@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_cby_r5k_5h">
+  <title>Save a new document with a predefined file name pattern</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>Is it possible using the SDK to get Oxygen Author to automatically generate a filename
+        comprising a UUID plus file extension?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>This could be done implementing a plugin for Oxygen using our Plugins SDK:</p>
+      <p><xref href="http://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins" format="html"
+          scope="external">http://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins</xref></p>
+      <p>There is a type of plugin called "Workspace Access" which can be used to add a listener to
+        be notified before an opened editor is saved,</p>
+      <p>The implemented plugin would intercept the save events when a newly created document is
+        untitled and show an alternative chooser dialog to the user, then save the topic with the
+        proper name.</p>
+      <p>The Java code for this would look
+        like:<codeblock outputclass="language-java">  private static class CustomEdListener extends WSEditorListener{
+    private final WSEditor editor;
+    private final StandalonePluginWorkspace
+        pluginWorkspaceAccess;
+    private boolean saving = false;
+    public CustomEdListener(StandalonePluginWorkspace pluginWorkspaceAccess, WSEditor editor) {
+            this.pluginWorkspaceAccess = pluginWorkspaceAccess;
+            this.editor = editor;
+    }
+    @Override
+    public boolean editorAboutToBeSavedVeto(int operationType) {
+      if(! saving &amp;&amp;
+        editor.getEditorLocation().toString().contains("Untitled")) {
+        File chosenDir = pluginWorkspaceAccess.chooseDirectory();
+        if(chosenDir != null) {
+          final File chosenFile = new File(chosenDir, UUID.randomUUID().toString() + ".dita");         
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override     
+              public void run() {
+              try {               
+                saving = true;
+                editor.saveAs(new URL(chosenFile.toURI().toASCIIString()));
+              } catch (MalformedURLException e) {
+                e.printStackTrace();
+              } finally {
+                saving = false;           
+              }
+            }
+          });
+        }
+       
+        //Reject the original save request.
+        return false;
+      }
+      return true;
+    }
+  }
+  
+  @Override
+  public void applicationStarted(final StandalonePluginWorkspace pluginWorkspaceAccess) {   
+        pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
+      @Override
+      public void editorOpened(URL editorLocation) {
+        final WSEditor editor = pluginWorkspaceAccess.getEditorAccess(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
+        if(editor != null &amp;&amp; editor.getEditorLocation().toString().contains("Untitled")) {
+         
+        //Untitled editor
+          editor.addEditorListener(new CustomEdListener(pluginWorkspaceAccess, editor));
+        }
+      }
+     },
+  PluginWorkspace.MAIN_EDITING_AREA);
+................................................
+</codeblock></p>
+    </section>
+  </body>
+</topic>

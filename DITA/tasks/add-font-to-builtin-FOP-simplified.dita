@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="add-font-to-builtin-FOP">
+  <title>Add a Font to the Built-in FOP - The Simple Version</title>
+  <taskbody>
+    <context>
+      <p>If the font that must be set to Apache FOP is one of the fonts that are installed in the
+        operating system you should follow the next steps for creating and setting a FOP
+        configuration file that looks for the font that it needs in the system fonts. It is a
+        simplified version of <xref href="add-font-to-builtin-FOP.dita#add-font-to-builtin-FOP"
+          format="dita">the procedure for setting a custom font in Apache FOP</xref>.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Register the font in FOP configuration. (not necessary in case of DITA PDF
+          transformations, see next step)</cmd>
+        <substeps>
+          <substep>
+            <cmd>Create a FOP configuration file that specifies that FOP should look for fonts in
+              the installed fonts of the operating system.</cmd>
+            <info>
+              <codeblock outputclass="language-xml">&lt;fop version="1.0"&gt;
+  &lt;renderers&gt;
+    &lt;renderer mime="application/pdf"&gt;
+      &lt;fonts&gt;
+        &lt;auto-detect/&gt;
+      &lt;/fonts&gt;
+    &lt;/renderer&gt;
+  &lt;/renderers&gt;
+&lt;/fop&gt;                       </codeblock>
+            </info>
+          </substep>
+          <substep>
+            <cmd>Set the FOP configuration file in <uicontrol>Preferences</uicontrol>.</cmd>
+            <info>Go to menu <menucascade>
+                <uicontrol>Options</uicontrol>
+                <uicontrol>Preferences</uicontrol>
+                <uicontrol>XML</uicontrol>
+                <uicontrol>XSLT/FO/XQuery</uicontrol>
+                <uicontrol>FO Processors</uicontrol>
+              </menucascade> and enter the path of the FOP configuration file in the
+                <uicontrol>Configuration file for the built-in FOP</uicontrol> text field.</info>
+          </substep>
+        </substeps>
+      </step>
+      <step>
+        <cmd>Set the font on the document content.</cmd>
+        <info>This is done usually with XSLT stylesheet parameters and depends on the document type
+          processed by the stylesheet.</info>
+        <choices>
+          <choice>For DocBook documents you can start with the predefined scenario called <b>DocBook
+              PDF</b>, <xref
+                href="../topics/xml-transformation-with-xslt.dita#xml-transformation-with-xslt"
+              format="dita">edit the XSLT parameters</xref> and set the font name (in our example
+            the font family name is <b>Arial Unicode MS</b>) to the parameters
+              <parmname>body.font.family</parmname> and
+            <parmname>title.font.family</parmname>.</choice>
+          <choice>For TEI documents you can start with the predefined scenario called <b>TEI
+            PDF</b>, <xref
+              href="../topics/xml-transformation-with-xslt.dita#xml-transformation-with-xslt"
+              format="dita">edit the XSLT parameters</xref> and set the font name (in our example
+              <b>Arial Unicode MS</b>) to the parameters <parmname>bodyFont</parmname> and
+              <parmname>sansFont</parmname>.</choice>
+          <choice>For DITA transformations to PDF using DITA-OT you should modify the following two files:<ul>
+            <li><filepath>${frameworks}/dita/DITA-OT/plugins/org.dita.pdf2/cfg/fo/font-mappings.xml</filepath> -
+                the <codeph>font-face</codeph> element included in each element
+                  <codeph>physical-font</codeph> having the <codeph>attribute
+                  char-set="default"</codeph> must contain the name of the font (<b>Arial Unicode
+                  MS</b> in our example)</li>
+            <li><filepath>${frameworks}/dita/DITA-OT/plugins/org.dita.pdf2/fop/conf/fop.xconf</filepath> - an
+                element <codeph>auto-detect</codeph> must be inserted in the element
+                  <codeph>fonts</codeph> which is inside the element <codeph>renderer</codeph>
+                having the attribute
+                <codeph>mime="application/pdf"</codeph>:<codeblock outputclass="language-xml">&lt;renderer mime="application/pdf"&gt;
+  . . .
+   &lt;fonts&gt;
+       &lt;auto-detect/&gt;
+   &lt;/fonts&gt;
+  . . .
+&lt;/renderer&gt;</codeblock></li>
+            </ul></choice>
+        </choices>
+      </step>
+    </steps>
+  </taskbody>
+</task>

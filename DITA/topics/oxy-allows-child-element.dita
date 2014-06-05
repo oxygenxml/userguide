@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="oxy-allows-child-element">
+  <title>The <codeph>oxy:allows-child-element()</codeph> Function</title>
+  <shortdesc>This extension function allows author actions to be available in a context only if the
+    associated schema permits it.</shortdesc>
+  <body>
+    <p>The oxy:allows-child-element() is evaluated at the caret position and has the following
+      signature: <codeph>oxy:allows-child-element($childName, ($attributeName,
+        $defaultAttributeValue, $contains?)?)</codeph>.</p>
+    <p>The following parameters are supported:<parml>
+        <plentry>
+          <pt><codeph>childName</codeph></pt>
+          <pd>the name of the element that you want to check whether it is valid in the current
+            context. Its value is a string that supports the following forms:<ul>
+              <li>the child element with the specified local name that belongs to the default
+                namespace.<codeblock>oxy:allows-child-element("para")</codeblock>The above example
+                verifies if the <keyword>para</keyword> element (of the default namespace) is
+                allowed in the current context.</li>
+              <li>the child element with the local name specified by any
+                namespace.<codeblock>oxy:allows-child-element("*:para")</codeblock>The above example
+                verifies if the <keyword>para</keyword> element (of any namespace) is allowed in the
+                current context.</li>
+              <li>a qualified name of an element.
+                <codeblock>oxy:allows-child-element("prefix:para")</codeblock>The prefix is resolved
+                in the context of the element where the caret is located. The function matches on
+                the element with the <keyword>para</keyword> local name from the previous resolved
+                namespace. In case the prefix is not resolved to a namespace, the function returns
+                  <codeph>false</codeph>.</li>
+              <li>any element.<codeblock>oxy:allows-child-element("*")</codeblock>The above function
+                verifies if any element is allowed in the current context.<note>A common use case of
+                    <codeph>oxy:allows-child-element("*")</codeph> is in combination with the
+                    <codeph>attributeName</codeph> parameter.</note></li>
+            </ul></pd>
+        </plentry>
+      </parml><parml>
+        <plentry>
+          <pt><codeph>attributeName</codeph></pt>
+          <pd>the attribute of an element that you want to check whether it is valid in the current
+            context. Its value is a string that supports the following forms:<ul>
+              <li>the attribute with the specified name from no
+                namespace.<codeblock>oxy:allows-child-element("*", "class", " topic/topic ")</codeblock>The
+                above example verifies if an element with the <codeph>class</codeph> attribute and
+                the default value of this attribute (that contains the <codeph>topic/topic</codeph>
+                string) is allowed in the current context.</li>
+              <li>the attribute with the local name specified by any
+                namespace.<codeblock>oxy:allows-child-element("*", "*:localname", " topic/topic ")</codeblock></li>
+              <li>a qualified name of an
+                attribute.<codeblock>oxy:allows-child-element("*", "prefix:localname", " topic/topic ")</codeblock>The
+                prefix is resolved in the context of the element where the caret is located. In case
+                the prefix is not resolved to a namespace, the function returns
+                  <codeph>false</codeph>.</li>
+            </ul></pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>defaultAttributeValue</codeph></pt>
+          <pd>a string that represents the default value of the attribute. Depending on the value of
+            the next parameter the default value of the attribute must either contain this value or
+            be equal with it.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>contains</codeph></pt>
+          <pd>an optional boolean. The default value is <codeph>true</codeph>. For the
+              <codeph>true</codeph> value, the default value of the attribute must contain the
+              <codeph>defaultAttributeValue</codeph> parameter. In case the value is
+              <codeph>false</codeph>, the two values must be the same.</pd>
+        </plentry>
+      </parml></p>
+  </body>
+</topic>

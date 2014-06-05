@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="howto-custom-protocol-plugin">
+  <title>How to Write a CMS Integration Plugin</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Extend Oxygen with Plugins<indexterm>implement plugin<indexterm>CMS integration
+              plugin</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>In order to have a complete integration between <ph keyref="product"/> and any CMS you
+      usually have to write a plugin which combines two available plugin extensions:<ul
+        id="ol_gnu_jbt_z">
+        <li><xref href="../concepts/workspace-access-plugin.dita#workspace-access-plugin"
+            format="dita">Workspace Access</xref></li>
+        <li><xref href="../tasks/howto-custom-protocol-plugin.dita#howto-custom-protocol-plugin"
+            format="dita">Custom protocol</xref></li>
+      </ul>The usual set of requirements for an integration between <ph keyref="product"/> and the
+      CMS are the following:</p>
+    <ul id="procedure-custom-protocol">
+      <li>
+        <p>Contribute to the <ph
+            keyref="product"/> toolbars and
+          main menu with your custom <b>Check Out</b> and <b>Check In</b> actions:<ul>
+            <li><b>Check Out</b> triggers your custom dialogs which allow you to browse the remote
+              CMS and choose the resources you want to open;</li>
+            <li><b>Check In</b> allows you to send back to the server the modified content. <p>You
+                can use the <b>Workspace Access</b> plugin extension (and provided sample Java code)
+                for all these operations.</p></li>
+          </ul></p>
+      </li>
+      <li><p>When <b>Check Out</b> is called, use the <ph
+            keyref="product"/> API to open
+          your custom URLs (URLs created using your custom protocol). It is important to implement
+          and use a <b>Custom Protocol</b> extension in order to be notified when the files are
+          opened and saved and to be able to provide to <ph
+            keyref="product"/> the content
+          for the relative references the files may contain. Your custom
+            <apiname>java.net.URLStreamHandler</apiname> implementation checks out the resource
+          content from the server, stores it locally and provides its content. Sample <b>Check
+            Out</b>
+          implementation:<codeblock outputclass="language-java">  /**
+   * Sample implementation for the "Check Out" method.
+   *
+   * @param pluginWorkspaceAccess The plugin workspace access (Workspace Access plugin).
+   * @throws MalformedURLException 
+   */
+  private void checkOut(StandalonePluginWorkspace pluginWorkspaceAccess) throws MalformedURLException {
+    //TODO Show the user a custom dialog for browsing the CMS
+    //TODO after the user selected the resource create an URL with a custom protocol 
+    // which will uniquely map to the resource on the CMS using the URLHandler
+    //something like:
+    URL customURL = new URL("mycms://host/path/to/file.xml");
+    //Ask Oxygen to open the URL
+    pluginWorkspaceAccess.open(customURL);
+    //Oxygen will then your custom protocol handler to provide the contents for the resource "mycms://host/path/to/file.xml"
+    //Your custom protocol handler will check out the file in a temporary directory for example and provide the content from it.
+    //Oxygen will also pass through your URLHandler if you have any relative references which need to be opened/obtained.
+  } </codeblock>Here
+          is a diagram of the <uicontrol>Check Out</uicontrol> process:</p>
+        <p><image
+          href="../img/cmscheckout.png" id="image_yvg_bmg_ab"/></p>
+        <p>Each phase is described below:<ol id="ol_svs_qxm_hb">
+          <li>Browse CMS repository</li>
+          <li>User chooses a resource</li>
+          <li>Use API to open custom URL: <filepath>mycms://path/to/file.xml</filepath></li>
+          <li>Get content of URL: <filepath>mycms://path/to/file.xml</filepath></li>
+          <li>Get content of resource</li>
+          <li>Store on disk for faster access</li>
+          <li>Retrieve content from disk if already checked out</li>
+          <li>Retrieved content</li>
+        </ol></p>
+      </li>
+      <li>Contribute a special <b>Browse CMS</b> action to every dialog in <ph
+          keyref="product"/> where an URL
+        can be chosen to perform a special action (like the <b>Insert a DITA Content Reference</b>
+        action or the <b>Insert Image Reference</b> action). Sample
+          code:<codeblock outputclass="language-java">      //Add an additional browse action to all dialogs/places where Oxygen allows selecting an URL.
+      pluginWorkspaceAccess.addInputURLChooserCustomizer(new InputURLChooserCustomizer() {
+        public void customizeBrowseActions(List&lt;Action> existingBrowseActions, final InputURLChooser chooser) {
+          //IMPORTANT, you also need to set a custom icon on the action for situations when its text is not used for display.
+          Action browseCMS = new AbstractAction("CMS") {
+            public void actionPerformed(ActionEvent e) {
+              URL chosenResource = browseCMSAndChooseResource();
+              if (chosenResource != null) {
+                try {
+                  //Set the chosen resource in the dialog's combo box chooser.
+                  chooser.urlChosen(chosenResource);
+                } catch (MalformedURLException e1) {
+                  //
+                }
+              }
+            }
+          };
+          existingBrowseActions.add(browseCMS);
+        }
+      });</codeblock><p>When
+          inserting references to other resources using the actions already implemented in <ph
+            keyref="product"/>, the
+          reference to the resource is made by default relative to the absolute location of the
+          edited XML file. You can gain control over the way in which the reference is made relative
+          for a specific protocol
+          like:<codeblock outputclass="language-java">      //Add a custom relative reference resolver for your custom protocol.
+      //Usually when inserting references from one URL to another Oxygen makes the inserted path relative.
+      //If your custom protocol needs special relativization techniques then it should set up a custom relative
+      //references resolver to be notified when resolving needs to be done.
+      pluginWorkspaceAccess.addRelativeReferencesResolver(
+          //Your custom URL protocol for which you already have a custom URLStreamHandlerPluginExtension set up.
+          "mycms", 
+          //The relative references resolver
+          new RelativeReferenceResolver() {
+        public String makeRelative(URL baseURL, URL childURL) {
+          //Return the referenced path as absolute for example.
+          //return childURL.toString();
+          //Or return null for the default behavior.
+          return null;
+        }
+      });</codeblock></p></li>
+      <li>
+        <p>Write the <filepath>plugin.xml</filepath> descriptor. Your plugin combines the two
+          extensions using a single set of libraries. The descriptor would look like:</p>
+        <p>
+          <pre>&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
+&lt;plugin
+ name="CustomCMSAccess"
+ description="Test"
+ version="1.0.0"
+ vendor="ACME"
+ class="custom.cms.CMSAccessPlugin">
+ &lt;runtime>
+  &lt;library name="lib/cmsaccess.jar"/>
+ &lt;/runtime>
+ &lt;!--Access to add actions to the main menu and toolbars or to add custom views.-->
+ &lt;!--See the "ro.sync.sample.plugin.workspace.CustomWorkspaceAccessPluginExtension" Java sample for more details-->
+ &lt;extension type="WorkspaceAccess" 
+  class="custom.cms.CustomWorkspaceAccessPluginExtension"/>
+ &lt;!--The custom URL handler which will communicate with the CMS implementation-->
+ &lt;!--See the "ro.sync.sample.plugin.workspace.customprotocol.CustomProtocolURLHandlerExtension" Java sample for more details-->
+ &lt;extension type="URLHandler" 
+  class="custom.cms.CustomProtocolURLHandlerExtension"/>
+&lt;/plugin></pre>
+        </p>
+      </li>
+      <li>
+        <p>Create a <filepath>cmsaccess.jar</filepath> JAR archive containing your implementation classes.</p>
+      </li>
+      <li>
+        <p>Copy your new plugin directory in the <filepath>plugins</filepath> subfolder of the <ph
+            keyref="product"/> install
+          folder and start <ph
+            keyref="product"/>.</p>
+      </li>
+    </ul>
+  </body>
+</topic>

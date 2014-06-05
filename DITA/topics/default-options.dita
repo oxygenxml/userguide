@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="default-options">
+  <title>Customized Default Options</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Configure the Application<indexterm>customize default
+          options</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>In the <xref href="preferences.dita#preferences" format="dita">Preferences pages</xref> each
+      particular setting (configurable via UI controls like radio buttons, check boxes, option
+      boxes) has a default value. This default value is used by the application as long as the user
+      does not explicitly change that setting to some other value. You can overwrite these default
+      values/settings for a specific installation by loading a set of options from a specific XML
+      structure stored in an <term>options file</term>. </p>
+    <section><title>Creating an XML <term>options file</term></title><p>Follow these steps to create an XML <term>options file</term> containing an export of all
+        explicitly set options from an <ph keyref="product"/> installation:<ul id="ul_mgf_s1h_12">
+          <li product="editor author developer">make sure the options that you want to set are not
+              <xref href="preferences-sharing.dita#preferences-sharing" format="dita">stored at
+              project level</xref>;</li>
+          <li>explicitly set the values you want to impose as defaults in the <xref
+              href="preferences.dita#preferences" format="dita">Preferences pages</xref>;</li>
+          <li>select <menucascade product="editor author developer diff svnClient">
+              <uicontrol>Options</uicontrol>
+              <uicontrol>Export Global Options</uicontrol>
+            </menucascade><menucascade product="editorEclipse authorEclipse developerEclipse">
+              <uicontrol>Window</uicontrol>
+              <uicontrol>Preferences</uicontrol>
+              <uicontrol>oXygen XML Editor</uicontrol>
+              <uicontrol>Export Global Options</uicontrol>
+            </menucascade>. The options values are stored in an XML file.</li>
+        </ul></p><p product="editor author developer">If you want to control exactly which options page will be
+        stored in the default options file, you can choose to attach them to a <term>project file
+          (.xpr file extension)</term> by following these steps:<ul id="ul_bdf_d5t_zd">
+          <li>In <xref href="using-the-project-view.dita#using-the-project-view" format="dita">the
+              Project view</xref> create a project or open an already existing one;</li>
+          <li>switch to <xref href="preferences-sharing.dita#preferences-sharing" format="dita"
+              >Project Options</xref> each <uicontrol>Preferences</uicontrol> page which contains
+            settings of interest to you. All explicitly set values will be saved in the project file
+            after you press either of the <uicontrol>OK</uicontrol> or <uicontrol>Apply</uicontrol>
+            buttons.</li>
+        </ul><note>If you store the options to a <term>project file (.xpr file extension)</term> the
+          file extension must be preserved as such (<filepath>xpr</filepath>) when the configuration
+          file is distributed to other users.</note></p></section>
+    <section><title>Providing Default Option Values</title><p>Use either one of the following ways to configure an <ph keyref="product"/> installation to use
+        customized default options from an XML configuration file:</p><ul id="ul_n5f_btb_md">
+        <li><p>set the path to the XML options configuration file as the value of the
+              <codeph>com.oxygenxml.default.options</codeph>
+            <xref href="set-parameter-in-startup-script.dita#set-parameter-in-startup-script"
+              format="dita" product="editor author developer">system property</xref><ph
+              product="editorEclipse authorEclipse developerEclipse">system property</ph>.</p><p
+            product="diff author developer editor svnClient">The path must be specified with an URL
+            or a file path relative to the application installation
+            folder:<screen product="editor author developer diff svnClient">-Dcom.oxygenxml.default.options=options/default.xml</screen></p><p product="authorEclipse developerEclipse editorEclipse">You can add the following line in the
+              <filepath>[Eclipse-platform-install-folder]/configuration/config.ini</filepath>
+            file:<screen>com.oxygenxml.default.options=file\:@config.dir/../default-options.xml </screen></p>
+          <note product="author developer editor">If you are using the <xref
+              href="../tasks/jwsInstaller.dita">Java Webstart distribution</xref>, edit the <xref
+              href="http://download.oracle.com/javase/1,5.0/docs/guide/javaws/developersguide/syntax.html"
+              format="html" scope="external"><filepath>.jnlp</filepath> file</xref> that launches
+            the application and set the <codeph>com.oxygenxml.default.options</codeph> parameter
+            using a <codeph>property</codeph> element, for
+            example:<screen> &lt;property name="oxy:com.oxygenxml.default.options" <b>value=</b>"http://host/path/to/default-options.xml"/&gt;</screen></note>
+        </li>
+        <li>copy the XML options configuration file to the <filepath
+            product="editor author developer">[Oxygen-install-folder]/preferences</filepath><ph
+            product="authorEclipse developerEclipse editorEclipse"
+              ><filepath>[Eclipse-platform-install-folder]/plugins/com.oxygenxml.editor/preferences</filepath>
+            folder or to the equivalent plugin folder in the
+              <filepath>[Eclipse-platform-install-folder]/dropins</filepath> folder if the plugin
+            was installed as a drop-in.</ph>.<note product="author developer editor">The same
+            procedure applies to a <xref href="../tasks/jwsInstaller.dita">Java Webstart
+              distribution</xref>.</note></li>
+      </ul><note product="diff author developer editor svnClient">Make sure that the options
+        configuration file has either the <filepath>.xml</filepath> extension (eg:
+          <filepath>default-options.xml</filepath>) or an <filepath>.xpr</filepath> extension
+        depending on the way in which it was created (from the global options or saved at project
+        level).</note><note product="authorEclipse developerEclipse editorEclipse">Make sure that
+        the options configuration file has the <filepath>.xml</filepath> extension (eg:
+          <filepath>default-options.xml</filepath>).</note></section>
+  </body>
+</topic>

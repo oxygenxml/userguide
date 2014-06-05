@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_sqm_tnf_33">
+  <title>Insert an Element with all the Required Content</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>I'm inserting a DITA <varname>image</varname> XML element, using the Author API, which
+        points to a certain resource and has required content. Can the required content be
+        automatically inserted by the application? </p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>The API <codeph>ro.sync.ecss.extensions.api.AuthorSchemaManager</codeph> can propose valid
+        elements which can be inserted at the specific offset. Using the method
+          <codeph>AuthorSchemaManager.createAuthorDocumentFragment(CIElement)</codeph> you can
+        convert the proposed elements to document fragments (which have all the required content
+        filled in) which can then be inserted in the
+        document.<codeblock outputclass="language-java">AuthorSchemaManager schemaManager = this.authorAccess.getDocumentController().getAuthorSchemaManager();
+WhatElementsCanGoHereContext context = schemaManager.createWhatElementsCanGoHereContext(this.authorAccess.getEditorAccess().getCaretOffset());
+List&lt;CIElement> possibleElementsAtCaretPosition = schemaManager.whatElementsCanGoHere(context);
+loop: for (int i = 0; i &lt; possibleElementsAtCaretPosition.size(); i++) {
+  CIElement possibleElement = possibleElementsAtCaretPosition.get(i);
+  List&lt;CIAttribute> attrs = possibleElement.getAttributes();
+  if(attrs != null) {
+    for (int j = 0; j &lt; attrs.size(); j++) {
+      CIAttribute ciAttribute = attrs.get(j);
+      if (ciAttribute.getName().equals("class")) {
+        if (ciAttribute.getDefaultValue() != null
+            &amp;&amp; ciAttribute.getDefaultValue().contains("  topic/image ")) {
+          //Found a CIElement for image
+          //Create a fragment for it. The fragment contains all required child elements already built.
+          AuthorDocumentFragment frag = schemaManager.createAuthorDocumentFragment(possibleElement);
+          //Now set the @href to it.
+          //Ask the user and obtain a value for the @href
+          //Then:
+
+          String href = "test.png";
+          List&lt;AuthorNode> nodes = frag.getContentNodes();
+          if(!nodes.isEmpty()) {
+            AuthorElement imageEl = (AuthorElement) nodes.get(0);
+            imageEl.setAttribute("href", new AttrValue(href));
+          }
+          //And insert the fragment.
+          this.authorAccess.getDocumentController().insertFragment(this.authorAccess.getEditorAccess().getCaretOffset(), frag);
+          break loop;
+        }
+      }
+    }
+  }
+} </codeblock></p>
+    </section>
+  </body>
+</topic>

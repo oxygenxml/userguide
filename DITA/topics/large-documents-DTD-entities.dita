@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="large-documents-DTD-entities">
+  <title>Including Document Parts with DTD Entities</title>
+  <body>
+    <p>There are two conditions for including a part using DTD entities:</p>
+    <ul>
+      <li>
+        <p>The master document should declare the DTD to be used, while the external entities should
+          declare the XML sections to be referred;</p>
+      </li>
+      <li>
+        <p>The document containing the section must not define again the DTD.</p>
+      </li>
+    </ul>
+    <example>
+      <p>A master document looks like this:</p>
+      <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;!DOCTYPE book SYSTEM "../xml/docbookx.dtd" [ 
+&lt;!ENTITY testing SYSTEM "testing.xml" &gt; ]
+&gt; 
+&lt;book&gt; 
+&lt;chapter&gt; ...</codeblock>
+    </example>
+    <p>The referred document looks like this:</p>
+    <codeblock outputclass="language-xml">&lt;section&gt; ... here comes the section content ... &lt;/section&gt;</codeblock>
+    <note>
+      <p>The indicated DTD and the element names (<i>section</i>, <i>chapter</i>) are used here only
+        for illustrating the inclusion mechanism. You can use any DTD and element names you
+        need.</p>
+    </note>
+    <p>At a certain point in the master document there can be inserted the section
+        <i>testing.xml</i> entity:<codeblock>... &amp;testing; ...</codeblock></p>
+    <p>When splitting a large document and including the separate parts in the master file using
+      external entities, only the master file will contain the Document Type Definition (the DTD) or
+      other type of schema. The included sections can't define again the schema because the main
+      document will not be valid. If you want to validate the parts separately you have to <xref href="including-document-parts-with-XInclude.dita">use XInclude</xref> for assembling the
+      parts together with the master file.</p>  </body>
+</topic>

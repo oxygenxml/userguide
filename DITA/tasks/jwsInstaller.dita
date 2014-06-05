@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="jwsInstaller">
+    <title>Java Web Start (JWS) Installer</title>
+    <shortdesc/>
+    <taskbody>
+        <context>
+            <p><ph><ph keyref="product"/></ph> provides the tools to create your own JWS
+        distribution that can be installed on a custom web server. Advantages of a JWS distribution
+          include:<ul id="ul_sjk_beg_c">
+          <li><ph><ph keyref="product"/></ph> is run locally, not inside a web browser, overcoming
+            many of the browser compatibility problems common to applets;</li>
+          <li>
+            <p>JWS ensures that the most current version of the application will be deployed, as
+              well as the correct version of JRE;</p>
+          </li>
+          <li>
+            <p>applications launched with Java Web Start are cached locally. Thus, an already
+              downloaded application is launched on par with a traditionally installed
+              application;</p>
+          </li>
+          <li>
+            <p>you can preconfigure <ph><ph keyref="product"/></ph> and the rest of your team will
+              use the same preferences and frameworks.</p>
+          </li>
+        </ul><note>If you want to create your own JWS distribution package, please contact Syncro
+          Soft for the Oxygen SDK agreement.</note></p>
+            <note>A code signing certificate is needed to sign the JWS distribution. The following
+        procedure assumes that you already have such a certificate (for example <tm tmtype="tm"
+          >Thawte</tm>, or <tm tmtype="tm">Verisign</tm>).</note>
+      <note type="important">When running the Java Web Start distribution on Mac OS X, due to
+        changes in this <xref href="http://support.apple.com/kb/HT5672" format="html"
+          scope="external">security release</xref>, clicking the link to the JNLP file does not
+        start the application. The selected JNLP is downloaded locally. Right click it and choose to
+        open the resource.</note>
+            <p>The following schematics depicts the <ph><ph
+                        keyref="product"
+                    /></ph> Java Web Start deployment procedure:<fig>
+                    <title>Java Web Start Deployment Procedure</title>
+                    <image href="../img/diag_JWSApplet.png"/>
+                </fig></p>
+            <p>The following steps describe the procedure of deploying an <ph><ph keyref="product"
+          /></ph> installation on a custom server.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Go to <filepath product="editor"
+            >http://www.oxygenxml.com/InstData/Editor/All/oxygen.tar.gz</filepath><filepath
+            product="author"
+            >http://www.oxygenxml.com/InstData/Author/All/oxygenAuthor.tar.gz</filepath>
+          <filepath product="developer"
+            >http://www.oxygenxml.com/InstData/Developer/All/oxygenDeveloper.tar.gz</filepath> and
+          download the All Platforms Installation package to a local drive.</cmd>
+            </step>
+            <step>
+                <cmd>Expand the archive.</cmd>
+                <stepresult>The <filepath product="editor">oxygen</filepath><filepath
+            product="author">oxygenAuthor</filepath><filepath product="developer"
+            >oxygenDeveloper</filepath> folder is created.</stepresult>
+            </step>
+            <step>
+                <cmd>Optionally, you can customize the content of the <b>frameworks</b> folder,
+                    containing default template document files.</cmd>
+            </step>
+            <step>
+                <cmd>Edit the <filepath product="editor"
+                        >oxygen\tools\jwsPackager\packager.properties</filepath><filepath
+                        product="author">oxygenAuthor\tools\jwsPackager\packager.properties</filepath>
+                    <filepath product="developer">oxygenDeveloper\tools\jwsPackager\packager.properties</filepath>
+                    configuration file. The following properties need to be adjusted:</cmd>
+                <choices>
+                    <choice><b><keyword>codebase</keyword></b> - represents the location of the
+                        future JWS distribution;</choice>
+                    <choice><b><keyword>keystore</keyword></b> - keystore location path;</choice>
+                    <choice><b><keyword>storepass</keyword></b> - password for keystore
+                        integrity;</choice>
+          <choice><b><keyword>storetype</keyword></b> - type of the certificate file, like
+              <codeph>PKCS12</codeph> or <codeph>JKS</codeph>;</choice>
+                    <choice><b><keyword>alias</keyword></b> - keystore alias;</choice>
+                    <choice><b><keyword>optionsDir</keyword></b> - points to the options directory
+            that may be distributed with the JWS installer. In case the directory contains an XML
+            document named <filepath>options.xml</filepath> or <filepath>default.xml</filepath>
+            containing exported options, these options will be used. Otherwise, the structure of the
+            options folder has to match the structure of a stand alone application <xref
+              href="../topics/import-export-preferences.dita#import-export-preferences">options
+              folder</xref>.<note>This property is optional. It is provided only if <xref
+                href="../topics/option-layers.dita#topic_x4m_2x1_12" format="dita">custom
+                options</xref> need to be delivered to the end users.</note></choice>
+                </choices>
+                <info>The values of <b><keyword>keystore</keyword></b>,
+              <b><keyword>storepass</keyword></b>, and <b><keyword>alias</keyword></b> properties
+          are all provided by the code signing certificate. For more information, please check the
+          documentation of the <i><cmdname>jarsigner</cmdname></i> tool.</info>
+            </step>
+            <step>
+                <cmd>Edit the JNLP <filepath product="editor"
+            >oxygen\tools\jwsPackager\dist\javawebstart\oxygen\oxygen.jnlp</filepath><filepath
+            product="author"
+            >oxygenAuthor\tools\jwsPackager\dist\javawebstart\author\author.jnlp</filepath><filepath
+            product="developer"
+            >oxygenDeveloper\tools\jwsPackager\dist\javawebstart\author\developer.jnlp</filepath>
+          template file to modify default settings. You can specify the list of files opened at
+          startup by modifying the <codeph>&lt;argument></codeph> list. To pass system properties
+          directly to <ph><ph keyref="product"/></ph> when it is started, add the
+            <codeph>oxy</codeph> prefix to them (for example: <codeph>&lt;property
+            name="oxyPropertyName" value="testValue"/></codeph>). The system property is passed to
+              <ph><ph keyref="product"/></ph> with the prefix stripped.</cmd>
+            </step>
+            <step>
+                <cmd>Using a command-line console, run <codeph>ant</codeph> in the <filepath
+                        product="editor">oxygen\tools\jwsPackager</filepath><filepath
+                        product="author">oxygenAuthor\tools\jwsPackager</filepath><filepath
+                        product="developer">oxygenDeveloper\tools\jwsPackager</filepath>
+                    folder.</cmd>
+                <stepresult>The <b>ant</b> process creates the <filepath product="editor"
+                        >oxygen\tools\jwsPackager\dist\InstData\oxygenJWS.zip</filepath><filepath
+                        product="author"
+                            >oxygenAuthor\tools\jwsPackager\dist\InstData\authorJWS.zip</filepath><filepath
+                                product="developer"
+                                >oxygenDeveloper\tools\jwsPackager\dist\InstData\authorJWS.zip</filepath> archive
+                    that contains the actual remote JWS installer.</stepresult>
+            </step>
+            <step>
+                <cmd>Copy the expanded content of the archive to the folder specified in the
+              <b><keyword>codebase</keyword></b> property, previously set in the
+              <b><filepath>packager.properties</filepath></b> file.</cmd>
+            </step>
+            <step>
+                <cmd>Using your favorite web browser, go to the address specified in the
+                            <b><keyword>codebase</keyword></b> property or to its parent folder and
+                    start the remote installer.</cmd>
+            </step>
+        </steps>
+    </taskbody>
+</task>

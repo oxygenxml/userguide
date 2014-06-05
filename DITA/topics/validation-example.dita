@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="validation-example">
+  <title>Validation Example - A DocBook Validation Error</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Editing XML Documents<indexterm>validation against a schema<indexterm>validation
+              example</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>In the following DocBook 4 document the content of the <codeph>listitem</codeph> element does
+      not match the rules of the DocBook 4 schema, that is <filepath>docbookx.dtd</filepath>.</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+     "http://www.docbook.org/xml/4.4/docbookx.dtd"&gt;
+&lt;article&gt;
+    &lt;title&gt;Article Title&lt;/title&gt;
+    &lt;sect1&gt;
+      &lt;title&gt;Section1 Title&lt;/title&gt;
+      &lt;itemizedlist&gt;
+        &lt;listitem&gt;
+          &lt;link&gt;a link here&lt;/link&gt;
+        &lt;/listitem&gt;
+      &lt;/itemizedlist&gt;
+    &lt;/sect1&gt;
+&lt;/article&gt;</codeblock>
+    <p>The <uicontrol>Validate Document</uicontrol> action will return the following error:</p>
+    <msgblock xml:space="preserve">
+Unexpected element "link". The content of the parent element type must match 
+"(calloutlist|glosslist|bibliolist|itemizedlist|orderedlist|segmentedlist|simplelist
+|variablelist|caution|important|note|tip|warning|literallayout|programlisting
+|programlistingco|screen|screenco|screenshot|synopsis|cmdsynopsis|funcsynopsis
+|classsynopsis|fieldsynopsis|constructorsynopsis|destructorsynopsis|methodsynopsis
+|formalpara|para|simpara|address|blockquote|graphic|graphicco|mediaobject|mediaobjectco
+|informalequation|informalexample|informalfigure|informaltable|equation|example|figure
+|table|msgset|procedure|sidebar|qandaset|task|anchor|bridgehead|remark|highlights
+|abstract|authorblurb|epigraph|indexterm|beginpage)+".
+</msgblock>
+    <p>This error message is a little more difficult to understand, so understanding of the syntax
+      or processing rules for the DocBook XML DTD's <codeph>listitem</codeph> element is
+      recommended. However, the error message does give us a clue as to the source of the problem,
+      indicating that <q>The content of element type c<codeph/> must match</q>.</p>
+    <p>Luckily most standards based DTD's, XML Schema's and Relax NG schemas are supplied with
+      reference documentation. This enables us to lookup the element and read about it. In this case
+      you should learn about the child elements of <codeph>listitem</codeph> and their nesting
+      rules. Once you have correctly inserted the required child element and nested it in accordance
+      with the XML rules, the document will become valid on the next validation test.</p>
+  </body>
+</topic>

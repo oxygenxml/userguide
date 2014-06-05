@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="installation-dita-webhelp-feedback">
+  <title>Installation</title>
+  <body id="installation">
+    <section id="system-requirements">
+      <title>System Requirements</title>
+      <p>The feedback-enabled WebHelp system of <ph
+                    keyref="product"/> demands the
+                following system requirements:<ul>
+          <li>
+            <p>Apache Web Server running;</p>
+          </li>
+          <li>
+            <p>MySQL server running;</p>
+          </li>
+          <li>
+            <p>PHP Version&gt;= 5.1.6;</p>
+          </li>
+          <li>
+            <p>PHP MySQL Support;</p>
+          </li>
+          <li>
+                        <p>oXygen WebHelp system supports the following browsers:IE7+, Chrome 19+,
+                            Firefox 11+, Safari 5+, Opera 11+.</p>
+          </li>
+        </ul>
+      </p>
+    </section>
+    <section id="installation-requirements">
+      <title>Installation Instructions</title>
+            <note>These instructions were written for XAMPP 1.7.7 with PHP 5.3.8 and for
+                    <term>phpMyAdmin</term> 3.4.5. Later versions of these packages may change the
+                location or name of some options, however the following installation steps should
+                remain valid and basically the same.</note>
+            <p>In case you have a web server configured with PHP, MySQL, you can deploy the WebHelp
+                output directly. Otherwise, install XAMPP. XAMPP is a free and open source
+                cross-platform web server solution stack package. It consists mainly of the Apache
+                HTTP Server, MySQL database, and interpreters for scripts written in the PHP.</p>
+      <p>Install XAMPP:<ul>
+        <li>Go to <xref href="https://www.apachefriends.org/download.html"
+                            format="html" scope="external"/> and download XAMPP, for instance for a
+                        Windows system;</li>
+          <li>Install it in C:\xampp;</li>
+          <li>From the XAMPP control panel, start "MySQL", and then "Apache";</li>
+                    <li>Open <codeph>http://localhost/xampp/index.php</codeph> in your browser to
+            check whether the HTTP server is working.</li>
+        </ul></p>
+      <p>Create a database for the feedback system and a MySQL user with privileges on that
+                database. The feedback system uses the MySQL user to connect to the database. The
+                username and password for the database administrator are pre-required. For XAMPP,
+                the defaults are <codeph>root</codeph> for the username and the password is empty. </p>
+      <p>Use <term>phpMyAdmin</term> to create a database: <ul>
+          <li>Type <term>localhost</term> in your browser;</li>
+          <li>In the left area, select: <term>phpMyAdmin</term>;</li>
+                    <li>Click <i>Databases</i> (in the right frame) and then create a
+                            <i>database</i>. You can give any name you want to your database, for
+                        example <i>comments</i>;</li>
+          <li>Create a user with connection privileges for this database. In the
+              <uicontrol>SQL</uicontrol> tab, paste the following
+            text:<codeblock outputclass="language-sql">  INSERT INTO `mysql`.`user` (`Host`,`User`,`Password`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,
+      `Drop_priv`,`Reload_priv`,`Shutdown_priv`,`Process_priv`,`File_priv`,`Grant_priv`,`References_priv`,`Index_priv`,`Alter_priv`, 
+      `Show_db_priv`,`Super_priv`,`Create_tmp_table_priv`,`Lock_tables_priv`,`Execute_priv`,`Repl_slave_priv`,`Repl_client_priv`,         
+      `Create_view_priv`, `Show_view_priv`,`Create_routine_priv`,`Alter_routine_priv`,`Create_user_priv`,`Event_priv`,`Trigger_priv`,
+      `Create_tablespace_priv`,`ssl_type`,`max_questions`,`max_updates`,`max_connections`,`max_user_connections`,`plugin`, 
+      `authentication_string`) VALUES ('localhost', 'user_name', PASSWORD('user_password'), 'Y','Y','Y','Y','Y','Y','Y', 'N','N','N',
+      'N','Y','Y','Y','Y','N','Y','Y','Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y','', '0', '0', '0', '0', '', '');  </codeblock></li>
+          <li>Change the <i>user_name</i> and the <i>user_password</i> values;</li>
+                    <li>Under <i>localhost</i> in the right frame click <i>Privileges</i> and then
+                        at the bottom of the page click the <i>reload the privileges</i> link. </li>
+        </ul></p>
+    </section>
+    <section id="deploying-webhelp">
+      <title>Deploying the WebHelp output</title>
+      <p>To deploy the WebHelp output, follow these steps:<ul>
+          <li>Locate the directory of the HTML documents. Open
+              <codeph>http://localhost/xampp/phpinfo.php</codeph> in your browser and see the value
+            of the DOCUMENT_ROOT variable. In case you installed XAMPP in C:\xampp, the value of
+            DOCUMENT_ROOT is <filepath>C:/xampp/htdocs</filepath>;</li>
+          <li>Copy the transformation output folder in the DOCUMENT_ROOT;</li>
+          <li>Rename it to a relevant name, for example, webhelp_1;</li>
+          <li>Open <codeph>http://localhost/webhelp_1/</codeph>. You are redirected to
+              <codeph>http://localhost/webhelp_1/install/</codeph>;<ul>
+              <li>Verify that the prerequisites are fulfilled;</li>
+              <li>Press <uicontrol>Start Installation</uicontrol>;</li>
+              <li>Configure the e-mail addresses, username, and password. Enter the WebHelp system
+                administrator password. This special user is able to moderate new posts and manage
+                WebHelp users;<p>The address and port of the SMTP mail server that will send the
+                  email notifications for the user registration and for the user comments are
+                  displayed in the WebHelp installation wizard. They can be modified later in the
+                  PHP Runtime Configuration which is usually stored in the
+                    <filepath>php.ini</filepath> file in the XAMPP installation.</p><p>You can
+                  choose to share comments with other products using the same database. After
+                  configuring the database connection, enable the <uicontrol>Display comments from
+                    other products</uicontrol> option. In the <uicontrol>Display comments
+                    from</uicontrol> section a list with the products sharing the same database is
+                  displayed. You can choose one or more products from this list to share comments
+                  with. <note>You can restrict the displayed comments of a product depending on its
+                    version. In case you have two products that use the same database and you
+                    restrict one of them to display comments starting from a certain version, the
+                    comments of the other product are also displayed from the specified version
+                    onwards. </note>
+                </p></li>
+              <li>Press Next Step;</li>
+              <li>Remove the installation folder from your web server; </li>
+              <li>Click the link pointing to the index of the documentation, or visit:
+                  <codeph>http://localhost/webhelp_1/</codeph>.</li>
+            </ul></li>
+        </ul></p>
+            <p>To test your system, create a user or post as anonymous. Check that the notification
+                emails are delivered to your inbox.<note>To read debug messages, do one of the following:<ul>
+            <li>open the <filepath>log.js</filepath> file, locate the <codeph>var log= new
+                Log(Level.NONE);</codeph> line, and change the logging level to:
+                <codeph>Level.INFO</codeph>, <codeph>Level.DEBUG</codeph>,
+                <codeph>Level.WARN</codeph>, or <codeph>Level.ERROR</codeph>;</li>
+            <li>append <codeph>?log=true</codeph> to the WebHelp URL.</li>
+          </ul></note>
+            </p>
+    </section>
+  </body>
+</topic>

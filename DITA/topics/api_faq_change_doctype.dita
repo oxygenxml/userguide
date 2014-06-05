@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_zth_clk_5h">
+  <title>Change the DOCTYPE of an Opened XML Document</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>How to change the DOCTYPE of a document opened in the <uicontrol>Author</uicontrol>
+        mode?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>The following
+        API:<codeblock outputclass="language-java">ro.sync.ecss.extensions.api.AuthorDocumentController.getDoctype()  </codeblock>
+        allows you to get the <codeph>DOCTYPE</codeph> of the current XML file opened in the Author
+        page. </p>
+      <p>There is also an API method available which would allow you to set the
+          <codeph>DOCTYPE</codeph> back to the
+        XML:<codeblock outputclass="language-java">ro.sync.ecss.extensions.api.AuthorDocumentController.setDoctype(AuthorDocumentType)  </codeblock>
+        Here is an example of how this solution would
+        work:<codeblock outputclass="language-java">AuthorDocumentType dt = new AuthorDocumentType("article", "testSystemID", "testPublicID",
+            "&lt;!DOCTYPE article PUBLIC \"testPublicID\" \"testSystemID\">");
+docController.setDoctype(dt); </codeblock></p>
+      <p> Basically you could take the entire content from the existing DOCTYPE,
+        <codeblock outputclass="language-java">ro.sync.ecss.extensions.api.AuthorDocumentType.getContent()</codeblock> modify it
+        to your needs, and create another <codeph>AuthorDocumentType</codeph> object with the new
+        content and with the same public, system IDs. </p>
+      <p>For example you could use this API is you want to add unparsed entities in the XML
+          <codeph>DOCTYPE</codeph>.</p>
+    </section>
+  </body>
+</topic>

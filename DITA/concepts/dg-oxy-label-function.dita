@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="oxy-label-function">
+ <title>The <codeph>oxy_label()</codeph> Function</title>
+ <shortdesc></shortdesc>
+ <conbody>
+  <p>The <codeph>oxy_label()</codeph> function can be used in conjunction with the CSS
+        <codeph>content</codeph> property to change the style of generated text. The arguments of
+      the function are <i>property name - property value</i> pairs. The following properties are supported:<ul>
+        <li><ph conref="../topics/oxy-editor-properties.dita#oxy-editor-properties/text-property"
+          />;</li>
+        <li><ph conref="../topics/oxy-editor-properties.dita#oxy-editor-properties/width-property"
+          />;</li>
+        <li><ph conref="../topics/oxy-editor-properties.dita#oxy-editor-properties/color-property"
+          />;</li>
+        <li><ph
+            conref="../topics/oxy-editor-properties.dita#oxy-editor-properties/background-color-property"
+          />;</li>
+        <li>
+          <p conref="../topics/oxy-editor-properties.dita#oxy-editor-properties/style-property"/>
+        </li>
+      </ul>If the text from an <codeph>oxy_label()</codeph> function contains new lines, for example
+        <codeph>oxy_label(text, 'LINE1\A LINE2', width, 100px)</codeph>, the text is split and the
+      new line has the specified width (100 pixels in this case).<note>The text is split only after
+          <codeph>\A</codeph>. In case a <codeph>width</codeph> is specified for the
+          <codeph>oxy_label()</codeph> function and a <codeph>\A</codeph> is encountered, the new
+        line has the specified width.</note></p>
+  <p>You can use the <xref href="dg-editor-function.dita#dg-editor-function">oxy_editor()</xref> and
+        <codeph>oxy_label()</codeph> functions together to create a form control based layout.</p>
+    <example>Let's say we want to edit two attributes on a single element using form controls on
+      separate lines:
+      <codeblock>person:before {
+  content: "Name:*" oxy_textfield(edit, '@name', columns, 20) "\A Address:" oxy_textfield(edit, '@address', columns, 20)
+}</codeblock>We
+      can use <codeph>oxy_label()</codeph> if we want only the <uicontrol>Name</uicontrol> label to
+      be bold and also to properly align the two controls:
+      <codeblock>person:before {
+  content: oxy_label(text, "Name:*", styles, "font-weight:bold;width:200px") oxy_textfield(edit, '@name', columns, 20) "\A "
+           oxy_label(text, "Address:", styles, "width:200px") oxy_textfield(edit, '@address', columns, 20)
+}</codeblock></example>
+ </conbody>
+</concept>

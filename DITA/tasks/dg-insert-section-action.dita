@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="dg-insert-section-action">
+  <title>Creating the Insert Section Action</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Author Settings<indexterm>actions<indexterm>insert
+            section</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <p>This section presents all the steps that you need to follow, to define the
+          <uicontrol>Insert Section</uicontrol> action. We assume the icon files <image
+          href="../img/bt_section16.png"/> (<filepath>Section16.png</filepath>) for the menu item
+        and <image href="../img/bt_section20.png"/> (<filepath>Section20.png</filepath>) for the
+        toolbar, are already available. Although you could use the same icon size for both menu and
+        toolbar, usually the icons from the toolbars are larger than the ones found in the menus.
+        These files should be placed in the <filepath>frameworks / sdf</filepath> directory.</p>
+      <fig product="editor author authorSDK">
+        <title>The Action Dialog</title>
+        <image href="../img/sa_dg_edit_action_dialog.png"/>
+      </fig>
+      <fig product="editorEclipse authorEclipse">
+        <title>The Action Dialog</title>
+        <image href="../img/ec_dg_edit_action_dialog.png"/>
+      </fig>
+    </context>
+    <steps>
+      <step>
+        <cmd>Set the <b>ID</b> field to <b>insert_section</b>. This is an unique action
+          identifier.</cmd>
+      </step>
+      <step>
+        <cmd>Set the <b>Name</b> field to <b>Insert Section</b>. This will be the action's name,
+          displayed as a tooltip when the action is placed in the toolbar, or as the menu item
+          name.</cmd>
+      </step>
+      <step>
+        <cmd>Set the <b>Menu access key</b> to <b>i</b>. On Windows, the menu items can be accessed
+          using (ALT + <keyword>letter</keyword>) combination, when the menu is visible. The
+            <keyword>letter</keyword> is visually represented by underlining the first letter from
+          the menu item name having the same value.</cmd>
+      </step>
+      <step>
+        <cmd>Set the <b>Description</b> field to <b>Insert a section at caret position</b>. </cmd>
+      </step>
+      <step>
+        <cmd>Set the <b>Large icon (20x20)</b> field to<b> ${frameworks} / sdf / Section20.png</b>.
+          A good practice is to store the image files inside the framework directory and use <xref
+            href="../topics/editor-variables.dita#editor-variables">editor variable</xref>
+          <filepath>${framework}</filepath> to make the image relative to the framework
+          location.</cmd>
+        <info>
+          <p>If the images are bundled in a jar archive together with some Java operations
+            implementation for instance, it might be convenient for you to refer the images not by
+            the file name, but by their relative path location in the class-path.</p>
+          <p>If the image file <filepath>Section20.png</filepath> is located in the <b>images</b>
+            directory inside the jar archive, you can refer to it by using
+              <b>/images/Section20.png</b>. The jar file must be added into the
+              <uicontrol>Classpath</uicontrol> list.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Set the <b>Small icon (16x16)</b> field to <b>${frameworks} / sdf /
+          Section16.png</b>.</cmd>
+      </step>
+      <step>
+        <cmd>Click the text field next to <b>Shortcut key</b> and set it to <b>Ctrl (Meta on Mac
+            OS)+Shift+S</b>. This will be the key combination to trigger the action using the
+          keyboard only.</cmd>
+        <info>
+          <p>The shortcut is enabled only by <xref
+              href="dg-configuring-author-menu.dita#dg-configuring-author-menu">adding the action to
+              the main menu of the Author mode</xref> which contains all the actions that the author
+            will have in a menu for the current document type.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>At this time the action has no functionality added to it. Next you must define how this
+          action operates. An action can have multiple operation modes, each of them activated by
+          the evaluation of an XPath version 2.0 expression. The first enabled action mode will be
+          executed when the action is triggered by the user. The scope of the XPath expression must
+          be only element nodes and attribute nodes of the edited document, otherwise the expression
+          will not return a match and will not fire the action. For this example we'll suppose you
+          want allow the action to add a section only if the current element is either a
+            <codeph>book</codeph>, <codeph>article</codeph> or another
+          <codeph>section</codeph>.</cmd>
+        <substeps id="substeps_fafb419f-187b-4bbf-8986-48ee0120f0b0">
+          <substep>
+            <cmd>Set the XPath expression field to:</cmd>
+            <stepxmp>
+              <codeblock>local-name()='section' or local-name()='book' or 
+ local-name()='article'</codeblock>
+            </stepxmp>
+          </substep>
+          <substep>
+            <cmd>Set the <b>invoke operation</b> field to <apiname>InsertFragmentOperation</apiname>
+              built-in operation, designed to insert an XML fragment at caret position. This belongs
+              to a set of built-in operations, a complete list of which can be found in the <xref
+                href="../topics/dg-default-author-operations.dita#dg-default-author-operations"
+                format="dita">Author Default Operations</xref> section. This set can be expanded
+              with your own Java operation implementations. </cmd>
+          </substep>
+          <substep>
+            <cmd>Configure the arguments section as follows:</cmd>
+            <stepxmp>
+              <codeblock outputclass="language-xml">&lt;section xmlns=
+"http://www.oxygenxml.com/sample/documentation"&gt;
+     &lt;title/&gt;
+&lt;/section&gt;</codeblock>
+              <p><apiname>insertLocation</apiname> - leave it empty. This means the location will be
+                at the caret position.</p>
+              <p><apiname>insertPosition</apiname> - select "<b>Inside</b>".</p>
+            </stepxmp>
+          </substep>
+        </substeps>
+      </step>
+    </steps>
+  </taskbody>
+</task>

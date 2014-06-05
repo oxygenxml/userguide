@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="customizing-xml-schema-documentation">
+  <title>Customizing the Generated PDF</title>
+  <body>
+    <p>You are able to customize the PDF output of the documentation for an XML schema by running
+      two transformations and customizing the intermediate file. To do this, follow the next procedure:<ul>
+        <li>Customize the <filepath>[Oxygen-install-directory]
+            /frameworks/schema_documentation/xsl/xsdDocDocbook.xsl </filepath> stylesheet to include
+          the content that you want to add in the PDF output. Add the content in the XSLT template
+          with the <codeph>match="schemaDoc"</codeph> attribute between these two
+            elements:<codeblock outputclass="language-xml">&lt;info>    
+  &lt;pubdate>&lt;xsl:value-of select="format-date(current-date(),'[Mn] [D], [Y]', 'en', (), ())"/>&lt;/pubdate>
+&lt;/info></codeblock><codeblock outputclass="language-xml"> &lt;xsl:apply-templates select="schemaHierarchy"/></codeblock><note>The
+            content that you insert here has to be wrapped in DocBook markup. For details about
+            working with DocBook take a look at the video demonstration from this address <xref
+              href="http://www.oxygenxml.com/demo/DocBook_Editing_in_Author.html" format="html"
+              scope="external"
+            >http://www.oxygenxml.com/demo/DocBook_Editing_in_Author.html</xref>.</note></li>
+        <li>Create an intermediary file that holds the content of your XML Schema documentation;<ul>
+            <li>Go to <menucascade>
+                <uicontrol>Tools</uicontrol>
+                <uicontrol>Generate Documentation</uicontrol>
+                <uicontrol>XML Schema Documentation</uicontrol>
+              </menucascade>;</li>
+            <li>Click <uicontrol>Custom</uicontrol> in the <uicontrol>XML Schema
+                Documentation</uicontrol> dialog;</li>
+            <li>Go to <uicontrol>Options</uicontrol>;</li>
+            <li>In the <uicontrol>Custom format options</uicontrol> dialog enable <uicontrol> Copy
+                additional resources to the output folder </uicontrol>, enter: <filepath>
+                [Oxygen-install-directory]/frameworks/schema_documentation/xsl/xsdDocDocbook.xsl
+              </filepath> in the <uicontrol>Custom XSL</uicontrol> field and click
+                <uicontrol>OK</uicontrol>;</li>
+            <li>When you return to the <uicontrol>Custom format options</uicontrol> dialog box just
+              press the <uicontrol>Generate</uicontrol> button which will generate a DocBook XML
+              file with an intermediary form of the Schema documentation;</li>
+          </ul></li>
+        <li>Create the final PDF document;<ul>
+            <li>Go to <menucascade>
+                <uicontrol>Document</uicontrol>
+                <uicontrol> Transformation</uicontrol>
+                <uicontrol> Configure Transformation Scenario</uicontrol>
+              </menucascade> and click <uicontrol>New</uicontrol>;</li>
+            <li>In the <uicontrol>New Scenario</uicontrol> dialog go to the <uicontrol>XSL
+                URL</uicontrol> field and choose the <filepath>
+                [Oxygen-install-dir]/frameworks/docbook/oxygen/xsdDocDocbookCustomizationFO.xsl
+              </filepath> file;</li>
+            <li>Go to the <uicontrol>FO Processor</uicontrol> tab and enable <uicontrol>Perform FO
+                Processing</uicontrol> and <uicontrol>XSLT result as input</uicontrol>;</li>
+            <li>Go to the <uicontrol>Output</uicontrol> tab and select the directory where you want
+              to store the XML Schema documentation output and click <uicontrol>OK</uicontrol>;</li>
+            <li>Click <uicontrol>Apply Associated</uicontrol>.</li>
+          </ul></li>
+      </ul></p>
+  </body>
+</topic>

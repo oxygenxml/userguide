@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="svn-integration-with-bug-tracking-tools">
+    <title>Integration with Bug Tracking Tools</title>
+    <prolog>
+    <metadata>
+      <keywords><indexterm>Synchronize with the SVN Repository<indexterm>integration with Bug Tracking
+            tools</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+    <body>
+        <p>Users of bug tracking systems can associate the changes they make in the repository
+            resources with a specific ID in their bug tracking system. The only requirement is that
+            the user includes the bug ID in the commit message that he enters in the
+                <uicontrol>Commit</uicontrol> dialog. The format and the location of the ID in the
+            commit message are configured with SVN properties.</p>
+        <p>To make the integration possible <ph keyref="product"/> needs some data about the bug
+      tracking tool used in the project. You can configure this using the following <xref
+        href="show-properties.dita">SVN properties</xref> which must be set on the folder containing
+      resources associated with the bug tracking system. Usually they are set recursively on the
+      root folder of the working copy.</p>
+        <ul>
+            <li><uicontrol>bugtraq:message</uicontrol> - A string property. If it is set <xref
+                    href="send-changes.dita">the <uicontrol>Commit</uicontrol> dialog</xref> will
+                display a text field for entering the bug ID. It must contain the string
+                    <i>%BUGID%</i>, which is replaced with the bug number on commit.</li>
+            <li><uicontrol>bugtraq:label</uicontrol> - A string property that sets the label for the
+                text field configured with the <uicontrol>bugtraq:message</uicontrol> property.</li>
+            <li><uicontrol>bugtraq:url</uicontrol> - A string property that is the URL pointing to
+        the bug tracking tool. The URL string should contain the substring <i>%BUGID%</i> which <ph
+          keyref="product"/> replaces with the issue number. That way the resulting URL will point
+        directly to the correct issue.</li>
+            <li><uicontrol>bugtraq:warnifnoissue</uicontrol> - A boolean property with the values
+          <i>true</i>/<i>yes</i> or <i>false</i>/<i>no</i>. If set to <i>true</i>, the <ph
+          keyref="product"/> will warn you if the bug ID text field is left empty. The warning will
+        not block the commit, only give you a chance to enter an issue number.</li>
+            <li><uicontrol>bugtraq:number</uicontrol> - A boolean property with the value
+                    <i>true</i> or <i>false</i>. If this property is set to <i>false</i>, then any
+                character can be entered in the bug ID text field. If the property is set to
+                    <i>true</i> or is missing then only numbers are allowed as the bug ID.</li>
+            <li><uicontrol>bugtraq:append</uicontrol> - A boolean property. If set to <i>false</i>,
+                then the bug ID is inserted at the beginning of the commit message. If <i>yes</i> or
+                not set, then it's appended to the commit message.</li>
+            <li><uicontrol>bugtraq:logregex</uicontrol> - This property contains one or two regular
+                expressions, separated by a newline. If only one expression is set, then the bug
+                ID's must be matched in the groups of the regular expression string, for example
+                    <codeph>[Ii]ssue #?(\d+)</codeph> If two expressions are set, then the first
+                expression is used to find a string which relates to a bug ID but may contain more
+                than just the bug ID (e.g. <codeph>Issue #123</codeph> or <codeph>resolves issue
+                    123</codeph>). The second expression is then used to extract the bug ID from the
+                string extracted with the first expression. An example: if you want to catch every
+                pattern <codeph>issue #XXX</codeph> and <codeph>issue #890, #789</codeph> inside a
+                log message you could use the following strings:<ul>
+                    <li><codeph>[Ii]ssue #?(\d+)(,? ?#?(\d+))+</codeph></li>
+                    <li><codeph>(\d+)</codeph></li>
+                </ul></li>
+        </ul>
+        <p>The data configured with these SVN properties is stored on the repository when a revision
+            is committed. A bug tracking system or a statistics tools can retrieve from the SVN
+            server the revisions that affected a bug and present the commits related to that bug to
+            the user of the bug tracking system.</p>
+        <p>If the <uicontrol>bugtraq:url</uicontrol> property was filled in with the URL of the bug
+            tracking system and this URL includes the <i>%BUGID%</i> substring as specified above in
+            the description of the <uicontrol>bugtraq:url</uicontrol> property then <xref
+                href="history-view.dita">the <uicontrol>History</uicontrol> view</xref> presents the
+            bug ID as a hyperlink in the commit message. A click on such a hyperlink in the commit
+            message of a revision opens a Web browser at the page corresponding to the bug affected
+            by that commit.</p>
+    </body>
+</topic>

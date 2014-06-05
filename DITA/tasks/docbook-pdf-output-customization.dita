@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="docbook-pdf-output-customization">
+    <title>DocBook to PDF Output Customization</title>
+    <shortdesc>Main steps for customization of PDF output generated from DocBook XML
+        documents.</shortdesc>
+    <taskbody>
+        <context>
+            <p>When the default layout and output look of the DocBook to PDF transformation need to
+                be customized, the following main steps should be followed. In this example a
+                company logo image is added to the front matter of a book. Other types of
+                customizations should follow some similar steps.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Create a custom version of the DocBook title spec file.</cmd>
+                <info>
+                    <p>You should start from a copy of the file
+              <filepath>[Oxygen-install-dir]/frameworks/docbook/xsl/fo/titlepage.templates.xml</filepath>
+            and customize it. The instructions for the spec file can be found <xref
+              href="http://www.sagehill.net/docbookxsl/TitlePagePrint.html#PrintTitlepageSpecfile"
+              format="html" scope="external">here.</xref>
+          </p>
+                    <p>An example of spec file:</p>
+                    <codeblock outputclass="language-xml">&lt;t:titlepage-content t:side="recto"&gt;
+    &lt;mediaobject/&gt;
+    &lt;title
+        t:named-template="book.verso.title"
+        font-size="&amp;hsize2;"
+        font-weight="bold"
+        font-family="{$title.font.family}"/&gt;
+    &lt;corpauthor/&gt;
+      ...
+&lt;/t:titlepage-content&gt;</codeblock>
+                </info>
+            </step>
+            <step>
+                <cmd>Generate a new XSLT stylesheet from the title spec file from the previous
+                    step.</cmd>
+                <info>Apply
+                        <filepath>[Oxygen-install-dir]/frameworks/docbook/xsl/template/titlepage.xsl</filepath>
+                    to the title spec file. The result is an XSLT stylesheet, let's call it
+                        <filepath>mytitlepages.xsl</filepath>.</info>
+            </step>
+            <step>
+                <cmd>Import <filepath>mytitlepages.xsl</filepath> in a <xref
+                        href="http://www.oxygenxml.com/demo/DocBook_Customization.html"
+                        format="html" scope="external">DocBook customization layer</xref>.</cmd>
+                <info>The customization layer is the stylesheet that will be applied to the XML
+                    document. The <filepath>mytitlepages.xsl</filepath> should be imported with an
+                    element
+                    like:<codeblock outputclass="language-xml">&lt;xsl:import href="dir-name/mytitlepages.xsl"/&gt;</codeblock></info>
+            </step>
+            <step>
+                <cmd>Insert logo image in the XML document.</cmd>
+                <info>The path to the logo image must be inserted in the
+                        <apiname>book/info/mediaobject</apiname> element of the XML document.</info>
+            </step>
+            <step>
+                <cmd>Apply the customization layer to the XML document.</cmd>
+                <info>A quick way is duplicating the transformation scenario <b>DocBook PDF</b> that
+          comes with Oxygen and set the customization layer in <xref
+            href="../topics/xslt-tab.dita#xslt-tab/xml-xslt-tabs"
+            product="author authorEclipse developer developerEclipse editor editorEclipse">the
+              <b>XSL URL</b> property of the scenario</xref><ph product="authorSDK">the <b>XSL
+              URL</b> property of the scenario</ph>.</info>
+            </step>
+        </steps>
+    </taskbody>
+    <related-links>
+        <link href="http://www.sagehill.net/docbookxsl/PrintCustomEx.html" format="html" scope="external">
+      <desc>The book <b>DocBook XSL: The Complete Guide</b> by <xref href="http://www.sagehill.net/"
+          format="html" scope="external">Bob Stayton</xref> contains more details about customizing the PDF
+        output.</desc>
+    </link>
+        <link href="http://www.oxygenxml.com/demo/DocBook_Customization.html" format="html" scope="external">
+      <desc>Video demonstration for creating a DocBook customization layer in Oxygen.</desc>
+    </link>
+    <link href="http://oxygenxml.com/demo/DocBook_Customization.html" format="html" scope="external"/>
+    </related-links>
+</task>

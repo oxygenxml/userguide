@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-basic-association-first-step">
+    <title>First Step - XML Schema</title>
+    <body>
+        <p>Our documentation framework will be very simple. The documents will be either
+                <codeph>articles</codeph> or <codeph>books</codeph>, both composed of
+                <codeph>sections</codeph>. The <codeph>sections</codeph> may contain
+                <codeph>titles</codeph>, <codeph>paragraphs</codeph>, <codeph>figures</codeph>,
+                <codeph>tables</codeph> and other <codeph>sections</codeph>. To complete the
+            picture, each section will include a <codeph>def</codeph> element from another
+            namespace.</p>
+        <p>The first schema file:</p>
+        <p>
+            <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://www.oxygenxml.com/sample/documentation"
+    xmlns:doc="http://www.oxygenxml.com/sample/documentation"
+    xmlns:abs="http://www.oxygenxml.com/sample/documentation/abstracts"
+    elementFormDefault="qualified"&gt;
+
+    &lt;xs:import namespace=
+    "http://www.oxygenxml.com/sample/documentation/abstracts" 
+     schemaLocation=
+    "abs.xsd"/&gt;
+                    </codeblock>
+        </p>
+        <p>The namespace of the documents will be
+                <codeph>http://www.oxygenxml.com/sample/documentation</codeph>. The namespace of the
+                <codeph>def</codeph> element is
+                <codeph>http://www.oxygenxml.com/sample/documentation/abstracts</codeph>.</p>
+        <p>Now let's define the structure of the sections. They all start with a title, then have
+            the optional <codeph>def</codeph> element then either a sequence of other sections, or a
+            mixture of paragraphs, images and tables.</p>
+        <codeblock outputclass="language-xml">&lt;xs:element name="book" type="doc:sectionType"/&gt;
+&lt;xs:element name="article" type="doc:sectionType"/&gt;
+&lt;xs:element name="section" type="doc:sectionType"/&gt;
+    
+&lt;xs:complexType name="sectionType"&gt;
+    &lt;xs:sequence&gt;
+        &lt;xs:element name="title" type="xs:string"/&gt;
+        &lt;xs:element ref="abs:def" minOccurs="0"/&gt;
+        &lt;xs:choice&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element ref="doc:section" maxOccurs="unbounded"/&gt;
+            &lt;/xs:sequence&gt;    
+            &lt;xs:choice maxOccurs="unbounded"&gt;
+                &lt;xs:element ref="doc:para"/&gt;
+                &lt;xs:element ref="doc:image"/&gt;
+                &lt;xs:element ref="doc:table"/&gt;                
+            &lt;/xs:choice&gt;
+        &lt;/xs:choice&gt;
+    &lt;/xs:sequence&gt;
+&lt;/xs:complexType&gt;
+</codeblock>
+        <p>The paragraph contains text and other styling markup, such as bold (<codeph>b</codeph>)
+            and italic (<codeph>i</codeph>) elements.</p>
+        <codeblock outputclass="language-xml">&lt;xs:element name="para" type="doc:paragraphType"/&gt;
+    
+&lt;xs:complexType name="paragraphType" mixed="true"&gt;
+    &lt;xs:choice minOccurs="0" maxOccurs="unbounded"&gt;
+        &lt;xs:element name="b"/&gt;
+        &lt;xs:element name="i"/&gt;
+    &lt;/xs:choice&gt;
+&lt;/xs:complexType&gt;
+</codeblock>
+        <p>The <codeph>image</codeph> element has an attribute with a reference to the file
+            containing image data.</p>
+        <codeblock outputclass="language-xml">&lt;xs:element name="image"&gt;
+    &lt;xs:complexType&gt;
+        &lt;xs:attribute name="href" type="xs:anyURI" use="required"/&gt;
+    &lt;/xs:complexType&gt;
+&lt;/xs:element&gt;
+</codeblock>
+        <p>The <codeph>table</codeph> contains a header row and then a sequence of rows
+                (<codeph>tr</codeph> elements) each of them containing the cells. Each cell has the
+            same content as the paragraphs.</p>
+        <codeblock outputclass="language-xml"> &lt;xs:element name="table"&gt;
+    &lt;xs:complexType&gt;
+        &lt;xs:sequence&gt;
+            &lt;xs:element name="header"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:sequence&gt;
+                        &lt;xs:element name="td" maxOccurs="unbounded" 
+                            type="doc:paragraphType"/&gt;
+                    &lt;/xs:sequence&gt;
+                &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name="tr" maxOccurs="unbounded"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:sequence&gt;
+                        &lt;xs:element name="td" type="doc:tdType" 
+                             maxOccurs="unbounded"/&gt;                                
+                    &lt;/xs:sequence&gt;
+                &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+        &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+&lt;/xs:element&gt;
+
+
+&lt;xs:complexType name="tdType"&gt;
+    &lt;xs:complexContent&gt;
+        &lt;xs:extension base="doc:paragraphType"&gt;
+            &lt;xs:attribute name="row_span" type="xs:integer"/&gt;
+            &lt;xs:attribute name="column_span" type="xs:integer"/&gt;
+        &lt;/xs:extension&gt;            
+    &lt;/xs:complexContent&gt;
+&lt;/xs:complexType&gt;    
+</codeblock>
+        <p>The <codeph>def</codeph> element is defined as a text only element in the imported schema
+                <filepath>abs.xsd</filepath>:</p>
+        <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace=
+     "http://www.oxygenxml.com/sample/documentation/abstracts"&gt;
+    &lt;xs:element name="def" type="xs:string"/&gt;
+&lt;/xs:schema&gt;</codeblock>
+        <p>Now the XML data structure will be styled.</p>
+    </body>
+</topic>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_rsz_b3w_h3">
+  <title>How does the DITA Open Toolkit PDF font mapping work?</title>
+  <body>
+    <p>The DITA OT contains a file
+        <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/cfg/fo/font-mappings.xml</filepath>
+      which maps logical fonts used in the XSLT stylesheets to physical fonts which will be used by
+      the FO processor to generate the PDF output.</p>
+    <p>The XSLT stylesheets used to generate the XSL-FO output contain code like:</p>
+    <codeblock outputclass="language-xml">&lt;xsl:attribute name="font-family"&gt;monospace&lt;/xsl:attribute&gt;</codeblock>
+    <p>The font-family is defined to be <varname>monospace</varname>, but
+        <varname>monospace</varname> is just an alias, it is not a physical font name. So another
+      stage in the PDF generation takes this <varname>monospace</varname> alias and looks in the
+        <filepath>font-mappings.xml</filepath>.</p>
+    <p>If it finds a mapping like this:</p>
+    <codeblock outputclass="language-xml">&lt;aliases&gt;
+      &lt;alias name="monospace"&gt;Monospaced&lt;/alias&gt;
+ &lt;/aliases&gt;</codeblock>
+    <p>then it looks to see if the <varname>Monospaced</varname> has a
+        <varname>logical-font</varname> definition and if so it will use the
+        <varname>physical-font</varname> specified
+      there:<codeblock outputclass="language-xml">&lt;logical-font name="Monospaced">
+      &lt;physical-font char-set="default">
+        &lt;font-face>Courier New, Courier&lt;/font-face>
+      &lt;/physical-font>
+............
+&lt;/logical-font></codeblock></p>
+    <note type="important">
+      <p>If no alias mapping is found for a font-family specified in the XSLs, the processing
+        defaults to <b>Helvetica</b>.</p>
+    </note>
+  </body>
+</topic>

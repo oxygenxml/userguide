@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-namespace-selectors">
+    <title>Namespace Selector</title>
+    <prolog>
+      <metadata>
+        <keywords><indexterm>Oxygen CSS Extensions<indexterm>supported features from CSS level 3<indexterm>namespace
+          selectors</indexterm></indexterm></indexterm></keywords>
+      </metadata>    
+    </prolog>
+    <body>
+      <p>In the CSS 2.1 standard the element selectors are ignoring the namespaces of the elements
+      they are matching. Only the local name of the elements are considered in the selector matching
+      process.</p>
+      <p><ph keyref="product"/> Author uses a
+        different approach similar to the CSS Level 3 specification. If the element name from the
+        CSS selector is not preceded by a namespace prefix it is considered to match an element with
+        the same local name as the selector value and ANY namespace, otherwise the element must
+        match both the local name and the namespace.</p>
+      <p>In CSS up to version 2.1 the name tokens from selectors are matching all elements from ANY
+        namespace that have the same local name. Example:</p>
+      <codeblock outputclass="language-xml">&lt;x:b xmlns:x="ns_x"/&gt;
+&lt;y:b xmlns:y="ns_y"/&gt;</codeblock>
+      <p>Are both matched by the rule:</p>
+      <codeblock outputclass="language-css">b {font-weight:bold}</codeblock>
+      <p>Starting with CSS Level 3 you can create selectors that are namespace aware.</p>
+      <example>
+      <title>Defining both prefixed namespaces and the default namespace</title>
+      <p>Given the namespace declarations:</p>
+      <codeblock outputclass="language-css">@namespace sync "http://sync.example.org";
+@namespace "http://example.com/foo";</codeblock>
+      <p>In a context where the default namespace applies:</p>
+      <dl>
+        <dlentry>
+          <dt>sync|A</dt>
+          <dd>
+            <p>represents the name A in the <codeph>http://sync.example.org</codeph> namespace.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>|B</dt>
+          <dd>
+            <p>represents the name B that belongs to NO NAMESPACE.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>*|C</dt>
+          <dd>
+            <p>represents the name C in ANY namespace, including NO NAMESPACE.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>D</dt>
+          <dd>
+            <p>represents the name D in the <codeph>http://example.com/foo</codeph> namespace.</p>
+          </dd>
+        </dlentry>
+      </dl>
+    </example>
+      <example>
+      <title>Defining only prefixed namespaces </title>
+      <p>Given the namespace declaration:</p>
+      <codeblock outputclass="language-css">@namespace sync "http://sync.example.org";</codeblock>
+      <p>Then:</p>
+      <dl>
+        <dlentry>
+          <dt>sync|A</dt>
+          <dd>
+            <p>represents the name A in the <codeph>http://sync.example.org</codeph> namespace.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>|B</dt>
+          <dd>
+            <p>represents the name B that belongs to NO NAMESPACE.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>*|C</dt>
+          <dd>
+            <p>represents the name C in ANY namespace, including NO NAMESPACE.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>D</dt>
+          <dd>
+            <p>represents the name D in ANY namespace, including NO NAMESPACE.</p>
+          </dd>
+        </dlentry>
+      </dl>
+    </example>
+    <example>
+      <title>Defining prefixed namespaces combined with pseudo-elements</title>
+      <p>To match the <codeph>def</codeph> element its namespace will be declared, bind it to the
+          <i>abs</i> prefix, and then write a CSS rule:</p>
+      <codeblock outputclass="language-css">@namespace abs "http://www.oxygenxml.com/sample/documentation/abstracts";</codeblock>
+      <p>Then:</p>
+      <dl>
+        <dlentry>
+          <dt>abs|def</dt>
+          <dd>
+            <p>represents the name "def" in the
+                <codeph>http://www.oxygenxml.com/sample/documentation/abstracts</codeph>
+              namespace.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>abs|def:before</dt>
+          <dd>
+            <p>represents the :before pseudo-element of the "def" element from the
+                <codeph>http://www.oxygenxml.com/sample/documentation/abstracts</codeph> namespace.
+            </p>
+          </dd>
+        </dlentry>
+      </dl>
+    </example>
+    </body>
+</topic>

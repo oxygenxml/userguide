@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="builtin-css-selectors">
+  <title>Builtin CSS Stylesheet</title>
+  <body>
+    <p>When <ph keyref="product"/> renders content in the <uicontrol>Author</uicontrol> mode, it
+      adds built-in CSS selectors (in addition to the CSS stylesheets linked in the XML or specified
+      in the document type associated to the XML document). These built-in CSS selectors are
+      processed before all other CSS content, but they can be overwritten in case the CSS developer
+      wants to modify a default behavior.</p>
+    <section>
+      <title>List of CSS Selector Contributed by <ph keyref="product"/></title>
+      <codeblock outputclass="language-css">@namespace oxy "http://www.oxygenxml.com/extensions/author";
+@namespace xi "http://www.w3.org/2001/XInclude";
+@namespace xlink "http://www.w3.org/1999/xlink";
+@namespace svg "http://www.w3.org/2000/svg";
+@namespace mml "http://www.w3.org/1998/Math/MathML";
+
+oxy|document {
+    display:block !important;
+}
+
+oxy|cdata {
+    display:-oxy-morph !important;
+    white-space:pre-wrap !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|processing-instruction {
+    display:block !important;
+    color: rgb(139, 38, 201) !important;
+    white-space:pre-wrap !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|comment {
+    display:-oxy-morph !important;
+    color: rgb(0, 100, 0) !important;
+    background-color:rgb(255, 255, 210) !important;
+    white-space:pre-wrap !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|reference:before,
+oxy|entity[href]:before{  
+  link: attr(href) !important;
+  text-decoration: underline !important;
+  color: navy !important;
+  
+  margin: 2px !important;
+  padding: 0px !important;  
+}
+
+oxy|reference:before {
+  display: -oxy-morph !important;
+  content: url(../images/editContent.gif) !important;  
+}
+
+oxy|entity[href]:before{
+  display: -oxy-morph !important;
+  content: url(../images/editContent.gif) !important;
+}
+
+oxy|reference,
+oxy|entity {
+    -oxy-editable:false !important;
+    background-color: rgb(240, 240, 240) !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|reference {
+    display:-oxy-morph !important;
+    /*EXM-28674 No need to present tags for these artificial references.*/
+    -oxy-display-tags: none;
+}
+
+oxy|entity {
+    display:-oxy-morph !important;
+}
+
+oxy|entity[href] {
+  border: 1px solid rgb(175, 175, 175) !important;
+  padding: 0.2em !important;
+}
+
+xi|include {
+    display:-oxy-morph !important;
+    margin-bottom: 0.5em !important;
+    padding: 2px !important;
+}
+xi|include:before,
+xi|include:after{
+    display:inline !important;
+    background-color:inherit !important;
+    color:#444444 !important;
+    font-weight:bold !important;
+}
+
+xi|include:before {
+    content:url(../images/link.gif) attr(href)  !important;
+    link: attr(href) !important;
+}
+xi|include[xpointer]:before {
+    content:url(../images/link.gif) attr(href) " " attr(xpointer) !important;
+    link: oxy_concat(attr(href), "#", attr(xpointer)) !important;
+}
+
+xi|fallback {
+    display:-oxy-morph !important;
+    margin: 2px !important;
+    border: 1px solid #CB0039 !important;
+}
+
+xi|fallback:before {
+    display:-oxy-morph !important;
+    content:"XInclude fallback: " !important;
+    color:#CB0039 !important;
+}
+
+oxy|doctype {
+    display:block !important;
+    background-color: transparent !important;
+    color:blue !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 2px !important;
+}
+
+oxy|error {
+    display:-oxy-morph !important;
+    -oxy-editable:false !important;
+    white-space:pre !important;
+    color: rgb(178, 0, 0) !important;
+    font-weight:bold !important;
+}
+
+oxy|error:before {
+    content:url(../images/ReferenceError.png) !important;
+}
+
+*[xlink|href]:before {
+    content:url(../images/link.gif);
+    link: attr(xlink|href) !important;
+}
+
+
+/*No direct display of the MathML and SVG images.*/
+svg|svg{	
+	display:inline !important;
+    white-space: -oxy-trim-when-ws-only;
+}
+/*EXM-28827 SVG can contain more than one namespace in it*/
+svg|svg * {
+    display:none !important;
+    white-space:normal;
+}
+
+mml|math{	
+	display:inline !important;
+    white-space: -oxy-trim-when-ws-only;
+}
+mml|math mml|*{
+    display:none !important;
+    white-space: normal;
+}
+
+/*Text direction attributes*/
+*[dir='rtl'] { direction:rtl; unicode-bidi:embed; }
+*[dir='rlo'] { direction:rtl; unicode-bidi:bidi-override; }
+
+*[dir='ltr'] { direction:ltr; unicode-bidi:embed; }
+*[dir='lro'] { direction:ltr; unicode-bidi:bidi-override; }
+
+</codeblock>
+    </section>
+    <example>To show all entities in the <uicontrol>Author</uicontrol> mode as transparent, without
+      that grayed-out background, first define in your CSS after all imports the
+      namespace:<codeblock>@namespace oxy "http://www.oxygenxml.com/extensions/author";</codeblock>and
+      then add the following
+      selector:<codeblock outputclass="language-css">oxy|entity {
+    background-color: inherit !important;
+}</codeblock></example>
+  </body>
+</topic>

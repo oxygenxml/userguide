@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="dg-author-references-resolver">
+  <title>Configuring a References Resolver</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Author Settings<indexterm>Java API<indexterm>references resolver</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <p>You need to provide a handler for resolving references and obtain the content they refer.
+        In our case the element which has references is <b>ref</b> and the attribute indicating the
+        referred resource is <b>location</b>. You will have to implement a Java extension class for
+        obtaining the referred resources.</p>
+      <p conref="../topics/dg-java-files.dita#dg-java-files/javadoc-ref"/>
+    </context>
+    <steps>
+      <step>
+        <cmd>Create the class <apiname>simple.documentation.framework.ReferencesResolver</apiname>.
+          This class must implement the <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorReferenceResolver.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.AuthorReferenceResolver</apiname></xref>
+          interface.</cmd>
+        <info>
+          <codeblock outputclass="language-java">import ro.sync.ecss.extensions.api.AuthorReferenceResolver;
+import ro.sync.ecss.extensions.api.AuthorAccess;
+import ro.sync.ecss.extensions.api.node.AttrValue;
+import ro.sync.ecss.extensions.api.node.AuthorElement;
+import ro.sync.ecss.extensions.api.node.AuthorNode;
+
+public class ReferencesResolver 
+      implements AuthorReferenceResolver {</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The <apiname>hasReferences</apiname> method verifies if the handler considers the node
+          to have references. It takes as argument an <apiname>AuthorNode</apiname> that represents
+          the node which will be verified. The method will return <codeph>true</codeph> if the node
+          is considered to have references. In our case, to be a reference the node must be an
+          element with the name <i>ref</i> and it must have an attribute named
+          <i>location</i>.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public boolean hasReferences(AuthorNode node) {
+  boolean hasReferences = false;
+  if (node.getType() == AuthorNode.NODE_TYPE_ELEMENT) {
+    AuthorElement element = (AuthorElement) node;
+    if ("ref".equals(element.getLocalName())) {
+      AttrValue attrValue = element.getAttribute("location");
+      hasReferences = attrValue != null;
+    }
+  }
+  return hasReferences;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The method <apiname>getDisplayName</apiname> returns the display name of the node that
+          contains the expanded referred content. It takes as argument an
+            <apiname>AuthorNode</apiname> that represents the node for which the display name is
+          needed. The referred content engine will ask this
+            <apiname>AuthorReferenceResolver</apiname> implementation what is the display name for
+          each node which is considered a reference. In our case the display name is the value of
+          the <i>location</i> attribute from the <i>ref</i> element.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public String getDisplayName(AuthorNode node) {
+  String displayName = "ref-fragment";
+  if (node.getType() == AuthorNode.NODE_TYPE_ELEMENT) {
+    AuthorElement element = (AuthorElement) node;
+    if ("ref".equals(element.getLocalName())) {
+      AttrValue attrValue = element.getAttribute("location");
+      if (attrValue != null) {
+        displayName = attrValue.getValue();
+      }
+    }
+  }
+  return displayName;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The method <apiname>resolveReference</apiname> resolves the reference of the node and
+          returns a <apiname>SAXSource</apiname> with the parser and the parser's input source. It
+          takes as arguments an <apiname>AuthorNode</apiname> that represents the node for which the
+          reference needs resolving, the <varname>systemID</varname> of the node, the
+            <apiname>AuthorAccess</apiname> with access methods to the Author data model and a SAX
+            <apiname>EntityResolver</apiname> which resolves resources that are already opened in
+          another editor or resolve resources through the XML catalog. In the implementation you
+          need to resolve the reference relative to the <varname>systemID</varname>, and create a
+          parser and an input source over the resolved reference.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public SAXSource resolveReference(
+    AuthorNode node, 
+    String systemID, 
+    AuthorAccess authorAccess,
+    EntityResolver  entityResolver) {
+  SAXSource saxSource = null;
+  
+  if (node.getType() == AuthorNode.NODE_TYPE_ELEMENT) {
+    AuthorElement element = (AuthorElement) node;
+    if ("ref".equals(element.getLocalName())) {
+      AttrValue attrValue = element.getAttribute("location");
+      if (attrValue != null) {
+        String attrStringVal = attrValue.getValue();
+        try {
+          URL absoluteUrl = new URL(new URL(systemID), 
+          authorAccess.getUtilAccess().correctURL(attrStringVal));
+          
+          InputSource inputSource = entityResolver.resolveEntity(null, 
+              absoluteUrl.toString());
+          if(inputSource == null) {
+            inputSource = new InputSource(absoluteUrl.toString());
+          }
+          
+          XMLReader xmlReader = authorAccess.newNonValidatingXMLReader();
+          xmlReader.setEntityResolver(entityResolver);
+          
+          saxSource = new SAXSource(xmlReader, inputSource);
+        } catch (MalformedURLException e) {
+          logger.error(e, e);
+        } catch (SAXException e) {
+          logger.error(e, e);
+        } catch (IOException e) {
+          logger.error(e, e);
+        }
+      }
+    }
+  }
+
+  return saxSource;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The method <apiname>getReferenceUniqueID</apiname> should return an unique identifier
+          for the node reference. The unique identifier is used to avoid resolving the references
+          recursively. The method takes as argument an <apiname>AuthorNode</apiname> that represents
+          the node with the reference. In the implementation the unique identifier is the value of
+          the <i>location</i> attribute from the <i>ref</i> element.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public String getReferenceUniqueID(AuthorNode node) {
+  String id = null;
+  if (node.getType() == AuthorNode.NODE_TYPE_ELEMENT) {
+    AuthorElement element = (AuthorElement) node;
+    if ("ref".equals(element.getLocalName())) {
+      AttrValue attrValue = element.getAttribute("location");
+      if (attrValue != null) {
+        id = attrValue.getValue();
+      }
+    }
+  }
+  return id;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The method <apiname>getReferenceSystemID</apiname>should return the
+            <varname>systemID</varname> of the referred content. It takes as arguments an
+            <apiname>AuthorNode</apiname> that represents the node with the reference and the
+            <apiname>AuthorAccess</apiname> with access methods to the Author data model. In the
+          implementation you use the value of the <i>location</i> attribute from the <i>ref</i>
+          element and resolve it relatively to the XML base URL of the node.</cmd>
+        <info>
+          <p>
+            <codeblock outputclass="language-java">public String getReferenceSystemID(AuthorNode node, 
+                                   AuthorAccess authorAccess) {
+  String systemID = null;
+  if (node.getType() == AuthorNode.NODE_TYPE_ELEMENT) {
+    AuthorElement element = (AuthorElement) node;
+    if ("ref".equals(element.getLocalName())) {
+      AttrValue attrValue = element.getAttribute("location");
+      if (attrValue != null) {
+        String attrStringVal = attrValue.getValue();
+        try {
+          URL absoluteUrl = new URL(node.getXMLBaseURL(), 
+              authorAccess.getUtilAccess().correctURL(attrStringVal));
+          systemID = absoluteUrl.toString();
+        } catch (MalformedURLException e) {
+          logger.error(e, e);
+        }
+      }
+    }
+  }
+  return systemID;
+}</codeblock>
+          </p>
+          <p conref="../topics/dg-java-files.dita#dg-java-files/sdf_project"/>
+          <p>In the listing below, the XML document contains the <b>ref</b> element:</p>
+          <codeblock outputclass="language-xml">&lt;ref location="referred.xml"&gt;Reference&lt;/ref&gt;</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>When no reference resolver is specified, the reference has the following layout:</p>
+      <fig>
+        <title>Reference with no specified reference resolver</title>
+        <image href="../img/bt_dg_reference_norefres.png"/>
+      </fig>
+      <p>When the above implementation is configured, the reference has the expected layout:</p>
+      <fig>
+        <title>Reference with reference resolver</title>
+        <image href="../img/bt_dg_reference_withrefres.png"/>
+      </fig>
+    </result>
+  </taskbody>
+</task>

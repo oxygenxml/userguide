@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="task_qnz_z2g_xc">
+  <title>Generate a Testing Certificate For Signing an Applet</title>
+  <shortdesc/>
+  <taskbody>
+    <context>
+      <p>All jar files of an applet deployed on a remote Web server must be signed with the same
+        certificate before the applet is deployed. The following steps describe how to generate a
+        test certificate for signing the jar files. We will use the tool called <b>keytool</b> which
+        is included in the Oracle's Java Development Kit.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Create a keystore with a RSA encryption key.</cmd>
+        <info>
+          <p>Invoke the following in a command line
+            terminal:<codeblock><cmdname>keytool -genkey -alias myAlias -keystore keystore.pkcs -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "cn=your name here, ou=organization unit name,  o=organization name, c=US"</cmdname></codeblock></p>
+          <p>This command creates a keystore file called <filepath>keystore.pkcs</filepath>. The
+            certificate attributes are specified in the <i>dname</i> parameter: common name of the
+            certificate, organization unit name (for example <i>Purchasing</i> or <i>Sales
+              Department</i>), organization name, country.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Generate a self-signed certificate.</cmd>
+        <info>
+          <p>Invoke the following in a command line
+            terminal:<codeblock><b>keytool -selfcert -alias myAlias -keystore keystore.pkcs -storetype PKCS12</b></codeblock></p>
+        </info>
+      </step>
+      <step>
+        <cmd>Optionally display the certificate details in a human readable form.</cmd>
+        <info>
+          <p>First, the certificate must be exported to a separate file with the following
+            command:<codeblock><b>keytool -export -alias myAlias -keystore keystore.pkcs -storetype PKCS12 -file certfile.cer</b></codeblock></p>
+          <p>The certificate details are displayed with the
+            command:<codeblock><b>keytool -printcert -file certfile.cer</b></codeblock></p>
+        </info>
+      </step>
+      <step>
+        <cmd>Edit the <filepath>default.properties</filepath> file and fill-in the parameters that
+          hold the path to <filepath>keystore.pkcs</filepath> file (<codeph>keystore</codeph>
+          parameter), keystore type (<codeph>storetype</codeph> parameter, with <codeph>JSK</codeph>
+          or <codeph>PKCS12</codeph> as possible values), alias (<codeph>alias</codeph> parameter)
+          and password (<codeph>password</codeph> parameter).</cmd>
+      </step>
+      <step>
+        <cmd>The jar files are automatically signed during the <term>package</term> phase of the
+          Maven build.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="dg-xml-catalogs">
+  <title>Configuring XML Catalogs</title><prolog>
+    <metadata>
+      <keywords><indexterm>Customization Support<indexterm>document type associations (advanced customization
+              tutorial)<indexterm>XML Catalogs</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>In the XML sample file for <b>SDF</b> you did not use a
+        <keyword>xsi:schemaLocation</keyword> attribute, but instead you let the editor use the
+      schema from the association. However there are cases in which you must refer for instance the
+      location of a schema file from a remote web location and an Internet connection may not be
+      available. In such cases an XML catalog may be used to map the web location to a local file
+      system entry. The following procedure presents an example of using an XML catalogs, by
+      modifying our <filepath>sdf.xsd</filepath> XML Schema file from the <xref href="../topics/dg-sdf-files.dita#dg-sdf-files">Example Files Listings</xref>.</context>
+    <steps>
+      <step>
+        <cmd>Create a catalog file that will help the parser locate the schema for validating the
+          XML document. The file must map the location of the schema to a local version of the
+          schema.</cmd>
+        <stepxmp>
+          <p>Create a new XML file called <filepath>catalog.xml</filepath> and save it into the
+              <filepath>{oXygen_installation_directory} / frameworks / sdf</filepath> directory. The
+            content of the file should be:</p>
+          <codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt; 
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"&gt;
+    &lt;uri name="http://www.oxygenxml.com/SDF/abs.xsd"
+            uri="schema/abs.xsd"/&gt;
+    &lt;uri name="http://www.oxygenxml.com/SDF/abs.xsd" 
+               uri="schema/abs.xsd"/&gt;
+&lt;/catalog&gt;</codeblock>
+        </stepxmp>
+      </step>
+      <step>
+        <cmd>Add catalog files to your Document Type Association using the Catalogs tab from the
+          Document Type dialog.</cmd>
+        <info/>
+      </step>
+    </steps>
+    <result>
+      <p>To test the catalog settings, restart <ph
+          keyref="product"/> and try to
+        validate a new sample <b>Simple Documentation Framework</b> document. There should be no
+        errors.</p>
+    </result>
+    <example>
+      <p>The <filepath>sdf.xsd</filepath> schema that validates the document refers the other file
+          <filepath>abs.xsd</filepath> through an <keyword>import</keyword> element:</p>
+      <codeblock outputclass="language-xml">&lt;xs:import namespace=
+ "http://www.oxygenxml.com/sample/documentation/abstracts" 
+ schemaLocation="http://www.oxygenxml.com/SDF/abs.xsd"/&gt;</codeblock>
+      <p>The <codeph>schemaLocation</codeph> attribute references the <filepath>abs.xsd</filepath>
+        file:</p>
+      <codeblock>xsi:schemaLocation="http://www.oxygenxml.com/sample/documentation/abstracts
+    <ph>http://www.oxygenxml.com/SDF/abs.xsd</ph>"/&gt;</codeblock>
+      <p>The catalog mapping is:</p>
+      <codeblock>http://www.oxygenxml.com/SDF/abs.xsd -&gt; schema/abs.xsd</codeblock>
+      <p>This means that all the references to <ph>http://www.oxygenxml.com/SDF/abs.xsd</ph> must be
+        resolved to the <filepath>abs.xsd</filepath> file located in the <filepath>schema</filepath>
+        directory. The URI element is used by URI resolvers, for example for resolving a URI
+        reference used in an XSLT stylesheet.</p>
+    </example>
+  </taskbody>
+</task>

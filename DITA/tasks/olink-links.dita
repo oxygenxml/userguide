@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="task_csq_l5q_f2">
+  <title>Inserting olink Links in DocBook 5 Documents</title>
+  <shortdesc>An <codeph>olink</codeph> is a type of link between two DocBook XML
+    documents.</shortdesc>
+  <taskbody>
+    <context>
+      <p>The <codeph>olink</codeph> element is the equivalent for linking outside the current
+        DocBook document. It has the attribute <codeph>targetdoc</codeph> for the document ID that
+        contains the target element and the attribute <codeph>targetptr</codeph> for the ID (the
+        value of an <codeph>id</codeph> or <codeph>xml:id</codeph> attribute) of the target element.
+        The combination of those two attributes provides a unique identifier to locate cross
+        references.</p>
+      <p>For example, the <i>Administrator Guide</i> is a book with the document ID
+          <codeph>MailAdminGuide</codeph> and it contains a chapter about user accounts like the
+        following:</p>
+      <pre>&lt;chapter id="user_accounts"&gt;
+&lt;title&gt;Administering User Accounts&lt;/title&gt;
+&lt;para&gt;blah blah&lt;/para&gt;
+...</pre>
+      <p>You can form a cross reference to that chapter by adding an <codeph>olink</codeph> in the
+          <i>User Guide</i> like the following:</p>
+      <pre>You may need to update your
+&lt;olink targetdoc="MailAdminGuide" targetptr="user_accounts"&gt;user accounts
+&lt;/olink&gt;
+when you get a new machine.</pre>
+    </context>
+    <steps>
+      <step>
+        <cmd>Decide what documents are included in the domain for cross referencing.</cmd>
+        <info>
+          <p>An ID should be assigned to each document that will be referenced with an
+              <codeph>olink</codeph>. Usually it is added as an <codeph>id</codeph> or
+              <codeph>xml:id</codeph> attribute to the root element of the document. A document ID
+            is a string that is unique for each document in your collection. For example the
+            documentation may include a user's guide, an administrator's guide, and a reference
+            document. These could have simple IDs like <codeph>ug</codeph>, <codeph>ag</codeph>, and
+              <codeph>ref</codeph> or more specific IDs like <codeph>MailUserGuide</codeph>,
+              <codeph>MailAdminGuide</codeph>, and <codeph>MailReference</codeph>.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Decide the output hierarchy.</cmd>
+        <info>
+          <p>For creating links between documents, the relative locations of the output documents
+            must be known. Generally the HTML files for multiple documents are output to different
+            directories if chunking is used. Before going further you must decide the names and
+            locations of the HTML output directories for all the documents from the domain. Each
+            directory will be represented by an element <codeph>&lt;dir
+              name="directory_name"&gt;</codeph> in the target database document. In the example
+            from the next step the hierarchy is <filepath>documentation/guides/mailuser</filepath>,
+              <filepath>documentation/guides/mailadmin</filepath>,
+              <filepath>documentation/guides/reference</filepath>.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Create the target database document.</cmd>
+        <info>
+          <p>Each collection of documents has a master target database document that is used to
+            resolve all <codeph>olinks</codeph> from that collection. The target database document
+            is an XML file that is created once. It provides a framework that pulls in the target
+            data for each document. The database document is static and all the document data is
+            pulled in dynamically. An example is the following:</p>
+          <p>
+            <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="utf-8"?>
+&lt;!DOCTYPE targetset 
+       SYSTEM "file:///tools/docbook-xsl/common/targetdatabase.dtd" [
+&lt;!ENTITY ugtargets SYSTEM "file:///doc/userguide/target.db"&gt; 
+&lt;!ENTITY agtargets SYSTEM "file:///doc/adminguide/target.db"&gt;
+&lt;!ENTITY reftargets SYSTEM "file:///doc/man/target.db"&gt;
+]&gt;
+&lt;targetset&gt; 
+  &lt;targetsetinfo&gt; 
+    Description of this target database document,
+    which is for the examples in olink doc.
+  &lt;/targetsetinfo&gt;
+
+  &lt;!-- Site map for generating relative paths between documents --&gt;
+  &lt;sitemap&gt; 
+    &lt;dir name="documentation"&gt; 
+      &lt;dir name="guides"&gt; 
+        &lt;dir name="mailuser"&gt; 
+          &lt;document targetdoc="MailUserGuide" 
+                    baseuri="userguide.html"&gt; 
+            &amp;ugtargets;
+          &lt;/document&gt;
+        &lt;/dir&gt;
+        &lt;dir name="mailadmin"&gt;
+          &lt;document targetdoc="MailAdminGuide"&gt;
+            &amp;agtargets;
+          &lt;/document&gt;
+        &lt;/dir&gt;
+      &lt;/dir&gt;
+      &lt;dir name="reference"&gt;
+        &lt;dir name="mailref"&gt;
+          &lt;document targetdoc="MailReference"&gt;
+            &amp;reftargets;
+          &lt;/document&gt;
+        &lt;/dir&gt;
+      &lt;/dir&gt;
+    &lt;/dir&gt;
+  &lt;/sitemap&gt;
+&lt;/targetset&gt;</codeblock>
+          </p>
+          <p>An example of a <filepath>target.db</filepath> file:</p>
+          <p>
+            <screen>&lt;!DOCTYPE div
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+&lt;div element="book" href="#MailAdminGuide" number="1" targetptr="user_accounts">
+  &lt;ttl>Administering User Accounts&lt;/ttl>
+  &lt;xreftext>How to administer user accounts&lt;/xreftext>
+  &lt;div element="part" href="#d5e4" number="I">
+    &lt;ttl>First Part&lt;/ttl>
+    &lt;xreftext>Part I, “First Part”&lt;/xreftext>
+    &lt;div element="chapter" href="#d5e6" number="1">
+      &lt;ttl>Chapter Title&lt;/ttl>
+      &lt;xreftext>Chapter 1, Chapter Title&lt;/xreftext>
+      &lt;div element="sect1" href="#src_chapter" number="1" targetptr="src_chapter">
+        &lt;ttl>Section1 Title&lt;/ttl>
+        &lt;xreftext>xreflabel_here&lt;/xreftext>
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+&lt;/div></screen>
+          </p>
+        </info>
+      </step>
+      <step>
+        <cmd>Generate the target data files.</cmd>
+        <info>These files are the <filepath>target.db</filepath> files from the above example of
+          target database document. They are created with the same DocBook transformation scenario
+          as the HTML or XHTML output. The XSLT parameter called
+            <codeph>collect.xref.targets</codeph> must be set to the value <codeph>yes</codeph>. The
+          default name of a target data file is <filepath>target.db</filepath> but it can be changed
+          by setting an absolute file path in the XSLT parameter
+          <codeph>targets.filename</codeph>.</info>
+      </step>
+      <step>
+        <cmd>Insert <codeph>olink</codeph> elements in the DocBook XML documents.</cmd>
+        <info>When a DocBook XML document is edited in Author mode Oxygen provides the
+            <uicontrol>Insert OLink</uicontrol> action on the toolbar. This action allows selecting
+          the target of an <codeph>olink</codeph> from the list of all possible targets from a
+          specified target database document. In the following image the target database document is
+          called <filepath>target.xml</filepath>.<fig product="editor author developer">
+            <title>Insert OLink Dialog</title>
+            <image href="../img/sa_insert_olink.png"/>
+          </fig>
+          <fig product="editorEclipse authorEclipse developerEclipse">
+            <title>Insert OLink Dialog</title>
+            <image href="../img/ec_insert_olink.png"/>
+          </fig>
+        </info>
+      </step>
+      <step>
+        <cmd>Process each document for output.</cmd>
+        <info>That is done using a DocBook transformation scenario in which the URL of the target
+          database document is set in the <codeph>target.database.document</codeph> parameter. The
+          DocBook XSL stylesheets know how to resolve <codeph>olinks</codeph> in the output files
+          using the value of this parameter.</info>
+      </step>
+    </steps>
+  </taskbody>
+</task>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="find-and-replace-text-in-files">
+  <title>Finding and Replacing Text in Multiple Files</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Text Editing Mode<indexterm>find and replace text in multiple
+            files</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>To open the <uicontrol>Find / Replace in Files</uicontrol> dialog do one of the following:<ul>
+        <li>go to <menucascade>
+            <uicontrol>Find</uicontrol>
+            <uicontrol>Find / Replace in Files... </uicontrol>
+          </menucascade>;</li>
+        <li>click the <uicontrol><image href="../img/sa_find_replace_in_files_button.png"/> Find /
+            Replace in Files</uicontrol> toolbar button;</li>
+        <li>go to the contextual menu of the <uicontrol>DITA Maps Manager</uicontrol> view;</li>
+        <li>go to the contextual menu of the <uicontrol>Project</uicontrol> view;</li>
+        <li>go to the contextual menu of the <uicontrol>Data Source Explorer</uicontrol> view for
+          Documentum xDb (X-Hive/DB), eXist and WebDAV connections. This action is available for
+          Documentum (CMS), but lacks the <i>replace</i> feature.</li>
+      </ul></p>
+    <p>The operation works on both local and remote files from an (S)FTP, WebDAV or <xref
+        href="cms-integration.dita#cms-integration" format="dita">CMS</xref> server.</p>
+    <p>It enables you to define "search for" or "search for and replace" operations across a number
+      of files. The find works at line level, which means a find match cannot cover characters on
+      more than one line. The replace operation can bind <xref
+        href="http://perldoc.perl.org/perlre.html#Regular-Expressions" format="html"
+        scope="external">Perl 5</xref> regular expression group variables ($1, $2, etc.) from the
+      find match. For example to replace the tag with attributes called <codeph>tag-name</codeph>
+      with the tag <codeph>tag-name1</codeph> use as <uicontrol>Text to find</uicontrol> the
+      expression <i>&lt;tag-name(\s+)(.*)&gt;</i> and as the <uicontrol>Replace with</uicontrol>
+      expression <i>&lt;tag-name1$1$2&gt;</i>.</p>
+    <p>The encoding used to read and write the files is detected from the XML header or from the
+      BOM. If a file does not have an XML header or BOM <ph
+        keyref="product"/> uses by default the UTF-8
+      encoding for files of type XML, that is for files with one of the extensions:
+        <filepath>.xml</filepath>, <filepath>.xsl</filepath>, <filepath>.fo</filepath>,
+        <filepath>.xsd</filepath>, <filepath>.rng</filepath>, <filepath>.nvdl</filepath>,
+        <filepath>.sch</filepath>, <filepath>.wsdl</filepath> or <xref
+        href="preferences-file-types.dita">an extension associated with the XML editor type</xref>.
+      For the other files it uses <xref href="preferences-encoding.dita">the encoding configured for
+        non-XML files.</xref></p>
+    <p>You can cancel a long operation at any time by pressing the <uicontrol>Cancel</uicontrol>
+      button of the progress dialog displayed when the operation is executed.</p>
+    <p>Because the content of read-only files cannot be modified, the <uicontrol>Replace</uicontrol>
+      operation is not processing those files. For every such file, a warning message is displayed
+      in the message panel.</p>
+    <fig id="figure-find-replace-in-files-dialog">
+      <title>Find / Replace in Files</title>
+      <image href="../img/sa_find_replace_in_files.png"/>
+    </fig>
+    <p>The dialog contains the following options:</p>
+    <ul>
+      <li conref="find-replace-dialog.dita#find-replace-dialog/text-to-find"/>
+      <li conref="find-replace-dialog.dita#find-replace-dialog/case-sensitive"/>
+      <li conref="find-replace-dialog.dita#find-replace-dialog/whole-words"/>
+      <li conref="find-replace-dialog.dita#find-replace-dialog/regexp"/>
+      <li conref="find-replace-dialog.dita#find-replace-dialog/xpath"/>
+      <li conref="find-replace-dialog.dita#find-replace-dialog/xml-search-options"/>
+      <li><uicontrol>Replace with</uicontrol> - The character string with which to replace the
+        target. It may contain regular expression group markers if the search expression is a
+        regular expression and the <uicontrol>Regular expression</uicontrol> checkbox is
+        checked.</li>
+      <li><uicontrol>Make backup files with extension</uicontrol> - In the replace process <ph
+          keyref="product"/> makes backup files of
+        the modified files. The default extension is <filepath>.bak</filepath> but you can change
+        the extension as you prefer.</li>
+      <li><uicontrol>Selected project files</uicontrol> - Searches only in the selected files of the
+        current opened project. Not displayed when dialog is started from <ph
+          product="author editor">contextual menu of <xref
+            href="editing-dita-maps.dita#editing-dita-maps" format="dita"><uicontrol>DITA
+              Maps</uicontrol> view</xref> and</ph>
+        <xref href="archive-browser-view.dita#archive-browser-view" format="dita">Archive
+          Browser</xref> view.</li>
+      <li><uicontrol>Project files</uicontrol> - Searches in all files from the current project. Not
+        displayed when dialog is started from <ph product="author editor">contextual menu of <xref
+            href="editing-dita-maps.dita#editing-dita-maps" format="dita"><uicontrol>DITA
+              Maps</uicontrol> view</xref> and</ph>
+        <xref href="archive-browser-view.dita#archive-browser-view" format="dita">Archive
+          Browser</xref> view.</li>
+      <li><uicontrol>All opened files</uicontrol> - Searches in all files opened in <ph
+          keyref="product"/>
+        <ph product="author editor">(regular files or DITA Maps)</ph>. You are prompted to save all
+        modified files before any operation is performed. Not displayed when dialog is started from
+          <ph product="author editor">contextual menu of <xref
+            href="editing-dita-maps.dita#editing-dita-maps" format="dita"><uicontrol>DITA
+              Maps</uicontrol> view</xref> and </ph><xref
+          href="archive-browser-view.dita#archive-browser-view" format="dita">Archive Browser</xref>
+        view.</li>
+      <li><uicontrol>Current file directory</uicontrol> - The search is done in the directory of the
+        file opened in the current editor panel. If there is no opened file, this option is disabled
+        in the dialog. Not displayed when dialog is started from <ph product="author editor"
+          >contextual menu of <xref href="editing-dita-maps.dita#editing-dita-maps" format="dita"
+              ><uicontrol>DITA Maps</uicontrol> view</xref> and</ph>
+        <xref href="archive-browser-view.dita#archive-browser-view" format="dita">Archive
+          Browser</xref> view.</li>
+      <li product="author editor"><uicontrol>Current DITA Map hierarchy</uicontrol> - The search is
+        done in all maps and topics referenced by the current edited DITA Map. If <uicontrol>Recurse
+          referenced maps</uicontrol> option is checked, the references from the maps referenced in
+        the main DITA map are also searched in. If there is no opened DITA Map, this option is
+        disabled in the dialog. You are prompted to save all modified files before any operation is
+        performed. Displayed only when dialog is opened from <xref
+          href="editing-dita-maps.dita#editing-dita-maps" format="dita"><uicontrol>DITA
+            Maps</uicontrol> view</xref>.</li>
+      <li><uicontrol>Opened archive</uicontrol> - The search is done in archive opened in <xref
+          href="archive-browser-view.dita#archive-browser-view" format="dita">Archive Browser</xref>
+        view. Displayed only when dialog is opened from <xref
+          href="archive-browser-view.dita#archive-browser-view" format="dita">Archive Browser</xref>
+        view.</li>
+      <li><uicontrol>Specified path</uicontrol> - Chooses the search path.</li>
+      <li><uicontrol>Include files</uicontrol> - Narrows the scope of the operation only to the
+        files that match the given filters.</li>
+      <li><uicontrol>Recurse subdirectories</uicontrol> - When checked, the search is performed
+        recursively in the sub directories found in the specified directory path.</li>
+      <li><uicontrol>Include hidden files</uicontrol> - When checked, the search is performed also
+        in the hidden files.</li>
+      <li><uicontrol>Include archives</uicontrol> - When checked, the search is also done in all
+        individual file entries from all supported ZIP-type archives.</li>
+      <li><uicontrol>Show separate results for each search expression</uicontrol> - When checked,
+        the application opens a new tab to display the result of each new search expression. When
+        the option is unchecked, the search results are displayed in the <i>Find in Files</i> tab,
+        replacing any previous search results.</li>
+      <li><uicontrol>Find All</uicontrol> - Executes a find operation and returns the result list to
+        the message panel. The results are <xref href="results-view.dita#results-view" format="dita"
+          >displayed in a view</xref> that allows grouping the results as a tree with two
+        levels.</li>
+      <li><uicontrol>Replace All</uicontrol> - Replaces all occurrences of the target contained in
+        the specified files.</li>
+    </ul>
+    <p>When you replace a fragment of text, <ph
+        keyref="product"/> provides a preview of the
+      changes you make. The <uicontrol>Preview</uicontrol> dialog is divided in two sections. The
+      first section presents a list of all the documents containing the fragment of text you want to
+      modify. The second section offers a view of the original file and a view of the final result.
+      It also allows you to highlight all changes using the vertical bar from the right side of the
+      view. The <uicontrol>Next change</uicontrol> and <uicontrol>Previous change</uicontrol>
+      buttons allow you to navigate through the changes displayed in the
+        <uicontrol>Preview</uicontrol> dialog.</p>
+    <note type="caution">Use this option with caution. Global search and replace across all project
+      files does not open the files containing the targets, nor does it prompt on a per occurrence
+      basis, to confirm that a replace operation must be performed. As the operation simply matches
+      the string defined in the find field, this may result in replacement of matching strings that
+      were not originally intended to be replaced.</note>
+  </body>
+</topic>

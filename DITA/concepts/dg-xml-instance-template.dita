@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="dg-xml-instance-template">
+  <title>The XML Instance Template</title>
+  <shortdesc>Based
+    on the XML Schema and the CSS file the Author can help the
+    content author in loading, editing and validating the test reports. An XML file template must be
+    created, a kind of skeleton, that the users can use as a starting point for creating new test
+    reports. The template must be generic enough and refer the XML Schema file and the CSS
+    stylesheet.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Customization Support<indexterm>simple customization tutorial<indexterm>XML instance
+              template </indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>This is an example:</p>
+    <codeblock>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-stylesheet type="text/css" href="test_report.css"?&gt;
+&lt;report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="test_report.xsd"&gt;
+  &lt;title&gt;Automated test report&lt;/title&gt;
+  &lt;description&gt;
+    &lt;line&gt;This is the report of the test automatically ran. Each test suite is ran at 20:00h each
+      day. Please &lt;important&gt;check&lt;/important&gt; the failed ones!&lt;/line&gt;
+  &lt;/description&gt;
+  &lt;results&gt;
+    &lt;entry&gt;
+      &lt;test_name&gt;Database connection test&lt;/test_name&gt;
+      &lt;passed&gt;true&lt;/passed&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;test_name&gt;XSLT Transformation test&lt;/test_name&gt;
+      &lt;passed&gt;true&lt;/passed&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;test_name&gt;DTD validation test&lt;/test_name&gt;
+      &lt;passed&gt;false&lt;/passed&gt;
+    &lt;/entry&gt;
+  &lt;/results&gt;
+&lt;/report&gt;
+</codeblock>
+    <p>The processing instruction <codeph>xml-stylesheet</codeph> associates the CSS stylesheet to
+      the XML file. The href pseudo attribute contains the URI reference to the stylesheet file. In
+      our case the CSS is in the same directory as the XML file.</p>
+    <p>The next step is to place the XSD file and the CSS file on a web server and modify the
+      template to use the HTTP URLs, like this:</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-stylesheet type="text/css" 
+        href="http://www.mysite.com/reports/test_report.css"?&gt;
+&lt;report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:noNamespaceSchemaLocation=
+        "http://www.mysite.com/reports/test_report.xsd"&gt;
+    &lt;title&gt;Test report title&lt;/title&gt;
+    &lt;description&gt;
+.......</codeblock>
+    <p>The alternative is to create an archive containing the <filepath>test_report.xml</filepath>,
+        <filepath>test_report.css</filepath> and <filepath>test_report.xsd</filepath> and send it to
+      the content authors.</p>
+  </conbody>
+</concept>

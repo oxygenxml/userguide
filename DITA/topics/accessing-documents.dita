@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_nsh_s2g_nm">
+  <title>Accessing Documents</title>
+  <body>
+    <p>One of the main challenges when integrating the Author Component applet in your SharePoint
+      site is to avoid authenticating twice when opening a document resource stored in your
+      SharePoint repository.</p>
+    <p>You have already signed in when you started the SharePoint session, but the applet is not
+      aware of your current session. In this case every time the applet is accessing a document it
+      will ask you to input your credentials again.</p>
+    <p>As a possible solution, do not execute HTTP requests directly from the Java code, but forward
+      them to the web browser that hosts the applet, because it is aware of the current user session
+      (authentication cookies).</p>
+    <p>To open documents stored on your SharePoint repository, register your own protocol handler to
+      the JVM. We implemented a handler for both <term>http</term> and <term>https</term> protocols
+      that forwards the HTTP requests to a JavaScript <codeph>XMLHttpRequest</codeph> object. This
+      way, the browser that executes the JavaScript code is responsible for handling the
+      authentication to the SharePoint site.</p>
+    <p>To install this handler, add the following line to your Java Applet code (in our case, in the
+        <codeph>ro.sync.ecss.samples.AuthorComponentSampleApplet</codeph>
+      class):<codeblock outputclass="language-java">URL.setURLStreamHandlerFactory(new ro.sync.net.protocol.http.handlers.CustomURLStreamHandlerFactory(this));</codeblock></p>
+    <p> To enable JavaScript calls from your Java applet code, set the MAYSCRIPT attribute to
+        <codeph>true</codeph> in the <codeph>&lt;applet></codeph> element embedded in you HTML
+      page:<codeblock outputclass="language-xml">&lt;applet width="100%" height="600"
+  code="ro.sync.ecss.samples.AuthorComponentSampleApplet"
+  name="authorComponentAppletName" id="authorComponentApplet" 
+  <b>MAYSCRIPT="true"</b>>
+    .....
+&lt;/applet></codeblock></p>
+    <note type="tip">In case the applet is not working, or you cannot open documents from your
+      SharePoint repository, enable the debugging tools that come bundled with your Web Browser or
+      the Java Console from your operating system to try to identify the cause of the
+      problem.</note>
+  </body>
+</topic>

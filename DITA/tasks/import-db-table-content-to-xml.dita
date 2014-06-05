@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="import-db-table-content-to-xml">
+  <title>Import Table Content as XML Document</title><prolog>
+    <metadata>
+      <keywords><indexterm>Importing Data<indexterm>from a database<indexterm>table content as XML
+              document</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>The steps for importing the data from a relational database table are the
+      following:</context>
+    <steps>
+      <step>
+        <cmd><ph product="editor developer">Go to menu <menucascade>
+              <uicontrol>File</uicontrol>
+              <uicontrol>Import</uicontrol>
+              <uicontrol>Database Data...</uicontrol>
+            </menucascade></ph><ph product="editorEclipse developerEclipse">Go to menu <menucascade>
+              <uicontrol>File</uicontrol>
+              <uicontrol>Import</uicontrol>
+              <uicontrol>oXygen / Database Data</uicontrol>
+            </menucascade>.</ph></cmd>
+        <stepresult>
+          <p>Clicking this action opens a dialog with all the defined database connections:</p>
+          <fig product="editor developer">
+            <title>Select Database Table Dialog</title>
+            <image href="../img/sa_select_database_table.png"/>
+          </fig>
+          <fig product="editorEclipse developerEclipse">
+            <title>Import From Database Data Wizard</title>
+            <image href="../img/ec_select_database_table.png"/>
+          </fig>
+        </stepresult>
+      </step>
+      <step>
+        <cmd>Select the connection to the database that contains the data. </cmd>
+        <info>Only connections configured on relational data sources can be used to import
+          data.</info>
+      </step>
+      <step>
+        <cmd>If you want to edit, delete or add a data source or connection click on the
+            <uicontrol>Configure Database Sources</uicontrol> button. </cmd>
+        <stepresult>The <uicontrol>Preferences</uicontrol>/<uicontrol>Data Sources</uicontrol>
+          option page is opened.</stepresult>
+      </step>
+      <step>
+        <cmd>Click <uicontrol>Connect</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>From the catalogs list, click on a schema and choose the required table.</cmd>
+      </step>
+      <step>
+        <cmd>Click the <uicontrol>OK</uicontrol> button.</cmd>
+        <stepresult>
+          <p>The <uicontrol>Import Criteria</uicontrol> dialog opens next, with a default query
+            string in the <uicontrol>SQL Query</uicontrol> pane:</p>
+          <fig product="editor developer">
+            <title>Import from Database Criteria Dialog</title>
+            <image href="../img/sa_import_criteria_db.png"/>
+          </fig>
+          <fig product="editorEclipse developerEclipse">
+            <title>Import from Database Criteria Dialog</title>
+            <image href="../img/ec_import_criteria_db.png"/>
+          </fig>
+          <p>The dialog contains the following items:</p>
+          <ul>
+            <li><uicontrol>SQL Preview</uicontrol> - If the <uicontrol>SQL Preview</uicontrol>
+              button is pressed, it shows the labels that are used in the XML document and the first
+              five lines from the database into the <uicontrol>Import settings</uicontrol> panel.
+              All data items in the input are converted by default to element content, but this can
+              be overridden by clicking the individual column headers. Clicking once on a column
+              header (ex <uicontrol>Heading0</uicontrol>) causes the data from this column to be
+              used as attribute values of the row elements. Click a second time and the column's
+              data is ignored when generating the XML file. You can cycle through these three
+              options by continuing to click the column header. The following symbols decorate the
+              column header to indicate the type of content that column is converted to:<ul
+                id="ul_132_krd_ff">
+                <li><i>&lt;&gt;</i> symbols for data columns converted to element content</li>
+                <li><i>=</i> symbol for data columns converted to attribute content</li>
+                <li><i>x</i> symbol for ignored data</li>
+              </ul></li>
+            <li><uicontrol>Change labels</uicontrol> - This button opens a new dialog, allowing you
+              to edit the names of the root and row elements, change the XML name and the conversion
+              criterion. The XML names can be edited by double-clicking the desired item and
+              entering the required label. The conversion criterion can also be modified by
+              selecting from the drop-down list <uicontrol>ELEMENT</uicontrol>,
+                <uicontrol>ATTRIBUTE</uicontrol>, or <uicontrol>SKIPPED</uicontrol>.</li>
+            <li product="editor developer"><uicontrol>Open in editor</uicontrol> - If checked, the
+              new XML document created from the imported text file is open in the editor.</li>
+            <li><uicontrol>Save in file</uicontrol> - If checked, the new XML document is saved at
+              the specified path.<note>If only <uicontrol>Open in editor</uicontrol> is checked, the
+                newly created document is open in the editor, but as an unsaved file.</note></li>
+            <li><uicontrol>Generate XML Schema</uicontrol> - Allows you to specify the path of the
+              generated XML Schema file.</li>
+          </ul>
+        </stepresult>
+      </step>
+      <step>
+        <cmd>Click the <uicontrol>SQL Preview</uicontrol> button.</cmd>
+        <info>
+          <p>The <uicontrol>SQL Query</uicontrol> string is editable. You can specify which fields
+            are considered.</p>
+        </info>
+        <stepxmp>
+          <p>Use aliases if the following are true:<ul id="ul_f4h_yrd_ff">
+              <li>the query string represents a join operation of two or more tables</li>
+              <li>columns selected from different tables have the same name</li>
+            </ul></p>
+          <p>The use of aliases avoids the confusion of two columns being mapped to the same name in
+            the result document of the importing operation.</p>
+          <codeblock>
+  select s.subcat_id,
+        s.nr as s_nr,
+        s.name,
+        q.q_id,
+        q.nr as q_nr,
+        q.q_text
+    from faq.subcategory s,
+            faq.question q
+    where  ...</codeblock>
+        </stepxmp>
+        <stepresult>The input data is displayed in a tabular form in the <uicontrol>Import
+            Settings</uicontrol> panel. The <uicontrol>XML Import Preview</uicontrol> panel contains
+          an example of what the generated XML looks like.</stepresult>
+      </step>
+    </steps>
+  </taskbody>
+</task>

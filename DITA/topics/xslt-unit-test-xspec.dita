@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="xslt-unit-test-xspec">
+  <title>XSLT Unit Test (XSpec)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Editing XSL Stylesheets<indexterm>XSpec</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>XSpec is a behavior driven development (BDD) framework for XSLT and XQuery. XSpec consists of
+      a syntax for describing the behavior of your XSLT or XQuery code, and some code that enables
+      you to test your code against those descriptions. </p>
+    <p>To create an XSLT Unit Test, go to <menucascade>
+        <uicontrol>File</uicontrol>
+        <uicontrol> New</uicontrol>
+        <uicontrol>XSLT Unit Test</uicontrol>
+      </menucascade>. You can also create an XSLT Unit Test from the contextual menu of an XSL file
+      in the <uicontrol>Project</uicontrol> view. <ph
+        keyref="product"/> allows you to customize
+      the XSpec document when you create it. In the customization dialog, you can enter the path to
+      an XSL document or to a master XSL document.</p>
+    <p>To run an XSLT Unit Test, open the XSPEC file in an editor and click <uicontrol><image
+          href="../img/bt_ApplyStyleSheet20.png"/>Apply Transformation Scenario(s)</uicontrol> on
+      the main toolbar.<note>The transformation scenario is defined in the XSPEC <xref
+          href="the-document-type-dialog.dita#the-document-type-dialog">document
+      type</xref>.</note></p>
+    <p>When you create an XSpec document based on an XSL document, <ph
+        keyref="product"/> uses information from the
+      validation and transformation scenarios associated with the XSL file. From the transformation
+      scenario <ph keyref="product"/> uses extensions
+      and properties of Saxon <ph
+        conref="oxygenEntitiesDictionary.dita#OxygenEntities/saxon9FullVersion"/>, improving the ANT scenario associated with the XSpec document. </p>
+    <fig product="developer editor">
+      <title>The New XSLT Unit Test wizard</title>
+      <image href="../img/New_XSLT_Unit_Test_wizard.png"/>
+    </fig>
+    <fig product="developerEclipse editorEclipse">
+      <title>The New XSLT Unit Test wizard</title>
+      <image href="../img/EC_New_XSLT_Unit_Test_wizard.png"/>
+    </fig>
+    <p>An XSpec file contains one, or more test scenarios. You can test a stylesheet in one of the
+      following ways:<ul>
+        <li>test an entire stylesheet;<p>Testing is performed in a certain context. You can define a
+            context as follows:<ul>
+              <li>inline context - building the test based on a string;<p>
+                  <codeblock outputclass="language-xml">&lt;x:scenario label="when processing a para element">
+    &lt;x:context>
+        &lt;para>...&lt;/para>
+    &lt;/x:context>
+    ...
+&lt;/x:scenario>  </codeblock>
+                </p></li>
+              <li>based on an external file, or on a part of an external file extracted with an
+                XPath expression.<p>
+                  <codeblock outputclass="language-xml">&lt;x:scenario label="when processing a para element">
+    &lt;x:context href="source/test.xml" select="/doc/body/p[1]" />
+    ...
+&lt;/x:scenario>  </codeblock>
+                </p></li>
+            </ul></p></li>
+        <li>test a function;<p>
+            <codeblock outputclass="language-xml">&lt;x:scenario label="when capitalising a string">
+  &lt;x:call function="eg:capital-case">
+    &lt;x:param select="'an example string'" />
+    &lt;x:param select="true()" />
+  &lt;/x:call>
+  ...
+&lt;/x:scenario>  </codeblock>
+          </p></li>
+        <li>test a template with a name.<p>
+            <codeblock outputclass="language-xml">&lt;x:call template="createTable">
+    &lt;x:param name="nodes">
+      &lt;value>A&lt;/value>
+      &lt;value>B&lt;/value>
+    &lt;/x:param>
+    &lt;x:param name="cols" select="2" />
+&lt;/x:call>  </codeblock>
+          </p></li>
+      </ul>You are able to refer test files between each other, which allows you to define a suite
+      of tests. For further details about test scenarios, go to <xref
+        href="http://code.google.com/p/xspec/wiki/WritingScenarios" format="html" scope="external"
+      />.</p>
+  </body>
+</topic>

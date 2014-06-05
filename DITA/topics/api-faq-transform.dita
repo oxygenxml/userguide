@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="api-faq-transform">
+  <title>Running XSLT or XQuery Transformations</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>Can I run XSL 2.0 / 3.0 transformation with Saxon EE using the oXygen SDK?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>The API class <apiname>ro.sync.exml.workspace.api.util.XMLUtilAccess</apiname> allows you
+        to create an XSLT Transformer which implements the JAXP interface
+          <apiname>javax.xml.transform.Transformer</apiname>. Then this type of transformer can be
+        used to transform XML. Here's just an example of transforming when you have an
+          <apiname>AuthorAccess</apiname> API available:
+        <codeblock outputclass="language-java"> InputSource is = new org.xml.sax.InputSource(URLUtil.correct(new File("test/personal.xsl")).toString());
+ xslSrc = new SAXSource(is);
+ javax.xml.transform.Transformer transformer = authorAccess.getXMLUtilAccess().createXSLTTransformer(xslSrc, null, AuthorXMLUtilAccess.TRANSFORMER_SAXON_ENTERPRISE_EDITION);
+ transformer.transform(new StreamSource(new File("test/personal.xml")), new StreamResult(new File("test/personal.html")));</codeblock>If
+        you want to create the transformer from the plugins side, you can use this method instead:
+          <apiname>ro.sync.exml.workspace.api.PluginWorkspace.getXMLUtilAccess()</apiname>.  </p>
+    </section>
+  </body>
+</topic>

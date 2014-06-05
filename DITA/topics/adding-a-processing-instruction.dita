@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="adding-a-processing-instruction">
+    <title>Making the Schema Association Explicit in the XML Instance Document</title>
+    <prolog>
+    <metadata>
+      <keywords><indexterm>Editing XML Documents<indexterm>associate a schema to a
+                        document<indexterm>add schema association in XML
+                    instance</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+    <body>
+        <p>The schema used by the <xref href="streamline-with-content-completion.dita"
+          ><uicontrol>Content Completion Assistant</uicontrol></xref> and <xref
+        href="validating-XML-documents.dita">document validation</xref> engine can be associated
+      with the document using the <uicontrol>Associate Schema</uicontrol> action. For most of the
+      schema types, it uses <xref href="../concepts/oxygen-processing-instruction.dita">the
+          <codeph>xml-model</codeph> processing instruction</xref>, the exceptions being:<ul>
+        <li>W3C XML Schema - the <codeph>xsi:schemaLocation</codeph> attribute is used;</li>
+        <li>DTD - the <codeph>DOCTYPE</codeph> declaration is used.</li>
+      </ul></p>
+        <p>The association can specify a relative file path or a URL of the schema. The advantage of
+            relative file path is that you can configure the schema at file level instead of
+            document type level.</p>
+        <p>Go to menu <menucascade>
+                <uicontrol>Document</uicontrol>
+                <uicontrol>Schema</uicontrol>
+                <uicontrol>Associate schema...</uicontrol>
+            </menucascade> or click the <uicontrol><image
+                    href="../img/bt_associate_schema_button.png"/>Associate schema</uicontrol>
+            toolbar button to select the schema that will be associated with the XML document. The
+            following dialog is displayed:</p>
+        <fig product="editor author developer">
+            <title>The Associate Schema Dialog</title>
+            <image href="../img/sa_associate_schema_dialog.png"/>
+        </fig>
+        <fig product="editorEclipse authorEclipse developerEclipse">
+            <title>The Associate Schema Dialog</title>
+            <image href="../img/ec_associate_schema_dialog.png"/>
+        </fig>
+        <p>The available options are:<ul>
+                <li><uicontrol>URL</uicontrol> - contains a predefined set of schemas that are used
+          more often and it also keeps a history of the last used schemas. The URL must point to the
+          schema file which can be loaded from the local disk or from a remote server through
+          HTTP(S), FTP(S)<ph product="editor developer"> or a <xref
+              href="../tasks/howto-custom-protocol-plugin.dita#howto-custom-protocol-plugin"
+              format="dita">custom protocol</xref></ph>;</li>
+                <li><uicontrol>Schema type</uicontrol> - selected automatically from the list of
+          possible types in the <uicontrol>Schema type</uicontrol> combo box (XML Schema, DTD, Relax
+          NG, Relax NG Compact, Schematron, NVDL) based on the extension of the schema file that was
+          entered in the <uicontrol>URL</uicontrol> field;</li>
+                <li><uicontrol>Public ID</uicontrol> - Specify a public ID if you have selected a
+          DTD;</li>
+                <li><uicontrol>Add additional association for embedded schematron rules</uicontrol>
+          - if you have selected XML Schema or Relax NG schemas with embedded Schematron rules,
+          enable this option;</li>
+                <li><uicontrol>Use path relative to file location</uicontrol> - enable this option
+          if the XML instance document and the associated schema contain relative paths. The
+          location of the schema file is inserted in the XML instance document as a relative file
+          path. This practice allows you, for example, to share these documents with other users,
+          without running into problems caused by different project locations on physical disk;</li>
+        <li><uicontrol>Keep existing schema associations</uicontrol> - enable this option to keep
+          the associations of the currently edited document with a Schema when you associate a new
+          one.</li>
+            </ul></p>
+        <p>The association with an XML Schema is added as an attribute of the root element. The
+                <uicontrol>Associate schema</uicontrol> action adds a:<ul>
+                <li><codeph>xsi:schemaLocation</codeph> attribute, if the root element of the
+                    document sets a default namespace with an <codeph>xmlns</codeph> attribute;</li>
+                <li>or a <codeph>xsi:noNamespaceSchemaLocation</codeph> attribute, if the root
+                    element does not set a default namespace.</li>
+            </ul></p>
+        <p>The association with a DTD is added as a <codeph>DOCTYPE</codeph> declaration. The
+            association with a Relax NG , Schematron or NVDL schema is added as <xref
+                href="../concepts/oxygen-processing-instruction.dita#oxygen-processing-instruction"
+                format="dita"><codeph>xml-model</codeph> processing instruction</xref>.</p>
+    </body>
+</topic>

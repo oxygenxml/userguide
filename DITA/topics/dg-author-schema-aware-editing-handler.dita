@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-author-schema-aware-editing-handler"
+  product="editor author editorEclipse authorEclipse authorSDK">
+  <title>Implementing an Author Schema Aware Editing Handler</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Author Settings<indexterm>Java API<indexterm>Author schema aware editing
+            handler</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>To implement your own handler for actions like typing, deleting, or pasting, provide an
+      implementation of <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorSchemaAwareEditingHandlerAdapter.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.AuthorSchemaAwareEditingHandler</apiname></xref>.
+      For this handler to be called, the <xref
+        href="http://www.oxygenxml.com/doc/ug-editor/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="editor"><uicontrol>Schema Aware
+        Editing</uicontrol></xref><xref
+        href="http://www.oxygenxml.com/doc/ug-editorEclipse/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="editorEclipse"><uicontrol>Schema Aware
+          Editing</uicontrol></xref><xref
+        href="http://www.oxygenxml.com/doc/ug-author/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="author"><uicontrol>Schema Aware
+        Editing</uicontrol></xref><xref
+        href="http://www.oxygenxml.com/doc/ug-authorEclipse/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="authorEclipse"><uicontrol>Schema Aware
+          Editing</uicontrol></xref><ph product="authorSDK"><uicontrol>Schema Aware
+          Editing</uicontrol></ph> option must be set to <b>On</b>,or <b>Custom</b>. The handler can
+      either resolve a specific case, let the default implementation take place, or reject the edit
+      entirely by throwing an <codeph>InvalidEditException</codeph>.</p>
+    <note>The Javadoc documentation of the Author API used in the example files is <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/index.html" format="html"
+        scope="external">available on the <ph
+          keyref="product"/> website</xref>. Also it
+      can be downloaded as a <xref href="http://www.oxygenxml.com/InstData/Editor/SDK/doc.zip"
+        format="html" scope="external">zip archive from the website</xref>.</note>
+    <codeblock outputclass="language-java">package simple.documentation.framework.extensions;
+
+/**
+ * Specific editing support for SDF documents.
+ * Handles typing and paste events inside section and tables.
+ */
+public class SDFSchemaAwareEditingHandler implements AuthorSchemaAwareEditingHandler {</codeblock>
+    <p>Typing events can be handled using the <apiname>handleTyping</apiname> method. For example,
+      the <codeph>SDFSchemaAwareEditingHandler</codeph> checks if the schema is not a learned one,
+      was loaded successfully and <xref
+        href="http://www.oxygenxml.com/doc/ug-editor/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="editor"><uicontrol>Smart
+        Paste</uicontrol></xref><xref
+        href="http://www.oxygenxml.com/doc/ug-editorEclipse/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="editorEclipse"><uicontrol>Smart
+        Paste</uicontrol></xref><xref
+        href="http://www.oxygenxml.com/doc/ug-author/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="author"><uicontrol>Smart
+        Paste</uicontrol></xref><xref
+        href="http://www.oxygenxml.com/doc/ug-authorEclipse/topics/preferences-schema-aware.html"
+        format="html" scope="external" product="authorEclipse"><uicontrol>Smart
+        Paste</uicontrol></xref><ph product="authorSDK"><uicontrol>Smart Paste</uicontrol></ph> is
+      active. If these conditions are met, the event will be handled.</p>
+    <codeblock outputclass="language-java">/**
+ * @see ro.sync.ecss.extensions.api.AuthorSchemaAwareEditingHandler#handleTyping(int, char, ro.sync.ecss.extensions.api.AuthorAccess)
+ */
+public boolean handleTyping(int offset, char ch, AuthorAccess authorAccess)
+throws InvalidEditException {
+  boolean handleTyping = false;
+  AuthorSchemaManager authorSchemaManager = authorAccess.getDocumentController().getAuthorSchemaManager();
+  if (!authorSchemaManager.isLearnSchema() &amp;&amp; 
+      !authorSchemaManager.hasLoadingErrors() &amp;&amp;
+      authorSchemaManager.getAuthorSchemaAwareOptions().isEnableSmartTyping()) {
+    try {
+      AuthorDocumentFragment characterFragment = 
+        authorAccess.getDocumentController().createNewDocumentTextFragment(String.valueOf(ch));    
+      handleTyping = handleInsertionEvent(offset, new AuthorDocumentFragment[] {characterFragment}, authorAccess);
+    } catch (AuthorOperationException e) {
+      throw new InvalidEditException(e.getMessage(), "Invalid typing event: " + e.getMessage(), e, false);
+    }
+  }
+  return handleTyping;    
+}</codeblock>
+    <p>Implementing the <codeph>AuthorSchemaAwareEditingHandler</codeph> gives the possibility to
+      handle other events like: the keyboard delete event at the given offset (using Delete or
+      Backspace keys), delete element tags, delete selection, join elements or paste fragment.</p>
+    <p conref="../topics/dg-java-files.dita#dg-java-files/sdf_project"/>
+  </body>
+</topic>

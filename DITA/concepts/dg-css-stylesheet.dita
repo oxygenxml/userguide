@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="dg-css-stylesheet">
+  <title>CSS Stylesheet</title>
+  <shortdesc>A set of rules must be
+    defined for describing how the XML document is to be rendered into the Author. This is done
+    using Cascading Style Sheets or CSS on short. CSS is a language used to describe how an HTML or
+    XML document should be formatted by a browser. CSS is widely used in the majority of
+    websites.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Customization Support<indexterm>simple customization
+            tutorial<indexterm>CSS</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>The elements from an XML document are displayed in the layout as a series of boxes. Some of
+      the boxes contain text and may flow one after the other, from left to right. These are called
+      in-line boxes. There are also other type of boxes that flow one below the other, like
+      paragraphs. These are called block boxes.</p>
+    <p>For example consider the way a traditional text editor arranges the text. A paragraph is a
+      block, because it contains a vertical list of lines. The lines are also blocks. But any block
+      that contains inline boxes is arranging its children in a horizontal flow. That is why the
+      paragraph lines are also blocks, but the traditional "bold" and "italic" sections are
+      represented as inline boxes.</p>
+    <p>The CSS allows us to specify that some elements are displayed as tables. In CSS a table is a
+      complex structure and consists of rows and cells. The "table" element must have children that
+      have "table-row" style. Similarly, the "row" elements must contain elements with "table-cell"
+      style.</p>
+    <p>To make it easy to understand, the following section describes the way each element from the
+      above schema is formatted using a CSS file. Please note that this is just one from an infinite
+      number of possibilities of formatting the content.</p>
+    <dl>
+      <dlentry>
+        <dt>report</dt>
+        <dd>
+          <p>This element is the root element of the report document. It should be rendered as a box
+            that contains all other elements. To achieve this the display type is set to
+              <b>block</b>. Additionally some margins are set for it. The CSS rule that matches this
+            element is:<codeblock outputclass="language-css">report{
+    display:block;
+    margin:1em;
+}</codeblock>
+          </p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>title</dt>
+        <dd>
+          <p>The title of the report. Usually titles have a larger font. The <b>block</b> display
+            should also be used - the next elements will be placed below it, and change its font to
+            double the size of the normal text.</p>
+          <codeblock outputclass="language-css">title {
+    display:block;
+    font-size:2em;    
+}
+</codeblock>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>description</dt>
+        <dd>
+          <p>This element contains several lines of text describing the report. The lines of text
+            are displayed one below the other, so the description will have the same <b>block</b>
+            display. To make it standout the background color is changed.</p>
+          <codeblock outputclass="language-css">description {
+    display:block;
+    background-color:#EEEEFF;
+    color:black;
+}</codeblock>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>line</dt>
+        <dd>
+          <p>A line of text in the description. A specific aspect is not defined for it, just
+            indicate that the display should be <b>block</b>.</p>
+          <codeblock outputclass="language-css">line {
+    display:block;
+}</codeblock>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>important</dt>
+        <dd>
+          <p>The <codeph>important</codeph> element defines important text from the description.
+            Because it can be mixed with text, its display property must be set to <b>inline</b>. To
+            make it easier to spot, the text will be emphasized.</p>
+          <codeblock outputclass="language-css">important {
+    display:inline;
+    font-weight:bold;
+}</codeblock>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>results</dt>
+        <dd>
+          <p>The <codeph>results</codeph> element shows the list of test_names and the result for
+            each one. To make it easier to read, it is displayed as a <b>table</b> with a green
+            border and margins.</p>
+          <codeblock outputclass="language-css">results{
+    display:table;
+    margin:2em;
+    border:1px solid green;
+}</codeblock>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>entry</dt>
+        <dd>
+          <p>An item in the results element. The results are displayed as a table so the entry is a
+            row in the table. Thus, the display is <b>table-row</b>.</p>
+          <codeblock outputclass="language-css">entry {
+    display:table-row;
+}</codeblock>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>test_name, passed</dt>
+        <dd>
+          <p>The name of the individual test, and its result. They are cells in the results table
+            with display set to <b>table-cell</b>. Padding and a border are added to emphasize the
+            table grid.</p>
+          <codeblock outputclass="language-css">
+test_name, passed{
+    display:table-cell;
+    border:1px solid green;
+    padding:20px;
+}
+
+passed{
+    font-weight:bold;
+}</codeblock>
+        </dd>
+      </dlentry>
+    </dl>
+    <p>The full content of the CSS file <filepath>test_report.css</filepath> is:</p>
+    <codeblock outputclass="language-css">
+report {
+    display:block;
+    margin:1em;
+}
+
+description {
+    display:block;
+    background-color:#EEEEFF;
+    color:black;
+}
+
+line {
+    display:block;
+}
+
+important {
+    display:inline;
+    font-weight:bold;
+}
+
+title {
+    display:block;
+    font-size:2em;    
+}
+
+results{
+    display:table;
+    margin:2em;       
+    border:1px solid green;
+}
+
+entry {
+    display:table-row;
+}
+
+test_name, passed{
+    display:table-cell;
+    border:1px solid green;
+    padding:20px;
+}
+
+passed{
+    font-weight:bold;
+}                        
+                    </codeblock>
+    <fig>
+      <title>A report opened in the Author </title>
+      <image href="../img/bt_dg_sample_reports.png"/>
+    </fig>
+    <note>
+      <p>You can edit attributes in-place in the Author mode using <xref
+          href="../topics/editing-attributes-form-controls.dita">form-based controls</xref>.</p>
+    </note>
+  </conbody>
+</concept>

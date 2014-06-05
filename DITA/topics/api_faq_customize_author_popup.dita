@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="customize-popup">
+  <title>How Do I Add My Custom Actions to the Contextual Menu?</title>
+  <body>
+    <p>The API methods <apiname>WSAuthorEditorPageBase.addPopUpMenuCustomizer</apiname> and
+        <apiname>WSTextEditorPage.addPopUpMenuCustomizer</apiname> allow you to customize the
+      contextual menu shown either in the Author or in the Text modes. The API is available both in
+      the standalone application and in the Eclipse plugin.</p>
+    <p>Here's an elegant way to add from your Eclipse plugin extension actions to the Author
+        page:<ol id="ol_y4y_2lh_xh">
+        <li>Create a pop-up menu customizer
+          implementation:<codeblock outputclass="language-java">import org.eclipse.jface.action.ContributionManager;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.menus.IMenuService;
+import ro.sync.ecss.extensions.api.AuthorAccess;
+import ro.sync.ecss.extensions.api.structure.AuthorPopupMenuCustomizer;
+/**
+* This class is used to create the possibility to attach certain
+* menuContributions to the {@link ContributionManager}, which is used for the
+* popup menu in the Author Page of the Oxygen Editor.&lt;br />
+* You just need to use the org.eclipse.ui.menus extension and add a
+* menuContribution with the locationURI: &lt;b>menu:oxygen.authorpage&lt;/b>
+*/
+public class OxygenAuthorPagePopupMenuCustomizer implements
+        AuthorPopupMenuCustomizer {
+
+    @Override
+    public void customizePopUpMenu(Object menuManagerObj,
+            AuthorAccess authoraccess) {
+        if (menuManagerObj instanceof ContributionManager) {
+            ContributionManager contributionManager = (ContributionManager) menuManagerObj;
+            IMenuService menuService = (IMenuService) PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getService(IMenuService.class);
+
+            menuService.populateContributionManager(contributionManager,
+                    "menu:oxygen.authorpage");
+            contributionManager.update(true);
+        }
+    }
+}</codeblock></li>
+        <li>Add a workbench listener and add the pop-up customizer when an editor is opened in the
+          Author
+          page:<codeblock outputclass="language-java">Workbench.getInstance().getActiveWorkbenchWindow().getPartService().addPartListener(
+    new IPartListener() {
+      @Override
+      public void partOpened(IWorkbenchPart part) {
+        if(part instanceof ro.sync.exml.workspace.api.editor.WSEditor) {
+          WSEditorPage currentPage = ((WSEditor)part).getCurrentPage();
+          if(currentPage instanceof WSAuthorEditorPage) {
+            ((WSAuthorEditorPage)currentPage).addPopUpMenuCustomizer(new OxygenAuthorPagePopupMenuCustomizer());
+          }
+        }
+      }
+      ........
+    });</codeblock></li>
+        <li>Implement the extension point in your
+          <filepath>plugin.xml</filepath>:<codeblock outputclass="language-xml">&lt;extension
+       point="org.eclipse.ui.menus">
+    &lt;menuContribution
+          allPopups="false"
+          locationURI="menu:oxygen.authorpage">
+       &lt;command
+             commandId="eu.doccenter.kgu.client.tagging.removeTaggingFromOxygen"
+             style="push">
+       &lt;/command>
+    &lt;/menuContribution>
+&lt;/extension></codeblock></li>
+      </ol></p>
+  </body>
+</topic>

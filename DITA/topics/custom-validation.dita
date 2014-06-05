@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="custom-validation">
+  <title>Custom Validators</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Editing XML Documents<indexterm>validation against a schema<indexterm>custom
+              validation</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>If you need to validate the edited document with other validation engine than the built-in
+      one you have the possibility to configure external validators in the <ph keyref="product"/>
+      user preferences. After such a custom validator is <xref
+        href="preferences-editor-custom-validation.dita">properly configured</xref> it can be
+      applied on the current document with just one click on the <uicontrol>Custom Validation
+        Engines</uicontrol> toolbar. The document is validated against the schema declared in the
+      document. </p>
+    <p>Some validators are configured by default but they are third party processors which do not
+      support the <xref
+        href="linked-output-messages-of-external-engine.dita#linked-output-messages-of-external-engine"
+        format="dita">output message format</xref> of <ph keyref="product"/> for linked
+      messages:</p>
+    <ul>
+      <li><b>LIBXML</b> - Included in <ph keyref="product"/> (Windows edition only). It is
+        associated to XML Editor. It is able to validate the edited document against XML Schema,
+        Relax NG schema full syntax, internal DTD (included in the XML document) or a custom schema
+        type. XML catalogs support (the <parmname>--catalogs</parmname> parameter) and XInclude
+        processing (<parmname>--xinclude</parmname>) are enabled by default in the preconfigured
+        LIBXML validator. The <parmname>--postvalid</parmname> parameter is also set by default
+        which allows LIBXML to validate correctly the main document even if the XInclude fragments
+        contain IDREFS to ID's located in other fragments.<p>For validation against an external DTD
+          specified by URI in the XML document, add the <parmname>--dtdvalid ${ds}</parmname>
+          parameter manually to the DTD validation command line. ${ds} represents the detected DTD
+          declaration in the XML document.</p><note type="caution">File paths containing spaces are
+          not handled correctly in the LIBXML processor. For example the built-in XML catalog files
+          of the predefined document types (DocBook, TEI, DITA, etc) are not handled by LIBXML if
+            <ph keyref="product"/> is installed in the default location on Windows (C:\Program
+          Files) because the built-in XML catalog files are stored in the
+            <filepath>frameworks</filepath> subfolder of the installation folder which in this case
+          contains at least one space character in the file path.</note><note type="attention">
+          <p>On Mac OS X if the full path to the LIBXML executable file is not specified in the
+              <uicontrol>Executable path</uicontrol> text field, some errors may occur during
+            validation against a W3C XML Schema like:</p>
+          <msgblock xml:space="preserve">Unimplemented block at ... xmlschema.c</msgblock>
+          <p>To avoid these errors, specify the full path to the LIBXML executable file.</p>
+        </note></li>
+      <li><b>Saxon SA</b> - Included in <ph keyref="product"/>. It is associated to XML Editor and
+        XSD Editor. It is able to validate XML Schema schemas and XML documents against XML Schema
+        schemas. The validation is done according to the W3C XML Schema 1.0 or 1.0. This can be
+          <xref href="xml-schema-preferences-page.dita">configured in Preferences</xref>.</li>
+      <li><b>MSXML 4.0</b> - Included in <ph keyref="product"/> (Windows edition only). It is
+        associated to XML Editor, XSD Editor and XSL Editor. It is able to validate the edited
+        document against XML Schema, internal DTD (included in the XML document), external DTD or a
+        custom schema type.</li>
+      <li><b>MSXML.NET</b> - Included in <ph keyref="product"/> (Windows edition only). It is
+        associated to XML Editor, XSD Editor and XSL Editor. It is able to validate the edited
+        document against XML Schema, internal DTD (included in the XML document), external DTD or a
+        custom schema type.</li>
+      <li><b>XSV</b> - Not included in <ph keyref="product"/>. Windows and Linux distributions of
+        XSV can be downloaded from <xref href="http://www.cogsci.ed.ac.uk/%7Eht/xsv-status.html"
+          format="html" scope="external">http://www.cogsci.ed.ac.uk/~ht/xsv-status.html</xref>. The
+        executable path is <xref href="preferences-editor-custom-validation.dita">already configured
+          in <ph keyref="product"/></xref> for the <filepath>[Oxygen-install-folder]/xsv</filepath>
+        installation folder. If it is installed in a different folder the predefined executable path
+        must be <xref href="preferences-editor-custom-validation.dita">corrected in
+          Preferences.</xref> It is associated to XML Editor and XSD Editor. It is able to validate
+        the edited document against XML Schema or a custom schema type.</li>
+      <li><b>SQC (Schema Quality Checker from IBM)</b> - Not included in <ph keyref="product"/>. It
+        can be downloaded <xref href="http://www.alphaworks.ibm.com/tech/xmlsqc/download"
+          scope="external" format="html">from here</xref> (it comes as a .zip file, at the time of
+        this writing SQC2.2.1.zip is about 3 megabytes). The executable path and working directory
+        are already configured for the SQC installation directory
+          <filepath>[Oxygen-install-folder]/sqc</filepath>. If it is installed in a different folder
+        the predefined executable path and working directory must be <xref
+          href="preferences-editor-custom-validation.dita">corrected in the Preferences page.</xref>
+        It is associated to XSD Editor.</li>
+    </ul>
+    <p product="editor author developer">A custom validator cannot be applied on files loaded
+      through an <xref href="create-plugins-introduction.dita"><ph keyref="product"/> custom
+        protocol plugin</xref> developed independently and added to <ph keyref="product"/> after
+      installation.</p>
+  </body>
+</topic>

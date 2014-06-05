@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="debug-sdk">
+  <title>Debugging an SDK Extension Using the Eclipse Workbench</title>
+  <body>
+    <p>To debug problems in the extension code without having to bundle the extension's Java classes
+      in a JAR library, perform the following steps:<ol id="ol_ops_m3p_hj">
+        <li>Download and unpack an <xref
+            href="http://www.oxygenxml.com//InstData/Editor/All/oxygen.tar.gz" format="gz"
+            scope="external">all platforms standalone version</xref> of Oxygen XML Author/Editor to
+          a folder on your hard drive.<note>Name the folder
+          <filepath>OXYGEN_DIR</filepath>.</note></li>
+        <li>Create an Eclipse Java Project (let's call it <filepath>MySDKProject</filepath>) with
+          the corresponding Java sources (for example a custom implementation of the
+            <apiname>ro.sync.ecss.extensions.api.StylesFilter</apiname> interface). </li>
+        <li>In the Project's build path add external JAR references to all the JAR libraries in the
+            <filepath>OXYGEN_DIR/lib</filepath> folder. Now your Project should compile
+          successfully.</li>
+        <li>Start the standalone version of Oxygen from the <filepath>OXYGEN_DIR</filepath> and in
+          the <b>Document Type Association</b> Preferences page edit the document type (for example
+            <b>DITA</b>). In the <b>Classpath</b> tab, add a reference to your Project's
+            <filepath>classes</filepath> directory and in the <b>Extensions</b> tab, select your
+          custom <apiname>StylesFilter</apiname> extension as a value for the <b>CSS styles
+            filter</b> property. Close the application to save the changes to the framework
+          file.</li>
+        <li>Create a new Java Application configuration for debugging. The Main Class should be
+            <codeph>ro.sync.exml.Oxygen</codeph>. The given VM Arguments should be
+          <codeblock>-Dcom.oxygenxml.app.descriptor=ro.sync.exml.EditorFrameDescriptor -Xmx1024m -XX:MaxPermSize=384m</codeblock></li>
+        <li>Add a break point in one of the source Java classes.</li>
+        <li>Debug the created configuration. When the code reaches your breakpoint, the debug
+          perspective should take over.</li>
+      </ol></p>
+  </body>
+</topic>

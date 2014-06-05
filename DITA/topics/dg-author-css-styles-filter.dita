@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-author-css-styles-filter">
+  <title>Configuring CSS Styles Filter</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Author Settings<indexterm>Java API<indexterm>CSS styles filter</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>You can modify the CSS styles for each <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorNode.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.node.AuthorNode</apiname></xref> rendered in the
+      Author mode using an implementation of <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/StylesFilter.html"
+        format="html" scope="external"><apiname>
+        ro.sync.ecss.extensions.api.StylesFilter</apiname></xref>. You can implement the various
+      callbacks of the interface either by returning the default value given by <ph
+        keyref="product"/> or by contributing to the
+      value. The received styles <apiname>ro.sync.ecss.css.Styles</apiname> can be processed and
+      values can be overwritten with your own. For example you can override the
+        <apiname>KEY_BACKGROUND_COLOR</apiname> style to return your own implementation of <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/view/graphics/Color.html"
+        format="html" scope="external"><apiname>ro.sync.exml.view.graphics.Color</apiname></xref> or
+      override the <apiname>KEY_FONT</apiname> style to return your own implementation of <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/view/graphics/Font.html"
+        format="html" scope="external"
+      ><apiname>ro.sync.exml.view.graphics.Font</apiname></xref>.</p>
+    <p conref="dg-java-files.dita#dg-java-files/javadoc-ref"/>
+    <p>For instance in our simple document example the filter can change the value of the
+        <apiname>KEY_FONT</apiname> property for the <codeph>table</codeph> element:</p>
+    <codeblock outputclass="language-java">
+package simple.documentation.framework;
+
+import ro.sync.ecss.css.Styles;
+import ro.sync.ecss.extensions.api.StylesFilter;
+import ro.sync.ecss.extensions.api.node.AuthorNode;
+import ro.sync.exml.view.graphics.Font;
+
+public class SDFStylesFilter implements StylesFilter {
+
+    	public Styles filter(Styles styles, AuthorNode authorNode) {
+	        if (AuthorNode.NODE_TYPE_ELEMENT == authorNode.getType() 
+    	      &amp;&amp; "table".equals(authorNode.getName())) {
+    	      styles.setProperty(Styles.KEY_FONT, new Font(null, Font.BOLD, 12));
+        	}
+        	return styles;
+    	}
+}
+</codeblock>
+  </body>
+</topic>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="workspace-access-plugin">
+  <title>Workspace Access Plugin Extension</title>
+  <shortdesc>This plugin type allows you to contribute actions to the main menu and toolbars of <ph
+      keyref="product"/>, to create custom views and to interact with the application workspace,
+    make modifications to opened documents and add listeners for various events.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Workspace Access</indexterm></keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>Many complex integrations, like integrations with Content Management Systems (CMS) usually
+      requires access to some workspace resources like the toolbar, menus and to the opened XML
+      editors. This type of plugin is also useful because it allows you to make modifications to an
+      opened editor's XML content.</p>
+    <p>The plugin must implement the interface <xref
+        href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/plugin/workspace/WorkspaceAccessPluginExtension.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension</apiname></xref>.
+      The callback method <apiname>applicationStarted</apiname> of this interface allows access to a
+      parameter of type <xref
+        href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/workspace/api/standalone/StandalonePluginWorkspace.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace</apiname></xref>
+      which in its turn allows for API access to the application workspace. </p>
+    <p>The interface <apiname>StandalonePluginWorkspace</apiname> has three methods which can be
+      called in order to customize the toolbars, menus and views:</p>
+    <ul>
+      <li>
+        <p><apiname>addToolbarComponentsCustomizer</apiname> - Contributes to or modifies existing
+          toolbars. You can specify in the associated <filepath>plugin.xml</filepath> descriptor
+          additional toolbar IDs using the following
+          construct:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
+&lt;plugin name="CustomWorkspaceAccess" ..............>
+ &lt;runtime>
+  ........
+ &lt;/runtime>
+ 
+ &lt;extension type="WorkspaceAccess" .............../>
+ ...............
+  <b>&lt;toolbar id="SampleWorkspaceAccessToolbarID" initialSide="NORTH" initialRow="1"/></b>
+&lt;/plugin>
+</codeblock></p>
+        <p>The <codeph>toolbar</codeph> element adds a toolbar in the <ph
+            keyref="product"/> interface
+          and allows you to contribute your own plugin specific actions. The following attributes
+          are available:<ul>
+            <li><codeph>id</codeph> - unique identifier of the plugin toolbar;</li>
+            <li><codeph>initialSide</codeph> - specifies the place where the toolbar is initially
+              displayed. The allowed values are <option>NORTH</option> and
+              <option>SOUTH</option>.</li>
+            <li><codeph>initialRow</codeph> - specifies the initial row on the specified side where
+              the toolbar is displayed. For example the main menu has an initial row of "0" and the
+              "Edit" toolbar has an initial row of "1".</li>
+          </ul></p>
+        <p>The <xref
+            href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/workspace/api/standalone/ToolbarInfo.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.exml.workspace.api.standalone.ToolbarInfo</apiname></xref> toolbar
+          component information with the specified id will be provided to you by the customizer
+          interface. You will thus be able to provide Swing components which will appear on the
+          toolbar when the application starts.</p>
+      </li>
+      <li>
+        <p><apiname>addViewComponentCustomizer</apiname> - Contributes to or modifies existing views
+          or contributes to the reserved custom view. You can specify in the associated
+            <filepath>plugin.xml</filepath> descriptor additional view IDs using the following
+          construct:
+          <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
+&lt;plugin name="CustomWorkspaceAccess" ..............>
+ &lt;runtime>
+  ........
+ &lt;/runtime>
+ 
+ &lt;extension type="WorkspaceAccess" .............../>
+ ...............
+ <b>&lt;view id="SampleWorkspaceAccessID" initialSide="WEST" initialRow="0"/></b>
+&lt;/plugin>
+</codeblock></p>
+        <p>The <codeph>view</codeph> element adds a view in the <ph
+            keyref="product"/> interface
+          and allows you to contribute your own plugin specific UI components. The following
+          attributes are available:<ul>
+            <li><codeph>id</codeph> - unique identifier of the view component.</li>
+            <li><codeph>initialSide</codeph> - specifies the place where the view is initially
+              displayed. The allowed values are <option>NORTH</option>, <option>SOUTH</option>,
+                <option>EAST</option> and <option>WEST</option>.</li>
+            <li><codeph>initialRow</codeph> - specifies the initial row on the specified side where
+              the view is displayed. For example the <uicontrol>Project</uicontrol> view has an
+              initial row of <codeph>0</codeph> and the Outline view has an initial row of
+                <codeph>1</codeph>. Both views are in the <option>WEST</option> part of the
+              workbench.</li>
+          </ul></p>
+        <p>The <apiname>ro.sync.exml.workspace.api.standalone.ViewInfo</apiname> view component
+          information with the specified id will be provided to you by the customizer interface. You
+          will thus be able to provide Swing components which will appear on the view when the
+          application starts.</p>
+      </li>
+      <li>
+        <p><apiname>addMenuBarCustomizer</apiname> - Contributes to or modifies existing menu
+          components.</p>
+      </li>
+    </ul>
+    <p>Access to the opened editors can be done first by getting access to all URLs opened in the
+      workspace using the API method <apiname>StandalonePluginWorkspace.getAllEditorLocations(int
+        editingArea)</apiname>. There are two available editing areas: the DITA Maps Manager editing
+      area <ph product="developer">(available only in <ph><ph
+            keyref="product"/></ph> Editor
+        and <ph><ph keyref="product"/></ph>
+        Author)</ph> where only DITA Maps are edited and the main editing area. Using the URL of an
+      opened resource you can gain access to it using the
+        <apiname>StandalonePluginWorkspace.getEditorAccess(URL location, int editingArea)</apiname>
+      API method. A <xref
+        href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/workspace/api/editor/WSEditor.html"
+        format="html" scope="external"
+        ><apiname>ro.sync.exml.workspace.api.editor.WSEditor</apiname></xref> allows then access to
+      the current editing page. Special editing API is supported only for the <b>Text</b> (<xref
+        href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/workspace/api/editor/page/text/WSTextEditorPage.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage</apiname></xref>)
+        page<ph product="author editor"> and the <b>Author</b> (<xref
+          href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/workspace/api/editor/page/author/WSAuthorEditorPage.html"
+          format="html" scope="external"
+            ><apiname>ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage</apiname></xref>)
+        page</ph>.</p>
+    <p>In order to be notified when editors are opened, selected and closed you can use the API
+      method <apiname>StandalonePluginWorkspace.addEditorChangeListener</apiname> to add a
+      listener.</p>
+  </conbody>
+</concept>

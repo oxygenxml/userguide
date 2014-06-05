@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="common-problem-10">
+  <title>After Installing <ph keyref="product"/> I
+    Cannot Open XML Files in Internet Explorer Anymore</title>
+  <body>
+    <section>
+      <p>Before installing <ph keyref="product"/> I
+        had no problems opening XML files in Internet Explorer. Now when I try to open an XML file
+        in Internet Explorer it opens the file in <ph
+          keyref="product"/>. How can I load XML
+        files in Internet Explorer again?</p>
+    </section>
+    <section>
+      <p>XML files are opened in <ph keyref="product"
+        /> because Internet Explorer uses the Windows system file associations for opening files and
+        you associated XML files with <ph
+          keyref="product"/> in the installer panel
+        called <uicontrol>File Associations</uicontrol> therefore Internet Explorer opens XML files
+        with the associated Windows application.</p>
+      <p>By default the association with XML files is disabled in the <ph
+          keyref="product"/> installer panel called
+          <uicontrol>File Associations</uicontrol>. When you enabled it the installer displayed a
+        warning message about the effect that you experience right now.</p>
+      <p>For opening XML files in Internet Explorer again you have to set Internet Explorer as the
+        default system application for XML files, for example by right-clicking on an XML file in
+        Windows Explorer, selecting <menucascade>
+          <uicontrol>Open With</uicontrol>
+          <uicontrol>Choose Program</uicontrol>
+        </menucascade>, selecting IE in the list of applications and selecting the checkbox
+          <uicontrol>Always use the selected program</uicontrol>. Also you have to run the following
+        command from a command line:</p>
+      <screen xml:space="preserve">wscript revert.vbs</screen>
+      <p>where <filepath>revert.vbs</filepath> is a text file with the following content:</p>
+      <codeblock outputclass="language-java">
+  function revert()
+    Set objShell = CreateObject("WScript.Shell")
+    objShell.RegWrite "HKCR\.xml\", "xmlfile", "REG_SZ"
+    objShell.RegWrite "HKCR\.xml\Content Type", "text/xml", "REG_SZ"
+  end function
+                        
+  revert()</codeblock>
+    </section>
+  </body>
+</topic>

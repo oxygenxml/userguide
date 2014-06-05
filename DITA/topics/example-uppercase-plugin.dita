@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="example-uppercase-plugin">
+  <title>Example - A Selection Plugin</title><prolog>
+    <metadata>
+      <keywords><indexterm>Develop an &lt;oXygen/&gt; Plugin<indexterm>example -
+            <apiname>UppercasePlugin</apiname></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The following plugin is called <apiname>UppercasePlugin</apiname> and is an example of 
+      <xref href="../concepts/selection-plugin.dita#selection-plugin" format="dita"
+        product="author editor">selection plugin.</xref>
+      <ph product="authorSDK authorEclipse editorEclipse">selection plugin.</ph>
+      It is used in <ph keyref="product"/>
+      for capitalizing the characters in the current selection. This example consists of two Java
+      classes and the plugin descriptor:</p>
+    <ul>
+      <li><filepath>UppercasePlugin.java</filepath>:<codeblock outputclass="language-java">
+package ro.sync.sample.plugin.uppercase;
+
+import ro.sync.exml.plugin.Plugin;
+import ro.sync.exml.plugin.PluginDescriptor;
+
+public class UppercasePlugin extends Plugin {
+    /**
+    * Plugin instance.
+    */
+    private static UppercasePlugin instance = null;  
+    
+    /**
+    * UppercasePlugin constructor.
+    * 
+    * @param descriptor Plugin descriptor object.
+    */
+    public UppercasePlugin(PluginDescriptor descriptor) {
+        super(descriptor);
+    
+        if (instance != null) {
+            throw new IllegalStateException("Already instantiated !");
+        }    
+        instance = this;
+    }
+    
+    /**
+    * Get the plugin instance.
+    * 
+    * @return the shared plugin instance.
+    */
+    public static UppercasePlugin getInstance() {
+        return instance;
+    }
+}
+</codeblock></li>
+      <li><filepath>UppercasePluginExtension.java</filepath>:<codeblock outputclass="language-java">
+package ro.sync.sample.plugin.uppercase;
+
+import ro.sync.exml.plugin.selection.SelectionPluginContext;
+import ro.sync.exml.plugin.selection.SelectionPluginExtension;
+import ro.sync.exml.plugin.selection.SelectionPluginResult;
+import ro.sync.exml.plugin.selection.SelectionPluginResultImpl;
+
+public class UppercasePluginExtension implements SelectionPluginExtension {
+    /**
+    * Convert the text to uppercase.
+    *
+    *@param  context  Selection context.
+    *@return          Uppercase plugin result.
+    */
+    public SelectionPluginResult process(SelectionPluginContext context) {
+        return new SelectionPluginResultImpl(
+            context.getSelection().toUpperCase());
+    }
+}
+</codeblock></li>
+      <li><filepath>plugin.xml</filepath>:<codeblock outputclass="language-xml">
+&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd"&gt;
+&lt;plugin
+    name="UpperCase"
+    description="Convert the selection to uppercase"
+    version="1.0.0"
+    vendor="SyncRO"
+    class="ro.sync.sample.plugin.uppercase.UppercasePlugin"&gt;
+    &lt;runtime&gt;
+        &lt;library name="lib/uppercase.jar"/&gt;
+    &lt;/runtime&gt;
+    &lt;extension type="selectionProcessor" 
+     class="ro.sync.sample.plugin.uppercase.UppercasePluginExtension"/&gt;
+&lt;/plugin&gt;
+</codeblock></li>
+    </ul>
+  </body>
+</topic>

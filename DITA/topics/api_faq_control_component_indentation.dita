@@ -1,0 +1,51 @@
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_cby_r5k_5h">
+  <title>Controlling XML Serialization in the Author Component</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>How can I force the Author Component to save the XML with zero indent size and not to break the line inside block-level elements?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>Usually, in a standalone version of <ph keyref="product"/>, the <menucascade>
+          <uicontrol>Editor </uicontrol>
+          <uicontrol>Format</uicontrol>
+        </menucascade> and <menucascade>
+          <uicontrol>Editor</uicontrol>
+          <uicontrol> Format</uicontrol>
+          <uicontrol> XML</uicontrol>
+        </menucascade> preferences pages allow you to control the way the XML is saved on the disk
+        after you edit it in the <uicontrol>Author</uicontrol> mode.</p>
+      <p>In the editor application (Standalone or Eclipse-based), you can either bundle a <xref
+          href="default-options.dita" product="editor author authorEclipse editorEclipse">default
+          set of options</xref><ph product="authorSDK">default set of options</ph> or use the
+          <codeph>PluginWorkspace.setGlobalObjectProperty(String, Object)</codeph>
+        API:<codeblock outputclass="language-java">//For not breaking the line
+//Long line
+pluginWorkspace.setObjectProperty("editor.line.width", new Integer(100000));
+//Do not break before inline elements
+pluginWorkspace.setObjectProperty("editor.format.indent.inline.elements", false);
+
+//For forcing zero indent
+//Force indent settings to be controlled by us
+pluginWorkspace.setObjectProperty("editor.detect.indent.on.open", false);
+//Zero indent size
+pluginWorkspace.setObjectProperty("editor.indent.size.v9.2", 0);</codeblock></p>
+      <p>In the Author Component, you can either bundle a <xref
+          href="api_faq_enable_change_tracking_at_startup.dita">fixed set of options</xref>, or use
+        our Java API to set properties which overwrite the default
+        options:<codeblock outputclass="language-java">//For not breaking the line
+//Long line
+AuthorComponentFactory.getInstance().setObjectProperty("editor.line.width", new Integer(100000));
+//Do not break before inline elements
+AuthorComponentFactory.getInstance().setObjectProperty("editor.format.indent.inline.elements", false);
+
+//For forcing zero indent
+//Force indent settings to be controlled by us
+AuthorComponentFactory.getInstance().setObjectProperty("editor.detect.indent.on.open", false);
+//Zero indent size
+AuthorComponentFactory.getInstance().setObjectProperty("editor.indent.size.v9.2", 0);</codeblock></p>
+    </section>
+  </body>
+</topic>

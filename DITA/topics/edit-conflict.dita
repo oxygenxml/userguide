@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="edit-conflict">
+  <title>Edit Real Content Conflicts</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Synchronize with the SVN Repository<indexterm>resolve conflicts<indexterm>edit real
+              content conflicts</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The conflicts of a file in the conflicted state (a file with the red double arrow icon) can
+      be edited visually with the <uicontrol>Compare</uicontrol> view (the built-in file diff tool)
+      or with an <xref href="preferences-svn.dita">external diff application</xref>. Resolving the
+      conflict means deciding for each conflict if the local version of the change will remain or
+      the remote one instead of the special conflict markers inserted in the file by the SVN
+      server.</p>
+    <p>The <uicontrol>Compare</uicontrol> view (or the external diff application <xref href="preferences-svn.dita">set in Preferences</xref>) is opened with the action
+        <uicontrol>Edit Conflict</uicontrol> which is available on the contextual menus of <xref href="working-copy-view.dita">the <uicontrol>Working Copy</uicontrol> view</xref> and is
+      enabled only for files in the conflicted state (an update operation was executed but the
+      differences could not be merged without conflicts). The external diff application is called
+      with 3 parameters because it is a 3-way diff operation between the local version of the file
+      from the working copy and the HEAD version from the SVN repository with the BASE version from
+      the working copy as common ancestor.</p>
+    <p>If <xref href="preferences-svn-messages.dita">the option <uicontrol>Show warning dialog when
+          edit conflicts</uicontrol> is enabled</xref> you will be warned at the beginning of the
+      operation that the operation will overwrite the conflict version of the file received from the
+      SVN server (the version which contains the conflict markers &lt;&lt;&lt;&lt;&lt;&lt;&lt;,
+      =======, &gt;&gt;&gt;&gt;&gt;&gt;&gt;) with the original local version of the file that
+      preceded the update operation. If you press the OK button the visual conflict editing will
+      proceed and a backup file of the conflict version received from the SVN server is created in
+      the same working copy folder as the file with the edited conflicts. The name of the backup
+      file is obtained by appending the extension <filepath>.sync.bak</filepath> to the file as
+      stored on the SVN server. If you press the <uicontrol>Cancel</uicontrol> button the visual
+      editing will be aborted.</p>
+    <p>The usual operations on the differences between two versions of a file are available on the
+      toolbar of this view:</p>
+    <ul>
+      <li><uicontrol>Save</uicontrol> - Saves the modifications of the local version of the file
+        displayed in the left side of the view.</li>
+      <li><uicontrol>Perform Files Differencing</uicontrol> - Applies the diff operation on the two
+        versions of the file displayed in the view. It is useful after modifying the local version
+        displayed in the left side of the view.</li>
+      <li><uicontrol>Go to First Modification</uicontrol> - Scrolls the view to the topmost
+        difference.</li>
+      <li><uicontrol>Go to Previous Modification</uicontrol> - Scrolls the view to the previous
+        difference. The current difference is painted with a darker color than the other ones.</li>
+      <li><uicontrol>Go to Next Modification</uicontrol> - Scrolls the view to the next difference.
+        The current difference is painted with a darker color than the other ones.</li>
+      <li><uicontrol>Go to Last Modification</uicontrol> - Scrolls the view to the last
+        difference.</li>
+      <li><uicontrol>Copy All Non Conflicting Changes from Left to Right</uicontrol> - Not
+        applicable for editing conflicts so it is disabled.</li>
+      <li><uicontrol>Copy Change from Left to Right</uicontrol> - Not applicable for editing
+        conflicts so it is disabled.</li>
+      <li><uicontrol>Copy Change from Right to Left</uicontrol> - Copies the current difference from
+        the left side to the right side by replacing the highlighted text of the current difference
+        from the left side with the one from the right side.</li>
+      <li><uicontrol>Copy All Non Conflicting Changes from Right to Left</uicontrol> - Applies the
+        previous operation for all the differences.</li>
+      <li><uicontrol>Show Modification Details at Word Level</uicontrol> - Displays a more detailed
+        version of the current difference computed at word level.</li>
+      <li><uicontrol>Show Modification Details at Char Level</uicontrol> - Displays a more detailed
+        version of the current difference computed at character level.</li>
+      <li><uicontrol>Ignore Whitespaces</uicontrol> - The text nodes are normalized before computing
+        the difference so that if two text nodes differ only in whitespace characters they are
+        reported as equal.</li>
+    </ul>
+    <p>The operation begins by overwriting the conflict version of the file received from the SVN
+      server (the version which contains the conflict markers &lt;&lt;&lt;&lt;&lt;&lt;&lt;, =======,
+      &gt;&gt;&gt;&gt;&gt;&gt;&gt;) with the original local version of the file before running the
+      update action which created the conflict. After that the differences between this original
+      local version and the repository version are displayed in the <uicontrol>Compare</uicontrol>
+      view.</p>
+    <p>If you want to edit the conflict version of the file directly in a text editor instead of the
+      visual editing offered by the <uicontrol>Compare</uicontrol> view you should work on the local
+      working copy file after the update operation without running the action <uicontrol>Edit
+        Conflict</uicontrol>. If you decide that you want to edit the conflict version directly
+      after running the action <uicontrol>Edit Conflict</uicontrol> you have to work on the
+        <filepath>.sync.bak</filepath> file.</p>
+    <p>If you did not finish editing the conflicts in a file at the first run of the action
+        <uicontrol>Edit Conflict</uicontrol> you can run the action again and you will be prompted
+      to choose between resuming the editing where the previous run left it and starting again from
+      the conflict file received from the SVN server.</p>
+    <p>After the conflicts are edited and saved in the local version of the file you should run:</p>
+    <ul>
+      <li>either the action <uicontrol>Mark Resolved</uicontrol> on the file so that the result of
+        the conflict editing process can be committed to the SVN repository,</li>
+      <li>or the action <uicontrol>Revert</uicontrol> so that the repository version overwrites all
+        the local modifications.</li>
+    </ul>
+    <p>Both actions remove the backup file and other temporary files created with the conflict
+      version of the local file.</p>
+  </body>
+</topic>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="common-problem-20">
+  <title>I Cannot Connect to SVN Repository From <uicontrol>Repositories</uicontrol> View</title>
+  <body>
+    <section>
+      <p>I cannot connect to a SVN repository from the <uicontrol>Repositories</uicontrol> view of
+        SVN Client. How can I find more details about the error?</p>
+    </section>
+    <section>
+      <p>First check that you entered the correct URL of the repository in the
+          <uicontrol>Repositories</uicontrol> view. Also check that a SVN server is running on the
+        server machine specified in the repository URL and is accepting connections from SVN
+        clients. You can check that the SVN server accepts connections with the command line SVN
+        client from CollabNet. </p>
+      <p>If you try to access the repository with a <codeph>svn+ssh</codeph> URL also check that a
+        SSH server is running on port 22 on the server machine specified in the URL. </p>
+      <p>If the above conditions are verified and you cannot connect to the SVN repository please
+        generate a logging file on your computer and send the logging file to <ph
+          keyref="supportEmail"/>. For generating a logging file you need to create a text file
+        called <filepath>log4j.properties</filepath> in the install folder with the following
+        content:</p>
+      <codeblock outputclass="language-ini">log4j.rootCategory= debug, R2
+
+log4j.appender.R2=org.apache.log4j.RollingFileAppender
+log4j.appender.R2.File=logging.log
+log4j.appender.R2.MaxFileSize=12000KB
+log4j.appender.R2.MaxBackupIndex=20
+log4j.appender.R2.layout=org.apache.log4j.PatternLayout
+log4j.appender.R2.layout.ConversionPattern=%r %p [ %t ] %c - %m%n</codeblock>
+      <p>Restart the application, reproduce the error, close the application and send the file
+          <filepath>logging.log</filepath> generated in the install directory to <ph
+          keyref="supportEmail"/>.</p>
+    </section>
+  </body>
+</topic>

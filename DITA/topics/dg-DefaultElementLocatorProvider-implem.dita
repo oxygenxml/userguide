@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-DefaultElementLocatorProvider-implem">
+  <title>The <apiname>DefaultElementLocatorProvider</apiname> implementation</title>
+  <body>
+    <p>The <apiname>DefaultElementLocatorProvider</apiname> implementation offers support for the
+      most common types of links:</p>
+    <ul>
+      <li>
+        <p>links based on ID attribute values</p>
+      </li>
+      <li>
+        <p>XPointer element() scheme</p>
+      </li>
+    </ul>
+    <p>The method <apiname>getElementLocator</apiname> determines what
+        <apiname>ElementLocator</apiname> should be used. In the default implementation it checks if
+      the link is an XPointer element() scheme otherwise it assumes it is an ID. A non-null
+        <apiname>IDTypeVerifier</apiname> will always be provided if a schema is associated with the
+      document type.</p>
+    <p>The <codeph>link</codeph> string argument is the "anchor" part of the of the URL which is
+      composed from the value of the link property specified for the link element in the CSS.</p>
+    <codeblock outputclass="language-java">public ElementLocator getElementLocator(IDTypeVerifier idVerifier, 
+               String link) {
+  ElementLocator elementLocator = null;
+  try {
+    if(link.startsWith("element(")){
+      // xpointer element() scheme
+      elementLocator = new XPointerElementLocator(idVerifier, link);
+    } else {
+      // Locate link element by ID
+      elementLocator = new IDElementLocator(idVerifier, link);
+    }
+  } catch (ElementLocatorException e) {
+    logger.warn("Exception when create element locator for link: " 
+        + link + ". Cause: " + e, e);
+  }
+  return elementLocator;
+}</codeblock>
+  </body>
+</topic>

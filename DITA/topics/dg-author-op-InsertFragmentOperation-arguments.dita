@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-author-op-InsertFragmentOperation-arguments">
+  <title>The arguments of <codeph>InsertFragmentOperation</codeph> operation</title>
+  <body>
+    <dl>
+      <dlentry>
+        <dt>fragment</dt>
+        <dd><p>This argument has a textual value. This value is parsed by <ph keyref="product"/> as
+            it was already in the document at the caret position. You can use entity references
+            declared in the document and it is namespace aware. The fragment may have multiple
+            roots.</p>You can even use namespace prefixes that are not declared in the inserted
+          fragment, if they are declared in the document where the insertion is done. For the sake
+          of clarity, you should always prefix and declare namespaces in the inserted fragment!<p>If
+            the fragment contains namespace declarations that are identical to those found in the
+            document, the namespace declaration attributes will be removed from elements contained
+            by the inserted fragment.</p><p>There are two possible scenarios:</p><ol
+            id="ol_a9cd91c4-d9d0-4c25-ae3f-df91171f25b1">
+            <li><b>Prefixes that are not bound explicitly</b><p>For instance, the
+                fragment:</p><codeblock>&lt;x:item id="dty2"/&gt;
+&amp;ent;
+&lt;x:item id="dty3"/&gt;</codeblock><p>Can
+                be correctly inserted in the document: ('|' marks the insertion
+                point):</p><codeblock>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE x:root [
+    &lt;!ENTITY ent "entity"&gt;
+]&gt;
+
+&lt;x:root <b>xmlns:x="nsp"</b>&gt; 
+  |
+&lt;/x:root&gt;</codeblock><p>Result:</p><codeblock>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE x:root [
+    &lt;!ENTITY ent "entity"&gt;
+]&gt;
+&lt;x:root <b>xmlns:x="nsp"</b>&gt;
+    &lt;x:item id="dty2"/&gt;
+    &amp;ent;
+    &lt;x:item id="dty3"/&gt;
+&lt;/x:root&gt;</codeblock></li>
+            <li><b>Default namespaces</b></li>
+          </ol><p>If there is a default namespace declared in the document and the document fragment
+            does not declare a namespace, the elements from the fragment are considered to be in
+              <b>no namespace</b>.</p><p>For instance the
+            fragment:</p><codeblock>&lt;item id="dty2"/&gt;
+&lt;item id="dty3"/&gt;
+</codeblock><p>Inserted
+            in the
+            document:</p><codeblock>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;root <b>xmlns="nsp"</b>&gt;
+|
+&lt;/root&gt;</codeblock><p>Gives
+            the result
+          document:</p><codeblock>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;root <b>xmlns="nsp"</b>&gt;
+    &lt;item <b>xmlns=""</b> id="dty2"/&gt;
+    &lt;item <b>xmlns=""</b> id="dty3"/&gt;
+&lt;/root&gt;</codeblock></dd>
+      </dlentry>
+      <dlentry>
+        <dt><apiname>insertLocation</apiname></dt>
+        <dd>
+          <p>An XPath expression that is relative to the current node. It selects the reference node
+            for the fragment insertion.</p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt><apiname>insertPosition</apiname></dt>
+        <dd>
+          <p>One of the three constants: "<b>Inside</b>", "<b>After</b>", or "<b>Before</b>" ,
+            showing where the insertion is made relative to the reference node selected by the
+              <apiname>insertLocation</apiname>. "<b>Inside</b>" has the meaning of the first child
+            of the reference node.</p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt><apiname>goToNextEditablePosition</apiname></dt>
+        <dd>
+          <p>After inserting the fragment, the first editable position is detected and the caret is
+            placed at that location. It handles any in-place editors used to edit attributes. It
+            will be ignored if the fragment specifies a caret position using the caret editor
+            variable. The possible values of this action are <uicontrol>true</uicontrol> and
+              <uicontrol>false</uicontrol>.</p>
+        </dd>
+      </dlentry>
+    </dl>
+  </body>
+</topic>

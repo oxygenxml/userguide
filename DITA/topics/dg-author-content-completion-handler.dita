@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-author-content-completion-handler">
+  <title>Configuring a Content Completion Handler</title>
+  <body>
+    <p>You can filter or contribute to items offered for content completion by implementing the
+        <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/contentcompletion/xml/SchemaManagerFilter.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.contentcompletion.xml.SchemaManagerFilter</apiname></xref>
+      interface.</p>
+    <p conref="dg-java-files.dita#dg-java-files/javadoc-ref"/>
+    <codeblock outputclass="language-java">import java.util.List;
+
+import ro.sync.contentcompletion.xml.CIAttribute;
+import ro.sync.contentcompletion.xml.CIElement;
+import ro.sync.contentcompletion.xml.CIValue;
+import ro.sync.contentcompletion.xml.Context;
+import ro.sync.contentcompletion.xml.SchemaManagerFilter;
+import ro.sync.contentcompletion.xml.WhatAttributesCanGoHereContext;
+import ro.sync.contentcompletion.xml.WhatElementsCanGoHereContext;
+import ro.sync.contentcompletion.xml.WhatPossibleValuesHasAttributeContext;
+
+public class SDFSchemaManagerFilter implements SchemaManagerFilter {</codeblock>
+    <p>You can implement the various callbacks of the interface either by returning the default
+      values given by <ph keyref="product"/> or by
+      contributing to the list of proposals. The filter can be applied on elements, attributes or on
+      their values. Attributes filtering can be implemented using the
+        <apiname>filterAttributes</apiname> method and changing the default content completion list
+      of <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/contentcompletion/xml/CIAttribute.html"
+        format="html" scope="external"
+        ><apiname>ro.sync.contentcompletion.xml.CIAttribute</apiname></xref> for the element
+      provided by the current <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/contentcompletion/xml/WhatAttributesCanGoHereContext.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.contentcompletion.xml.WhatAttributesCanGoHereContext</apiname></xref>
+      context. For example, the <codeph>SDFSchemaManagerFilter</codeph> checks if the element from
+      the current context is the <codeph>table</codeph> element and adds the <codeph>frame</codeph>
+      attribute to the <codeph>table</codeph> list of attributes.</p>
+    <codeblock outputclass="language-java">/**
+ * Filter attributes of the "table" element.
+ */
+public List&lt;CIAttribute&gt; filterAttributes(List&lt;CIAttribute&gt; attributes,
+    WhatAttributesCanGoHereContext context) {
+  // If the element from the current context is the 'table' element add the
+  // attribute named 'frame' to the list of default content completion proposals
+  if (context != null) {
+    ContextElement contextElement = context.getParentElement();
+    if ("table".equals(contextElement.getQName())) {
+      CIAttribute frameAttribute = new CIAttribute();
+      frameAttribute.setName("frame");
+      frameAttribute.setRequired(false);
+      frameAttribute.setFixed(false);
+      frameAttribute.setDefaultValue("void");
+      if (attributes == null) {
+        attributes = new ArrayList&lt;CIAttribute&gt;();
+      }
+      attributes.add(frameAttribute);
+    }
+  }
+  return attributes;
+}</codeblock>
+    <p>The elements that can be inserted in a specific context can be filtered using the
+        <apiname>filterElements</apiname> method. The <codeph>SDFSchemaManagerFilter</codeph> uses
+      this method to replace the <codeph>td</codeph> child element with the <codeph>th</codeph>
+      element when <codeph>header</codeph> is the current context element.</p>
+    <codeblock outputclass="language-java">public List&lt;CIElement&gt; filterElements(List&lt;CIElement&gt; elements,
+    WhatElementsCanGoHereContext context) {
+  // If the element from the current context is the 'header' element remove the
+  // 'td' element from the list of content completion proposals and add the
+  // 'th' element.
+  if (context != null) {  
+    Stack&lt;ContextElement&gt; elementStack = context.getElementStack();
+    if (elementStack != null) {
+      ContextElement contextElement = context.getElementStack().peek();
+      if ("header".equals(contextElement.getQName())) {
+        if (elements != null) {
+          for (Iterator&lt;CIElement&gt; iterator = elements.iterator(); iterator.hasNext();) {
+            CIElement element = iterator.next();
+            // Remove the 'td' element
+            if ("td".equals(element.getQName())) {
+              elements.remove(element);
+              break;
+            }
+          }
+        } else {
+          elements = new ArrayList&lt;CIElement&gt;();
+        }
+        // Insert the 'th' element in the list of content completion proposals
+        CIElement thElement = new SDFElement();
+        thElement.setName("th");
+        elements.add(thElement);
+      }
+    }
+  } else {
+    // If the given context is null then the given list of content completion elements contains
+    // global elements. 
+  }
+  return elements;
+}</codeblock>
+    <p>The elements or attributes values can be filtered using the
+        <apiname>filterElementValues</apiname> or <apiname>filterAttributeValues</apiname>
+      methods.</p>
+    <p conref="../topics/dg-java-files.dita#dg-java-files/sdf_project"/>
+  </body>
+</topic>

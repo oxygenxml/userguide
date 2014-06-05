@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_swj_gvv_td">
+  <title>Frequently Asked Questions </title>
+  <body>
+    <section>
+      <title>Installation and Licensing </title>
+      <ol>
+        <li>
+          <p>What hosting options are available for applet delivery and licensing services (i.e.,
+            Apache, IIS, etc.)?</p>
+          <p>For applet delivery any web server. We currently use Apache to deploy the sample on our
+            site. For the floating license server you would need a J2EE server, like Tomcat if you
+            want to restrict the access to the licenses. </p>
+          <p>If you do not need the access restrictions that are possible with a J2EE server you can
+            simplify the deployment of the floating license server by using the standalone version
+            of this server. The standalone license server is a simple Java application that
+            communicates with Author Component by TCP/IP connections. </p>
+        </li>
+        <li>
+          <p>Are there any client requirements beyond the Java VM and (browser) Java Plug-In
+            Technology? </p>
+          <p>Oracle (formerly Sun) Java JRE version 1.6 update 10 or newer. At least 200 MB disk
+            space and 200MB free memory would be necessary for the Author Applet component.</p>
+        </li>
+        <li>
+          <p>Are there any other client requirements or concerns that could make deployment
+            troublesome (i.e., browser security settings, client-side firewalls and AV engines,
+            etc.)?</p>
+          <p>The applet is signed and will request access to the user machine, in order to store
+            customization data (frameworks). The applet needs to be signed by you with a valid
+            certificate.</p>
+        </li>
+        <li>
+          <p>How sensitive is the applet to the automatic Java VM updates, which are typically on by
+            default (i.e., could automatic updates potentially &quot;break&quot; the run-time)?</p>
+          <p>The component should work well with newer Java versions but we cannot guarantee
+            this.</p>
+        </li>
+        <li>
+          <p>How and when are &quot;project&quot; related files deployed to the client (i.e., applet
+            code, DTD, styling files, customizations, etc.)? </p>
+          <p>Framework files are downloaded on the first load of the applet. Subsequent loads will
+            re-use the cached customization files and will be much faster.</p>
+        </li>
+        <li>
+          <p>For on-line demo
+            (http://www.oxygenxml.com/demo/AuthorDemoApplet/author-component-dita.html), noted a
+            significant wait during initial startup. Any other mechanisms to enhance startup
+            time?</p>
+          <p>See explanation above.</p>
+        </li>
+        <li>
+          <p>Does the XML Author component support multiple documents being open simultaneously?
+            What are the licensing ramifications? </p>
+          <p>A single <apiname>AuthorComponentFactory</apiname> instance can create multiple
+              <apiname>EditorComponentProvider</apiname> editors which can then be added and managed
+            by the developer who is customizing the component in a Swing
+              <apiname>JTabbedPane</apiname>. A single license (floating or user-based) is enough
+            for this.</p>
+          <p>If you need to run multiple Java Applets or distinct Java processes using the Author
+            component, the current floating license model allows for now only two concurrent
+            components from the same computer when using the license servlet. An additional started
+            component will take an extra license seat. </p>
+          <p> Another licensing technique would be to embed the license key in one of the jar
+            libraries used by the applet. But you would need to implement your own way of
+            determining how many users are editing using the Author applet. </p>
+        </li>
+        <li>
+          <p>Is there any internet traffic during an editing session (user actively working on the
+            content, on the client side, in the XML Author component))?</p>
+          <p>No.</p>
+        </li>
+        <li>Does <ph keyref="product"/> work in virtualized environments with terminal services,
+          such as Citrix.<p><ph keyref="product"/> has been tested in virtualized environments with
+            terminal services, including Citrix, and there have been no problems. We also have
+            several customers that use <ph keyref="product"/> in Citrix environments and we have not
+            received any problem reports from them either.</p><p>For named licenses, you would
+            normally have to deploy the license for each user or let each user be asked by Oxygen
+            for the license key and give it himself. Perhaps a better approach would be to create a
+            file named "licensekey.txt"(without the quotes) and in this file paste the nine lines of
+            text of the license key. Copy this file to the Oxygen installation folder. Any user who
+            runs Oxygen from this installation will use that license. Please note that this way of
+            deploying the license key does not automatically limit the number of licenses to the
+            specified number, so you should attempt to manually limit(keep evidence of) the number
+            of users that are running Oxygen to the number of licenses specified in the license
+            key.</p></li>
+      </ol>
+    </section>
+    <section>
+      <title>Functionality</title>
+      <ol>
+        <li>
+          <p>How and when are saves performed back to the hosting server? </p>
+          <p>What you can see on our web site is just an example of the Author component (which is a
+            Java Swing component) used in an Applet.</p>
+          <p> This applet is just for demonstration purposes. It's source can be at most a starting
+            point for a customization. You should implement, sign and deploy your custom applet
+            implementation. </p>
+          <p>The save operation could be implemented either in Javascript by requesting the XML
+            content from the Applet or in Java directly working with the Author component. You would
+            be responsible to send the content back to the CMS.</p>
+        </li>
+        <li>
+          <p>Is there a particular XML document size (or range) when the Author applet would start
+            to exhibit performance problems? </p>
+          <p>The applet has a total amount of used memory specified in the JNLP JavaWebstart
+            configuration file which can be increased if necessary. By default it is 156 Mb. It
+            should work comfortably with documents of 1-3 megabytes.</p>
+        </li>
+        <li>
+          <p>What graphic formats can be directly rendered in the XML Author component?</p>
+          <p>GIF, JPEG, PNG, BMP and SVG.</p>
+        </li>
+        <li>
+          <p>Can links be embedded to retrieve (from the server) and &quot;play&quot; other types of
+            digital assets, such as audio or video files?</p>
+          <p> You could add listeners to intercept clicks and open the clicked links. This would
+            require a good knowledge of the Author SDK. The Author component can only render static
+            images (no GIF animations). </p>
+        </li>
+        <li>
+          <p>Does the XML Author component provide methods for uploading ancillary files (new
+            graphics, for instance) to the hosting server? </p>
+          <p>No.</p>
+        </li>
+        <li>
+          <p>Does the XML Author component provide any type of autosave functionality?</p>
+          <p>By default no but you could customize the applet that contains the author component to
+            save its content periodically to a file on disk.</p>
+        </li>
+        <li>
+          <p>Assuming multiple documents can be edited simultaneously, can content be copied, cut
+            and pasted from one XML Author component &quot;instance&quot; to another?</p>
+          <p>Yes.</p>
+        </li>
+        <li>
+          <p>Does the XML Author component support pasting content from external sources (such as a
+            web page or a Microsoft Word document and, if so, to what extent? </p>
+          <p>If no customizations are available the content is pasted as simple text. We provide
+            customizations for the major frameworks (DITA, Docbook, TEI, etc) which use a conversion
+            XSLT stylesheet to convert HTML content from clipboard to the target XML.</p>
+        </li>
+        <li>
+          <p>Can UTF-8 characters (such as Greeks, mathematical symbols, etc.) be inserted and
+            rendered? </p>
+          <p>Any UTF-8 character can be inserted and rendered as long as the font used for editing
+            supports rendering the characters. The font can be changed by the developers but not by
+            the users. When using a logical font (which by default is <i>Serif</i> for the Author
+            component) the JVM will know how to map all characters to glyphs. There is no character
+            map available but you could implement one </p>
+        </li>
+      </ol>
+    </section>
+    <section>
+      <title>Customization</title>
+      <ol>
+        <li>
+          <p>Please describe, in very general terms, the menus, toolbars, context menu options,
+            &quot;helper panes&quot;, etc. that are available for the XML Author component &quot;out
+            of the box&quot;. </p>
+          <p>You can mount on your custom toolbar all actions available in the standalone Oxygen
+            application for editing in the Author page. This includes custom actions defined in the
+            framework customized for each XML type. </p>
+          <p>The Author component also can provide the <i>Outline</i>, <i>Model</i>, <i>Elements</i>
+            and <i>Attributes</i> views which can be added to your own panels (see sample
+            applet).</p>
+        </li>
+        <li>
+          <p>Please describe, in general terms, the actions, project resources (e.g., DTD/Schema for
+            validation purposes, CSS/XSL for styling, etc.) and typical level of effort that would
+            be required to deploy a XML Author component solution for a customer with a proprietary
+            DTD.</p>
+          <p>The Author internal engine uses CSS to render XML. </p>
+          <p>For a special type of XML you can create a custom framework (which also works in an
+            Oxygen standalone version) which would also contain default schemas and custom actions.
+            A simple framework would probably need 2-3 weeks development time. For a complex
+            framework with many custom actions it could take a couple of months. Oxygen already has
+            frameworks for editing Docbook, DITA, TEI, etc. Sources for them are available in <xref
+              href="http://www.oxygenxml.com/developer.html#XML_Editor_Authoring_SDK" format="html"
+              scope="external"> the Author SDK</xref>.</p>
+          <p>More than one framework can coexist in the same Oxygen instance (the desktop standalone
+            version or the applet version) and can be used at the same time for editing XML
+            documents.</p>
+        </li>
+        <li>
+          <p>Many customers desire a very simplistic interface for contributors (with little or no
+            XML expertise) but a more robust XML editing environment for editors (or other users
+            with more advanced XML savviness). How well does the XML Author component support
+            varying degrees of user interface complexity and capability?</p>
+          <p>
+            <ul>
+              <li><i>Showing/hiding menus, toolbars, helpers, etc.</i>
+                <p>All the UI parts from the Author component are assembled by you. You could
+                  provide two applet implementations: one for advanced/power users and one for
+                  technical writers.</p>
+              </li>
+              <li><i>Forcing behaviors (i.e., ensuring change tracking is on and preventing it from
+                  being shut down)</i>
+                <p>You could avoid placing the change tracking toolbar actions in the custom applet.
+                  You could also use API to turn change tracking ON when the content has been
+                  loaded.</p></li>
+              <li><i>Preventing access to &quot;privileged&quot; editor processes (i.e.,
+                  accept/reject changes)</i>
+                <p>You can remove the change tracking actions completely in a custom applet
+                  implementation. Including the ones from the contextual menu.</p></li>
+              <li><i>Presenting and/or describing XML constructs (i.e., tags) in
+                  &quot;plain-English&quot;</i>
+                <p>Using our API you can customize what the Outline or Breadcrumb presents for each
+                  XML tag. You can also customize the in-place content completion list.</p></li>
+              <li><i>Presenting a small subset of the overall XML tag set (rather than the full tag
+                  set) for use by contributors (i.e., allowing an author to only insert Heading,
+                  Para and inline emphasis) Could varying &quot;interfaces&quot;, with different
+                  mixes these capabilities and customizations, be developed and pushed to the user
+                  based on a &quot;role&quot; or a similar construct?</i><p>The API allows for a
+                  content completion filter which also affects the <i>Elements</i> view.</p></li>
+            </ul>
+          </p>
+        </li>
+        <li>
+          <p>Does the XML Author component&apos;s API provide access to the XML document, for
+            manipulation purposes, using common XML syntax such as DOM, XPath, etc.? </p>
+          <p>Yes, using the Author API.</p>
+        </li>
+        <li>
+          <p>Can custom dialogs be developed and launched to collect information in a
+            &quot;form&quot; (with scripting behind to push tag the collection information and embed
+            it in the XML document? </p>
+          <p>Yes.</p>
+        </li>
+        <li>
+          <p>Can project resources, customizations, etc. be readily shared between the desktop and
+            component versions of your XML Author product line?</p>
+          <p>A framework developed for the Desktop Oxygen application can then be bundled with an
+            Author component in a custom applet. For example the Author demo applet from our web
+            site is DITA-aware using the same framework as the Oxygen standalone distribution.</p>
+          <p>A custom version of the applet that includes one or more customized frameworks and user
+            options can be built and deployed for non-technical authors by a technical savvy user
+            using a built-in tool of Oxygen. All the authors that load the deployed applet from the
+            same server location will share the same frameworks and options.</p>
+          <p>A custom editing solution can deploy one or more frameworks that can be used at the
+            same time.</p>
+        </li>
+      </ol>
+    </section>
+  </body>
+</topic>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_s42_r3m_5h">
+  <title>Disable Context-Sensitive Menu Items for Custom Author Actions</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>Is there a way to disable menu items for custom Author actions depending on the cursor
+        context? </p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>By default Oxygen does not toggle the enabled/disabled states for actions based on whether
+        the activation XPath expressions for that certain Author action are fulfilled. This is done
+        because the actions can be many and evaluating XPath expression on each caret move can lead
+        to performance problems. But if you have your own
+          <apiname>ro.sync.ecss.extensions.api.ExtensionsBundle</apiname> implementation you can
+        overwrite the
+        method:<codeblock outputclass="language-java">ro.sync.ecss.extensions.api.ExtensionsBundle.createAuthorExtensionStateListener()</codeblock>and
+        when the extension state listener gets activated you can use the API
+        like:<codeblock outputclass="language-java">
+/**
+ * @see ro.sync.ecss.extensions.api.AuthorExtensionStateListener#activated(ro.sync.ecss.extensions.api.AuthorAccess)
+ */
+public void activated(final AuthorAccess authorAccess) {
+
+  //Add a caret listener to enable/disable extension actions:
+  authorAccess.getEditorAccess().addAuthorCaretListener(new AuthorCaretListener() {
+    @Override
+    public void caretMoved(AuthorCaretEvent caretEvent) {
+      try {
+        Map&lt;String, Object> authorExtensionActions = authorAccess.getEditorAccess().getActionsProvider().getAuthorExtensionActions();
+        //Get the action used to insert a paragraph. It's ID is "paragraph"
+        AbstractAction insertParagraph = (AbstractAction) authorExtensionActions.get("paragraph");
+        //Evaluate an XPath expression in the context of the current node in which the caret is located
+        Object[] evaluateXPath = authorAccess.getDocumentController().evaluateXPath(".[ancestor-or-self::p]", false, false, false, false);
+        if(evaluateXPath != null &amp;&amp; evaluateXPath.length > 0 &amp;&amp; evaluateXPath[0] != null) {
+          //We are inside a paragraph, disable the action.
+          insertParagraph.setEnabled(false);
+        } else {
+          //Enable the action
+          insertParagraph.setEnabled(true);
+        }
+      } catch (AuthorOperationException e) {
+        e.printStackTrace();
+      }
+    }
+  });
+</codeblock>When
+        the extension is deactivated you should remove the caret listener in order to avoid adding
+        multiple caret listeners which perform the same functionality. </p>
+    </section>
+  </body>
+</topic>

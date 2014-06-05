@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="converting-between-schema-languages">
+  <title>Converting Between Schema Languages</title><prolog>
+    <metadata>
+      <keywords><indexterm>Editing XML Documents<indexterm>converting between schema languages</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <uicontrol>Generate/Convert Schema</uicontrol> allows you to convert a DTD or Relax NG
+      (full or compact syntax) schema or a set of XML files to an equivalent XML Schema, DTD or
+      Relax NG (full or compact syntax) schema. Where perfect equivalence is not possible due to
+      limitations of the target language <ph keyref="product"/> will generate an approximation of
+      the source schema.</p>
+    <p>The conversion functionality is available from <ph product="developer editor"><menucascade>
+          <uicontrol>Tools </uicontrol>
+          <uicontrol>Generate/Convert Schema...</uicontrol>
+        </menucascade>(<uicontrol
+          conref="oxygen-shortcuts-list.dita#oxygen-shortcuts-list/ctrl_alt_t"/>)</ph>
+      <ph product="developerEclipse editorEclipse"><menucascade>
+          <uicontrol>XML Tools</uicontrol>
+          <uicontrol>Generate/Convert Schema...</uicontrol>
+        </menucascade>(<uicontrol
+          conref="oxygen-shortcuts-list.dita#oxygen-shortcuts-list/ctrl_shift_slash"/>)</ph>
+      <ph product="editor developer">, from the <uicontrol>Project</uicontrol> view contextual menu
+        - the action <menucascade>
+          <uicontrol>Open with</uicontrol>
+          <uicontrol>Generate/Convert Schema</uicontrol>
+        </menucascade> and from the toolbar button <uicontrol>
+          <image href="../img/bt_convert_to_button.png"/> Generate/Convert Schema... </uicontrol>. </ph>
+      <ph product="editorEclipse developerEclipse"> and from the toolbar button <uicontrol>
+          <image href="../img/bt_convert_to_button.png"/> Convert to... </uicontrol>.</ph>
+    </p>
+    <p>A schema being edited can be converted with just one click on a toolbar button if that schema
+      can be the subject of a supported conversion.</p>
+    <fig id="figure-trang-converter-dialog-oxygen" product="editor developer">
+      <title>Convert a Schema to Other Schema Language</title>
+      <image href="../img/sa_convert_dialog.png"/>
+    </fig>
+    <fig id="figure-trang-converter-dialog-oxygenEclipse" product="editorEclipse developerEclipse">
+      <title>Convert a Schema to Other Schema Language</title>
+      <image href="../img/ec_convert_dialog.png"/>
+    </fig>
+    <p product="editor developer">The language of the source schema is specified with one of the four radio
+      buttons of the <uicontrol>Input</uicontrol> panel. If the <uicontrol>XML Documents</uicontrol>
+      button is selected more than one file selection is allowed in the list below the group of
+      radio buttons in case the conversion is based on a set of XML files instead of a single
+      file.</p>
+    <p>The language of the target schema is specified with one of the four radio buttons of the
+        <uicontrol>Output</uicontrol> panel. The encoding, the maximum line width and the number of
+      spaces for one level of indentation can be also specified in this panel.</p>
+    <p>The conversion can be further fine-tuned by specifying more advanced options available from
+      the <uicontrol>Advanced options</uicontrol> button. For example if the input is a DTD and the
+      output is an XML Schema the advanced options are:</p>
+    <fig id="figure-trang-converter-advanced-options-dialog-oxygen" product="editor developer">
+      <title>Convert a Schema to Other Schema Language - Advanced Options</title>
+      <image href="../img/sa_convert_options_dialog.png"/>
+    </fig>
+    <fig id="figure-trang-converter-advanced-options-dialog-oxygenEclipse" product="editorEclipse developerEclipse">
+      <title>Convert a Schema to Other Schema Language - Advanced Options</title>
+      <image href="../img/ec_convert_options_dialog.png"/>
+    </fig>
+    <p>For the <uicontrol>Input</uicontrol> panel:</p>
+    <ul>
+      <li>xmlns field - Specifies the default namespace, that is the namespace used for unqualified
+        element names;</li>
+      <li>xmlns table - Each row specifies in the prefix used for a namespace in the input
+        schema;</li>
+      <li>colon-replacement - Replaces colons in element names with the specified chars when
+        constructing the names of definitions used to represent the element declarations and
+        attribute list declarations in the DTD;</li>
+      <li>element-define - Specifies how to construct the name of the definition representing an
+        element declaration from the name of the element. The specified value must contain exactly
+        one percent character. This percent character is replaced by the name of element (after
+        colon replacement) and the result is used as the name of the definition;</li>
+      <li>inline-attlist - Instructs the application not to generate definitions for attribute list
+        declarations, but instead move attributes declared in attribute list declarations into the
+        definitions generated for element declarations. This is the default behavior when the output
+        language is XSD;</li>
+      <li>attlist-define - Specifies how to construct the name of the definition representing an
+        attribute list declaration from the name of the element. The specified value must contain
+        exactly one percent character. This percent character is replaced by the name of element
+        (after colon replacement) and the result is used as the name of the definition;</li>
+      <li>any-name - Specifies the name of the definition generated for the content of elements
+        declared in the DTD as having a content model of ANY;</li>
+      <li>strict-any - Preserves the exact semantics of ANY content models by using an explicit
+        choice of references to all declared elements. By default, Trang uses a wildcard that allows
+        any element;</li>
+      <li>generate-start - Specifies whether Trang should generate a start element. DTD's do not
+        indicate what elements are allowed as document elements. Trang assumes that all elements
+        that are defined but never referenced are allowed as document elements;</li>
+      <li>annotation-prefix - Default values are represented using an annotation attribute
+          <i>prefix:defaultValue</i> where prefix is the specified value and is bound to
+        http://relaxng.org/ns/compatibility/annotations/1.0 as defined by the RELAX NG DTD
+        Compatibility Committee Specification. By default, Trang will use a for prefix unless that
+        conflicts with a prefix used in the DTD.</li>
+    </ul>
+    <p>For the <uicontrol>Output</uicontrol> panel:</p>
+    <ul>
+      <li>disable-abstract-elements - Disables the use of abstract elements and substitution groups
+        in the generated XML Schema. This can also be controlled using an annotation attribute;</li>
+      <li>any-process-contents - One of the values: strict, lax, skip. Specifies the value for the
+        processContents attribute of any elements. The default is skip (corresponding to RELAX NG
+        semantics) unless the input format is dtd, in which case the default is strict
+        (corresponding to DTD semantics);</li>
+      <li>any-attribute-process-contents - Specifies the value for the processContents attribute of
+        anyAttribute elements. The default is skip (corresponding to RELAX NG semantics).</li>
+    </ul>
+  </body>
+</topic>
