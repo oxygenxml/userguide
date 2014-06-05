@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-sdf-files-xml-schema">
+  <title>
+    <filepath>sdf.xsd</filepath>
+  </title>
+  
+  
+  <body>
+    <p>This sample file can also be found in the <xref
+        href="http://www.oxygenxml.com/developer.html#XML_Editor_Authoring_SDK" format="html"
+        scope="external"
+        >Author SDK distribution</xref> in the <filepath>"oxygenAuthorSDK\samples\Simple Documentation Framework - SDF\framework\schema"</filepath> directory.</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.oxygenxml.com/sample/documentation"
+    xmlns:doc="http://www.oxygenxml.com/sample/documentation"
+    xmlns:abs="http://www.oxygenxml.com/sample/documentation/abstracts"
+    elementFormDefault="qualified"&gt;
+    
+    &lt;xs:import
+        namespace="http://www.oxygenxml.com/sample/documentation/abstracts"
+        schemaLocation="abs.xsd"/&gt;
+    
+    &lt;xs:element name="book" type="doc:sectionType"/&gt;
+    &lt;xs:element name="article" type="doc:sectionType"/&gt;
+    &lt;xs:element name="section" type="doc:sectionType"/&gt;
+    
+    &lt;xs:complexType name="sectionType"&gt;
+        &lt;xs:sequence&gt;
+            &lt;xs:element name="title" type="xs:string"/&gt;
+            &lt;xs:element ref="abs:def" minOccurs="0"/&gt;
+            &lt;xs:choice&gt;
+                &lt;xs:sequence&gt;
+                    &lt;xs:element ref="doc:section"
+                        maxOccurs="unbounded"/&gt;
+                &lt;/xs:sequence&gt;
+                &lt;xs:choice maxOccurs="unbounded"&gt;
+                    &lt;xs:element ref="doc:para"/&gt;
+                    &lt;xs:element ref="doc:ref"/&gt;
+                    &lt;xs:element ref="doc:image"/&gt;
+                    &lt;xs:element ref="doc:table"/&gt;
+                &lt;/xs:choice&gt;
+            &lt;/xs:choice&gt;
+        &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+    
+    &lt;xs:element name="para" type="doc:paragraphType"/&gt;
+    
+    &lt;xs:complexType name="paragraphType" mixed="true"&gt;
+        &lt;xs:choice minOccurs="0" maxOccurs="unbounded"&gt;
+            &lt;xs:element name="b"/&gt;
+            &lt;xs:element name="i"/&gt;
+            &lt;xs:element name="link"/&gt;
+        &lt;/xs:choice&gt;
+    &lt;/xs:complexType&gt;
+    
+    &lt;xs:element name="ref"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:attribute name="location" type="xs:anyURI"
+                use="required"/&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+    
+    &lt;xs:element name="image"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:attribute name="href" type="xs:anyURI"
+                use="required"/&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+    
+    &lt;xs:element name="table"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element name="customcol" maxOccurs="unbounded"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:attribute name="width" type="xs:string"/&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+                &lt;xs:element name="header"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                            &lt;xs:element name="td"
+                                maxOccurs="unbounded"
+                                type="doc:paragraphType"/&gt;
+                        &lt;/xs:sequence&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+                &lt;xs:element name="tr" maxOccurs="unbounded"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                            &lt;xs:element name="td"
+                                type="doc:tdType"
+                                maxOccurs="unbounded"/&gt;
+                        &lt;/xs:sequence&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+            &lt;/xs:sequence&gt;
+            &lt;xs:attribute name="width" type="xs:string"/&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+    
+    
+    &lt;xs:complexType name="tdType"&gt;
+        &lt;xs:complexContent&gt;
+            &lt;xs:extension base="doc:paragraphType"&gt;
+                &lt;xs:attribute name="row_span"
+                    type="xs:integer"/&gt;
+                &lt;xs:attribute name="column_span"
+                    type="xs:integer"/&gt;
+            &lt;/xs:extension&gt;
+        &lt;/xs:complexContent&gt;
+    &lt;/xs:complexType&gt;
+&lt;/xs:schema&gt;</codeblock>
+  </body>
+  
+</topic>

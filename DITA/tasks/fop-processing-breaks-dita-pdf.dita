@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="fop-processing-breaks-dita-pdf">
+  <title>The PDF Processing Fails to Use the DITA OT and Apache FOP</title>
+  <body>
+    <p>There are cases when publishing DITA content which you consider perfectly valid fails when
+      creating the PDF file. This topic tries to list some of the more usual situations and has
+      fix-up hints for each of these cases.</p>
+    <ul id="ul_bcz_sqz_33">
+      <li>
+        <p>The FO processor cannot save the PDF at the specified target. The console output contains
+          messages
+          like:<codeblock>[fop] [ERROR] Anttask - Error rendering fo file: C:\samples\dita\temp\pdf\oxygen_dita_temp\topic.fo &lt;Failed to open C:\samples\dita\out\pdf\test.pdf>
+Failed to open samples\dita\out\pdf\test.pdf
+[fop] 	at org.apache.fop.tools.anttasks.FOPTaskStarter.renderInputHandler(Fop.java:647)
+[fop] 	at org.apache.fop.tools.anttasks.FOPTaskStarter.render(Fop.java:676)
+.............
+[fop] 	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:280)
+[fop] 	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:109)
+[fop] Caused by: java.io.FileNotFoundException: C:\Users\radu_coravu\Desktop\bev\out\pdf\test.pdf 
+(The process cannot access the file because it is being used by another process)
+[fop] 	at java.io.FileOutputStream.open(Native Method)
+[fop] 	at java.io.FileOutputStream.&lt;init>(Unknown Source)
+[fop] 	at java.io.FileOutputStream.&lt;init>(Unknown Source)
+[fop] 	at org.apache.fop.tools.anttasks.FOPTaskStarter.renderInputHandler(Fop.java:644)
+[fop] 	... 45 more
+[fop] C:\samples\dita\temp\pdf\oxygen_dita_temp\topic.fo -> C:\samples\dita\out\pdf\test.pdf</codeblock></p>
+        <note type="tip">Such an error message usually means that the PDF file is already opened in
+          a PDF Reader application. The workaround is simple, always close the external PDF reader
+          application before running the transformation.</note>
+      </li>
+      <li>
+        <p>One of the DITA tables contains more cells in a table row than the defined number of
+            <varname>colspec</varname> elements. The console output contains messages
+          like:<codeblock>[fop] [ERROR] Anttask - Error rendering fo file: D:\projects\eXml\samples\dita\flowers\temp\pdf\oxygen_dita_temp\topic.fo 
+&lt;net.sf.saxon.trans.XPathException: org.apache.fop.fo.ValidationException: 
+The column-number or number of cells in the row overflows the number of fo:table-columns specified for the table. (See position 179:-1)>net.sf.saxon.trans.XPathException: org.apache.fop.fo.ValidationException: The column-number or number of cells in the row overflows the number of fo:table-columns specified for the table. (See position 179:-1)
+[fop] 	at org.apache.fop.tools.anttasks.FOPTaskStarter.renderInputHandler(Fop.java:657)
+[fop] 	at net.sf.saxon.event.ContentHandlerProxy.startContent(ContentHandlerProxy.java:375)
+............
+[fop] D:\projects\samples\dita\flowers\temp\pdf\oxygen_dita_temp\topic.fo -> D:\projects\samples\dita\flowers\out\pdf\flowers.pdf</codeblock></p>
+        <note type="tip">
+          <ul>
+            <li>Find the DITA topic that contains a DITA CALS table for which one of the table rows
+              has more cells than the number of <term>colspecs</term> defined on the table.</li>
+            <li>Edit the transformation scenario you and set the parameter
+                <varname>clean.temp</varname> to <varname>no</varname>.</li>
+            <li>Run the transformation, open the <filepath>topic.fo</filepath> file in <ph
+                keyref="product"/>, and look in it at the line specified in the error message
+                <codeph>(See position 179:-1)</codeph>.</li>
+            <li>Look around that line in the <apiname>XSL-FO</apiname> file to find relevant text
+              content which you can use, for example, with the <b>Find/Replace in Files</b> action
+              in the <b>DITA Maps Manager</b> view to find the original DITA topic for which the
+              table was generated.</li>
+          </ul>
+        </note>
+      </li>
+      <li>
+        <p>There is a broken link in the generated <filepath>XSL-FO</filepath> file. The PDF is
+          generated but contains a link that is not working. The console output contains messages
+          like:<codeblock>[fop] 1248 WARN [ main ] org.apache.fop.apps.FOUserAgent - Page 6: Unresolved ID reference "unique_4_Connect_42_wrongID" found.</codeblock></p>
+        <note type="tip">
+          <ul>
+            <li>Use the <b>Validate and Check for Completeness</b> action available in the <b>DITA
+                Maps Manager</b> view to find such problems.</li>
+            <li>In case you publish to PDF using a certain <apiname>DITAVAL</apiname> filter, set
+              the same DITAVAL file in the <uicontrol>DITA Map Completeness Check</uicontrol>
+              dialog.</li>
+            <li>In case the <b>Validate and Check for Completeness</b> action does not discover any
+              issues, edit the transformation scenario and set the <varname>clean.temp</varname>
+              parameter to <varname>no</varname>.</li>
+            <li>Run the transformation, open the <filepath>topic.fo</filepath> file in <ph
+                keyref="product"/>, and search in it for the
+                <codeph>unique_4_Connect_42_wrongID</codeph>
+              <apiname>id</apiname>.</li>
+            <li>
+              <p>Look around that line in the <apiname>XSL-FO</apiname> file to find relevant text
+                content which you can use, for example, with the <b>Find/Replace in Files</b> action
+                in the <b>DITA Maps Manager</b> view to find the original DITA topic for which the
+                table was generated.</p>
+            </li>
+          </ul>
+        </note>
+      </li>
+    </ul>
+  </body>
+</topic>

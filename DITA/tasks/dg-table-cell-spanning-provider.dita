@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="dg-table-cell-spanning-provider">
+  <title>Configuring a Table Cell Span Provider</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Author Settings<indexterm>Java API<indexterm>table cell span provider</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>In the sample documentation framework the <codeph>table</codeph> element can have cells
+      that span over multiple columns and rows. As explained in <xref
+        href="../topics/dg-styling-table-element.dita#dg-styling-table-element"/>, you need to
+      indicate <ph keyref="product"/> a method to determine the cell spanning. If you use the cell
+      element attributes <b>rowspan</b> and <b>colspan</b> or <b>rows</b> and <b>cols</b>, <ph
+        keyref="product"/> can determine the cell spanning automatically. In our example the
+        <codeph>td</codeph> element uses the attributes <b>row_span</b> and <b>column_span</b> that
+      are not recognized by default. You will need to implement a Java extension class for defining
+      the cell spanning.<p conref="../topics/dg-java-files.dita#dg-java-files/javadoc-ref"
+      /></context>
+    <steps>
+      <step>
+        <cmd>Create the class
+            <apiname>simple.documentation.framework.TableCellSpanProvider</apiname>. This class must
+          implement the <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorTableCellSpanProvider.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.AuthorTableCellSpanProvider</apiname></xref>
+          interface.</cmd>
+        <info>
+          <codeblock outputclass="language-java">import ro.sync.ecss.extensions.api.AuthorTableCellSpanProvider;
+import ro.sync.ecss.extensions.api.node.AttrValue;
+import ro.sync.ecss.extensions.api.node.AuthorElement;
+
+public class TableCellSpanProvider 
+      implements AuthorTableCellSpanProvider {</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The <apiname>init</apiname> method is taking as argument the <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorElement.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.node.AuthorElement</apiname></xref> that
+          represents the XML <codeph>table</codeph> element. In our case the cell span is specified
+          for each of the cells so you leave this method empty. However there are cases like the
+          table CALS model when the cell spanning is specified in the <codeph>table</codeph>
+          element. In such cases you must collect the span information by analyzing the
+            <codeph>table</codeph> element.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public void init(AuthorElement table) {
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The <apiname>getColSpan</apiname> method is taking as argument the table cell. The
+          table layout engine will ask this <apiname>AuthorTableSpanSupport</apiname> implementation
+          what is the column span and the row span for each XML element from the table that was
+          marked as cell in the CSS using the property <codeph>display:table-cell</codeph>. The
+          implementation is simple and just parses the value of <b>column_span</b> attribute. The
+          method must return <codeph>null</codeph> for all the cells that do not change the span
+          specification.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public Integer getColSpan(AuthorElement cell) {
+  Integer colSpan = null;
+
+  AttrValue attrValue = cell.getAttribute("column_span");
+  if(attrValue != null) {
+    // The attribute was found.
+    String cs = attrValue.getValue();
+    if(cs != null) {        
+      try {
+        colSpan = new Integer(cs);
+      } catch (NumberFormatException ex) {
+        // The attribute value was not a number.
+      }     
+    }   
+  }
+  return colSpan;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The row span is determined in a similar manner:</cmd>
+        <info>
+          <codeblock outputclass="language-java">public Integer getRowSpan(AuthorElement cell) {
+  Integer rowSpan = null;
+
+  AttrValue attrValue = cell.getAttribute("row_span");
+  if(attrValue != null) {
+    // The attribute was found.
+    String rs = attrValue.getValue();
+    if(rs != null) {        
+      try {
+        rowSpan = new Integer(rs);
+      } catch (NumberFormatException ex) {
+        // The attribute value was not a number.
+      }     
+    }   
+  }
+  return rowSpan;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The method <apiname>hasColumnSpecifications</apiname> always returns
+            <codeph>true</codeph> considering column specifications always available.</cmd>
+        <info>
+          <p>
+            <codeblock outputclass="language-java">public boolean hasColumnSpecifications(AuthorElement tableElement) {
+  return true;
+}</codeblock>
+          </p>
+          <p conref="../topics/dg-java-files.dita#dg-java-files/sdf_project"/>
+        </info>
+      </step>
+      <step>
+        <cmd>In the listing below, the XML document contains the table element:</cmd>
+        <info>
+          <codeblock outputclass="language-xml">&lt;table&gt;
+    &lt;header&gt;
+        &lt;td&gt;C1&lt;/td&gt;
+        &lt;td&gt;C2&lt;/td&gt;
+        &lt;td&gt;C3&lt;/td&gt;
+        &lt;td&gt;C4&lt;/td&gt;
+    &lt;/header&gt;
+    &lt;tr&gt;
+        &lt;td&gt;cs=1, rs=1&lt;/td&gt;
+        &lt;td column_span="2" row_span="2"&gt;cs=2, rs=2&lt;/td&gt;
+        &lt;td row_span="3"&gt;cs=1, rs=3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;cs=1, rs=1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td column_span="3"&gt;cs=3, rs=1&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>When no table cell span provider is specified, the table has the following layout:</p>
+      <fig>
+        <title>Table layout when no cell span provider is specified</title>
+        <image href="../img/bt_dg_table_no_span_provider.png"/>
+      </fig>
+      <p>When the above implementation is configured, the table has the correct layout:</p>
+      <fig>
+        <title>Cells spanning multiple rows and columns.</title>
+        <image href="../img/bt_dg_cells_spanning_multiple_rows_and_cols.png"/>
+      </fig>
+    </result>
+  </taskbody>
+</task>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="author-whitespace-handling">
+  <title>Whitespace Handling</title><prolog>
+    <metadata>
+      <keywords><indexterm>Author Editor<indexterm>whitespace handling</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>There are several major aspects of white-space handling in <ph keyref="product"/> which are
+      important in the following cases:<ul>
+        <li>when opening documents;</li>
+        <li>when switching from other editing mode to <uicontrol>Author</uicontrol> mode;</li>
+        <li>when saving documents in <uicontrol>Author</uicontrol> mode;</li>
+        <li>when switching from Author mode to another one.</li>
+      </ul></p>
+    <ul>
+      <li><b>Open documents</b> - When deciding if the white-spaces from a text node are to be
+        preserved, normalized or stripped, the following rules apply:<ul>
+          <li>If the text node is inside an element context where the
+              <codeph>xml:space="preserve"</codeph> is set then the white-spaces are preserved;</li>
+          <li>If the CSS property <codeph>white-space</codeph> is set to <codeph>pre</codeph> for
+            the node style then the white-spaces are preserved;</li>
+          <li>If the text node contains other non-white-space characters then the white-spaces are
+            normalized;</li>
+          <li>If the text node contains only white-spaces:<ul>
+              <li>If the node has a parent element with the CSS <codeph>display</codeph> property
+                set to <codeph>inline</codeph> then the white-spaces are normalized;</li>
+              <li>If the left or right sibling is an element with the CSS <codeph>display</codeph>
+                property set to <codeph>inline</codeph> then the white-spaces are normalized;</li>
+              <li>
+                <p>If one of its ancestors is an element with the CSS <codeph>display</codeph>
+                  property set to <codeph>table</codeph> then the white-spaces are striped;</p>
+              </li>
+              <li>
+                <p>Otherwise the white-spaces are ignored.</p>
+              </li>
+            </ul></li>
+        </ul></li>
+      <li><b>Save documents</b> - The Author editor will try to format and indent the document while
+        following the white-space handling rules:<ul>
+          <li>If text nodes are inside an element context where the
+              <codeph>xml:space="preserve"</codeph> is set then the white-spaces are written without
+            modifications;</li>
+          <li>If the CSS property <codeph>white-space</codeph> is set to <codeph>pre</codeph> for
+            the node style then the white-spaces are written without any changes;</li>
+          <li>In other cases the text nodes are wrapped.</li>
+        </ul>Also, when formatting and indenting an element that is not in a space-preserve context,
+        additional line separators and white-spaces are added as follows:<ul>
+          <li>Before a text node that starts with a white-space;</li>
+          <li>After a text node that ends with a white-space;</li>
+          <li>Before and after CSS <codeph>block</codeph> nodes;</li>
+          <li>If the current node has an ancestor that is a CSS <codeph>table</codeph> element.</li>
+        </ul></li>
+      <li><b>Editing documents</b> - You cannot insert consecutive space characters in any text
+        nodes. Line breaks are permitted only in space-preserve elements. Tabs are marked in the
+        space-preserve elements with a little marker.</li>
+    </ul>
+  </body>
+</topic>

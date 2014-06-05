@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="checking-xml-well-formedness">
+  <title>Checking XML Well-Formedness</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Editing XML Documents<indexterm>checking XML
+          well-formedness</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>A <i>Well-Formed XML</i> document is a document that conforms to the XML syntax rules. A
+        <i>Namespace Well-Formed XML</i> document is a document that is XML Well-Formed and is also
+      namespace-wellformed and namespace-valid.</p>
+    <p>The XML Syntax rules for Well-Formed XML are:</p>
+    <ul>
+      <li>All XML elements must have a closing tag.</li>
+      <li>XML tags are case-sensitive.</li>
+      <li>All XML elements must be properly nested.</li>
+      <li>All XML documents must have a root element.</li>
+      <li>Attribute values must always be quoted.</li>
+      <li>With XML, white space is preserved.</li>
+    </ul>
+    <p>The namespace-wellformed rules are:</p>
+    <ul>
+      <li>All element and attribute names contain either zero or one colon.</li>
+      <li>No entity names, processing instruction targets, or notation names contain any
+        colons.</li>
+    </ul>
+    <p>The namespace-valid rules are:</p>
+    <ul>
+      <li>The prefix <i>xml</i> is by definition bound to the namespace name
+          <i>http://www.w3.org/XML/1998/namespace</i>. It MAY, but need not, be declared, and MUST
+        NOT be undeclared or bound to any other namespace name. Other prefixes MUST NOT be bound to
+        this namespace name.</li>
+      <li>The prefix <i>xmlns</i> is used only to declare namespace bindings and is by definition
+        bound to the namespace name <i>http://www.w3.org/2000/xmlns/</i>. It MUST NOT be declared or
+        undeclared. Other prefixes MUST NOT be bound to this namespace name.</li>
+      <li>All other prefixes beginning with the three-letter sequence <i>x</i>, <i>m</i>, <i>l</i>,
+        in any case combination, are reserved. This means that users SHOULD NOT use them except as
+        defined by later specifications and processors MUST NOT treat them as fatal errors.</li>
+      <li>The namespace prefix, unless it is <i>xml</i> or <i>xmlns</i>, MUST have been declared in
+        a namespace declaration attribute in either the start-tag of the element where the prefix is
+        used or in an ancestor element (i.e. an element in whose content the prefixed markup
+        occurs). Furthermore, the attribute value in the innermost such declaration MUST NOT be an
+        empty string.</li>
+    </ul>
+    <p>To check if a document is <i>Namespace Well-Formed XML</i>, go to <menucascade>
+        <uicontrol>Document</uicontrol>
+        <uicontrol>Validate</uicontrol>
+        <uicontrol>Check Well-Formedness<shortcut product="editor author developer">(Ctrl (Meta on
+            Mac OS)+Shift+W)</shortcut>
+          <shortcut product="editorEclipse authorEclipse developerEclipse">(Alt+Shift+V W (Cmd+Alt+V
+            W on Mac))</shortcut></uicontrol>
+      </menucascade>. You can also open the drop-down menu of the <image
+        href="../img/Validate20.png" id="image_k4z_p4t_2g"/> validate button on the toolbar and
+      select <uicontrol>
+        <image href="../img/WellFormed20.png" id="image_c4t_44t_2g"/> Check
+        Well-Formedness</uicontrol>. If any error is found the result is returned to the message
+      panel. Each error is one record in the result list and is accompanied by an error message.
+      Clicking the record will open the document containing the error and highlight its approximate
+      location.</p>
+    <example><title>A not Well-Formed XML
+      Document</title><codeblock outputclass="language-xml">&lt;root&gt;&lt;tag&gt;&lt;/root&gt;</codeblock>When
+        <uicontrol>Check Well-Formedness</uicontrol> is performed the following error is
+        raised:<codeblock>The element type "tag" must be terminated by the matching end-tag "&lt;/tag&gt;"</codeblock><p>To
+        resolve the error, click in the result list record which will locate and highlight the
+        errors approximate position. Identify which start tag is missing an end tag and insert
+        &lt;/tag&gt;.</p></example>
+    <example>
+      <title>A not namespace-wellformed document</title>
+      <p><codeblock outputclass="language-xml">&lt;x::y&gt;&lt;/x::y&gt;</codeblock>When <uicontrol>Check document
+          form</uicontrol> is performed the following error is raised:
+        <screen xml:space="preserve">Element or attribute do not match QName production: QName::=(NCName':')?NCName.</screen></p>
+    </example>
+    <example>
+      <title> A not namespace-valid document</title>
+      <p><codeblock outputclass="language-xml">&lt;x:y&gt;&lt;/x:y&gt;</codeblock> When <uicontrol>Check document
+          form</uicontrol> is performed the following error is raised:
+        <screen xml:space="preserve">The prefix "x" for element "x:y" is not bound.</screen></p>
+    </example>
+    <p>Also the files contained in the current project and selected with the mouse in <xref
+        href="using-the-project-view.dita">the Project view</xref> can be checked for
+      well-formedness with one action available on the popup menu of the Project view <ph
+        product="editorEclipse developerEclipse">in the <uicontrol>Validate</uicontrol>
+      submenu</ph>: <uicontrol><image href="../img/WellFormed20.png"/>Check
+        Well-Formedness</uicontrol>.</p>
+  </body>
+</topic>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="xml-schema-flat">
+  <title>Flatten an XML Schema</title><prolog>
+    <metadata>
+      <keywords><indexterm>XML Schema Text Editor<indexterm>flatten an XML Schema</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>You can organize an XML schema on several levels linked by <codeph>xs:include</codeph> and
+        <codeph>xs:import</codeph> statements. In some cases, working on such a schema as on a
+      single file is more convenient.</p>
+    <p>The <uicontrol>Flatten Schema</uicontrol> operation allows you to flatten an entire hierarchy
+      of XML schemas. Starting with the main XML schema, <ph keyref="product"/> calculates its
+      hierarchy by processing the <codeph>xs:include</codeph> and <codeph>xs:import</codeph>
+      statements. This action is available either from the <menucascade>
+        <uicontrol>contextual menu</uicontrol>
+        <uicontrol>Flatten Schema...</uicontrol>
+      </menucascade> or from the application's main menu, <menucascade>
+        <uicontrol>Tools</uicontrol>
+        <uicontrol>Flatten Schema...</uicontrol>
+      </menucascade> sub-menu.</p>
+    <fig>
+      <title>Flatten Schema Dialog</title>
+      <image href="../img/flatten-schema-dialog.png"/>
+    </fig>
+    <p>For the main schema file and for each imported schema, a new flattened schema is generated in
+      the output folder. These schemas have the same name as the original ones.<note>If necessary,
+        the operation renames the resulted schemas to avoid duplicated file names.</note><note>You
+        can choose the output folder and the name of each generated schema file.</note></p>
+    <p>A flattened XML schema is obtained by recursively adding the components of the included
+      schemas into the main one. This means <ph keyref="product"/> replaces the
+        <codeph>xs:include</codeph>, <codeph>xs:redefine</codeph>, and <codeph>xs:override</codeph>
+      elements with the ones coming from the included files.</p>
+    <p>The following options are available in the <uicontrol>Flatten Schema</uicontrol> dialog:<ul>
+        <li><uicontrol>Open the flattened XML Schema file in editor</uicontrol> - opens the main
+          flattened schema in the editing area after the operation completes;</li>
+        <li><uicontrol>Use the XML Catalogs when collecting the referred XML Schemas</uicontrol> -
+          enables resolving the imported and included schemas through the available XML
+            Catalogs;<note>Changing this option triggers the recalculation of the dependencies graph
+            for the main schema. </note></li>
+        <li><uicontrol>Process the imported XML Schemas resolved through the XML
+            Catalogs</uicontrol> - specifies whether the imported schemas that were resolved through
+          an XML Catalog are flattened;</li>
+        <li><uicontrol>Flatten the imported XML Schema(s)</uicontrol> - specifies whether the
+          imported schemas are flattened.<note>For the schemas skipped by the flatten operation, no
+            files are created in the output folder and the corresponding import statements remain
+            unchanged.</note></li>
+      </ul></p>
+    <p>To flatten a schema from the command line, run one of the following scripts that come with
+        <ph keyref="product"/>:<ul>
+        <li><filepath>flattenSchema.bat</filepath> on Windows;</li>
+        <li><filepath>flattenSchema.sh</filepath> on Mac OS X and Unix/Linux.</li>
+      </ul>The command line accepts the following parameters:<ul>
+        <li><codeph>-in:inputSchemaURL</codeph> - the input schema URL;</li>
+        <li><codeph>-outDir:outputDirectory</codeph> - the directory where the flattened schemas
+          should be saved;</li>
+        <li><codeph>-flattenImports:&lt;boolean_value></codeph> - controls if the imported XML
+          Schemas should be flattened or not. The default value <codeph>true</codeph>;</li>
+        <li><codeph>-useCatalogs:&lt;boolean_value></codeph> - controls if the references to other
+          XML Schemas should be resolved through the available XML Catalogs. The default value
+            <codeph>false</codeph>;</li>
+        <li><codeph>-flattenCatalogResolvedImports:&lt;boolean_value></codeph> - controls if the
+          imported schemas that were resolved through the XML Catalogs should be flattened or
+            not;<note>This option is used only when <codeph>-useCatalogs</codeph> is set to
+              <codeph>true</codeph>. The default value is <codeph>true</codeph>.</note></li>
+        <li><codeph>-verbose</codeph> - provides information about the current flatten XML Schema
+          operation;</li>
+        <li><codeph>--help | -help | --h | -h</codeph> - prints the available parameters for the
+          operation.</li>
+      </ul></p>
+    <example>
+      <title>Command Line Example</title>
+      <codeblock>flattenSchema -in:http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd -outDir:mySchemas/ flattened/xhtml -flattenImports:true -useCatalogs:true -flattenCatalogResolvedIm ports:true -verbose</codeblock>
+    </example>
+  </body>
+</topic>

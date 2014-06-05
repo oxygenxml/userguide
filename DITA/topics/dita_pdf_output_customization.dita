@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_fmq_kk2_ng">
+  <title>DITA to PDF Output Customization</title>
+  <shortdesc>In this topic you will see how to do a basic customization of the PDF output by setting
+        up a customization directory. </shortdesc>
+  <body>
+        <p>DITA Open Toolkit PDF output customizations can be made in two major ways: <ol
+                id="ol_d4n_s5y_1j">
+                <li>Creating a DITA Open Toolkit plugin which adds extensions to the PDF plugin.
+          More details can be found in the <xref href="http://dita-ot.sourceforge.net/1.8/"
+            format="html" scope="external">DITA Open Toolkit user manual</xref>.</li>
+                <li>Creating a customization directory and using it from the PDF transformation
+                    scenario. A small example of this procedure can be found below.</li>
+            </ol></p>
+    <p>
+      Let us take for example the common case of embedding a company logo image in the front
+      matter of the book. You can later extend this example to create more complex
+      customizations.</p>
+    
+    <ol>
+      <li>Copy the entire directory:
+        <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/Customization</filepath> to
+        some other place, for instance: C:\Customization.</li>
+      <li>Copy your logo image to:
+        <filepath>C:\Customization\common\artwork\logo.png</filepath>.</li>
+      <li>Rename <filepath>C:\Customization\catalog.xml.orig</filepath> to:
+          <filepath>C:\Customization\catalog.xml</filepath>
+      </li>
+      <li>Open the <filepath>catalog.xml</filepath> in <ph
+          keyref="product"/> and uncomment this line:
+          <codeblock outputclass="language-xml">  &lt;!--uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/--&gt;   </codeblock><p>So
+          now it looks like
+        this:</p><codeblock outputclass="language-xml">&lt;uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/></codeblock></li>
+      <li> Rename the file: <filepath> C:\Customization\fo\xsl\custom.xsl.orig</filepath> to:
+          <filepath>C:\Customization\fo\xsl\custom.xsl</filepath>
+      </li>
+      <li> Open the <filepath>custom.xsl</filepath> file in <ph
+          keyref="product"/> and create the template
+        called <keyword>createFrontMatter_1.0</keyword>. This will override the same template from
+        the
+        <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/xsl/fo/front-matter.xsl</filepath>.
+        Now, <filepath>custom.xsl</filepath> has the content:
+        <codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format"
+    version="1.1">
+
+&lt;xsl:template name="createFrontMatter_1.0">
+        &lt;fo:page-sequence master-reference="front-matter" xsl:use-attribute-sets="__force__page__count">
+            &lt;xsl:call-template name="insertFrontMatterStaticContents"/>
+            &lt;fo:flow flow-name="xsl-region-body">
+                &lt;fo:block xsl:use-attribute-sets="__frontmatter">
+                    &lt;!-- set the title -->
+                    &lt;fo:block xsl:use-attribute-sets="__frontmatter__title">
+                        &lt;xsl:choose>
+                            &lt;xsl:when test="$map/*[contains(@class,' topic/title ')][1]">
+                                &lt;xsl:apply-templates select="$map/*[contains(@class,' topic/title ')][1]"/>
+                            &lt;/xsl:when>
+                            &lt;xsl:when test="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]">
+                                &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]"/>
+                            &lt;/xsl:when>
+                            &lt;xsl:when test="//*[contains(@class, ' map/map ')]/@title">
+                                &lt;xsl:value-of select="//*[contains(@class, ' map/map ')]/@title"/>
+                            &lt;/xsl:when>
+                            &lt;xsl:otherwise>
+                                &lt;xsl:value-of select="/descendant::*[contains(@class, ' topic/topic ')][1]/*[contains(@class, ' topic/title ')]"/>
+                            &lt;/xsl:otherwise>
+                        &lt;/xsl:choose>
+                    &lt;/fo:block>
+
+                    &lt;!-- set the subtitle -->
+                    &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/booktitlealt ')]"/>
+
+                    &lt;fo:block xsl:use-attribute-sets="__frontmatter__owner">
+                        &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/bookmeta ')]"/>
+                    &lt;/fo:block>
+                   
+                    &lt;fo:block text-align="center" width="100%">
+                        &lt;fo:external-graphic src="url({concat($artworkPrefix, '/Customization/OpenTopic/common/artwork/logo.png')})"/>
+                     &lt;/fo:block>
+
+                &lt;/fo:block>
+
+                &lt;!--&lt;xsl:call-template name="createPreface"/>-->
+
+            &lt;/fo:flow>
+        &lt;/fo:page-sequence>
+        &lt;xsl:call-template name="createNotices"/>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+      <li>Edit (or duplicate, then edit) the <keyword>DITA Map to PDF</keyword> transformation
+        scenario. In the <keyword>Parameters</keyword> tab, set the
+          <keyword>customization.dir</keyword> parameter to
+        <filepath>C:\Customization</filepath>.</li>
+    </ol>
+    <p>There are other ways in which you could directly modify the XSL stylesheets from the DITA OT
+      but this customization gives you flexibility to future DITA OT upgrades in <ph
+        keyref="product"/>.</p>
+  </body>
+  <related-links>
+        <link href="http://www.scriptorium.com/whitepapers/ditaotpdf/DITA-PDF-tweaks.pdf"
+            format="html" scope="external">
+            <linktext>An interesting document from Scriptorium shows tweaks to DITA PDF
+                output.</linktext>
+        </link>
+        <link href="http://dita-generator-hrd.appspot.com/pdf-plugin/" format="html"
+            scope="external">
+            <linktext>Automatic PDF plugin customization generator by Jarno Elovirta.</linktext>
+        </link>
+  </related-links>  
+</topic>

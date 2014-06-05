@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="lock-unlock-working-copy">
+  <title>Lock / Unlock Resources</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>SVN Working Copy Resources<indexterm>lock/unlock resources</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The idea of version control is based on the <i>copy-modify-merge</i> model of file sharing.
+      This model states that each user contacts the repository and creates a local working copy
+      (check out). Users can then work independently and modify their working copies as they please.
+      When their goal has been accomplished, it is time for the users to share their work with the
+      others, to send them to the repository (commit). When a user has modified a file that has been
+      also modified on the repository, the two files will have to be merged. The version control
+      system assists the user with the merging as much as it can, but in the end the user is the one
+      that must make sure it is done correctly.</p>
+    <p>The copy-modify-merge model only works when files are contextually mergeable: this is usually
+      the case of line-based text files (such as source code). However this is not always possible
+      with binary formats, such as images or sounds. In these situations, the users must each have
+      exclusive access to the file, ending up with a <i>lock-modify-unlock</i> model. Without this,
+      one or more users could end up wasting time on changes that cannot be merged.</p>
+    <p>An SVN lock is a piece of metadata which grants exclusive access to a user. This user is
+      called the lock owner. A lock is uniquely identified by a lock token (a string of characters).
+      If someone else attempts to commit the file (or delete a parent of the file), the repository
+      demands two pieces of information:</p>
+    <ul>
+      <li>User authentication - the user performing the commit must be the lock owner;</li>
+      <li>Software authorization - the user's working copy must have the same lock token as the one
+        from the repository, proving that it is the same working copy where the lock originated
+        from.</li>
+    </ul>
+  </body>
+</topic>

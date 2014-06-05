@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="insert-reference-from-webdav-repository">
+    <title>Adding Support to Insert References from a WebDAV
+    <?oxy_comment_start author="Matthew" timestamp="20131223T122613+0200" comment="De pus ID."?>Repository<?oxy_comment_end?>
+  </title>
+    <shortdesc/>
+    <taskbody>
+        <context>
+            <p>Already defined actions which insert references, like the <uicontrol>Insert Image
+          Reference</uicontrol> action, display an URL chooser which allows you to select the
+          <uicontrol>Browse Data Source Explorer</uicontrol> action. To use an already configured
+        WebDAV connection in the Author Component, follow these steps:</p>
+        </context>
+        <steps>
+            <step>
+        <cmd>Open a standalone Oxygen XML 14.2 and configure a WebDAV connection;</cmd>
+      </step>
+      <step>
+        <cmd>Pack the <xref href="author_component_pack_options.dita">fixed set of options</xref>
+          from the standalone to use them with the Author Component Project;</cmd>
+      </step>
+      <step>
+        <cmd>In the Author Component, the defined connection still does not work when expanded
+          because the additional JAR libraries used to browse the WebDAV repository are missing. By
+          default, the <term>httpclient</term> dependency of the <term>oxygen-sdk</term> artifact is
+          excluded. You can enable it by commenting the following lines:</cmd>
+        <info><codeblock>&lt;exclusion>
+    &lt;artifactId>httpclient&lt;/artifactId>
+    &lt;groupId>org.apache.httpcomponents&lt;/groupId>
+&lt;/exclusion> </codeblock>If
+          you want to have a different WebDAV connection URL, user name and password depending on
+          the user who has started the component, you have a more flexible approach using the
+          API:<codeblock outputclass="language-java">//DBConnectionInfo(String id, String driverName, String url, String user, String passwd, String host, String port) 
+DBConnectionInfo info = new DBConnectionInfo("WEBDAV", "WebDAV FTP", "http://host/webdav-user-root", "userName", "password", null, null);
+AuthorComponentFactory.getInstance().setObjectProperty("database.stored.sessions1", new DBConnectionInfo[] {info}); </codeblock></info>
+      </step>
+        </steps>
+    </taskbody>
+</task>

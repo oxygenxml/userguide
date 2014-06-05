@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="xdb-troubleshooting">
+  <title>Troubleshooting</title>
+  <topic id="cannot-save-file">
+    <title>Cannot save the file. DTD factory class <apiname>org.apache.xerces.impl.dv.dtd.DTDDVFactoryImpl</apiname> does not extend from <apiname>DTDDVFactory</apiname></title>
+    <body>
+      <section>
+        <p>I am able to access my XML Database in the Data Source Explorer and open files for reading but when I try to save changes to a file, back into the database, I receive the following error:"Cannot save the file. DTD factory class <apiname>org.apache.xerces.impl.dv.dtd.DTDDVFactoryImpl</apiname> does not extend from <apiname>DTDDVFactory</apiname>." How can I fix this?</p>
+      </section>
+      <section>
+        <title>Answer:</title>
+        <p> xhive.jar contains a MANIFEST.MF with a classpath: <codeblock>Class-Path: core/antlr-runtime.jar core/aspectjrt.jar core/fastutil-shrinked.jar
+              core/google-collect.jar core/icu4j.jar core/lucene-regex.jar core/lucene.jar
+              core/serializer.jar core/xalan.jar core/xercesImpl.jar</codeblock>Because the driver was configured to use <filepath>xhive.jar</filepath> directly from the <i>xDB</i> installation(where many other jars are located), <filepath>core/xercesImpl.jar</filepath> from the <i>xDB</i> installation directory is loaded even though it is not specified in the list of jars from the data source driver configuration(it is in the classpath from <filepath>xhive.jar</filepath>'s <term>MANIFEST.MF</term>).A simple workaround for this issue is to copy <b>ONLY</b> the jar files used in the driver configuration to a separate folder and configure the data source driver to use them from there. </p>
+      </section>
+    </body>
+  </topic>
+</topic>

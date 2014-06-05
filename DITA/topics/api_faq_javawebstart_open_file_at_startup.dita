@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_en4_vjm_5h">
+  <title>Dynamic Open File in <ph keyref="product"/>
+    Distributed via JavaWebStart</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>How can we dynamically open a file in an <ph
+          keyref="product"/> distributed via JWS?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>The JWS packager ANT build file which comes with Oxygen signs by default the JNLP file
+        (this means that a copy of it is included in the main JAR library) in this
+        step:<codeblock outputclass="language-xml"> 
+&lt;copy file="${outputDir}/${packageName}/${productName}.jnlp" tofile="${home}/JNLP-INF/APPLICATION.JNLP"/&gt;
+</codeblock>Signing
+        the JNLP file indeed means that it is impossible to automatically generate a JNLP file
+        containing some dynamic arguments.</p>
+      <p>But the JNLP does not need to be signed. Indeed the user probably receives this information
+        when launching the application but at least in this way you should be able to dynamically
+        generate a JNLP file via a PHP script based on the URL which was clicked by the user.</p>
+      <p>The generated JNLP would then take as argument the URL which needs to be opened when Oxygen
+        starts.</p>
+      <p>Maybe a different approach (more complicated though) would be to have the JNLP file signed
+        and always refer as a URL argument a location like this:
+        <codeblock>http://path/to/server/redirectEditedURL.php</codeblock>When the URL gets clicked
+        on the client side you would also call a PHP script on the server side which would update
+        the redirect location for <codeph>redirectEditedURL.php</codeph> to point to the clicked XML
+        resource. Then the opened Oxygen would try to connect to the redirect PHP and be redirected
+        to open the XML.</p>
+    </section>
+  </body>
+</topic>

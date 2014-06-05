@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-author-extension-state-listener">
+  <title>Implementing an Author Extension State Listener</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Author Settings<indexterm>Java API<indexterm>Author extension state listener</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorExtensionStateListener.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.AuthorExtensionStateListener</apiname></xref>
+      implementation is notified when the Author extension where the listener is defined is
+      activated or deactivated in the Document Type detection process. </p>
+    <note>The Javadoc documentation of the Author API used in the example files is <xref href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/index.html" format="html" scope="external">available on the <ph keyref="product"/> website</xref>. Also it can be
+      downloaded as a <xref href="http://www.oxygenxml.com/InstData/Editor/SDK/doc.zip" format="html" scope="external">zip archive from the website</xref>.</note>
+    <codeblock outputclass="language-java">import ro.sync.ecss.extensions.api.AuthorAccess;
+import ro.sync.ecss.extensions.api.AuthorExtensionStateListener;
+
+public class SDFAuthorExtensionStateListener implements
+		AuthorExtensionStateListener {
+  private AuthorListener sdfAuthorDocumentListener;
+  private AuthorMouseListener sdfMouseListener;
+  private AuthorCaretListener sdfCaretListener;
+  private OptionListener sdfOptionListener;</codeblock>
+    <p>The <b>activation</b> event received by this listener when the rules of the Document Type
+      Association match a document opened in the Author editor mode, should be used to perform
+      custom initializations and to register listeners like <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorListener.html"
+        format="html" scope="external"
+        ><apiname>ro.sync.ecss.extensions.api.AuthorListener</apiname></xref>, <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorMouseListener.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.AuthorMouseListener</apiname></xref> or <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorCaretListener.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.AuthorCaretListener</apiname></xref>. </p>
+    <codeblock outputclass="language-java">	public void activated(AuthorAccess authorAccess) {
+	  // Get the value of the option.
+	  String option = authorAccess.getOptionsStorage().getOption(
+               "sdf.custom.option.key", "");
+	  // Use the option for some initializations...
+	  
+	  // Add an option listener.
+	  authorAccess.getOptionsStorage().addOptionListener(sdfOptionListener);
+	  
+	  // Add author document listeners.
+	  sdfAuthorDocumentListener = new SDFAuthorListener();
+	  authorAccess.getDocumentController().addAuthorListener(
+               sdfAuthorDocumentListener);
+	
+	  // Add mouse listener.
+	  sdfMouseListener = new SDFAuthorMouseListener();
+	  authorAccess.getEditorAccess().addAuthorMouseListener(sdfMouseListener);
+	
+	  // Add caret listener.
+	  sdfCaretListener = new SDFAuthorCaretListener();
+	  authorAccess.getEditorAccess().addAuthorCaretListener(sdfCaretListener);
+	
+	  // Other custom initializations...
+	
+	}</codeblock>
+    <p>The <parmname>authorAccess</parmname> parameter received by the <apiname>activated</apiname> method can be used to gain access to Author specific actions and informations related to components like the editor, document, workspace, tables, or the change tracking manager.</p>
+    <p>If options specific to the custom developed Author extension need to be stored or retrieved,
+      a reference to the <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/OptionsStorage.html"
+        format="html" scope="external"
+        ><apiname>ro.sync.ecss.extensions.api.OptionsStorage</apiname></xref> can be obtained by
+      calling the <apiname>getOptionsStorage</apiname> method from the author access. The same
+      object can be used to register <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/OptionListener.html"
+        format="html" scope="external"
+        ><apiname>ro.sync.ecss.extensions.api.OptionListener</apiname></xref> listeners. An option
+      listener is registered in relation with an option <b>key</b> and will be notified about the
+      value changes of that option.</p>
+    <p>An <apiname>AuthorListener</apiname> can be used if events related to the Author document
+      modifications are of interest. The listener can be added to the <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentController.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.AuthorDocumentController</apiname></xref>. A
+      reference to the document controller is returned by the
+        <apiname>getDocumentController</apiname> method from the author access. The document
+      controller can also be used to perform operations involving document modifications.</p>
+    <p>To provide access to Author editor component related functionality and information, the
+      author access has a reference to the <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/access/AuthorEditorAccess.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.access.AuthorEditorAccess</apiname></xref> that can
+      be obtained when calling the <apiname>getEditorAccess</apiname> method. At this level
+        <apiname>AuthorMouseListener</apiname> and <apiname>AuthorCaretListener</apiname> can be
+      added which will be notified about mouse and caret events occurring in the Author editor
+      mode.</p>
+    <p>The <b>deactivation</b> event is received when another framework is activated for the same
+      document, the user switches to another editor mode or the editor is closed. The
+        <apiname>deactivate</apiname> method is typically used to unregister the listeners
+      previously added on the <apiname>activate</apiname> method and to perform other actions. For
+      example, options related to the deactivated author extension can be saved at this point.</p>
+    <codeblock outputclass="language-java">	public void deactivated(AuthorAccess authorAccess) {
+	  // Store the option.
+	  authorAccess.getOptionsStorage().setOption(
+               "sdf.custom.option.key", optionValue);
+	  
+	  // Remove the option listener.
+	  authorAccess.getOptionsStorage().removeOptionListener(sdfOptionListener);
+    
+	  // Remove document listeners.
+	  authorAccess.getDocumentController().removeAuthorListener(
+               sdfAuthorDocumentListener);
+    
+	  // Remove mouse listener.
+	  authorAccess.getEditorAccess().removeAuthorMouseListener(sdfMouseListener);
+
+	  // Remove caret listener.
+	  authorAccess.getEditorAccess().removeAuthorCaretListener(sdfCaretListener);
+    
+	  // Other actions...
+    
+	}</codeblock>
+  </body>
+</topic>

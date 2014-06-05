@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="merge-branch">
+  <title>Reintegrate a Branch</title><prolog>
+    <metadata>
+      <keywords><indexterm>SVN Branches/Tags<indexterm>merging<indexterm>reintegrate a
+            branch</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <prereq id="reintegrate-merge-prereq">There are some conditions that apply to a reintegrate merge:<ul>
+        <li>the server must support merge tracking;</li>
+        <li>the source branch (to be reintegrated) must be coherently synchronized with its parent
+            branch;<p>This means that all revisions between the branching point and the last
+            revision merged from the parent branch to the child branch must be merged to the latter
+            one (there must be no missing revisions in-between).</p></li>
+        <li>the working copy <b>must not</b>:<ul id="ul_tbg_4lg_34">
+            <li>have any local modifications;</li>
+            <li>contain a mixture of revisions (all items must point to the same revision);</li>
+            <li>have any sparse directories (all directories must be of depth
+              <term>infinity</term>);</li>
+            <li>contain any switched items;</li>
+          </ul></li>
+      </ul></prereq>
+    <context>
+      <p>This method covers the case when you have a feature branch on which the development has
+        concluded and it should be merged back into its parent branch. Since you have kept the
+        feature branch synchronized with its parent, the latest versions of them will be absolutely
+        identical except for your feature branch changes. These changes can be reintegrated into the
+        parent branch by using a working copy of it and the <uicontrol>Reintegrate a
+          branch</uicontrol> option.</p>
+      <p>This method uses the merge-tracking features of <ph
+          conref="../topics/oxygenEntitiesDictionary.dita#OxygenEntities/apacheSubversion"/> to
+        automatically calculate the correct revision ranges and to perform additional checks which
+        ensure that the branch to be reintegrated has been fully updated with its parent changes.
+        This ensures that you don't accidentally undo work that others have committed to the parent
+        branch, since you last synchronized the child branch with it. After the merge ends, all
+        branch development will be completely merged back into the parent branch, so the child
+        branch will be redundant and can be deleted from the repository.<note type="tip">It is
+          recommended to do a last synchronization of the child branch with its parent branch,
+          before reintegrating it, to be sure you avoid any possible conflicts.</note></p>
+    </context>
+    <steps>
+      <step conref="merge-revisions-range.dita#merge-revisions-range/start-wizard">
+        <cmd/>
+      </step>
+      <step>
+        <cmd>Select the <uicontrol>Reintegrate a branch</uicontrol> option.</cmd><info>This option is disabled if the selected working copy item, or any of the items inside it (in
+          case of directories), has any type of modification, because it is mandatory for the target
+          item to have no modifications.</info>
+      </step>
+      <step conref="merge-revisions-range.dita#merge-revisions-range/merge_wizard_second_page">
+        <cmd/>
+      </step>
+      <step>
+        <cmd>In the <b>Child branch (URL)</b> field enter the URL of the child branch to be
+          reintegrated.</cmd>
+        <info
+          conref="merge-revisions-range.dita#merge-revisions-range/merge_browse_source_repository"/>
+      </step>
+      <step>
+        <cmd>Press the <uicontrol>Next</uicontrol> button.</cmd>
+        <stepresult><ph conref="merge-revisions-range.dita#merge-revisions-range/options-set-result"
+            /><note>Because a <i>reintegrate merge</i> is quite specialized for the use case
+            described above, most of the merge options are not applicable, except those in the
+              <uicontrol>File Comparison</uicontrol> category.</note></stepresult>
+      </step>
+      <step conref="merge-revisions-range.dita#merge-revisions-range/perform-merge">
+        <cmd/>
+      </step>
+      <step conref="resolve-merge-conflicts.dita#resolve-merge-conflicts/resolve-conflicts">
+        <cmd/>
+      </step>
+    </steps>
+    <result conref="merge-revisions-range.dita#merge-revisions-range/merge-result"/>
+    <postreq conref="merge-revisions-range.dita#merge-revisions-range/merge-postreq">
+      <note type="important">Once a <i>reintegrate merge</i> is done, the child branch is no longer
+        usable for further work. It's not able to correctly absorb new changes from the parent
+        branch, nor can it be properly reintegrated to it again. For this reason, if you want to
+        keep working on your feature branch, you can:<ul id="ul_rd2_njm_34">
+          <li>delete the child branch from the repository and then re-create it again from the same
+            parent branch (after the previous reintegration was committed);</li>
+          <li>perform a new merge on the child branch, using <uicontrol>Merge revisions</uicontrol>
+            merge type with the revision created when committing the reintegration on the parent
+            branch, and using the <uicontrol>Only record the merge (block revisions from getting
+              merged) option</uicontrol>.<p>When reintegrating your branch into its parent, you
+              create a new revision <codeph>R</codeph> which changes the latter one. The changes
+              made to the parent in this revision <codeph>R</codeph> are semantically equivalent to
+              the changes you made to your branch. If you now try to merge outstanding changes from
+              the parent to your branch, Subversion will consider changes made in revision
+                <codeph>R</codeph> as eligible for merging into the branch. However, since your
+              branch already contains all these changes, merging them again will result in spurious
+              conflicts! These conflicts are often tree conflicts, especially if renames were made
+              on the child branch or the parent branch while the child branch was in
+              development.</p></li>
+        </ul></note>
+    </postreq>
+  </taskbody>
+</task>

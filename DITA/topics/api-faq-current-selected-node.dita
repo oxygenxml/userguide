@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_cdb_c4z_33">
+  <title>Obtain the Current Selected Element Using the Author API</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>If in the <uicontrol>Author</uicontrol> mode, an element is fully selected, I would like to
+        perform an action on it. If not, I would like to perform an action on the node which is
+        located at the caret position. Is this possible via the API?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>When an element is fully selected by the user the selection start and end offsets are
+        actually outside of the node's offset bounds. So using
+          <apiname>AuthorDocumentController.getNodeAtOffset</apiname> will actually return the
+        parent of the selected node. We have some special API which makes it easier for you to
+        determine this situation:
+        <apiname>WSAuthorEditorPageBase.getFullySelectedNode()</apiname>.</p>
+      <p>
+        <codeblock outputclass="language-java">AuthorDocumentController controller = authorPageAccess.getDocumentController();
+AuthorAccess authorAccess = authorPageAccess.getAuthorAccess();
+int caretOffset = authorAccess.getEditorAccess().getCaretOffset();
+
+AuthorElement nodeAtCaret = (AuthorElement) authorAccess.getEditorAccess().getFullySelectedNode();
+if (nodeAtCaret == null) {
+     //We have no fully selected node. We can look at the caret offset.
+     nodeAtCaret = (AuthorElement) authorAccess.getDocumentController().getNodeAtOffset(caretOffset);
+    //Or we could look at the selection start and end, see which node is the parent of each offset and get the closest common ancestor.
+}</codeblock>
+      </p>
+    </section>
+  </body>
+</topic>

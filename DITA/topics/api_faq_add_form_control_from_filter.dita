@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="api-faq-add-form-control-from-filter">
+  <title><b>Dynamically Adding Form Controls Using a StylesFilter</b></title>
+  <body>
+    <p>Usually, a form control is added from the CSS using <xref
+        href="../concepts/dg-editor-function.dita#dg-editor-function"/>. However, in some cases you
+      don't have all the information you need to properly initialize the form control at CSS level.
+      In these cases you can add the form controls by using the API, more specifically <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/StylesFilter.html"
+        format="html" scope="external"><apiname>
+        ro.sync.ecss.extensions.api.StylesFilter</apiname></xref>. </p>
+    <p>For instance, let's assume that we want a combo box form control and the values to populate
+      the combo are specified inside a file (for a more interesting scenario we could imagine that
+      they come from a database). Here is how to add the form control from the API:</p>
+    <codeblock outputclass="language-java">public class SDFStylesFilter implements StylesFilter {
+
+  public Styles filter(Styles styles, AuthorNode authorNode) {
+    if(authorNode.getType() == AuthorNode.NODE_TYPE_PSEUDO_ELEMENT 
+        &amp;&amp; "before".equals(authorNode.getName())) {
+      authorNode = authorNode.getParent();
+      if ("country".equals(authorNode.getName())) {
+        // This is the BEFORE pseudo element of the "country" element.
+        // Read the supported countries from the configuration file.
+        // This will be a comma separated enumeration: France, Spain, Great Britain
+        String countries = readCountriesFromFile();
+        Map&lt;String, Object> formControlArgs = new HashMap&lt;String, Object>();
+        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_EDIT, "#text");
+        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_TYPE, InplaceEditorArgumentKeys.TYPE_COMBOBOX);
+        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, countries);
+        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_EDITABLE, "false");
+
+        // We also add a label in form of the form control.
+        Map&lt;String, Object> labelProps = new HashMap&lt;String, Object>();
+        labelProps.put("text", "Country: ");
+        labelProps.put("styles", "* {width: 100px; color: gray;}");
+        StaticContent[] mixedContent = new StaticContent[] {new LabelContent(labelProps), new EditorContent(formControlArgs)};
+        styles.setProperty(Styles.KEY_MIXED_CONTENT, mixedContent);
+      }
+    }
+    
+    // The previously added form control is the only way the element can be edited.
+    if ("country".equals(authorNode.getName())) {
+      styles.setProperty(Styles.KEY_VISIBITY, "-oxy-collapse-text");
+    }
+
+    return styles;
+  }
+</codeblock>
+    <p>The full source code for this example is available inside the <xref
+        href="http://www.oxygenxml.com/oxygen_sdk.html#XML_Editor_Authoring_SDK" format="html"
+        scope="external">Author SDK</xref>.</p>
+  </body>
+</topic>

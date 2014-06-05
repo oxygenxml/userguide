@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="merge-revisions-range">
+  <title>Merge Revisions</title><prolog>
+    <metadata>
+      <keywords><indexterm>SVN Branches/Tags<indexterm>merging<indexterm>merge changes</indexterm><indexterm>reverse
+              merge</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>This is the case when you have made one or more changes to a branch and you want to
+      port them across a different branch. An example of such operation can be the following: we
+      know that a problem has been fixed by committing revisions 17, 20 and 25 on branch B1. These
+      changes are also needed in branch B2, so, in order to merge them, we need a working copy of
+      the B2 branch.</context>
+    <steps>
+      <step id="start-wizard">
+        <cmd>Go to menu <menucascade>
+            <uicontrol>Tools</uicontrol>
+            <uicontrol>Merge</uicontrol>
+          </menucascade></cmd>
+        <stepresult>The <uicontrol>Merge</uicontrol> wizard is opened.</stepresult>
+      </step>
+      <step>
+        <cmd>Select the <uicontrol>Merge revisions</uicontrol> option.</cmd>
+      </step>
+      <step id="merge_wizard_second_page">
+        <cmd>Press the <uicontrol>Next</uicontrol> button.</cmd>
+        <stepresult>The second page of the <uicontrol>Merge</uicontrol> wizard is
+          displayed.</stepresult>
+      </step>
+      <step>
+        <cmd>In the <b>Merge from (URL)</b> field enter the URL of the branch or tag containing the
+          changes that you want to port into your working copy. In our example, it is the URL of the
+          B1 branch.</cmd>
+        <info id="merge_browse_source_repository">You may also click the
+            <uicontrol>Browse</uicontrol> button to browse the repository and find the desired
+          branch. If you have merged from this branch before, then just use the drop down list which
+          shows a history of previously used URLs.</info>
+      </step>
+      <step>
+        <cmd>Select the revisions to merge. Choose between <uicontrol>all revisions</uicontrol> and
+            <uicontrol>specific revision(s)</uicontrol> options.</cmd>
+        <info>
+          <p>If the <uicontrol>Ignore ancestry / Disable merge tracking</uicontrol> option, found on
+            the wizard's <xref href="../topics/merge-options.dita#topic_anl_lcy_h4"
+                ><uicontrol>Options</uicontrol> page</xref>, is not selected, <uicontrol>all
+              revisions</uicontrol> means <i>all eligible revisions</i> that were not yet
+            merged.</p>
+          <p>If you choose <uicontrol>specific revision(s)</uicontrol>, you can specify one or
+            multiple single revisions and/or revision ranges. Also, you can mix <term>forward</term>
+            (ascending) and <term>backward</term> (descending) revision ranges and subtract specific
+            revisions from a range.</p>
+          <p>For example, the construction <codeph>1-5, -3, 7, 10-HEAD, 20-15</codeph>, includes
+            changes done in the following revisions: <ul id="ul_r3k_wvr_h4">
+              <li>1 to 5, without 3;</li>
+              <li>7;</li>
+              <li>10 to 14;</li>
+              <li>21 to the latest revision (<codeph>HEAD</codeph>).</li>
+            </ul><note>If using the Subversion command-line client, a revision range of the form
+                <codeph>1-5</codeph> means all changes starting from revision 2 up to revision 5
+              (the changes necessary to reach revision 5, committed after revision 1). Unlike the
+              Subversion command-line client, in Syncro SVN Client the revision ranges are
+              inclusive, meaning that it will process all revisions, starting with revision 1, up to
+              revision 5. This behaviour is dictated by the application's interface, given that it
+              is easier to choose explicitly the changes to be merged. The
+                <uicontrol>History</uicontrol> button opens <xref
+                href="../topics/history-dialog.dita#history-dialog" format="dita">the
+                  <uicontrol>History</uicontrol> dialog</xref> which allows selecting the revisions
+              to be merged (one or more).</note><note type="attention">The <codeph>HEAD</codeph>
+              revision is the only non-numerical revision allowed, and it can be used only when
+              specifying revision ranges, as one of the ends of the range (the other end must to be
+              an explicit revision number). But be careful when using it, as it might not refer to
+              the revision you think it does, if someone else made a commit in the
+              meantime.</note><note type="tip" id="tip_negative_revisions">If you want to roll-back
+              out of your working copy changes that have already been committed to the repository,
+              use the <i>negative revisions</i> notation (like <codeph>-3</codeph>) and/or
+                <i>backward revision ranges</i> (like <codeph>20-10</codeph>) to perform a
+                <term>reverse merge</term>.</note></p>
+        </info>
+      </step>
+      <step id="next-button">
+        <cmd>Press the <uicontrol>Next</uicontrol> button.</cmd>
+        <stepresult><ph id="options-set-result">The <xref
+              href="../topics/merge-options.dita#topic_anl_lcy_h4"><uicontrol>Options</uicontrol>
+              page</xref> of the wizard is displayed, where you can select the options you need for
+            a fine-grained control of the operation.</ph></stepresult>
+      </step>
+      <step id="perform-merge">
+        <cmd>Press the <uicontrol>Merge</uicontrol> button.</cmd>
+        <stepresult>The merge operation is performed.</stepresult>
+      </step>
+      <step conref="resolve-merge-conflicts.dita#resolve-merge-conflicts/resolve-conflicts">
+        <cmd/>
+      </step>
+    </steps>
+    <result id="merge-result">If the merge is completed successfully, all the changes corresponding
+      to the selected revisions should be merged in your working copy.</result>
+    <postreq id="merge-postreq">It's a good idea to look at the result of the merge, in the working
+      copy, to review the changes and see if it meets your expectations. Because merging is
+      sometimes complicated, <xref href="resolve-merge-conflicts.dita#resolve-merge-conflicts"
+        format="dita">conflicts may appear</xref> when there are major changes.<note type="note"><ph
+          id="commit-merge-result">The merge result is only in your local working copy and needs to
+          be committed to the repository, so that it can be seen by others.</ph></note></postreq>
+  </taskbody>
+</task>

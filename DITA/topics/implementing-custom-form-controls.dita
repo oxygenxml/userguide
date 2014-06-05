@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="implementing-custom-form-controls">
+  <title>Implementing Custom Form Controls</title>
+  <body>
+    <p>In case the built-in form controls are not enough, you can implement custom form controls in
+      Java and specify them using the following properties:<ul>
+        <li><uicontrol>rendererClassName</uicontrol> - the name of the class that draws the edited
+          value. It must be an implementation of
+            <codeph>ro.sync.ecss.extensions.api.editor.InplaceRenderer</codeph>. The renderer has to
+          be a SWING implementation and can be used both in the standalone and Eclipse
+          distributions;</li>
+        <li><uicontrol>swingEditorClassName</uicontrol> - you can use this property for the
+          standalone (<b>Swing</b>-based) distribution to specify the name of the class used for
+          editing. It is a <b>Swing</b> implementation of
+            <codeph>ro.sync.ecss.extensions.api.editor.InplaceEditor</codeph>;</li>
+        <li><uicontrol>swtEditorClassName</uicontrol> - you can use this property for the Eclipse
+          plug-in distribution to specify the name of the class used for editing. It is a <b>SWT</b>
+          implementation of the
+          <codeph>ro.sync.ecss.extensions.api.editor.InplaceEditor</codeph>;</li>
+        <li><uicontrol>classpath</uicontrol> - you can use this property to specify the location of
+          the classes used for a custom form control. The value of the
+            <uicontrol>classpath</uicontrol> property is an enumeration of URLs separated by
+          comma;</li>
+        <li><uicontrol>edit</uicontrol> - in case your form control edits the value of an attribute,
+          or the text value of an element, you can use the <uicontrol>@attribute_name</uicontrol>
+          and <uicontrol>#text</uicontrol> predefined values and oxygen will perform the commit
+          logic by itself. You can use the <uicontrol>custom</uicontrol> value to perform the commit
+          logic yourself.<note>If the custom form control chooses to perform the commit by itself,
+            it must do so after it triggers the
+              <codeph>ro.sync.ecss.extensions.api.editor.InplaceEditingListener.editingStopped(EditingEvent)</codeph>
+            notification.</note></li>
+      </ul></p>
+    <p>If the custom form control is intended to work in the <ph keyref="product"/> standalone
+      distribution, the declaration of <uicontrol>swtEditorClassName</uicontrol> is not required.
+      The <term>renderer</term> (the class that draws the value) and the <term>editor</term> (the
+      class that edits the value) have different properties because you can present a value in one
+      way and edit it in another way.</p>
+    <p>The custom form controls can use any of the predefined properties of the
+        <codeph>oxy_editor</codeph> function, as well as specified custom properties. This is an
+      example of how to specify a custom form
+      control:<codeblock outputclass="language-css">myElement {
+    content: oxy_editor(
+        rendererClassName, "com.custom.editors.CustomRenderer",
+        swingEditorClassName, "com.custom.editors.SwingCustomEditor",
+        swtEditorClassName, "com.custom.editors.SwtCustomEditor",
+        edit, "@my_attr"
+        customProperty1, "customValue1",
+        customProperty2, "customValue2"
+    )
+}</codeblock></p>
+    <note>Add these custom <b>Java</b> implementations in the <term>classpath</term> of the document
+      type associated with the document you are editing. To get you started the Java sources for the
+        <apiname>SimpleURLChooserEditor</apiname> are available in the Author SDK.</note>
+    <p>The <codeph>oxy_editor</codeph> function can receive other functions as parameters for
+      obtaining complex behaviors.</p>
+    <example>
+      <p>The following example shows how the combo box editor can obtain its values from the current
+        XML file by calling the <codeph>oxy_xpath</codeph>
+        function:<codeblock outputclass="language-css">link:before{
+      content: "Managed by:"
+        oxy_editor(
+            type, combo, 
+            edit, "@manager",
+            values, oxy_xpath('string-join(//@id , ",") '));</codeblock></p>
+    </example>
+  </body>
+</topic>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="howto-custom-protocol-plugin">
+  <title>How to Write A Custom Protocol Plugin</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Extend Oxygen with Plugins<indexterm>implement plugin<indexterm>how to write a custom
+              protocol plugin</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>For creating a custom protocol plugin, apply the following steps:</context>
+    <steps id="procedure-custom-protocol">
+      <step>
+        <cmd>Write the handler class for your protocol that implements the
+            <apiname>java.net.URLStreamHandler</apiname> interface.</cmd>
+        <info>Be careful to provide ways to correct and uncorrect the URLs of your files.</info>
+      </step>
+      <step>
+        <cmd>Write the plugin class by extending <xref
+          href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/plugin/Plugin.html"
+            format="html" scope="external"
+          ><apiname>ro.sync.exml.plugin.Plugin</apiname></xref>.</cmd>
+      </step>
+      <step>
+        <cmd>Write the plugin extension class that implements the <xref
+          href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLStreamHandlerPluginExtension.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.exml.plugin.urlstreamhandler.URLStreamHandlerPluginExtension</apiname></xref>
+          interface.</cmd>
+        <info>
+          <p>It is necessary that the plugin extension for the custom protocol implements the
+              <apiname>URLStreamHandlerPluginExtension</apiname> interface. Without it, you cannot
+            use your plugin, because <ph
+              keyref="product"/> is not able to
+            find the protocol handler.</p>
+          <p>You can choose also to implement the <xref
+            href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLChooserPluginExtension.html"
+              format="html" scope="external"><apiname>URLChooserPluginExtension</apiname></xref>
+            interface. It allows you to write and display your own customized dialog for selecting
+            resources that are loaded with the custom protocol.</p>
+          <p>An implementation of the extension <xref
+            href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLHandlerReadOnlyCheckerExtension.html"
+              format="html" scope="external"
+              ><apiname>URLHandlerReadOnlyCheckerExtension</apiname></xref> allows you to:</p>
+          <ul>
+            <li>mark a resource as read-only when it is opened</li>
+            <li>switch between marking the resource as read-only and read-write while it is
+              edited</li>
+          </ul>
+          <p>It is useful when opening and editing CMS resources.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Write the <filepath>plugin.xml</filepath> descriptor.</cmd>
+        <info>Remember to set the name of the plugin class to the one from the second step and the
+          plugin extension class name with the one you have chosen at step 3.</info>
+      </step>
+      <step>
+        <cmd>Create a .jar archive with all these files.</cmd>
+      </step>
+      <step>
+        <cmd>Install your new plugin in the <filepath>plugins</filepath> subfolder of the <ph
+            keyref="product"/> install
+          folder.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

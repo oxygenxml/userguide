@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dg-custom-css-pseudo-classes">
+  <title>Custom CSS Pseudo-classes</title>
+  <body>
+    <p>You can set your custom CSS pseudo-classes on the nodes from the <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorDocument.html"
+        format="html" scope="external">AuthorDocument</xref> model. These are similar to the normal
+      XML attributes, with the important difference that they are not serialized, and by changing
+      them the document does not create undo and redo edits - the document is considered unmodified.
+      You can use custom pseudo-classes for changing the style of an element (and its children)
+      without altering the document.</p>
+    <p>In oXygen they are used to hide/show the colspec elements from CALS tables. To take a look at
+      the implementation, see:</p>
+    <ol>
+      <li><filepath>OXYGEN_INSTALL_DIR/frameworks/docbook/css/cals_table.css</filepath> (Search for
+          <codeph>-oxy-visible-colspecs</codeph>)</li>
+      <li>The definition of action <codeph>table.toggle.colspec</codeph> from the DocBook 4
+        framework makes use of the pre-defined <xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/commons/operations/TogglePseudoClassOperation.html"
+          format="html" scope="external">TogglePseudoClassOperation</xref> Author operation.</li>
+    </ol>
+    <p>Here are some examples:</p>
+    <example>
+      <title>Controlling the visibility of a section using a pseudo-class</title>
+      <p>You can use a non standard (custom) pseudo-class to impose a style change on a specific
+        element. For instance you can have CSS styles matching the custom pseudo-class
+          <codeph>access-control-user</codeph>, like the one below: </p>
+      <pre>section {
+  display:none;
+}
+
+section:access-control-user {
+  display:block;
+} </pre>
+      <p>By setting the pseudo-class <codeph>access-control-user</codeph>, the element section will
+        become visible by matching the second CSS selector.</p>
+    </example>
+    <example>
+      <title>Coloring the elements over which the caret was placed</title>
+      <pre>*:caret-visited {  
+  color:red;
+} </pre>
+      <p>You could create an <xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorCaretListener.html"
+          format="html" scope="external">AuthorCaretListener</xref> that sets the
+          <codeph>caret-visited</codeph> pseudo-class to the element at the caret location. The
+        effect will be that all the elements traversed by the caret become red.</p>
+      <p>The API you can use from the caret listener:</p>
+      <pre><xref format="html" scope="external" href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentController.html#setPseudoClass(java.lang.String,%20ro.sync.ecss.extensions.api.node.AuthorElement)">ro.sync.ecss.extensions.api.AuthorDocumentController#setPseudoClass(java.lang.String, ro.sync.ecss.extensions.api.node.AuthorElement)</xref>
+<xref format="html" scope="external" href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentController.html#removePseudoClass(java.lang.String,%20ro.sync.ecss.extensions.api.node.AuthorElement)">ro.sync.ecss.extensions.api.AuthorDocumentController#removePseudoClass(java.lang.String, ro.sync.ecss.extensions.api.node.AuthorElement)</xref></pre>        
+    </example>
+    <p>Pre-defined <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorOperation.html"
+        format="html" scope="external">AuthorOperation</xref>s can be used directly in your
+      framework ("Author/Actions") to work with custom pseudo classes:</p>
+    <ol>
+      <li><xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/commons/operations/TogglePseudoClassOperation.html"
+          format="html" scope="external">TogglePseudoClassOperation</xref></li>
+      <li><xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/commons/operations/SetPseudoClassOperation.html"
+          format="html" scope="external">SetPseudoClassOperation</xref></li>
+      <li><xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/commons/operations/RemovePseudoClassOperation.html"
+          format="html" scope="external">RemovePseudoClassOperation</xref></li>
+    </ol>
+  </body>
+</topic>

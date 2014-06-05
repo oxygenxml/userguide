@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="add-font-to-builtin-FOP">
+  <title>Add a Font to the Built-in FOP</title>
+  <taskbody>
+    <context>
+      <p>If an XML document is transformed to PDF using the built-in Apache FOP processor but it
+        contains some Unicode characters that cannot be rendered by the default PDF fonts, then a
+        special font that is capable to render these characters must be configured and embedded in
+        the PDF result.</p>
+      <note type="important">If this special font is installed in the operating system, there is a
+        simple way of telling FOP to look for it. See <xref
+          href="add-font-to-builtin-FOP-simplified.dita#add-font-to-builtin-FOP" format="dita">the
+          simplified procedure for adding a font to FOP</xref>.</note>
+    </context>
+    <steps>
+      <step>
+        <cmd>Locate the font.</cmd>
+        <info>
+          <p>First, find out the name of a font that has the glyphs for the special characters you
+            used. One font that covers most characters, including Japanese, Cyrillic, and Greek, is
+            Arial Unicode MS.</p>
+          <p>On Windows the fonts are located into the <filepath>C:\Windows\Fonts</filepath>
+            directory. On Mac, they are placed in <filepath>/Library/Fonts</filepath>. To install a
+            new font on your system, is enough to copy it in the <filepath>Fonts</filepath>
+            directory.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Generate a font metrics file from the font file.</cmd>
+        <substeps>
+          <substep>
+            <cmd>Open a terminal.</cmd>
+          </substep>
+          <substep>
+            <cmd>Change the working directory to the <ph
+                keyref="product"/> install
+              directory.</cmd>
+          </substep>
+          <substep>
+            <cmd>Create the following script file in the <ph
+                keyref="product"/>
+              installation directory.</cmd>
+            <info>
+              <p>For Mac OS X and Linux create a file <filepath>ttfConvert.sh</filepath>:</p>
+              <codeblock outputclass="language-bourne">#!/bin/sh 
+
+export LIB=lib
+export CP=$LIB/fop.jar
+export CP=$CP:$LIB/avalon-framework-4.2.0.jar
+export CP=$CP:$LIB/xercesImpl.jar
+export CP=$CP:$LIB/commons-logging-1.1.1.jar
+export CP=$CP:$LIB/commons-io-1.3.1.jar
+export CP=$CP:$LIB/xmlgraphics-commons-1.5.jar
+export CP=$CP:$LIB/xml-apis.jar
+export CMD="java -cp $CP org.apache.fop.fonts.apps.TTFReader"
+export FONT_DIR='.'
+
+$CMD $FONT_DIR/Arialuni.ttf Arialuni.xml</codeblock>
+              <p>For Windows create a file <filepath>ttfConvert.bat</filepath>:</p>
+              <codeblock>@echo off
+set LIB=lib
+set CP=%LIB%\fop.jar
+set CP=%CP%;%LIB%\avalon-framework-4.2.0.jar
+set CP=%CP%;%LIB%\xercesImpl.jar
+set CP=%CP%;%LIB%\commons-logging-1.1.1.jar
+set CP=%CP%;%LIB%\commons-io-1.3.1.jar
+set CP=%CP%;%LIB%\xmlgraphics-commons-1.5.jar
+set CP=%CP%;%LIB%\xml-apis.jar
+set CMD=java -cp "%CP%" org.apache.fop.fonts.apps.TTFReader
+set FONT_DIR=C:\Windows\Fonts
+%CMD% %FONT_DIR%\Arialuni.ttf Arialuni.xml</codeblock>
+              <p>The paths specified in the file are relative to the <ph
+                  keyref="product"/>
+                installation directory. If you decide to create it in other directory, change the
+                file paths accordingly.</p>
+              <p>The <varname>FONT_DIR</varname> can be different on your system. Check that it
+                points to the correct font directory. If the Java executable is not in the
+                  <varname>PATH</varname>, specify the full path of the executable.</p>
+              <p>If the font has bold and italic variants, convert them too by adding two more lines
+                to the script file:</p>
+              <ul>
+                <li>for Mac OS X and
+                  Linux:<codeblock>$CMD $FONT_DIR/Arialuni-Bold.ttf Arialuni-Bold.xml
+$CMD $FONT_DIR/Arialuni-Italic.ttf Arialuni-Italic.xml</codeblock></li>
+                <li>for
+                  Windows:<codeblock>%CMD% %FONT_DIR%\Arialuni-Bold.ttf Arialuni-Bold.xml
+%CMD% %FONT_DIR%\Arialuni-Italic.ttf Arialuni-Italic.xml</codeblock></li>
+              </ul>
+            </info>
+          </substep>
+          <substep>
+            <cmd>Execute the script.</cmd>
+            <info>On Linux and Mac OS X, execute the command <cmdname>sh ttfConvert.sh</cmdname>
+              from the command line. On Windows, run the command <cmdname>ttfConvert.bat</cmdname>
+              from the command line or double click on the file
+              <cmdname>ttfConvert.bat</cmdname>.</info>
+          </substep>
+        </substeps>
+      </step>
+      <step>
+        <cmd>Register the font in FOP configuration. (not necessary in case of DITA PDF
+          transformations, see next step)</cmd>
+        <substeps>
+          <substep>
+            <cmd>Create a FOP configuration file that specifies the font metrics file for your
+              font.</cmd>
+            <info>
+              <codeblock outputclass="language-xml">&lt;fop version="1.0"&gt;
+  &lt;base&gt;./&lt;/base&gt;
+  &lt;font-base&gt;file:/C:/path/to/FOP/font/metrics/files/&lt;/font-base&gt;
+  &lt;source-resolution&gt;72&lt;/source-resolution&gt;
+  &lt;target-resolution&gt;72&lt;/target-resolution&gt;
+  &lt;default-page-settings height="11in" width="8.26in"/&gt;
+  &lt;renderers&gt;
+    &lt;renderer mime="application/pdf"&gt;
+      &lt;filterList&gt;
+        &lt;value&gt;flate&lt;/value&gt;
+      &lt;/filterList&gt;
+      &lt;fonts&gt;
+          &lt;font metrics-url="Arialuni.xml" kerning="yes" 
+                embed-url="file:/Library/Fonts/Arialuni.ttf"&gt;
+              &lt;font-triplet name="Arialuni" style="normal" 
+                    weight="normal"/&gt;
+          &lt;/font&gt;
+      &lt;/fonts&gt;
+    &lt;/renderer&gt;
+  &lt;/renderers&gt;
+&lt;/fop&gt;
+                       </codeblock>
+              <p>The <codeph>embed-url</codeph> attribute points to the font file to be embedded.
+                Specify it using the URL convention. The <codeph>metrics-url</codeph> attribute
+                points to the font metrics file with a path relative to the <codeph>base</codeph>
+                element. The triplet refers to the unique combination of name, weight, and style
+                (italic) for each variation of the font. In our case is just one triplet, but if the
+                font had variants, you would have to specify one for each variant. Here is an
+                example for Arial Unicode if it had italic and bold variants:</p>
+              <codeblock outputclass="language-xml">&lt;fop version="1.0"&gt;
+  ...
+    &lt;fonts&gt;
+        &lt;font metrics-url="Arialuni.xml" kerning="yes" 
+              embed-url="file:/Library/Fonts/Arialuni.ttf"&gt;
+            &lt;font-triplet name="Arialuni" style="normal" 
+                  weight="normal"/&gt;
+        &lt;/font&gt;
+        &lt;font metrics-url="Arialuni-Bold.xml" kerning="yes" 
+              embed-url="file:/Library/Fonts/Arialuni-Bold.ttf"&gt;
+            &lt;font-triplet name="Arialuni" style="normal" 
+                  weight="bold"/&gt;
+        &lt;/font&gt;
+        &lt;font metrics-url="Arialuni-Italic.xml" kerning="yes" 
+              embed-url="file:/Library/Fonts/Arialuni-Italic.ttf"&gt;
+            &lt;font-triplet name="Arialuni" style="italic" 
+                  weight="normal"/&gt;
+        &lt;/font&gt;
+    &lt;/fonts&gt;
+  ...
+&lt;/fop&gt;</codeblock>
+              <p>More details about the FOP configuration file are available on the FOP website.</p>
+            </info>
+          </substep>
+          <substep>
+            <cmd>Set the FOP configuration file in <uicontrol>Preferences</uicontrol>.</cmd>
+            <info>Go to menu <menucascade>
+                <uicontrol>Options</uicontrol>
+                <uicontrol>Preferences</uicontrol>
+                <uicontrol>XML</uicontrol>
+                <uicontrol>XSLT/FO/XQuery</uicontrol>
+                <uicontrol>FO Processors</uicontrol>
+              </menucascade> and enter the path of the FOP configuration file in the
+                <uicontrol>Configuration file for the built-in FOP</uicontrol> text field.</info>
+          </substep>
+        </substeps>
+      </step>
+      <step>
+        <cmd>Set the font on the document content.</cmd>
+        <info>This is usually done with XSLT stylesheet parameters and depends on the document type
+          processed by the stylesheet.</info>
+        <stepxmp>For DocBook documents, you can start with the predefined scenario called <b>DocBook
+            PDF</b>, <xref
+              href="../topics/xml-transformation-with-xslt.dita#xml-transformation-with-xslt"
+            format="dita">edit the XSLT parameters</xref>, and set the font name (in our example
+            <b>Arialuni</b>) to the parameters <parmname>body.font.family</parmname> and
+            <parmname>title.font.family</parmname>.</stepxmp>
+        <stepxmp>For TEI documents, you can start with the predefined scenario called <b>TEI
+          PDF</b>, <xref href="../topics/xml-transformation-with-xslt.dita#xml-transformation-with-xslt"
+            format="dita">edit the XSLT parameters</xref>, and set the font name (in our example
+            <b>Arialuni</b>) to the parameters <parmname>bodyFont</parmname> and
+            <parmname>sansFont</parmname>.</stepxmp>
+        <stepxmp>For DITA to PDF transformations using DITA-OT modify
+          the following two files:<ul>
+            <li><filepath>${frameworks}/dita/DITA-OT/plugins/org.dita.pdf2/cfg/fo/font-mappings.xml</filepath> -
+              the <codeph>font-face</codeph> element included in each element
+                <codeph>physical-font</codeph> having the <codeph>attribute
+                char-set="default"</codeph> must contain the name of the font (<i>Arialuni</i> in
+              our example)</li>
+            <li><filepath>${frameworks}/dita/DITA-OT/plugins/org.dita.pdf2/fop/conf/fop.xconf</filepath> - an
+              element <codeph>font</codeph> must be inserted in the element <codeph>fonts</codeph>
+              which is inside the element <codeph>renderer</codeph> having the attribute
+                <codeph>mime="application/pdf"</codeph>:<codeblock outputclass="language-xml">&lt;renderer mime="application/pdf"&gt;
+  . . .
+   &lt;fonts&gt;
+       &lt;font metrics-url="Arialuni.xml" kerning="yes" 
+           embed-url="file:/Library/Fonts/Arialuni.ttf"&gt;
+           &lt;font-triplet name="Arialuni" style="normal" 
+               weight="normal"/&gt;
+       &lt;/font&gt;
+   &lt;/fonts&gt;
+  . . .
+&lt;/renderer&gt;</codeblock></li>
+          </ul></stepxmp>
+      </step>
+    </steps>
+  </taskbody>
+</task>

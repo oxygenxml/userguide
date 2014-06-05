@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-additional-custom-selectors">
+  <title>Additional CSS Selectors</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Oxygen CSS Extensions<indexterm>supported features from CSS level
+              3<indexterm>additional custom selectors</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="product"/> Author provides support for selecting additional types of nodes. These
+      custom selectors apply to: <i>document</i>, <i>doctype sections</i>,
+        <i>processing-instructions</i>, <i>comments</i>, <i>CDATA sections</i>, <i>reference
+        sections</i>, and <i>entities</i>. <i>Processing-instructions</i> are not displayed by
+      default. To display them, go to <menucascade>
+        <uicontrol>Options</uicontrol>
+        <uicontrol> Preferences</uicontrol>
+        <uicontrol> Editor</uicontrol>
+        <uicontrol> Author</uicontrol>
+      </menucascade> and select <uicontrol>Show processing instructions</uicontrol>.</p>
+    <p>
+      <note>The custom selectors are presented in the default CSS for <uicontrol>Author</uicontrol>
+        mode and all of their properties are marked with an <i>!important</i> flag. For this reason,
+        you have to set the <i>!important</i> flag on each property of the custom selectors from
+        your CSS to be applicable.</note>
+    </p>
+    <p>For the custom selectors to work in your CSSs, declare the Author extensions namespace at the
+      beginning of the stylesheet documents: </p>
+    <codeblock outputclass="language-css">@namespace oxy url('http://www.oxygenxml.com/extensions/author');</codeblock>
+    <ul id="ul_gh4_fyr_gd">
+      <li> The <i>oxy|document</i> selector matches the entire
+        document:<codeblock outputclass="language-css">oxy|document {
+    display:block !important;
+}</codeblock>
+      </li>
+      <li> The following example changes the rendering of doctype sections:
+        <codeblock outputclass="language-css">oxy|doctype {
+    display:block !important;
+    color:blue !important;
+    background-color:transparent !important;
+}</codeblock>
+      </li>
+      <li><p> To match the processing instructions, you can use the
+            <i>oxy|processing-instruction</i> selector:
+          <codeblock outputclass="language-css">oxy|processing-instruction {
+    display:block !important;
+    color:purple !important;
+    background-color:transparent !important;
+}</codeblock></p><p>A
+          processing instruction usually has a target and one or more pseudo
+          attributes:<codeblock>&lt;?target_name data="b"?&gt;</codeblock></p> You can match a
+        processing instruction with a particular target from the CSS using the
+        construct:<codeblock>oxy|processing-instruction[target_name]</codeblock>You can also match
+        the processing instructions having a certain target and pseudo attribute value
+        like:<codeblock>oxy|processing-instruction[target_name][data="b"]</codeblock></li>
+      <li> The XML comments display in Author mode can be changed using the <i>oxy|comment</i>
+        selector:
+        <codeblock outputclass="language-css">oxy|comment {
+    display:block !important;
+    color:green !important;
+    background-color:transparent !important;
+}</codeblock>
+      </li>
+      <li>The <i>oxy|cdata</i> selector matches CDATA sections:
+        <codeblock outputclass="language-css">oxy|cdata{
+    display:block !important;
+    color:gray !important;
+    background-color:transparent !important;
+} </codeblock>
+      </li>
+      <li> The <i>oxy|entity</i> selector matches the entities
+        content:<codeblock outputclass="language-css">oxy|entity {
+    display:morph !important;
+    editable:false !important;
+    color:orange !important;
+    background-color:transparent !important;
+}</codeblock>
+      </li>
+      <li> The <i>references to entities</i>, <i>XInclude</i>, and <i>DITA conrefs</i> are expanded
+        by default in Author mode and <xref
+          href="http://www.oxygenxml.com/doc/ug-editor/topics/author-displaying-referred-content.html"
+          format="html" scope="external" product="editor">the referred content is
+          displayed.</xref><xref
+          href="http://www.oxygenxml.com/doc/ug-editorEclipse/topics/author-displaying-referred-content.html"
+          format="html" scope="external" product="editorEclipse">the referred content is
+          displayed.</xref><xref
+          href="http://www.oxygenxml.com/doc/ug-author/topics/author-displaying-referred-content.html"
+          format="html" scope="external" product="author">the referred content is
+          displayed.</xref><xref
+          href="http://www.oxygenxml.com/doc/ug-authorEclipse/topics/author-displaying-referred-content.html"
+          format="html" scope="external" product="authorEclipse">the referred content is
+          displayed.</xref><ph product="authorSDK">the referred content is displayed.</ph> The
+        referred resources are loaded and displayed inside the element or entity that refers them. <ul>
+          <li>
+            <p> You can use the <i>reference</i> property to customize the way these references are
+              rendered in the <uicontrol>Author</uicontrol> mode:</p>
+            <codeblock outputclass="language-css">oxy|reference {
+  border:1px solid gray !important;
+}</codeblock>
+          </li>
+        </ul><p>In the <uicontrol>Author</uicontrol> mode, content is highlighted when parts of text contain:<ul>
+            <li><xref
+                href="http://www.oxygenxml.com/doc/ug-editor/topics/author-change-tracking.html"
+                format="html" scope="external" product="editor">comments;</xref><xref
+                href="http://www.oxygenxml.com/doc/ug-editorEclipse/topics/author-change-tracking.html"
+                format="html" scope="external" product="editorEclipse">comments;</xref><xref
+                href="http://www.oxygenxml.com/doc/ug-author/topics/author-change-tracking.html"
+                format="html" scope="external" product="author">comments;</xref><xref
+                href="http://www.oxygenxml.com/doc/ug-authorEclipse/topics/author-change-tracking.html"
+                format="html" scope="external" product="authorEclipse">comments;</xref><ph
+                product="authorSDK">comments;</ph>
+            </li>
+            <li>changes and <xref
+                href="http://www.oxygenxml.com/doc/ug-editor/topics/author-change-tracking.html"
+                format="html" scope="external" product="editor"><i>Track Changes</i></xref><xref
+                href="http://www.oxygenxml.com/doc/ug-editorEclipse/topics/author-change-tracking.html"
+                format="html" scope="external" product="editorEclipse"><i>Track
+                Changes</i></xref><xref
+                href="http://www.oxygenxml.com/doc/ug-author/topics/author-change-tracking.html"
+                format="html" scope="external" product="author"><i>Track Changes</i></xref><xref
+                href="http://www.oxygenxml.com/doc/ug-authorEclipse/topics/author-change-tracking.html"
+                format="html" scope="external" product="authorEclipse"><i>Track
+                Changes</i></xref><ph product="authorSDK"><i>Track Changes</i></ph> was active when
+              the content was modified.</li>
+          </ul></p><p>If this content is referred, the <uicontrol>Author</uicontrol> mode does not
+          display the highlighted areas in the new context. If you want to mark the existence of
+          this comments and changes you can use the <i>oxy|reference[comments]</i>,
+            <i>oxy|reference[changeTracking]</i>, and <i>oxy|reference[changeTracking][comments]</i>
+          selectors.</p><note>Two artificial attributes (<i>comments</i> and <i>changeTracking</i>)
+          are set on the reference node, containing information about the number of comments and
+          track changes in the content.</note><ul>
+          <li>
+            <p>The following example represents the customization of the reference fragments that
+              contain comments:</p>
+            <codeblock outputclass="language-css">oxy|reference[comments]:before {
+  content: "Comments: " attr(comments) !important;  
+}</codeblock>
+          </li>
+          <li>
+            <p>To match reference fragments based on the fact that they contain change tracking
+              inside, use the <i>oxy|reference[changeTracking]</i> selector. </p>
+            <codeblock outputclass="language-css">oxy|reference[changeTracking]:before {
+  content: "Change tracking: " attr(changeTracking) !important;  
+}</codeblock>
+          </li>
+          <li>
+            <p>Here is an example of how you can set a custom color to the reference containing both
+              track changes and comments:</p>
+            <codeblock outputclass="language-css">oxy|reference[changeTracking][comments]:before {
+  content: "Change tracking: " attr(changeTracking) " and comments: " attr(comments) !important;  
+}</codeblock>
+          </li>
+        </ul></li>
+    </ul>
+    <p>A sample document rendered using these rules:</p>
+    <image href="../img/bt_dg_custom_selectors_sample.png"/>
+  </body>
+</topic>

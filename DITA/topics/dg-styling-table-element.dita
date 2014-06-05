@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-styling-table-element">
+  <title>Configuring tables</title>
+  <body>
+    <p>There are standard CSS properties used to indicate what elements are tables, table rows and
+      table cells. What CSS is missing is the possibility to indicate the cell spanning, row
+      separators or the column widths. <ph keyref="product"/> Author offers support for adding
+      extensions to solve these problems. This will be presented in the next chapters.</p>
+    <p>The table in this example is a simple one. The header must be formatted in a different way
+      than the ordinary rows, so it will have a background color.</p>
+    <p>
+      <codeblock outputclass="language-css">table{
+    display:table;
+    border:1px solid navy;
+    margin:1em;
+    max-width:1000px;
+    min-width:150px;
+}
+
+table[width]{
+  width:attr(width, length);
+}
+
+tr, header{
+    display:table-row;
+}
+
+header{
+    background-color: silver;
+    color:inherit
+}
+
+td{
+  display:table-cell;
+  border:1px solid navy;
+  padding:1em;
+}</codeblock>
+    </p>
+    <p>Because in the <xref href="dg-sdf-files-xml-schema.dita">schema</xref> the
+        <codeph>td</codeph> tag has the attributes <b>row_span</b> and <b>column_span</b> that are
+      not automatically recognized by <ph keyref="product"/> Author, a Java extension will be
+      implemented which will provide information about the cell spanning. See the section <xref
+        href="../tasks/dg-table-cell-spanning-provider.dita">Configuring a Table Cell Span
+        Provider</xref>.</p>
+    <p>The column widths are specified by the attributes <b>width</b> of the elements
+        <codeph>customcol</codeph> that are not automatically recognized by <ph keyref="product"/>
+      Author. It is necessary to implement a Java extension which will provide information about the
+      column widths. See the section <xref href="../tasks/dg-table-column-width-provider.dita"
+        >Configuring a Table Column Width Provider</xref>.</p>
+    <p>The table from our example does not make use of the attributes <codeph>colsep</codeph> and
+        <codeph>rowsep</codeph> (which are automatically recognized) but we still want the rows to
+      be separated by horizontal lines. It is necessary to implement a Java extension which will
+      provide information about the row and column separators. See the section <xref
+        href="../tasks/dg-table-rowsep-colsep-provider.dita"/>.</p>
+  </body>
+</topic>

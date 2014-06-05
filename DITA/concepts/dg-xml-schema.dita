@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="dg-xml-schema">
+  <title>XML Schema</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Customization Support<indexterm>simple customization tutorial<indexterm>XML
+              Schema</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>Let's consider the following XML Schema, <filepath>test_report.xsd</filepath> defining a
+            report with results of a testing session. The report consists of a title, few lines
+            describing the test suite that was run and a list of test results, each with a name and
+            a boolean value indicating if the test passed or failed.
+            <codeblock outputclass="language-xml">    
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+    &lt;xs:element name="report"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element ref="title"/&gt;
+                &lt;xs:element ref="description"/&gt;
+                &lt;xs:element ref="results"/&gt;
+            &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+    &lt;xs:element name="title" type="xs:string"/&gt;
+    &lt;xs:element name="description"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence maxOccurs="unbounded"&gt;
+                &lt;xs:element name="line"&gt;
+                    &lt;xs:complexType mixed="true"&gt;
+                        &lt;xs:sequence minOccurs="0" 
+                            maxOccurs="unbounded"&gt;
+                            &lt;xs:element name="important" 
+                              type="xs:string"/&gt;
+                        &lt;/xs:sequence&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;                
+            &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+    
+    &lt;xs:element name="results"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:sequence maxOccurs="unbounded"&gt;
+                &lt;xs:element name="entry"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                            &lt;xs:element name="test_name" 
+                              type="xs:string"/&gt;
+                            &lt;xs:element name="passed" 
+                               type="xs:boolean"/&gt;
+                        &lt;/xs:sequence&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+            &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+&lt;/xs:schema&gt;</codeblock>The
+            use-case is that several users are testing a system and must send report results to a
+            content management system. The Author customization should provide a visual editor for
+            this kind of documents.</p>
+  </conbody>
+</concept>

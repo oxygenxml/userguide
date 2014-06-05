@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="import-https-server-certificate">
+    <title>Troubleshooting HTTPS</title>
+    <taskbody>
+    <context>
+      <p>When <ph keyref="product"/> cannot connect to an HTTPS-capable server, most likely there is
+        no certificate set in the <term>Java Runtime Environment (JRE)</term> that oXygen runs into.
+        The following procedure describes how to:<ul id="ul_4r3_mhr_kf">
+          <li>export a certificate to a local file using any HTTPS-capable Web browser (for example
+            Internet Explorer);</li>
+          <li>import the certificate file into the JRE using the <b>keytool</b> tool that comes
+            bundled with <ph keyref="product"/>.</li>
+        </ul></p>
+    </context>
+        <steps>
+            <step>
+                <cmd>Export the certificate into a local file</cmd>
+                <substeps>
+                    <substep>
+                        <cmd>Point your HTTPS-aware Web browser to the repository URL. </cmd>
+                        <stepresult>
+                            <p>If this is your first visit to the repository it will be displayed a
+                                security alert stating that the security certificate presented by
+                                the server is not trusted.</p>
+                            <fig>
+                                <title>Security alert - untrusted certificate</title>
+                                <image href="../img/sa_security_alert.png"/>
+                            </fig>
+                        </stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Go to menu <menucascade>
+                                <uicontrol>Tools</uicontrol>
+                                <uicontrol>Internet Options</uicontrol>
+                            </menucascade>.</cmd>
+                        <stepresult><uicontrol>Internet Options</uicontrol> dialog is
+                            opened.</stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Select <uicontrol>Security</uicontrol> tab.</cmd>
+                    </substep>
+                    <substep>
+                        <cmd>Select <uicontrol>Trusted sites</uicontrol> icon.</cmd>
+                    </substep>
+                    <substep>
+                        <cmd>Press <uicontrol>Sites</uicontrol> button.</cmd>
+                        <stepresult>This will open <uicontrol>Trusted sites</uicontrol>
+                            dialog.</stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Add repository URL to <uicontrol>Websites</uicontrol> list.</cmd>
+                    </substep>
+                    <substep>
+                        <cmd>Close <uicontrol>Trusted sites</uicontrol> dialog and
+                                <uicontrol>Internet Options</uicontrol> dialog.</cmd>
+                    </substep>
+                    <substep>
+                        <cmd>Try again to connect to the same repository URL in Internet
+                            Explorer.</cmd>
+                        <stepresult>The same error page as above will be displayed.</stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Select <uicontrol>Continue to this website</uicontrol> option.</cmd>
+                        <stepresult>A clickable area with a red icon and text <uicontrol>Certificate
+                                Error</uicontrol> is added to Internet Explorer address
+                            bar.</stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Click on <uicontrol>Certificate Error</uicontrol> area.</cmd>
+                        <stepresult>A dialog containing <uicontrol>View certificates</uicontrol>
+                            link is displayed.</stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Click on <uicontrol>View certificates</uicontrol> link.</cmd>
+                        <stepresult><uicontrol>Certificate</uicontrol> dialog is
+                            displayed.</stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Select <uicontrol>Details</uicontrol> tab of
+                                <uicontrol>Certificate</uicontrol> dialog.</cmd>
+                    </substep>
+                    <substep>
+                        <cmd>Press <uicontrol>Copy to File</uicontrol> button.</cmd>
+                        <stepresult><uicontrol>Certificate Export Wizard</uicontrol> is
+                            started.</stepresult>
+                    </substep>
+                    <substep>
+                        <cmd>Follow indications of wizard for DER encoded binary X.509 certificate.
+                            Save certificate to local file <filepath>server.cer</filepath>.</cmd>
+                    </substep>
+                </substeps>
+            </step>
+            <step>
+                <cmd>Import the local file into the JRE running <ph
+            keyref="product"/>.</cmd>
+                <substeps>
+                    <substep>
+                        <cmd>Open a text-mode console with administrative rights.</cmd>
+                    </substep>
+                    <substep>
+                        <cmd>Go to the <filepath>lib/security</filepath> directory of the JRE
+              running <ph keyref="product"
+              />. You find the home directory of the JRE in the <i>java.home</i> property that is
+              displayed in the <uicontrol>About</uicontrol> dialog<ph
+                product="editor author developer diff svnClient">, <uicontrol> Installation
+                  Details</uicontrol>, <uicontrol>System properties</uicontrol> tab</ph>. On Mac OS
+              X systems, the <filepath>lib/security</filepath> directory is usually located in
+                <filepath>
+                /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home</filepath>
+              directory.</cmd>
+                    </substep>
+                    <substep>
+            <cmd>Run the following command:</cmd>
+            <info><screen xml:space="preserve">..\..\bin\keytool -import -trustcacerts -file server.cer -keystore cacerts</screen>The
+                <filepath>server.cer</filepath> file contains the server certificate, created during
+              the previous step. <b>keytool</b> requires a password before adding the certificate to
+              the JRE keystore. The default password is <i>changeit</i>. If somebody changed the
+              default password then he is the only one who can perform the import.</info>
+            <info>
+              <note>To make <ph keyref="product"/> accept a certificate even if it is invalid, go to
+                the <menucascade>
+                  <uicontrol>Options</uicontrol>
+                  <uicontrol> Preferences</uicontrol>
+                  <uicontrol> Connection settings</uicontrol>
+                  <uicontrol> HTTP(S)/WebDAV</uicontrol>
+                </menucascade> preferences page and enable the <uicontrol>Automatically accept a
+                  security certificate, even if invalid</uicontrol> option.</note>
+            </info>
+          </substep>
+                </substeps>
+            </step>
+            <step>
+                <cmd>Restart <ph keyref="product"/>. </cmd>
+            </step>
+        </steps>
+    </taskbody>
+  <related-links>
+    <link href="../topics/https-webdav-preferences.dita#https-webdav-preferences"/>
+  </related-links>
+</task>

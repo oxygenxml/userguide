@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="floating-license-server-setup">
+  <title>Setting up a Floating License Server Running as a Standalone Process</title>
+  <shortdesc>Setting up the floating license server.
+  </shortdesc>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>License<indexterm>floating
+          license server</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <note type="important">Add <ph>oXygenLicenseServer.exe</ph> manually in the Window Firewall
+        list of exceptions. Go to <menucascade>
+          <uicontrol>Control Panel</uicontrol>
+          <uicontrol>System and Security</uicontrol>
+          <uicontrol>Windows Firewall</uicontrol>
+          <uicontrol>Allow a program or feature through Windows Firewall</uicontrol>
+          <uicontrol> Allow another program</uicontrol>
+        </menucascade> and browse for <ph>oXygenLicenseServer.exe</ph> from the oXygen License
+        Server installation folder.</note>
+    </context>
+    <steps>
+      <step>
+        <cmd>Download the license server installation kit for your platform from one of the download
+          URLs included in the registration email message with your floating license key. </cmd>
+      </step>
+      <step>
+        <cmd>Unzip the install kit in a new folder.</cmd>
+        <info>
+          <p>The Windows installer <xref href="install-license-server-as-windows-service.dita"
+              >installs the license server as a Windows service</xref>. It provides the following
+            optional features that are not available in the other license server installers: </p>
+          <ul>
+            <li>Set the Windows Service name;</li>
+            <li>Start the Windows service automatically at Windows startup;</li>
+            <li>Create shortcuts on the Start menu for starting and stopping the Windows service
+              manually.</li>
+          </ul>
+          <p>If you use the zip archive on Windows you have to run the scripts provided in the
+            archive for installing, starting, stopping and uninstalling the server as a Windows
+            service.</p>
+          <p>The zip archive can be used for running the license server on any platform where a Java
+            virtual machine can run (Windows, Mac OS X, Linux / Unix, etc).</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Start the server using the startup script. </cmd>
+        <info>
+          <p>The startup script is called <filepath>licenseServer.bat</filepath> for Windows and
+              <filepath>licenseServer.sh</filepath> for Mac OS X and Unix / Linux. It has 2
+            parameters: </p>
+          <ul>
+            <li><codeph>licenseDir</codeph> - the path of the directory where the license files will
+              be placed. Default value: <filepath>license</filepath>. </li>
+            <li><codeph>port</codeph> - the TCP port number used to communicate with <ph
+                keyref="product"/> instances.
+              Default value: <b>12346</b>. </li>
+          </ul>
+        </info>
+        <stepxmp>
+          <p>The following is an example command line for starting the license server on Unix/Linux
+            and Mac OS X:</p>
+          <screen>sh licenseServer.sh myLicenseDir 54321</screen>
+        </stepxmp>
+        <stepxmp>
+          <p>The following is an example command line for starting the license server on
+            Windows:</p>
+          <screen>licenseServer.bat myLicenseDir 54321</screen>
+        </stepxmp>
+      </step>
+    </steps>
+    <postreq> The license folder must contain a text file called <filepath>license.txt</filepath>
+      which must contain a single floating license key corresponding to the set of purchased
+      floating licenses. If you have more than one floating license key for the same <ph
+        keyref="product"/> version obtained
+      from different purchases or you want to split a set of license keys between 2 different
+      servers please contact us at <i>support@oxygenxml.com</i> to merge / split your license keys.
+    </postreq>
+  </taskbody>
+</task>

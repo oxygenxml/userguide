@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-XPointerElementLocator-implem">
+  <title>The <apiname>XPointerElementLocator</apiname> implementation</title>
+  <body>
+    <p><apiname>XPointerElementLocator</apiname> is an implementation of the abstract class <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/link/ElementLocator.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.link.ElementLocator</apiname></xref> for links that
+      have one of the following XPointer element() scheme patterns:</p>
+    <dl>
+      <dlentry>
+        <dt>element(<varname>elementID</varname>)</dt>
+        <dd>
+          <p>Locate the element with the specified id.</p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>element(<varname>/1/2/3</varname>)</dt>
+        <dd>
+          <p>A child sequence appearing alone identifies an element by means of stepwise navigation,
+            which is directed by a sequence of integers separated by slashes (/); each integer n
+            locates the nth child element of the previously located element.</p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>element(<varname>elementID/3/4</varname>)</dt>
+        <dd>
+          <p>A child sequence appearing after a <varname>NCName</varname> identifies an element by
+            means of stepwise navigation, starting from the element located by the given name.</p>
+        </dd>
+      </dlentry>
+    </dl>
+    <p>The constructor separates the id/integers which are delimited by slashes(/) into a sequence
+      of identifiers (an XPointer path). It will also check that the link has one of the supported
+      patterns of the XPointer element() scheme.</p>
+    <codeblock outputclass="language-java">public XPointerElementLocator(IDTypeVerifier idVerifier, String link)
+                      throws ElementLocatorException {
+  super(link);
+  this.idVerifier = idVerifier;
+
+  link = link.substring("element(".length(), link.length() - 1);
+
+  StringTokenizer stringTokenizer = new StringTokenizer(link, "/", false);
+  xpointerPath = new String[stringTokenizer.countTokens()];
+  int i = 0;
+  while (stringTokenizer.hasMoreTokens()) {
+    xpointerPath[i] = stringTokenizer.nextToken();
+    boolean invalidFormat = false;
+    
+    // Empty xpointer component is not supported
+    if(xpointerPath[i].length() == 0){
+      invalidFormat = true;
+    }
+    
+    if(i &gt; 0){
+      try {
+        Integer.parseInt(xpointerPath[i]);
+      } catch (NumberFormatException e) {
+        invalidFormat = true;
+      }
+    }
+
+    if(invalidFormat){
+      throw new ElementLocatorException(
+        "Only the element() scheme is supported when locating XPointer links."
+        + "Supported formats: element(elementID), element(/1/2/3), 
+              element(elemID/2/3/4).");
+    }
+    i++;
+  }
+
+  if(Character.isDigit(xpointerPath[0].charAt(0))){
+    // This is the case when xpointer have the following pattern /1/5/7
+    xpointerPathDepth = xpointerPath.length;
+  } else {
+    // This is the case when xpointer starts with an element ID
+    xpointerPathDepth = -1;
+    startWithElementID  = true;
+  }
+}</codeblock>
+    <p>The method <apiname>startElement</apiname> will be invoked at the beginning of every element
+      in the XML document(even when the element is empty). The arguments it takes are</p>
+    <dl>
+      <dlentry>
+        <dt>
+          <varname>uri</varname>
+        </dt>
+        <dd>
+          <p>The namespace URI, or the empty string if the element has no namespace URI or if
+            namespace processing is disabled.</p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <varname>localName</varname>
+        </dt>
+        <dd>
+          <p>Local name of the element.</p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <varname>qName</varname>
+        </dt>
+        <dd>
+          <p>Qualified name of the element.</p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <varname>atts</varname>
+        </dt>
+        <dd>
+          <p>Attributes attached to the element. If there are no attributes, this argument will be
+            empty.</p>
+        </dd>
+      </dlentry>
+    </dl>
+    <p>The method returns <codeph>true</codeph> if the processed element is found to be the one
+      indicated by the link.</p>
+    <p>The <apiname>XPointerElementLocator</apiname> implementation of the
+        <apiname>startElement</apiname> will update the depth of the current element and keep the
+      index of the element in its parent. If the <codeph>xpointerPath</codeph> starts with an
+      element ID then the current element ID is verified to match the specified ID. If this is the
+      case the depth of the XPointer is updated taking into account the depth of the current
+      element.</p>
+    <p>If the XPointer path depth is the same as the current element depth then the kept indices of
+      the current element path are compared to the indices in the XPointer path. If all of them
+      match then the element has been found.</p>
+    <codeblock outputclass="language-java">public boolean startElement(String uri, String localName, 
+        String name, Attr[] atts) {
+  boolean linkLocated = false;
+  // Increase current element document depth
+  startElementDepth ++;
+  
+  if (endElementDepth != startElementDepth) {
+    // The current element is the first child of the parent
+    currentElementIndexStack.push(new Integer(1));
+  } else {
+    // Another element in the parent element
+    currentElementIndexStack.push(new Integer(lastIndexInParent + 1));
+  }
+  
+  if (startWithElementID) {
+    // This the case when xpointer path starts with an element ID.
+    String xpointerElement = xpointerPath[0];
+    for (int i = 0; i &lt; atts.length; i++) {
+      if(xpointerElement.equals(atts[i].getValue())){
+        if(idVerifier.hasIDType(
+            localName, uri, atts[i].getQName(), atts[i].getNamespace())){
+          xpointerPathDepth = startElementDepth + xpointerPath.length - 1;
+          break;
+        }
+      }
+    }
+  }
+      
+  if (xpointerPathDepth == startElementDepth){
+    // check if xpointer path matches with the current element path
+    linkLocated = true;
+    try {        
+      int xpointerIdx = xpointerPath.length - 1;
+      int stackIdx = currentElementIndexStack.size() - 1;
+      int stopIdx = startWithElementID ? 1 : 0;
+      while (xpointerIdx &gt;= stopIdx &amp;&amp; stackIdx &gt;= 0) {
+        int xpointerIndex = Integer.parseInt(xpointerPath[xpointerIdx]);
+        int currentElementIndex = 
+          ((Integer)currentElementIndexStack.get(stackIdx)).intValue();
+        if(xpointerIndex != currentElementIndex) {
+          linkLocated = false;
+          break;
+        }
+        
+        xpointerIdx--;
+        stackIdx--;
+      }
+
+    } catch (NumberFormatException e) {
+      logger.warn(e,e);
+    }
+  }
+  return linkLocated;
+}</codeblock>
+    <p>The method <apiname>endElement</apiname> will be invoked at the end of every element in the
+      XML document (even when the element is empty).</p>
+    <p>The <apiname>XPointerElementLocator</apiname> implementation of the
+        <apiname>endElement</apiname> updates the depth of the current element path and the index of
+      the element in its parent.</p>
+    <codeblock outputclass="language-java">public void endElement(String uri, String localName, String name) {
+  endElementDepth = startElementDepth;
+  startElementDepth --;
+  lastIndexInParent = ((Integer)currentElementIndexStack.pop()).intValue();
+}</codeblock>
+  </body>
+</topic>

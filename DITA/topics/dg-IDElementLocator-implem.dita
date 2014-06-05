@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-IDElementLocator-implem">
+  <title>The <apiname>IDElementLocator</apiname> implementation</title>
+  <body>
+    <p>The <apiname>IDElementLocator</apiname> is an implementation of the abstract class <xref
+        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/link/ElementLocator.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.ecss.extensions.api.link.ElementLocator</apiname></xref> for links that
+      use an <b>id</b>.</p>
+    <p>The constructor only assigns field values and the method <apiname>endElement</apiname> is
+      empty for this implementation.</p>
+    <p>The method <apiname>startElement</apiname> checks each of the element's attribute values and
+      when one matches the link, it considers the element found if one of the following conditions
+      is satisfied:</p>
+    <ul>
+      <li>
+        <p>the qualified name of the attribute is <codeph>xml:id</codeph>
+        </p>
+      </li>
+      <li>
+        <p>the attribute type is ID</p>
+      </li>
+    </ul>
+    <p>The attribute type is checked with the help of the method
+        <apiname>IDTypeVerifier.hasIDType</apiname>.</p>
+    <codeblock outputclass="language-java">public boolean startElement(String uri, String localName, 
+        String name, Attr[] atts) {
+  boolean elementFound = false;
+  for (int i = 0; i &lt; atts.length; i++) {
+    if (link.equals(atts[i].getValue())) {
+      if("xml:id".equals(atts[i].getQName())) {
+        // xml:id attribute
+        elementFound = true;          
+      } else {
+        // check if attribute has ID type
+        String attrLocalName = 
+          ExtensionUtil.getLocalName(atts[i].getQName());
+        String attrUri = atts[i].getNamespace();
+        if (idVerifier.hasIDType(localName, uri, attrLocalName, attrUri)) {
+          elementFound = true;
+        }
+      }
+    }
+  }
+  
+  return elementFound;
+}</codeblock>
+  </body>
+</topic>

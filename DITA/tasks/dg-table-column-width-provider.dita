@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="dg-table-column-width-provider">
+  <title>Configuring a Table Column Width Provider</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Author Settings<indexterm>Java API<indexterm>table column width provider</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>In the sample documentation framework the <codeph>table</codeph> element as well as the
+      table columns can have specified widths. In order for these widths to be considered by Author
+      we need to provide the means to determine them. As explained in the <xref
+        href="../topics/dg-styling-table-element.dita#dg-styling-table-element"/>, if you use the
+      table element attribute <b>width</b>
+      <ph keyref="product"/> can determine the table width automatically. In this example the table
+      has <codeph>col</codeph> elements with <b>width</b> attributes that are not recognized by
+      default. You will need to implement a Java extension class to determine the column widths.<p
+        conref="../topics/dg-java-files.dita#dg-java-files/javadoc-ref"/></context>
+    <steps>
+      <step>
+        <cmd>Create the class
+            <apiname>simple.documentation.framework.TableColumnWidthProvider</apiname>. This class
+          must implement the <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorTableColumnWidthProvider.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.AuthorTableColumnWidthProvider</apiname></xref>
+          interface.</cmd>
+        <info>
+          <codeblock outputclass="language-java">import ro.sync.ecss.extensions.api.AuthorAccess;
+import ro.sync.ecss.extensions.api.AuthorOperationException;
+import ro.sync.ecss.extensions.api.AuthorTableColumnWidthProvider;
+import ro.sync.ecss.extensions.api.WidthRepresentation;
+import ro.sync.ecss.extensions.api.node.AuthorElement;
+
+public class TableColumnWidthProvider 
+      implements AuthorTableColumnWidthProvider {</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Method <apiname>init</apiname> is taking as argument an <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorElement.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.node.AuthorElement</apiname></xref> that
+          represents the XML <codeph>table</codeph> element. In our case the column widths are
+          specified in <codeph>col</codeph> elements from the <codeph>table</codeph> element. In
+          such cases you must collect the span information by analyzing the <codeph>table</codeph>
+          element.</cmd>
+        <info>
+          <codeblock outputclass="language-java">	public void init(AuthorElement tableElement) {
+		this.tableElement = tableElement;
+		AuthorElement[] colChildren = tableElement.getElementsByLocalName("customcol");
+		if (colChildren != null &amp;&amp; colChildren.length &gt; 0) {
+			for (int i = 0; i &lt; colChildren.length; i++) {
+				AuthorElement colChild = colChildren[i];
+				if (i == 0) {
+					colsStartOffset = colChild.getStartOffset();
+				} 
+				if (i == colChildren.length - 1) {
+					colsEndOffset = colChild.getEndOffset();
+				}
+				// Determine the 'width' for this col.
+				AttrValue colWidthAttribute = colChild.getAttribute("width");
+				String colWidth = null;
+				if (colWidthAttribute != null) {
+					colWidth = colWidthAttribute.getValue();
+					// Add WidthRepresentation objects for the columns this 'customcol' specification
+					// spans over.
+					colWidthSpecs.add(new WidthRepresentation(colWidth, true));
+				}
+			}
+		}
+	}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The method <apiname>isTableAcceptingWidth</apiname> should check if the table cells are
+            <codeph>td</codeph>.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public boolean isTableAcceptingWidth(String tableCellsTagName) {
+  return "td".equals(tableCellsTagName);
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The method <apiname>isTableAndColumnsResizable</apiname> should check if the table
+          cells are <codeph>td</codeph>. This method determines if the table and its columns can be
+          resized by dragging the edge of a column.</cmd>
+        <info>
+          <codeblock outputclass="language-java">public boolean isTableAndColumnsResizable(String tableCellsTagName) {
+  return "td".equals(tableCellsTagName);
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Methods <apiname>getTableWidth</apiname> and <apiname>getCellWidth</apiname> are used
+          to determine the table and column width. The table layout engine will ask this <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorTableColumnWidthProvider.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.AuthorTableColumnWidthProvider</apiname></xref>
+          implementation what is the table width for each table element and the cell width for each
+          cell element from the table that was marked as cell in the CSS using the property
+            <codeph>display:table-cell</codeph>. The implementation is simple and just parses the
+          value of the <b>width</b> attribute. The methods must return <codeph>null</codeph> for the
+          tables / cells that do not have a specified width.</cmd>
+        <info>
+          <codeblock outputclass="language-java">	public WidthRepresentation getTableWidth(String tableCellsTagName) {
+		WidthRepresentation toReturn = null;
+		if (tableElement != null &amp;&amp; "td".equals(tableCellsTagName)) {
+			AttrValue widthAttr = tableElement.getAttribute("width");
+			if (widthAttr != null) {
+				String width = widthAttr.getValue();
+				if (width != null) {
+					toReturn = new WidthRepresentation(width, true);
+				}
+			}
+		}
+		return toReturn;
+	}</codeblock>
+          <codeblock outputclass="language-java">	public List&lt;WidthRepresentation&gt; getCellWidth(AuthorElement cellElement, int colNumberStart,
+			int colSpan) {
+		List&lt;WidthRepresentation&gt; toReturn = null;
+		int size = colWidthSpecs.size();
+		if (size &gt;= colNumberStart &amp;&amp; size &gt;= colNumberStart + colSpan) {
+			toReturn = new ArrayList&lt;WidthRepresentation&gt;(colSpan);
+			for (int i = colNumberStart; i &lt; colNumberStart + colSpan; i ++) {
+				// Add the column widths
+				toReturn.add(colWidthSpecs.get(i));
+			}
+		}
+		return toReturn;
+	}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Methods <apiname>commitTableWidthModification</apiname> and
+            <apiname>commitColumnWidthModifications</apiname> are used to commit changes made to the
+          width of the table or its columns when using the mouse drag gestures.</cmd>
+        <info>
+          <codeblock outputclass="language-java">	public void commitTableWidthModification(AuthorDocumentController authorDocumentController,
+			int newTableWidth, String tableCellsTagName) throws AuthorOperationException {
+		if ("td".equals(tableCellsTagName)) {
+			if (newTableWidth &gt; 0) {
+				if (tableElement != null) {
+					String newWidth = String.valueOf(newTableWidth);
+
+					authorDocumentController.setAttribute(
+							"width",
+							new AttrValue(newWidth),
+							tableElement);
+				} else {
+					throw new AuthorOperationException("Cannot find the element representing the table.");
+				}
+			}
+		}
+	}</codeblock>
+          <codeblock outputclass="language-java">public void commitColumnWidthModifications(AuthorDocumentController authorDocumentController,
+			WidthRepresentation[] colWidths, String tableCellsTagName) throws AuthorOperationException {
+		if ("td".equals(tableCellsTagName)) {
+			if (colWidths != null &amp;&amp; tableElement != null) {
+				if (colsStartOffset &gt;= 0 &amp;&amp; colsEndOffset &gt;= 0 &amp;&amp; colsStartOffset &lt; colsEndOffset) {
+					authorDocumentController.delete(colsStartOffset,
+							colsEndOffset);
+				}
+				String xmlFragment = createXMLFragment(colWidths);
+				int offset = -1;
+				AuthorElement[] header = tableElement.getElementsByLocalName("header");
+				if (header != null &amp;&amp; header.length &gt; 0) {
+					// Insert the cols elements before the 'header' element 
+					offset = header[0].getStartOffset();
+				}
+				if (offset == -1) {
+					throw new AuthorOperationException("No valid offset to insert the columns width specification.");
+				}
+				authorDocumentController.insertXMLFragment(xmlFragment, offset);
+			}
+		}
+	}
+
+	private String createXMLFragment(WidthRepresentation[] widthRepresentations) {
+		StringBuffer fragment = new StringBuffer();
+		String ns = tableElement.getNamespace();
+		for (int i = 0; i &lt; widthRepresentations.length; i++) {
+			WidthRepresentation width = widthRepresentations[i];
+			fragment.append("&lt;customcol");
+			String strRepresentation = width.getWidthRepresentation();
+			if (strRepresentation != null) {
+				fragment.append(" width=\"" + width.getWidthRepresentation() + "\"");
+			}
+			if (ns != null &amp;&amp; ns.length() &gt; 0) {
+				fragment.append(" xmlns=\"" + ns + "\"");
+			}
+			fragment.append("/&gt;");
+		}
+		return fragment.toString();
+	}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>The following three methods are used to determine what type of column width
+          specifications the table column width provider support. In our case all types of
+          specifications are allowed:</cmd>
+        <info>
+          <codeblock outputclass="language-java">
+	public boolean isAcceptingFixedColumnWidths(String tableCellsTagName) {
+		return true;
+	}
+
+	public boolean isAcceptingPercentageColumnWidths(String tableCellsTagName) {
+		return true;
+	}
+
+	public boolean isAcceptingProportionalColumnWidths(String tableCellsTagName) {
+		return true;
+	}</codeblock>
+        </info>
+        <info>
+          <p conref="../topics/dg-java-files.dita#dg-java-files/sdf_project"/>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>In the listing below, the XML document contains the table element:</p>
+      <codeblock outputclass="language-xml">&lt;table width="300"&gt;
+    &lt;customcol width="50.0px"/&gt;
+    &lt;customcol width="1*"/&gt;
+    &lt;customcol width="2*"/&gt;
+    &lt;customcol width="20%"/&gt;
+    &lt;header&gt;
+        &lt;td&gt;C1&lt;/td&gt;
+        &lt;td&gt;C2&lt;/td&gt;
+        &lt;td&gt;C3&lt;/td&gt;
+        &lt;td&gt;C4&lt;/td&gt;
+    &lt;/header&gt;
+    &lt;tr&gt;
+        &lt;td&gt;cs=1, rs=1&lt;/td&gt;
+        &lt;td&gt;cs=1, rs=1&lt;/td&gt;
+        &lt;td row_span="2"&gt;cs=1, rs=2&lt;/td&gt;
+        &lt;td row_span="3"&gt;cs=1, rs=3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;cs=1, rs=1&lt;/td&gt;
+        &lt;td&gt;cs=1, rs=1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td column_span="3"&gt;cs=3, rs=1&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;</codeblock>
+      <p>When no table column width provider is specified, the table has the following layout:</p>
+      <fig>
+        <title>Table layout when no column width provider is specified</title>
+        <image href="../img/bt_dg_table_no_column_width_provider.png"/>
+      </fig>
+      <p>When the above implementation is configured, the table has the correct layout:</p>
+      <fig>
+        <title>Columns with custom widths</title>
+        <image href="../img/bt_dg_table_with_column_widths.png"/>
+      </fig>
+    </result>
+  </taskbody>
+</task>

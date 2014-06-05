@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_ufx_btg_c3">
+  <title>Use Different Rendering Styles for Entity References, Comments or Processing
+    Instructions</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>Is there a way to display entity references in the <uicontrol>Author</uicontrol> mode
+        without the distinct gray background and tag markers?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>There is a built-in CSS stylesheet in the Oxygen libraries which is used when styling
+        content in the <uicontrol>Author</uicontrol> mode, no matter what CSS you use. This CSS has
+        the following
+        content:<codeblock outputclass="language-css">@namespace oxy url('http://www.oxygenxml.com/extensions/author');
+@namespace xi "http://www.w3.org/2001/XInclude";
+@namespace xlink "http://www.w3.org/1999/xlink";
+@namespace svg "http://www.w3.org/2000/svg";
+@namespace mml "http://www.w3.org/1998/Math/MathML";
+
+oxy|document {
+    display:block !important;
+}
+
+oxy|cdata {
+    display:morph !important;
+    white-space:pre-wrap !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|processing-instruction {
+    display:block !important;
+    color: rgb(139, 38, 201) !important;
+    white-space:pre-wrap !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|comment {
+    display:morph !important;
+    color: rgb(0, 100, 0) !important;
+    background-color:rgb(255, 255, 210) !important;
+    white-space:pre-wrap !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|reference:before,
+oxy|entity[href]:before{  
+  link: attr(href) !important;
+  text-decoration: underline !important;
+  color: navy !important;
+  
+  margin: 2px !important;
+  padding: 0px !important;  
+}
+
+oxy|reference:before {
+  display: morph !important;
+  content: url(../images/editContent.gif) !important;  
+}
+
+oxy|entity[href]:before{
+  display: morph !important;
+  content: url(../images/editContent.gif) !important;
+}
+
+oxy|reference,
+oxy|entity {
+    editable:false !important;
+    background-color: rgb(240, 240, 240) !important;
+    margin:0px !important;
+    padding: 0px !important;
+}
+
+oxy|reference {
+    display:morph !important;
+}
+
+oxy|entity {
+    display:morph !important;
+}
+
+oxy|entity[href] {
+  border: 1px solid rgb(175, 175, 175) !important;
+  padding: 0.2em !important;
+}
+
+xi|include {
+    display:block !important;
+    margin-bottom: 0.5em !important;
+    padding: 2px !important;
+}
+xi|include:before,
+xi|include:after{
+    display:inline !important;
+    background-color:inherit !important;
+    color:#444444 !important;
+    font-weight:bold !important;
+}
+
+xi|include:before {
+    content:url(../images/link.gif) attr(href)  !important;
+    link: attr(href) !important;
+}
+xi|include[xpointer]:before {
+    content:url(../images/link.gif) attr(href) " " attr(xpointer) !important;
+    link: oxy_concat(attr(href), "#", attr(xpointer)) !important;
+}
+
+xi|fallback {
+    display:morph !important;
+    margin: 2px !important;
+    border: 1px solid #CB0039 !important;
+}
+
+xi|fallback:before {
+    display:morph !important;
+    content:"XInclude fallback: " !important;
+    color:#CB0039 !important;
+}
+
+oxy|doctype {
+    display:block !important;
+    background-color: transparent !important;
+    color:blue !important;
+    border-width:0px !important;
+    margin:0px !important;
+    padding: 2px !important;
+}
+
+oxy|error {
+    display:morph !important;
+    editable:false !important;
+    white-space:pre !important;
+    color: rgb(178, 0, 0) !important;
+    font-weight:bold !important;
+}
+
+*[xlink|href]:before {
+    content:url(../images/link.gif);
+    link: attr(xlink|href) !important;
+}
+
+
+/*No direct display of the MathML and SVG images.*/
+svg|svg{	
+	display:inline !important;
+    white-space: trim-when-ws-only;
+}
+svg|svg svg|*{
+    display:none !important;
+    white-space:normal;
+}
+
+mml|math{	
+	display:inline !important;
+    white-space: trim-when-ws-only;
+}
+mml|math mml|*{
+    display:none !important;
+    white-space: normal;
+}
+</codeblock></p>
+      <p>In the CSS used for rendering the XML in <uicontrol>Author</uicontrol> mode do the following:<ul>
+          <li>import the special Author namespace;</li>
+          <li>use a special selector to customize the <codeph>entity</codeph> node.</li>
+        </ul><b>Example:</b></p>
+      <codeblock outputclass="language-css">@namespace oxy url('http://www.oxygenxml.com/extensions/author');
+oxy|entity {   
+   background-color: inherit !important;
+   margin:0px !important;
+   padding: 0px !important;   
+    -oxy-display-tags:none;
+}</codeblock>
+      <p>You can overwrite styles in the predefined CSS in order to custom style comments,
+        processing instructions and <term>CData</term> sections. You can also customize the way in
+        which <codeph>xi:include</codeph> elements are rendered.</p>
+    </section>
+  </body>
+</topic>

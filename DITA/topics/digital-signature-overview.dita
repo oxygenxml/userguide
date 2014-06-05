@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="overview">
+  <title>Overview</title>
+  <body>
+    <p>Digital signatures are widely used as security tokens, not just in XML. A digital signature
+      provides a mechanism for assuring integrity of data, the authentication of its signer, and the
+      non-repudiation of the entire signature to an external party:</p>
+    <ul>
+      <li>A digital signature must provide a way to verify that the data has not been modified or
+        replaced to ensure integrity.</li>
+      <li>The signature must provide a way to establish the identity of the data's signer for
+        authentication.</li>
+      <li>The signature must provide the ability for the data's integrity and authentication to be
+        provable to a third party for non-repudiation.</li>
+    </ul>
+    <p>A public key system is used to create the digital signature and it's also used for
+      verification. The signature binds the signer to the document because digitally signing a
+      document requires the originator to create a hash of the message and then encrypt that hash
+      value with his own private key. Only the originator has that private key and he is the only
+      one that can encrypt the hash so that it can be unencrypted using his public key. The
+      recipient, upon receiving both the message and the encrypted hash value, can decrypt the hash
+      value, knowing the originator's public key. The recipient must also try to generate the hash
+      value of the message and compare the newly generated hash value with the unencrypted hash
+      value received from the originator. If the hash values are identical, it proves that the
+      originator created the message, because only the actual originator could encrypt the hash
+      value correctly.</p>
+    <p>XML Signatures can be applied to any digital content (data object), including XML (see W3C
+      Recommendation, <xref href="http://www.w3.org/TR/xmldsig-core/" scope="external" format="html"
+        >XML-Signature Syntax and Processing</xref> ). An XML Signature may be applied to the
+      content of one or more resources:</p>
+    <ul>
+      <li>enveloped or enveloping signatures are applied over data within the same XML document as
+        the signature</li>
+      <li>detached signatures are applied over data external to the signature element; the signature
+        is "detached" from the content it signs. This definition typically applies to separate data
+        objects, but it also includes the instance where the signature and data object reside within
+        the same XML document but are sibling elements.</li>
+    </ul>
+    <p>The XML Signature is a method of associating a key with referenced data. It does not
+      normatively specify how keys are associated with persons or institutions, nor the meaning of
+      the data being referenced and signed.</p>
+    <p>The original data is not actually signed. Instead, the signature is applied to the output of
+      a chain of canonicalization and transformation algorithms, which are applied to the data in a
+      designated sequence. This system provides the flexibility to accommodate whatever
+      "normalization" or desired preprocessing of the data that might be required or desired before
+      subjecting it to being signed.</p>
+    <p>To canonicalize something means to put it in a standard format that everyone generally uses.
+      Because the signature is dependent on the content it is signing, a signature produced from a
+      not canonicalized document could possibly be different from one produced from a canonicalized
+      document. The canonical form of an XML document is physical representation of the document
+      produced by the method described in this specification. The term canonical XML refers to XML
+      that is in canonical form. The XML canonicalization method is the algorithm defined by this
+      specification that generates the canonical form of a given XML document or document subset.
+      The term XML canonicalization refers to the process of applying the XML canonicalization
+      method to an XML document or document subset. XML canonicalization is designed to be useful to
+      applications that require the ability to test whether the information content of a document or
+      document subset has been changed. This is done by comparing the canonical form of the original
+      document before application processing with the canonical form of the document result of the
+      application processing.</p>
+    <p>A digital signature over the canonical form of an XML document or document subset would
+      allows the signature digest calculations to be oblivious to changes in the original document's
+      physical representation. During signature generation, the digest is computed over the
+      canonical form of the document. The document is then transferred to the relying party, which
+      validates the signature by reading the document and computing a digest of the canonical form
+      of the received document. The equivalence of the digests computed by the signing and relying
+      parties (and hence the equivalence of the canonical forms over which they were computed)
+      ensures that the information content of the document has not been altered since it was
+      signed.</p>
+    <p>The following canonicalization algorithms are used in <ph
+        keyref="product"/>: Canonical XML (or Inclusive XML
+        Canonicalization)(<xref href="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+        scope="external" format="html">XMLC14N</xref>) and Exclusive XML Canonicalization(<xref
+        href="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/" scope="external" format="html"
+        >EXCC14N</xref>). The first is used for XML where the context doesn't change while the
+      second was designed for canonicalization where the context might change.</p>
+    <p>Inclusive Canonicalization copies all the declarations, even if they are defined outside of
+      the scope of the signature. In this way all the declarations you might use will be
+      unambiguously specified. A problem appears when the signed XML is moved into another XML
+      document which has other declarations because the Inclusive Canonicalization will copy then
+      and the signature will be invalid.</p>
+    <p>Exclusive Canonicalization finds out what namespaces you are actually using (the ones that
+      are a part of the XML syntax) and just copies those. It does not look into attribute values or
+      element content, so the namespace declarations required to process these are not copied.</p>
+    <p>This type of canonicalization is useful when you have a signed XML document that you wish to
+      insert into other XML documents and it will insure the signature verifies correctly every
+      time, so it is required when you need self-signed structures that support placement within
+      different XML contexts.</p>
+    <p>Inclusive Canonicalization is useful when it is less likely that the signed data will be
+      inserted in other XML document and it's the safer method from the security perspective because
+      it requires no knowledge of the data that are to be secured in order to safely sign them.</p>
+    <p>The canonicalization method can specify whether or not comments should be included in the
+      canonical form output by the XML canonicalization method. If a canonical form contains
+      comments corresponding to the comment nodes in the input node-set, the result is called
+      canonical XML with comments. In an uncommented canonical form comments are removed, including
+      delimiter for comments outside document element.</p>
+    <p>These three operations: Digital Signing, Canonicalization and Verification of the signature
+      are available from the <uicontrol>Tools</uicontrol> menu or from the Editor's <menucascade>
+        <uicontrol>contextual menu</uicontrol>
+        <uicontrol>Source</uicontrol>
+      </menucascade>.</p>
+  </body>
+</topic>

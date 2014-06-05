@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="api-faq-extend-bundle">
+  <title>Extending the Java Functionality of an Existing Framework (Document Type)</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>How can I change the way Docbook 4 <codeph>xref</codeph>'s display in author view based on
+        what element is at the <codeph>linkend</codeph>?</p>
+    </section>
+    <section>
+      <p>Please follow the steps below:<ol id="ol_6114a4af-a0ed-46f8-bb76-aaccadecc310">
+          <li>
+            <?oxy_delete author="costi" timestamp="20140516T121201+0300" content="Download the Author SDK, create a Java project (we work with Eclipse for example) which adds to the classpath all libraries of the SDK."?><?oxy_insert_start author="costi" timestamp="20140516T121220+0300"?>
+            Create a Maven Java project and add a dependency on the oXygen
+            classes:<codeblock>&lt;dependency>
+    &lt;groupId>com.oxygenxml&lt;/groupId>
+    &lt;artifactId>oxygen-sdk&lt;/artifactId>
+    &lt;version>${oxygen.version}&lt;/version>
+&lt;/dependency></codeblock>where
+              <codeph>${oxygen.version}</codeph> is the version of the oXygen.<p>Alternatively, if
+              the project does not use Maven, all the transitive dependencies of the above Maven
+              artifact need to be added to the classpath of the project.</p><?oxy_insert_end?></li>
+          <li>Also add to the project's class path the:
+            "OXYGEN_INSTALL_DIR\frameworks\docbook\docbook.jar".</li>
+          <li>Create a class which extends
+              <codeph>ro.sync.ecss.extensions.docbook.DocBook4ExtensionsBundle</codeph> and
+            overwrites the method:
+              <codeph>ro.sync.ecss.extensions.api.ExtensionsBundle#createLinkTextResolver()</codeph></li>
+          <li>For your custom resolver implementation you can start from the Java sources of the
+              <codeph>ro.sync.ecss.extensions.docbook.link.DocbookLinkTextResolver</codeph> (the
+            Java code for the entire Docbook customization is present in a subfolder in the Author
+            SDK).</li>
+          <li>Pack your extension classes in a JAR file. Copy the JAR to:
+            "OXYGEN_INSTALL_DIR\frameworks\docbook\custom.jar".</li>
+          <li>Start Oxygen, in the <menucascade>
+              <uicontrol>Preferences</uicontrol>
+              <uicontrol>Document Type Association</uicontrol>
+            </menucascade>-> page edit the Docbook 4 document type. In the <b>Classpath</b> list add
+            the path to the new JAR. In the extensions list select your custom extension instead of
+            the regular Docbook one.</li>
+          <li>You can rename the document type and also the "docbook" framework folder to something
+            else like "custom_docbook" and share it with others. A document type can also be
+            installed using our <xref href="../tasks/deploying-addons.dita">add-on
+            support</xref>.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
+<?oxy_options track_changes="on"?>

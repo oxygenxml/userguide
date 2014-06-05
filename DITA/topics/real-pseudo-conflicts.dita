@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="real-pseudo-conflicts">
+  <title>Real Conflicts vs Mergeable Conflicts</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Synchronize with the SVN Repository<indexterm>resolve conflicts<indexterm>real conflicts
+              vs mergeable conflicts</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>There are two types of conflicts:<ul>
+        <li><i>real conflict</i> (<image href="../img/SynchronizeRealConflict.png"/> decorator in
+            <i>Name</i> column)  - Syncro SVN Client considers the following resource states to be
+          real conflicts:<ul>
+            <li><i>conflicted</i> state - a file reported by SVN as being in this state is obtained
+              after it was updated/merged while having incoming and outgoing content or property
+              changes at the same time, changes which could not be merged. A content conflict
+                (<image href="../img/SVNWCConflicted10.png"/> symbol in <i>Local file status</i>
+              column) is reported when the modified file has binary content or it is a text file and
+              both local and remote changes were found on the same line. A properties conflict
+                (<image href="../img/SVNWCPropConflicted10.png"/> symbol in <i>Local properties
+                status</i> column) is reported when a property's value was modified both locally and
+              remotely;</li>
+            <li><i>tree conflicted</i> state (<image href="../img/SVNWCTreeConflicted10.png"/>
+              symbol in <i>Local file status</i> column)  - obtained after an update or merge
+              operation, while having changes at the directory structure level (for example, file is
+              locally modified and remotely deleted or locally scheduled for deletion and remotely
+              modified);</li>
+            <li><i>obstructed</i> state (<image href="../img/SVNWCObstructed10.png"/> symbol in
+                <i>Local file status</i> column) - obtained after a resource was versioned as one
+              kind of object (file, directory, symbolic link), but has been replaced outside Syncro
+              SVN Client by a different kind of object.</li>
+          </ul></li>
+        <li><i>pseudo-conflict</i> (<image href="../img/SVNSynchronizePseudoConflict9.png"/>
+          decorator in <i>Name</i> column) - a file is considered to be in <i>pseudo-conflict</i>
+          when it contains both incoming and outgoing changes. When incoming and outgoing changes do
+          not intersect, an update operation may automatically merge the incoming file content into
+          the existing locally one. In this case, the <i>pseudo-conflict</i> marker is removed. This
+          marker is used only as a warning which should prevent you to run into a real
+          conflict.</li>
+      </ul><note>
+        <ul>
+          <li>A conflicting resource cannot be committed to repository. You have to resolve it
+            first, by using <uicontrol>Mark Resolved</uicontrol> action (after manually
+            editing/merging file contents) or by using <uicontrol>Mark as Merged</uicontrol> action
+            (for pseudo-conflicts).</li>
+          <li><image href="../img/SynchronizeRealConflict.png"/> and <image
+              href="../img/SVNSynchronizePseudoConflict9.png"/> decorators are presented only when
+            one of the following view modes is selected: <uicontrol>Modified</uicontrol>,
+              <uicontrol>Incoming</uicontrol>, <uicontrol>Outgoing</uicontrol>,
+              <uicontrol>Conflicts</uicontrol>.</li>
+          <li>The <image href="../img/SVNSynchronizePseudoConflict9.png"/> marker is used also for
+            folders to signal that they contain a file in real conflict or pseudo-conflict
+            state.</li>
+        </ul>
+      </note></p>
+  </body>
+</topic>

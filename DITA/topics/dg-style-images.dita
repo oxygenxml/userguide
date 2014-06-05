@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-style-images">
+    <title>Styling Images</title>
+    <body>
+        <p>The CSS 2.1 does not specify how an element can be rendered as an image. To overpass this
+            limitation, <ph keyref="product"/> Author
+            supports a CSS Level 3 extension allowing to load image data from an URL. The URL of the
+            image must be specified by one of the element attributes and it is resolved through the
+            catalogs specified in <ph
+                keyref="product"/>.</p>
+        <codeblock outputclass="language-css">
+image{
+    display:block;
+    content: attr(href, url);
+    margin-left:2em;
+}</codeblock>
+        <p>Our <codeph>image</codeph> element has the required attribute <codeph>href</codeph> of
+      type <codeph>xs:anyURI</codeph>. The <codeph>href</codeph> attribute contains an image
+      location so the rendered content is obtained by using the
+      function:<codeblock>attr(href, url)</codeblock> The first argument is the name of the
+      attribute pointing to the image file. The second argument of the <codeph>attr</codeph>
+      function specifies the type of the content. If the type has the <codeph>url</codeph> value,
+      then <ph keyref="product"/> identifies the content as being an image. If the type is missing,
+      then the content will be the text representing the attribute value.</p>
+    <p><ph keyref="product"/> Author handles both absolute and relative specified URLs. If the image
+      has an <i>absolute</i> URL location (e.g:
+      "http://www.oasis-open.org/images/standards/oasis_standard.jpg") then it is loaded directly
+      from this location. If the image URL is <i>relative</i> specified to the XML document (e.g:
+      "images/my_screenshot.jpg") then the location is obtained by adding this value to the location
+      of the edited XML document.</p>
+        <p>An image can also be referenced by the name of a DTD entity which specifies the location
+            of the image file. For example if the document declares an entity <b>graphic</b> which
+            points to a JPEG image file:</p>
+        <codeblock outputclass="language-xml">&lt;!ENTITY graphic SYSTEM "depo/keyboard_shortcut.jpg" NDATA JPEG&gt;</codeblock>
+        <p>and the image is referenced in the XML document by specifying the name of the entity as
+            the value of an attribute:</p>
+        <codeblock outputclass="language-xml">&lt;mediaobject&gt;
+    &lt;imageobject&gt;
+        &lt;imagedata entityref="graphic" scale="50"/&gt;
+    &lt;/imageobject&gt;
+&lt;/mediaobject&gt;</codeblock>
+        <p>The CSS should use the functions <codeph>url</codeph>, <codeph>attr</codeph> and
+                <codeph>unparsed-entity-uri</codeph> for displaying the image in the Author
+            mode:</p>
+        <codeblock outputclass="language-css">imagedata[entityref]{
+    content: url(unparsed-entity-uri(attr(entityref))); 
+}
+</codeblock>
+        <p>To take into account the value of the <codeph>width</codeph> attribute of the
+                <codeph>imagedata</codeph> and use it for resizing the image, the CSS can define the
+            following rule:</p>
+        <codeblock outputclass="language-css">imagedata[width]{
+  width:attr(width, length);
+}</codeblock>
+        <fig>
+            <title>Samples of images in Author</title>
+            <image href="../img/bt_dg_images_in_author.png"/>
+        </fig>
+    </body>
+</topic>

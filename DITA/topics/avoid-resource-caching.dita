@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="avoid-resource-caching">
+  <title>Avoiding Resource Caching</title>
+  <body>
+    <p>A Java plugin installed in a web browser caches access to all HTTP resources that the applet
+      uses. This is useful in order to avoid downloading all the libraries each time the applet is
+      run. However, this may have undesired side-effects when the applet presents resources loaded
+      via  HTTP. If such a resource is modified on the server and the browser window is refreshed,
+      you might end-up with the old content of the resource presented in the applet.</p>
+    <p>To avoid such a behaviour, you need to edit the
+        <codeph>ro.sync.ecss.samples.AuthorComponentSampleApplet</codeph> class and set a custom
+        <codeph>URLStreamHandlerFactory</codeph> implementation. A sample usage is already available
+      in the class, but it is commented-out for increased
+      flexibility:<codeblock outputclass="language-java">//THIS IS THE WAY IN WHICH YOU CAN REGISTER YOUR OWN PROTOCOL HANDLER TO THE JVM.
+//THEN YOU CAN OPEN YOUR CUSTOM URLs IN THE APPLET AND THE APPLET WILL USE YOUR HANDLER
+URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory() {
+	public URLStreamHandler createURLStreamHandler(String protocol) {
+		if("http".equals(protocol) || "https".equals(protocol)) {
+			return new URLStreamHandler() {
+				@Override
+				protected URLConnection openConnection(URL u) throws IOException {
+					URLConnection connection = new HttpURLConnection(u, null);
+					if(!u.toString().endsWith(".jar")) {
+						//Do not cache HTTP resources other than JARS
+						//By default the Java HTTP connection caches content for 
+						//all URLs so if one URL is modified and then re-loaded in the
+						//applet the applet will show the old content.
+						connection.setDefaultUseCaches(false);
+					}
+					return connection;
+				}
+			};
+		}
+		return null;
+	}
+});</codeblock></p>
+  </body>
+</topic>

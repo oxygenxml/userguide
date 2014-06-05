@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="content-property-conflicts">
+  <title>Content Conflicts vs Property Conflicts</title><prolog>
+    <metadata>
+      <keywords><indexterm>Synchronize with the SVN Repository<indexterm>resolve conflicts<indexterm>content
+              conflicts vs property conflicts</indexterm></indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>A <i>Content conflict</i> appears in the content of a file. A merge occurs for every inbound
+      change to a file which is also modified in the working copy. In some cases, if the local
+      change and the incoming change intersect each other, <ph
+        conref="oxygenEntitiesDictionary.dita#OxygenEntities/apacheSubversion"/> cannot merge these
+      changes without intervention. So if the conflict is real when updating the file in question
+      the conflicting area is marked like this:</p>
+    <codeblock>
+              &lt;&lt;&lt;&lt;&lt;&lt;&lt; filename
+              your changes
+              =======
+              code merged from repository
+              &gt;&gt;&gt;&gt;&gt;&gt;&gt; revision
+              </codeblock>
+    <p>Also, for every conflicted file Subversion places three additional temporary files in your
+      directory:</p>
+    <ul>
+      <li><filepath>filename.ext.mine</filepath> - This is your file as it existed in your working
+        copy before you updated your working copy, that is without conflict markers. This file has
+        your latest changes in it and nothing else.</li>
+      <li><filepath>filename.ext.rOLDREV</filepath> - This is the file that was the BASE revision
+        before you updated your working copy, that is the file revision that you updated before you
+        made your latest edits.</li>
+      <li><filepath>filename.ext.rNEWREV</filepath> - This is the file that Subversion client just
+        received from the server when you updated your working copy. This file corresponds to the
+        HEAD revision of the repository.</li>
+    </ul>
+    <p>OLDREV and NEWREV are revision numbers. If you have conflicts with binary files, Subversion does not attempt to merge the files by itself. The local file remains unchanged (exactly as you last changed it) and you will get <filepath>filename.ext.r*</filepath> files also.</p>
+    <p>A <i>Property conflict</i> is obtained when two people modify the same property of the same
+      file or folder. When updating such a resource a file named
+        <filepath>filename.ext.prej</filepath> is created in your working copy containing the nature
+      of the conflict. Your local file property that is in conflict will not be changed. After
+      resolving the conflict you should use the <uicontrol>Mark resolved</uicontrol> action in order
+      to be able to commit the file. Note that the <uicontrol>Mark resolved</uicontrol> action does
+      not really resolve the conflict. It just removes the conflicted flag of the file and deletes
+      the temporary files.</p>
+  </body>
+</topic>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="dg-xpath-function">
+  <title>The <codeph>oxy_xpath()</codeph> Function</title>
+  <conbody>
+    <p>The <codeph>oxy_xpath()</codeph> function has the signature:</p>
+    <ul>
+      <li>
+        <syntaxdiagram>
+          <groupseq>
+            <kwd>oxy_xpath</kwd>
+            <sep>(</sep>
+            <kwd> XPathExpression </kwd>
+            <sep>[,</sep>
+            <kwd>processChangeMarkers</kwd>
+            <sep>,</sep>
+            <kwd>value</kwd>
+            <sep>])</sep>
+          </groupseq>
+        </syntaxdiagram>
+        <p>Evaluates the given XPath expression using Saxon 9 and returns the result. The parameters
+          of the function are: the XPath expression, followed by an optional
+            <codeph>processChangeMarkers</codeph> parameter and then by its value, which can be
+          either <codeph>true</codeph> or <codeph>false</codeph> (default value). When you set the
+          parameter to <codeph>true</codeph>, the function returns the result text with all the
+          change markers accepted (delete changes are removed and insert changes are
+            preserved).<note>The entities are ignored when the XPath expressions are evaluated.
+          </note></p>
+        <dl>
+          <dlentry>
+            <dt><keyword>expression</keyword></dt>
+            <dd>An XPath 2.0 expression to be evaluated. </dd>
+          </dlentry>
+        </dl>
+      </li>
+    </ul>
+    <example>
+      <p>The following example counts the number of words from a paragraph (including tracked
+        changes) and displays the result in front of
+        it:<codeblock outputclass="language-css">para:before{ 
+  content: 
+    concat("|Number of words:", 
+           oxy_xpath(
+                "count(tokenize(normalize-space(string-join(text(), '')), ' '))",
+                processChageMarkers,
+                true),
+           "| "); 
+}</codeblock></p>
+    </example>
+  </conbody>
+</concept>

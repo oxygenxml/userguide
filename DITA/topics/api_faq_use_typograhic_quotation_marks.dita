@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_d5b_tpl_5h">
+  <title>Dynamically Modify the Content Inserted by the Writer</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>Is there a way to insert typographic quotation marks instead of double quotes?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>By using the API you can set a document filter to change the text that is inserted in the
+        Author document. You can use this method to change the insertion of double quotes with the
+        typographic quotes. </p>
+      <p>Here is some sample code:
+        <codeblock outputclass="language-java">authorAccess.getDocumentController().setDocumentFilter(new AuthorDocumentFilter() {
+  /**
+   * @see ro.sync.ecss.extensions.api.AuthorDocumentFilter#insertText(ro.sync.ecss.extensions.api.AuthorDocumentFilterBypass, int, java.lang.String)
+   */
+  @Override
+  public void insertText(AuthorDocumentFilterBypass filterBypass, int offset, String toInsert) {
+    if(toInsert.length() == 1 &amp;&amp; "\"".equals(toInsert)) {
+      //User typed a quote but he actually needs a smart quote.
+      //So we either have to add \u201E (start smart quote)
+      //Or we add \u201C (end smart quote)
+      //Depending on whether we already have a start smart quote inserted in the current paragraph.
+     
+      try {
+        AuthorNode currentNode = authorAccess.getDocumentController().getNodeAtOffset(offset);
+        int startofTextInCurrentNode = currentNode.getStartOffset();
+        if(offset > startofTextInCurrentNode) {
+          Segment seg = new Segment();
+          authorAccess.getDocumentController().getChars(startofTextInCurrentNode, offset - startofTextInCurrentNode, seg);
+          String previosTextInNode = seg.toString();
+          boolean insertStartQuote = true;
+          for (int i = previosTextInNode.length() - 1; i >= 0; i--) {
+            char ch = previosTextInNode.charAt(i);
+            if('\u201C' == ch) {
+              //Found end of smart quote, so yes, we should insert a start one
+              break;
+            } else if('\u201E' == ch) {
+              //Found start quote, so we should insert an end one.
+              insertStartQuote = false;
+              break;
+            }
+          }
+         
+          if(insertStartQuote) {
+            toInsert = "\u201E";
+          } else {
+            toInsert = "\u201C";
+          }
+        }
+      } catch (BadLocationException e) {
+        e.printStackTrace();
+      }
+    }
+    System.err.println("INSERT TEXT |" + toInsert + "|");
+    super.insertText(filterBypass, offset, toInsert);
+  }
+});
+</codeblock></p>
+      <p>You can find the online Javadoc for <codeph>AuthorDocumentFilter</codeph> API here: <xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentFilter.html"
+          format="html" scope="external"
+          >http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentFilter.html</xref></p>
+      <p>An alternative to using a document filtering is the use of a
+          <apiname>ro.sync.ecss.extensions.api.AuthorSchemaAwareEditingHandlerAdapter</apiname>
+        which has clear callbacks indicating the source from where the API is called (Paste, Drag
+        and Drop, Typing).</p>
+    </section>
+  </body>
+</topic>

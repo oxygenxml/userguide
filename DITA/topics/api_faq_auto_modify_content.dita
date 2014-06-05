@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="api_faq_auto_modify_content">
+  <title>Modifying the XML content on open</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>I have a bunch of DITA documents which have a fixed path the image <codeph>src</codeph>
+        attributes. These paths are not valid and I am trying to move away from this practice by
+        converting it in to relative paths. When an XML document is opened, can I trigger the Java
+        API to change the fixed path to a relative path? </p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>Our Plugins SDK:<xref href="http://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins"
+          format="html" scope="external"
+          >http://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins</xref>contains a sample Plugin
+        Type called <varname>WorkspaceAccess</varname>.Such a plugin is notified when the
+        application starts and it can do what you want in a couple of ways:</p>
+      <p>
+        <ol id="ol_zxx_l1n_nm">
+          <li>You add a listener which notifies you when the user opens an XML document. Then if the
+            XML document is opened in the Author visual editing mode you can use our Author API to
+            change
+            attributes:<codeblock outputclass="language-java">    pluginWorkspaceAccess.addEditorChangeListener(new  WSEditorChangeListener() {
+      /**
+       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorOpened(java.net.URL) 
+       */
+      @Override
+      public void editorOpened(URL editorLocation) {
+        WSEditor openedEditor = pluginWorkspaceAccess.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA); 
+        if(openedEditor.getCurrentPage() instanceof WSAuthorEditorPage) {     
+        WSAuthorEditorPage authPage = (WSAuthorEditorPage)  openedEditor.getCurrentPage();
+        AuthorDocumentController docController = authPage.getDocumentController();
+        try {
+         //All changes will be undone by pressing Undo once.            
+         docController.beginCompoundEdit();
+         fixupImageRefs(docController,
+          docController.getAuthorDocumentNode());
+        } finally {       
+           docController.endCompoundEdit();
+          }
+        }   
+      }
+
+      private void fixupImageRefs(AuthorDocumentController docController, AuthorNode authorNode) {
+          if(authorNode instanceof AuthorParentNode) {
+            //Recurse
+            List&lt;AuthorNode&gt; contentNodes = ((AuthorParentNode)authorNode).getContentNodes();   
+            if(contentNodes != null) {
+               for (int i = 0; i &lt; contentNodes.size(); i++) {
+                 fixupImageRefs(docController, contentNodes.get(i));
+               }
+             }       
+          }
+          if(authorNode.getType() == AuthorNode.NODE_TYPE_ELEMENT) {   
+            AuthorElement elem = (AuthorElement) authorNode;         
+            if("image".equals(elem.getLocalName())) {           
+               if(elem.getAttribute("href") != null) {
+                 String originalHref = elem.getAttribute("href").getValue();
+                 URL currentLocation = docController.getAuthorDocumentNode().getXMLBaseURL();
+                //TODO here you compute the new href.
+                String newHref = null;   
+                docController.setAttribute("href", new AttrValue(newHref), elem); 
+             }
+          }
+        }
+      }
+    },
+  StandalonePluginWorkspace.MAIN_EDITING_AREA);</codeblock></li>
+          <li>You also have API to open XML documents in the
+            application:<codeblock>ro.sync.exml.workspace.api.Workspace.open(URL)</codeblock>So you
+            can create up a plugin which automatically opens one by one XML documents from a certain
+            folder in the application, makes modifications to them, saves the content by
+            calling:<codeblock>ro.sync.exml.workspace.api.editor.WSEditorBase.save()</codeblock>and
+            then closes the
+            editor:<codeblock>ro.sync.exml.workspace.api.Workspace.close(URL)</codeblock></li>
+        </ol>
+      </p>
+    </section>
+  </body>
+</topic>

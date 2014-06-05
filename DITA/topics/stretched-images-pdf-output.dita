@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="stretched-images-pdf-output">
+  <title>An Image Appears Stretched Out in the PDF Output</title>
+  <body>
+    <p>Sometimes, when publishing XML content (DITA, Docbook, etc), images are scaled up in the PDF
+      outputs but are displayed perfectly in the HTML (or WebHelp) output. </p>
+    <p>PDF output from XML content is obtained by first obtaining a intermediary XML format called
+      XSL-FO and then applying an XSL-FO processor to it to obtain the PDF. This stretching problem
+      is caused by the fact that all XSL-FO processors take into account the DPI (dots-per-inch)
+      resolution when computing the size of the rendered image.</p>
+    <p>The PDF processor which comes out of the box with the application is the open-source Apache
+      FOP processor. Here is what Apache FOP does when deciding the image size:<ol
+        id="ol_mhj_mlk_wh">
+        <li>If the XSL-FO output contains width, height or a scale specified for the image
+            <codeph>external-graphic</codeph> tag, then these dimensions are used. This means that
+          if in the XML (DITA, Docbook, etc) you set explicit dimensions to the image they will be
+          used as such in the PDF output.</li>
+        <li>If there are no sizes (width, height or scale) specified on the image XML element, the
+          processor looks at the image resolution information available in the image content. If the
+          image has such a resolution saved in it, the resolution will be used and combined with the
+          image width and height in order to obtain the rendered image dimensions.</li>
+        <li>If the image does not contain resolution information inside, Apache FOP will look at the
+          FOP configuration file for a default resolution. The FOP configuration file for XSLT
+          transformations which output PDF is located in the
+            <filepath>OXYGEN_INSTALL_DIR\lib\fop.xconf</filepath>. DITA publishing uses the DITA
+          Open Toolkit which has the Apache FOP configuration file located in
+            <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/fop/conf/fop.xconf</filepath>.
+          The configuration file contains two XML elements called <codeph>source-resolution</codeph>
+          and <codeph>target-resolution</codeph>. The values set to those elements can be increased,
+          usually a DPI value of 110 or 120 should render the image in PDF just like in the HTML
+          output.</li>
+      </ol></p>
+    <p>The commercial <b>RenderX XEP</b> XSL-FO processor behaves similarly but as a fallback it
+      uses 120 as the DPI value instead of using a configuration file.</p>
+    <note type="tip"><p>As a conclusion, it is best to save your images without any DPI resolution
+        information in them. For example the open-source GIMP image editor allows you when saving a
+        PNG image whether to save the resolution to it or not:</p><image
+        href="../img/gimpSaveResolution.png" id="image_b4x_zrk_wh"/></note>
+    <p>Having images without any resolution information saved in them allows you to control the
+      image resolution from the configuration file for all referenced images.</p>
+  </body>
+</topic>

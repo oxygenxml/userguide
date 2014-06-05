@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="using-XML-Catalogs">
+  <title>Working with XML Catalogs</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Editing XML Documents<indexterm>working with XML
+        Catalogs</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>An <term>XML Catalog</term> maps a system ID or an URI reference pointing to a resource
+      (stored either remotely or locally) to a local copy of the same resource. If XML processing
+      relies on external resources (like referred schemas and stylesheets, for example), the use of
+      an XML Catalog becomes a necessity when Internet access is not available or the Internet
+      connection is slow.</p>
+    <p><ph keyref="product"/> supports any XML
+      Catalog file that conforms to one of:</p>
+    <ol id="ol_rc1_nl3_mg">
+      <li><xref href="http://www.oasis-open.org/committees/download.php/14809/xml-catalogs.html"
+          scope="external" format="html">OASIS XML Catalogs Committee Specification v1.1</xref></li>
+      <li><xref href="http://www.oasis-open.org/specs/a401.htm" scope="external" format="html">OASIS
+          Technical Resolution 9401:1997</xref> including the plain-text flavor described in that
+        resolution</li>
+    </ol>
+    <p>The version 1.1 of the OASIS XML Catalog specification introduces the possibility to map a
+      system ID, a public ID or a URI to a local copy using only a suffix of the ID or URI used in
+      the actual document. This is done using the new catalog elements <xref
+        href="http://www.oasis-open.org/committees/download.php/14809/xml-catalogs.html#s.systemsuffix"
+        scope="external" format="html">systemSuffix </xref> and <xref
+        href="http://www.oasis-open.org/committees/download.php/14809/xml-catalogs.html#s.urisuffix"
+        scope="external" format="html">uriSuffix</xref>.</p>
+    <p>Depending on the resource type, <ph
+        keyref="product"/> uses different catalog
+      mappings. </p>
+    <table frame="all" id="table_cw5_1v3_mg">
+      <title>Catalog Mappings</title>
+      <tgroup cols="3">
+        <colspec colname="c1" colnum="1" colwidth="1*"/>
+        <colspec colname="c2" colnum="2" colwidth="1.45*"/>
+        <colspec colname="c3" colnum="3" colwidth="9.6*"/>
+        <thead>
+          <row>
+            <entry>Document </entry>
+            <entry>Referred Resource</entry>
+            <entry>Mappings</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry morerows="4">XML</entry>
+            <entry>DTD</entry>
+            <entry><i>system</i> or <i>public</i>
+              <p>The <xref
+                  href="preferences-xml-catalog.dita#preferences-xml-catalog/xml_catalog_prefer"
+                  format="dita"><uicontrol>Prefer</uicontrol></xref> option controls which one of
+                the mappings should be used.</p></entry>
+          </row>
+          <row>
+            <entry>XML Schema</entry>
+            <entry morerows="3">
+              <p>The following strategy is used (if one step fails to provide a resource, the next
+                is applied):<ol id="ol_iy1_mw3_mg">
+                  <li>resolve the schema using <term>uri</term> catalog mappings.</li>
+                  <li>resolve the schema using <term>system</term> catalog mappings. <p>This happens
+                      only if the  <xref
+                        href="preferences-xml-catalog.dita#preferences-xml-catalog/xml_catalog_resolve_schema"
+                        format="dita"><uicontrol>Resolve schema locations also through system
+                          mappings</uicontrol></xref> option is enabled (it is by default);</p></li>
+                  <li>resolve the root <term>namespace</term> using <term>uri</term> catalog
+                    mappings. </li>
+                </ol></p>
+            </entry>
+          </row>
+          <row>
+            <entry>Relax NG</entry>
+          </row>
+          <row>
+            <entry>Schematron</entry>
+          </row>
+          <row>
+            <entry>NVDL</entry>
+          </row>
+          <row>
+            <entry>XSL</entry>
+            <entry>XSL/ANY</entry>
+            <entry><i>uri</i></entry>
+          </row>
+          <row>
+            <entry>CSS</entry>
+            <entry>CSS</entry>
+            <entry><i>uri</i></entry>
+          </row>
+          <row>
+            <entry>XML Schema</entry>
+            <entry>XML Schema</entry>
+            <entry morerows="1">
+              <p>The following strategy is used (if one step fails to provide a resource, the next
+                is applied):<ol id="ol_ukf_kv3_mg">
+                  <li>resolve schema reference using <term>uri</term> catalog mappings. </li>
+                  <li>resolve schema reference using <term>system</term> catalog mappings. <p>This
+                      happens only if the  <xref
+                        href="preferences-xml-catalog.dita#preferences-xml-catalog/xml_catalog_resolve_schema"
+                        format="dita"><uicontrol>Resolve schema locations also through system
+                          mappings</uicontrol></xref> option is enabled (it is by default);</p></li>
+                  <li>resolve schema <term>namespace</term> using <term>uri</term> catalog mappings.
+                      <p>This happens only if the  <xref
+                        href="preferences-xml-catalog.dita#preferences-xml-catalog/xml_catalog_process_ns"
+                        format="dita"><uicontrol>Process namespaces through URI mappings for XML
+                          Schema</uicontrol></xref> option is enabled (it is not by
+                    default);</p></li>
+                </ol></p>
+            </entry>
+          </row>
+          <row>
+            <entry>Relax NG</entry>
+            <entry>Relax NG</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    <p>An XML Catalog file can be created quickly in <ph
+        keyref="product"/> starting from the two XML
+      Catalog document templates called <i>OASIS XML Catalog 1.0</i> and <i>OASIS XML Catalog
+        1.1</i> and available in <xref href="../tasks/creating-from-templates.dita">the document
+        templates dialog</xref>.</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE catalog 
+      PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" 
+      "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd">
+
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+    &lt;!-- Use "system" and "public" mappings when resolving DTDs -->
+    &lt;system 
+          systemId="http://www.docbook.org/xml/4.4/docbookx.dtd" 
+          uri="frameworks/docbook/4.4/dtd/docbookx.dtd"/>     
+    &lt;!-- The "systemSuffix" matches any system ID ending in a specified string -->
+    &lt;systemSuffix 
+          systemIdSuffix="docbookx.dtd" 
+          uri="frameworks/docbook/dtd/docbookx.dtd"/>
+
+    &lt;!-- Use "uri" for resolving XML Schema and XSLT stylesheets -->
+    &lt;uri 
+          name="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" 
+          uri="frameworks/docbook/5.0/rng/docbookxi.rng"/>
+
+    &lt;!-- The "uriSuffix" matches any URI ending in a specified string -->
+    &lt;uriSuffix 
+          uriSuffix="docbook.xsl" 
+          uri="frameworks/docbook/xsl/fo/docbook.xsl"/>
+
+&lt;/catalog></codeblock>
+    <p><ph keyref="product"/> comes with a built-in
+      catalog set as default, but you can also create your own one. <ph
+        keyref="product"/> looks for a catalog in the
+      following order:<ul>
+        <li>user-defined catalog set globally in the <xref
+            href="preferences-xml-catalog.dita#preferences-xml-catalog">XML Catalog
+            preferences</xref> page;</li>
+        <li>user-defined catalog set at document type level, in the <xref
+            href="preferences-document-type-association.dita#preferences-document-type-association"
+            >Document Type Association preferences pages</xref>;</li>
+        <li>built-in catalogs.</li>
+      </ul></p>
+    <example>
+      <p>An XML catalog can be used to map a W3C XML Schema specified with an URN in the
+          <codeph>xsi:noNamespaceSchemaLocation</codeph> attribute of an XML document to a local
+        copy of the schema.</p>
+      <p>Considering the following XML document code snippet: </p>
+      <codeblock outputclass="language-xml">&lt;topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:noNamespaceSchemaLocation="urn:oasis:names:tc:dita:xsd:topic.xsd:1.1"&gt;</codeblock>
+      <p>The URN can be resolved to a local schema file with a catalog entry like: </p>
+      <codeblock outputclass="language-xml">&lt;uri name="urn:oasis:names:tc:dita:xsd:topic.xsd:1.1"
+    uri="topic.xsd"/&gt;</codeblock>
+    </example>
+  </body>
+</topic>

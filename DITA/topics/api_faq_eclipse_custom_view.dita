@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="api_faq_eclipse_custom_view">
+  <title>Use a custom view with the Oxygen Eclipse plugin distribution</title>
+  <body>
+    <section>
+      <title>Question</title>
+      <p>Is it possible to create a custom view in Eclipse which can insert certain XML fragments in
+        the documents opened with the Oxygen plugin?</p>
+    </section>
+    <section>
+      <title>Answer</title>
+      <p>Here you can find more information about the oXygen Eclipse SDK:</p>
+      <p><xref href="http://www.oxygenxml.com/oxygen_sdk.html#oXygen_Eclipse_plugin" format="html"
+          scope="external"/></p>
+      <p>Use the provided Eclipse plugin sample project as a starting point. From any custom
+        view/component you can have singleton access to the Oxygen API using the
+          <codeph>ro.sync.exml.workspace.api.PluginWorkspaceProvider.getPluginWorkspace()</codeph>
+        API. </p>
+      <p>The Java code for inserting a certain XML fragment in the currently open editor (either in
+        the Text or Author editing modes) would look like
+        this:<codeblock outputclass="language-java">    WSEditor currentEditorAccess = PluginWorkspaceProvider.getPluginWorkspace().getCurrentEditorAccess(PluginWorkspace.MAIN_EDITING_AREA);
+    if(currentEditorAccess.getCurrentPage() instanceof WSXMLTextEditorPage) {
+      //Editor opened in Text page
+      WSXMLTextEditorPage tp = (WSXMLTextEditorPage) currentEditorAccess.getCurrentPage();
+      //You can access an API to insert text in the XML content
+//      tp.getDocument().insertString(tp.getCaretOffset(), "&lt;testTag/>", null);
+      //This is the internal StyledText implementation
+//      tp.getTextComponent()
+      //You can use this XPath API to find the range of an XML element.
+//      tp.findElementsByXPath(xpathExpression)
+    } else if(currentEditorAccess.getCurrentPage() instanceof WSAuthorEditorPage) {
+      //Editor opened in Author page
+//      try {
+        WSAuthorEditorPage authPage = (WSAuthorEditorPage) currentEditorAccess.getCurrentPage();
+        //Then you can do stuff like this to insert XML at caret position
+//        authPage.getDocumentController().insertXMLFragment("&lt;testTag/>", authPage.getCaretOffset());
+//      } catch (AuthorOperationException e) {
+//        // TODO Auto-generated catch block
+//        e.printStackTrace();
+//      }
+    } </codeblock></p>
+    </section>
+  </body>
+</topic>

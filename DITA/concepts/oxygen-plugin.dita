@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="oxygen-plugin">
+  <title>General configuration of an <ph keyref="product"/> plugin</title>
+  <abstract><indexterm>Extend Oxygen with plugins<indexterm>implement
+    plugin</indexterm></indexterm>The <ph keyref="product"/> functionality can be extended with
+    plugins that implement a clearly specified API. <ph product="author editor">For customizing the
+      rendering and functionality available when an XML document is rendered in the Author visual
+      editing mode, please see the <xref
+        href="http://www.oxygenxml.com/doc/ug-oxygen/#topics/author-devel-guide-intro.html"
+        format="html" scope="external">Author Developer Guide</xref>.</ph></abstract>
+  <conbody>
+    <p>On the <ph keyref="product"/> website there is a <xref
+        href="http://www.oxygenxml.com/pluginsSDK.html" scope="external" format="html">Plugin
+        Development Kit</xref> with sample plugins (source and compiled Java code) and the Javadoc
+      API necessary for developing custom plugins. </p>
+    <p>The minimal implementation of a plugin must provide:</p>
+    <ul>
+      <li>a Java class that extends the <apiname>ro.sync.exml.plugin.Plugin</apiname> class</li>
+      <li>a Java class that implements the <apiname>ro.sync.exml.plugin.PluginExtension</apiname>
+        interface</li>
+      <li>a plugin descriptor file called <filepath>plugin.xml</filepath></li>
+    </ul>
+    <p>A <apiname>ro.sync.exml.plugin.PluginDescriptor</apiname> object is passed to the constructor
+      of the subclass of the <apiname>ro.sync.exml.plugin.Plugin</apiname> class. It contains the
+      following data items about the plugin:</p>
+    <ul>
+      <li><parmname>basedir</parmname> - <i>File</i> object - the base directory of the plugin.</li>
+      <li><parmname>description</parmname> - <i>String</i> object - the description of the
+        plugin.</li>
+      <li><parmname>name</parmname> - <i>String</i> object - the name of the plugin.</li>
+      <li><parmname>vendor</parmname> - <i>String</i> object - the vendor name of the plugin.</li>
+      <li><parmname>version</parmname> - <i>String</i> object - the plugin version.</li>
+      <li><ph id="plugin-id"><parmname>id</parmname> - <i>String</i> object - an unique
+          identifier.</ph></li>
+    </ul>
+    <p>The <xref
+        href="http://www.oxygenxml.com/InstData/Editor/Plugins/javadoc/ro/sync/exml/plugin/PluginDescriptor.html"
+        format="html" scope="external"
+        ><apiname>ro.sync.exml.plugin.PluginDescriptor</apiname></xref> fields are filled with
+      information from the plugin descriptor file.</p>
+    <p>The plugin descriptor is an XML file that defines how the plugin is integrated in <ph
+        keyref="product"/> and what libraries are loaded. The structure of the plugin descriptor
+      file is fully described in a DTD grammar located in
+        <filepath>OXYGEN_INSTALLATION_FOLDER/plugins/plugin.dtd</filepath>. Here is a sample plugin
+      descriptor used by the <i>Capitalize Lines</i> sample plugin:</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd"&gt;
+&lt;plugin
+    name="Capitalize Lines"
+    description="Capitalize the first character on each line"
+    version="1.0.0"
+    vendor="SyncRO"
+    class="ro.sync.sample.plugin.caplines.CapLinesPlugin"&gt;
+    &lt;runtime&gt;
+        &lt;library name="lib/caplines.jar"/&gt;
+    &lt;/runtime&gt;
+    &lt;extension type="selectionProcessor" 
+    class="ro.sync.sample.plugin.caplines.CapLinesPluginExtension" keyboardShortcut="ctrl shift EQUALS"/&gt;
+&lt;/plugin&gt;</codeblock>
+    <p>Libraries referenced by the plugin can have three scopes:<ul id="ul_cw1_gd3_c4">
+        <li><term>local</term> - the library is loaded in the plugin's own class loader. This is the
+          default behaviour;</li>
+        <li><term>global</term> - the library is loaded in the main application class loader as the
+          last library in the list (as if it would be present in the application
+            <filepath>lib</filepath> directory); </li>
+        <li><term>globalHighPriority</term> - the library is loaded in the main application class
+          loader as the first library in the list (useful to patch certain resources located in
+          other JARs of the application).</li>
+      </ul></p>
+    <p>If your plugin is of type <i>Selection</i>, <i>Document</i> or <i>General</i>, and thus
+      contributes an action either to the contextual menu or to the main menu of the Text editing
+      mode, then you can assign a keyboard shortcut for it. You can use the
+        <codeph>keyboardShortcut</codeph> attribute for each <codeph>extension</codeph> element to
+      specify the desired shortcut.</p>
+    <note type="tip">To compose string representations of the desired shortcut keys you can go to
+      the <ph keyref="product"/>
+      <uicontrol>Menu Shortcut Keys</uicontrol> preferences page, press <uicontrol>Edit</uicontrol>
+      on any action, press the desired key sequence and use the representation which appears in the
+      edit dialog.</note>
+  </conbody>
+</concept>

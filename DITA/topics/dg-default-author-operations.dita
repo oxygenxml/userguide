@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dg-default-author-operations">
+  <title>Author Default Operations</title>
+  <prolog>
+    <metadata>
+      <keywords><indexterm>Author Settings<indexterm>Author default operations</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>Below are listed all the operations and their arguments:<ul>
+        <li><b><apiname>InsertFragmentOperation</apiname></b><p>Inserts an XML fragment at the
+            current cursor position. The selection - if there is one, remains unchanged. The
+            fragment will be inserted in the current context of the cursor position meaning that if
+            the current XML document uses some namespace declarations then the inserted fragment
+            must use the same declarations. The inserted fragment will not be copied and pasted to
+            the cursor position, but the namespace declarations of the fragment will be adapted if
+            needed to the existing namespace declarations of the XML document. For more details
+            about the list of parameters go to <xref
+              href="dg-author-op-InsertFragmentOperation-arguments.dita"/>.</p></li>
+        <li><b><apiname>InsertOrReplaceFragmentOperation</apiname></b><p>Similar to
+                <b><apiname>InsertFragmentOperation</apiname></b>, except it removes the selected
+            content before inserting the fragment.</p></li>
+        <li><b><apiname>InsertOrReplaceTextOperation</apiname></b><p>Inserts a text at current
+            position removing the selected content, if any. The argument of this operation is:<ul>
+              <li><b><apiname>text</apiname></b> - the text section to insert.</li>
+            </ul></p></li>
+        <li><b><apiname>SurroundWithFragmentOperation</apiname></b><p>Surrounds the selected content
+            with a text fragment. Since the fragment can have multiple nodes, the surrounded content
+            will be always placed in the first leaf element. If there is no selection, the operation
+            will simply insert the fragment at the caret position. For more details about the list
+            of parameters go to <xref
+              href="dg-author-op-SurroundWithFragmentOperation-arguments.dita"/>.</p></li>
+        <li><b><apiname>SurroundWithTextOperation</apiname></b><p>This operation has two arguments
+            (two text values) that will be inserted before and after the selected content. If there
+            is no selected content, the two sections will be inserted at the caret position. The
+            arguments of the operation are:<ul>
+              <li><b><apiname>header</apiname></b> - the text that is placed before the
+                selection;</li>
+              <li><b><apiname>footer</apiname></b> - the text that is placed after the
+                selection.</li>
+            </ul></p></li>
+        <li><b><apiname>InsertEquationOperation</apiname></b><p>Inserts a fragment containing a
+            MathML equation at caret offset. The argument of this operation is:<ul>
+              <li><b><apiname>fragment</apiname></b> - the XML fragment containing the MathML
+                content which should be inserted.</li>
+            </ul></p></li>
+        <li><b><apiname>InsertXIncludeOperation</apiname></b><p>Insert an
+                <b><codeph>XInclude</codeph></b> element at caret offset.</p></li>
+        <li><b><apiname>ChangeAttributeOperation</apiname></b><p>This operation allows
+            adding/modifying/removing an attribute. You can use this operation in your own Author
+            action to modify the value for a certain attribute on a specific XML element. The
+            arguments of the operation are:<ul>
+              <li><b><apiname>name</apiname></b> - the attribute local name;</li>
+              <li><b><apiname>namespace</apiname></b> - the attribute namespace;</li>
+              <li><b><apiname>elementLocation</apiname></b> - the XPath location that identifies the
+                element;</li>
+              <li><b><apiname>value</apiname></b> - the new value for the attribute. If empty or
+                null the attribute will be removed;</li>
+              <li><b><apiname>editAttribute</apiname></b> - if an in-place editor exists for this
+                attribute, it will automatically activate the in-pace editor and start editing;</li>
+              <li><b><apiname>removeIfEmpty</apiname></b> - the possible values are
+                  <codeph>true</codeph> and <codeph>false</codeph>. True means that the attribute
+                should be removed if an empty value is provided. The default behavior is to remove
+                it.</li>
+            </ul></p></li>
+        <li><b><apiname>UnwrapTagsOperation</apiname></b><p>This operation allows removing the
+            element tags either from the current element or for an element identified with an XPath
+            location. The argument of the operation is<ul>
+              <li><b><apiname>unwrapElementLocation</apiname></b> - an XPath expression indicating
+                the element to unwrap. If it is not defined, the element at caret is unwrapped.</li>
+            </ul></p></li>
+        <li><b><apiname>ToggleSurroundWithElementOperation</apiname></b><p>This operation allows
+            wrapping and unwrapping content in a specific element with specific attributes. It is
+            useful to implement toggle actions like highlighting text as bold, italic, or underline.
+            The arguments of the operation are:<ul>
+              <li><b><apiname>element</apiname></b> - the element to wrap or unwrap content;</li>
+              <li><b><apiname>schemaAware</apiname></b> - this argument applies only on the surround
+                with element operation and controls if the insertion is schema aware or not.</li>
+            </ul></p></li>
+        <li><b><apiname>ExecuteTransformationScenariosOperation</apiname></b><p>This operation
+            allows running one or more transformation scenarios defined in the current document type
+            association. It is useful to add to the toolbar buttons that trigger publishing to
+            various output formats. The argument of the operation is:<ul>
+              <li><b><apiname>scenarioNames</apiname></b> - the list of scenario names that will be
+                executed, separated by new lines.</li>
+            </ul></p></li>
+        <li><b><apiname>XSLTOperation</apiname></b> and
+            <b><apiname>XQueryOperation</apiname></b><p>Applies an XSLT or XQuery script on a source
+            element and then replaces or inserts the result in a specified target
+            element.</p><p>This operation has the following parameters:<ul>
+              <li><b><apiname>sourceLocation</apiname></b><p>An XPath expression indicating the
+                  element that the script will be applied on. If it is not defined then the element
+                  at the caret position will be used. </p><p>There may be situations in which you
+                  want to look at an ancestor of the current element and take decisions in the
+                  script based on this. In order to do this you can set the
+                    <apiname>sourceLocation</apiname> to point to an ancestor node (for example /)
+                  then declare a parameter called <apiname>currentElementLocation</apiname> in your
+                  script and use it to re-position in the current element
+                  like:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" 
+  xpath-default-namespace="http://docbook.org/ns/docbook" 
+  xmlns:saxon="http://saxon.sf.net/" exclude-result-prefixes="saxon"&gt;     
+    &lt;!-- This is an XPath location which will be sent by the operation to the script -->
+    &lt;xsl:param name="currentElementLocation"/&gt;
+    
+    &lt;xsl:template match="/"&gt;
+        &lt;!-- Evaluate the XPath of the current element location -->
+        &lt;xsl:apply-templates 
+        select="saxon:eval(saxon:expression($currentElementLocation))"/&gt;
+    &lt;/xsl:template&gt;
+    
+    &lt;xsl:template match="para"&gt;
+        &lt;!-- And the context is again inside the current element, 
+        but we can use information from the entire XML -->
+        &lt;xsl:variable 
+            name="keyImage" select="//imagedata[@fileref='images/lake.jpeg']
+              /ancestor::inlinemediaobject/@xml:id/string()"/&gt;
+                &lt;xref linkend="{$keyImage}" role="key_include" 
+                  xmlns="http://docbook.org/ns/docbook"&gt;
+                    &lt;xsl:value-of 
+                          select="$currentElementLocation"&gt;&lt;/xsl:value-of&gt;
+        &lt;/xref&gt;
+    &lt;/xsl:template&gt;    
+&lt;/xsl:stylesheet&gt;</codeblock></p></li>
+              <li><b><apiname>targetLocation</apiname></b><p>An XPath expression indicating the
+                  insert location for the result of the transformation. If it is not defined then
+                  the insert location will be at the caret.</p></li>
+              <li><b><apiname>script</apiname></b><p>The script content (XSLT or XQuery). The base
+                  system ID for this will be the framework file, so any include/import reference
+                  will be resolved relative to the <filepath>.framework</filepath> file that
+                  contains this action definition.</p><p>For example, for the following script, the
+                  imported <filepath>xslt_operation.xsl</filepath> needs to be located in the
+                  current framework's
+                directory.</p><codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+             version="1.0"&gt;
+    &lt;xsl:import href="xslt_operation.xsl"/&gt;
+&lt;/xsl:stylesheet&gt;</codeblock></li>
+              <li><b><apiname>action</apiname></b><p>The insert action relative to the node
+                  determined by the target XPath expression. It can be: Replace, At caret position,
+                  Before, After, Inside as first child or Inside as last child.</p></li>
+              <li><b><apiname>caretPosition</apiname></b><p>The position of the caret after the
+                  action is executed. It can be: Preserve, Before, Start, First editable position,
+                  End or After. If not specified the caret position ca be specified by outputting in
+                  the XSLT script a <uicontrol>${caret}</uicontrol> editor variable.</p></li>
+              <li><b><apiname>expandEditorVariables</apiname></b><p>Parameter controlling the
+                  expansion of editor variables returned by the script processing. Expansion is
+                  enabled by default.</p></li>
+            </ul></p></li>
+        <li><b><apiname>ExecuteMultipleActionsOperation</apiname></b><p>This operation allows the
+            execution of a sequence of actions, defined as a list of action IDs. The actions must be
+            defined by the corresponding framework, or one of the common actions for all frameworks
+            supplied by Oxygen.<ul id="ul_hvc_pdd_vm">
+              <li><b><apiname>actionIDs</apiname></b> - the action IDs list which will be executed
+                in sequence, the list must be a string sequence containing the IDs separated by new
+                lines.</li>
+            </ul></p></li>
+      </ul></p>
+        <p>Author operations
+      can take parameters that might contain the following editor variables:<ul>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-caret">
+          <note>This editor variable is available only for parameters that take XML content as
+            values.</note>
+          <note>The <term>${caret}</term> editor variable is replaced with the <term>
+              ${UNIQUE_CARET_MARKER_FOR_AUTHOR}</term> macro. The default Author operations process
+            this macro and position the caret at the designated offset.</note>
+        </li>
+        <li conref="../topics/editor-variables.dita#editor-variables/edvar-selection"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-ask"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edvar-timestamp"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edvar-uuid"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-id"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-cfn"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-cfne"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edvar-cf"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-cfd"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-frameworksDir"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-pd"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-oxygenInstallDir"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-homeDir"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-pn"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edvar-env"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-system"/>
+        <li conref="../topics/editor-variables.dita#editor-variables/edVar-date"/>
+      </ul></p>
+    </body>
+  <related-links>
+    <link href="dg-author-op-InsertFragmentOperation-arguments.dita"/>
+    <link href="dg-author-op-SurroundWithFragmentOperation-arguments.dita"/>
+  </related-links>
+</topic>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="class-loading-issues">
+  <title>Class Loading Issues</title>
+  <body>
+    <p>It is possible that the Java libraries you have specified in the plugin libraries list
+      conflict with the ones already loaded by <ph
+        keyref="product"/>. In order to
+      instruct the plugin to prefer its libraries over the ones used by <ph
+        keyref="product"/>, you can add the
+      following attribute on the <codeph>&lt;plugin></codeph> root
+        element:<codeph>classLoaderType="preferReferencedResources"</codeph> from the
+        <filepath>plugin.xml</filepath> descriptor.</p>
+    <p>A <b>Late Delegation Class Loader</b> (the main class loader in <ph
+        keyref="product"/>) is a
+        <codeph>java.net.URLClassLoader</codeph> extension which prefers to search classes in its
+      own libraries list and only if a class is not found there to delegate to the parent class
+      loader. </p>
+    <p>The main <ph keyref="product"/>
+      Class Loader uses as libraries all jars specified in the
+        <filepath>OXYGEN_INSTALL_DIR\lib</filepath> directory. Its parent class loader is the
+      default JVM Class loader. For each instantiated plugin a separate class loader is created
+      having as parent the <ph
+        keyref="product"/> Class
+      Loader.</p>
+    <p>The plugin class loader can be either a standard <codeph>java.net.URLClassLoader</codeph> or
+      a <codeph>LateDelegationClassLoader</codeph> (depending on the attribute
+        <codeph>classLoaderType</codeph> in the <filepath>plugin.xml</filepath>). Its parent class
+      loader is always the <ph
+        keyref="product"/>
+      <codeph>LateDelegationClassLoader</codeph>.</p>
+    <p>If you experience additional problems like the
+      following:<codeblock>java.lang.LinkageError: ClassCastException: attempting to cast jar:file:/C:/jdk1.6.0_06/jre/lib/rt.jar!/javax/xml/ws/spi/Provider.classtojar:file:/D:/Program
+    Files/Oxygen XML Editor
+    12/plugins/wspcaccess/../../xdocs/lib/jaxws/jaxws-api.jar!/javax/xml/ws/spi/Provider.class
+    at javax.xml.ws.spi.Provider.provider(Provider.java:94) at
+    javax.xml.ws.Service.&lt;init>(Service.java:56)
+......................................................................</codeblock>The
+      cause could be the fact that some classes are instantiated using the context class loader of
+      the current thread. The most straightforward fix is to write your code in a <i>try/finally</i>
+      statement:<codeblock outputclass="language-java">  ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+  try {
+    //This is the implementation of the WorkspaceAccessPluginExtension plugin interface.
+    Thread.currentThread().setContextClassLoader(
+        CustomWorkspaceAccessPluginExtension.this.getClass().getClassLoader());
+    //WRITE YOUR CODE HERE
+  } finally {
+    Thread.currentThread().setContextClassLoader(oldClassLoader);
+  }</codeblock></p>
+  </body>
+</topic>

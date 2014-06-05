@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="working-with-XSLT-profiler">
+  <title>Working with XSLT/XQuery Profiler</title><prolog>
+    <metadata>
+      <keywords><indexterm>Profiling XSLT Stylesheets and XQuery Documents<indexterm>XSLT/XQuery
+            profiler</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>Profiling activity is linked with debugging activity, so the first step in order to profile
+      is to switch to debugging perspective and follow the corresponding procedure for debugging
+      (see <xref href="../tasks/steps-in-typical-debug-process.dita">Working with XSLT Debugger</xref>).</p>
+    <p>Immediately after turning the profiler on two new information views are added to the current
+      debugger <xref href="debug-info-view.dita">information views</xref>:</p>
+    <ul>
+      <li><xref href="invocation-tree-view.dita"><uicontrol>Invocation tree</uicontrol> view</xref>
+        on left side</li>
+      <li><xref href="hotspots-view.dita"><uicontrol>Hotspots</uicontrol> view</xref> on right
+        side</li>
+    </ul>
+    <p>Profiling data is available only after the transformation ends successfully.</p>
+    <p>Looking to the right side (<xref href="hotspots-view.dita"><uicontrol>Hotspots</uicontrol>
+        view</xref>), you can immediately spot the time the processor spent in each instruction. As
+      an instruction usually calls other instructions the used time of the called instruction is
+      extracted from the duration time of the caller (the hotspot only presents the inherent time of
+      the instruction).</p>
+    <p>Looking to the left side (<xref href="invocation-tree-view.dita"><uicontrol>Invocation
+          tree</uicontrol> view</xref>), you can examine how style instructions are processed. This
+      result view is also named call-tree, as it represents the order of style processing. The
+      profiling result shows the duration time for each of the style-instruction including the time
+      needed for its called children.</p>
+    <fig id="figure-profiler-backmapping-oxygen" product="editor developer">
+      <title>Source backmapping</title>
+      <image href="../img/sa_profiler_backmapping.png"/>
+    </fig>
+    <fig id="figure-profiler-backmapping-oxygenEclipse" product="editorEclipse developerEclipse">
+      <title>Source backmapping</title>
+      <image href="../img/ec_profiler_backmapping.png"/>
+    </fig>
+    <p>In any of the above views you can use the backmapping feature in order to find the XSLT
+      stylesheet or XQuery expression definition. Clicking on the selected item cause <ph keyref="product"/> to highlight the XSLT stylesheet
+      or XQuery expression source line where the instruction is defined.</p>
+    <p>When navigating through the trees by opening instruction calls, <ph keyref="product"/> automatically expands
+      instructions which are only called by one other instruction themselves.</p>
+    <p>The profiling data can be saved into XML and HTML format. On any view you should right click
+      , use the pop-up menu and select the corresponding choice. Basically saving HTML means saving
+      XML and applying an XSLT stylesheet to render the report as XML. These stylesheets are
+      included in the <ph keyref="product"/> distribution
+      (see the subfolder <filepath>frameworks/profiler/</filepath> of the <ph keyref="product"/> installation folder) so you can
+      make your own report based on the profiling raw data.</p>
+    <p>If you like to change the <xref href="preferences-profiler.dita">XSLT/XQuery profiler
+        settings</xref> you should right click on view, use the pop-up menu and choose the
+      corresponding <uicontrol>View settings</uicontrol> entry.</p>
+    <note type="caution">Profiling exhaustive transformation may run into an OutOfMemory error due
+      to the large amount of information being collected. If this is the case you can close unused
+      projects when running the profiling or use high values for Java VM options -Xms and -Xmx. If
+      this does not help you can shorten your source xml file and try again.</note>
+    <p>To watch our video demonstration about the XSLT/XQuery Profiler, go to <xref
+        href="http://oxygenxml.com/demo/XSLT_Profiling.html" format="html" scope="external"
+        >http://oxygenxml.com/demo/XSLT_Profiling.html</xref>.</p>
+  </body>
+</topic>

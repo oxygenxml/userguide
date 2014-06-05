@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_m5r_mcc_mh">
+  <title>Creating and Running Automated Tests</title>
+  <body>
+    <!--TODO: update this procedure to use Maven.-->
+    <p>If you have developed complex custom plugins and/or document types the best way to test your
+      implementation and insure that further changes will not interfere with the current behavior is
+      to make automated tests for your customization.</p>
+    <p>An <ph><ph keyref="product"/></ph> installation standalone (Author or Editor) comes with a
+      main <apiname>oxygen.jar</apiname> library located in the
+        <apiname>OXYGEN_INSTALLATION_DIRECTORY</apiname>. That JAR library contains a base class for
+      testing developer customizations named
+        <apiname>ro.sync.exml.workspace.api.PluginWorkspaceTCBase</apiname>.</p>
+    <p>Please see below some steps in order to develop <apiname>JUnit</apiname> tests for your
+      customizations using the <b>Eclipse</b> workbench:</p>
+    <ol id="ol_g45_pdc_mh">
+      <li>Create a new Eclipse Java project and copy to it the entire contents of the
+          <apiname>OXYGEN_INSTALLATION_DIRECTORY</apiname>.</li>
+      <li>Add to the <uicontrol>Java Build Path</uicontrol>-><uicontrol>Libraries</uicontrol> tab
+        all JAR libraries present in the <apiname>OXYGEN_INSTALLATION_DIRECTORY/lib</apiname>
+        directory. Make sure that the main JAR library <apiname>oxygen.jar</apiname> or
+          <apiname>oxygenAuthor.jar</apiname> is the first one in the Java classpath by moving it up
+        in the <uicontrol>Order and Export</uicontrol> tab.</li>
+      <li>Click <b>Add Library</b>  and add the <apiname>JUnit</apiname> libraries.</li>
+      <li>Create a new Java class which extends
+          <apiname>ro.sync.exml.workspace.api.PluginWorkspaceTCBase</apiname>.</li>
+      <li>Pass on to the constructor of the super class the following parameters: <ul
+          id="ul_dnz_3fc_mh">
+          <li><apiname>File frameworksFolder</apiname> The file path to the frameworks directory. It
+            can point to a custom frameworks directory where the custom framework resides.</li>
+          <li><apiname>File pluginsFolder</apiname> The file path to the plugins directory. It can
+            point to a custom plugins directory where the custom plugins resides.</li>
+          <li><apiname>String licenseKey</apiname> The license key used to license the test
+            class.</li>
+        </ul></li>
+      <li>Create test methods which use the API in the base class to open XML files and perform
+        different actions on them. Your test class could look something
+        like:<codeblock outputclass="language-java">public class MyTestClass extends PluginWorkspaceTCBase {
+	
+	/**
+	 * Constructor.
+	 */
+	public MyTestClass() throws Exception {
+		super(new File("frameworks"), new File("plugins"), 
+        "------START-LICENSE-KEY------\n" + 
+				"\n" + 
+				"Registration_Name=Developer\n" + 
+				"\n" + 
+				"Company=\n" + 
+				"\n" + 
+				"Category=Enterprise\n" + 
+				"\n" + 
+				"Component=XML-Editor, XSLT-Debugger, Saxon-SA\n" + 
+				"\n" + 
+				"Version=14\n" + 
+				"\n" + 
+				"Number_of_Licenses=1\n" + 
+				"\n" + 
+				"Date=09-04-2012\n" + 
+				"\n" + 
+				"Trial=31\n" + 
+				"\n" + 
+				"SGN=MCwCFGNoEGJSeiC3XCYIyalvjzHhGhhqAhRNRDpEu8RIWb8icCJO7HqfVP4++A\\=\\=\n" + 
+				"\n" + 
+		"-------END-LICENSE-KEY-------");
+	}
+	
+	 /**
+	   * &lt;p>&lt;b>Description:&lt;/b> TC for opening a file and using the bold operation&lt;/p>
+	   * &lt;p>&lt;b>Bug ID:&lt;/b> EXM-20417&lt;/p>
+	   *
+	   * @author radu_coravu
+	   *
+	   * @throws Exception
+	   */
+	  public void testOpenFileAndBoldEXM_20417() throws Exception {
+	    WSEditor ed = open(new File("D:/projects/eXml/test/authorExtensions/dita/sampleSmall.xml").toURL());
+	    //Move caret
+	    moveCaretRelativeTo("Context", 1, false);
+	    
+	    //Insert &lt;b>
+	    invokeAuthorExtensionActionForID("bold");
+	    assertEquals("&lt;?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + 
+	    		"&lt;!DOCTYPE task PUBLIC \"-//OASIS//DTD DITA Task//EN\" \"http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd\">\n" + 
+	    		"&lt;task id=\"taskId\">\n" + 
+	    		"    &lt;title>Task &lt;b>title&lt;/b>&lt;/title>\n" + 
+	    		"    &lt;prolog/>\n" + 
+	    		"    &lt;taskbody>\n" + 
+	    		"        &lt;context>\n" + 
+	    		"            &lt;p>Context for the current task&lt;/p>\n" + 
+	    		"        &lt;/context>\n" + 
+	    		"        &lt;steps>\n" + 
+	    		"            &lt;step>\n" + 
+	    		"                &lt;cmd>Task step.&lt;/cmd>\n" + 
+	    		"            &lt;/step>\n" + 
+	    		"        &lt;/steps>\n" + 
+	    		"    &lt;/taskbody>\n" + 
+	    		"&lt;/task>\n" + 
+	    		"", getCurrentEditorXMLContent());
+	  }
+}</codeblock></li>
+    </ol>
+  </body>
+</topic>

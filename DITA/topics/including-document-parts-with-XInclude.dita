@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="including-document-parts-with-XInclude">
+  <title>Including Document Parts with XInclude</title><prolog>
+    <metadata>
+      <keywords><indexterm>Editing XML Documents<indexterm>including document parts with XInclude</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>XInclude is a standard for assembling XML instances into another XML document through
+      inclusion. It enables larger documents to be dynamically created from smaller XML documents
+      without having to physically duplicate the content of the smaller files in the main file.
+      XInclude is targeted as the replacement for External Entities. The advantage of using XInclude
+      is that, unlike the entities method, each of the assembled documents is permitted to contain a
+      Document Type Declaration (DOCTYPE Decl.). This means that each file is a valid XML instance
+      and can be independently validated. It also means that the main document to which smaller
+      instances are included can be validated without having to remove or comment the DOCTYPE Decl.
+      as is the case with External Entities. This makes XInclude a more convenient and effective
+      method for managing XML instances that need to be stand-alone documents and part of a much
+      larger project.</p>
+    <p>The main application for XInclude is in the document-oriented content frameworks such as
+      manuals and Web pages. Employing XInclude enables authors and content managers to manage
+      content in a modular fashion that is akin to Object Oriented methods used in languages such as
+      Java, C++ or C#.</p>
+    <p>The advantages of modular documentation include: reusable content units, smaller file units
+      that are easier to be edited, better version control and distributed authoring.</p>
+    <example>
+      <title>Include a chapter in an article using XInclude</title>
+      <p>Create a chapter file and an article file in the <filepath>samples</filepath> folder of the
+          <ph keyref="product"/> install folder. </p>
+      <p>Chapter file (<filepath>introduction.xml</filepath>) looks like this:</p>
+      <codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"&gt;
+&lt;chapter&gt;
+    &lt;title&gt;Getting started&lt;/title&gt;
+    &lt;section&gt;
+        &lt;title&gt;Section title&lt;/title&gt;
+        &lt;para&gt;Para text&lt;/para&gt;
+    &lt;/section&gt;
+&lt;/chapter&gt;</codeblock>
+      <p>Main article file looks like this:</p>
+      <codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.docbook.org/xml/4.3/docbookx.dtd"
+[ &lt;!ENTITY % xinclude SYSTEM "../frameworks/docbook/dtd/xinclude.mod"&gt;
+%xinclude;
+]&gt;
+&lt;article&gt;
+    &lt;title&gt;Install guide&lt;/title&gt;
+    &lt;para&gt;This is the install guide.&lt;/para&gt;
+    &lt;xi:include xmlns:xi="http://www.w3.org/2001/XInclude" 
+                    href="introduction.dita"&gt;
+      &lt;xi:fallback&gt;
+        &lt;para&gt;
+          &lt;emphasis&gt;FIXME: MISSING XINCLUDE CONTENT&lt;/emphasis&gt;
+        &lt;/para&gt;
+      &lt;/xi:fallback&gt;
+    &lt;/xi:include&gt;
+&lt;/article&gt;</codeblock>
+    </example>
+    <p>In this example the following is of note:</p>
+    <ul>
+      <li>
+        <p>the DOCTYPE Decl. defines an entity that references a file containing the information to
+          add the <i>xi</i> namespace to certain elements defined by the DocBook DTD;</p>
+      </li>
+      <li>
+        <p>the href attribute of the xi:include element specifies that the
+            <filepath>introduction.xml</filepath> file will replace the <i>xi:include</i> element
+          when the document is parsed;</p>
+      </li>
+      <li>
+        <p>if the <filepath>introduction.xml</filepath> file cannot be found, the parser will use
+          the value of the <i>xi:fallback</i> element - a FIXME message.</p>
+      </li>
+    </ul>
+    <p>If you want to include only a fragment of a file in the master file, the fragment must be
+      contained in a tag having an <i>xml:id</i> attribute and you must use an XPointer expression
+      pointing to the <i>xml:id</i> value. For example if the master file is:</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-model href="test.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
+&lt;test&gt;
+    &lt;xi:include href="a.xml" xpointer="a1"
+        xmlns:xi="http://www.w3.org/2001/XInclude"/&gt;
+&lt;/test&gt;        </codeblock>
+    <p>and the <filepath>a.xml</filepath> file is:</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;test&gt;
+    &lt;a xml:id="a1"&gt;test&lt;/a&gt;
+&lt;/test&gt;        </codeblock>
+    <p>after resolving the XPointer reference the document is:</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-model href="test.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
+&lt;test&gt;
+    &lt;a xml:id="a1" xml:base="a.xml"&gt;test&lt;/a&gt;
+&lt;/test&gt;</codeblock>
+    <p>The XInclude support in <ph keyref="product"/> is turned on by default. You can <xref
+        href="preferences-xml-parser.dita">toggle it</xref> by going to the entry <uicontrol>Enable
+        XInclude processing</uicontrol> in the menu <menucascade>
+        <uicontrol product="editor author developer">Options</uicontrol>
+        <uicontrol product="editorEclipse authorEclipse developerEclipse">Window</uicontrol>
+        <uicontrol>Preferences ...</uicontrol>
+        <uicontrol product="editorEclipse authorEclipse developerEclipse">oXygen XML
+          Editor</uicontrol>
+        <uicontrol>XML</uicontrol>
+        <uicontrol>XML Parser</uicontrol>
+      </menucascade>. When enabled, <ph keyref="product"/> will be able to validate and transform
+      documents comprised of parts added using XInclude.</p>
+  </body>
+</topic>

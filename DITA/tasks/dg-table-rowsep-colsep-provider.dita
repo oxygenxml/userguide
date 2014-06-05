@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="dg-table-rowsep-colsep-provider">
+    <title>Configuring a Table Cell Row And Column Separator Provider</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Author Settings<indexterm>Java API<indexterm>table cell row and column separators
+                provider</indexterm></indexterm></indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <taskbody>
+      <context>In the sample documentation framework the <codeph>table</codeph> element has
+      separators between rows. As explained in <xref
+        href="../topics/dg-styling-table-element.dita#dg-styling-table-element"/> section which
+      describes the CSS properties needed for defining a table, you need to indicate <ph
+        keyref="product"/> a method to determine the way rows and columns are separated. If you use
+      the <codeph>rowsep</codeph> and <codeph>colsep</codeph> cell element attributes, or your table
+      is conforming to the CALS table model, <ph keyref="product"/> can determine the cell
+      separators. In the example there are no attributes defining the separators but we still want
+      the rows to be separated. You will need to implement a Java extension.<p
+        conref="../topics/dg-java-files.dita#dg-java-files/javadoc-ref"/></context>
+      <steps>
+        <step>
+          <cmd>Create the class
+            <apiname>simple.documentation.framework.TableCellSepProvider</apiname>. This class must
+          implement the <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorTableCellSepProvider.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.AuthorTableCellSepProvider</apiname></xref>
+          interface.</cmd>
+          <info>
+            <codeblock outputclass="language-java">import ro.sync.ecss.extensions.api.AuthorTableCellSepProvider;
+import ro.sync.ecss.extensions.api.node.AuthorElement;
+
+public class TableCellSepProvider implements AuthorTableCellSepProvider{</codeblock>
+          </info>
+        </step>
+        <step>
+          <cmd>The <apiname>init</apiname> method is taking as argument the <xref
+            href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorElement.html"
+            format="html" scope="external"
+              ><apiname>ro.sync.ecss.extensions.api.node.AuthorElement</apiname></xref> that
+          represents the XML <codeph>table</codeph> element. In our case the separator information
+          is implicit, it does not depend on the current table, so you leave this method empty.
+          However there are cases like the table CALS model when the cell separators are specified
+          in the <codeph>table</codeph> element - in that case you should initialize your provider
+          based on the given argument.</cmd>
+          <info>
+            <codeblock outputclass="language-java">public void init(AuthorElement table) {
+}</codeblock>
+          </info>
+        </step>
+        <step>
+          <cmd>The <apiname>getColSep</apiname> method is taking as argument the table cell. The
+          table layout engine will ask this <apiname>AuthorTableCellSepProvider</apiname>
+          implementation if there is a column separator for each XML element from the table that was
+          marked as cell in the CSS using the property <codeph>display:table-cell</codeph>. In our
+          case we choose to return <b>false</b> since we do not need column separators.</cmd>
+          <info>
+            <codeblock outputclass="language-java">  /**
+   * @return false - No column separator at the right of the cell.
+   */
+  @Override
+  public boolean getColSep(AuthorElement cellElement, int columnIndex) {
+    return false;
+  }</codeblock>
+          </info>
+        </step>
+        <step>
+          <cmd>The row separators are determined in a similar manner. This time the method returns
+            <b>true</b>, forcing a separator between the rows.</cmd>
+          <info>
+            <codeblock outputclass="language-java">  /**
+   * @return true - A row separator below each cell.
+   */
+  @Override
+  public boolean getRowSep(AuthorElement cellElement, int columnIndex) {
+    return true;
+  }</codeblock>
+          </info>
+        <info>
+          <p conref="../topics/dg-java-files.dita#dg-java-files/sdf_project"/>
+        </info>
+        </step>
+        <step>
+          <cmd>In the listing below, the XML document contains the table element:</cmd>
+          <info>
+            <codeblock outputclass="language-xml"> &lt;table>
+      &lt;header>
+        &lt;td>H1&lt;/td>
+        &lt;td>H2&lt;/td>
+        &lt;td>H3&lt;/td>
+        &lt;td>H4&lt;/td>
+      &lt;/header>
+      &lt;tr>
+        &lt;td>C11&lt;/td>
+        &lt;td>C12&lt;/td>
+        &lt;td>C13&lt;/td>
+        &lt;td>C14&lt;/td>
+      &lt;/tr>
+      &lt;tr>
+        &lt;td>C21&lt;/td>
+        &lt;td>C22&lt;/td>
+        &lt;td>C23&lt;/td>
+        &lt;td>C24&lt;/td>
+      &lt;/tr>
+      &lt;tr>
+        &lt;td>C31&lt;/td>
+        &lt;td>C32&lt;/td>
+        &lt;td>C33&lt;/td>
+        &lt;td>C34&lt;/td>
+      &lt;/tr>
+    &lt;/table></codeblock>
+          </info>
+        </step>
+      </steps>
+      <result>
+      <p>When the borders for the <codeph>td</codeph> element are removed from the CSS, the row
+        separators become visible:</p>
+        <fig>
+        <title>Row separators provided by the Java implementation.</title>
+        <image href="../img/bt_dg_row_separator.png"/>
+      </fig>
+      </result>
+    </taskbody>
+  </task>
+    
