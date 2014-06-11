@@ -26,11 +26,29 @@
           or the text value of an element, you can use the <uicontrol>@attribute_name</uicontrol>
           and <uicontrol>#text</uicontrol> predefined values and oxygen will perform the commit
           logic by itself. You can use the <uicontrol>custom</uicontrol> value to perform the commit
-          logic yourself.<note>If the custom form control chooses to perform the commit by itself,
-            it must do so after it triggers the
-              <codeph>ro.sync.ecss.extensions.api.editor.InplaceEditingListener.editingStopped(EditingEvent)</codeph>
-            notification.</note></li>
+          logic yourself.</li>
       </ul></p>
+    <example>
+      <title>Custom Form Control Implementation</title>
+      <p>Sample Java code for a custom combo box form control implementation which inserts an XML
+        element in the content when the editing stops:</p>
+      <codeblock>public class ComboBoxEditor  extends AbstractInplaceEditor {
+  /**
+   * @see ro.sync.ecss.extensions.api.editor.InplaceEditor#stopEditing()
+   */
+  @Override
+   public void stopEditing() {
+     Runnable customCommit =  new Runnable() {
+      @Override
+       public void run() {
+        AuthorDocumentController documentController = context.getAuthorAccess().getDocumentController();
+        documentController.insertXMLFragment( "&lt;custom/&gt;", offset);
+      }
+    };
+    EditingEvent event =  new EditingEvent(customCommit,  true);
+    fireEditingStopped(event);
+  }</codeblock>
+    </example>
     <p>If the custom form control is intended to work in the <ph keyref="product"/> standalone
       distribution, the declaration of <uicontrol>swtEditorClassName</uicontrol> is not required.
       The <term>renderer</term> (the class that draws the value) and the <term>editor</term> (the
