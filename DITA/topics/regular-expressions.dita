@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="regular-expressions">
+  <title>Regular Expressions Syntax</title>
+  <body>
+    <p><ph keyref="product"/> uses the Java regular expression syntax. It is <b>similar</b> to that
+      used in Perl 5, with several exceptions. Thus, <ph keyref="product"/> does not support the
+      following constructs:<ul>
+        <li>The conditional constructs <codeph>(?{X})</codeph> and
+              <codeph>(?(<i>condition</i>)<i>X</i>|<i>Y</i>)</codeph>;</li>
+        <li>The embedded code constructs <codeph>(?{code})</codeph> and
+          <codeph>(??{code})</codeph>;</li>
+        <li>The embedded comment syntax <codeph>(?#comment)</codeph>;</li>
+        <li>The preprocessing operations <codeph>\l</codeph>, <codeph>\u</codeph>,
+            <codeph>\L</codeph>, and <codeph>\U</codeph>.</li>
+      </ul></p>
+    <p>Other notable difference:<ul>
+        <li>In Perl, <codeph>\1</codeph> through <codeph>\9</codeph> are always interpreted as back
+          references; a backslash-escaped number greater than 9 is treated as a back reference if at
+          least that many subexpressions exist, otherwise it is interpreted, if possible, as an
+          octal escape. In this class octal escapes must always begin with a zero. In Java,
+            <codeph>\1</codeph> through <codeph>\9</codeph> are always interpreted as back
+          references, and a larger number is accepted as a back reference if at least that many
+          subexpressions exist at that point in the regular expression, otherwise the parser will
+          drop digits until the number is smaller or equal to the existing number of groups or it is
+          one digit.</li>
+        <li>Perl uses the <codeph>g</codeph> flag to request a match that resumes where the last
+          match left off.</li>
+        <li>In Perl, embedded flags at the top level of an expression affect the whole expression.
+          In Java, embedded flags always take effect at the point at which they appear, whether they
+          are at the top level or within a group; in the latter case, flags are restored at the end
+          of the group just as in Perl.</li>
+        <li> Perl is forgiving about malformed matching constructs, as in the expression
+            <codeph>*a</codeph>, as well as dangling brackets, as in the expression
+            <codeph>abc]</codeph>, and treats them as literals. This class also accepts dangling
+          brackets but is strict about dangling metacharacters like <codeph>+</codeph>,
+            <codeph>?</codeph> and <codeph>*</codeph>.</li>
+      </ul></p>
+  </body>
+  <related-links>
+    <link href="http://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html#jcc"
+      format="html" scope="external">
+      <desc>Comparison between the Java and Perl 5 regular expression syntax</desc>
+    </link>
+  </related-links>
+</topic>
