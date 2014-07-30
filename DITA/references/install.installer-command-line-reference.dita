@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="reference_hm4_qgr_x4">
+  <title>Oxygen Installer Command Line Reference</title>
+  <shortdesc>Command line options of the <ph keyref="product"/> installer.</shortdesc>
+  <refbody>
+    <section>
+      <title>The response.varfile</title>
+      <p>The <ph keyref="product"/> installers for Windows and Linux creates a file called
+          <filepath>response.varfile</filepath>, which records the choices that the user made when
+        running the installer interactively. You can use an <filepath>response.varfile</filepath> to
+        set the options for an unintended install. Here is an example of a
+          <filepath>responses.varfile</filepath>:</p>
+      <codeblock>#install4j response file for Oxygen XML Editor 16.0
+#Fri Jul 18 21:52:15 EDT 2014
+sys.adminRights$Boolean=true
+sys.programGroupDisabled$Boolean=false
+createDesktopLinkAction$Boolean=true
+autoVersionChecking=true
+sys.fileAssociation.launchers$StringArray="19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19","19"
+sys.programGroupAllUsers$Boolean=true
+reportProblem=true
+downloadResources=true
+sys.languageId=en
+sys.installationDir=C\:\\Program Files (x86)\\Oxygen XML Editor 16
+createQuicklaunchIconAction$Boolean=true
+sys.programGroupName=Oxygen XML Editor 16.0
+executeLauncherAction$Boolean=true
+sys.fileAssociation.extensions$StringArray="xml","dita","ditamap","ditaval","xsl","xslt","xspec","xsd","rng","rnc","sch","dtd","mod","ent","nvdl","fo","wsdl","xquery","xq","xqy","xqm","xql","xpl","css","json","xpr"</codeblock>
+      <p>The following table describes some of the settings that can be used in the
+          <filepath>responses.varfile</filepath>:</p>
+      <table frame="all" id="table_ncm_v3r_x4">
+        <title>Privacy Options Parameters</title>
+        <tgroup cols="3">
+          <colspec colname="c1" colnum="1" colwidth="1.0*"/>
+          <colspec colname="newCol2" colnum="2" colwidth="2.55*"/>
+          <colspec colname="c2" colnum="3" colwidth="2.27*"/>
+          <thead>
+            <row>
+              <entry>Parameter name</entry>
+              <entry>Description</entry>
+              <entry>Values</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>autoVersionChecking</entry>
+              <entry>Automatic version checking.</entry>
+              <entry><codeph>true</codeph> / <codeph>false</codeph>. Default setting is
+                  <codeph>true</codeph>.</entry>
+            </row>
+            <row>
+              <entry>reportProblem</entry>
+              <entry>Allows you to report a problem encountered while using <ph keyref="product"
+                />.</entry>
+              <entry><codeph>true</codeph> / <codeph>false</codeph>. Default setting is
+                  <codeph>true</codeph>.</entry>
+            </row>
+            <row>
+              <entry>usageDataCollector</entry>
+              <entry>When set to <codeph>true</codeph>, you can choose whether <ph keyref="product"
+                /> sends anonymous information about how it is used.</entry>
+              <entry><codeph>true</codeph> / <codeph>false</codeph>. Default setting is
+                  <codeph>true</codeph>.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <draft-comment author="Mark">Why are these referred to as "privacy options"? Only
+        usageDataCollector seems to have anything to do with privacy. What is the reason for
+        documenting these particular options and not the others?</draft-comment>
+      <p>The <ph keyref="product"/> installation uses the install4j installer. A description of
+          <xref
+          href="http://resources.ej-technologies.com/install4j/help/doc/indexRedirect.html?http&amp;resources.ej-technologies.com/install4j/help/doc/helptopics/installers/responseFile.html"
+          format="html" scope="external">the responses.varfile format</xref> can be found on the
+        install4j site.</p>
+    </section>
+    <section>
+      <title>Command line parameters</title>
+      <p>The <ph keyref="product"/> installer supports the following command line parameters:</p>
+      <simpletable frame="all" id="simpletable_m4s_cjr_x4">
+        <sthead>
+          <stentry>Option</stentry>
+          <stentry>Meaning</stentry>
+        </sthead>
+        <strow>
+          <stentry>-q</stentry>
+          <stentry>Run the installer in unattended mode. The installer will not prompt the user for
+            input during the install. Default settings will be used for all options unless a
+            responses.varfile is specified using the -varfile option or individual settings are
+            specified using <dl>
+              <dlentry>
+                <dt>- on Windows: </dt>
+                <dd>
+                  <p>
+                    <codeblock><ph keyref="executableInstallWindows"/> -q </codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+              <dlentry>
+                <dt>- on Linux: </dt>
+                <dd>
+                  <p>
+                    <codeblock><ph keyref="executableInstallLinux"/> -q </codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+            </dl></stentry>
+        </strow>
+        <strow>
+          <stentry>-overwrite</stentry>
+          <stentry>In unattended mode, the installer does not overwrite files with the same name if
+            a previous version of the <ph keyref="product"/> is installed in the same folder.
+              <draft-comment author="Mark">What is the consequence of this failure to overwrite.
+              Will the install fails when the file cannot be overwritten? Or will it silently create
+              an invalid install?</draft-comment>The <parmname>-overwrite</parmname> parameter added
+            after the <parmname>-q</parmname> parameter forces the overwriting of these files. <dl>
+              <dlentry>
+                <dt>- on Windows: </dt>
+                <dd>
+                  <p>
+                    <codeblock><ph keyref="executableInstallWindows"/> -q -overwrite</codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+              <dlentry>
+                <dt>- on Linux: </dt>
+                <dd>
+                  <p>
+                    <codeblock><ph keyref="executableInstallLinux"/> -q -overwrite</codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+            </dl></stentry>
+        </strow>
+        <strow>
+          <stentry>-console</stentry>
+          <stentry>
+            <p>To display a console for the unattended installation, add a
+                <parmname>-console</parmname> parameter to the command line. <draft-comment
+                author="Mark">Why does the console version of the command line start with start
+                /wait. Is this required to make the console stay open so you can inspect the
+                result?</draft-comment><dl>
+                <dlentry>
+                  <dt>- on Windows: </dt>
+                  <dd>
+                    <p>
+                      <codeblock>start /wait <ph keyref="executableInstallWindows"/> -q -console</codeblock>
+                    </p>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>- on Linux: </dt>
+                  <dd>
+                    <p>
+                      <codeblock>start /wait <ph keyref="executableInstallWindows"/> -q -console</codeblock>
+                    </p>
+                  </dd>
+                </dlentry>
+              </dl></p>
+          </stentry>
+        </strow>
+        <strow>
+          <stentry>-varfile</stentry>
+          <stentry>Points to the location of a responses.varfile to be used during an unattended
+            installation. For example:<dl>
+              <dlentry>
+                <dt>- on Windows: </dt>
+                <dd>
+                  <p>
+                    <codeblock><ph keyref="executableInstallWindows"/> -q -varfile response.varfile</codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+              <dlentry>
+                <dt>- on Linux: </dt>
+                <dd>
+                  <p>
+                    <codeblock><ph keyref="executableInstallLinux"/> -q -varfile response.varfile</codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+            </dl></stentry>
+        </strow>
+        <strow>
+          <stentry>-V</stentry>
+          <stentry>Is used to define a variable to be used by an uattended installation. For example:<dl>
+              <dlentry>
+                <dt>- on Windows: </dt>
+                <dd>
+                  <p>
+                    <codeblock><keyword keyref="executableInstallWindows"/> -q -VusageDataCollector=false</codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+              <dlentry>
+                <dt>- on Linux: </dt>
+                <dd>
+                  <p>
+                    <codeblock><keyword keyref="executableInstallLinux"/> -q -VusageDataCollector=false</codeblock>
+                  </p>
+                </dd>
+              </dlentry>
+            </dl></stentry>
+        </strow>
+      </simpletable>
+      <p>The <ph keyref="product"/> installation uses the install4j installer. A full list of the
+          <xref
+          href="http://resources.ej-technologies.com/install4j/help/doc/indexRedirect.html?http&amp;resources.ej-technologies.com/install4j/help/doc/helptopics/installers/responseFile.html"
+          format="html" scope="external">command line parameters supported by the install4j
+          instller</xref> can be found on the install4j site. </p>
+
+    </section>
+  </refbody>
+</reference>
