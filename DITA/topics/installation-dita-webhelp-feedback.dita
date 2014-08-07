@@ -5,7 +5,7 @@
   <body id="installation">
     <section id="system-requirements">
       <title>System Requirements</title>
-      <p>The feedback-enabled WebHelp system of <ph keyref="product"/> demands the following system requirements:<ul>
+      <p>The feedback-enabled WebHelp system of <ph keyref="product"/> requires the following system components:<ul>
           <li>
             <p>Apache Web Server running;</p>
           </li>
@@ -26,34 +26,40 @@
     </section>
     <section id="installation-requirements">
       <title>Installation Instructions</title>
-            <note>These instructions were written for XAMPP 1.7.7 with PHP 5.3.8 and for
-                    <term>phpMyAdmin</term> 3.4.5. Later versions of these packages may change the
-                location or name of some options, however the following installation steps should
-                remain valid and basically the same.</note>
-            <p>In case you have a web server configured with PHP, MySQL, you can deploy the WebHelp
-        output directly. Otherwise, install XAMPP. XAMPP is a free and open source cross-platform
-        web server solution stack package. It consists mainly of the Apache HTTP Server, MySQL
-        database, and interpreters for scripts written in PHP.</p>
-      <p>Install XAMPP:<ul>
-        <li>Go to <xref href="https://www.apachefriends.org/download.html"
-                            format="html" scope="external"/> and download XAMPP, for instance for a
-                        Windows system;</li>
+      <note>These instructions were written for XAMPP 1.7.7 with PHP 5.3.8 and for
+          <term>phpMyAdmin</term> 3.4.5. Later versions of these packages may change the location or
+        name of some options, however the following installation steps should remain valid and
+        basically the same.</note>
+      <p>In case you have a web server configured with PHP, MySQL, you can deploy the WebHelp output
+        directly. Otherwise, install XAMPP. XAMPP is a free and open source cross-platform web
+        server solution stack package. It consists mainly of the Apache HTTP Server, MySQL database,
+        and interpreters for scripts written in PHP.</p>
+    </section>
+    <section>
+      <title>Install XAMPP</title>
+      <p>
+        <ul>
+          <li>Go to <xref href="https://www.apachefriends.org/download.html" format="html"
+              scope="external"/> and download XAMPP, for instance for a Windows system;</li>
           <li>Install it in <filepath>C:\xampp</filepath>;</li>
           <li>From the XAMPP control panel, start <uicontrol>MySQL</uicontrol>, and then
               <uicontrol>Apache</uicontrol>;</li>
-                    <li>Open <filepath>http://localhost/xampp/index.php</filepath> in your browser
-            to check whether the HTTP server is working.</li>
-        </ul></p>
-      <p>Create a database for the feedback system and a MySQL user with privileges on that
-                database. The feedback system uses the MySQL user to connect to the database. The
-                username and password for the database administrator are pre-required. For XAMPP,
-                the defaults are <codeph>root</codeph> for the username and the password is empty. </p>
+          <li>Open <filepath>http://localhost/xampp/index.php</filepath> in your browser to check
+            whether the HTTP server is working.</li>
+        </ul>
+      </p>
+    </section>
+    <section>
+      <title>Create the WebHelp Feedback database</title>
+      <p>The WebHelp system needs a database to store user details and the actual feedback they
+        provide. The following procedure creates a database for the feedback system and a MySQL user
+        with privileges on that database. The feedback system uses these credentials to connect to
+        the database.</p>
       <p>Use <term>phpMyAdmin</term> to create a database: <ul>
           <li>Type <term>localhost</term> in your browser;</li>
           <li>In the left area, select: <term>phpMyAdmin</term>;</li>
-                    <li>Click <i>Databases</i> (in the right frame) and then create a
-                            <i>database</i>. You can give any name you want to your database, for
-                        example <i>comments</i>;</li>
+          <li>Click <i>Databases</i> (in the right frame) and then create a <i>database</i>. You can
+            give any name you want to your database, for example <i>comments</i>;</li>
           <li>Create a user with connection privileges for this database. In the
               <uicontrol>SQL</uicontrol> tab, paste the following
             text:<codeblock outputclass="language-sql">  INSERT INTO `mysql`.`user` (`Host`,`User`,`Password`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,
@@ -64,8 +70,8 @@
       `authentication_string`) VALUES ('localhost', 'user_name', PASSWORD('user_password'), 'Y','Y','Y','Y','Y','Y','Y', 'N','N','N',
       'N','Y','Y','Y','Y','N','Y','Y','Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y','', '0', '0', '0', '0', '', '');  </codeblock></li>
           <li>Change the <i>user_name</i> and the <i>user_password</i> values;</li>
-                    <li>Under <i>localhost</i> in the right frame click <i>Privileges</i> and then
-            at the bottom of the page click the <uicontrol>reload the privileges</uicontrol> link. </li>
+          <li>Under <i>localhost</i> in the right frame click <i>Privileges</i> and then at the
+            bottom of the page click the <uicontrol>reload the privileges</uicontrol> link. </li>
         </ul></p>
     </section>
     <section id="deploying-webhelp">
@@ -82,38 +88,47 @@
               <filepath>http://localhost/webhelp_1/install/</filepath>;<ul>
               <li>Verify that the prerequisites are fulfilled;</li>
               <li>Press <uicontrol>Start Installation</uicontrol>;</li>
-              <li>Configure the e-mail addresses, username, and password. Enter the WebHelp system
-                administrator password. This special user is able to moderate new posts and manage
-                WebHelp users;<p>The address and port of the SMTP mail server that will send the
-                  email notifications for the user registration and for the user comments are
-                  displayed in the WebHelp installation wizard. They can be modified later in the
-                  PHP Runtime Configuration which is usually stored in the
-                    <filepath>php.ini</filepath> file in the XAMPP installation.</p><p>You can
-                  choose to share comments with other products using the same database. After
-                  configuring the database connection, enable the <uicontrol>Display comments from
-                    other products</uicontrol> option. In the <uicontrol>Display comments
-                    from</uicontrol> section a list with the products sharing the same database is
-                  displayed. You can choose one or more products from this list to share comments
-                  with. <note>You can restrict the displayed comments of a product depending on its
-                    version. In case you have two products that use the same database and you
-                    restrict one of them to display comments starting from a certain version, the
-                    comments of the other product are also displayed from the specified version
-                    onwards. </note></p></li>
-              <li>Press Next Step;</li>
+              <li>Configure the <uicontrol>Deployment Settings</uicontrol> section. Default values
+                are provided, but you should adjust them as needed.</li>
+              <li>Configure the <uicontrol>MySql Database Connection Settings</uicontrol> section.
+                Use the details from the Create the WebHelp Feedback database section to fill-in the
+                appropriate text boxes.<note type="warning">Checking the <uicontrol>Create new
+                    database structure</uicontrol> option will overwrite any existing data in the
+                  selected database, if it already exists. </note></li>
+              <li>If the <uicontrol>Create new database structure</uicontrol> option is checked, the
+                  <uicontrol>Create WebHelp Administrator Account</uicontrol> section becomes
+                available. Here you can set the administrator account data. The administrator is
+                able to moderate new posts and manage WebHelp users. <p>The same database can be
+                  used to store comments for different WebHelp deployments. If a topic is available
+                  in more than one WebHelp deployments and there are comments associated with it,
+                  you can choose to display the comments in all deployments that share the database.
+                  To do this, enable the <uicontrol>Display comments from other products</uicontrol>
+                  option. In the <uicontrol>Display comments from</uicontrol> section a list with
+                  the deployments sharing the same database is displayed. Select the deployments
+                  allowed to share common feedback.<note>You can restrict the displayed comments of
+                    a product depending on its version. In case you have two products that use the
+                    same database and you restrict one of them to display comments starting from a
+                    certain version, the comments of the other product are also displayed from the
+                    specified version onwards. </note></p></li>
+              <li>Press <uicontrol>Next Step</uicontrol>;</li>
               <li>Remove the installation folder from your web server; </li>
               <li>Click the link pointing to the index of the documentation, or visit:
                   <filepath>http://localhost/webhelp_1/</filepath>.</li>
             </ul></li>
         </ul></p>
-            <p>To test your system, create a user or post as anonymous. Check that the notification
-                emails are delivered to your inbox.<note>To read debug messages, do one of the following:<ul>
-            <li>open the <filepath>log.js</filepath> file, locate the <codeph>var log= new
-                Log(Level.NONE);</codeph> line, and change the logging level to:
-                <codeph>Level.INFO</codeph>, <codeph>Level.DEBUG</codeph>,
-                <codeph>Level.WARN</codeph>, or <codeph>Level.ERROR</codeph>;</li>
-            <li>append <codeph>?log=true</codeph> to the WebHelp URL.</li>
+            <p>To test your system, create a user and post a comment. Check if the notification
+        emails are delivered to your inbox.<note>To read debug messages generated by the system:<ul>
+            <li>enable JScript logging:<ul>
+                <li>open the <filepath>log.js</filepath> file, locate the <codeph>var log= new
+                    Log(Level.NONE);</codeph> line, and change the logging level to:
+                    <codeph>Level.INFO</codeph>, <codeph>Level.DEBUG</codeph>,
+                    <codeph>Level.WARN</codeph>, or <codeph>Level.ERROR</codeph>;</li>
+                <li>or append <codeph>?log=true</codeph> to the WebHelp URL.</li>
+              </ul></li>
+          </ul><ul>
+            <li>inspect the PHP and Apache server log files.</li>
           </ul></note>
-            </p>
+      </p>
     </section>
   </body>
 </topic>
