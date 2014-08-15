@@ -12,3 +12,22 @@ Rules for writing the User Manual:
 5. For review comments and questions, use Oxygen comments. When a decision is made that future authors might need to know about, record it in the text as a draft-note. Oxygen comments should be removed once they are dealt with. draft-notes should remain in the text so that we don't lose the history. 
 
 6. Context sensitive help is connected to the interface by including the topic ids in the corresponding Java classes. (In other words, the code connects to ids in the docs, not the docs to ids the code as is the case in other systems. Topic ids should therefore remain stable as much as possible. Also, the topic id must match the file name of the topic file, minus the extension.
+
+7. Representing the name of directories on the user's system: 
+
+* To represent the Oxygen install directory in a file path, use [OXYGEN_DIR]
+* To represent the Oxygen plugin install directory, use [OXYGEN_PLUGIN_DIR]
+* To represent a framework directory with an unknown name, use [FRAMEWORK_DIR]
+* To represent the Berkley DBXML directory: [DBXML_DIR]
+* To represent the JDK install directory: [JDK_DIR]
+* To represent a customization directory: [CUSTOMIZATION_DIR]
+* To represent the user's home directory: [HOME_DIR]
+* To represent the transformation output directory: [OUTPUT_DIR]
+* [DITA_MAP_BASE_DIR]
+* To represent other directories, use the same convention: [NAME_DIR], standardise the usage across the doc set, and add it to this list.
+
+Don't create  placeholders for directories whose names are known, but whole location is not. Start the path at the directory whose name is local to the system. That is, don't write [FRAMEWORKS_DIR], write [OXYGEN_DIR]/frameworks.
+
+8. Don't use <filepath> for variables that happen to represent paths, use <varname>. Don't use <filepath> for field values that happen to be pathnames, particularly if they include editor variables that stand for directory names, use <codeph>.
+
+9. Don't use <uicontrol> for variable names just because the appear in the UI. Use <varname>
