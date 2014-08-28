@@ -1,9 +1,9 @@
 Rules for writing the User Manual:
 
 
-1. All images will be already scaled with GIMP or Photoshop when they are included in manual with an <image> element. This is necessary because if we add the image/@scale attribute the image will not be displayed correctly in JavaHelp. Also scaling it may make the text look bad at edges.
+1. All images will be already scaled with GIMP or Photoshop when they are included in manual with an <image> element. This is necessary because if we add the image/@scale attribute the image will not be displayed correctly in JavaHelp. Also scaling the image may make the text look bad at edges.
 
-2. Maximum width of images: 820 pixels. Maximum height of images: 750. For larger width or height scaling is necessary in XML (the image/@scale attribute) or in PDF which will NOT be done.
+2. Maximum width of images: 820 pixels. Maximum height of images: 750.
 
 3. Use "you" instead of "I", ex: "You should go to menu Options ..." instead of "I go to menu Options ...". Exception: the Common Problems chapter where the question is formulated as: "I get a crash on Mac OS X when I try to start Oxygen. What should I do?"
 
@@ -30,4 +30,4 @@ Don't create  placeholders for directories whose names are known, but whole loca
 
 8. Don't use <filepath> for variables that happen to represent paths, use <varname>. Don't use <filepath> for field values that happen to be pathnames, particularly if they include editor variables that stand for directory names, use <codeph>.
 
-9. Don't use <uicontrol> for variable names just because the appear in the UI. Use <varname>
+9. Don't use <uicontrol> for variable names just because they appear in the UI, use <varname>.
