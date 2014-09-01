@@ -31,3 +31,5 @@ Don't create  placeholders for directories whose names are known, but whole loca
 8. Don't use <filepath> for variables that happen to represent paths, use <varname>. Don't use <filepath> for field values that happen to be pathnames, particularly if they include editor variables that stand for directory names, use <codeph>.
 
 9. Don't use <uicontrol> for variable names just because they appear in the UI, use <varname>.
+
+10. "Referred vs. referenced. To identify content that is being referred to by other content, say "the referenced content" not "the referred content". For example, the sentence "The referred resources are loaded and displayed inside the element or entity that refers them." should acutally be written "The *referenced* resources are loaded and displayed inside the element or entity that refers *to* them. 
