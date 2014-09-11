@@ -8,55 +8,40 @@
     </metadata>
   </prolog>
   <body>
-    <p><?oxy_comment_start author="Mark" timestamp="20140904T155832-0400" comment="This has largely been replaced by the general format and indent topic. Need to find other homes for a couple of bits of info here that are not covered in that topic."?>There
-      are several major aspects of white-space handling in <ph keyref="product"/> which are
-      important in the following cases:<?oxy_comment_end?><ul>
-        <li>when opening documents;</li>
-        <li>when switching from other editing mode to <uicontrol>Author</uicontrol> mode;</li>
-        <li>when saving documents in <uicontrol>Author</uicontrol> mode;</li>
-        <li>when switching from Author mode to another one.</li>
-      </ul></p>
-    <ul>
-      <li><b>Open documents</b> - When deciding if the white-spaces from a text node are to be
-        preserved, normalized or stripped, the following rules apply:<ul>
-          <li>If the text node is inside an element context where the
-              <codeph>xml:space="preserve"</codeph> is set then the white-spaces are preserved;</li>
-          <li>If the CSS property <codeph>white-space</codeph> is set to <codeph>pre</codeph> for
-            the node style then the white-spaces are preserved;</li>
-          <li>If the text node contains other non-white-space characters then the white-spaces are
-            normalized;</li>
-          <li>If the text node contains only white-spaces:<ul>
-              <li>If the node has a parent element with the CSS <codeph>display</codeph> property
-                set to <codeph>inline</codeph> then the white-spaces are normalized;</li>
-              <li>If the left or right sibling is an element with the CSS <codeph>display</codeph>
-                property set to <codeph>inline</codeph> then the white-spaces are normalized;</li>
-              <li>
-                <p>If one of its ancestors is an element with the CSS <codeph>display</codeph>
-                  property set to <codeph>table</codeph> then the white-spaces are striped;</p>
-              </li>
-              <li>
-                <p>Otherwise the white-spaces are ignored.</p>
-              </li>
-            </ul></li>
-        </ul></li>
-      <li><b>Save documents</b> - The Author editor will try to format and indent the document while
-        following the white-space handling rules:<ul>
-          <li>If text nodes are inside an element context where the
-              <codeph>xml:space="preserve"</codeph> is set then the white-spaces are written without
-            modifications;</li>
-          <li>If the CSS property <codeph>white-space</codeph> is set to <codeph>pre</codeph> for
-            the node style then the white-spaces are written without any changes;</li>
-          <li>In other cases the text nodes are wrapped.</li>
-        </ul>Also, when formatting and indenting an element that is not in a space-preserve context,
-        additional line separators and white-spaces are added as follows:<ul>
-          <li>Before a text node that starts with a white-space;</li>
-          <li>After a text node that ends with a white-space;</li>
-          <li>Before and after CSS <codeph>block</codeph> nodes;</li>
-          <li>If the current node has an ancestor that is a CSS <codeph>table</codeph> element.</li>
-        </ul></li>
-      <li><b>Editing documents</b> - You cannot insert consecutive space characters in any text
-        nodes. Line breaks are permitted only in space-preserve elements. Tabs are marked in the
-        space-preserve elements with a little marker.</li>
-    </ul>
+    <p>When you edit a document in Author mode, <ph keyref="product"/> must serialize the resulting
+      document as XML. <ph keyref="product"/> serializes the document when you save it or switch to
+      another editing mode. When the document is serialized, <ph keyref="product"/>
+      <xref keyref="edit.format-and-indent-XML">formats and indents the XML document</xref>
+      according to the current <xref keyref="options.editor.format">format and indent
+        settings</xref>.</p>
+    <section>
+      <title>Minimizing whitespace differences between versions</title>
+      <p>When serializing a document to XML, Author mode will only format and indent those elements
+        of the document that have been edited. Any element that has not been edited will be
+        serialized exactly as it was loaded from disk. This is useful when your content is managed
+        in a version control systems, as it avoids introducing insignificant whitespace differences
+        between version, which in turn makes diff output easier to read. </p>
+    </section>
+    <section>
+      <title>Entering whitespace in Author mode</title>
+      <p><ph keyref="product"/> controls the entry of whitespace characters in Author mode according
+        the <xref keyref="edit.format-and-indent-XML">XML whitespace rules</xref>, which means it
+        will not let you insert insignificant whitespace. This means that it will not let you insert
+        extra line-breaks or spaces inside a typical paragraph element, for instance. (Any such
+        whitespace would be normalized away when the document was serialized to XML, so <ph
+          keyref="product"/> is saving you from any surprises when this happens.)</p>
+      <p>Of course, you will legitimately want to enter additional spaces and returns in some cases,
+        such as code samples. <ph keyref="product"/> will allow this in elements that are configured
+        as preserve space elements according to the XML whitespace rules. For all of its <xref
+          keyref="doctypes.predefined">predefined document types</xref>, <ph keyref="product"/> is
+          <xref keyref="options.editor.format.xml">correctly configured to recognize preserve space
+          elements</xref> and to allow you to enter additional spaces in them. </p>
+      <p>If you are using a predefined document type and you are unable to enter additional
+        whitespace, make sure that you are using an element from that document type that is intended
+        to be a preserve-space element.</p>
+      <p>If you are using a custom document type, make sure that it is <xref
+          keyref="chapter.authoring-customization-guide">configured correctly</xref> so that <ph
+          keyref="product"/> recognizes that the current element is a preserve-space element.</p>
+    </section>
   </body>
 </topic>

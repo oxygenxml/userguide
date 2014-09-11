@@ -105,15 +105,14 @@ class HelloWorld
           <dd>In the normalize space category, a single whitespace character between character
             strings is considered significant and all other spaces are considered insignificant.
             This generally applies to elements that contain text content only. This content can be
-            normalized by removing leading and trailing whitespace and replacing all sequences of
-            whitespace between non-whitespace characters with a single space. Insignificant
-            whitespace may then be added to format and indent the content.</dd>
+            normalized by removing insignificant whitespace. Insignificant whitespace may then be
+            added to format and indent the content.</dd>
         </dlentry>
         <dlentry>
           <dt>Mixed content</dt>
           <dd>
-            <p>In the mixed content category, a single whitespace between characters is considered
-              significant and all other spaces are considered insignificant. However, </p>
+            <p>In the mixed content category, a single whitespace between text characters is
+              considered significant and all other spaces are considered insignificant. However, </p>
             <ul id="ul_awx_mwk_jp">
               <li>
                 <p>Whitespace between two child elements embedded in the text is normalized to a
@@ -150,13 +149,13 @@ class HelloWorld
         in an element tag are always in the default space category.<?oxy_comment_end?></p>
       <p><ph keyref="product"/> consults several pieces of information to assign an element to one
         of these categories. An element is always assigned to the most restrictive category (from
-        Ignore to Preserve) that it is assigned to by any of the sources it consults. For instance,
-        if the element is named on the <uicontrol>Default elements</uicontrol> list (as described
-        below) but it has and <codeph>xml:space="preserve"</codeph> attribute in the source file, it
-        will be assigned to the preserve space category. If an element has the
-          <codeph>xml:space="default"</codeph> attribute in the source, but is listed on the
-          <uicontrol>Mixed content</uicontrol> elements list, it will be assigned to the mixed
-        content category.</p>
+        Ignore to Preserve) that it is assigned to by any of the sources <ph keyref="product"/>
+        consults. For instance, if the element is named on the <uicontrol>Default
+          elements</uicontrol> list (as described below) but it has and
+          <codeph>xml:space="preserve"</codeph> attribute in the source file, it will be assigned to
+        the preserve space category. If an element has the <codeph>xml:space="default"</codeph>
+        attribute in the source, but is listed on the <uicontrol>Mixed content</uicontrol> elements
+        list, it will be assigned to the mixed content category.</p>
       <p>To assign elements to these categories, <ph keyref="product"/> consults information from
         the following sources: </p>
       <dl>
@@ -234,7 +233,7 @@ class HelloWorld
           <dt>Preserve space elements list</dt>
           <dd>
             <p>If an element is listed in the <uicontrol>Preserve space</uicontrol> list in the
-                <xref keyref="options.editor.format.xml">XML formatting preferences</xref>,it is
+                <xref keyref="options.editor.format.xml">XML formatting preferences</xref>, it is
               promoted to the preserve space category.</p>
           </dd>
         </dlentry>
@@ -242,7 +241,7 @@ class HelloWorld
           <dt>Default space elements list</dt>
           <dd>
             <p>If an element is listed in the <uicontrol>Default space</uicontrol> list in the <xref
-                keyref="options.editor.format.xml">XML formatting preferences</xref>,it is promoted
+                keyref="options.editor.format.xml">XML formatting preferences</xref>, it is promoted
               to the default space category</p>
           </dd>
         </dlentry>
@@ -263,17 +262,14 @@ class HelloWorld
               content.)</p>
             <p>If an element contains text content, it is promoted to the default space
               category.</p>
-            <p>If an element contains only other elements, it is assigned to the ignore space
-              category.</p>
           </dd>
         </dlentry>
         <dlentry>
           <dt>Text node content</dt>
           <dd>
             <ul>
-              <li>If the text node contains other non-whitespace characters then the text node is
+              <li>If a text node contains any non-whitespace characters then the text node is
                 promoted to the normalize space category.</li>
-              <li>Otherwise the node is assigned to the ignore space category.</li>
             </ul>
           </dd>
         </dlentry>
@@ -284,12 +280,15 @@ class HelloWorld
       <p>In general, a element can only be promoted to a more restrictive category (one that treats
         more whitespace as significant). However, there is one exception. In author mode, if an
         element is marked as mixed content in the schema, but the actual element contains no text
-        content, it can be demoted to the space ignore category if  all of its child elements are
-        displayed as blocks by the associated CSS (that is, it has a CSS property of
+        content, it can be demoted to the space ignore category if all of its child elements are
+        displayed as blocks by the associated CSS (that is, they have a CSS property of
           <codeph>display: block</codeph>). For example, in some schemas, a section or a table entry
         can be defined as having mixed content but in many cases they contain only block elements.
         In these cases, any whitespace the contain cannot be significant and they can be treated as
-        space ignore elements.</p>
+        space ignore elements. This exception can be turned on or off using the option <xref
+          keyref="options.editor.edit-modes.author.schema-aware"
+          product="author authorEclipse editor editorEclipse"><uicontrol>Editor / Edit modes /
+            Author / Schema aware</uicontrol></xref></p>
     </section>
     <section>
       <title>How <ph keyref="product"/> formats and indents XML</title>
@@ -323,9 +322,14 @@ class HelloWorld
             <uicontrol>Format and Indent Element</uicontrol>
           </menucascade>).</li>
         <li>In author mode, when opening documents.</li>
-        <li>When switching from other editing mode to Author mode.</li>
+        <li>When switching from other editing modes to Author mode.</li>
         <li>When saving documents in Author mode.</li>
-        <li>When switching from Author mode to another one.</li>
+        <li>When switching from Author mode to another mode.</li>
+        <li>When saving or switching to Text mode from Grid mode, if the option <xref
+            keyref="options.editor.edit-modes.author.schema-aware"
+            product="author editor authorEclipse editorEclipse"><uicontrol>Editor / Edit modes /
+              Grid / Format and indent when passing from grid to text or on save</uicontrol></xref>
+          is selected.</li>
       </ul>
     </section>
   </body>
