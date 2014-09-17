@@ -4,72 +4,62 @@
 <topic id="content-completion-schema-annotations">
     <title>Schema Annotations</title>
     <body>
-        <p>If the document's schema is an XML Schema, Relax NG (full syntax), NVDL or DTD and it
-            contains element, attributes or attributes values annotations, these will be presented
-            when the content completion window is displayed, only if the option <xref
-                href="preferences-content-completion-annotations.dita">
-                <i>Show annotations</i>
-            </xref> is enabled. Also the annotation is presented in a small tooltip window displayed
-            automatically when the mouse hovers over an element or attribute annotated in the
-            associated schema of the edited document. <ph product="editor author developer">The tooltip window
-                can be invoked at any time using the <ph>F2</ph> shortcut.</ph></p>
-        <p>In an XML Schema the annotations are specified in an &lt;xs:annotation&gt; element like
-            this:<codeblock outputclass="language-xml">    &lt;xs:annotation&gt;
-        &lt;xs:documentation&gt;
+    <p>A schema annotation is a documentation snippet associated with the definition of an element
+      or attribute in a schema. If such a schema is associated with an XML document, the annotations
+      are displayed in:<ul>
+        <li>the Content Completion Assistant.</li>
+        <li>a small tooltip window shown when the mouse hovers over an element or attribute.<ph
+            product="editor author developer"> The tooltip window can be invoked at any time using
+            the <ph>F2</ph> shortcut.</ph></li>
+      </ul></p>
+    <p>The schema annotations support is available the schema type is one of the following: XML
+      Schema, Relax NG, NVDL, or DTD. If you want to turn off this feature, disable the <xref
+        href="preferences-content-completion-annotations.dita"><uicontrol>Show
+          annotations</uicontrol></xref> option.</p>
+    <section>
+      <title>Styling Annotations with HTML</title>
+      <p>You can use HTML format in the annotations you add in an XML Schema or Relax NG schema.
+        This improves the visual appearance and readability of the documentation window displayed
+        when editing XML documents validated against such a schema. An annotation is recognized and
+        displayed as HTML if it contains at least one HTML element, like: <term>div</term>,
+          <term>body</term>, <term>p</term>, <term>br</term>, <term>table</term>, <term>ul</term>,
+        or <term>ol</term>. </p>
+      <p>The HTML rendering is controlled by the <uicontrol>Show annotations using HTML format, if
+          possible</uicontrol> option. When this options is disabled, the annotations are converted
+        and displayed as plain text. If the annotation contains one or more HTML tags
+          (<codeph>p</codeph>, <codeph>br</codeph>, <codeph>ul</codeph>, <codeph>li</codeph>), they
+        are rendered as an HTML document loaded in a web browser: <codeph>p</codeph> begins a new
+        paragraph, <codeph>br</codeph> breaks the current line, <codeph>ul</codeph> encloses a list
+        of items, <codeph>li</codeph> encloses an item of the list.</p>
+    </section>
+    <section><title>Collecting Annotations from XML Schemas</title>In an XML Schema the annotations
+      are specified in an <codeph>&lt;xs:annotation></codeph> element like
+        this:<pre>&lt;xs:annotation>
+  &lt;xs:documentation>
             Description of the element.
-        &lt;/xs:documentation&gt; 
-    &lt;/xs:annotation&gt;</codeblock></p>
-        <p>If the current element / attribute in the edited document does not have an annotation in
-            the schema and that schema is an XML Schema, <ph
-                keyref="product"/> seeks an
-            annotation in the type definition of the element / attribute or, if no annotation is
-            found there, in the parent type definition of that definition, etc.</p>
-      <p>When editing a Schematron schema the <uicontrol>Content Completion Assistant</uicontrol>
-      displays XSLT 1.0 functions and optionally XSLT 2.0 / 3.0 functions in the attributes
-        <i>path</i>, <i>select</i>, <i>context</i>, <i>subject</i>, <i>test</i> depending on <xref
-        href="preferences-xml-parser.dita">the Schematron options</xref> that are set in
-      Preferences. If the Saxon <ph
-        keyref="saxon6FullVersion"/>namespace
-        (<codeph>xmlns:saxon="http://icl.com/saxon"</codeph>) or the Saxon <ph
-        keyref="saxon9FullVersion"/> namespace is
-      declared in the Schematron schema (<codeph>xmlns:saxon="http://saxon.sf.net/"</codeph>) the
-      content completion displays also the XSLT Saxon extension functions as in the following
-      figure:</p>
-        <fig id="figure-content-completion-schematron-ext-functions-oxygen" product="editor author developer">
-            <title>XSLT extension functions in Schematron schemas documents</title>
-            <image href="../img/sa_content_completion_sch_ext_fct.png"/>
-        </fig>
-        <fig id="figure-content-completion-schematron-ext-functions-oxygenEclipse"
-            product="editorEclipse authorEclipse developerEclipse">
-            <title>XSLT extension functions in Schematron schemas documents</title>
-            <image href="../img/ec_content_completion_sch_ext_fct.png"/>
-        </fig>
-        <p>In a Relax NG schema any element outside the Relax NG namespace
-                (<i>http://relaxng.org/ns/structure/1.0</i>) is handled as annotation and the text
-            content is displayed in the annotation window together with the content completion
-            window:</p>
-        <p>For NVDL schemas annotations for the elements / attributes in the referred schemas (XML
-            Schema, RNG, etc) are presented</p>
-        <fig product="editor author developer">
-            <title>Schema annotations displayed at Content Completion</title>
-            <image href="../img/sa_annotate_relax_ng.png"/>
-        </fig>
-        <fig product="editorEclipse authorEclipse developerEclipse">
-            <title>Schema annotations displayed at Content Completion</title>
-            <image href="../img/ec_annotate_relax_ng.png"/>
-        </fig>
-        <p>The following HTML tags are recognized inside the text content of an XML Schema
-            annotation: <codeph>p</codeph>, <codeph>br</codeph>, <codeph>ul</codeph>,
-                <codeph>li</codeph>. They are rendered as in an HTML document loaded in a web
-            browser: <codeph>p</codeph> begins a new paragraph, <codeph>br</codeph> breaks the
-            current line, <codeph>ul</codeph> encloses a list of items, <codeph>li</codeph> encloses
-            an item of the list.</p>
-        <p>For DTD <ph keyref="product"/> defines a
-            custom mechanism for annotation using comments enabled from the option <xref
-                href="preferences-content-completion-annotations.dita">
-                <i>Use DTD comments as annotations</i>
-            </xref>. The text of a comment with the following format will be presented on content
-            completion:
-            <codeblock outputclass="language-xml">&lt;!--doc:Description of the element. --&gt;</codeblock></p>
+  &lt;/xs:documentation>
+&lt;/xs:annotation></pre><p>For
+        XML Schema, if an element or attribute does not have a specific annotation, then <ph
+          keyref="product"/> looks for an annotation in the type definition of that element or
+        attribute.</p></section>
+    <section>
+      <title>Collecting Annotations from Relax NG Schemas</title>
+      <p>For Relax NG schema element / attribute annotation are made using the
+          <codeph>&lt;documentation></codeph> element from the
+          <codeph>http://relaxng.org/ns/compatibility/annotations/1.0</codeph> namespace. However,
+        any element outside the Relax NG namespace
+          (<codeph>http://relaxng.org/ns/structure/1.0</codeph>) is handled as annotation and the
+        text content is displayed in the annotation window. To activate this behaviour, enable the
+          <xref
+          href="preferences-content-completion-annotations.dita#preferences-content-completion-annotations/use_relax_ng_annotations"
+            ><uicontrol>Use all Relax NG annotations as documentation</uicontrol></xref> option.</p>
+    </section>
+    <section>
+      <title>Collecting Annotation from DTDs</title>
+      <p>For DTD <ph keyref="product"/> defines a custom mechanism for annotation using comments
+        enabled from the option <xref href="preferences-content-completion-annotations.dita"><i>Use
+            DTD comments as annotations</i></xref>. Following is an example of a DTD
+        annotation:<codeblock outputclass="language-xml">&lt;!--doc:Description of the element. --&gt;</codeblock></p>
+    </section>
     </body>
 </topic>
