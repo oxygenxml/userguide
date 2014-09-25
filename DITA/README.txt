@@ -32,4 +32,6 @@ Don't create  placeholders for directories whose names are known, but whole loca
 
 9. Don't use <uicontrol> for variable names just because they appear in the UI, use <varname>.
 
-10. "Referred vs. referenced. To identify content that is being referred to by other content, say "the referenced content" not "the referred content". For example, the sentence "The referred resources are loaded and displayed inside the element or entity that refers them." should acutally be written "The *referenced* resources are loaded and displayed inside the element or entity that refers *to* them. 
+10. "Referred vs. referenced. To identify content that is being referred to by other content, say "the referenced content" not "the referred content". For example, the sentence "The referred resources are loaded and displayed inside the element or entity that refers them." should actually be written "The *referenced* resources are loaded and displayed inside the element or entity that refers *to* them. 
+
+11. The correct spelling of "e.g." is "e.g.", not "eg" or "e.g". However, don't use "e.g." at all. Use "for example".
