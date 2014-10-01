@@ -14,10 +14,10 @@
         <uicontrol>DITA</uicontrol>
         <uicontrol>topics</uicontrol>
       </menucascade> and select the topic type that you want to create. </p>
-    <note>Note that if you organization has created any kind of DITA customizations, the appropriate
-      template files may be in another location, and different topic types may be provided for your
-      use. Check with the person who manages your DITA system to see if you should be using
-      templates from a different directory.</note>
+    <note>If you organization has created any kind of DITA customizations, the appropriate template
+      files may be in another location, and different topic types may be provided for your use.
+      Check with the person who manages your DITA system to see if you should be using templates
+      from a different directory.</note>
     <p>Your DITA topic is an XML document. As such, all <xref keyref="get-started.xml-document">the
         editing features that <ph keyref="product"/> provides for editing XML documents</xref> apply
       to DITA topics. However, <ph keyref="product"/> also provides extensive additional support for
@@ -79,7 +79,12 @@
         href="../img/sa_insert_topic_ref_dialog.png" id="image_fqz_2ck_pp"/><p>If you want to see
         what the resulting map looks like in XML, save your map and then double click on
           <uicontrol>DITA Topic Map</uicontrol> in the <wintitle>DITA Maps Manager</wintitle> view.
-        The XML version of the map will open in the editor.  </p></section>
+        The XML version of the map will open in the editor.  </p><note>Maps have titles. The default
+        title in <ph keyref="product"/> is <uicontrol>DITA Topic Map</uicontrol>, which is what is
+        shown in the <wintitle>DITA Maps Manager</wintitle> view. You can (and should) change the
+        title by right clicking on the default title,  <uicontrol>DITA Topic Map</uicontrol>, and
+        selecting <uicontrol>Edit properties...</uicontrol>. In this description, however, we will
+        continue to use the title <uicontrol>DITA Topic Map</uicontrol>.</note></section>
     <section>
       <title>Child topics</title>
       <p>As you add more topics to your map, you may want to make one topic the child of another
@@ -90,6 +95,9 @@
           <uicontrol>Reference...</uicontrol> to create a reference to an existing topic, or
           <uicontrol>Reference to the currently edited file...</uicontrol> to make the file
         currently open in the editor the child topic. </p>
+      <p>You can also change the order and nesting of topics the <wintitle>DITA Maps
+          Manager</wintitle> view by selecting the topic to move, holding down the
+          <uicontrol>Alt</uicontrol> key, and using the arrow keys.</p>
       <p>How your parent and child topics are displayed relative to each other in any particular
         output will depend both on the configuration of those topics in the map and on the rules of
         the output transform that is applied to them. Also, don't assume that your topics have to
@@ -100,9 +108,63 @@
     </section>
     <section>
       <title>Child maps</title>
+      <p>If you have a large information set, such as a long book or an extensive help system, a
+        single map can become long and hard to manage. You can break content up into smaller maps. A
+        smaller map might represent a chapter of a book, a section of a reference, or even a single
+        help topic or web page made up of a number of smaller DITA topics.</p>
+      <p>To build a publication out of these smaller maps, you must add them to a map that
+        represents the overall publication. To add a child map to a the current map, right click on
+        the map title ( <uicontrol>DITA Topic Map</uicontrol>, by default) and choose <menucascade>
+          <uicontrol>Append child</uicontrol>
+          <uicontrol>Map reference...</uicontrol>
+        </menucascade>.</p>
     </section>
     <section>
-      <title>Root maps</title>
+      <title>Validating a map</title>
+      <p>Just as you should validate your topics, you should validate your maps. <ph
+          keyref="product"/> provides a validation function for DITA maps that does more than just
+        validate that they are correct XML. It also validates all of the relationships described by
+        the maps, validates all the topic files, and validates any links between topics described in
+        the topic files. Validating the map that describes your entire publication, therefore,
+        validates all the files that make up the publication and all of the relationships between
+        them. To validate a map, click the Validate and <uicontrol>Check for
+          Completeness</uicontrol> button (<image href="../img/bt_validate_and_check_button.png"
+          id="image_z2b_p5n_pp"/>) in the <wintitle>DITA Maps Manager</wintitle> view.</p>
     </section>
+    <section>
+      <title>Using a root map</title>
+      <p>When you validate a map, <ph keyref="product"/> checks all of the relationships described
+        in that map. If you check a child map (which may be referenced by more than one parent map)
+        some of the relationships in the topics may be to topics outside the current child map. For
+          <ph keyref="product"/> to successfully validate those relationships, it needs to know
+        which map describes the overall publication (and thus includes all the topics in the
+        publication). To tell <ph keyref="product"/> which map to use for this purpose, specify a
+        root map in the <wintitle>DITA Maps Manager</wintitle> view. Note that you may need to
+        validate a child map against more than one root map.</p>
+      <p>Root maps are not only used for validation. They are also used for content completion
+        purposes. For instance, they are used to suggest topics that are available for linking or
+        reuse, or to suggest keys that can be used to form relationships. As soon as you start to
+        work with multiple maps, you will need to make sure you have designated the correct root
+        map. </p>
+    </section>
+    <section><title>Publishing your topics</title><p>As noted above, in DITA you do not publish a
+        topic by itself. To create published output, you run a DITA transformation on a map. This
+        collects all the topics referenced in the map, organizes them, and produced output in a
+        particular format. By default, <ph keyref="product"/> uses the transformations provided by
+        the DITA Open Toolkit for publishing to a number of different output format. Your
+        organization may have created different transformations, or modified the DITA Open Toolkit
+        transformations. In either case, <ph keyref="product"/> manages transformations using
+        transformation scenarios. </p><p>To publish a map, you must select the transformation
+        scenario you want to run, and, if necessary, set any parameters it requires. To select a
+        transformation, click the <uicontrol>Configure Transformation Scenario(s)</uicontrol> button
+        in the <wintitle>DITA Maps Manager</wintitle> view (<image
+          href="../img/bt_transform_config.png" id="image_jcs_q14_pp"/>). This brings up the
+          <wintitle>Configure Transformation Scenario(s)</wintitle> dialog.</p><image
+        href="../img/sa_scenario_list_dialog.png" id="image_o3f_tb4_pp"/></section>
+    <p>Choose the transformation (or transformations) you want to apply and click <uicontrol>Apply
+        associated</uicontrol>. Depending on how the transformation scenario is configured, your
+      output may be opened in the appropriate application automatically. To change how a
+      transformation is configured (or just to figure out where this transformation places its
+      output), select the transformation and press <uicontrol>Edit</uicontrol>.</p>
   </body>
 </topic>
