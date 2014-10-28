@@ -12,7 +12,7 @@
       those provided by the DITA Open Toolkit, or by third parties). Not all output transforms may
       support all the same media types. Consult the DITA documentation for information on which
       formats are supported.</note>
-    <section>
+    <section id="adding-image-inline">
       <title>Adding an image inline</title>
       <p>To add an image inline:</p>
       <ol id="ol_eb4_q5d_xp">
@@ -34,6 +34,42 @@
             <li>Search for file: Opens the <wintitle>Find Resource</wintitle> dialog to search for a
               file.</li>
           </ul></li>
+      </ol>
+    </section>
+    <section>
+      <title>Adding an image in a figure</title>
+      <p>To add an image in a figure:</p>
+      <ol id="ol_nhs_qf2_xp">
+        <li>Add a <codeph>fig</codeph> element to your document at the appropriate place.</li>
+        <li>Add a <codeph>title</codeph> and/or <codeph>desc</codeph> element to the
+            <codeph>fig</codeph> element, according to your needs. </li>
+        <li><xref href="#eppo.dita.adding-images/adding-image-inline" format="dita">Add a
+              <codeph>image</codeph> element</xref> to the <codeph>fig</codeph> element.</li>
+      </ol>
+      <note>The fig element has a number of other child elements that may be appropriate to your
+        content. See the DITA documentation for complete information on the fig element.</note>
+      <note>The order in which the <codeph>image</codeph>, <codeph>title</codeph>, and
+          <codeph>desc</codeph> content are presented in output is determined by the output
+        transform, not by the order in which they are entered in the source. If you want to change
+        how they are output, you should modify the output transform, not your source content.</note>
+    </section>
+    <section>
+      <title>Adding an image using a key reference</title>
+      <p>The image element specifies a particular image file. You may have copies of your image in
+        more than one format. You may wish to use a different format for different output types. One
+        way to do this is to insert your image as a key reference. To use this approach:</p>
+      <ol id="ol_lkz_vk2_xp">
+        <li>Create a DITA map to hold your image keys for each output media. For instance, you might
+          create one map of images to be used in PDF and one for images to be used in Web output. </li>
+        <li>For each image in each map, create a <codeph>topicref</codeph> element with the
+          following
+          structure:<codeblock>&lt;topicref keys="image.test" href="img/test.png" type="image"></codeblock></li>
+        <li>Repeat in each map for each output type. For instance, in the map for PDF output
+          create:<codeblock>&lt;topicref keys="image.test" href="img/test.eps" type="image"></codeblock></li>
+        <li>To insert an image by key, insert an image element and use a keyref attribute to point
+          to the image.<codeblock>&lt;image keyref="image.test"/></codeblock></li>
+        <li>Configure your build so that the appropriate image map is included for each output type.
+        </li>
       </ol>
     </section>
   </body>
