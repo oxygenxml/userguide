@@ -13,12 +13,14 @@
     <p>The <codeph>oxy_url()</codeph> function extends the standard CSS <uicontrol>url()</uicontrol>
       function, by allowing you to specify additional relative path components (parameters
         <uicontrol>loc_1</uicontrol> to <uicontrol>loc_n</uicontrol>). <ph keyref="product"/> uses
-      all these parameters to construct an absolute location.</p>
+      all these parameters to construct an absolute location. Note that any of the parameters that
+      are passed to the function can be either relative or absolute locations. These locations can
+      be expressed as String objects, functions, or editor variables (built-in or custom).</p>
     <syntaxdiagram>
       <groupseq>
         <kwd>oxy_url</kwd>
         <sep>(</sep>
-        <kwd> location </kwd>
+        <kwd> base_location </kwd>
         <sep>,</sep>
         <kwd>loc_1</kwd>
         <sep>,</sep>
@@ -29,24 +31,42 @@
     </syntaxdiagram>
     <dl>
       <dlentry>
-        <dt>location</dt>
-        <dd>The location as string. If not absolute, will be solved relative to the CSS file
-          URL.</dd>
+        <dt>base_location</dt>
+        <dd>String representing the base location. If not absolute, will be solved relative to the
+          CSS file URL.</dd>
       </dlentry>
       <dlentry>
-        <dt>loc_1 ... loc_n</dt>
-        <dd>Relative location path components as string. (optional)</dd>
+        <dt>loc_1 ... loc_n (optional)</dt>
+        <dd>Strings representing relative location path components. </dd>
       </dlentry>
     </dl>
     <example>
-      <p>The following
-        function:<codeblock>oxy_url('http://www.oxygenxml.com/css/test.css', '../dir1/', 'dir2/dir3/', '../../dir4/dir5/test.xml')</codeblock>returns
-        <codeblock>'http://www.oxygenxml.com/dir1/dir4/dir5/test.xml'</codeblock></p>
-      <p>As a concrete example if you have image references but you want to see in the visual Author
-        editing mode thumbnail images which reside in the same
-        folder:<codeblock outputclass="language-css">image[href]{
+      <p>The following function receives String objects as input
+        parameters:<codeblock>oxy_url('http://www.oxygenxml.com/css/test.css', '../dir1/', 'dir2/dir3/', '../../dir4/dir5/test.xml')</codeblock>and
+        returns:<codeblock>'http://www.oxygenxml.com/dir1/dir4/dir5/test.xml'</codeblock></p>
+    </example>
+    <example>
+      <p>The following function receives the result of the evaluation of two other functions as
+        parameters:</p>
+      <p>
+        <codeblock outputclass="language-css">image[href]{
  content:oxy_url(oxy_base-uri(), oxy_replace(attr(href), '.jpeg', 'Thumbnail.jpeg'));
-}</codeblock></p>
+}</codeblock>
+      </p>
+      <p>You can use the above example when you have image references and you want to see thumbnail
+        images stored in the same folder.</p>
+    </example>
+    <example>
+      <p>The following function uses an editor variable as the first parameter to point to the <ph
+          keyref="product"/> installation location:</p>
+      <p>
+        <codeblock>image[href] {
+    content: oxy_url('${oxygenHome}', 'logo.png');
+}</codeblock>
+      </p>
     </example>
   </conbody>
+  <related-links>
+    <link href="../topics/editor-variables.dita#editor-variables"/>
+  </related-links>
 </concept>
