@@ -2,9 +2,9 @@
 <!DOCTYPE task
   PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
 <task id="floating-license-server-setup">
-  <title>Setting up a Floating License Server Running as a Standalone Process</title>
-  <shortdesc>Setting up the floating license server.
-  </shortdesc>
+  <title>Setting up a Floating License Server Running as a Standalone Process for Windows</title>
+  <!--Proofed-->
+  <shortdesc>Setting up the floating license server as a standalone process for Windows. </shortdesc>
   <prolog>
     <metadata>
       <keywords><indexterm>License<indexterm>floating
@@ -14,74 +14,99 @@
   <taskbody>
     <context>
       <fig id="fig_ryp_rkz_x4">
-        <title>Floating License Server Running as a Standalone Process</title>
         <image href="../img/diag_TCPIPLicense.png" id="image_xzp_rkz_x4"/>
       </fig>
+      <p><b>Steps for Installing the Floating License Server in Windows as a Standalone
+        Process</b></p>
     </context>
-    <steps>
+    <steps id="steps_xff_gp3_5q">
       <step>
-        <cmd>Download the license server installation kit for your platform from one of the download
-          URLs included in the registration email message with your floating license key. </cmd>
-        <info>The license server installation may be in the form of a zip archive or an executable
-          file. </info>
+        <cmd>Ensure that the version of Java that is installed on the server machine is up-to-date. </cmd>
+        <info>oXygen License Server uses the following rules to determine which installed version of
+          Java to use:<ol id="ol_e3f_gp3_5q">
+            <li>If you install <ph keyref="product"/> using the native Windows installer, which
+              installs a version of Java as part of the oXygen License Server installation, the
+              version in the <filepath>jre</filepath> subdirectory of the installation directory is
+              used.</li>
+            <li>Otherwise, if the Windows environment variable <codeph>JAVA_HOME</codeph> is set,
+              oXygen License Server uses the Java version pointed to by this variable.</li>
+            <li>Otherwise, the version of Java that is pointed to by your PATH environment variable
+              is used.</li>
+          </ol></info>
       </step>
       <step>
-        <cmd>Install the license server with admin rights.</cmd>
-        <choices id="choices_xsz_35d_tq">
-          <choice>Executable file method<ul id="ul_jtv_rvd_tq">
-              <li>Run the license server executable file.</li>
-              <li>Follow the prompts.</li>
-            </ul></choice>
-          <choice>Zip Archive method<ul id="ul_vlq_w5d_tq">
-              <li>Unzip the installation kit into a new folder.</li>
-              <li>Start the server using the startup script.<note>The startup script is called
-                    <filepath>licenseServer.bat</filepath> for Windows and
-                    <filepath>licenseServer.sh</filepath> for OS X and Unix / Linux. It has 2
-                  parameters: <ul id="ul_shg_5wd_tq">
-                    <li><codeph>licenseDir</codeph> - The path of the directory where the license
-                      files will be placed. Default value: <filepath>license</filepath>.</li>
-                    <li><codeph>port</codeph> - The TCP port number used to communicate with <ph
-                        keyref="product"/> instances. Default value: <b>12346</b>.</li>
-                  </ul></note></li>
-            </ul></choice>
-        </choices>
-        <stepxmp>
-          <p>The following is an example command line for starting the license server on Unix/Linux
-            and OS X:</p>
-          <screen>sh licenseServer.sh myLicenseDir 54321</screen>
-        </stepxmp>
-        <stepxmp>
-          <p>The following is an example command line for starting the license server on
-            Windows:</p>
-          <screen>licenseServer.bat myLicenseDir 54321</screen>
-        </stepxmp>
-        <info>
-          <p>The zip archive can be used for running the license server on any platform where a Java
-            virtual machine can run (Windows, OS X, Linux / Unix, etc).</p>
-          <p>If you use the zip archive on Windows you have to run the scripts provided in the
-            archive for installing, starting, stopping, and uninstalling the server as a Windows
-            service. The Windows installer <xref
-              href="install-license-server-as-windows-service.dita">installs the license server as a
-              Windows service</xref>. It provides the following optional features that are not
-            available in the other license server installers: </p>
-          <ul>
-            <li>Set the Windows Service name.</li>
-            <li>Start the Windows service automatically at Windows startup.</li>
-            <li>Create shortcuts on the Start menu for starting and stopping the Windows service
-              manually.</li>
+        <cmd>Download the license server installation kit for Windows from the download URL that is
+          included in the registration email with your floating license key.</cmd>
+      </step>
+      <step>
+        <cmd>Run the downloaded installer and follow the prompts.</cmd>
+        <info id="windows_service_scripts">
+          <p>By default, the installer installs the license server as a Windows service. You have
+            the optional ability to start the Windows service automatically at Windows startup or
+            create shortcuts on the <uicontrol>Start</uicontrol> menu for starting and stopping the
+            Windows service manually. If you want to manually install, start, stop, or uninstall the
+            server as a Windows service, run the following scripts from a command line as an
+            Administrator:</p>
+          <ul id="ul_j3f_gp3_5q">
+            <li><filepath>installWindowsService.bat [serviceName]</filepath> - install the server as
+              a Windows service with the name <i>serviceName</i>. The parameters for the license key
+              folder and the server port can be set in the
+                <filepath>oXygenLicenseServer.vmoptions</filepath> file. </li>
+            <li><filepath>startWindowsService.bat [serviceName]</filepath> - start the Windows
+              service.</li>
+            <li><filepath>stopWindowsService.bat [serviceName]</filepath> - stop the Windows
+              service.</li>
+            <li><filepath>uninstallWindowsService.bat [serviceName]</filepath> - uninstall the
+              Windows service.</li>
           </ul>
+          <note>If you do not provide the <term>serviceName</term> argument, the default name
+              <term>oXygenLicenseServer</term> is used.<p>When the license server is installed as a
+              Windows service, the output and error messages are automatically redirected to the
+              following log files that are created in the install folder:<ul id="ul_rfs_pjn_5q">
+                <li><filepath>outLicenseServer.log</filepath> - standard output stream of the
+                  server</li>
+                <li><filepath>errLicenseServer.log</filepath> - standard error stream of the
+                  server</li>
+              </ul></p></note>
         </info>
       </step>
       <step>
-        <cmd>The license folder must contain a text file called <filepath>license.txt</filepath>
-          that must contain a single floating license key corresponding to the set of purchased
-          floating licenses.</cmd>
+        <cmd>Manually add <ph>oXygenLicenseServer.exe</ph> in the Windows Firewall list of
+          exceptions. Go to <menucascade>
+            <uicontrol>Control Panel</uicontrol>
+            <uicontrol>System and Security</uicontrol>
+            <uicontrol>Windows Firewall</uicontrol>
+            <uicontrol>Allow a program or feature through Windows Firewall</uicontrol>
+            <uicontrol> Allow another program</uicontrol>
+          </menucascade> and browse for <ph>oXygenLicenseServer.exe</ph> from the oXygen License
+          Server installation folder.</cmd>
+      </step>
+      <step>
+        <cmd>Make sure the license key directory contains a text file called
+            <filepath>license.txt</filepath> that contains the license key corresponding to the set
+          of purchased floating licenses. </cmd>
         <info>
           <note>If you have more than one floating license key for the same <ph keyref="product"/>
-            version, or you want to split a set of license keys between 2 different servers, please
-            contact us at <i>support@oxygenxml.com</i> to merge / split your license keys.</note>
+            version, or you want to split a set of license keys between two different servers,
+            please contact us at <i>support@oxygenxml.com</i> to merge or split your license
+            keys.</note>
         </info>
       </step>
     </steps>
+    <example><title>Installing a License Server in Windows Using a Zip Archive Method</title><p>If
+        for some reason you do not want to run the recommended executable installation file, you can
+        also use a zip archive installation method in Windows. If you use the zip archive method in
+        Windows, you have to run the scripts provided in the archive for <xref
+          href="#floating-license-server-setup/windows_service_scripts" format="dita">installing,
+          starting, stopping, and uninstalling the server as a Windows service</xref>.</p><p>To
+        install the license server using the zip archive method in Windows, use the startup script
+          <filepath>licenseServer.bat</filepath>. It has the following parameters: <ul
+          id="ul_ep5_5jn_5q">
+          <li><codeph>licenseDir</codeph> - The path of the directory where the license files will
+            be placed. The default value is <filepath>license</filepath>.</li>
+          <li><codeph>port</codeph> - The TCP port number used to communicate with <ph
+              keyref="product"/> instances. The default value is <b>12346</b>.</li>
+        </ul></p>The following is an example of the command line for starting the license server on
+      Windows:<screen>licenseServer.bat myLicenseDir 54321</screen></example>
   </taskbody>
 </task>
