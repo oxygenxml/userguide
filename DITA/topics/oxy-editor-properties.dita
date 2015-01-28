@@ -24,10 +24,46 @@
             control. If you select the <codeph>caret</codeph> value, the action is invoked at the
             caret location. If the caret is not inside the element that holds the form control, the
               <codeph>element</codeph> value is selected automatically.</ph></li>
-        <li><ph id="actionID-property"><codeph>actionID</codeph> - the ID of the action specified in
-            the associated document type (framework) (see <xref href="the-action-dialog.dita">Author
-              actions</xref>), invoked when you click the button.</ph>. An alternative to this is
-          the <codeph>action</codeph> parameter.</li>
+        <li id="actionID-property"><codeph>actionID</codeph> - the ID of the action, specified in
+          the associated <xref href="the-action-dialog.dita">document type framework</xref>, that is
+          invoked when you click the button.<note>The element that contains the form control
+            represents the context where the action is invoked. </note></li>
+        <li><ph id="action-property"><codeph>action</codeph> - defines an action directly, rather
+            than using the <codeph>actionID</codeph> parameter to refer to an action from the
+            associated <xref href="the-action-dialog.dita">document type framework</xref>. This
+            property is defined using the <xref href="../concepts/dg-action-function.dita"
+                ><codeph>oxy_action</codeph> function</xref>.</ph><p>
+            <codeblock>oxy_action(
+          name, 'Insert Section', 
+          description, 'Insert an element after the current one', 
+          icon, url('insert.png'), 
+          operation, 'ro.sync.ecss.extensions.commons.operations.InsertFragmentOperation', 
+          arg-fragment, '&lt;element&gt;${caret}&lt;/element&gt;',
+          arg-insertLocation, '.',
+          arg-insertPosition, 'After'
+)</codeblock>
+          </p></li>
+        <li><ph id="action-list-property"><codeph>action_list</codeph> - defines a list of actions
+            directly, rather than using the <codeph>actionID</codeph> parameter to refer to actions
+            from the associated <xref href="the-action-dialog.dita">document type framework</xref>.
+            This property is defined using the <xref href="../concepts/dg-action-list-function.dita"
+                ><codeph>oxy_action_list</codeph> function</xref>.</ph><p>
+            <codeblock>oxy_action_list(
+          oxy_action(
+                name, 'Insert', 
+                description, 'Insert an element after the current one', 
+                operation, 'ro.sync.ecss.extensions.commons.operations.InsertFragmentOperation', 
+                arg-fragment, '&lt;element&gt;&lt;/element&gt;',
+                arg-insertLocation, '.',
+                arg-insertPosition, 'After'
+          ),
+          oxy_action(
+                name, 'Delete', 
+                description, 'Deletes the current element', 
+                operation, 'ro.sync.ecss.extensions.commons.operations.DeleteElementOperation' 
+          )
+      )</codeblock>
+          </p></li>
         <li><ph id="actionDisplayStyle-property"><codeph>actionStyle</codeph> - specifies what to
             display for an action in the form control. The values of this property can be text,
             icon, or both.</ph></li>
