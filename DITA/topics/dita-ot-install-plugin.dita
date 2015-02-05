@@ -10,10 +10,10 @@
     </metadata>
   </prolog>
   <body>
-    <p>The architecture of the DITA Open Toolkit allows additional plugins to be installed. <ol
-        id="ol_uwz_kc4_l3">
+    <p>The architecture of the <b>DITA Open Toolkit</b> allows additional plugins to be installed.
+        <ol id="ol_uwz_kc4_l3">
         <li>The additional plugin(s) should be copied to the <filepath>plugins</filepath> directory
-          of the DITA Open Toolkit installation (by default
+          of the <b>DITA Open Toolkit</b> installation (by default
             <filepath>[OXYGEN_DIR]\frameworks\dita\DITA-OT\plugins</filepath>.</li>
         <li>Run the predefined transformation scenario called <uicontrol>Run DITA OT
             Integrator</uicontrol> by executing it from the <uicontrol><image
@@ -21,17 +21,37 @@
             Scenario(s)</uicontrol> dialog. If the integrator is not visible, enable the <b>Show all
             scenarios</b> action that is available in the <image href="../img/Settings16.png"
             id="image_km5_xrs_yq"/> settings drop-down list.<note type="important">The folder where
-            the DITA OT is located needs to have full write access permissions set to
-          it.</note></li>
-        <li>If the plugin contributed a new <b>transtype</b> to the publishing stage, the
-          application will not detect it by default. You have to create a new <b>DITA OT</b>
-          transformation scenario with a predefined type that is close to the newly added
-            <b>transtype</b>. Then edit the transformation scenario and in the <b>Parameters</b>
-          tab, add a parameter called <b>transtype</b> with the value of the newly added
-          transformation type.</li>
+            the <b>DITA OT</b> is located needs to have full write access permissions set to
+            it.</note><p>Starting with version 17.0, <ph keyref="product"/> detects the
+            transformation type (<codeph>transtype</codeph>) declarations from all <b>DITA OT</b>
+            plugins and presents descriptions, which are contributed in the
+              <codeph>transtype</codeph> declarations, in the <uicontrol>DITA Transformation
+              Type</uicontrol> dialog. <ph keyref="product"/> also shows the contributed parameters
+            from <b>DITA OT</b> plugins in the <uicontrol>Parameters</uicontrol> tab in the
+              <uicontrol>Edit DITA Scenario</uicontrol> dialog.</p></li>
+        <li>If the plugin contributed a new transformation type that is not detected (for instance,
+          if you are using a previous version of <ph keyref="product"/> that does not detect the
+            <codeph>transtype</codeph> declarations), you can create a new <b>DITA OT</b>
+          transformation scenario with a predefined type that is similar to the new transformation
+          type. Then edit the transformation scenario, and in the <b>Parameters</b> tab add a
+            <codeph>transtype</codeph> parameter with the value of the new transformation type.</li>
       </ol></p>
+    <note>A transformation type can also extend another <codeph>transtype</codeph>. For example, the
+        <i>pdf-prince</i>
+      <codeph>transtype</codeph> extends a <codeph>commons</codeph> transformation type that
+      contains all the common DITA OT parameters.</note>
+    <p><b>Example:</b><codeblock>&lt;plugin id="com.oxygenxml.pdf.prince"&gt;
+  &lt;!-- extensions --&gt;
+  &lt;feature extension="dita.conductor.transtype.check" value="pdf-prince" type="txt"/&gt;
+  &lt;feature extension="dita.conductor.target.relative" value="integrator.xml" type="file"/&gt;  
+  &lt;feature extension="dita.transtype.print" value="pdf-prince"/&gt;
+  &lt;transtype name="pdf-prince"extends="commons" desc="PDF (Prince XML - Experimental)"&gt;
+    &lt;param name="princeExecPath" type="file" desc="Path to the Prince executable file (eg: &amp;quot;c:\path\to\prince.exe&amp;quot; on Windows) which should be run to produce the PDF"/&gt;
+  &lt;/ Transtype&gt;
+&lt;/plugin&gt;</codeblock></p>
   </body>
   <related-links>
+    <link href="simple-dita-ot-plugin.dita"/>
     <link href="http://dita4publishers.sourceforge.net/topics/install-instructions.html"
       format="html" scope="external"/>
   </related-links>
