@@ -6,9 +6,39 @@
     a Font for PDF Output Generated with Apache FOP<?oxy_comment_end?></title>
   <body>
     <p>When a DITA map is transformed to PDF using the Apache FOP processor and it contains some
-      Unicode characters that cannot be rendered by the default PDF fonts then a font that is
-      capable to render these characters must be configured and embedded in the PDF result.</p>
+      Unicode characters that cannot be rendered by the default PDF fonts, a font that is capable of
+      rendering these characters must be configured and embedded in the PDF result.</p>
     <p>The settings that must be modified for configuring a font for the Apache FOP processor are
       detailed in <xref href="../tasks/add-font-to-builtin-FOP.dita">this section</xref>.</p>
+    <section>
+      <title>DITA OT PDF Font Mapping</title>
+      <p>The DITA OT contains a file
+          <filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/cfg/fo/font-mappings.xml</filepath>
+        which maps logical fonts used in the XSLT stylesheets to physical fonts which will be used
+        by the FO processor to generate the PDF output.</p>
+      <p>The XSLT stylesheets used to generate the XSL-FO output contain code like:</p>
+      <codeblock outputclass="language-xml">&lt;xsl:attribute name="font-family"&gt;monospace&lt;/xsl:attribute&gt;</codeblock>
+      <p>The font-family is defined to be <varname>monospace</varname>, but
+          <varname>monospace</varname> is just an alias, it is not a physical font name. So another
+        stage in the PDF generation takes this <varname>monospace</varname> alias and looks in the
+          <filepath>font-mappings.xml</filepath>.</p>
+      <p>If it finds a mapping like this:</p>
+      <codeblock outputclass="language-xml">&lt;aliases&gt;
+      &lt;alias name="monospace"&gt;Monospaced&lt;/alias&gt;
+ &lt;/aliases&gt;</codeblock>
+      <p>then it looks to see if the <varname>Monospaced</varname> has a
+          <varname>logical-font</varname> definition and if so it will use the
+          <varname>physical-font</varname> specified
+        there:<codeblock outputclass="language-xml">&lt;logical-font name="Monospaced">
+      &lt;physical-font char-set="default">
+        &lt;font-face>Courier New, Courier&lt;/font-face>
+      &lt;/physical-font>
+............
+&lt;/logical-font></codeblock></p>
+      <note type="important">
+        <p>If no alias mapping is found for a font-family specified in the XSLT stylesheets, the
+          processing defaults to <b>Helvetica</b>.</p>
+      </note>
+    </section>
   </body>
 </topic>
