@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="how_to_security_manager">
+  <title>How To Configure WebApp Minimal File Access Permissions</title>
+  <body>
+    <p>WebApp requires access to the following file resources:<ul id="ul_rjs_5hd_cr">
+        <li><term>READ</term> access to the directory where the WebApp is deployed.</li>
+        <li><term>READ</term> and <term>WRITE</term> access to the application's working
+          directory.</li>
+        <li><term>READ</term> and <term>WRITE</term> access to JVM's temporary directory.</li>
+      </ul></p>
+    <p>It is a good security practice to allow a component to access only the information and
+      resources that are necessary for its purpose. In an environment that uses Apache Tomcat, you
+      can enforce these rules following these steps:<ul id="ul_ojh_g3d_cr">
+        <li>
+          <p>Start the Apache Tomcat server using the <codeph>-security</codeph> flag</p>
+        </li>
+        <li>
+          <p>Edit the <filepath>catalina.policy</filepath> file and add the following
+              snippet:<codeblock>grant codeBase "file:${catalina.base}/webapps/oxygen-webapp/-" {
+    // Oxygen uses System properties for various configuration purposes.
+    permission java.util.PropertyPermission "*", "read,write";
+    // Oxygen custom protocols need access to network.
+    permission java.net.NetPermission "*";
+    permission java.net.SocketPermission "*", "accept,connect,listen,resolve";
+    // The web framework used by Oxygen Webapp uses reflection and classloaders.
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.lang.RuntimePermission "*";
+	
+    // Oxygen uses the JVM's java.io.tempdir for various file handling tasks.
+    permission java.io.FilePermission "${java.io.tmpdir}/-", "read,write,delete"; 
+};</codeblock><note>In
+              the previous example, in the first line, replace <codeph>oxygen-webapp</codeph> with
+              the name of your deployment of <ph keyref="webapp"/>.</note></p>
+        </li>
+      </ul></p>
+  </body>
+</topic>
