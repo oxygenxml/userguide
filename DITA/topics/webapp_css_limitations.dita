@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webapp_css_limitations">
+  <title><ph keyref="webapp"/> CSS Limitations</title>
+  <body>
+    <p><ph keyref="webapp"/> CSS support is compatible to that offered by the standalone
+      distribution of oXygen, with the following exceptions:<ul id="ul_pxb_nl1_br">
+        <li>The <codeph>+</codeph> (<term>direct adjacent</term>) and <codeph>></codeph>
+            (<term>child selector</term>) structural selectors cannot be used to match table-related
+          elements.</li>
+        <li>Oxygen CSS extensions are ignored on <codeph>print</codeph> media. If an Oxygen CSS
+          extension is used on the <codeph>screen</codeph> media, then it will also be used on the
+            <codeph>print</codeph> media.</li>
+        <li>Oxygen CSS extensions used in property values that express lengths may not behave as
+          expected. Nevertheless, it is a good enough approximation.</li>
+        <li>Oxygen synthetic DOM nodes <codeph>comment</codeph>, <codeph>reference</codeph>,
+            <codeph>cdata</codeph>, <codeph>pi</codeph>, <codeph>error</codeph>interfere with the
+            <codeph>+</codeph> (<term>direct adjacent</term>) structural selector. For example:
+            <codeblock>b + b {
+color: red;
+}</codeblock><p>will not match the following XML
+            structure:
+            <codeblock>&lt;root>
+  &lt;b/>
+  &lt;!--comment-->
+  &lt;b/>
+&lt;/root&gt;</codeblock></p></li>
+        <li><ph keyref="webapp"/> does not render non-<codeph>table-row</codeph> children elements
+          of tables and non-<codeph>table-cell</codeph> elements of <codeph>table-row</codeph>
+          elements.</li>
+        <li><ph keyref="webapp"/> does not support:<ul id="ul_mtl_xm1_br">
+            <li><codeph>:nth-last-of-type</codeph>, <codeph>:first-of-type</codeph>,
+                <codeph>:last-of-type</codeph>, <codeph>:nth-last-of-type</codeph>
+              pseudo-classes</li>
+            <li>subject selectors, because they are not supported by web browsers</li>
+            <li>specifying widths for inline elements</li>
+            <li>attribute selectors that use wildcard for the attribute name</li>
+            <li>oXygen CSS extensions to style <codeph>:before</codeph> and <codeph>:after</codeph>
+              pseudo-elements, except in the <codeph>content</codeph> property</li>
+            <li>CSS property values that contain the <codeph>oxy_xpath</codeph> function; they are
+              not refreshed correctly</li>
+            <li>registering a <codeph>ro.sync.ecss.extensions.api.StylesFilter</codeph>; it is
+              ignored</li>
+          </ul></li>
+      </ul></p>
+  </body>
+</topic>

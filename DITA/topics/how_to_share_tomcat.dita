@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="how_to_share_tomcat">
+  <title>How To Share a Tomcat Instance Between <ph keyref="webapp"/> And Another
+    Application</title>
+  <body>
+    <p>Due to a class loader issue, the oXygen XML built-in protocol handlers cannot be used in a
+      scenario where the WebApp shares the same Apache Tomcat instance with another application. To
+      disable the protocol handlers initialization, set the <xref
+        href="customizing-options.dita#customizing-options/webapp_config_file"
+          ><codeph>com.oxygenxml.loadBuiltinProtocolHandlers</codeph> option</xref> to
+        <codeph>false</codeph>.</p>
+    <p>Also, the following issues need to be considered:<ul id="ul_xbd_cmt_1r">
+        <li>oXygen reads and sets system properties, and while we try to namespace oXygen-specific
+          ones, there is no guarantee that there won't be any clashes with those set by other
+          applications.</li>
+        <li>you have to adapt the JVM's memory configuration to the scenario where there will be
+          more applications competing for the same pool of memory.</li>
+        <li>oXygen XML Author WebApp currently does not restart (or <term>reload</term> in Apache
+          Tomcat terminology) correctly unless the Apache Tomcat server is also restarted.</li>
+      </ul></p>
+  </body>
+</topic>
