@@ -58,17 +58,32 @@
             destination stylesheet.</li>
         </ul><note>This refactoring action is also proposed by the <xref
             href="xslt-quick-assist.dita#xslt-quick-assist">Quick Assist support</xref>.</note></li>
-      <li><uicontrol>Convert attributes to xsl:attributes...</uicontrol> - Converts the attributes
-        from the selected element and represents each of them with an
-          <codeph>&lt;xsl:attribute&gt;</codeph> instruction. For example from the following
-          element:<codeblock outputclass="language-xml">&lt;person id="Big{test}Boss"/&gt;</codeblock><p>you
-          obtain:</p><codeblock outputclass="language-xml">&lt;person&gt;
-    &lt;xsl:attribute name="id"&gt;
-        &lt;xsl:text&gt;Big&lt;/xsl:text&gt;
-        &lt;xsl:value-of select="test"/&gt;
-        &lt;xsl:text&gt;Boss&lt;/xsl:text&gt;
-    &lt;/xsl:attribute&gt;
-&lt;/person&gt;</codeblock></li>
+      <li><uicontrol>Convert attributes to xsl:attributes</uicontrol> - Converts the attributes from
+        the selected element and represents each of them with an
+          <codeph>&lt;xsl:attribute&gt;</codeph> instruction. For example, from the following
+          element:<codeblock outputclass="language-xml">&lt;person id="Big{test}Boss"/></codeblock><p>you
+          obtain:</p><codeblock outputclass="language-xml">&lt;person>
+    &lt;xsl:attribute name="id">
+        &lt;xsl:text>Big&lt;/xsl:text>
+        &lt;xsl:value-of select="test"/>
+        &lt;xsl:text>Boss&lt;/xsl:text>
+    &lt;/xsl:attribute>
+&lt;/person></codeblock></li>
+      <li><uicontrol>Convert xsl:if into xsl:choose/xsl:when</uicontrol> - Converts an
+          <codeph>xsl:if</codeph> block to an <codeph>xsl:when</codeph> block surrounded by an
+          <codeph>xsl:choose</codeph> element. For example, the following
+          block:<codeblock outputclass="language-xml">&lt;xsl:if test="a">
+  &lt;!-- XSLT code -->
+&lt;/xsl:if></codeblock><p>is
+          converted
+          to:<codeblock outputclass="language-xml">&lt;xsl:choose>
+    &lt;xsl:when test="a">
+        &lt;!-- XSLT code -->
+    &lt;/xsl:when>
+    &lt;xsl:otherwise>
+        |
+    &lt;/xsl:otherwise>
+&lt;/xsl:choose></codeblock></p></li>
       <li><uicontrol>Extract local variable</uicontrol> - <ph id="extract_local_var_sh_desc">Allows
           you to create a new local variable by extracting the selected XPath expression.</ph> After
         creating the new local variable before the current element, <ph keyref="product"/> allows
