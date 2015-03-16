@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="xml-refactoring-operation-descriptor">
+  <title>Custom Refactoring Operation Descriptor File</title>
+  <body>
+    <p>The second step in creating a custom refactoring operation is to create a custom operation
+      descriptor file. The easiest way to create this file is to use the <b>New</b> document wizard
+      and choose the <b>XML Refactoring Operation Descriptor</b> template. You can also use our
+      example of the descriptor file below to help you create your custom file.</p>
+    <section>
+      <title>Introduction to the Descriptor File</title>
+      <p>The descriptor file is edited and validated against the following schema:
+          <filepath>frameworks/xml_refactoring/operation_descriptor.xsd</filepath>. </p>
+      <p>This file contains information that is necessarily when loading an XML Refactoring
+        operation (such as <codeph>name</codeph>, <codeph>description</codeph>, and
+          <codeph>id</codeph>). It also contains the path to the XQuery Update script that is
+        associated with the particular operation through the <codeph>script</codeph> element.</p>
+      <p>You can specify a <codeph>category</codeph> for your custom operations to logically group
+        certain operations. The <codeph>category</codeph> element is optional and if it is not
+        included in the descriptor file, the default name of the category for the custom operations
+        is <i>Other operations</i>. </p>
+    </section>
+    <section>
+      <title>Declaring Parameters in the Descriptor File</title>
+      <p>If the XQuery Update script includes parameters, they should be declared in the
+          <b>parameters</b> section of the descriptor file. All the parameters specified in this
+        section of the descriptor file will be displayed in the <uicontrol>XML
+          Refactoring</uicontrol> tool within <xref
+          href="xml-refactoring-tool.dita#xml-refactoring-tool/parameters_dlentry">the
+            <uicontrol>Configure Operation Parameters</uicontrol> dialog box</xref> for that
+        particular operation.</p>
+      <p>The value of the first <codeph>description</codeph> element in the <b>parameters</b>
+        section will be displayed at the top of <xref
+          href="xml-refactoring-tool.dita#xml-refactoring-tool/parameters_dlentry">the
+            <uicontrol>Configure Operation Parameters</uicontrol> dialog box</xref>.</p>
+      <p>To declare a parameter, also specify the following information in the descriptor file:</p>
+      <ul id="ul_irs_glv_gr">
+        <li><b><codeph>label</codeph></b> - This value is displayed in the user interface for the
+          parameter.</li>
+        <li><b><codeph>name</codeph></b> - The parameter name used in the XQuery Update script and
+          it should be the same as the one declared in XQuery script.</li>
+        <li><b><codeph>type</codeph></b> - Defines the type of the parameter and how it will be
+          rendered. There are several types available:<ul id="ul_xm5_j4v_gr">
+            <li><codeph>TEXT</codeph> - Generic type used to specify a simple text fragment.</li>
+            <li>
+              <p><codeph>XPATH</codeph> - Type of parameter whose value is an XPATH expression. For
+                this type of parameter, the application will use a text input with corresponding
+                content completion and syntax highlighting.</p>
+              <note>Only prefixes declared in the <xref href="preferences-xpath.dita"><menucascade>
+                    <uicontrol>Options</uicontrol>
+                    <uicontrol>Preferences</uicontrol>
+                    <uicontrol>XML</uicontrol>
+                    <uicontrol>XSLT-FO-XQUERY</uicontrol>
+                    <uicontrol>XPath</uicontrol>
+                  </menucascade></xref> page can be used for the XPath expressions.</note>
+            </li>
+            <li><codeph>NAMESPACE</codeph> - Used for editing namespace values.</li>
+            <li><codeph>REG_EXP_FIND</codeph> - Used when you want to match a certain text by using
+              Perl-like regular expressions.</li>
+            <li><codeph>REG_EXP_REPLACE</codeph> - Used along with <codeph>REG_EXP_FIND</codeph> to
+              specify the replacement string.</li>
+            <li><codeph>XML_FRAGMENT</codeph> - This type is used when you want to specify an XML
+              fragment. For this type, the application will display a text area specialized for
+              inserting XML documents.</li>
+            <li><codeph>NC_NAME</codeph> - The parameter for <codeph>NC_NAME</codeph> values. It is
+              useful when you want to specify the local part of a <term>QName</term> for an element
+              or attribute.</li>
+            <li><codeph>BOOLEAN</codeph> - Used to edit boolean parameters.</li>
+            <li><codeph>TEXT_CHOICE</codeph> - It is useful for parameters whose value should be
+              from a list of possible values. In the application, each possible value will be
+              rendered as a radio button.</li>
+          </ul></li>
+        <li><b><codeph>description</codeph></b> - The description of the parameter. It is used by
+          the application to display a tooltip when you hover over the parameter.</li>
+        <li><b><codeph>default_value</codeph></b> - If the user does not specify a value for the
+          parameter, this will be the value that is transferred to the operation processor.</li>
+        <li><b><codeph>possible_values</codeph></b> - Contains the list with possible values for the
+          parameter.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Specialized Parameters (<codeph>elementParameter</codeph> and
+          <codeph>attributeParameter</codeph>)</title>
+      <p>If you want to match elements or attributes, you can use the specialized parameters
+          <codeph>elementParameter</codeph> or <codeph>attributeParameter</codeph>. If you use these
+        parameters, the application will propose all declared elements or attributes based on the
+        schema associated with the currently edited file.</p>
+      <p>Example of an <codeph>elementParameter</codeph>:</p>
+      <codeblock outputclass="language-xml">&lt;elementParameter id="elemID">
+    &lt;localName label="Name" name="element_localName" allowsAny="true">
+        &lt;description>The local name of the attribute's parent element.&lt;/description>            
+    &lt;/localName>
+    &lt;namespace label="Namespace" name="element_namespace" allowsAny="true">
+        &lt;description>The local name of the attribute's parent element&lt;/description>            
+    &lt;/namespace>        
+&lt;/elementParameter></codeblock>
+      <p>This parameter is used to specify elements by local name and namespace. For this type of
+        parameter, the application displays two combo boxes with elements and namespaces collected
+        from the associated schema of the currently edited file. The text from the
+          <codeph>label</codeph> attribute is displayed in the application as label of the
+        associated combo. The <codeph>name</codeph> attribute is used to specify the name of the
+        parameter from the XQuery Update script. If you specify the <codeph>allowsAny</codeph>
+        attribute, the application will propose the <i>&lt;ANY></i> value as a possible value for
+        the <b>Name</b> and <b>Namespace</b> combo boxes.</p>
+      <p>Example of an <codeph>attributeParameter</codeph>:</p>
+      <codeblock outputclass="language-xml">&lt;attributeParameter dependsOn="elemID">
+    &lt;localName label="Name" name="attribute_localName">
+        &lt;description>The name of the attribute to be converted.&lt;/description>
+    &lt;/localName>
+    &lt;namespace label="Namespace" name="attribute_namespace" allowsAny="true">
+        &lt;description>The namespace of the attribute to be converted.&lt;/description>
+    &lt;/namespace>        
+&lt;/attributeParameter></codeblock>
+      <p>This parameter is used to specify attributes by local name and namespace. For this type of
+        parameter, the application displays two combo boxes with attributes and their namespaces
+        collected from the associated schema of the currently edited file. The text from the
+          <codeph>label</codeph> attribute is displayed in the application as the label of the
+        associated combo box.<note>An <codeph>attributeParameter</codeph> is dependant upon an
+            <codeph>elementParameter</codeph>. The list of attributes and namespaces are computed
+          based on the selection in the <codeph>elementParameter</codeph> combo boxes.</note></p>
+    </section>
+    <example>
+      <title>Sample Operation Descriptor File for Creating a Custom Operation to <i>Convert an
+          Attribute to an Element</i></title>
+    </example>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;refactory_operation_descriptor 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://oxygenxml.com/app/xml_refactory http://oxygenxml.com/app/xml_refactory/operation_descriptor.xsd"
+    xmlns="http://oxygenxml.com/app/xml_refactory" 
+    id="convert-attribute-to-element" 
+    name="Convert attribute to element"&gt;
+    &lt;description&gt;Converts the specified attribute to an element. The new element will be inserted as first child of the attribute's parent element.&lt;/description&gt;    
+    &lt;script type="XQUERY_UPDATE" href="convert-attribute-to-element.xq"/&gt;
+    &lt;category>Custom operations&lt;/category>
+    &lt;parameters&gt;
+        &lt;description&gt;Specify the attribute to be converted to element.&lt;/description&gt;
+        &lt;section label="Parent element"&gt;
+            &lt;elementParameter id="elemID"&gt;
+                &lt;localName label="Name" name="element_localName" allowsAny="true"&gt;
+                    &lt;description&gt;The local name of the attribute's parent element.&lt;/description&gt;            
+                &lt;/localName&gt;
+                &lt;namespace label="Namespace" name="element_namespace" allowsAny="true"&gt;
+                    &lt;description&gt;The local name of the attribute's parent element&lt;/description&gt;            
+                &lt;/namespace&gt;        
+            &lt;/elementParameter&gt;
+        &lt;/section&gt;
+        &lt;section label="Attribute"&gt;
+            &lt;attributeParameter dependsOn="elemID"&gt;
+                &lt;localName label="Name" name="attribute_localName"&gt;
+                    &lt;description&gt;The name of the attribute to be converted.&lt;/description&gt;
+                &lt;/localName&gt;
+                &lt;namespace label="Namespace" name="attribute_namespace" allowsAny="true"&gt;
+                    &lt;description&gt;The namespace of the attribute to be converted.&lt;/description&gt;
+                &lt;/namespace&gt;        
+            &lt;/attributeParameter&gt;
+        &lt;/section&gt;
+        &lt;section label="New element"&gt;
+            &lt;elementParameter&gt;
+                &lt;localName label="Name" name="new_element_localName"&gt;
+                    &lt;description&gt;The name of the new element.&lt;/description&gt;
+                &lt;/localName&gt;
+                &lt;namespace label="Namespace" name="new_element_namespace"&gt;
+                    &lt;description&gt;The namespace of the new element.&lt;/description&gt;
+                &lt;/namespace&gt;        
+            &lt;/elementParameter&gt;
+        &lt;/section&gt;
+    &lt;/parameters&gt;
+&lt;/refactory_operation_descriptor&gt;</codeblock>
+  </body>
+</topic>

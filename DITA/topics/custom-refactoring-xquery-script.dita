@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="custom-refactoring-xquery-script">
+  <title>Custom Refactoring XQuery Update Script</title>
+  <body>
+    <p>The first step in creating a custom refactoring operation is to create an XQuery Update
+      script. The easiest way to create this file is to use the <b>New</b> document wizard and
+      create a new <b>XQuery</b> file. You can then use the example below to help you create the
+      XQuery file.  </p>
+    <p>To demonstrate creating a custom operation, consider that we have a task where we need to
+      convert an attribute into an element and insert it inside another element. A specific example
+      would be if you have a project with a variety of <codeph>image</codeph> elements where a
+      deprecated <codeph>alt</codeph> attribute was used for the description and you want to convert
+      all instances of that attribute into an element with the same name and insert it as the first
+      child of the <codeph>image</codeph> element. </p>
+    <p>To achieve this, the XQuery Update script iterates over all elements from the document that
+      have the specified local name and namespace. Then it finds the attribute that will be
+      converted to an element. It then computes the <term>QName</term> of the new element to be
+      inserted and inserts it as the first child of the parent element.</p>
+    <p>In our example, we created the custom operation to use parameters that can be specified in
+      the dialog box that is displayed after selecting the custom operation in <xref
+        href="xml-refactoring-tool.dita#xml-refactoring-tool/refactoring_operations_dlentry">the
+          <uicontrol>Refactoring operations</uicontrol> dialog box</xref>. Since various parameters
+      can be it specified, this custom operation can also be used for other similar tasks. The
+      following image shows the parameters that can be specified in our example of the custom
+      operation to convert an attribute to an element:<fig id="fig_vsr_3fd_jr">
+        <image href="../img/custom_refactoring_operation.png" id="image_tsb_lfd_jr"/>
+      </fig></p>
+    <example>
+      <title>Sample XQuery Update Script for Creating a Custom Operation to <i>Convert an Attribute
+          to an Element</i>
+      </title>
+      <codeblock outputclass="language-xml">(: 
+    XQuery document used to implement 'Convert attribute to element' operation from XML Refactoring tool.
+:)
+
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare option output:method   "xml";
+declare option output:indent   "no"; 
+
+(: Local name of the attribute's parent element. :)
+declare variable $element_localName as xs:string external;
+
+(: Namespace of the attribute's parent element. :)
+declare variable $element_namespace as xs:string external;
+
+(: The local name of the attribute to be converted :)
+declare variable $attribute_localName as xs:string external;
+
+(: The namespace of the attribute to be converted :)
+declare variable $attribute_namespace as xs:string external;
+
+(: Local name of the new element. :)
+declare variable $new_element_localName as xs:string external;
+
+(: Namespace of the new element. :)
+declare variable $new_element_namespace as xs:string external;
+
+(: Convert attribute to element:)
+for $node in //*
+(: Find the attribute to convert :)
+let $attribute := 
+    $node/@*[local-name() = $attribute_localName and
+    ($attribute_namespace = '&lt;ANY>' or $attribute_namespace = namespace-uri())]
+    
+(: Compute the prefix for the new element to insert :)
+let $prefix := 
+    for $p in in-scope-prefixes($node)
+      where $new_element_namespace = namespace-uri-for-prefix($p, $node)
+return $p
+
+(: Compute the qname for the new element to insert :)    
+let $new_element_qName :=
+    if (empty($prefix) or $prefix[1] = '') then $new_element_localName
+    else $prefix[1] || ':' || $new_element_localName
+    
+  where ('&lt;ANY>' = $element_localName or local-name($node) = $element_localName) and 
+        ($element_namespace = '&lt;ANY>' or $element_namespace = namespace-uri($node))
+        
+  return 
+      if (exists($attribute)) then
+        (insert node element {QName($new_element_namespace, $new_element_qName)} 
+        {string($attribute)} as first into $node,
+        delete node $attribute)
+        else ()</codeblock>
+    </example>
+    <p>The next step in creating a custom refactoring operation is to <xref
+        href="xml-refactoring-operation-descriptor.dita">create a custom operation descriptor
+        file</xref>.</p>
+  </body>
+</topic>
