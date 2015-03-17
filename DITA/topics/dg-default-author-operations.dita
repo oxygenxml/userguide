@@ -107,37 +107,36 @@
             element.</p><p>This operation has the following parameters:<ul>
               <li><b><apiname>sourceLocation</apiname></b><p>An XPath expression indicating the
                   element that the script will be applied on. If it is not defined then the element
-                  at the caret position will be used. </p><p>There may be situations in which you
-                  want to look at an ancestor of the current element and take decisions in the
-                  script based on this. In order to do this you can set the
+                  at the caret position will be used. </p><p>There may be situations in which you want to look at an ancestor of the current element and take
+                  decisions in the script based on this. In order to do this you can set the
                     <apiname>sourceLocation</apiname> to point to an ancestor node (for example /)
                   then declare a parameter called <apiname>currentElementLocation</apiname> in your
                   script and use it to re-position in the current element
                   like:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" 
   xpath-default-namespace="http://docbook.org/ns/docbook" 
-  xmlns:saxon="http://saxon.sf.net/" exclude-result-prefixes="saxon"&gt;     
+  xmlns:saxon="http://saxon.sf.net/" exclude-result-prefixes="saxon">     
     &lt;!-- This is an XPath location which will be sent by the operation to the script -->
-    &lt;xsl:param name="currentElementLocation"/&gt;
+    &lt;xsl:param name="currentElementLocation"/>
     
-    &lt;xsl:template match="/"&gt;
+    &lt;xsl:template match="/">
         &lt;!-- Evaluate the XPath of the current element location -->
         &lt;xsl:apply-templates 
-        select="saxon:eval(saxon:expression($currentElementLocation))"/&gt;
-    &lt;/xsl:template&gt;
+        select="saxon:eval(saxon:expression($currentElementLocation))"/>
+    &lt;/xsl:template>
     
-    &lt;xsl:template match="para"&gt;
+    &lt;xsl:template match="para">
         &lt;!-- And the context is again inside the current element, 
         but we can use information from the entire XML -->
         &lt;xsl:variable 
             name="keyImage" select="//imagedata[@fileref='images/lake.jpeg']
-              /ancestor::inlinemediaobject/@xml:id/string()"/&gt;
+              /ancestor::inlinemediaobject/@xml:id/string()"/>
                 &lt;xref linkend="{$keyImage}" role="key_include" 
-                  xmlns="http://docbook.org/ns/docbook"&gt;
+                  xmlns="http://docbook.org/ns/docbook">
                     &lt;xsl:value-of 
-                          select="$currentElementLocation"&gt;&lt;/xsl:value-of&gt;
-        &lt;/xref&gt;
-    &lt;/xsl:template&gt;    
-&lt;/xsl:stylesheet&gt;</codeblock></p></li>
+                          select="$currentElementLocation">&lt;/xsl:value-of>
+        &lt;/xref>
+    &lt;/xsl:template>    
+&lt;/xsl:stylesheet></codeblock></p></li>
               <li><b><apiname>targetLocation</apiname></b><p>An XPath expression indicating the
                   insert location for the result of the transformation. If it is not defined then
                   the insert location will be at the caret.</p></li>
@@ -148,9 +147,9 @@
                   imported <filepath>xslt_operation.xsl</filepath> needs to be located in the
                   current framework's
                 directory.</p><codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-             version="1.0"&gt;
-    &lt;xsl:import href="xslt_operation.xsl"/&gt;
-&lt;/xsl:stylesheet&gt;</codeblock></li>
+             version="1.0">
+    &lt;xsl:import href="xslt_operation.xsl"/>
+&lt;/xsl:stylesheet></codeblock></li>
               <li><b><apiname>action</apiname></b><p>The insert action relative to the node
                   determined by the target XPath expression. It can be: Replace, At caret position,
                   Before, After, Inside as first child or Inside as last child.</p></li>
@@ -212,8 +211,7 @@
               <li><b><apiname>name</apiname></b> - The pseudo-class local name.</li>
             </ul></p></li>
       </ul></p>
-        <p>Author operations
-      can take parameters that might contain the following editor variables:<ul>
+        <p>Author operations can include parameters that contain the following editor variables:<ul>
         <li conref="../topics/editor-variables.dita#editor-variables/edVar-caret">
           <note>This editor variable is available only for parameters that take XML content as
             values.</note>
