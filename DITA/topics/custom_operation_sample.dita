@@ -9,13 +9,20 @@
         where a deprecated <codeph>alt</codeph> attribute was used for the description and you want
         to convert all instances of that attribute into an element with the same name and insert it
         as the first child of the <codeph>image</codeph> element. </p>
-      <p>So, our task is to convert such attribute into an element with the same name and insert it
-        as the first child of the image element. </p>
+      <p>Thus, our task is to convert this attribute into an element with the same name and insert
+      it as the first child of the image element. </p>
       <p><image href="../img/xml_refactor3.png" id="image_xwx_yww_gr"/></p>
-      <p>A new operation implies the creation of two files: an XQuery Update script and an XML
-        Refactoring operation descriptor.</p>
-      <p>The XQuery Update script is listed below:</p>
-      <codeblock>(: 
+      <p>A new operation requires an XQuery Update script and an XML Refactoring operation
+      descriptor file.</p>
+    <section><title>Sample XQuery Update Script for Creating a Custom Operation to <i>Convert an
+          Attribute to an Element</i>
+      </title>The XQuery Update script does the following:<ul id="ul_rhp_bsn_kr">
+        <li>Iterates over all elements from the document that have the specified local name and
+          namespace.</li>
+        <li>Finds the attribute that will be converted to an element. </li>
+        <li>Computes the <term>QName</term> of the new element to be inserted and inserts it as the
+          first child of the parent element.</li>
+      </ul><codeblock>(: 
     XQuery document used to implement 'Convert attribute to element' operation from XML Refactoring tool.
 :)
 
@@ -67,23 +74,12 @@ let $new_element_qName :=
         (insert node element {QName($new_element_namespace, $new_element_qName)} 
         {string($attribute)} as first into $node,
         delete node $attribute)
-        else ()</codeblock>
-      <p><?oxy_comment_start author="radu_pisoi" timestamp="20150318T103635+0200" comment="Rewrite this as a UL"?>The
-        XQuery Update script iterates over all elements from the document that have the specified
-        local name and namespace. Then it finds the attribute that will be converted to an element.
-        It then computes the <term>QName</term> of the new element to be inserted and inserts it as
-        the first child of the parent element. Since various parameters can be it specified, this
-        custom operation can also be used for other similar tasks.<?oxy_comment_end?></p>
-      <p>The basic steps of the XQuery Update script are:<ul id="ul_x5b_1hm_kr">
-          <li>iterate all elements ...</li>
-          <li>find the attribute....</li>
-          <li>compute ….</li>
-        </ul></p>
-      <p>After you have developed the XQuery script, you have to create an XML Refactoring operation
-        descriptor. This descriptor is used by application to load the operation details such as
-        name, description, or parameters.</p>
-      <p>Next is listed the content of the operation descriptor:</p>
-      <codeblock>&lt;?xml version="1.0" encoding="UTF-8"?>
+        else ()</codeblock><title>Sample
+        Operation Descriptor File for Creating a Custom Operation to <i>Convert an Attribute to an
+          Element</i></title><p>After you have developed the XQuery script, you have to create an
+        XML Refactoring operation descriptor. This descriptor is used by application to load the
+        operation details such as name, description, or
+      parameters.</p><codeblock>&lt;?xml version="1.0" encoding="UTF-8"?>
 
 &lt;refactory_operation_descriptor 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -126,15 +122,13 @@ let $new_element_qName :=
             &lt;/elementParameter>
         &lt;/section>
     &lt;/parameters>
-&lt;/refactory_operation_descriptor></codeblock>
-      <p>After we have created these
-        files,<?oxy_comment_start author="radu_pisoi" timestamp="20150305T162258+0200" comment="A link to the Sharing custom refactoring operations"?>
-        we have to copy them into a folder scanned by the application when it loads operations like
-          <b>refactoring</b> folder from the oxygen install folder.<?oxy_comment_end?> There are
-        also several mechanisms to <xref href="sharing-custom-refactoring-operations.dita">share
-          custom refactoring operations</xref> with other members of your team.</p>
-      <p>Now, if we start the XML Refactoring tool again, we should see the new created
-        operation.</p>
+&lt;/refactory_operation_descriptor></codeblock></section>
+      <p>After you have created these files, copy them into a folder <xref
+        href="sharing-custom-refactoring-operations.dita">scanned by <ph keyref="product"/> when it
+        loads the custom operation</xref>. When the XML Refactoring tool is started again, you will
+      see the created operation.</p>
+    <note>Since various parameters can be specified, this custom operation can also be used for
+      other similar tasks.</note>
     </body>
   </topic>
 

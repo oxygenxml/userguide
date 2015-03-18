@@ -7,78 +7,61 @@
       you can create a custom operation that is specific to your needs. For example, if you want to
       convert an attribute to an element and insert the element as the first child of the parent
       element, a custom refactoring operation needs to be created.</p>
-    <p>An XML Refactoring operation is defined
-      <?oxy_delete author="radu_pisoi" timestamp="20150316T164615+0200" content="with two resources"?><?oxy_insert_start author="radu_pisoi" timestamp="20150316T164618+0200"?>as
-      a pair of two resources<?oxy_insert_end?>:<ul id="ul_gwv_s4c_jr">
-        <li><?oxy_delete author="radu_pisoi" timestamp="20150317T165716+0200" content="An &lt;i&gt;XQuery Update&lt;/i&gt; script file that needs to be processed to refactor XML files."?><?oxy_insert_start author="radu_pisoi" timestamp="20150317T165601+0200"?>An
-          XQuery Update script file that oXygen will run in order to refactor XML
-          files.<?oxy_insert_end?></li>
-        <li>An <i><?oxy_insert_start author="radu_pisoi" timestamp="20150316T164707+0200"?>XML
-            <?oxy_insert_end?>Operation Descriptor</i> file that contains information about the
-          operation, such as the name, description, and parameters.</li>
+    <p>An XML Refactoring operation is defined as a pair of resources:<ul id="ul_gwv_s4c_jr">
+        <li>An XQuery Update script file that <ph keyref="product"/> will run in order to refactor
+          the XML files.</li>
+        <li>An <i>XML Operation Descriptor</i> file that contains information about the operation,
+          such as the name, description, and parameters.</li>
       </ul><fig id="fig_dgt_f4c_jr">
         <title>Diagram of an XML Refactoring Operation</title>
         <image href="../img/refactoring_diagram1.png" id="image_ktw_k4c_jr"/>
       </fig></p>
     <p>All the defined operations are loaded by the XML Refactoring tool and presented in <xref
         href="xml-refactoring-tool.dita#xml-refactoring-tool/refactoring_operations_dlentry">the
-          <uicontrol>Refactoring operations</uicontrol>
-        <?oxy_delete author="radu_pisoi" timestamp="20150316T165343+0200" content="dialog box"?><?oxy_insert_start author="radu_pisoi" timestamp="20150316T165344+0200"?>wizard
-        page<?oxy_insert_end?></xref>. </p>
-    <p>After the user chooses an operation and specifies its parameters, an XQuery
-      <?oxy_delete author="radu_pisoi" timestamp="20150316T165625+0200" content="u"?><?oxy_insert_start author="radu_pisoi" timestamp="20150316T165625+0200"?>U<?oxy_insert_end?>pdate
+          <uicontrol>Refactoring operations</uicontrol> wizard page</xref>. </p>
+    <p>After the user chooses an operation and specifies its parameters, an XQuery Update
       transformation is processed over the input file. This transformation is executed in a
-        <term>safe mode</term>, which implies the
-      following:<?oxy_insert_start author="radu_pisoi" timestamp="20150316T170405+0200" type="split"?></p>
-    <p><?oxy_insert_end?><?oxy_insert_start author="radu_pisoi" timestamp="20150316T170421+0200"?>When
-      loading the document:<?oxy_insert_end?></p>
-    <?oxy_insert_start author="radu_pisoi" timestamp="20150316T171230+0200"?>
-    <ul id="ul_mfj_dqc_jr">
-      <li>The XInclude mechanism is disabled. This means that the resources included by using
-        XInclude will not be visible in the transformation.</li>
-      <li>The DTD entities will be processed without being expanded.</li>
-      <li>The associated DTD will be not loaded, so the default attributes declared in the DTD will
-        not be visible in the transformation.</li>
-    </ul>
-    <p>When saving the updated XML document:</p>
-    <ul id="ul_kl5_ysz_jr">
-      <li>The <codeph>DOCTYPE</codeph> will be preserved.</li>
-      <li>The DTD entities will be preserved as they are in the original document when the document
-        is saved.</li>
-      <li>The attribute values will be kept in their original form without being normalized.</li>
-      <li>The spaces between attributes are preserved. Basically, the spaces are lost by an XML
-        serialization since they are not considered important.</li>
-    </ul>
-    <?oxy_insert_end?>
-    <?oxy_delete author="radu_pisoi" timestamp="20150316T171736+0200" content="&lt;p&gt;&lt;ul id=&quot;ul_mfj_dqc_jr&quot;/&gt;&lt;ul id=&quot;ul_kl5_ysz_jr&quot;&gt;&lt;li&gt;The &lt;codeph&gt;DOCTYPE&lt;/codeph&gt; will be preserved.&lt;/li&gt;&lt;li&gt;The entities will be preserved.&lt;/li&gt;&lt;li&gt;The attribute values will be kept in their original form without being normalized.&lt;/li&gt;&lt;li&gt;The spaces between attributes are preserved. Basically, the spaces are lost by an XML serialization since they are not considered important.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;"?>
+        <term>safe mode</term>, which implies the following:<ul id="ul_psd_jpm_kr">
+        <li>When loading the document:<ul id="ul_jgd_kpm_kr">
+            <li>The XInclude mechanism is disabled. This means that the resources included by using
+              XInclude will not be visible in the transformation.</li>
+            <li>The DTD entities will be processed without being expanded.</li>
+            <li>The associated DTD will be not loaded, so the default attributes declared in the DTD
+              will not be visible in the transformation.</li>
+          </ul></li>
+      </ul></p>
+    <p>
+      <ul id="ul_ytl_npm_kr">
+        <li>When saving the updated XML document:<ul id="ul_bcl_ppm_kr">
+            <li>The <codeph>DOCTYPE</codeph> will be preserved.</li>
+            <li>The DTD entities will be preserved as they are in the original document when the
+              document is saved.</li>
+            <li>The attribute values will be kept in their original form without being
+              normalized.</li>
+            <li>The spaces between attributes are preserved. Basically, the spaces are lost by an
+              XML serialization since they are not considered important.</li>
+          </ul></li>
+      </ul>
+    </p>
     <p>The result of this transformation overrides the initial input file.</p>
     <section>
       <title>Creating a Custom Refactoring Operation</title>
       <p>To create a custom refactoring operation, follow these steps:<ol id="ol_swm_crc_jr">
-          <li><xref href="custom-refactoring-xquery-script.dita">Create
-              a<?oxy_insert_start author="radu_pisoi" timestamp="20150317T094537+0200"?>n<?oxy_insert_end?><?oxy_delete author="radu_pisoi" timestamp="20150317T094540+0200" content=" custom"?>
-              XQuery <?oxy_insert_start author="radu_pisoi" timestamp="20150317T094544+0200"?>Update
-              <?oxy_insert_end?>script file</xref>.</li>
-          <li><xref href="xml-refactoring-operation-descriptor.dita">Create a<?oxy_insert_start author="radu_pisoi" timestamp="20150317T094628+0200"?>n<?oxy_insert_end?>
-              <?oxy_insert_start author="radu_pisoi" timestamp="20150317T094631+0200"?><b>XML
-                Refactoring Operation Descriptor</b>
-              <?oxy_insert_end?><?oxy_delete author="radu_pisoi" timestamp="20150317T094647+0200" content="custom operation Descriptor "?>file</xref>.</li>
-          <li><?oxy_delete author="radu_pisoi" timestamp="20150317T095229+0200" content="Copy both files to the &lt;i&gt;refactoring&lt;/i&gt; folder in the application installation directory (&lt;filepath&gt;[oXygen Installation Directory]/refactoring/&lt;/filepath&gt;). "?><?oxy_insert_start author="radu_pisoi" timestamp="20150317T095247+0200"?>Copy
-            both files in <xref
+          <li><xref href="custom-refactoring-xquery-script.dita">Create an XQuery Update script
+              file</xref>.</li>
+          <li><xref href="xml-refactoring-operation-descriptor.dita">Create an <b>XML Refactoring
+                Operation Descriptor</b> file</xref>.</li>
+          <li>Store both files in <xref
               href="sharing-custom-refactoring-operations.dita#sharing-custom-refactoring-operations"
-              >one of the folders scanned by <ph keyref="product"/></xref> when it loads the custom
-              operations.<?oxy_insert_end?><p><?oxy_comment_start author="radu_pisoi" timestamp="20150317T095146+0200" comment="This should be moved outside the ul element because is not part of the procedure."?>Once
-              you
-              <?oxy_delete author="radu_pisoi" timestamp="20150318T093127+0200" content="restart"?><?oxy_insert_start author="radu_pisoi" timestamp="20150318T093128+0200"?>run
-              again<?oxy_insert_end?> the <uicontrol>XML Refactoring</uicontrol> tool, the custom
-              operation appears in <xref
+              >one of the locations that <ph keyref="product"/></xref> scans when loading the custom
+              operations.<p>Once you run the <uicontrol>XML Refactoring</uicontrol> tool again, the
+              custom operation appears in <xref
                 href="xml-refactoring-tool.dita#xml-refactoring-tool/refactoring_operations_dlentry"
-                >the <uicontrol>Refactoring operations</uicontrol>
-                <?oxy_delete author="radu_pisoi" timestamp="20150317T101517+0200" content="dialog box"?><?oxy_insert_start author="radu_pisoi" timestamp="20150317T101517+0200"?>wizard
-                page<?oxy_insert_end?></xref>.<?oxy_comment_end?></p></li>
+                >the <uicontrol>Refactoring operations</uicontrol> wizard page</xref>.</p></li>
         </ol></p>
     </section>
-    <p><?oxy_delete author="radu_pisoi" timestamp="20150317T101411+0200" content="There are also several mechanisms to &lt;xref href=&quot;sharing-custom-refactoring-operations.dita&quot;&gt;share custom refactoring operations&lt;/xref&gt; with other members of your team."?></p>
   </body>
+  <related-links>
+    <link href="sharing-custom-refactoring-operations.dita#sharing-custom-refactoring-operations"/>
+  </related-links>
 </topic>
-<?oxy_options track_changes="on"?>
