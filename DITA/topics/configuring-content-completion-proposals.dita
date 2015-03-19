@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="configuring-content-completion-proposals">
+  <title>Configuring the Proposals in the Content Completion Assistant</title>
+  <body>
+    <p><ph keyref="product"/> gathers information from the associated schemas (DTDs, XML Schema,
+      RelaxNG) to determine the proposals that appear in the <uicontrol>Content Completion
+        Assistant</uicontrol>. <ph keyref="product"/> also includes support that allows you to
+      configure the possible attribute or element values for the proposals. To do so, a
+      configuration file can be used, along with the associated schema, to add or replace possible
+      values for attributes or elements that are proposed in the <uicontrol>Content Completion
+        Assistant</uicontrol>. An example of a specific use-case is if you want the
+        <uicontrol>Content Completion Assistant</uicontrol> to propose several possible values for
+      the language code whenever you use an <codeph>xml:lang</codeph> attribute.</p>
+    <p>To configure content completion proposals, follow these steps:<ol id="ol_js3_4k5_kq">
+        <li>Create a new <filepath>resources</filepath> folder (if it does not already exist) in the
+          frameworks directory for the document type. For instance:
+            <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/resources</filepath>.</li>
+        <li><ph conkeyref="reusable.menus/Open-the-preferences-page"/> and go to <uicontrol>Document
+            Type Association</uicontrol>. Edit the document type configuration for your XML
+          vocabulary, and in the <uicontrol>Classpath</uicontrol> tab add a link to that
+            <filepath>resources</filepath> folder.</li>
+        <li>Use the <uicontrol>New</uicontrol> document wizard to create a configuration file using
+          the <uicontrol>Content Completion Configuration</uicontrol> file template.</li>
+        <li>Make the appropriate changes to your custom configuration file. The file template
+          includes details about how each element and attribute is used in the configuration
+          file.</li>
+        <li>Save the file in the <filepath>resources</filepath> folder, using the fixed name:
+            <filepath>cc_value_config.xml</filepath>.</li>
+        <li>Re-open the application and open an XML document. In the <uicontrol>Content Completion
+            Assistant</uicontrol> you should see your customizations.</li>
+      </ol></p>
+    <section>
+      <title>The Configuration File</title>
+      <p>The configuration file is composed of a series of <codeph>match</codeph> instructions that
+        will match either an element or an attribute name. A new value is specified inside one or
+        more <codeph>item</codeph> elements, which are grouped inside an <codeph>items</codeph>
+        element. The behavior of the <codeph>items</codeph> element is specified with the help of
+        the <codeph>action</codeph> attribute, which can have any of the following values:<ul
+          id="ul_ghd_c55_kr">
+          <li><codeph>append</codeph> - Adds new values to appear in the proposals list (default
+            value).</li>
+          <li><codeph>addIfEmpty</codeph> - Adds new values to the proposals list, only if no other
+            values are contributed by the schema.</li>
+          <li><codeph>replace</codeph> - Replaces the values contributed by the schema with new
+            values to appear in the proposals list.</li>
+        </ul></p>
+      <p>The values in the configuration file can be specified either directly or by calling an
+        external XSLT file that will extract data from any external source.</p>
+    </section>
+    <section>
+      <title>Example - Specifying Values Directly </title>
+      <p>
+        <codeblock outputclass="language-xml">&lt;!-- Replaces the values for an element with the local name "lg", from the given namespace -->
+&lt;match elementName="lg" elementNS="http://www.oxygenxml.com/ns/samples">
+    &lt;items action="replace">
+        &lt;item value="stanza"/>
+        &lt;item value="refrain"/>
+    &lt;/items>
+&lt;/match>
+
+&lt;!-- Adds two values for an attribute with the local name "type", from any namespace -->
+&lt;match attributeName="type">
+    &lt;items>
+        &lt;item value="stanza"/>
+        &lt;item value="refrain"/>
+    &lt;/items>
+&lt;/match></codeblock>
+      </p>
+    </section>
+    <section>
+      <title>Example - Calling an External XSLT Script</title>
+      <p>
+        <codeblock outputclass="language-xml">&lt;xslt href="../xsl/get_values_from_db.xsl" useCache="false" action="replace"/></codeblock>
+      </p>
+      <p>In this example, the <codeph>get_values_from_db.xsl</codeph> is executed in order to
+        extract values from a database.<note>A comprehensive XSLT sample is included in the
+            <uicontrol>Content Completion Configuration</uicontrol> file template.</note></p>
+    </section>
+  </body>
+</topic>
