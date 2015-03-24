@@ -3,11 +3,61 @@
 <topic id="import-dynamic-conversions">
   <title>Dynamic content conversions</title>
   <body>
-    <p>Besides built-in support for various URL protocols like HTTP(s) or FTP(s) the application has
-      special support for a <filepath>convert</filepath> protocol which can be used to chain
-      predefined processors in order to dynamically import content from various sources.</p>
+    <p>Besides built-in support for various useful URL protocols like HTTP(s) or FTP(s) the
+      application has special support for a <filepath>convert</filepath> protocol which can be used
+      to chain predefined processors in order to dynamically import content from various
+      sources.</p>
+    <p>A dynamic conversion URL chains various processors which can be applied in sequence on a
+      target resource and has the general
+      syntax:<codeblock>convert:/processor=xslt;ss=urn:processors:excel2d.xsl/processor=excel!/urn:files:sample.xls</codeblock>The
+      example above first applies on a target identified by the identifier
+        <filepath>urn:files:sample.xls</filepath> a processor called <varname>excel</varname> which
+      converts the <tm tmtype="tm">Excel</tm> resource to XML. The second applied processor called
+        <varname>xslt</varname> applies an XSLT stylesheet identified using the identifier
+        <filepath>urn:processors:excel2d.xsl</filepath> over the content resulting from the first
+      applied processor. These identifiers are all mapped via an <term>XML catalog</term> configured
+      in the application to real resources on
+      disk:<codeblock outputclass="language-xml">&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+	&lt;rewriteURI uriStartString="urn:files:" rewritePrefix="./resources/"/>
+	&lt;rewriteURI uriStartString="urn:processors:" rewritePrefix="./processors/"/>
+&lt;/catalog></codeblock></p>
+    <p>Such an URL can be opened in the application using the <uicontrol>Open URL...</uicontrol>
+      action or can be referenced from existing XML resources via <i>xi:include</i> or from
+        <term>DITA Maps</term> as topic references.</p>
     <p>A GitHub Project which contains various dynamic conversion samples for producing DITA content
-      from various sources can be found here: <xref href="https://github.com/oxygenxml/dita-glass"
-        format="html" scope="external"/>.</p>
+      from various sources and then publishing it can be found here: <xref
+        href="https://github.com/oxygenxml/dita-glass" format="html" scope="external"/>.</p>
+    <section>
+      <title>Conversion Processors</title>
+      <p>A set of predefined conversion processors is provided out-of-the box. Each processor has
+        its own parameters which can be set to control the behavior of the conversion process:<ul
+          id="ul_r4y_5x2_mr">
+          <li>The <varname>xslt</varname> processor converts an XML input using XSLT 2.0 processing.
+            The parameter <varname>ss</varname> which indicates the stylesheet resource to be
+            loaded. All other specified parameters will be set as parameters to the XSLT
+            transformation.<codeblock>convert:/<b>processor=xslt;ss=urn:processors:convert.xsl;p1=v1</b>/urn:files:sample.xml</codeblock></li>
+          <li>The <varname>xquery</varname> processor converts an XML input using XQuery processing.
+            The parameter <varname>ss</varname> which indicates the XQuery script to be loaded. All
+            other specified parameters will be set as parameters to the XSLT
+            transformation.<codeblock>convert:/<b>processor=xquery;ss=urn:processors:convert.xquery;p1=v1</b>/urn:files:sample.xml</codeblock></li>
+          <li>The <varname>excel</varname> processor converts an <tm tmtype="tm">Excel</tm> input to
+            an XML format which can be later converted by other piped processors. It has a single
+            parameter called <varname>sn</varname> which indicates the name of the sheet which needs
+            to be converted. If the parameter is missing, the XML will contain the combined content
+            of all sheets included in the <tm tmtype="tm">Excel</tm> document.
+            <codeblock>convert:/<b>processor=excel;sn=test</b>!/urn:files:sample.xls</codeblock></li>
+          <li>The <varname>js</varname> processor converts an input to some other format by applying
+            a Javascript method. The parameter <varname>js</varname> indicates the script which will
+            be used. The parameter <varname>fn</varname> is the name of the method which will be
+            called from the script. The method must take a string as an argument and return a
+            string. If any of the parameters is missing an error is thrown and the conversion
+            breaks.<codeblock>convert:/<b>processor=js;js=urn:processors:md.js;fn=convertExternal</b>!/urn:files:sample.md</codeblock></li>
+          <li>The <varname>json</varname> processor converts an JSON input to XML. It has no
+            parameters.<codeblock>convert:/<b>processor=json</b>!/urn:files:personal.json</codeblock></li>
+          <li>The <varname>xhtml</varname> processor converts HTML content to wellformed XHTML. It
+            has no
+            parameters.<codeblock>convert:/<b>processor=xhtml</b>!/urn:files:test.html</codeblock></li>
+        </ul></p>
+    </section>
   </body>
 </topic>
