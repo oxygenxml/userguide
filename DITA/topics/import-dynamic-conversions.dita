@@ -30,7 +30,8 @@
     <section>
       <title>Conversion Processors</title>
       <p>A set of predefined conversion processors is provided out-of-the box. Each processor has
-        its own parameters which can be set to control the behavior of the conversion process:<ul
+        its own parameters which can be set to control the behavior of the conversion process. All
+        parameters which are resolved to resources are passed through the XML catalog mapping.<ul
           id="ul_r4y_5x2_mr">
           <li>The <varname>xslt</varname> processor converts an XML input using XSLT 2.0 processing.
             The parameter <varname>ss</varname> which indicates the stylesheet resource to be
@@ -46,6 +47,15 @@
             to be converted. If the parameter is missing, the XML will contain the combined content
             of all sheets included in the <tm tmtype="tm">Excel</tm> document.
             <codeblock>convert:/<b>processor=excel;sn=test</b>!/urn:files:sample.xls</codeblock></li>
+          <li>The <varname>java</varname> processor converts an input to some other format by
+            applying a specific Java method. The parameter <varname>jars</varname> is a comma
+            separated list of JAR libraries or folders from which libraries will be loaded. The
+            parameter <varname>ccn</varname> is the fully qualified name of the conversion class
+            which will be instantiated. The conversion class needs to have a method with the
+            following
+            signature:<codeblock>  public void convert(String systemID, String originalSourceSystemID, InputStream is, 
+OutputStream os, LinkedHashMap&lt;String, String> properties) throws IOException </codeblock><codeblock>convert:/<b>processor=java;jars=libs;ccn=test.JavaToXML</b>!/
+urn:files:java/WSEditorBase.java</codeblock></li>
           <li>The <varname>js</varname> processor converts an input to some other format by applying
             a Javascript method. The parameter <varname>js</varname> indicates the script which will
             be used. The parameter <varname>fn</varname> is the name of the method which will be
