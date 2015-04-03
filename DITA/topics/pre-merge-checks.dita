@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pre-merge-checks">
+  <title>Pre-Merge Checks</title>
+  <body>
+    <p>Before performing a merge, it is recommended to make sure that the working copy target item
+      is ready for the merge operation. The SVN Client includes a best practices step that checks
+      various conditions of the working copy target item to ensure that the merge operation will
+      succeed. By enabling the <uicontrol>Perform pre-merge best practices checks of the working
+        copy target</uicontrol> option in the first page of the <uicontrol>Merge</uicontrol> wizard,
+      the <uicontrol>Pre-merge checks</uicontrol> wizard page is displayed to give you a summary of
+      the verified conditions.   </p>
+    <p>
+      <fig id="fig_qrm_sll_4r">
+        <title>The Pre-Merge Checks Wizard Page</title>
+        <image href="../img/svn_pre_merge_checks.png" id="image_psv_5ll_4r"/>
+      </fig>
+    </p>
+    <p>The following conditions are checked in this operation:</p>
+    <dl>
+      <dlentry>
+        <dt><uicontrol>No local modifications</uicontrol></dt>
+        <dd>The working copy item (or any of its children) receiving the merge should not contain
+          uncommitted changes, to make it easier to revert merge-generated changes if you encounter
+          unexpected results.<note type="tip">If this condition fails, you should
+              <term>commit</term> or <term>revert</term> the local modifications before merging.
+          </note></dd>
+      </dlentry>
+      <dlentry>
+        <dt><uicontrol>No switched children</uicontrol></dt>
+        <dd>None of the children of the working copy item receiving the merge should be switched, to
+          avoid incomplete merges and <term>subtree mergeinfo</term>.<note type="tip">If this
+            condition fails, you should switch back all the children before merging. </note></dd>
+      </dlentry>
+      <dlentry>
+        <dt><uicontrol>Complete working copy tree</uicontrol></dt>
+        <dd>The working copy item receiving the merge should be a complete directory tree structure
+          with an infinite depth, to avoid incomplete merges and <term>subtree
+            mergeinfo</term>.<note type="tip">If this condition fails, you should change the
+              <term>sticky</term> depth of the working copy item receiving the merge to
+              <term>infinity</term> value. </note></dd>
+      </dlentry>
+      <dlentry>
+        <dt><uicontrol>No mixed revisions</uicontrol></dt>
+        <dd>The working copy item receiving the merge should not contain items that were updated to
+          different revisions, to avoid unexpected merge conflicts. <note type="tip">If this
+            condition fails, you should <term>update</term> the working copy before
+          merging.</note></dd>
+      </dlentry>
+    </dl>
+    <p>Each condition is marked with an icon that represents the state of the condition. The
+      possible states are as follows:<ul id="ul_k33_pql_4r">
+        <li><image href="../img/SVNMarkResolved16.png" id="image_hrl_14q_4r"/><b>Successful</b> -
+          The condition is fulfilled successfully.</li>
+        <li><image href="../img/bt_hotspot16.png" id="image_rxv_m4q_4r"/><b>Warning</b> - The
+          condition is not fulfilled, but it is not mandatory. </li>
+        <li><image href="../img/bt_validation_error.png" id="image_tjz_jpq_4r"/>
+          <b>Error</b> - The condition is not fulfilled and is mandatory, and therefore the
+          operation cannot proceed until you solve the error.</li>
+      </ul></p>
+    <note type="tip">For each condition state, a message is displayed that gives you additional
+      information about the results and, for warning or errors, a hint that explains how you can
+      solve them.</note>
+    <note type="important">After solving any of the warnings or errors, it is recommended that you
+      perform the <term>pre-merge checks</term> again to make sure your new changes are
+      valid.</note>
+  </body>
+</topic>

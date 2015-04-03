@@ -11,57 +11,70 @@
       </fig>
     </p>
     <ul id="ul_xx2_2dy_h4">
-      <li><uicontrol>Depth</uicontrol> - sets the depth of the merge operation. You can specify how
-        far down into your working copy the merge should go by selecting one of the following
-          values:<ul id="ul_pn1_jdy_h4">
-          <li>Current depth</li>
-          <li>Recursive (<term>infinity</term>)</li>
-          <li>Immediate children (<term>immediates</term>)</li>
-          <li>File children only (<term>files</term>)</li>
-          <li>This folder only (<term>empty</term>)</li>
-        </ul>The <i>depth</i> term is described in the <xref href="../topics/sparse-checkouts.dita"
-          >Sparse checkouts</xref> section. The default depth is the current depth of the working
-        copy item receiving the merge.</li>
-      <li><uicontrol>Ignore ancestry / Disable merge tracking</uicontrol> - changes the way two
+      <li><uicontrol>Depth</uicontrol> (This option is applicable only for directories) - sets the
+        depth of the merge operation. You can specify how far down into your working copy the merge
+        should go by selecting one of the following values:<ul id="ul_pn1_jdy_h4">
+          <li><uicontrol>Current depth</uicontrol> - Obeys the depths registered for the directories
+            in the working copy that are to be switched.</li>
+          <li><uicontrol>Recursive (infinity)</uicontrol> - Merges all the files and folders
+            contained in the selected folder. This is the recommended depth for most users, to avoid
+            incomplete merges and <term>subtree mergeinfo</term>.</li>
+          <li><uicontrol>Immediate children (immediates)</uicontrol> - Merges only the child files
+            and folders without recursing subfolders.</li>
+          <li><uicontrol>File children only (files)</uicontrol> - Merges only the child files.</li>
+          <li><uicontrol>This folder only (empty)</uicontrol> - Merges only the selected folder (no
+            child files or folders are included).</li>
+        </ul><note>The <i>depth</i> term is described in the <xref
+            href="../topics/sparse-checkouts.dita">Sparse checkouts</xref> section. The default
+          depth is the current depth of the working copy item receiving the merge.</note></li>
+      <li><uicontrol>Ignore ancestry / Disable merge tracking</uicontrol> - Changes the way two
         items are merged if they do not share a common ancestry. Most merges involve comparing items
-        that are ancestrally related to one another. Occasionally, however, you may want to merge
-        unrelated items, so, the first item will be replaced with the second item, if this option is
-        not enabled. In such situations, you would want the merge to do a path-based comparison
-        only, ignoring any relations between the items. For example, in case of two different files,
-        having the same name and being in the same relative location, this makes the difference
-        between replacing one of the files with the other one and merging their contents.<note>This
-          option is selected automatically (and you cannot change this), if the URL of the merge
+        that are ancestrally related to one another. However, occasionally you may want to merge
+        unrelated items. If this option is disabled, the first item will be replaced with the second
+        item. In these situations, you would want the merge to do a path-based comparison only,
+        ignoring any relations between the items. For example, if two different files have the same
+        name and are in the same relative location, disabling the option replaces one of the files
+        with the other one, and enabling it merges their contents.<note>If the URL of the merge
           source belongs to a different repository than the URL of the target working copy item (the
-          one receiving the changes), because <xref
+          one receiving the changes), this option is selected automatically (and you cannot change
+          this). This is because the <xref
             href="final-words-merge.dita#final-words-merge/merge-from-foreign-repositories"
-            >Subversion cannot track changes between different repositories</xref>.</note></li>
+            >Subversion client cannot track changes between different
+        repositories</xref>.</note></li>
       <li><uicontrol>Force deletion of modified or non-versioned items, if necessary</uicontrol> -
-        When the merge operation involves deleting locally modified or non-versioned items, it will
-        fail if this option is not enabled. This is done in order to prevent data loss.</li>
+        If disabled, when the merge operation involves deleting locally modified or non-versioned
+        items, it will fail. This is done in order to prevent data loss. This option is only
+        available if there are uncommitted changes in the working copy.</li>
       <li><uicontrol>Only record the merge (block revisions from getting merged)</uicontrol> -
-        Enables a special mode of the merge operation, that just records it in the local merge
-        tracking information, without actually performing it (does not modify any file contents or
-        the structure of your working copy), when the merge tracking support is enabled. You might
-        want to do so for two possible reasons:<ul id="ul_zqp_m3y_h4">
-          <li>you made (or you will make) the merge manually, so you need to mark the revisions as
-            having been merged to make the merge tracking system aware of them. This way, they will
-            be excluded from future merges;</li>
-          <li>you want to prevent one or more particular changes from being fetched in subsequent
-            merges.</li>
+        Available when the <uicontrol>Ignore ancestry / Disable merge tracking</uicontrol> option is
+        disabled. It enables a special mode of the merge operation that just records it in the local
+        merge tracking information, without actually performing it (does not modify any file
+        contents or the structure of your working copy). You might want to enable this option for
+        two possible reasons:<ul id="ul_zqp_m3y_h4">
+          <li>You made (or will make) the merge manually, and therefore you need to mark the
+            revisions as being merged to make the merge tracking system aware of them. This will
+            exclude them from future merges.</li>
+          <li>You want to prevent one or more particular changes from being fetched in subsequent
+            merges. </li>
         </ul></li>
-      <li><uicontrol>Ignore line endings</uicontrol>, <uicontrol>Ignore whitespaces</uicontrol> -
-        allow you to specify how the line ending and whitespace changes should be handled. By
-        default, all such changes are treated as real content changes, but you can ignore them if
-        you select these options. <uicontrol>Ignore whitespace changes</uicontrol> excludes changes
-        in the amount of whitespaces or to their type (for example, when changing the indentation or
-        changing tabs to spaces). Adding whitespaces where there were none before, or removing a
-        whitespace, is still considered to be a change. <uicontrol>Ignore all
-          whitespaces</uicontrol> ignores all types of whitespace changes.</li>
-      <li><uicontrol>Test merge</uicontrol> - performs a dry run of the merge operation, allowing to
-        "preview" it without actually performing the merge. In the <uicontrol>Console</uicontrol>
-        view you will see a list of the working copy items that will be affected and how they will
-        be affected. This is helpful in detecting if a merge will be successful or not, and where
-        conflicts may occur.</li>
+      <li><uicontrol>Ignore line endings</uicontrol> - Allows you to specify how the line ending
+        changes should be handled. By default, all such changes are treated as real content changes,
+        but you can ignore them if you select this option.</li>
+      <li><uicontrol>Ignore whitespaces</uicontrol> - Allows you to specify how the whitespace
+        changes should be handled. By default, all such changes are treated as real content changes,
+        but you can ignore them if you select this option. <ul id="ul_bvf_2mr_4r">
+          <li><uicontrol>Ignore whitespace changes</uicontrol> - Ignores changes in the amount of
+            whitespaces or to their type (for example, when changing the indentation or changing
+            tabs to spaces).<note> Whitespaces that were added where there were none before, or that
+              were removed, are still considered to be changes.</note></li>
+          <li><uicontrol>Ignore all whitespaces</uicontrol> - Ignores all types of whitespace
+            changes.</li>
+        </ul></li>
+      <li><uicontrol>Test merge</uicontrol> - Performs a dry run of the merge operation, allowing
+        you to <term>preview</term> it without actually performing the merge. In the
+          <uicontrol>Console</uicontrol> view you will see a list of the working copy items that
+        will be affected and how they will be affected. This is helpful in detecting whether or not
+        a merge will be successful, and where conflicts may occur.</li>
     </ul>
   </body>
 </topic>
