@@ -19,9 +19,9 @@
             <kwd>value</kwd>
             <sep>]</sep>
             <sep>[,</sep>
-            <kwd>static</kwd>
+            <kwd>evaluate</kwd>
             <sep>,</sep>
-            <kwd>true</kwd>
+            <kwd>value</kwd>
             <sep>])</sep>
           </groupseq>
         </syntaxdiagram>
@@ -34,16 +34,26 @@
               When you set the parameter to <codeph>true</codeph>, the function returns the
               resulting text with all the change markers accepted (<i>delete</i> changes are removed
               and <i>insert</i> changes are preserved). </li>
-            <li>An optional <codeph>static</codeph> parameter, followed by its value, which can be
-                <codeph>true</codeph> or <codeph>false</codeph> (default value). If you set the
-              value to <codeph>true</codeph>, the XPath expression is only evaluated once the
-              document is loaded. Therefore, if the <codeph>oxy_xpath</codeph> function is used to
-              load values from an external XML document, the <codeph>true</codeph> value will lead
-              to improved performance.</li>
-          </ul><note>The entities and <codeph>xi:include</codeph> sections are ignored when the
-            XPath expressions are evaluated. </note></p>
+            <li>An optional <codeph>evaluate</codeph> parameter, followed by its value, which can
+              have one of the following values:<ul id="ul_m32_lv3_qr">
+                <li><codeph>dynamic</codeph> - Evaluates the XPath each time there are changes in
+                  the document.</li>
+                <li><codeph>dynamic-once</codeph> - Separately evaluates the XPath for each node
+                  that matches the CSS selector. It will not re-evaluate the expression when changes
+                  are made to other nodes in the document. This will lead to improved performance
+                  but the displayed content may not be updated to reflect the actual document
+                  content.</li>
+                <li><codeph>static</codeph> - If the same XPath is evaluated on several nodes, the
+                  result for the first evaluation will be used for all other matches. Use this only
+                  if the XPath does not contain a relationship with the node on which the CSS
+                  property is evaluated. This will lead to improved performance but the static
+                  displayed content may not be updated to reflect the actual document content.</li>
+              </ul></li>
+          </ul></p>
       </li>
     </ul>
+    <note>The entities and <codeph>xi:include</codeph> sections are ignored when the XPath
+      expressions are evaluated. </note>
     <example>
       <p>The following example counts the number of words from a paragraph (including tracked
         changes) and displays the result in front of
