@@ -163,6 +163,28 @@
                   expansion of editor variables returned by the script processing. Expansion is
                   enabled by default.</p></li>
             </ul></p></li>
+        <li><b><apiname>JSOperation</apiname></b><p>Allows you to call the Java API from custom
+            JavaScript content.</p><p>This operation has the following parameters:<ul
+              id="ul_af1_4dr_qr">
+              <li><b><apiname>script</apiname></b><p>The JavaScript content to execute. It must have
+                  a function called <codeph>doOperation()</codeph>, which can use the predefined
+                    <codeph>authorAccess</codeph> variable. The <codeph>authorAccess</codeph>
+                  variable has access to the entire <xref
+                    href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorAccess.html"
+                    format="html" scope="external"
+                      ><apiname>ro.sync.ecss.extensions.api.AuthorAccess</apiname></xref> Java API.
+                </p></li>
+            </ul></p><p>The following example is a script that can be used to move the caret
+            location after the current
+            element:<codeblock outputclass="language-javascript">function doOperation(){ 
+caretOffset = authorAccess.getEditorAccess().getCaretOffset(); 
+currentNode = authorAccess.getDocumentController().getNodeAtOffset(caretOffset); 
+//Move caret after current node 
+authorAccess.getEditorAccess().setCaretPosition(currentNode.getEndOffset() + 1); 
+} </codeblock></p><note>If
+            you have a script called <filepath>commons.js</filepath> in the framework directory, you
+            can call functions defined inside it from your custom script content so that you can use
+            that external script file as a library of functions.</note></li>
         <li><b><apiname>ExecuteMultipleActionsOperation</apiname></b><p>This operation allows the
             execution of a sequence of actions, defined as a list of action IDs. The actions must be
             defined by the corresponding framework, or one of the common actions for all frameworks
