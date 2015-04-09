@@ -17,14 +17,58 @@
     </section>
     <section>
       <title>Licensing</title>
-      <p>Follow these steps to license a deployment of oXygen XML Author WebApp:</p>
+      <p>Follow these steps to license a deployment of <ph keyref="webapp"/>:</p>
       <ol id="ol_ctz_bzr_1r">
         <li>To obtain a license key, please contact <xref href="mailto:support@oxygenxml.com"
             scope="external" format="html">support@oxygenxml.com</xref>.</li>
-        <li>Paste the license key in a file called <filepath>license.txt</filepath> and save it in
-          the <filepath>WEB-INF</filepath> folder of the oXygen XML Author WebApp deployment.</li>
-        <li>TODO Activate the license key.</li>
+        <li><xref
+            href="installation.setting-up-license-server.dita#installation.setting-up-license-server"
+            >Install a floating license server</xref>. If you decide to use an HTTP license server,
+          you can deploy it in the same Tomcat server, alongside with <ph keyref="webapp"/>.</li>
+        <li>Configure the license server connection.</li>
       </ol>
+    </section>
+    <section>
+      <title>Configuring the license server</title>
+      <p>The connection to the server should be configured in a file located at
+          <filepath>WEB-INF/license.properties</filepath>. It should have the following keys.<parml>
+          <plentry>
+            <pt>licensing.server.type</pt>
+            <pd>Type of licensing server. Can be one of <codeph>http</codeph> or
+                <codeph>standalone</codeph>.</pd>
+          </plentry>
+        </parml></p>
+      <p>For an HTTP server, configure the following parameters:<parml>
+          <plentry>
+            <pt>licensing.server.url</pt>
+            <pd>The URL of the license server</pd>
+          </plentry>
+          <plentry>
+            <pt>licensing.server.user</pt>
+            <pd>The user name used for the license server</pd>
+          </plentry>
+          <plentry>
+            <pt>licensing.server.password</pt>
+            <pd>The password used for the license server</pd>
+          </plentry>
+        </parml></p>
+      <p>For a standalone server, configure the following parameters:<parml>
+          <plentry>
+            <pt>licensing.server.host</pt>
+            <pd>The host name of the licensing standalone server</pd>
+          </plentry>
+          <plentry>
+            <pt>licensing.server.port</pt>
+            <pd>The port of the licensing standalone server</pd>
+          </plentry>
+        </parml></p>
+      <p>By default, if no configuration is attempted, <ph keyref="webapp"/> uses an HTTP server
+        registered at <filepath>localhost:8080/oxygenLicenseServlet/</filepath>.</p>
+      <p>A configuration file might look like this:</p>
+      <pre>licensing.server.type=http
+licensing.server.url=http://example.com:8080/oxygenLicenseServlet/license-servlet
+licensing.server.user=admin
+licensing.server.password=******</pre>
     </section>
   </body>
 </topic>
