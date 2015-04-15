@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="using-retina-hidpi-images">
+  <title><?oxy_comment_start author="steven_higgs" timestamp="20150415T110018+0300" comment="Ask Dan is this is the appropriate place in the ditamap"?>Using
+    Retina/HiDPI Images in Author Mode<?oxy_comment_end?></title>
+  <body>
+    <p><?oxy_comment_start author="steven_higgs" timestamp="20150415T115323+0300" comment="Edit all content"?>To<?oxy_comment_end?>
+      use an image to style an element you can use in the <b>content</b> CSS property the <b>url</b>
+      function. Let's take this example:</p>
+    <pre outputclass="language-css">listItem:before{
+   content: url('../img/bullet.png');
+}
+</pre>
+    <p>This places a bullet image loaded from the 'bullet.png' file just before the element having
+      the name <b>listItem</b>.</p>
+    <p>In case the user has a Retina display (on a Mac) the icon looks a bit blurry as it gets
+      up-scaled. On a HiDPI display on a Windows computer, the icon remains at the original size, so
+      it will look very small.</p>
+    <p>So you need to specify both a <b>normal</b> DPI image, and also a <b>high</b> DPI image.
+      However, referring them both from the CSS is not practical, as you would need to change your
+      CSS files, and there is no standard way to do this.</p>
+    <p>Starting with version 17, oXygen interprets the argument of the <b>url</b> function rather as
+      key than a fixed URL. When running on a system with Retina/HiDPI oXygen will try to find first
+      the file corresponding to the retina scaling factor. If not found, falls back to the
+        <b>normal</b> icon.</p>
+    <p>Also, starting with same version, oXygen supports dark color themes. This means the
+      background of the editor area can be of a darker color and the foreground is lighter. On a
+      darker background, you may found useful to change / invert the images colors. If an image
+      designed for a dark backgroud is not found, it falls back to the <b>normal</b> image.</p>
+    <p>oXygen uses the Mac retina icon file naming convention.</p>
+    <p>For our example, on a Retina/HiDPI Display:</p>
+    <table id="table_myp_5sh_sr">
+      <tgroup cols="4">
+        <colspec colnum="1" colname="col1"/>
+        <colspec colnum="2" colname="col2"/>
+        <colspec colnum="3" colname="col3"/>
+        <colspec colnum="4" colname="col4"/>
+        <tbody>
+          <row>
+            <entry>Color Theme</entry>
+            <entry>Referred image file</entry>
+            <entry>Double density image file</entry>
+            <entry>Triple density image file</entry>
+          </row>
+          <row>
+            <entry>normal</entry>
+            <entry>'../img/bullet.png'</entry>
+            <entry>'../img/bullet@2x.png'</entry>
+            <entry>'../img/bullet@3x.png'</entry>
+          </row>
+          <row>
+            <entry>dark</entry>
+            <entry>'../img/bullet_dark.png'</entry>
+            <entry>'../img/bullet_dark@2x.png'</entry>
+            <entry>'../img/bullet_dark@3x.png'</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    <p>To support Retina displays, the icons referenced directly from the Document Type
+      customization (from the actions panel) or from the API
+      (ro.sync.exml.workspace.api.node.customizer.XMLNodeRendererCustomizer) should be backed up by
+      a copy of larger size.</p>
+    <p>For instance if the XMLNodeRendererCustomizer returns for the element "title" the path:
+      "$</p>
+    <p>Unknown macro: {framework}</p>
+    <p>/images/myImg.png", in order to support Retina with a scaling factor of 2, an extra file
+      "$</p>
+    <p>/images/myImg@2x.png" should be added to the images directory.</p>
+    <p>If the @2x file does not exist, the first one is scaled and used instead.</p>
+    <p>
+      <?oxy_comment_start author="steven_higgs" timestamp="20150415T110206+0300" comment="Use this link somewhere"?><xref
+        href="../topics/the-action-dialog.dita#the-action-dialog"><uicontrol>Action</uicontrol>
+        dialog box</xref><?oxy_comment_end?></p>
+  </body>
+</topic>
