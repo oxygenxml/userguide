@@ -4,31 +4,38 @@
   <title><?oxy_comment_start author="steven_higgs" timestamp="20150415T110018+0300" comment="Ask Dan is this is the appropriate place in the ditamap"?>Using
     Retina/HiDPI Images in Author Mode<?oxy_comment_end?></title>
   <body>
-    <p><?oxy_comment_start author="steven_higgs" timestamp="20150415T115323+0300" comment="Edit all content"?>To<?oxy_comment_end?>
-      use an image to style an element you can use in the <b>content</b> CSS property the <b>url</b>
-      function. Let's take this example:</p>
+    <p><ph keyref="product"/> provides support for Retina and HiDPI images through simple naming
+      conventions. The higher resolution images are stored in the same images folder as the normal
+      resolution images and they are identified by a scaling factor that is included in the name of
+      the image files. For instance, images with a Retina scaling factor of 2 will include
+          <i><filepath>@2x</filepath></i> in the name (for example,
+        <filepath>myImage@2x.png</filepath>). </p>
+    <p>You can reference an image to style an element in a CSS by using the <codeph>url</codeph>
+      function in the <codeph>content</codeph> property, as in the following example:</p>
     <pre outputclass="language-css">listItem:before{
-   content: url('../img/bullet.png');
-}
-</pre>
-    <p>This places a bullet image loaded from the 'bullet.png' file just before the element having
-      the name <b>listItem</b>.</p>
-    <p>In case the user has a Retina display (on a Mac) the icon looks a bit blurry as it gets
-      up-scaled. On a HiDPI display on a Windows computer, the icon remains at the original size, so
-      it will look very small.</p>
-    <p>So you need to specify both a <b>normal</b> DPI image, and also a <b>high</b> DPI image.
-      However, referring them both from the CSS is not practical, as you would need to change your
-      CSS files, and there is no standard way to do this.</p>
-    <p>Starting with version 17, oXygen interprets the argument of the <b>url</b> function rather as
-      key than a fixed URL. When running on a system with Retina/HiDPI oXygen will try to find first
-      the file corresponding to the retina scaling factor. If not found, falls back to the
-        <b>normal</b> icon.</p>
-    <p>Also, starting with same version, oXygen supports dark color themes. This means the
-      background of the editor area can be of a darker color and the foreground is lighter. On a
-      darker background, you may found useful to change / invert the images colors. If an image
-      designed for a dark backgroud is not found, it falls back to the <b>normal</b> image.</p>
-    <p>oXygen uses the Mac retina icon file naming convention.</p>
-    <p>For our example, on a Retina/HiDPI Display:</p>
+   content: url('../img/myImage.png');
+}</pre>
+    <p>This would place the image that is loaded from the <filepath>myImage.png</filepath> file just
+      before the <codeph>listItem</codeph> element. However, if you are using a Retina display (on a
+      Mac), the icon looks a bit blurry as it automatically gets scaled, or if you are using an
+      HiDPI display (on a Windows-based PC), the icon remains at the original size, thus it will
+      look very small. To solve this rendering problem you need to be able to reference both a
+        <i>normal</i> DPI image and a <i>high</i> DPI image. However, referencing both of them from
+      the CSS is not practical, as there is no standard way of doing this.</p>
+    <p>Starting with version 17, <ph keyref="product"/> interprets the argument of the
+        <codeph>url</codeph> function as key rather than a fixed URL. Therefore, when running on a
+      system with a Retina or HiDPI display, <ph keyref="product"/> will first try to find the image
+      file that corresponds to the retina scaling factor. For instance, using the previous example,
+        <ph keyref="product"/> would first try to find <filepath>myImage@2x.png</filepath>. If this
+      file is not found, it defaults back to the <i>normal</i> resolution image file
+        (<filepath>myImage.png</filepath>).</p>
+    <p><ph keyref="product"/> also supports dark color themes. This means that the background of the
+      editor area can be of a dark color and the foreground a lighter color. On a dark background,
+      you may find it useful to invert the colors of images. Again, this can be done with simple
+      naming conventions. If an image designed for a dark background is not found, the <i>normal</i>
+      image is used.</p>
+    <p>Refer to the following table for examples of the Retina/HiDPI image naming convention that is
+      used in <ph keyref="product"/>:</p>
     <table id="table_myp_5sh_sr">
       <tgroup cols="4">
         <colspec colnum="1" colname="col1"/>
@@ -38,39 +45,47 @@
         <tbody>
           <row>
             <entry>Color Theme</entry>
-            <entry>Referred image file</entry>
-            <entry>Double density image file</entry>
-            <entry>Triple density image file</entry>
+            <entry>Referred Image File</entry>
+            <entry>Double Density Image File</entry>
+            <entry>Triple Density Image File</entry>
           </row>
           <row>
             <entry>normal</entry>
-            <entry>'../img/bullet.png'</entry>
-            <entry>'../img/bullet@2x.png'</entry>
-            <entry>'../img/bullet@3x.png'</entry>
+            <entry>../img/myImage.png</entry>
+            <entry>../img/myImage@2x.png</entry>
+            <entry>../img/myImage@3x.png</entry>
           </row>
           <row>
             <entry>dark</entry>
-            <entry>'../img/bullet_dark.png'</entry>
-            <entry>'../img/bullet_dark@2x.png'</entry>
-            <entry>'../img/bullet_dark@3x.png'</entry>
+            <entry>../img/myImage_dark.png</entry>
+            <entry>../img/myImage_dark@2x.png</entry>
+            <entry>../img/myImage_dark@3x.png</entry>
           </row>
         </tbody>
       </tgroup>
     </table>
-    <p>To support Retina displays, the icons referenced directly from the Document Type
-      customization (from the actions panel) or from the API
-      (ro.sync.exml.workspace.api.node.customizer.XMLNodeRendererCustomizer) should be backed up by
-      a copy of larger size.</p>
-    <p>For instance if the XMLNodeRendererCustomizer returns for the element "title" the path:
-      "$</p>
-    <p>Unknown macro: {framework}</p>
-    <p>/images/myImg.png", in order to support Retina with a scaling factor of 2, an extra file
-      "$</p>
-    <p>/images/myImg@2x.png" should be added to the images directory.</p>
-    <p>If the @2x file does not exist, the first one is scaled and used instead.</p>
-    <p>
-      <?oxy_comment_start author="steven_higgs" timestamp="20150415T110206+0300" comment="Use this link somewhere"?><xref
-        href="../topics/the-action-dialog.dita#the-action-dialog"><uicontrol>Action</uicontrol>
-        dialog box</xref><?oxy_comment_end?></p>
+    <section id="adding-retina-icons-section">
+      <title>Adding Retina/HiDPI Icons in a Framework</title>
+      <p>Higher resolution icons can also be included in customized frameworks for rendering them in
+        a Retina or HiDPI display. The icons can be referenced directly from the Document Type
+        customization (from the <xref href="../topics/the-action-dialog.dita#the-action-dialog"
+            ><uicontrol>Action</uicontrol> dialog box</xref>) or from an API (<xref
+          href="dg-default-author-operations.dita#dg-default-author-operations/retina-api-li"
+            ><apiname>ro.sync.exml.workspace.api.node.customizer.XMLNodeRendererCustomizer</apiname></xref>).</p>
+      <p>As with any image, the higher resolution icons are stored in the same images folder as the
+        normal resolution images and they are identified by a scaling factor that is included in the
+        name of the image files. For instance, icons with a Retina scaling factor of 2 will include
+            <i><filepath>@2x</filepath></i> in the name (for example,
+          <filepath>myIcon@2x.png</filepath>).</p>
+      <p>Developers should not specify the path of the alternate icons
+          (<i><filepath>@2x</filepath></i> or <i><filepath>@3x</filepath></i>) in the <xref
+          href="../topics/the-action-dialog.dita#the-action-dialog"><uicontrol>Action</uicontrol>
+          dialog box</xref> or the <xref
+          href="dg-default-author-operations.dita#dg-default-author-operations/retina-api-li"
+            ><apiname>XMLNodeRendererCustomizer</apiname> API</xref>. When using a Retina or HiDPI
+        display, <ph keyref="product"/> automatically searches the folder of the <i>normal</i> icon
+        for a corresponding image file with a Retina scaling factor in the name. If the higher
+        resolution icon file does not exist, the <i>normal</i> icon is used instead. </p>
+    </section>
   </body>
 </topic>
