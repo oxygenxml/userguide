@@ -9,10 +9,10 @@
     <p>A dynamic conversion URL chains various processors that can be applied in sequence on a
       target resource and has the following general
       syntax:<codeblock>convert:/processor=xslt;ss=urn:processors:excel2d.xsl/processor=excel!/urn:files:sample.xls</codeblock></p>
-    <p>The previous example first applies a processor called <varname>excel</varname> on a target
+    <p>The previous example first applies a processor called <codeph>excel</codeph> on a target
       identified by the identifier <filepath>urn:files:sample.xls</filepath> and converts the <tm
-        tmtype="tm">Excel</tm> resource to XML. The second applied processor
-        (<varname>xslt</varname>) applies an XSLT stylesheet identified using the identifier
+        tmtype="tm">Excel</tm> resource to XML. The second applied processor (<codeph>xslt</codeph>)
+      applies an XSLT stylesheet identified using the identifier
         <filepath>urn:processors:excel2d.xsl</filepath> over the content resulting from the first
       applied processor. These identifiers are all mapped to real resources on disk via an <term>XML
         catalog</term> that is configured in the application, as in the following
@@ -34,45 +34,45 @@
         conversion process. All parameters that are resolved to resources are passed through the XML
         catalog mapping.</p>
       <p>The following predefined conversion processors are included:<ul id="ul_r4y_5x2_mr">
-          <li><b><varname>xslt</varname> Processor</b> - Converts an XML input using XSLT 2.0
-            processing. The <varname>ss</varname> parameter indicates the stylesheet resource to be
+          <li><b><codeph>xslt</codeph> Processor</b> - Converts an XML input using XSLT 2.0
+            processing. The <codeph>ss</codeph> parameter indicates the stylesheet resource to be
             loaded. All other specified parameters will be set as parameters to the XSLT
             transformation.<codeblock>convert:/<b>processor=xslt;ss=urn:processors:convert.xsl;p1=v1</b>!/urn:files:sample.xml</codeblock></li>
-          <li><b><varname>xquery</varname> Processor</b> - Converts an XML input using XQuery
-            processing. The <varname>ss</varname> parameter indicates the XQuery script to be
-            loaded. All other specified parameters will be set as parameters to the XSLT
+          <li><b><codeph>xquery</codeph> Processor</b> - Converts an XML input using XQuery
+            processing. The <codeph>ss</codeph> parameter indicates the XQuery script to be loaded.
+            All other specified parameters will be set as parameters to the XSLT
             transformation.<codeblock>convert:/<b>processor=xquery;ss=urn:processors:convert.xquery;p1=v1</b>!/urn:files:sample.xml</codeblock></li>
-          <li><b><varname>excel</varname> Processor</b> - Converts an <tm tmtype="tm">Excel</tm>
-            input to an XML format that can be later converted by other piped processors. It has a
-            single parameter <varname>sn</varname>, which indicates the name of the sheet that needs
-            to be converted. If this parameter is missing, the XML will contain the combined content
-            of all sheets included in the <tm tmtype="tm">Excel</tm> document.
+          <li><b><codeph>excel</codeph> Processor</b> - Converts an <tm tmtype="tm">Excel</tm> input
+            to an XML format that can be later converted by other piped processors. It has a single
+            parameter <codeph>sn</codeph>, which indicates the name of the sheet that needs to be
+            converted. If this parameter is missing, the XML will contain the combined content of
+            all sheets included in the <tm tmtype="tm">Excel</tm> document.
             <codeblock>convert:/<b>processor=excel;sn=test</b>!/urn:files:sample.xls</codeblock></li>
-          <li><b><varname>java</varname> Processor</b> - Converts an input to another format by
-            applying a specific Java method. The <varname>jars</varname> parameter is a comma
+          <li><b><codeph>java</codeph> Processor</b> - Converts an input to another format by
+            applying a specific Java method. The <codeph>jars</codeph> parameter is a comma
             separated list of JAR libraries or folders, from which libraries will be loaded. The
-              <varname>ccn</varname> parameter is the fully qualified name of the conversion class
+              <codeph>ccn</codeph> parameter is the fully qualified name of the conversion class
             that will be instantiated. The conversion class needs to have a method with the
             following
             signature:<codeblock>  public void convert(String systemID, String originalSourceSystemID, InputStream is, 
 OutputStream os, LinkedHashMap&lt;String, String> properties) throws IOException </codeblock><codeblock>convert:/<b>processor=java;jars=libs;ccn=test.JavaToXML</b>!/
 urn:files:java/WSEditorBase.java</codeblock></li>
-          <li><b><varname>js</varname> Processor</b> - Converts an input to another format by
-            applying a JavaScript method. The <varname>js</varname> parameter indicates the script
-            that will be used. The <varname>fn</varname> parameter is the name of the method that
-            will be called from the script. The method must take a string as an argument and return
-            a string. If any of the parameters are missing, an error is thrown and the conversion
+          <li><b><codeph>js</codeph> Processor</b> - Converts an input to another format by applying
+            a JavaScript method. The <codeph>js</codeph> parameter indicates the script that will be
+            used. The <codeph>fn</codeph> parameter is the name of the method that will be called
+            from the script. The method must take a string as an argument and return a string. If
+            any of the parameters are missing, an error is thrown and the conversion
             stops.<codeblock>convert:/<b>processor=js;js=urn:processors:md.js;fn=convertExternal</b>!/urn:files:sample.md</codeblock></li>
-          <li><b><varname>json</varname> Processor</b> - Converts a JSON input to XML. It has no
+          <li><b><codeph>json</codeph> Processor</b> - Converts a JSON input to XML. It has no
             parameters.<codeblock>convert:/<b>processor=json</b>!/urn:files:personal.json</codeblock></li>
-          <li><b><varname>xhtml</varname> Processor</b> - Converts HTML content to well-formed
-            XHTML. It has no
+          <li><b><codeph>xhtml</codeph> Processor</b> - Converts HTML content to well-formed XHTML.
+            It has no
             parameters.<codeblock>convert:/<b>processor=xhtml</b>!/urn:files:test.html</codeblock></li>
-          <li><b><varname>wrap</varname> Processor</b> - Wraps content in a tag name making it
-            well-formed XML. The <varname>rn</varname> parameter indicates the name of the root tag
-            to use. By default, it is <codeph>wrapper</codeph>. The <varname>encoding</varname>
-            parameter specifies the encoding that should be used to read the content. By default, it
-            is <codeph>UTF8</codeph>. As an example, this processor can be used if you want to
+          <li><b><codeph>wrap</codeph> Processor</b> - Wraps content in a tag name making it
+            well-formed XML. The <codeph>rn</codeph> parameter indicates the name of the root tag to
+            use. By default, it is <codeph>wrapper</codeph>. The <codeph>encoding</codeph> parameter
+            specifies the encoding that should be used to read the content. By default, it is
+              <codeph>UTF8</codeph>. As an example, this processor can be used if you want to
             process a comma-separated values file with an XSLT stylesheet to produce XML content.
             The CSV file is first wrapped as well-formed XML, which is then processed with an
               <codeph>xslt</codeph>
