@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://purl.oclc.org/dsdl/schematron"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   queryBinding="xslt2">
 
   <pattern abstract="true" id="avoidWordInElement">
@@ -14,9 +16,17 @@
       to the user in case the word appears in the specified element.</p>
     <rule context="$element">
       <assert test="not(tokenize(normalize-space(.), ' ') = '$word')"
-        role="warn">
+        role="warn" sqf:fix="avoidWordInElement_deleteWord">
         <value-of select="'$message'"/>
       </assert>
+      
+      <sqf:fix id="avoidWordInElement_deleteWord" role="delete">
+        <sqf:param name="word" abstract="true"/>
+        <sqf:description>
+          <sqf:title>The word "<value-of select="'$word'"/>" will be deleted.</sqf:title>
+        </sqf:description>
+        <sqf:stringReplace match=".//text()" regex="(\s|^)$word(\s|$)"/>
+      </sqf:fix>
     </rule>
   </pattern>
 
@@ -33,9 +43,16 @@
       specified element.</p>
     <rule context="$element">
       <assert test="not(ends-with(normalize-space(.), '$fragment'))"
-        role="warn">
+        role="warn" sqf:fix="avoidEndFragment_delete">
         <value-of select="'$message'"/>
       </assert>
+      
+      <sqf:fix id="avoidEndFragment_delete">
+        <sqf:description>
+          <sqf:title>Remove invalid character(s)</sqf:title>
+        </sqf:description>
+        <sqf:stringReplace match="node()[last()]" regex="$fragment(\s*$)"/>
+      </sqf:fix>
     </rule>
   </pattern>
 
@@ -51,9 +68,15 @@
       to the user in case the attribute appears in the specified
       element.</p>
     <rule context="$element">
-      <assert test="not(@$attribute)" role="warn">
+      <assert test="not(@$attribute)" role="warn" sqf:fix="avoidAttributeInElement_remove">
         <value-of select="'$message'"/>
       </assert>
+      <sqf:fix id="avoidAttributeInElement_remove">
+        <sqf:description>
+          <sqf:title>Delete the @<value-of select="'$attribute'"/> attribute</sqf:title>
+        </sqf:description>
+        <sqf:delete match="@$attribute"/>
+      </sqf:fix>
     </rule>
   </pattern>
 
@@ -68,9 +91,15 @@
       should display to the user in case the element is not present
       within the parent element.</p>
     <rule context="$parent">
-      <assert test="$element" role="warn">
+      <assert test="$element" role="warn" sqf:fix="recommendElementInParent_add">
         <value-of select="'$message'"/>
       </assert>
+      <sqf:fix id="recommendElementInParent_add">
+        <sqf:description>
+          <sqf:title>Add recommended element</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="element" target="$element"/>
+      </sqf:fix>
     </rule>
   </pattern>
 
