@@ -78,4 +78,19 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- Report if link text same as @href value -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/xref ') or contains(@class, ' topic/link ')]">
+      <sch:report test="@scope='external' and @href=text()" sqf:fix="removeText">
+        Link text is same as @href attribute value. Please remove.
+      </sch:report>
+      <sqf:fix id="removeText">
+        <sqf:description>
+          <sqf:title>Remove redundant link text, text is same as @href value.</sqf:title>
+        </sqf:description>
+        <sqf:delete match="text()"/>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
 </sch:schema>
