@@ -62,7 +62,6 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
-  
   <!-- Topic ID must be equal to file name -->
   <sch:pattern>
     <sch:rule context="/*[1][contains(@class, ' topic/topic ')]">
