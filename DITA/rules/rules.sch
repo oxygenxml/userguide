@@ -65,7 +65,7 @@
   <!-- Topic ID must be equal to file name -->
   <sch:pattern>
     <sch:rule context="/*[1][contains(@class, ' topic/topic ')]">
-      <sch:let name="reqId" value="replace(tokenize(document-uri(/), '/')[last()], '.dita', '')"/>
+      <sch:let name="reqId" value="replace(tokenize(document-uri(/), '/')[last()], '\.dita', '')"/>
       <sch:assert test="@id = $reqId" sqf:fix="setId">
         Topic ID must be equal to file name.
       </sch:assert>
