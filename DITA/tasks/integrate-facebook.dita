@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="integrate-facebook">
+  <title>How to Add a Facebook Like Button in WebHelp Output</title>
+  <shortdesc>See how you can add a Facebook widget into WebHelp output.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Facebook widget</indexterm>
+        <indexterm>Social media</indexterm>
+        <indexterm>Social plugin</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <p>To add a <term>Facebook<tm tmtype="tm"/> Like</term> widget to your WebHelp output, follow
+        these steps:</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Go to <xref href="https://developers.facebook.com/docs/plugins/like-button"
+            format="html" scope="external">Facebook Developers</xref> website.</cmd>
+      </step>
+      <step>
+        <cmd>Fill-in the displayed form, then click the <uicontrol>Get Code</uicontrol>
+          button.</cmd>
+        <stepresult>A dialog containing code snippets is displayed.</stepresult>
+      </step>
+      <step>
+        <cmd>Copy the two code snippets into a <term>&lt;div></term> element inside an XML file
+          called <filepath>facebook-widget.xml</filepath>.</cmd>
+        <stepresult>Make sure you follow these rules:<ul id="ul_y3s_cf5_ds">
+            <li>The file must be well-formed</li>
+            <li>The code for each <codeph>script</codeph> element is included in an XML comment</li>
+            <li>The start and end tags for the XML comment must be on a separate line</li>
+          </ul>The content of the XML file should look like
+          this:<codeblock outputclass="language-javascript">&lt;div id="facebook">
+    &lt;div id="fb-root"/>
+    &lt;script>
+        &lt;!-- 
+            (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.0";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk')); 
+        -->
+    &lt;/script>
+    &lt;div class="fb-like" data-layout="standard" data-action="like" data-show-faces="true"
+        data-share="true"/>
+&lt;/div></codeblock></stepresult>
+      </step>
+      <step>
+        <cmd>In <ph keyref="product"/>, click <uicontrol><image href="../img/TransformConfig16.png"
+              id="image_c5z_2wv_sr"/>Configure Transformation Scenarios</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Duplicate an existing WebHelp transformation scenario (depending on your needs, it may
+          be with or without feedback, or the mobile variant).</cmd>
+      </step>
+      <step>
+        <cmd>Switch to the <uicontrol>Parameters</uicontrol> tab and edit the
+            <codeph>webhelp.footer.file</codeph> parameter to reference the
+            <filepath>facebook-widget.xml</filepath> file created earlier.</cmd>
+      </step>
+      <step>
+        <cmd>Execute the transformation scenario.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+  <related-links>
+    <link href="../topics/dita_webhelp_output.dita#dita_webhelp_output"/>
+  </related-links>
+</task>
