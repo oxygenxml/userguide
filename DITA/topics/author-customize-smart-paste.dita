@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="author-customize-smart-paste">
+  <title>Customizing Smart Paste Support</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Customize Smart Paste</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <term>Smart Paste</term> feature preserves certain style and structure information when
+      copying content from some of the most common applications and pasting into <xref
+        href="smart-paste-support.dita#smart-paste-support/doc-types-sp-p">document types that
+        support Smart Paste</xref> in <ph keyref="product"/>. For other document types, the default
+      behavior of the paste operation is to keep only the text content without the styling.</p>
+    <p>The style of the pasted content can be customized by editing an XSLT stylesheet for the
+      particular document type. The XSLT stylesheet must accept an XHTML flavor of the copied
+      content as input, and transform it to the equivalent XML markup that is appropriate for the
+      target document type of the paste operation.</p>
+    <p>A default XSLT stylesheet that can be edited to customize the mapping between the markup of
+      the copied content and the markup of the pasted content is included the following directory
+      for each supported document type: <filepath>[OXYGEN INSTALLATION
+        DIRECTORY]/frameworks/[Document Type]/resources</filepath>. The name of this default XSLT
+      file begins with <filepath>xhtml2</filepath>, followed by the document type (for example,
+        <filepath>xhtml2dita.xsl</filepath> for the DITA document type). </p>
+    <example>
+      <title>The Default Stylesheet for DITA Document Type</title>
+      <p>To customize the mapping for a DITA topic, edit the <filepath>[OXYGEN INSTALLATION
+          DIRECTORY]/frameworks/dita/resources/xhtml2dita.xsl</filepath> stylesheet. To test the
+        modifications done in the stylesheet, you can start pasting content without having to
+        restart <ph keyref="product"/>.</p>
+    </example>
+    <p>
+      <note><ph keyref="product"/> implements the Smart Paste feature by <xref
+          keyref="customize.extensions-bundle" format="dita">setting up</xref> a stylesheet which is
+        obtained by <ph keyref="product"/> from the <apiname>getImporterStylesheetFileName</apiname>
+        method. This method is available in an instance of <xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorExternalObjectInsertionHandler.html"
+          format="html" scope="external">the <apiname>AuthorExternalObjectInsertionHandler</apiname>
+          class</xref>, which is returned by the
+          <apiname>createExternalObjectInsertionHandler</apiname> method of <xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/ExtensionsBundle.html"
+          format="html" scope="external">the <apiname>ExtensionsBundle</apiname> instance</xref> of
+        the target document type.</note>
+    </p>
+  </body>
+  <related-links product="editor author authorEclipse editorEclipse">
+    <link href="smart-paste-support.dita#smart-paste-support"/>
+  </related-links>
+</topic>
