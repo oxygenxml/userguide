@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="add-watermark-pdf-output">
+  <title>Adding a Watermark to PDF Output</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Customizing DITA OT Transformations <indexterm>Add Watermark to PDF
+            Output</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <p>To add a watermark to the PDF output of a DITA Map transformation, follow these steps:</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Create a custom XSL stylesheet named <filepath>custom.xsl</filepath> that sets the path
+          of the watermark image, as in the following example:</cmd>
+        <info>
+          <codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    &lt;xsl:variable name="imageDir" select="'/common/artwork/'"/>
+    &lt;xsl:variable name="imageWatermarkPath">&lt;xsl:value-of select="$imageDir"/>ExampleImage.png&lt;/xsl:variable>
+&lt;/xsl:stylesheet></codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Place the <filepath>custom.xsl</filepath> file in the following directory:
+            <filepath>[OXYGEN_DIR]\frameworks\dita\DITA-OT\plugins\org.dita.pdf2\Customization\fo\attrs</filepath>.</cmd>
+      </step>
+      <step>
+        <cmd>In the
+            <filepath>[OXYGEN_DIR]\frameworks\dita\DITA-OT\plugins\org.dita.pdf2\Customization</filepath>
+          directory, locate the file named <filepath>catalog.xml.orig</filepath> and rename it as
+            <filepath>catalog.xml</filepath>.</cmd>
+      </step>
+      <step>
+        <cmd>Edit the <filepath>catalog.xml</filepath> file and remove the comment from the
+          following line:</cmd>
+        <info>
+          <codeblock outputclass="language-xml">&lt;!--uri name="cfg:fo/attrs/custom.xsl" uri="fo/attrs/custom.xsl"/--></codeblock>
+          <codeblock outputclass="language-xml">&lt;uri name="cfg:fo/attrs/custom.xsl" uri="fo/attrs/custom.xsl"/></codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Edit the <filepath>static-content.xsl</filepath> file that is located in the
+            <filepath>[OXYGEN_DIR]\frameworks\dita\DITA-OT\plugins\org.dita.pdf2\xsl\fo</filepath>
+          directory and add the following template:</cmd>
+        <info>
+          <codeblock outputclass="language-xml">&lt;xsl:template name="insertImage">
+            &lt;fo:block-container absolute-position="fixed" top="160mm">
+                &lt;fo:block>
+                    &lt;fo:external-graphic src="url({concat($customizationDir.url, $imageWatermarkPath)})" xsl:use-attribute-sets="image" />
+                &lt;/fo:block>
+            &lt;/fo:block-container>
+&lt;/xsl:template></codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>In the same file (<filepath>static-content.xsl</filepath>), add a call to this template
+          before the <codeph>&lt;fo:block></codeph> tag in each of the header templates
+            (<codeph>insertBodyOddHeader</codeph>, <codeph>insertBodyEvenHeader</codeph>,
+            <codeph>insertBodyFirstHeader</codeph>, <codeph>insertBodyLastHeader</codeph>,
+            <codeph>insertTocOddHeader</codeph>, <codeph>insertTocEvenHeader</codeph>, and
+            <codeph>insertBodyFootnoteSeparator</codeph>), or in each of the footer templates
+            (<codeph>insertBodyFirstFooter</codeph>, <codeph>insertBodyLastFooter</codeph>,
+            <codeph>insertBodyOddFooter</codeph>, <codeph>insertBodyEvenFooter</codeph>,
+            <codeph>insertTocOddFooter</codeph>, <codeph>insertTocEvenFooter</codeph>, and
+            <codeph>insertBodyFootnoteSeparator</codeph>). The call would look like this:</cmd>
+        <info>
+          <codeblock outputclass="language-xml">&lt;xsl:call-template name="insertImage"/></codeblock>
+          <note>If you add the call in both the header and footer templates, the watermark image
+            will be displayed twice in each page of the output.</note>
+        </info>
+      </step>
+      <step>
+        <cmd>Edit a DITA Map PDF transformation scenario and in the
+            <uicontrol>Parameters</uicontrol> tab, set the value of the
+            <codeph>customization.dir</codeph> parameter to
+            <userinput>${frameworksDir}/dita/DITA-OT/plugins/org.dita.pdf2/Customization</userinput>.</cmd>
+      </step>
+      <step>
+        <cmd>Apply the transformation scenario.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>
