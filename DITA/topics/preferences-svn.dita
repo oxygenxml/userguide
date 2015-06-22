@@ -12,8 +12,8 @@
     <p>To configure the <uicontrol>SVN</uicontrol> options, <ph
         conkeyref="reusable_menus/open-the-preferences-page"/> and go to <menucascade>
         <uicontrol>SVN</uicontrol>
-      </menucascade>. In this preferences page the user preferences for the embedded SVN client tool
-      are configured. Some other preferences for the embedded SVN client tool can be set in the
+      </menucascade>. In this preferences page, the user preferences for the embedded SVN client
+      tool are configured. Some other preferences for the embedded SVN client tool can be set in the
       global files called <filepath>config</filepath> and <filepath>servers</filepath>. These files
       contain parameters that act as defaults applied to all the SVN client tools that are used by
       the same user on his login account on the computer. To open these files for editing, launch
@@ -32,40 +32,40 @@
       <title>The SVN Preferences Panel</title>
       <image href="../img/sa_svn_options.png"/>
     </fig>
-    <p>The SVN preferences are the following:</p>
+    <p>The following SVN options can be configured in this preferences page:</p>
     <ul>
       <li><uicontrol>Enable symbolic link support</uicontrol> (<i>available only on Mac OS X and
           Linux</i>) - <ph keyref="apacheSubversion"/> has the ability to put a symbolic link under
         version control, via the usual SVN <cmdname>add</cmdname> command. The Subversion repository
-        has no internal concept of a symbolic link, it stores a versioned symbolic link as an
-        ordinary file with a <codeph>svn:special</codeph> property attached. The SVN client (on
-        Unix) sees the property and translates the file into a symbolic link in the working
-          copy.<note>Windows file systems have no symbolic links, so a Windows client won't do any
-          such translation: the object appears as a normal file.</note><p> If the symbolic link
-          support is disabled then the versioned symbolic links, on Linux and OS X, are supported in
-          the same way as on Windows, that is a text file instead of symbolic link is
-          created.</p><note type="important">It is recommended to disable symbolic links support if
-          you do not have versioned symbolic links in your repository, because the SVN operations
-          will work faster. However, you should not disable this option when you do have versioned
+        has no internal concept of a symbolic link. It stores a versioned symbolic link as an
+        ordinary file with a <codeph>svn:special</codeph> property attached. On Unix/Linux, the SVN
+        client sees the property and translates the file into a symbolic link in the working copy.
+        If the symbolic link support is disabled, the versioned symbolic links appear as a text file
+        instead of symbolic link.<note>Windows file systems have no symbolic links, so a Windows
+          client will not do any such translation and the object appears as a normal
+          file.</note><note type="important">It is recommended to disable symbolic links support if
+          you do not have versioned symbolic links in your repository, since the SVN operations will
+          work faster. However, you should not disable this option when you do have versioned
           symbolic links in repository. In that case a workaround would be to reference the working
-          copy by its real path, not a path that includes a symbolic link.</note></li>
-      <li><uicontrol>Allow unversioned obstructions</uicontrol> - Controls how should be handled
-        working copy resources being ignored / unversioned when performing an update operation and
-        from the repository are incoming files with the same name, in the same location, that
-        intersect with those being ignored / unversioned. If the option is enabled, then the
-        incoming items will become BASE revisions of the ones already present in the working copy,
-        and those present will be made versioned resources and will be marked as modified. Exactly
-        as if the user first made the update operation and after that he / she modified the files.
-        If the option is disabled, the update operation will fail when encountering files in this
-        situation, possibly leaving other files not updated. By default, this option is
-        enabled.</li>
+          copy by its real path, instead of a path that includes a symbolic link.</note></li>
+      <li><uicontrol>Allow unversioned obstructions</uicontrol> - Controls how to handle a situation
+        where working copy resources are ignored / unversioned when performing an update operation
+        and incoming files (from the repository) with the same name and location intersect with
+        those being ignored / unversioned. If the option is enabled, the incoming items will become
+        BASE revisions of the ones already present in the working copy, and those present will be
+        made versioned resources and will be marked as modified (exactly as if the user first made
+        the update operation and then modified the files). If the option is disabled, the update
+        operation will fail when encountering files in this situation, possibly leaving other files
+        not updated. By default, this option is enabled.</li>
       <li><uicontrol>Use unsafe copy operations</uicontrol> - Sometimes when the working copy is
-        accessed through Samba and SVN client cannot make a safe copy of the committed file due to a
-        delay in getting write permission the result is that the committed file will be saved with
-        zero length (the content is removed) and an error will be reported. In this case this option
-        should be selected so that SVN client does not try to make the safe copy.</li>
-      <li id="svn_https_encryption_protocol"><uicontrol>HTTPS encryption protocols</uicontrol> -
-        Sets a specific encryption protocol to be used when the <xref
+        accessed through Samba and the SVN client cannot make a safe copy of the committed file due
+        to a delay in getting a write permission, the result is that the committed file will be
+        saved with zero length (the content is removed) and an error will be reported. In this case,
+        this option should be selected so that the SVN client does not try to make the safe
+        copy.</li>
+      <li id="svn_https_encryption_protocol"><uicontrol>HTTPS encryption protocols</uicontrol>
+        <i>(available if you are using Java version 1.6 or older)</i> - Sets a specific encryption
+        protocol to be used when the <xref
           href="repository-access-https.dita#repository-access-https" format="dita">application
           accesses a repository through HTTPS protocol</xref>. You can choose one of the following
           values:<ul id="ul_4qd_ycm_lf">
@@ -73,26 +73,15 @@
           <li><uicontrol>SSLv3 only</uicontrol></li>
           <li><uicontrol>TLSv1 only</uicontrol></li>
         </ul></li>
-      <li><uicontrol>SSH</uicontrol> - Specifies the command line for an external SSH client which
-        will be used when connecting to a SVN+SSH repository. Absolute paths are recommended for the
-        SSH client executable and the file paths given as arguments (if any). Depending on the SSH
-        client used and your SSH server configuration you may need to specify in the command line
-        the user name and / or private key / passphrase. Here you can also choose if the default
-        user name (the same user name as the SSH client user) will be used for SVN repository
-        operations or you should be prompted for a SVN user name whenever SVN authentication is
-        required. For example on Windows the following command line uses the
-          <filepath>plink.exe</filepath> tool as external SSH client for connecting to the SVN
-        repository with
-        SVN+SSH:<screen xml:space="preserve">C:\plink-install-folder\plink.exe -l username -pw password -ssh -batch host_name_or_IP_address_of_SVN_server</screen></li>
       <li><uicontrol>Results Console</uicontrol> - Specifies the maximum number of lines displayed
-        in the <uicontrol>Console</uicontrol> view. The default value is 1,000.</li>
-      <li><uicontrol>Annotations View</uicontrol> - Sets the color used for highlighting in the
-        editor panel all the changes contributed to a resource by the revision selected in <xref
+        in the <uicontrol>Console</uicontrol> view. The default value is 1000.</li>
+      <li><uicontrol>Annotations View</uicontrol> - Sets the color used in the editor panel for
+        highlighting all the changes contributed to a resource by the revision selected in <xref
           href="annotations-view.dita">the <uicontrol>Annotations</uicontrol> view</xref>.</li>
       <li><uicontrol>Revision Graph</uicontrol> - Enables caching for the action of computing a
-        revision graph. When a new revision graph is requested one of the caches from the previous
-        actions may be used which will avoid running the whole query again on the SVN server. If a
-        cache is used it will finish the action much faster.</li>
+        revision graph. When a new revision graph is requested, one of the caches from the previous
+        actions may be used that will avoid running the whole query again on the SVN server. If a
+        cache is used, it will finish the action much faster.</li>
     </ul>
   </body>
 </topic>
