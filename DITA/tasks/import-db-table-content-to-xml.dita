@@ -2,11 +2,13 @@
 <!DOCTYPE task
   PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
 <task id="import-db-table-content-to-xml">
-  <title>Import Table Content as an XML Document</title>
+  <title>Import Database Data as an XML Document</title>
   <!--Proofed--><prolog>
     <metadata>
       <keywords><indexterm>Importing Data<indexterm>from a database<indexterm>table content as XML
-              document</indexterm></indexterm></indexterm></keywords>
+              document</indexterm></indexterm></indexterm>
+        <indexterm><indexterm>File Menu <indexterm>Import Database
+          Data</indexterm></indexterm></indexterm></keywords>
     </metadata>
   </prolog>
   <taskbody>
@@ -52,13 +54,13 @@
         <cmd>Click <uicontrol>Connect</uicontrol>.</cmd>
       </step>
       <step>
-        <cmd>From the catalogs list, click on a schema and choose the required table.</cmd>
+        <cmd>In the list of sources, expand a schema and choose the required table.</cmd>
       </step>
       <step>
         <cmd>Click the <uicontrol>Next</uicontrol> button.</cmd>
         <stepresult>
           <p>The <uicontrol>Import Criteria</uicontrol> dialog box is opened with a default query
-            string in the <uicontrol>SQL Query</uicontrol> pane:</p>
+            string in the <uicontrol>SQL Query</uicontrol> pane.</p>
           <fig product="author developer editor">
             <title>Import from Database Criteria Dialog Box</title>
             <image href="../img/sa_import_criteria_db.png"/>
@@ -67,72 +69,60 @@
             <title>Import from Database Criteria Dialog Box</title>
             <image href="../img/ec_import_criteria_db.png"/>
           </fig>
-          <p>The dialog box contains the following options:</p>
-          <ul>
-            <li><uicontrol>SQL Preview</uicontrol> - If this button is pressed, the <uicontrol
-                product="author developer editor">Settings</uicontrol><uicontrol
-                product="authorEclipse developerEclipse editorEclipse">Import settings</uicontrol>
-              pane displays the labels that are used in the XML document and the first five lines
-              from the database. By default, all data items in the input are converted to element
-              content, but this can be overridden by clicking the individual column headers.
-              Clicking once on a column header causes the data from this column to be used as
-              attribute values of the row elements. Click a second time and the data from that
-              column is ignored when generating the XML file. You can cycle through these options by
-              continuing to click the column header. The following symbols are used in the column
-              header to indicate the type of content the column is converted to:<ul
-                id="ul_132_krd_ff">
-                <li><i>&lt;&gt;</i> - Data columns are converted to element content.</li>
-                <li><i>=</i> - Data columns are converted to attribute content.</li>
-                <li><i>x</i> - Data is ignored.</li>
-              </ul></li>
-            <li><uicontrol>Change labels</uicontrol> - This button opens a new dialog box that
-              allows you to edit the names of the root and row elements, change the XML name, and
-              change the conversion criterion. The XML names can be edited by double-clicking the
-              desired item and entering the required label. The conversion criterion can also be
-              modified by selecting <uicontrol>ELEMENT</uicontrol>,
-              <uicontrol>ATTRIBUTE</uicontrol>, or <uicontrol>SKIPPED</uicontrol> from the drop-down
-              list.</li>
-            <li product="author developer editor"><uicontrol>Open in editor</uicontrol> - If
-              checked, the new XML document that is created from the imported text file, is opened
-              in the editor.</li>
-            <li product="author developer editor"><uicontrol>Save in file</uicontrol> - If checked,
-              the new XML document is saved at the specified path.<note>If this option is unchecked,
-                while <uicontrol>Open in editor</uicontrol> is checked, the newly created document
-                is opened in the editor as an unsaved file.</note></li>
-            <li><uicontrol>Generate XML Schema</uicontrol> - Allows you to specify the path of the
-              generated XML Schema file.</li>
-          </ul>
         </stepresult>
       </step>
       <step>
-        <cmd>Click the <uicontrol>SQL Preview</uicontrol> button.</cmd>
-        <info>
-          <p>The <uicontrol>SQL Query</uicontrol> string is editable. You can specify which fields
-            are considered.</p>
-        </info>
-        <stepxmp>
-          <p>Use aliases if the following statements are true:<ul id="ul_f4h_yrd_ff">
-              <li>The query string represents a join operation of two or more tables.</li>
-              <li>Columns that are selected from different tables have the same name.</li>
-            </ul></p>
-          <p>The use of aliases avoids the confusion of two columns being mapped to the same name in
-            the resulting document of the import operation.</p>
-          <codeblock>
-  select s.subcat_id,
-        s.nr as s_nr,
-        s.name,
-        q.q_id,
-        q.nr as q_nr,
-        q.q_text
-    from faq.subcategory s,
-            faq.question q
-    where  ...</codeblock>
-        </stepxmp>
-        <stepresult>The input data is displayed in tabular form in the <uicontrol
-            product="author developer editor">Settings</uicontrol><uicontrol
-            product="authorEclipse developerEclipse editorEclipse">Import settings</uicontrol> pane.
-          The <uicontrol>XML Import Preview</uicontrol> pane contains an example of what the
-          generated XML looks like.</stepresult>
+        <cmd>Configure the settings for the conversion.</cmd>
+        <substeps id="substeps_qln_v4x_ls">
+          <substep>
+            <cmd><uicontrol>SQL Preview</uicontrol> - If this button is pressed, the <uicontrol
+                product="author developer editor">Settings</uicontrol><uicontrol
+                product="authorEclipse developerEclipse editorEclipse">Import settings</uicontrol>
+              pane displays the labels that are used in the XML document and the first five lines
+              from the database. By default, all data items are converted to element content
+                  (<uicontrol><image href="../img/ConvertToElement.png" id="image_vhy_spx_ls"
+                /></uicontrol> symbol), but this can be overridden by clicking the individual column
+              headers. Clicking a column header once causes the data from this column to be
+              converted to attribute values (<uicontrol><image href="../img/ConvertToAttribute.png"
+                  id="image_why_spx_ls"/></uicontrol> symbol). Clicking a second time causes the
+              column data to be ignored (<uicontrol><image href="../img/IgnoreData.png"
+                  id="image_xhy_spx_ls"/></uicontrol> symbol) when generating the XML file. You can
+              cycle through these three options by continuing to click the column header.</cmd>
+          </substep>
+          <substep>
+            <cmd><uicontrol>Customize</uicontrol> - This button opens a <uicontrol>Presentation
+                Names</uicontrol> dialog box that allows you to edit the name, XML name, and
+              conversion criterion for the root and row elements. The XML names can be edited by
+              double-clicking the desired item and entering the label. The conversion criteria can
+              also be modified by selecting one of the following option in the drop-down menu:
+                <userinput>ELEMENT</userinput>, <userinput>ATTRIBUTE</userinput>, or
+                <userinput>SKIPPED</userinput>. </cmd>
+          </substep>
+          <substep>
+            <cmd><uicontrol><image href="../img/Options16.png" product="author developer editor"
+                  id="image_zfm_4qw_ls"/><image href="../img/OptionsShortcut16.gif"
+                  product="authorEclipse developerEclipse editorEclipse" id="image_agm_4qw_ls"
+                />Import Settings</uicontrol> - Clicking this button opens the <xref
+                href="../topics/preferences-xml-import.dita#preferences-xml-import"/> page that
+              allows you to configure more import options.</cmd>
+          </substep>
+          <substep>
+            <cmd>The <uicontrol>XML Import Preview</uicontrol> panel contains an example of what the
+              generated XML document looks like.</cmd>
+          </substep>
+          <substep product="author developer editor">
+            <cmd><uicontrol>Open in editor</uicontrol> - If checked, the new XML document created
+              from the imported file is opened in the editor.</cmd>
+          </substep>
+          <substep>
+            <cmd><uicontrol>Save in file</uicontrol> - If checked, the new XML document is saved in
+              the specified path.</cmd>
+          </substep>
+          <substep>
+            <cmd><uicontrol>Generate XML Schema</uicontrol> - Allows you to specify the path of the
+              generated XML Schema file.</cmd>
+          </substep>
+        </substeps>
       </step>
       <step>
         <cmd>Click <uicontrol product="author developer editor">Import</uicontrol><uicontrol
