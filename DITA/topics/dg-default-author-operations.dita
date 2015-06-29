@@ -185,13 +185,30 @@
                     format="html" scope="external"
                       ><apiname>ro.sync.ecss.extensions.api.AuthorAccess</apiname></xref> Java API.
                 </p></li>
-            </ul></p><p>The following example is a script that can be used to move the caret
-            location after the current
-            element:<codeblock outputclass="language-javascript">function doOperation(){ 
-caretOffset = authorAccess.getEditorAccess().getCaretOffset(); 
-currentNode = authorAccess.getDocumentController().getNodeAtOffset(caretOffset); 
-//Move caret after current node 
-authorAccess.getEditorAccess().setCaretPosition(currentNode.getEndOffset() + 1); 
+            </ul></p><p>The following example is a script that retrieves the current value of the
+              <b>type</b> attribute on the current element, allows the end user to edit its new
+            value and sets the new value in the
+            document:<codeblock outputclass="language-javascript">function doOperation(){ 
+  //The current node is either entirely selected...
+ currentNode = authorAccess.getEditorAccess().getFullySelectedNode();
+ if(currentNode == null){
+  //or the caret is placed in it
+  caretOffset = authorAccess.getEditorAccess().getCaretOffset(); 
+  currentNode = authorAccess.getDocumentController().getNodeAtOffset(caretOffset);
+ }
+ //Get current value of the @type attribute
+  currentTypeValue = "";
+  currentTypeValueAttr = currentNode.getAttribute("type");
+  if(currentTypeValueAttr != null){
+    currentTypeValue = currentTypeValueAttr.getValue();
+  }
+ //Ask user for new value for attribute.
+ newTypeValue = javax.swing.JOptionPane.showInputDialog("Input @type value", currentTypeValue);
+ if(newTypeValue != null){
+   //Create and set the new attribute value for the @type attribute.
+   attrValue = new Packages.ro.sync.ecss.extensions.api.node.AttrValue(newTypeValue);
+   authorAccess.getDocumentController().setAttribute("type", attrValue, currentNode);
+ }
 } </codeblock></p><note>If
             you have a script called <filepath>commons.js</filepath> in the framework directory, you
             can call functions defined inside it from your custom script content so that you can use
