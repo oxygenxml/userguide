@@ -10,8 +10,9 @@
       <title>Introduction to the Descriptor File</title>
       <p>This file contains information (such as <codeph>name</codeph>,
         <codeph>description</codeph>, and <codeph>id</codeph>) that is necessarily when loading an
-        XML Refactoring operation . It also contains the path to the XQuery Update script that is
-        associated with the particular operation through the <codeph>script</codeph> element.</p>
+        XML Refactoring operation . It also contains the path to the XQuery Update script or XSLT
+        stylesheet that is associated with the particular operation through the
+          <codeph>script</codeph> element.</p>
       <p>You can specify a <codeph>category</codeph> for your custom operations to logically group
         certain operations. The <codeph>category</codeph> element is optional and if it is not
         included in the descriptor file, the default name of the category for the custom operations
@@ -21,11 +22,11 @@
     </section>
     <section>
       <title>Declaring Parameters in the Descriptor File</title>
-      <p>If the XQuery Update script includes parameters, they should be declared in the
-          <b>parameters</b> section of the descriptor file. All the parameters specified in this
-        section of the descriptor file will be displayed in the <uicontrol>XML
+      <p>If the XQuery Update script or XSLT stylesheet includes parameters, they should be declared
+        in the <b>parameters</b> section of the descriptor file. All the parameters specified in
+        this section of the descriptor file will be displayed in the <uicontrol>XML
           Refactoring</uicontrol> tool within <xref
-            href="refactoring-xml-documents.dita#refactoring-xml-documents/parameters_dlentry">the
+          href="refactoring-xml-documents.dita#refactoring-xml-documents/parameters_dlentry">the
             <uicontrol>Configure Operation Parameters</uicontrol> wizard page</xref> for that
         particular operation.</p>
       <p>The value of the first <codeph>description</codeph> element in the <b>parameters</b>
@@ -36,8 +37,8 @@
       <ul id="ul_irs_glv_gr">
         <li><b><codeph>label</codeph></b> - This value is displayed in the user interface for the
           parameter.</li>
-        <li><b><codeph>name</codeph></b> - The parameter name used in the XQuery Update script and
-          it should be the same as the one declared in the XQuery script.</li>
+        <li><b><codeph>name</codeph></b> - The parameter name used in the XQuery Update script or
+          XSLT stylesheet and it should be the same as the one declared in the script.</li>
         <li><b><codeph>type</codeph></b> - Defines the type of the parameter and how it will be
           rendered. There are several types available:<ul id="ul_xm5_j4v_gr">
             <li><codeph>TEXT</codeph> - Generic type used to specify a simple text fragment.</li>
@@ -45,12 +46,14 @@
               <p><codeph>XPATH</codeph> - Type of parameter whose value is an XPATH expression. For
                 this type of parameter, <ph keyref="product"/> will use a text input with
                 corresponding content completion and syntax highlighting.</p>
-              <note>The value of this parameter is transferred as plain text to the XQuery Update
-                transformation without being evaluated. To evaluate it in the XQuery Update script
-                you could use the <codeph>saxon:evaluate</codeph> Saxon extension function.</note>
+              <note>The value of this parameter is transferred as plain text to the XQuery Update or
+                XSLT transformation without being evaluated. You should evaluate the XPath
+                expression inside the XQuery Update script or XSLT stylesheet. For example, you
+                could use the <codeph>saxon:evaluate</codeph> Saxon extension function. </note>
               <note>A relative XPath expression is converted to an absolute XPath expression by
                 adding <codeph>//</codeph> before it (<codeph>//XPathExp</codeph>). This conversion
-                is done before transferring the XPath expression to the XQuery Update engine.</note>
+                is done before transferring the XPath expression to the XML refactoring
+                engine.</note>
               <note>When writing XPath expressions, you can only use prefixes declared in the <xref
                   href="preferences-xpath.dita"><menucascade>
                     <uicontrol>Options</uicontrol>
@@ -109,9 +112,9 @@
         from the associated schema of the currently edited file. The text from the
           <codeph>label</codeph> attribute is displayed in the application as label of the
         associated combo. The <codeph>name</codeph> attribute is used to specify the name of the
-        parameter from the XQuery Update script. If you specify the <codeph>allowsAny</codeph>
-        attribute, the application will propose <i>&lt;ANY></i> as a possible value for the
-          <b>Name</b> and <b>Namespace</b> combo boxes.</p>
+        parameter from the XQuery Update script or XSLT stylesheet. If you specify the
+          <codeph>allowsAny</codeph> attribute, the application will propose <i>&lt;ANY></i> as a
+        possible value for the <b>Name</b> and <b>Namespace</b> combo boxes.</p>
       <p>Example of an <codeph>attributeParameter</codeph>:</p>
       <codeblock outputclass="language-xml">&lt;attributeParameter dependsOn="elemID">
     &lt;localName label="Name" name="attribute_localName">
