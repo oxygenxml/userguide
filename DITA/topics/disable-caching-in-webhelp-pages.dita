@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="disable-caching-in-webhelp-pages">
+  <title>Disable Caching in WebHelp Pages</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Disable browser caching</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>Sometimes, a set of WebHelp pages needs to be updated often in order to deliver the latest
+      version of the documentation to your users. In such cases, a WebHelp page should always be
+      requested from the server upon re-loading it in a Web browser on the client side, rather than
+      re-using an outdated <term>cached</term> version in the browser.</p>
+    <p>To disable caching in WebHelp pages, follow this procedure:<ol id="ol_eqz_q11_5s">
+        <li><?oxy_comment_start author="bogdan" timestamp="20150723T144248+0300" comment="Candidate for reuse"?>Edit
+          the following XSL file for DITA or DocBook WebHelp systems:<ul id="ul_ch2_ds1_5s">
+            <li>For DITA WebHelp systems, edit the following file:
+                <filepath>[OXYGEN_DIR]\frameworks\dita\DITA-OT\plugins\com.oxygenxml.webhelp\xsl\createMainFiles.xsl</filepath>.</li>
+            <li>For DocBook WebHelp system, edit the following file:
+                <filepath>[OXYGEN_DIR]\frameworks\docbook\xsl\com.oxygenxml.webhelp\xsl\createMainFiles.xsl</filepath>.<?oxy_comment_end?></li>
+          </ul></li>
+        <li>Locate the following template in the XSL file: <codeph>&lt;xsl:template
+            name-"create-toc-common-file"></codeph> and add the following code
+            snippet:<codeblock outputclass="language-xml">&lt;meta http-equiv="Pragma" content="no-cache" />
+&lt;meta http-equiv="Expires" content="-1" /></codeblock><note>The
+            code should look like
+            this:<codeblock>  &lt;html>
+    &lt;head>
+      &lt;xsl:if test="$withFrames">         
+      &lt;base target="contentwin"/>
+      &lt;/xsl:if>
+      &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+           &lt;!-- Disable caching of WebHelp pages in web browser. -->      
+      &lt;meta http-equiv="Pragma" content="no-cache" />
+      &lt;meta http-equiv="Expires" content="-1" />
+....</codeblock></note></li>
+        <li>Save your changes to the file.</li>
+        <li>Re-run your WebHelp system transformation scenario.</li>
+      </ol></p>
+  </body>
+</topic>
