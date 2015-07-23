@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="integrate-github-plugin">
+    <title>Configuring the <ph keyref="webapp"/> to Use the <term>OAuth</term> Authentication to
+    Access Files Stored in a GitHub Repository</title>
+    <shortdesc>The <ph keyref="product"/> SDK includes a plugin that allows you to use the <ph
+      keyref="webapp"/> to edit files stored in a GitHub repository. You can configure your GitHub
+    integration to use the <term>OAuth</term> authentication method to access files stored in the
+    repository. You will then have access to a <uicontrol>Login with GitHub</uicontrol> button in
+    the GitHub login dialog box, allowing you to avoid having to enter your login credentials to
+    access files in the repository.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>WebApp <indexterm>integrate GitHub</indexterm><indexterm>OAuth authentication
+            method</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <taskbody>
+        <context>
+            <p>Follow this procedure to implement <term>OAuth</term> support in your <ph
+          keyref="webapp"/> GitHub integration:</p>
+        </context>
+        <steps>
+      <step>
+        <cmd>Login to GitHub and create a developer application at <xref
+            href="https://github.com/settings/applications/new" format="html" scope="external"
+          />.</cmd>
+        <substeps id="substeps_djf_jrz_ts">
+          <substep>
+            <cmd>Complete the form.</cmd>
+          </substep>
+          <substep>
+            <cmd>The <uicontrol>Authorization callback URL</uicontrol> field should include the
+              following path: <filepath>[OXYGEN-WEBAPP-INSTALL
+                DIR]/plugins-dispatcher/github-oauth/callback</filepath>.</cmd>
+          </substep>
+        </substeps>
+      </step>
+      <step>
+        <cmd>Click on <uicontrol>Register application</uicontrol> to obtain the <uicontrol>Client
+            ID</uicontrol> and <uicontrol>Client Secret</uicontrol> credentials (they are displayed
+          at the top-right section of the resulting page).</cmd>
+      </step>
+      <step>
+        <cmd>Create a new properties file called <filepath>github-plugin.properties</filepath> in
+          the <filepath>WEB-INF</filepath> folder of the <filepath>OXYGEN-WEBAPP</filepath>
+          directory and include the credentials from the previous step.</cmd>
+        <info>The properties file should include the following
+          content:<codeblock outputclass="language-ini">client_id=&lt;client_id>
+client_secret=&lt;client_secret></codeblock></info>
+      </step>
+      <step>
+        <cmd>Restart the <ph keyref="webapp"/>.</cmd>
+        <stepresult>You now have access to the <uicontrol>Login with GitHub</uicontrol> button in
+          the GitHub login dialog box.</stepresult>
+      </step>
+        </steps>
+    </taskbody>
+</task>
