@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="adding-select-all-button">
+  <title>Adding a Button in Code Snippet Areas</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Add button </indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>This task will get you started on how to add an action (such as a button or link) in
+      code snippet areas that are displayed in WebHelp output. You can then attach your code that
+      does the actual processing for the action.<p>Follow these steps:</p></context>
+    <steps>
+      <step>
+        <cmd>Open the
+            <filepath>OXYGEN_INSTALL_DIR\frameworks\dita\DITA-OT\plugins\org.dita.xhtml\xsl\xslhtml\dita2htmlImpl.xsl</filepath>
+          file.</cmd>
+      </step>
+      <step>
+        <cmd>Locate the <codeph>&lt;xsl:template match="*[contains(@class, ' topic/pre ')]"
+            mode="pre-fmt"></codeph> template to check the default behaviour of this template.</cmd>
+      </step>
+      <step>
+        <cmd>Open the
+            <filepath>OXYGEN_INSTALL_DIR\frameworks\dita\DITA-OT\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\fixup.xsl</filepath>
+          file.</cmd>
+      </step>
+      <step>
+        <cmd>Create a <codeph>&lt;xsl:template match="*[contains(@class, ' topic/pre ')]"
+            mode="pre-fmt"></codeph> template to override the default processing.</cmd>
+      </step>
+      <step>
+        <cmd>This new template will include your code for creating the button, which will have
+          attached to it the action code that does the actual processing (which can be written in
+          JavaScript, for example).</cmd>
+        <info>Example:<codeblock>&lt;xsl:template match="*[contains(@class, ' topic/pre ')]" mode="pre-fmt">
+    &lt;button onclick="SelectText(element)">Select all&lt;/button>
+    &lt;script>
+      function SelectText(element) {
+        var text = document.getElementById(element);
+        var range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+      }
+    &lt;/script>
+  &lt;/xsl:template></codeblock></info>
+      </step>
+    </steps>
+  </taskbody>
+</task>
