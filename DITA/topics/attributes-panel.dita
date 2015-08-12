@@ -12,32 +12,28 @@
     </metadata>
   </prolog>
   <body>
-    <p>The <uicontrol>Attributes View</uicontrol> presents all possible attributes of the current
-      element. </p>
-    <p product="author authorEclipse editor editorEclipse">The view allows you to insert attributes
-      or change the value of the already used attributes for the current editable element. An
-      element is editable if any one of the following is true:<ul id="ul_nfn_z5r_n2">
-        <li>The CSS stylesheet associated with the document does not specify a
-            <uicontrol>false</uicontrol> value for the <xref
-            href="../topics/dg-editable-css-extension.dita#dg-editable-css-extension" format="dita"
-            >-oxy-editable</xref> property associated with the element.</li>
-        <li>The element is entirely included into a deleted <xref
-            href="../topics/author-change-tracking.dita#author-change-tracking/change-tracking"
-            format="dita">Track Changes</xref> marker.</li>
-        <li>The element is part of a content fragment that is referenced in
-            <uicontrol>Author</uicontrol> mode from another document.</li>
+    <p><?oxy_comment_start author="steven_higgs" timestamp="20150812T151050+0300" comment="All of this can be referenced"?>The
+        <uicontrol>Attributes View</uicontrol> presents all possible attributes of the current
+      element determined by the schema of the document.  </p>
+    <p>The attributes are rendered differently depending on their state:<ul>
+        <li>The names of the attributes with a specified value are rendered with a bold font, and
+          their value with a plain font.<note>The names of the attributes with an empty string value
+            are also rendered bold. </note></li>
+        <li>Default values are rendered with a plain font, painted gray.</li>
+        <li>Empty values display the text "[empty]", painted gray.</li>
+        <li>Invalid attributes and values are painted red.</li>
+      </ul>Double-click a cell in the <uicontrol>Value</uicontrol> column to edit the value of the
+      corresponding attribute. If the possible values of the attribute are specified as
+        <codeph>list</codeph> in the schema of the edited document, the <uicontrol>Value</uicontrol>
+      column acts as a combo box that allows you to insert the values in the document.</p>
+    <p>You can sort the attributes table by clicking the <uicontrol>Attribute</uicontrol> column
+      header. The table contents can be sorted as follows: <ul>
+        <li>By attribute name in ascending order.</li>
+        <li>By attribute name in descending order.</li>
+        <li>Custom order, where the used attributes are displayed at the beginning of the table
+          sorted in ascending order, followed by the rest of the allowed elements sorted in
+          ascending order.<?oxy_comment_end?></li>
       </ul></p>
-    <p>The attributes present in the document are rendered bold in the <uicontrol>Attributes
-        View</uicontrol>. You can start editing the value of an attribute by clicking the
-        <uicontrol>Value</uicontrol> cell of a table row. If the possible values of the attribute
-      are specified as list in the schema associated with the edited document, the
-        <uicontrol>Value</uicontrol> cell works as a list box from which you can select one of the
-      possible values to be inserted in the document.</p>
-    <p>The <uicontrol>Attributes</uicontrol> table is sortable, three sorting modes being available
-      by clicking the <uicontrol>Attribute</uicontrol> column name: alphabetically ascending,
-      alphabetically descending, or custom order. The custom order places the already used
-      attributes at the beginning of the table, as they appear in the element, followed by the rest
-      of the allowed elements, as they are declared in the associated schema.</p>
     <fig product="editor author developer">
       <title>The Attributes View</title>
       <image href="../img/sa_attributes_panel.png"/>
@@ -46,5 +42,54 @@
       <title>The Attributes View</title>
       <image href="../img/ec_attributes_panel.png"/>
     </fig>
+    <p><?oxy_comment_start author="steven_higgs" timestamp="20150812T151103+0300" comment="Leave"?>The
+      following actions are available in the contextual menu of the
+        <uicontrol>Attributes</uicontrol> view when editing in <uicontrol>Text</uicontrol> mode:<?oxy_comment_end?><dl>
+        <?oxy_comment_start author="steven_higgs" timestamp="20150812T151121+0300" comment="This &apos;dlentry&apos; is only for this topic"?>
+        <dlentry>
+          <dt><uicontrol>Add</uicontrol></dt>
+          <dd>Allows you to insert a new attribute. Adding an attribute that is not in the list of
+            all defined attributes is not possible when the <xref
+              keyref="options_editor_edit-modes_author_schema-aware">Allow only insertion of valid
+              elements and attributes</xref> schema aware option is enabled.</dd>
+        </dlentry>
+        <?oxy_comment_end?>
+        <dlentry>
+          <dt><?oxy_comment_start author="steven_higgs" timestamp="20150812T151135+0300" comment="All this can be referenced"?><uicontrol>Set
+              empty value</uicontrol></dt>
+          <dd>Specifies the current attribute value as empty.</dd>
+        </dlentry>
+        <dlentry>
+          <dt><uicontrol>Remove</uicontrol></dt>
+          <dd>Removes the attribute (action available only if the attribute is specified). You can
+            invoke this action by pressing the <uicontrol><shortcut>(Delete)</shortcut></uicontrol>
+            or <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> keys.</dd>
+        </dlentry>
+        <dlentry>
+          <dt><uicontrol>Copy</uicontrol></dt>
+          <dd>Copies the <codeph>attrName="attrValue"</codeph> pair to the clipboard. The
+              <codeph>attrValue</codeph> can be: <ul>
+              <li>The value of the attribute.</li>
+              <li>The value of the default attribute, if the attribute does not appear in the edited
+                document.</li>
+              <li>Empty, if the attribute does not appear in the edited document and has no default
+                value set.</li>
+            </ul></dd>
+        </dlentry>
+        <dlentry>
+          <dt><uicontrol>Paste</uicontrol></dt>
+          <dd>Depending on the content of the clipboard, the following cases are possible: <ul>
+              <li>If the clipboard contains an attribute and its value, both of them are introduced
+                in the <uicontrol>Attributes</uicontrol> view. The attribute is selected and its
+                value is changed if they exist in the <uicontrol>Attributes</uicontrol> view.</li>
+              <li>If the clipboard contains an attribute name with an empty value, the attribute is
+                introduced in the <uicontrol>Attributes</uicontrol> view and you can start editing
+                it. The attribute is selected and you can start editing it if it exists in the
+                  <uicontrol>Attributes</uicontrol> view.</li>
+              <li>If the clipboard only contains text, the value of the selected attribute is
+                modified. <?oxy_comment_end?></li>
+            </ul></dd>
+        </dlentry>
+      </dl></p>
   </body>
 </topic>
