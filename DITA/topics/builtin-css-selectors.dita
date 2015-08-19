@@ -29,12 +29,24 @@ oxy|cdata {
 }
 
 oxy|processing-instruction {
-    display:block !important;
+    display:-oxy-morph !important;
     color: rgb(139, 38, 201) !important;
     white-space:pre-wrap !important;
     border-width:0px !important;
     margin:0px !important;
     padding: 0px !important;
+}
+
+oxy|processing-instruction[Pub],
+oxy|processing-instruction[PubTbl],
+oxy|processing-instruction[xm-replace_text],
+oxy|processing-instruction[xm-deletion_mark],
+oxy|processing-instruction[xm-insertion_mark_start],
+oxy|processing-instruction[xm-insertion_mark_end],
+oxy|processing-instruction[xml-model],
+oxy|processing-instruction[xml-stylesheet]
+{
+    display:none !important;
 }
 
 oxy|comment {
@@ -54,7 +66,9 @@ oxy|entity[href]:before{
   color: navy !important;
   
   margin: 2px !important;
-  padding: 0px !important;  
+  padding: 0px !important;
+  margin-right:0px !important;
+  padding-right:2px !important;  
 }
 
 oxy|reference:before {
@@ -73,16 +87,25 @@ oxy|entity {
     background-color: rgb(240, 240, 240) !important;
     margin:0px !important;
     padding: 0px !important;
+    
 }
 
 oxy|reference {
     display:-oxy-morph !important;
-    /*EXM-28674 No need to present tags for these artificial references.*/
     -oxy-display-tags: none;
 }
 
 oxy|entity {
     display:-oxy-morph !important;
+}
+
+oxy|entity[name='amp'],
+oxy|entity[name='lt'],
+oxy|entity[name='gt'],
+oxy|entity[name='quot'],
+oxy|entity[name='apos'],
+oxy|entity[name^='#']{
+    -oxy-display-tags: none;
 }
 
 oxy|entity[href] {
@@ -95,6 +118,7 @@ xi|include {
     margin-bottom: 0.5em !important;
     padding: 2px !important;
 }
+
 xi|include:before,
 xi|include:after{
     display:inline !important;
@@ -104,11 +128,16 @@ xi|include:after{
 }
 
 xi|include:before {
-    content:url(../images/link.gif) attr(href)  !important;
+    content:url(../images/link.png) attr(href)  !important;
     link: attr(href) !important;
 }
+
+xi|include[parse="text"]:before {
+    content:url(../images/link.png) !important;
+}
+
 xi|include[xpointer]:before {
-    content:url(../images/link.gif) attr(href) " " attr(xpointer) !important;
+    content:url(../images/link.png) attr(href) " " attr(xpointer) !important;
     link: oxy_concat(attr(href), "#", attr(xpointer)) !important;
 }
 
@@ -133,42 +162,63 @@ oxy|doctype {
     padding: 2px !important;
 }
 
+@media oxygen-dark-theme{
+    oxy|doctype {
+        color:#D0E2F4 !important;
+    }
+}
+
 oxy|error {
     display:-oxy-morph !important;
     -oxy-editable:false !important;
     white-space:pre !important;
-    color: rgb(178, 0, 0) !important;
     font-weight:bold !important;
+    color: rgb(178, 0, 0) !important;
+    -oxy-display-tags: none;
 }
 
 oxy|error:before {
-    content:url(../images/ReferenceError.png) !important;
+    content:url(../images/ReferenceError.png) "[" !important;
+    color: rgb(178, 0, 0) !important;
+}
+
+oxy|error[level='warn']:before {
+    content:url(../images/ReferenceWarn.png) "[" !important;
+    color: rgb(200, 185, 0) !important;
+}
+
+oxy|error[level='warn'] {
+    color: rgb(200, 185, 0) !important;
+}
+
+oxy|error:after {
+    content:"]" !important;
 }
 
 *[xlink|href]:before {
-    content:url(../images/link.gif);
+    content:url(../images/link.png);
     link: attr(xlink|href) !important;
 }
-
 
 /*No direct display of the MathML and SVG images.*/
 svg|svg{	
 	display:inline !important;
-    white-space: -oxy-trim-when-ws-only;
+    white-space: -oxy-trim-when-ws-only !important;
 }
-/*EXM-28827 SVG can contain more than one namespace in it*/
+
 svg|svg * {
     display:none !important;
-    white-space:normal;
+    white-space:normal !important;
 }
 
 mml|math{	
 	display:inline !important;
-    white-space: -oxy-trim-when-ws-only;
+    white-space: -oxy-trim-when-ws-only !important;
 }
+
 mml|math mml|*{
     display:none !important;
-    white-space: normal;
+    white-space: normal !important;
 }
 
 /*Text direction attributes*/
@@ -177,6 +227,20 @@ mml|math mml|*{
 
 *[dir='ltr'] { direction:ltr; unicode-bidi:embed; }
 *[dir='lro'] { direction:ltr; unicode-bidi:bidi-override; }
+
+@media oxygen-high-contrast-black{
+    xi|include:before,
+    xi|include:after{
+        color:#808080 !important;
+    }
+}
+
+@media oxygen-dark-theme{
+    xi|include:before,
+    xi|include:after{
+        color:#808080 !important;
+    }
+}
 
 </codeblock>
     </section>
