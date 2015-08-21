@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="configuring-content-completion-proposals">
-  <title><?oxy_comment_start author="steven_higgs" timestamp="20150807T125552+0300" comment="Use this as a starting point for EXM-33891"?>Configuring
-    the Proposals in the Content Completion Assistant<?oxy_comment_end?></title>
+  <title>Configuring the Proposals in the Content Completion Assistant</title>
   <body>
     <p><ph keyref="product"/> gathers information from the associated schemas (DTDs, XML Schema,
       RelaxNG) to determine the proposals that appear in the <uicontrol>Content Completion
@@ -78,5 +77,61 @@
         extract values from a database.<note>A comprehensive XSLT sample is included in the
             <uicontrol>Content Completion Configuration</uicontrol> file template.</note></p>
     </section>
+    <section><title>Configuring Proposals in the Context for which the Content Completion was
+        Invoked</title><p>A more complex scenario for configuring the content completion proposals
+        would be if you want to choose the possible values to provide, depending on the context of
+        the element in which the content completion was invoked.</p><p>Suppose that you want to
+        propose certain possible values for one property (for example, <i>color</i>) and other
+        values for another property (for example, <i>shape</i>). If the property represents a color
+        then the values should represent applicable colors, while if the property represents a shape
+        then the values should represent applicable shapes. See the following code
+        snippets:</p><p>Your main
+        document:<codeblock outputclass="language-xml">&lt;sampleArticle>
+  &lt;!-- The possible values for @value should be "red" and "blue" -->
+  &lt;property name="color" value=""/>
+  &lt;!-- The possible values for @value should be "square" and "rectangle" -->
+  &lt;property name="shape" value=""/>
+&lt;/sampleArticle></codeblock>The
+        content completion configuration
+        file:<codeblock outputclass="language-xml">&lt;config xmlns="http://www.oxygenxml.com/ns/ccfilter/config">
+    &lt;match elementName="property" attributeName="value">
+      &lt;xslt href="get_values.xsl" useCache="false" action="replace"/>
+    &lt;/match>
+&lt;/config></codeblock>The
+        stylesheet that defines the possible values based on the context of the property on which
+        the content completion was
+        invoked:<codeblock outputclass="language-xml">&lt;xsl:stylesheet 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:saxon="http://saxon.sf.net/"
+  exclude-result-prefixes="xs"
+  version="2.0">
+  
+  &lt;xsl:param name="documentSystemID" as="xs:string">&lt;/xsl:param>
+  &lt;xsl:param name="contextElementXPathExpression" as="xs:string">&lt;/xsl:param>
+  
+  &lt;xsl:template name="start">
+    &lt;xsl:apply-templates select="doc($documentSystemID)"/>
+  &lt;/xsl:template>
+  
+  &lt;xsl:template match="/">
+    &lt;xsl:variable name="propertyElement" 
+        select="saxon:eval(saxon:expression($contextElementXPathExpression, ./*))"/>
+    
+    &lt;items>
+      &lt;xsl:if test="$propertyElement/@name = 'color'">
+        &lt;item value='red'/>
+        &lt;item value='blue'/>  
+      &lt;/xsl:if>
+      &lt;xsl:if test="$propertyElement/@name = 'shape'">
+        &lt;item value='rectangle'/>
+        &lt;item value='square'/>  
+      &lt;/xsl:if>
+    &lt;/items>
+  &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></p>The
+        <codeph>contextElementXPathExpression</codeph> parameter will be bound to an XPath
+      expression that identifies the element in the context for which the content completion was
+      invoked.</section>
   </body>
 </topic>
