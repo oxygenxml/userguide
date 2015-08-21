@@ -117,10 +117,9 @@
                 executed, separated by new lines.</li>
             </ul></p></li>
         <li><b><apiname>XSLTOperation</apiname></b> and
-              <b><apiname><?oxy_comment_start author="steven_higgs" timestamp="20150807T130112+0300" comment="A starting point for EXM-33499"?>XQueryOperation<?oxy_comment_end?></apiname></b><p>Applies
-            an XSLT or XQuery script on a source element and then replaces or inserts the result in
-            a specified target element.</p><p>This operation has the following parameters:<ul
-              id="ul_pwk_qjh_ps">
+            <b><apiname>XQueryOperation</apiname></b><p>Applies an XSLT or XQuery script on a source
+            element and then replaces or inserts the result in a specified target
+            element.</p><p>This operation has the following parameters:<ul id="ul_pwk_qjh_ps">
               <li><b><apiname>sourceLocation</apiname></b><p>An XPath expression indicating the
                   element that the script will be applied on. If it is not defined then the element
                   at the caret position will be used. </p><p>There may be situations in which you
@@ -180,6 +179,64 @@
                   expansion of editor variables returned by the script processing. Expansion is
                   enabled by default.</p></li>
             </ul></p></li>
+        <li><b><apiname>XQueryUpdateOperation</apiname></b><p>Allows you to execute an XQuery Update
+            script directly over content in <uicontrol>Author</uicontrol> mode.</p><p>It has one argument:<ul>
+              <li><b><codeph>script</codeph></b><p>The XQuery Update script to be executed. The
+                  value can either be an XQuery script or a URL that points to the XQuery Update
+                  script. You can use the <codeph>${framework}</codeph> or
+                    <codeph>${frameworkDir}</codeph> editor variables to refer the scripts from the
+                  framework directory.</p><p>The script will be executed in the context of the
+                  current caret node. If the script declares the following variable, it will also
+                  receive the selected nodes (assuming that entire nodes are
+                  selected):<codeblock outputclass="language-ini">declare variable $oxyxq:selection external;</codeblock></p></li>
+            </ul></p><p>An example of an XQuery Update Script that converts paragraphs to list
+            items:<codeblock outputclass="language-ini">declare namespace oxyxq = "http://www.oxygenxml.com/ns/xqu";
+(: This variable will be linked to the selected nodes assuming that there are 
+actually fully selected nodes. For example this selection will returnnull: 
+&lt;p>{SEL_START}text{SEL_END} in para&lt;/p>
+but this will give two "p" elements:
+{SEL_END}&lt;p>text&lt;/p>&lt;p>text2&lt;/p>{SEL_END}
+
+If a multiple selection exists it will also be processed and forwarded. Again, only fully selected nodes will be passed.
+:)
+declare variable $oxyxq:selection external;
+
+(: We will process either the selection or the context node :)
+let $toProcess := if (empty($oxyxq:selection)) then
+    (.)
+else
+    ($oxyxq:selection)
+
+returnif (not(empty($toProcess))) then
+        (
+        (: Create the list :)
+        let $ul :=
+        &lt;ul>
+            {
+                for $sel in $toProcess
+                return
+                    &lt;li>{$sel}&lt;/li>
+            }
+        &lt;/ul>
+        
+        return
+            (
+            (: Delete the processed nodes :)
+            for $sel in $toProcess
+            return
+                delete node $sel,
+            (: Inserts the constructed list :)
+            insert node $ul
+                before $toProcess[1]
+            )
+        )
+    else
+        ()</codeblock></p><note
+            type="notice">The operation is not applicable to the Author Component or the <ph
+              keyref="webapp"/>.</note></li>
+      </ul></p>
+    <p>
+      <ul>
         <li><b><apiname>JSOperation</apiname></b><p>Allows you to call the Java API from custom
             JavaScript content.</p><p>This operation accepts the following parameter:<ul
               id="ul_af1_4dr_qr">
@@ -192,7 +249,8 @@
                       ><apiname>ro.sync.ecss.extensions.api.AuthorAccess</apiname></xref> Java API.
                 </p></li>
             </ul></p></li>
-      </ul></p>
+      </ul>
+    </p>
     <example>
       <p>The following example is a script that retrieves the current value of the <b>type</b>
         attribute on the current element, allows the end user to edit its new value and sets the new
