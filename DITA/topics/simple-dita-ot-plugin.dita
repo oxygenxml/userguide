@@ -13,9 +13,10 @@
     <p>The steps to help you to create the plugin are as follows:</p>
     <p>
       <ol id="ol_icd_rdt_pm">
-        <li>Create a folder for your plugin in the DITA OT <b>plugins</b> folder
-            (<filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/</filepath>).<p><b>For
-              example:</b></p><p><filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/com.oxygenxml.highlight</filepath></p></li>
+        <li>Create a folder for your plugin in the DITA OT <b>plugins</b> folder (<filepath><term
+              keyref="glossentry_dita_ot_dir"/>/plugins/</filepath>).<p><b>For example, if you are
+              using DITA 1.8 the path would look like
+              this:</b></p><p><filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/com.oxygenxml.highlight</filepath></p></li>
         <li>Create a <b>plugin.xml</b> file (in the same plugin folder) that contains the extension
           points of the plugin.<note>You can easily create this file by using the <uicontrol>DITA OT
               Plugin</uicontrol> new file template that is included in <ph keyref="product"/>. From
@@ -47,8 +48,8 @@
               <codeph>class</codeph> attribute value <codeph>+ topic/pre pr-d/codeblock</codeph> we
             can take part of the class attribute value (<b>topic/pre</b>) and search the <b>DITA
               OT</b> resources for a similar stylesheet. <p>Our search found the XSLT stylesheet
-                <filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/org.dita.xhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath>,
-              which
+                  <filepath><term keyref="glossentry_dita_ot_dir"
+                />/org.dita.xhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath>, which
               contains:<pre outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
   &lt;xsl:apply-templates select="."  mode="pre-fmt" /&gt;
 &lt;/xsl:template&gt;</pre></p>We
@@ -74,10 +75,9 @@
         <li>Create additional XSLT stylesheets to customize all other desired output types. In our
           example, to customize the PDF output we need to create an XSLT stylesheet called
             <b>pdfHighlight.xsl</b> (in the same plugin folder). <p>In this case we found an
-            appropriate XSLT stylesheet
-              <filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/legacypdf/xslfo/dita2fo-elems.xsl</filepath>
-            to use as a template that we use to overwrite our <b>pdfHighlight.xsl</b> stylesheet,
-            which results in the
+            appropriate XSLT stylesheet <filepath><term keyref="glossentry_dita_ot_dir"
+              />/plugins/legacypdf/xslfo/dita2fo-elems.xsl</filepath> to use as a template that we
+            use to overwrite our <b>pdfHighlight.xsl</b> stylesheet, which results in the
             following:</p><pre outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]"&gt;
   &lt;xsl:call-template name="gen-att-label"/&gt;
   &lt;fo:block xsl:use-attribute-sets="pre"&gt;
@@ -101,16 +101,17 @@
           information, see <xref href="dita-ot-install-plugin.dita"/>.<p><b>Results of running the
               integrator using our example:</b></p><p>XSLT content is applied with priority when
             publishing to both HTML and PDF outputs.</p><ol id="ol_vnx_h2t_pm">
-            <li>For the HTML output, in the XSLT stylesheet
-                <filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/xsl/dita2html-base.xsl</filepath> a
-              new import automatically
+            <li>For the HTML output, in the XSLT stylesheet <filepath><term
+                  keyref="glossentry_dita_ot_dir"/>/xsl/dita2html-base.xsl</filepath> a new import
+              automatically
                 appeared:<pre outputclass="language-xml">&lt;xsl:import href="../plugins/com.oxygenxml.highlight/xhtmlHighlight.xsl"/&gt;</pre><p>This
                 import is placed after all base imports and thus has a higher priority. See more
                 about imported template precedence in the XSLT specs: <xref
                   href="http://www.w3.org/TR/xslt#import" format="html" scope="external"/></p></li>
-            <li>Likewise, for the PDF output, in the top-level stylesheet
-                <filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/xsl/fo/topic2fo_shell_fop.xsl</filepath>
-              a new import statement
+            <li>Likewise, for the PDF output, in the top-level stylesheet <filepath><term
+                  keyref="glossentry_dita_ot_dir"
+                />/plugins/org.dita.pdf2/xsl/fo/topic2fo_shell_fop.xsl</filepath> a new import
+              statement
               appeared:<pre outputclass="language-xml">&lt;xsl:import href="../../../com.oxygenxml.highlight/pdfHighlight.xsl"/&gt;</pre></li>
           </ol></li>
       </ol>
