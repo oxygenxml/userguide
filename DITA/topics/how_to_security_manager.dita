@@ -27,10 +27,33 @@
     permission java.net.SocketPermission "*", "accept,connect,listen,resolve";
     // The web framework used by Oxygen Webapp uses reflection and classloaders.
     permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.security.SecurityPermission "*";
+    permission java.util.logging.LoggingPermission "control";
     permission java.lang.RuntimePermission "*";
+
+    // Oxygen requires these permissions in order to connect to an URL.
+    permission java.net.URLPermission "http:*", "*";
+    permission java.net.URLPermission "https:*", "*";
+    permission java.net.URLPermission "file:*", "*";
+
+    // Oxygen should be allowed to read JVM jars
+    permission java.io.FilePermission "${java.home}/-", "read";
 	
     // Oxygen uses the JVM's java.io.tempdir for various file handling tasks.
-    permission java.io.FilePermission "${java.io.tmpdir}/-", "read,write,delete"; 
+    permission java.io.FilePermission "${java.io.tmpdir}/-", "read,write,delete";
+    permission java.io.FilePermission "${java.io.tmpdir}", "read,write,delete";
+
+    // Folder used by oXygen to deploy the plugins to.
+    permission java.io.FilePermission "${oxygen.data.dir}/-", "read,write,delete";
+    permission java.io.FilePermission "${oxygen.data.dir}", "read,write,delete";
+};
+// The jar that contains sandboxing code.
+grant codeBase "jar:file:${catalina.base}/webapps/oxygen-webapp/WEB-INF/lib/oxygen-sandbox.jar!/-" {
+    permission java.security.AllPermission;
+};
+// Give all permissions to the plugins code unless otherwise instructed by the plugin vendor.
+grant codeBase "file:${oxygen.data.dir}/plugins/-" {
+    permission java.security.AllPermission;
 };</codeblock><note>In
               the previous example, in the first line, replace <codeph>oxygen-webapp</codeph> with
               the name of your deployment of the <ph keyref="webappComponent"/>.</note></p>
@@ -44,7 +67,8 @@
           <filepath>file://</filepath> protocol.</p>
       <p>You can do this by following these steps:<ul id="ul_rfq_nvr_qr">
           <li>Edit the <filepath>catalina.policy</filepath> file and add a line such
-            as:<codeblock>permission java.io.FilePermission "path/to/yourSecretDir/-", "read,write,delete";</codeblock></li>
+            as:<codeblock>permission java.io.FilePermission "path/to/yourSecretDir/-", "read,write,delete";
+permission java.io.FilePermission "path/to/yourSecretDir", "read,write,delete";</codeblock></li>
           <li>Use the following system property when starting the Tomcat
               server:<codeblock>-Dfile.protocol.blacklist=/path/to/yourSecretDir</codeblock><note>Use
               the value of <codeph>path.separator</codeph> system property to separate more
