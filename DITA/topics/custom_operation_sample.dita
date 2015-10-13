@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-  <topic id="topic_ecb_npf_kr">
-    <title>Example of an XML Refactoring Operation</title>
-    <body>
-      <p>To demonstrate creating a custom operation, consider that we have a task where we need to
-        convert an attribute into an element and insert it inside another element. A specific
-        example would be if you have a project with a variety of <codeph>image</codeph> elements
-        where a deprecated <codeph>alt</codeph> attribute was used for the description and you want
-        to convert all instances of that attribute into an element with the same name and insert it
-        as the first child of the <codeph>image</codeph> element. </p>
-      <p>Thus, our task is to convert this attribute into an element with the same name and insert
-      it as the first child of the image element. </p>
-      <p><image href="../img/xml_refactor3.png" id="image_xwx_yww_gr"/></p>
-      <p>A new operation requires an XQuery Update script and an XML Refactoring operation
-      descriptor file.</p>
-    <section><title>Sample XQuery Update Script for Creating a Custom Operation to <i>Convert an
-          Attribute to an Element</i>
+  <topic id="custom_operation_sample">
+  <title>Example of an XML Refactoring Operation</title>
+  <body>
+    <p>To demonstrate creating a custom operation, consider that we have a task where we need to
+      convert an attribute into an element and insert it inside another element. A specific example
+      would be if you have a project with a variety of <codeph>image</codeph> elements where a
+      deprecated <codeph>alt</codeph> attribute was used for the description and you want to convert
+      all instances of that attribute into an element with the same name and insert it as the first
+      child of the <codeph>image</codeph> element. </p>
+    <p>Thus, our task is to convert this attribute into an element with the same name and insert it
+      as the first child of the image element. </p>
+    <p><image href="../img/xml_refactor3.png" id="image_xwx_yww_gr"/></p>
+    <p>A new custom XML refactoring operation requires:<ul id="ul_k4j_fs3_ns">
+        <li>An <xref href="#custom_operation_sample/xquery-example-section" format="dita">XQuery
+            Update script</xref> or <xref href="#custom_operation_sample/xslt-example-section"
+            format="dita">XSLT stylesheet</xref>.</li>
+        <li>An <xref href="#custom_operation_sample/descriptor-example-section" format="dita">XML
+            Refactoring operation descriptor file</xref> that contains the path to the XQuery Update
+          script or XSLT stylesheet.</li>
+      </ul></p>
+    <section id="xquery-example-section"><title>Example of an XQuery Update Script for Creating a
+        Custom Operation to <i>Convert an Attribute to an Element</i>
       </title>The XQuery Update script does the following:<ul id="ul_rhp_bsn_kr">
         <li>Iterates over all elements from the document that have the specified local name and
           namespace.</li>
@@ -74,19 +80,92 @@ let $new_element_qName :=
         (insert node element {QName($new_element_namespace, $new_element_qName)} 
         {string($attribute)} as first into $node,
         delete node $attribute)
-        else ()</codeblock><title>Sample
-        Operation Descriptor File for Creating a Custom Operation to <i>Convert an Attribute to an
-          Element</i></title><p>After you have developed the XQuery script, you have to create an
-        XML Refactoring operation descriptor. This descriptor is used by application to load the
-        operation details such as name, description, or
-      parameters.</p><codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+        else ()</codeblock></section>
+    <section id="xslt-example-section"><title>Example of an XSLT Script for Creating a Custom
+        Operation to <i>Convert an Attribute to an Element</i></title>The XSLT stylesheet does the
+        following:<ul id="ul_yp5_tw3_ns">
+        <li>Iterates over all elements from the document that have the specified local name and
+          namespace.</li>
+        <li>Finds the attribute that will be converted to an element. </li>
+        <li>Adds the new element as the first child of the parent
+          element.<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs"
+    xmlns:xr="http://www.oxygenxml.com/ns/xmlRefactoring"
+    version="2.0">
+    
+    &lt;xsl:import href="http://www.oxygenxml.com/ns/xmlRefactoring/resources/commons.xsl"/>
+    
+    &lt;xsl:param name="element_localName" as="xs:string" required="yes"/>
+    &lt;xsl:param name="element_namespace" as="xs:string" required="yes"/>
+    &lt;xsl:param name="attribute_localName" as="xs:string" required="yes"/>
+    &lt;xsl:param name="attribute_namespace" as="xs:string" required="yes"/>
+    &lt;xsl:param name="new_element_localName" as="xs:string" required="yes"/>
+    &lt;xsl:param name="new_element_namespace" as="xs:string" required="yes"/>
+    
+    &lt;xsl:template match="node() | @*">
+        &lt;xsl:copy>
+            &lt;xsl:apply-templates select="node() | @*"/>
+        &lt;/xsl:copy>
+    &lt;/xsl:template>
+    &lt;xsl:template match="//*[xr:check-local-name($element_localName, ., true()) and
+        xr:check-namespace-uri($element_namespace, .)]">
+        
+        &lt;xsl:variable name="attributeToConvert" 
+            select="@*[xr:check-local-name($attribute_localName, ., true()) and
+            xr:check-namespace-uri($attribute_namespace, .)]"/>
+        
+        &lt;xsl:choose>
+            &lt;xsl:when test="empty($attributeToConvert)">
+                &lt;xsl:copy>
+                    &lt;xsl:apply-templates select="node() | @*"/>
+                &lt;/xsl:copy>
+            &lt;/xsl:when>
+            &lt;xsl:otherwise>
+                &lt;xsl:copy>
+                    &lt;xsl:for-each select="@*[empty(. intersect $attributeToConvert)]">
+                        &lt;xsl:copy-of select="."/>                        
+                    &lt;/xsl:for-each>
+                    &lt;!-- The new element namespace -->
+                    &lt;xsl:variable name="nsURI" as="xs:string">
+                        &lt;xsl:choose>
+                            &lt;xsl:when test="$new_element_namespace eq $xr:NO-NAMESPACE">
+                                &lt;xsl:value-of select="''"/>
+                            &lt;/xsl:when>
+                            &lt;xsl:otherwise>
+                                &lt;xsl:value-of select="$new_element_namespace"/>
+                            &lt;/xsl:otherwise>
+                        &lt;/xsl:choose>
+                    &lt;/xsl:variable>
+                    &lt;xsl:element name="{$new_element_localName}" namespace="{$nsURI}">
+                        &lt;xsl:value-of select="$attributeToConvert"/>
+                    &lt;/xsl:element>
+                    &lt;xsl:apply-templates select="node()"/>
+                &lt;/xsl:copy>
+            &lt;/xsl:otherwise>
+        &lt;/xsl:choose>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+      </ul><note>The XSLT stylesheet imports a module library that contains utility functions and
+        variables. The location of this module is resolved via an XML catalog set in the <i>XML
+          Refactoring</i> framework.</note></section>
+    <section id="descriptor-example-section">
+      <title>Example of an Operation Descriptor File for Creating a Custom Operation to <i>Convert
+          an Attribute to an Element</i></title>
+      <p>After you have developed the XQuery script or XSLT stylesheet, you have to create an XML
+        Refactoring operation descriptor. This descriptor is used by the application to load the
+        operation details such as name, description, or parameters.</p>
+      <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 
 &lt;refactoringOperationDescriptor 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://oxygenxml.com/ns/xmlRefactoring" 
+    xmlns="http://www.oxygenxml.com/ns/xmlRefactoring" 
     id="convert-attribute-to-element" 
     name="Convert attribute to element">
     &lt;description>Converts the specified attribute to an element. The new element will be inserted as first child of the attribute's parent element.&lt;/description>    
+    &lt;!-- For the XSLT stylesheet option uncomment the following line and comment the line referring the XQuery Update script -->
+    &lt;!-- &lt;script type="XSLT" href="convert-attribute-to-element.xsl"/> --> 
     &lt;script type="XQUERY_UPDATE" href="convert-attribute-to-element.xq"/>
     &lt;parameters>
         &lt;description>Specify the attribute to be converted to element.&lt;/description>
@@ -121,16 +200,23 @@ let $new_element_qName :=
             &lt;/elementParameter>
         &lt;/section>
     &lt;/parameters>
-&lt;/refactoringOperationDescriptor></codeblock></section>
+&lt;/refactoringOperationDescriptor></codeblock>
+      <note>If you are using an XSLT file, the line with the <codeph>script</codeph> element would
+        look like
+        this:<codeblock outputclass="language-xml"> &lt;script type="XSLT" href="convert-attribute-to-element.xsl"/></codeblock></note>
+    </section>
+    <section>
+      <title>Results</title>
       <p>After you have created these files, copy them into a folder <xref
-        href="sharing-custom-refactoring-operations.dita">scanned by <ph keyref="product"/> when it
-        loads the custom operation</xref>. When the XML Refactoring tool is started again, you will
-      see the created operation.</p>
-    <p>Since various parameters can be specified, this custom operation can also be used for other
-      similar tasks. The following image shows the parameters that can be specified in our example
-      of the custom operation to convert an attribute to an element:<fig id="fig_vsr_3fd_jr">
-        <image href="../img/custom_refactoring_operation.png" id="image_tsb_lfd_jr"/>
-      </fig></p>
-    </body>
-  </topic>
+          href="sharing-custom-refactoring-operations.dita">scanned by <ph keyref="product"/> when
+          it loads the custom operation</xref>. When the XML Refactoring tool is started again, you
+        will see the created operation.</p>
+      <p>Since various parameters can be specified, this custom operation can also be used for other
+        similar tasks. The following image shows the parameters that can be specified in our example
+        of the custom operation to convert an attribute to an element:<fig id="fig_vsr_3fd_jr">
+          <image href="../img/custom_refactoring_operation.png" id="image_tsb_lfd_jr"/>
+        </fig></p>
+    </section>
+  </body>
+</topic>
 

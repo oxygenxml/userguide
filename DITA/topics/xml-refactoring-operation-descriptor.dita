@@ -10,8 +10,9 @@
       <title>Introduction to the Descriptor File</title>
       <p>This file contains information (such as <codeph>name</codeph>,
         <codeph>description</codeph>, and <codeph>id</codeph>) that is necessarily when loading an
-        XML Refactoring operation . It also contains the path to the XQuery Update script that is
-        associated with the particular operation through the <codeph>script</codeph> element.</p>
+        XML Refactoring operation . It also contains the path to the XQuery Update script or XSLT
+        stylesheet that is associated with the particular operation through the
+          <codeph>script</codeph> element.</p>
       <p>You can specify a <codeph>category</codeph> for your custom operations to logically group
         certain operations. The <codeph>category</codeph> element is optional and if it is not
         included in the descriptor file, the default name of the category for the custom operations
@@ -21,11 +22,11 @@
     </section>
     <section>
       <title>Declaring Parameters in the Descriptor File</title>
-      <p>If the XQuery Update script includes parameters, they should be declared in the
-          <b>parameters</b> section of the descriptor file. All the parameters specified in this
-        section of the descriptor file will be displayed in the <uicontrol>XML
+      <p>If the XQuery Update script or XSLT stylesheet includes parameters, they should be declared
+        in the <b>parameters</b> section of the descriptor file. All the parameters specified in
+        this section of the descriptor file will be displayed in the <uicontrol>XML
           Refactoring</uicontrol> tool within <xref
-            href="refactoring-xml-documents.dita#refactoring-xml-documents/parameters_dlentry">the
+          href="refactoring-xml-documents.dita#refactoring-xml-documents/parameters_dlentry">the
             <uicontrol>Configure Operation Parameters</uicontrol> wizard page</xref> for that
         particular operation.</p>
       <p>The value of the first <codeph>description</codeph> element in the <b>parameters</b>
@@ -36,8 +37,8 @@
       <ul id="ul_irs_glv_gr">
         <li><b><codeph>label</codeph></b> - This value is displayed in the user interface for the
           parameter.</li>
-        <li><b><codeph>name</codeph></b> - The parameter name used in the XQuery Update script and
-          it should be the same as the one declared in the XQuery script.</li>
+        <li><b><codeph>name</codeph></b> - The parameter name used in the XQuery Update script or
+          XSLT stylesheet and it should be the same as the one declared in the script.</li>
         <li><b><codeph>type</codeph></b> - Defines the type of the parameter and how it will be
           rendered. There are several types available:<ul id="ul_xm5_j4v_gr">
             <li><codeph>TEXT</codeph> - Generic type used to specify a simple text fragment.</li>
@@ -45,12 +46,14 @@
               <p><codeph>XPATH</codeph> - Type of parameter whose value is an XPATH expression. For
                 this type of parameter, <ph keyref="product"/> will use a text input with
                 corresponding content completion and syntax highlighting.</p>
-              <note>The value of this parameter is transferred as plain text to the XQuery Update
-                transformation without being evaluated. To evaluate it in the XQuery Update script
-                you could use the <codeph>saxon:evaluate</codeph> Saxon extension function.</note>
+              <note>The value of this parameter is transferred as plain text to the XQuery Update or
+                XSLT transformation without being evaluated. You should evaluate the XPath
+                expression inside the XQuery Update script or XSLT stylesheet. For example, you
+                could use the <codeph>saxon:evaluate</codeph> Saxon extension function. </note>
               <note>A relative XPath expression is converted to an absolute XPath expression by
                 adding <codeph>//</codeph> before it (<codeph>//XPathExp</codeph>). This conversion
-                is done before transferring the XPath expression to the XQuery Update engine.</note>
+                is done before transferring the XPath expression to the XML refactoring
+                engine.</note>
               <note>When writing XPath expressions, you can only use prefixes declared in the <xref
                   href="preferences-xpath.dita"><menucascade>
                     <uicontrol>Options</uicontrol>
@@ -74,7 +77,7 @@
             <li><codeph>BOOLEAN</codeph> - Used to edit boolean parameters.</li>
             <li><codeph>TEXT_CHOICE</codeph> - It is useful for parameters whose value should be
               from a list of possible values. <ph keyref="product"/> renders each possible value as
-              a radio button.</li>
+              a radio button option.</li>
           </ul></li>
         <li><b><codeph>description</codeph></b> - The description of the parameter. It is used by
           the application to display a tooltip when you hover over the parameter.</li>
@@ -89,50 +92,115 @@
       </ul>
     </section>
     <section>
-      <title>Specialized Parameters (<codeph>elementParameter</codeph> and
-          <codeph>attributeParameter</codeph>)</title>
-      <p>If you want to match elements or attributes, use the specialized parameters
-          <codeph>elementParameter</codeph> or <codeph>attributeParameter</codeph>. If you use these
-        parameters, <ph keyref="product"/> will propose all declared elements or attributes based on
-        the schema associated with the currently edited file.</p>
-      <p>Example of an <codeph>elementParameter</codeph>:</p>
-      <codeblock outputclass="language-xml">&lt;elementParameter id="elemID">
-    &lt;localName label="Name" name="element_localName" allowsAny="true">
+      <title>Specialized Parameters to Match Elements or Attributes</title>
+      <p>If you want to match elements or attributes, you can use some specialized parameters, in
+        which case <ph keyref="product"/> will propose all declared elements or attributes based on
+        the schema associated with the currently edited file. The following specialized parameters
+        are supported:<dl>
+          <dlentry>
+            <dt><codeph>elementLocation</codeph></dt>
+            <dd>This parameter is used to match elements. For this type of parameter, the
+              application displays a text field where you can enter the element name or an XPath
+              expression. The text from the <codeph>label</codeph> attribute is displayed in the
+              application as the label of the text field. The <codeph>name</codeph> attribute is
+              used to specify the name of the parameter from the XQuery Update script or XSLT
+              stylesheet. If the value of the <codeph>useCurrentContext</codeph> attribute is set to
+                <userinput>true</userinput>, the element name from the cursor position is used as
+              proposed values for this parameter.</dd>
+            <dd>
+              <p>Example of an <codeph>elementLocation</codeph>:</p>
+              <codeblock outputclass="language-xml">&lt;elementLocation name="elem_loc" useCurrentContext="false">
+                &lt;element label="Element location">
+                    &lt;description>Element location description.&lt;/description>
+                &lt;/element>
+&lt;/ ElementLocation></codeblock>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>attributeLocation</codeph></dt>
+            <dd>This parameter is used to match attributes. For this type of parameter, the
+              application displays two text fields where you can enter the parent element name and
+              the attribute name (both text fields accept XPath expressions for a finer match). The
+              text from the <codeph>label</codeph> attributes is displayed in the application as the
+              label of the associated text fields. The <codeph>name</codeph> attribute is used to
+              specify the name of the parameter from the XQuery Update script or XSLT stylesheet.
+              The value of this parameter is an XPath expression that is computed by using the
+              values of the expression from the <codeph>element</codeph> and
+                <codeph>attribute</codeph> text fields. For example, if
+                <userinput>section</userinput> is entered for the element and a
+                <userinput>title</userinput> is entered for the attribute, the XPath expression
+              would be computed as <codeph>//section/@title</codeph>. If the value of the
+                <codeph>useCurrentContext</codeph> attribute is set to <userinput>true</userinput>,
+              the element and attribute name from the cursor position is used as proposed values for
+              the operation parameters. </dd>
+            <dd>
+              <p>Example of an <codeph>attributeLocation</codeph>:</p>
+              <codeblock outputclass="language-xml">&lt;attributeLocation name="attr_xpath" useCurrentContext="true">
+                &lt;element label="Element path">
+                    &lt;description>Element path description.&lt;/description>
+                &lt;/element>
+                &lt;attribute label="Attribute" >
+                    &lt;description>Attribute path description.&lt;/description>
+                &lt;/attribute>
+&lt;/ AttributeLocation></codeblock>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>elementParameter</codeph></dt>
+            <dd>This parameter is used to specify elements by local name and namespace. For this
+              type of parameter, the application displays two combo boxes with elements and
+              namespaces collected from the associated schema of the currently edited file. The text
+              from the <codeph>label</codeph> attribute is displayed in the application as label of
+              the associated combo. The <codeph>name</codeph> attribute is used to specify the name
+              of the parameter from the XQuery Update script or XSLT stylesheet. If you specify the
+                <codeph>allowsAny</codeph> attribute, the application will propose <i>&lt;ANY></i>
+              as a possible value for the <b>Name</b> and <b>Namespace</b> combo boxes. You can also
+              use the <codeph>useCurrentContext</codeph> attribute and if its value is set to
+                <userinput>true</userinput>, the element name and namespace from the cursor position
+              is used as proposed values for the operation parameters.</dd>
+            <dd>
+              <p>Example of an <codeph>elementParameter</codeph>:</p>
+              <codeblock outputclass="language-xml">&lt;elementParameter id="elemID">
+    &lt;localName label="Name" name="element_localName" allowsAny="true" useCurrentContext="true">
         &lt;description>The local name of the attribute's parent element.&lt;/description>           
     &lt;/localName>
     &lt;namespace label="Namespace" name="element_namespace" allowsAny="true">
         &lt;description>The local name of the attribute's parent element&lt;/description>           
     &lt;/namespace>        
 &lt;/elementParameter></codeblock>
-      <p>This parameter is used to specify elements by local name and namespace. For this type of
-        parameter, the application displays two combo boxes with elements and namespaces collected
-        from the associated schema of the currently edited file. The text from the
-          <codeph>label</codeph> attribute is displayed in the application as label of the
-        associated combo. The <codeph>name</codeph> attribute is used to specify the name of the
-        parameter from the XQuery Update script. If you specify the <codeph>allowsAny</codeph>
-        attribute, the application will propose <i>&lt;ANY></i> as a possible value for the
-          <b>Name</b> and <b>Namespace</b> combo boxes.</p>
-      <p>Example of an <codeph>attributeParameter</codeph>:</p>
-      <codeblock outputclass="language-xml">&lt;attributeParameter dependsOn="elemID">
-    &lt;localName label="Name" name="attribute_localName">
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>attributeParameter</codeph></dt>
+            <dd>This parameter is used to specify attributes by local name and namespace. For this
+              type of parameter, the application displays two combo boxes with attributes and their
+              namespaces collected from the associated schema of the currently edited file. The text
+              from the <codeph>label</codeph> attribute is displayed in the application as the label
+              of the associated combo box. You can also use the <codeph>useCurrentContext</codeph>
+              attribute and if its value is set to <userinput>true</userinput>, the attribute name
+              and namespace from the cursor position is used as proposed values for the operation
+                parameters.<note>An <codeph>attributeParameter</codeph> is dependant upon an
+                  <codeph>elementParameter</codeph>. The list of attributes and namespaces are
+                computed based on the selection in the <codeph>elementParameter</codeph> combo
+                boxes.</note></dd>
+            <dd>
+              <p>Example of an <codeph>attributeParameter</codeph>:</p>
+              <codeblock outputclass="language-xml">&lt;attributeParameter dependsOn="elemID">
+    &lt;localName label="Name" name="attribute_localName" useCurrentContext="true">
         &lt;description>The name of the attribute to be converted.&lt;/description>
     &lt;/localName>
     &lt;namespace label="Namespace" name="attribute_namespace" allowsAny="true">
         &lt;description>The namespace of the attribute to be converted.&lt;/description>
     &lt;/namespace>        
 &lt;/attributeParameter></codeblock>
-      <p>This parameter is used to specify attributes by local name and namespace. For this type of
-        parameter, the application displays two combo boxes with attributes and their namespaces
-        collected from the associated schema of the currently edited file. The text from the
-          <codeph>label</codeph> attribute is displayed in the application as the label of the
-        associated combo box.<note>An <codeph>attributeParameter</codeph> is dependant upon an
-            <codeph>elementParameter</codeph>. The list of attributes and namespaces are computed
-          based on the selection in the <codeph>elementParameter</codeph> combo boxes.</note></p>
+            </dd>
+          </dlentry>
+        </dl></p>
     </section>
-    <note>All predefined operations are loaded from the <filepath>installDir/refactoring</filepath>
-      folder.</note>
+    <note>All predefined operations are loaded from the
+        <filepath>[OXYGEN_DIR]/refactoring</filepath> folder.</note>
   </body>
   <related-links>
-    <link href="custom_operation_sample.dita#topic_ecb_npf_kr"/>
+    <link href="custom_operation_sample.dita#custom_operation_sample"/>
   </related-links>
 </topic>

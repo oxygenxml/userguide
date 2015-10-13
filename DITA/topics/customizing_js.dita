@@ -1,40 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="topic_gl4_1ys_1r">
-  <title>Customizing <ph keyref="webapp"/>'s Client Side</title>
+<topic id="customizing_js">
+  <title>Customizing <ph keyref="webappComponent"/> Client Side</title>
+  <shortdesc>Client side customization is available through a JavaScript API. Unlike the server side
+    customization, it can be used to modify the application's GUI.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>customizing WebApp client side</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
-    <p><ph keyref="webapp"/> is an editing platform, but it is the integrator's job to provide a way
-      for the user to select/choose which file is going to be edited. Afterwards, the user should be
-      redirected to WebApp's editing page, along with three URL parameters:<ul id="ul_x1l_2x1_br">
-        <li><codeph>url</codeph> - absolute URL of the edited file</li>
-        <li><codeph>ditamap</codeph> - absolute URL, optional parameter. Taken into account only
+    <p>The <ph keyref="webappComponent"/> is an editing platform, but it is the job of the
+      integrator to provide a way for the user to select which file is going to be edited.
+      Afterwards, the user should be redirected to the <ph keyref="webappComponent"/> editing page,
+      and the following three URL parameters specified:<ul id="ul_x1l_2x1_br">
+        <li><codeph>url</codeph> - An absolute URL of the edited file.</li>
+        <li><codeph>ditamap</codeph> - (Optional parameter) An absolute URL taken into account only
           when editing a DITA file. Provides the DITA map context of the edited DITA file.</li>
-        <li><codeph>author</codeph> - author name</li>
+        <li><codeph>author</codeph> - The author name.</li>
       </ul></p>
-    <section>
-      <title>Example</title>
-      <p>Let's suppose that the WebApp is deployed at the following
+    <example>
+      <p>Suppose that the <ph keyref="webappComponent"/> is deployed at the following
         URL:<codeblock>http://www.example.com/oxygen-sdk-sample-webapp/</codeblock></p>
-      <p>The user (whose name is John Doe) wants to edit a file (located at
+      <p>The user (John Doe) wants to edit a file (located at
           <filepath>http://www.test.com/topics/topic.xml</filepath>) in the context of a DITA map
         (located at <filepath>http://www.test.com/map.xml</filepath>). In this case, the editing URL
         should
-        be:<codeblock>http://www.example.com/oxygen-sdk-sample-webapp/app/demo-mobile.html?
-url=http%3A%2F%2Fwww.test.com%2Ftopics%2Ftopic.xml&amp;
-ditamap=http%3A%2F%2Fwww.test.com%2Fmap.xml
+        be:<codeblock>http://www.example.com/oxygen-sdk-sample-webapp/app/oxygen.html
+?url=http%3A%2F%2Fwww.test.com%2Ftopics%2Ftopic.xml
+&amp;ditamap=http%3A%2F%2Fwww.test.com%2Fmap.xml
 &amp;author=John%20Doe</codeblock></p>
-      <note>The parameters values are percent encoded before being added to the editing URL.</note>
+      <note>The parameter values are percent encoded before being added to the editing URL.</note>
+    </example>
+    <section>
+      <title>JavaScript API Method for Loading Content</title>
     </section>
+    <p>The <ph keyref="webappComponent"/> also offers an alternate method for loading editor content
+      using a JavaScript plugin. The <xref
+        href="http://oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/sync.api.Workspace.BeforeEditorOpenedEvent.html"
+        format="html" scope="external"><apiname>BeforeEditorOpenedEvent</apiname></xref> can be used
+      for the following:<ul id="ul_hrr_nck_1s">
+        <li>To specify the XML content to be loaded in the editor.</li>
+        <li>To add new actions to the action manager.</li>
+        <li>To change the startup options for the editor. For example, you can choose whether to
+          only load the <uicontrol>Review</uicontrol> mode editing actions or to enable full editing
+          support (<uicontrol>Edit</uicontrol> mode editing actions).</li>
+      </ul></p>
     <section>
       <title>Loading Custom JavaScript Code</title>
-      <p>To extend the functionality provided by <ph keyref="webapp"/>, create a file called
-          <filepath>plugin.js</filepath> and copy it in the <filepath>app</filepath> folder of the
-        WebApp deployment. <xref
+      <p>To extend the functionality provided by the <ph keyref="webappComponent"/>, create a file
+        called <filepath>plugin.js</filepath> and copy it in the <filepath>app</filepath> folder of
+        the <ph keyref="webappComponent"/> deployment. <xref
           href="customizing_plugins.dita#customizing_plugins/webapp_bundle_js_files_in_plugin"
           >Alternatively, you can bundle JavaScript code with a Java Plugin.</xref></p>
       <p>The <filepath>plugin.js</filepath> file can contain JavaScript code that calls the <xref
-          href="http://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.0.0/jsdoc/" format="html" scope="external">JavaScript
-          API</xref> provided by <ph keyref="webapp"/>.</p>
+          href="http://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/"
+          format="html" scope="external">JavaScript API</xref> provided by the <ph
+          keyref="webappComponent"/>.</p>
+    </section>
+    <section>
+      <title>Load JavaScript Code from a Framework</title>
+      <p>To load JavaScript code from a framework, put your code in the
+          <filepath>framework.js</filepath> file (located in the <filepath>web</filepath> folder
+        inside the particular framework folder) that calls the <xref
+          href="http://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/"
+          format="html" scope="external">JavaScript API</xref> provided by the <ph
+            keyref="webappComponent"/>.</p>
     </section>
   </body>
+  <related-links>
+    <link href="customizing_frameworks.dita#customizing_frameworks"/>
+  </related-links>
 </topic>

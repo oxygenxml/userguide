@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="how_to_security_manager">
-  <title>How To Configure WebApp Minimal File Access Permissions</title>
+  <title>How To Configure <ph keyref="webappComponent"/> Minimal File Access Permissions</title>
   <body>
-    <p>WebApp requires access to the following file resources:<ul id="ul_rjs_5hd_cr">
-        <li><term>READ</term> access to the directory where the WebApp is deployed.</li>
+    <p>The <ph keyref="webappComponent"/> requires access to the following file resources:<ul
+        id="ul_rjs_5hd_cr">
+        <li><term>READ</term> access to the directory where the <ph keyref="webappComponent"/> is
+          deployed.</li>
         <li><term>READ</term> and <term>WRITE</term> access to the application's working
           directory.</li>
         <li><term>READ</term> and <term>WRITE</term> access to JVM's temporary directory.</li>
@@ -25,23 +27,52 @@
     permission java.net.SocketPermission "*", "accept,connect,listen,resolve";
     // The web framework used by Oxygen Webapp uses reflection and classloaders.
     permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.security.SecurityPermission "*";
+    permission java.util.logging.LoggingPermission "control";
     permission java.lang.RuntimePermission "*";
+
+    // Oxygen requires these permissions in order to connect to an URL.
+    permission java.net.URLPermission "http:*", "*";
+    permission java.net.URLPermission "https:*", "*";
+    permission java.net.URLPermission "file:*", "*";
+
+    // Oxygen should be allowed to read JVM jars
+    permission java.io.FilePermission "${java.home}/-", "read";
 	
     // Oxygen uses the JVM's java.io.tempdir for various file handling tasks.
-    permission java.io.FilePermission "${java.io.tmpdir}/-", "read,write,delete"; 
+    permission java.io.FilePermission "${java.io.tmpdir}/-", "read,write,delete";
+    permission java.io.FilePermission "${java.io.tmpdir}", "read,write,delete";
+
+    // Folder used by oXygen to deploy the plugins to.
+    permission java.io.FilePermission "${oxygen.data.dir}/-", "read,write,delete";
+    permission java.io.FilePermission "${oxygen.data.dir}", "read,write,delete";
+};
+// The jar that contains sandboxing code.
+grant codeBase "jar:file:${catalina.base}/webapps/oxygen-webapp/WEB-INF/lib/oxygen-sandbox.jar!/-" {
+    permission java.security.AllPermission;
+};
+// Give all permissions to the plugins code unless otherwise instructed by the plugin vendor.
+grant codeBase "file:${oxygen.data.dir}/plugins/-" {
+    permission java.security.AllPermission;
+};
+// Give all permissions to the frameworks code unless otherwise instructed by the plugin vendor.
+grant codeBase "file:${oxygen.data.dir}/frameworks/-" {
+    permission java.security.AllPermission;
 };</codeblock><note>In
               the previous example, in the first line, replace <codeph>oxygen-webapp</codeph> with
-              the name of your deployment of <ph keyref="webapp"/>.</note></p>
+              the name of your deployment of the <ph keyref="webappComponent"/>.</note></p>
         </li>
       </ul></p>
     <section>
       <title>Configuring File Permissions to Custom Locations</title>
-      <p>There are cases when <ph keyref="webapp"/> needs to access files system resources, but, due
-        to security reasons, you want to prevent your users to open them directly in the WebApp's
-        editing page using the <filepath>file://</filepath> protocol.</p>
+      <p>There are cases when the <ph keyref="webappProduct"/> needs to access files system
+        resources, but due to security reasons, you want to prevent your users from opening them
+        directly in the <ph keyref="webappProduct"/> editing page using the
+          <filepath>file://</filepath> protocol.</p>
       <p>You can do this by following these steps:<ul id="ul_rfq_nvr_qr">
           <li>Edit the <filepath>catalina.policy</filepath> file and add a line such
-            as:<codeblock>permission java.io.FilePermission "path/to/yourSecretDir/-", "read,write,delete";</codeblock></li>
+            as:<codeblock>permission java.io.FilePermission "path/to/yourSecretDir/-", "read,write,delete";
+permission java.io.FilePermission "path/to/yourSecretDir", "read,write,delete";</codeblock></li>
           <li>Use the following system property when starting the Tomcat
               server:<codeblock>-Dfile.protocol.blacklist=/path/to/yourSecretDir</codeblock><note>Use
               the value of <codeph>path.separator</codeph> system property to separate more

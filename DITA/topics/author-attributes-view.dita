@@ -2,7 +2,7 @@
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="author-attributes-view">
-  <title>Attributes View</title>
+  <title>Attributes View in Author Mode</title>
   <prolog>
     <metadata>
       <keywords>
@@ -11,28 +11,21 @@
     </metadata>
   </prolog>
   <body>
-    <p>The <uicontrol>Attributes</uicontrol> view presents all the attributes of the current element
-      determined by the schema of the document. It allows you to insert attributes in the current
-      element or change the value of the attributes already inserted. The attributes are rendered
-      differently depending on their state:<ul>
-        <li>The names of the attributes with a specified value are rendered with a bold font, and
-          their value with a plain font.<note>The names of the attributes with an empty string value
-            are also rendered bold. </note></li>
-        <li>Default values are rendered with a plain font, painted gray.</li>
-        <li>Empty values display the text "[empty]", painted gray.</li>
-        <li>Invalid attributes and values are painted red.</li>
-      </ul>Double-click a cell in the <uicontrol>Value</uicontrol> column to edit the value of the
-      corresponding attribute. In case the possible values of the attribute are specified as list in
-      the schema of the edited document, the <uicontrol>Value</uicontrol> column acts as a combo box
-      that allows you to insert the values in the document. </p>
-    <p>You can sort the attributes table by clicking the <uicontrol>Attribute</uicontrol> column
-      header. The table contents can be sorted as follows: <ul>
-        <li>By attribute name in ascending order.</li>
-        <li>By attribute name in descending order.</li>
-        <li>Custom order, where the used attributes are displayed at the beginning of the table
-          sorted in ascending order, followed by the rest of the allowed elements sorted in
-          ascending order.</li>
+    <p conkeyref="reusables-editing-modes/attribute-view-intro"/>
+    <p>You can use this view to edit or add attribute values. The attributes of an element are
+      editable if any one of the following is true:<ul id="ul_nfn_z5r_n2">
+        <li>The CSS stylesheet associated with the document does not specify a
+            <uicontrol>false</uicontrol> value for the <xref
+            href="../topics/dg-editable-css-extension.dita#dg-editable-css-extension" format="dita"
+            >-oxy-editable</xref> property associated with the element.</li>
+        <li>The element is entirely included in a deleted <xref
+            href="../topics/author-change-tracking.dita#author-change-tracking/change-tracking"
+            format="dita">Track Changes</xref> marker.</li>
+        <li>The element is part of a content fragment that is referenced in
+            <uicontrol>Author</uicontrol> mode from another document.</li>
       </ul></p>
+    <p conkeyref="reusables-editing-modes/attribute-view-rendering"/>
+    <p conkeyref="reusables-editing-modes/attribute-view-sorting"/>
     <fig product="editor author">
       <title>The Attributes View</title>
       <image href="../img/sa_author_attributes_panel.png"/>
@@ -41,95 +34,31 @@
       <title>The Attributes View</title>
       <image href="../img/ec_author_attributes_panel.png"/>
     </fig>
-    <p>A combo box located in the upper part of the view allows you to edit the attributes of the
-      ancestors of the current element.</p>
-    <p>The following actions are available in the contextual menu:<dl>
-        <dlentry>
-          <dt><uicontrol>Add</uicontrol></dt>
-          <dd>Allows you to insert a new attribute. Adding an attribute that is not in the list of
-            all defined attributes is not possible when the <xref
-              keyref="options.editor.edit-modes.author.schema-aware">Allow only insertion of valid elements and
-              attributes</xref> schema aware option is enabled.</dd>
-        </dlentry>
-        <dlentry>
-          <dt><uicontrol>Set empty value</uicontrol></dt>
-          <dd>Specifies the current attribute value as empty.</dd>
-        </dlentry>
-        <dlentry>
-          <dt><uicontrol>Remove</uicontrol></dt>
-          <dd>Removes the attribute (action available only if the attribute is specified). You can
-            invoke this action by pressing the <uicontrol><shortcut>(Delete)</shortcut></uicontrol>
-            or <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> keys.</dd>
-        </dlentry>
-        <dlentry>
-          <dt><uicontrol>Copy</uicontrol></dt>
-          <dd>Copies the <codeph>attrName="attrValue"</codeph> pair to the clipboard. The
-              <codeph>attrValue</codeph> can be: <ul>
-              <li>The value of the attribute.</li>
-              <li>The value of the default attribute, if the attribute does not appear in the edited
-                document.</li>
-              <li>Empty, if the attribute does not appear in the edited document and has no default
-                value set.</li>
-            </ul></dd>
-        </dlentry>
-        <dlentry>
-          <dt><uicontrol>Paste</uicontrol></dt>
-          <dd>This action is available in the contextual menu of the
-              <uicontrol>Attributes</uicontrol> view, in the <uicontrol>Text</uicontrol> and
-              <uicontrol>Author</uicontrol> modes. Depending on the content of the clipboard, the
-            following cases are possible: <ul>
-              <li>If the clipboard contains an attribute and its value, both of them are introduced
-                in the <uicontrol>Attributes</uicontrol> view. The attribute is selected and its
-                value is changed if they exist in the <uicontrol>Attributes</uicontrol> view.</li>
-              <li>If the clipboard contains an attribute name with an empty value, the attribute is
-                introduced in the <uicontrol>Attributes</uicontrol> view and you can start editing
-                it. The attribute is selected and you can start editing it if it exists in the
-                  <uicontrol>Attributes</uicontrol> view.</li>
-              <li>If the clipboard only contains text, the value of the selected attribute is
-                modified. </li>
-            </ul></dd>
-        </dlentry>
-      </dl></p>
-    <section id="in-place-editor">
-      <title>In-place Attributes Editor</title>
-      <p>To edit in-place the attributes of an XML element, do one of the following: <ul>
-          <li>Completely select the element or place the caret inside it and then press the
-              <uicontrol conref="oxygen-shortcuts-list.dita#oxygen-shortcuts-list/alt_enter"/>
-            keyboard shortcut.</li>
-          <li>Double-click any named start tag when the document is edited in one of the following
-              <xref keyref="author.display-markup">display modes.</xref>: <uicontrol><image
-                href="../img/FullTagsWithAttrs16.png" id="image_hk5_rrm_wr"/>Full Tags with
-              Attributes</uicontrol>, <uicontrol><image href="../img/FullTags16.png"
-                id="image_tvc_srm_wr"/>Full Tags</uicontrol>, <uicontrol><image
-                href="../img/BlockTags16.png" id="image_kz4_srm_wr"/>Block Tags</uicontrol>,
-                <uicontrol><image href="../img/InlineTags16.png" id="image_vyx_srm_wr"/>Inline
-              Tags</uicontrol>.</li>
-        </ul></p>
-    <p>This shortcut pops up a small window with the same content as the
-        <uicontrol>Attributes</uicontrol> view. The default form of the pop-up window presents the
-        <uicontrol>Name</uicontrol> and <uicontrol>Value</uicontrol> fields, with the list of all
-      the possible attributes collapsed.</p>
-    <fig product="editor author">
-      <title>Edit attributes in place</title>
-      <image href="../img/sa_author_edit_attributes_in_place.png"/>
-    </fig>
-    <fig product="editorEclipse authorEclipse">
-      <title>Edit attributes in place</title>
-      <image href="../img/ec_author_edit_attributes_in_place.png"/>
-    </fig>
-    <p>The small right arrow button expands the list of possible attributes allowed by the schema of
-      the document as in the <uicontrol>Attributes</uicontrol> view.</p>
-    <fig product="editor author">
-      <title>Edit attributes in place - full version</title>
-      <image href="../img/sa_author_edit_attributes_in_place_full_version.png"/>
-    </fig>
-    <fig product="editorEclipse authorEclipse">
-      <title>Edit attributes in place - full version</title>
-      <image href="../img/ec_author_edit_attributes_in_place_full_version.png"/>
-    </fig>
-    <p>The <uicontrol>Name</uicontrol> field auto-completes the name of the attribute: the complete
-      name of the attribute is suggested based on the prefix already typed in the field as the user
-      types in the field.</p>
+    <p>A drop-down list located in the upper part of the view allows you to select the current
+      element or its ancestors.</p>
+    <section conkeyref="reusables-editing-modes/expand-section" product="author editor"/>
+    <section>
+      <title>Contextual Menu Actions in the Attributes View</title>
+      <p>The following actions are available in the contextual menu of the
+          <uicontrol>Attributes</uicontrol> view when editing in <uicontrol>Author</uicontrol> mode:<dl>
+          <dlentry conkeyref="reusables-editing-modes/set-empty-value-dlentry">
+            <dt/>
+            <dd/>
+          </dlentry>
+          <dlentry conkeyref="reusables-editing-modes/remove-dlentry">
+            <dt/>
+            <dd/>
+          </dlentry>
+          <dlentry conkeyref="reusables-editing-modes/copy_dlentry">
+            <dt/>
+            <dd/>
+          </dlentry>
+          <dlentry conkeyref="reusables-editing-modes/paste_dlentry">
+            <dt/>
+            <dd/>
+          </dlentry>
+        </dl></p>
     </section>
+    <section conkeyref="reusables-editing-modes/in-place-editor" id="in-place-attr-editor"/>
   </body>
 </topic>

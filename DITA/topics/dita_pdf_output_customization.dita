@@ -1,46 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="topic_fmq_kk2_ng">
-  <title><?oxy_comment_start author="Mark" timestamp="20141009T110722-0400" comment="It would make more sense to gather all of the PDF related material together in one place."?>DITA
-    to PDF Output<?oxy_comment_end?> Customization</title>
-  <shortdesc>In this topic you will see how to do a basic customization of the PDF output by setting
-        up a customization directory. </shortdesc>
+<topic id="dita_pdf_output_customization">
+  <title>Creating a Customization Directory for PDF Output</title>
   <body>
-        <p>DITA Open Toolkit PDF output customizations can be made in two major ways: <ol
-        id="ol_d4n_s5y_1j">
+    <p>DITA Open Toolkit PDF output can be customized in several ways: <ul id="ol_d4n_s5y_1j">
         <li>Creating a DITA Open Toolkit plugin which adds extensions to the PDF plugin. More
           details can be found in the <xref href="http://dita-ot.sourceforge.net/1.8/" format="html"
             scope="external">DITA Open Toolkit user manual</xref>.</li>
         <li>Creating a customization directory and using it from the PDF transformation scenario. A
           small example of this procedure can be found below.</li>
-      </ol></p>
-    <p>
-      Let us take for example the common case of embedding a company logo image in the front
-      matter of the book. You can later extend this example to create more complex
-      customizations.</p>
-    
+      </ul></p>
+    <p>The following procedure explains how to do a basic customization of the PDF output by setting
+      up a customization directory. An example of a common use case is embedding a company logo
+      image in the front matter of the book.</p>
     <ol>
       <li>Copy the entire directory:
-        <filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/Customization</filepath> to
-        some other place, for instance: C:\Customization.</li>
+        <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\org.dita.pdf2\Customization</filepath>
+        to another location (for instance, <filepath>C:\Customization</filepath>).</li>
       <li>Copy your logo image to:
         <filepath>C:\Customization\common\artwork\logo.png</filepath>.</li>
       <li>Rename <filepath>C:\Customization\catalog.xml.orig</filepath> to:
           <filepath>C:\Customization\catalog.xml</filepath>.</li>
-      <li>Open the <filepath>catalog.xml</filepath> in <ph
-          keyref="product"/> and uncomment this line:
+      <li>Open the <filepath>catalog.xml</filepath> in <ph keyref="product"/> and <i>uncomment</i>
+        this line:
           <codeblock outputclass="language-xml">  &lt;!--uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/--&gt;   </codeblock><p>So
           now it looks like
         this:</p><codeblock outputclass="language-xml">&lt;uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/></codeblock></li>
       <li> Rename the file: <filepath> C:\Customization\fo\xsl\custom.xsl.orig</filepath> to:
           <filepath>C:\Customization\fo\xsl\custom.xsl</filepath>
       </li>
-      <li> Open the <filepath>custom.xsl</filepath> file in <ph
-          keyref="product"/> and create the template
-        called <keyword>createFrontMatter_1.0</keyword>. This will override the same template from
-        the
-        <filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/org.dita.pdf2/xsl/fo/front-matter.xsl</filepath>.
-        Now, <filepath>custom.xsl</filepath> has the content:
+      <li> Open the <filepath>custom.xsl</filepath> file in <ph keyref="product"/> and create the
+        template called <keyword>createFrontMatter_1.0</keyword>. This will override the same
+        template from the
+        <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath>.
+        Now, <filepath>custom.xsl</filepath> has the following content:
         <codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:fo="http://www.w3.org/1999/XSL/Format"
@@ -89,20 +82,18 @@
         &lt;xsl:call-template name="createNotices"/>
     &lt;/xsl:template>
 &lt;/xsl:stylesheet></codeblock></li>
-      <li>Edit (or duplicate, then edit) the <keyword>DITA Map to PDF</keyword> transformation
-        scenario. In the <keyword>Parameters</keyword> tab, set the
-          <keyword>customization.dir</keyword> parameter to
-        <filepath>C:\Customization</filepath>.</li>
+      <li>Edit the <uicontrol>DITA Map to PDF</uicontrol> transformation scenario and in the
+          <keyword>Parameters</keyword> tab, set the <keyword>customization.dir</keyword> parameter
+        to <filepath>C:\Customization</filepath>.</li>
     </ol>
-    <p>There are other ways in which you could directly modify the XSL stylesheets from the DITA OT
-      but this customization gives you
-      <?oxy_comment_start author="Mark" timestamp="20141009T111756-0400" comment="How exactly does it do this? Does this mean you would not have to update your customization directory for an OT upgrade?"?>flexibility
-      to future DITA OT upgrades<?oxy_comment_end?> in <ph keyref="product"/>.</p>
   </body>
   <related-links>
-        <link href="http://dita-generator-hrd.appspot.com/pdf-plugin/" format="html"
+    <link href="http://dita-generator-hrd.appspot.com/pdf-plugin/" format="html" scope="external">
+      <linktext>Automatic PDF plugin customization generator by Jarno Elovirta.</linktext>
+    </link>
+        <link href="http://www.dita-ot.org/1.8/readme/dita2pdf-customization.html" format="html"
             scope="external">
-            <linktext>Automatic PDF plugin customization generator by Jarno Elovirta.</linktext>
+            <linktext>DITA OT Documentation - PDF Customization Plugin</linktext>
         </link>
-  </related-links>  
+  </related-links>
 </topic>
