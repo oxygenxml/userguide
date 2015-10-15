@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webapp-how-to-create-doc">
+  <title>How to Create and Open Documents for Configured Plugins</title>
+  <body>
+    <p>The <ph keyref="webappProduct"/> has a user-friendly <uicontrol>Dashboard</uicontrol> and if
+      a particular plugin registers a create or open action, then it will include sections for
+      creating and opening documents for plugin integrations.</p>
+    <section><title>Register Create and Open actions for <ph keyref="webappProduct"/>
+        <uicontrol>Dashboard</uicontrol></title>To register <i>Create</i> and <i>Open</i> actions,
+      follow these steps:<ol>
+        <li><xref href="../tasks/webapp-plugin-prototyping.dita#webapp-plugin-prototyping">Create a
+            plugin</xref> that has a <filepath>plugin.js</filepath> file in its
+            <filepath>web</filepath> folder.</li>
+        <li>In the <filepath>plugin.js</filepath> file, add code similar to the following
+            example:<codeblock outputclass="language-javascript">// The base url to browse.
+var initialUrl = 'file:/[PATH_TO_RESOURCE_FOLDER]';
+
+var createAction = new sync.api.CreateDocumentAction(
+    new sync.api.FileBrowsingDialog({initialUrl : initialUrl}));
+createAction.setActionName('New Document');
+
+var openAction =new sync.actions.OpenAction(
+    new sync.api.FileBrowsingDialog({initialUrl : initialUrl}));
+openAction.setActionName('Open Document');
+
+var actionsManager = workspace.getActionsManager();
+actionsManager.registerCreateAction(createAction);
+actionsManager.registerOpenAction(openAction);</codeblock><note>This
+            example will provide browsing capabilities on your local file system. More complex
+            connectors can be implemented using our Java and <xref
+              href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/"
+              format="html" scope="external">JavaScript API</xref>. Also, to see information for a
+            more complex example, you can also look at our <xref
+              href="https://github.com/oxygenxml/webapp-storage-services-integration" format="html"
+              scope="external"><ph keyref="webappProduct"/> storage services integration project
+              that is hosted on GitHub</xref>.</note></li>
+        <li><xref href="customizing_plugins.dita#customizing_plugins/add-plugin-section">Deploy the
+            plugin</xref> in the <ph keyref="webappProduct"/>.</li>
+      </ol>The registered <i>create</i> action will appear in the <uicontrol>New</uicontrol> section
+      on your <uicontrol>Dashboard</uicontrol>, while a registered <i>open</i> action will appear in
+      the <uicontrol>Open</uicontrol> section.</section>
+    <section><title>Create a New Document</title>To create a new document, follow these steps:<ol>
+        <li>Go to your <ph keyref="webappProduct"/>
+          <uicontrol>Dashboard</uicontrol> page.</li>
+        <li>Click the <uicontrol>New Document</uicontrol> action in the <uicontrol>New</uicontrol>
+          section. This opens a dialog box that allows you to select a new file template.</li>
+        <li>Select a file template click <uicontrol>OK</uicontrol>. This opens a dialog box that
+          allows you browse for a destination path.</li>
+        <li>Select a destination path and name for the new document.</li>
+      </ol>The new document will be opened in a new tab.</section>
+    <section><title>Open a Document</title>To open a document, follow these steps:<ol>
+        <li>Go to your <ph keyref="webappProduct"/>
+          <uicontrol>Dashboard</uicontrol> page.</li>
+        <li>Click the <uicontrol>Open Document</uicontrol> action in the <uicontrol>Open</uicontrol>
+          section. This opens a dialog box that allows you to browse for a file.</li>
+        <li>Select the file and click <uicontrol>OK</uicontrol>.</li>
+      </ol>The selected document will be opened in a new tab.</section>
+  </body>
+</topic>
