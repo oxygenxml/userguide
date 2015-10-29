@@ -93,4 +93,63 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
+  
+  <sch:pattern>
+    <!-- Image without any kind of reference -->
+    <sch:rule context="*[contains(@class, ' topic/image ')]">
+      <sch:report test="not(@href) and not(@keyref) and not(@conref) and not(@conkeyref)"> Image without
+        a reference. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern>
+    <!-- Report ul after ul -->
+    <sch:rule context="*[contains(@class, ' topic/ul ')]">
+      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ul ')]" role="warn"> Two
+        consecutive unordered lists. You can probably merge them into one. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern>
+    <!-- Report ol after ol -->
+    <sch:rule context="*[contains(@class, ' topic/ol ')]">
+      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ol ')]" role="warn"> Two
+        consecutive ordered lists. You can probably merge them into one. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  <sch:pattern>
+    <!-- Report possible case in which a codeblock containg XML was not marked appropriately. -->
+    <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
+      <sch:report test="starts-with(text()[1], '&lt;') and not(@outputclass)"> Possible XML Codeblock
+        without @outputclass set to it. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern>
+    <!-- Most DITA elements should not be empty -->
+    <sch:rule
+      context="
+      *[not(contains(@class, ' topic/image '))]
+      [not(contains(@class, ' topic/colspec '))]
+      [not(contains(@class, ' map/topicref '))]
+      [not(contains(@class, ' topic/data '))]
+      [not(contains(@class, ' topic/vrm '))]
+      [not(contains(@class, ' topic/entry '))]
+      [not(contains(@class, ' topic/stentry '))]
+      [not(@conref)]
+      [not(@conkeyref)]
+      [not(@keyref)]
+      [not(@href)]
+      [not(ancestor::*[@conref or @conkeyref])]">
+      <sch:report test="not(node())"> Empty element. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  <sch:pattern>
+    <!--Tables with more entries than number of columns -->
+    <sch:rule context="*[contains(@class, ' topic/tgroup ')]">
+      <sch:assert
+        test="max(.//*[contains(@class, ' topic/row ')]/count(*[contains(@class, ' topic/entry ')])) = @cols"
+        > Maximum number of entries must equal cols attribute specified on table.. </sch:assert>
+    </sch:rule>
+  </sch:pattern>
 </sch:schema>
