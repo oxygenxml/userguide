@@ -126,6 +126,14 @@
   </sch:pattern>
   
   <sch:pattern>
+    <!-- Report two consecutive note -->
+    <sch:rule context="*[contains(@class, ' topic/note ')]">
+      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/note ')] and 
+        @type=following-sibling::node()[1]/@type" role="warn"> Try to avoid inserting two consecutive notes with the same type. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern>
     <!-- Most DITA elements should not be empty -->
     <sch:rule
       context="
