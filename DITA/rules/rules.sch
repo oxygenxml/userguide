@@ -126,10 +126,10 @@
   </sch:pattern>
   
   <sch:pattern>
-    <!-- Report two consecutive note -->
+    <!-- Report two consecutive note elements -->
     <sch:rule context="*[contains(@class, ' topic/note ')]">
-      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/note ')] and 
-        @type=following-sibling::node()[1]/@type" role="warn"> Try to avoid inserting two consecutive notes with the same type. </sch:report>
+      <sch:report test="preceding-sibling::node()[1][contains(@class, ' topic/note ')] and 
+        @type=preceding-sibling::node()[1]/@type" role="warn"> Try to avoid inserting two consecutive notes with the same type. </sch:report>
     </sch:rule>
   </sch:pattern>
   
