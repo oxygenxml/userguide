@@ -5,49 +5,49 @@
   <body>
     <p>Along with the built-in support for various useful URL protocols (such as HTTP or FTP), <ph
         keyref="product"/> also provides special support for a <i>convert</i> protocol that can be
-      used to chain predefined processors to import content from various sources dynamically.</p>
-    <p>A dynamic conversion URL chains various processors that can be applied in sequence on a
-      target resource and has the following general
+      used to chain predefined processors to dynamically import content from various sources.</p>
+    <p>A <term>dynamic conversion URL</term> chains various processors that can be applied, in
+      sequence, on a target resource and has the following general
       syntax:<codeblock>convert:/processor=xslt;ss=urn:processors:excel2d.xsl/processor=excel!/urn:files:sample.xls</codeblock></p>
-    <p>The previous example first applies a processor called <codeph>excel</codeph> on a target
-      identified by the identifier <filepath>urn:files:sample.xls</filepath> and converts the <tm
+    <p>The previous example first applies a processor (<codeph>excel</codeph>) on a target
+      identified by the identifier (<filepath>urn:files:sample.xls</filepath>) and converts the <tm
         tmtype="tm">Excel</tm> resource to XML. The second applied processor (<codeph>xslt</codeph>)
       applies an XSLT stylesheet identified using the identifier
-        <filepath>urn:processors:excel2d.xsl</filepath> over the content resulting from the first
+        (<filepath>urn:processors:excel2d.xsl</filepath>) over the resulting content  from the first
       applied processor. These identifiers are all mapped to real resources on disk via an <term>XML
         catalog</term> that is configured in the application, as in the following
       example:<codeblock outputclass="language-xml">&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
 	&lt;rewriteURI uriStartString="urn:files:" rewritePrefix="./resources/"/>
 	&lt;rewriteURI uriStartString="urn:processors:" rewritePrefix="./processors/"/>
 &lt;/catalog></codeblock></p>
-    <p>The target resource part of the conversion URL must always follow the <i>!/</i> pattern. It
-      can be:<ul id="ul_hbw_t3j_25">
-        <li>An absolute URL pointing to a resource.</li>
-        <li>An identifier which will be resolved via the XML Catalog support in the application to
-          an actual resource. In the example above the <b>urn:files:sample.xls</b> target resource
-          is resolved via the XML catalog.</li>
+    <p>The target resource part of the conversion URL must always follow the <codeph>!/</codeph>
+      pattern. It can be any of the following:<ul id="ul_hbw_t3j_25">
+        <li>An absolute URL that points to a resource.</li>
+        <li>An identifier that will be resolved to an actual resource via the XML Catalog support in
+          the application. In the example above, the <b>urn:files:sample.xls</b> target resource is
+          resolved via the XML catalog.</li>
         <li>
           <p>A relative location. This location can only be resolved to an actual resource URL when
-            the application has enough information about the place where the URL is referenced. </p>
-          <p>For example if I have a DITA Map with a topicref
+            the application has enough information about the location where the URL is referenced. </p>
+          <p><i>For example</i>, for a DITA map with a <codeph>topicref</codeph>
             like:<codeblock outputclass="language-xml">&lt;topicref href="convert:/.../processor=excel!/resources/sample.xls"/></codeblock>the
-            path <filepath>resources/sample.xls</filepath> will be resolved relative to the DITA Map
-            location.</p>
+              <filepath>resources/sample.xls</filepath> path will be resolved relative to the DITA
+            map location.</p>
         </li>
       </ul></p>
     <p>This type of URL can be opened in the application by using the <uicontrol>Open
         URL</uicontrol> action from the <uicontrol>File</uicontrol> menu. It can also be referenced
-      from existing XML resources via <i>xi:include</i> or from <term>DITA maps</term> as topic
-      references.</p>
+      from existing XML resources via <codeph>xi:include</codeph> or as a topic reference from a
+        <term>DITA map</term>.</p>
     <p>A <i>GitHub</i> project that contains various dynamic conversion samples for producing DITA
       content from various sources (and then publishing it) can be found here: <xref
         href="https://github.com/oxygenxml/dita-glass" format="html" scope="external"/>.</p>
     <section>
       <title>Conversion Processors</title>
-      <p>A set of predefined conversion processors is provided in <ph keyref="product"/> out-of-the
-        box. Each processor has its own parameters that can be set to control the behavior of the
-        conversion process. All parameters that are resolved to resources are passed through the XML
-        catalog mapping.</p>
+      <p>A set of predefined conversion processors is provided in <ph keyref="product"/>. Each
+        processor has its own parameters that can be set to control the behavior of the conversion
+        process. All parameters that are resolved to resources are passed through the XML catalog
+        mapping.</p>
       <p>The following predefined conversion processors are included:<ul id="ul_r4y_5x2_mr">
           <li><b><codeph>xslt</codeph> Processor</b> - Converts an XML input using XSLT 2.0
             processing. The <codeph>ss</codeph> parameter indicates the stylesheet resource to be
@@ -58,15 +58,15 @@
             All other specified parameters will be set as parameters to the XSLT
             transformation.<codeblock>convert:/<b>processor=xquery;ss=urn:processors:convert.xquery;p1=v1</b>!/urn:files:sample.xml</codeblock></li>
           <li><b><codeph>excel</codeph> Processor</b> - Converts an <tm tmtype="tm">Excel</tm> input
-            to an XML format that can be later converted by other piped processors. It has a single
+            to an XML format that can later be converted by other piped processors. It has a single
             parameter <codeph>sn</codeph>, which indicates the name of the sheet that needs to be
             converted. If this parameter is missing, the XML will contain the combined content of
             all sheets included in the <tm tmtype="tm">Excel</tm> document.
             <codeblock>convert:/<b>processor=excel;sn=test</b>!/urn:files:sample.xls</codeblock></li>
           <li><b><codeph>java</codeph> Processor</b> - Converts an input to another format by
-            applying a specific Java method. The <codeph>jars</codeph> parameter is a comma
-            separated list of JAR libraries or folders, from which libraries will be loaded. The
-              <codeph>ccn</codeph> parameter is the fully qualified name of the conversion class
+            applying a specific Java method. The <codeph>jars</codeph> parameter is a
+            comma-separated list of JAR libraries or folders, from which libraries will be loaded.
+            The <codeph>ccn</codeph> parameter is the fully qualified name of the conversion class
             that will be instantiated. The conversion class needs to have a method with the
             following
             signature:<codeblock>  public void convert(String systemID, String originalSourceSystemID, InputStream is, 
