@@ -109,7 +109,15 @@
         consecutive unordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
-  
+
+  <sch:pattern>
+    <!-- Report dl after dl -->
+    <sch:rule context="*[contains(@class, ' topic/dl ')]">
+      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/dl ')]" role="warn"> Two
+        consecutive definition lists. You can probably merge them into one. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+
   <sch:pattern>
     <!-- Report ol after ol -->
     <sch:rule context="*[contains(@class, ' topic/ol ')]">
