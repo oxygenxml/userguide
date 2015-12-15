@@ -42,7 +42,7 @@
       to the user in case the fragment appears at the end of the the
       specified element.</p>
     <rule context="$element">
-      <assert test="not(ends-with(normalize-space(.), '$fragment'))"
+      <assert test="not(ends-with(normalize-space(.), '$fragment')) or local-name(node()[last()]) = 'codeblock'"
         role="warn" sqf:fix="avoidEndFragment_delete">
         <value-of select="'$message'"/>
       </assert>
