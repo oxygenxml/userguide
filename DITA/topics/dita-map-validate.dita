@@ -12,94 +12,149 @@
     </metadata>
   </prolog>
   <body>
-    <p><xref href="../tasks/eppo-validate-map.dita#eppo-validate-map">The <uicontrol><image
-            href="../img/ValidateAndCheck16.png" id="image_bw5_12q_js"/>Validate and Check for
-          Completeness</uicontrol> action</xref> allows you to validate a DITA map and configure the
-      options for the validation process. You can find the <uicontrol><image
-          href="../img/ValidateAndCheck16.png" id="image_c3s_dvv_sr"/>Validate and Check for
-        Completeness</uicontrol> action in the toolbar of <xref
-        href="dita-maps-manager.dita#dita-maps-manager">the <uicontrol>DITA Maps Manager</uicontrol>
-        view</xref><ph product="author editor"> or in the <uicontrol>DITA Maps</uicontrol>
-      menu</ph>. Invoking this action opens the <uicontrol>DITA Map Completeness Check</uicontrol>
-      dialog box, which allows you to configure the DITA map validation.</p>
-    <section><title>Validation Process</title>The validation process of a DITA map includes the
-        following:<ul id="ul_qbl_3dx_js">
-        <li>Verifies that the file paths of the topic references are valid. For example, if an
-            <codeph>href</codeph> attribute points to an invalid file path, it is reported as an
-          error in the message panel at the bottom of the editor.</li>
-        <li>Validates each referenced topic and map. Each topic file is opened and validated against
-          the appropriate DITA DTD. If another DITA map is referenced in the main one, the
-          referenced DITA map is verified recursively, applying the same algorithm as for the main
-          map.</li>
-        <li>If errors or warnings are found, they are displayed in a separate message pane at the
-          bottom of the editor and clicking them takes you to the location of the error or warning
-          in the file where it was found.</li>
-      </ul></section>
-    <section><title>DITA Map Completeness Check Dialog Box</title><fig id="fig_tsy_zkx_js">
-        <image href="../img/sa_completeness_check.png" id="image_elf_clx_js" product="author editor"/>
-        <image href="../img/ec_completeness_check.png" id="image_zns_dlx_js"
-          product="authorEclipse editorEclipse"/>
-      </fig>You can configure the validation process with the following options that are available
-      in the <uicontrol>DITA Map Completeness Check</uicontrol> dialog box:<ul id="ul_afw_1kx_js">
-        <li><uicontrol>Batch validate referenced DITA resources</uicontrol> - This option decides
-          the level of validation that applies to referenced DITA files:<ul id="ul_bfw_1kx_js">
-            <li>If the check box is left unchecked (which is the default setting), the DITA files
-              will be validated using the rules defined in the DTD or XML Schema declared in the
-              document.</li>
-            <li>If the check box is checked, the DITA files will be validated using rules defined in
-              their associated <xref href="../concepts/validation-scenario.dita#validation-scenario"
-                >validation scenario</xref>.</li>
-          </ul></li>
-        <li><uicontrol>Check the existence of non-DITA references resources</uicontrol> - Extends
-          the validation of referenced resources to non-DITA files.<ul id="ul_t2x_pgq_js">
-            <li><uicontrol>Include remote resources</uicontrol> - Enable this option if you want to
-              check that remote referenced binary resources (like images, movie clips, ZIP archives)
-              exist at the specified location.</li>
-          </ul></li>
-        <li><uicontrol>Use DITAVAL filters</uicontrol> - The content of the map is filtered by
-          applying a <xref
-            href="dita-profiling-conditional-text.dita#dita-profiling-conditional-text"
-            format="dita">profiling condition set</xref> before validation. You can choose between
-          the following options:<ul id="ul_k2l_z33_kd">
-            <li><uicontrol>From the current condition set</uicontrol> - The map is filtered using
-              the condition set applied currently in the <uicontrol>DITA Maps Manager</uicontrol>
-              view. Clicking the <uicontrol><image href="../img/HelpToc16.png" id="image_lss_jkx_js"
-                />Details</uicontrol> icon opens a topic in the <ph keyref="product"/> user guide
-              that explains how to create a profiling condition set.</li>
-            <li><uicontrol>From all available condition sets</uicontrol> - For each available
-              condition set, the map content is filtered using the condition set before
-              validation.</li>
-            <li><uicontrol>From the associated transformation scenario</uicontrol> - The filtering
-              condition set is specified explicitly as a DITAVAL file in the current transformation
-              scenario associated with the DITA map.</li>
-            <li><uicontrol>Other DITAVAL files</uicontrol> -For each DITAVAL file from this list,
-              the map content is filtered using the DITAVAL file before validation. Use the
-                <uicontrol>Add</uicontrol> or <uicontrol>Remove</uicontrol> buttons to configure the
-              list.</li>
-          </ul></li>
-        <li><uicontrol>Check for duplicate topic IDs within the DITA map context</uicontrol> -
-          Checks for multiple topics with the same ID in the context of the entire map.</li>
-        <li><uicontrol>Report links to topics not referenced in DITA maps</uicontrol> - Checks that
-          all referenced topics are linked in the DITA map.</li>
-        <li><uicontrol>Identify possible conflicts in profile attribute values</uicontrol> - When
-          the profiling attributes of a topic contain values that are not found in parent topic
-          profiling attributes, the content of the topic is overshadowed when generating profiled
-          output. This option reports these possible conflicts.</li>
-        <li><uicontrol>Report attributes and values that conflict with profiling
-            preferences</uicontrol> - Looks for profiling attributes and values not defined in the
-            <xref href="preferences-profiling-conditions.dita#preferences-profiling-conditions"
-            format="dita">Profiling / Conditional Text</xref> preferences page (you can click the
-            <image href="../img/Options16.png" id="image_rv2_rhq_js" product="author editor"/><image
-            href="../img/OptionsShortcut16.gif" id="image_ns4_rhq_js"
-            product="authorEclipse editorEclipse"/> button to open this preferences page). It also
-          checks if profiling attributes defined as <i>single-value</i> have multiple values set in
-          the searched topics.</li>
-        <li><uicontrol>Additional schematron checks</uicontrol> - Allows you to select a Schematron
-          schema that <ph keyref="product"/> uses for the validation of DITA resources.</li>
-      </ul></section>
+    <p>You should validate your maps regularly to make sure that your topics are valid, and all of
+      the relationships between them are working. Changing one topic, image, or piece of metadata
+      may create errors in references that rely on them. You may not discover these problems all at
+      once. Validate your map to catch all of these kinds of problems. The longer you wait between
+      validating your maps, the more difficult it may be to detect and correct any errors you
+      find.</p>
+    <section>
+      <title>Validating a DITA Map</title>
+      <p>To validate a DITA, follow these steps:<ol>
+          <li>In <xref href="../topics/dita-maps-manager.dita#dita-maps-manager">the <uicontrol>DITA
+                Maps Manager</uicontrol> view</xref>, make sure that the tab that holds your
+              <term>root map</term> is selected and that the <uicontrol>Root map</uicontrol>
+            selection is set either to the name of your <term>root map</term> or to
+              <codeph>&lt;current map></codeph>.</li>
+          <li>It is a good practice to refresh your DITA map before running the validation process.
+            To do so, select the DITA map in the <uicontrol>DITA Maps Manager</uicontrol> view and
+            click <uicontrol product="author editor"><image href="../img/Refresh16.png"
+                id="image_xgc_wcq_js"/>Reload (<shortcut>F5</shortcut>)</uicontrol><menucascade
+              product="authorEclipse editorEclipse">
+              <uicontrol>File</uicontrol>
+              <uicontrol>Refresh (<shortcut>F5</shortcut>)</uicontrol>
+            </menucascade>.</li>
+          <li>Click the <uicontrol><image href="../img/ValidateAndCheck16.png" id="image_q3v_2vv_sr"
+              />Validate and Check for Completeness</uicontrol> button on the <uicontrol>DITA Maps
+              Manager</uicontrol> toolbar to open the <xref
+              href="#dita-map-validate/dita-map-completeness-dialog" format="dita"><uicontrol>DITA
+                Map Completeness Check</uicontrol> dialog box</xref>.</li>
+          <li>If you are using profiling, check the <uicontrol>Use DITAVAL filters</uicontrol> box
+            and select the appropriate option.</li>
+          <li>Select any other options you want to check.</li>
+          <li>Click <uicontrol>Check</uicontrol> to run the validation process.</li>
+        </ol></p>
+    </section>
+    <section>
+      <title>Validation Process</title>
+      <p>The validation process of a DITA map includes the following:<ul id="ul_qbl_3dx_js">
+          <li>Verifies that the file paths of the topic references are valid. For example, if an
+              <codeph>href</codeph> attribute points to an invalid file path, it is reported as an
+            error in the message panel at the bottom of the editor.</li>
+          <li>Validates each referenced topic and map. Each topic file is opened and validated
+            against the appropriate DITA DTD. If another DITA map is referenced in the main one, the
+            referenced DITA map is verified recursively, applying the same algorithm as for the main
+            map.</li>
+          <li>If errors or warnings are found, they are displayed in a separate message pane at the
+            bottom of the editor and clicking them takes you to the location of the error or warning
+            in the file where it was found.</li>
+        </ul></p>
+    </section>
+    <section id="dita-map-completeness-dialog">
+      <title>DITA Map Completeness Check Dialog Box</title>
+      <p>The <uicontrol>DITA Map Completeness Check</uicontrol> dialog box allows you to configure
+        the DITA map validation.<fig id="fig_tsy_zkx_js">
+          <image href="../img/sa_completeness_check.png" id="image_elf_clx_js"
+            product="author editor"/>
+        </fig><fig id="fig_tsy_zkx_js2">
+          <image href="../img/ec_completeness_check.png" id="image_zns_dlx_js"
+            product="authorEclipse editorEclipse"/>
+        </fig> You can configure the validation process with the following options that are
+        available in the <uicontrol>DITA Map Completeness Check</uicontrol> dialog box:<dl>
+          <dlentry>
+            <dt><uicontrol>Batch validate referenced DITA resources</uicontrol></dt>
+            <dd>This option decides the level of validation that applies to referenced DITA
+                files:<ul id="ul_bfw_1kx_js">
+                <li>If the check box is left unchecked (which is the default setting), the DITA
+                  files will be validated using the rules defined in the DTD or XML Schema declared
+                  in the document.</li>
+                <li>If the check box is checked, the DITA files will be validated using rules
+                  defined in their associated <xref
+                    href="../concepts/validation-scenario.dita#validation-scenario">validation
+                    scenario</xref>.</li>
+              </ul></dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Check the existence of non-DITA references resources</uicontrol></dt>
+            <dd>Extends the validation of referenced resources to non-DITA files.<dl>
+                <dlentry>
+                  <dt><uicontrol>Include remote resources</uicontrol></dt>
+                  <dd>Enable this option if you want to check that remote referenced binary
+                    resources (like images, movie clips, ZIP archives) exist at the specified
+                    location.</dd>
+                </dlentry>
+              </dl></dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Use DITAVAL filters</uicontrol></dt>
+            <dd>The content of the map is filtered by applying a <xref
+                href="dita-profiling-conditional-text.dita#dita-profiling-conditional-text"
+                format="dita">profiling condition set</xref> before validation. You can choose
+              between the following options:<ul id="ul_k2l_z33_kd">
+                <li><uicontrol>From the current condition set</uicontrol> - The map is filtered
+                  using the condition set applied currently in the <uicontrol>DITA Maps
+                    Manager</uicontrol> view. Clicking the <uicontrol><image
+                      href="../img/HelpToc16.png" id="image_lss_jkx_js"/>Details</uicontrol> icon
+                  opens a topic in the <ph keyref="product"/> user guide that explains how to create
+                  a profiling condition set.</li>
+                <li><uicontrol>From all available condition sets</uicontrol> - For each available
+                  condition set, the map content is filtered using the condition set before
+                  validation.</li>
+                <li><uicontrol>From the associated transformation scenario</uicontrol> - The
+                  filtering condition set is specified explicitly as a DITAVAL file in the current
+                  transformation scenario associated with the DITA map.</li>
+                <li><uicontrol>Other DITAVAL files</uicontrol> -For each DITAVAL file from this
+                  list, the map content is filtered using the DITAVAL file before validation. Use
+                  the <uicontrol>Add</uicontrol> or <uicontrol>Remove</uicontrol> buttons to
+                  configure the list.</li>
+              </ul></dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Check for duplicate topic IDs within the DITA map
+              context</uicontrol></dt>
+            <dd>Checks for multiple topics with the same ID in the context of the entire map.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Report links to topics not referenced in DITA maps</uicontrol></dt>
+            <dd>Checks that all referenced topics are linked in the DITA map.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Identify possible conflicts in profile attribute values</uicontrol></dt>
+            <dd>When the profiling attributes of a topic contain values that are not found in parent
+              topic profiling attributes, the content of the topic is overshadowed when generating
+              profiled output. This option reports these possible conflicts.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Report attributes and values that conflict with profiling
+                preferences</uicontrol></dt>
+            <dd>Looks for profiling attributes and values not defined in the <xref
+                href="preferences-profiling-conditions.dita#preferences-profiling-conditions"
+                format="dita">Profiling / Conditional Text</xref> preferences page (you can click
+              the <image href="../img/Options16.png" id="image_rv2_rhq_js" product="author editor"
+                /><image href="../img/OptionsShortcut16.gif" id="image_ns4_rhq_js"
+                product="authorEclipse editorEclipse"/> button to open this preferences page). It
+              also checks if profiling attributes defined as <i>single-value</i> have multiple
+              values set in the searched topics.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Additional schematron checks</uicontrol></dt>
+            <dd>Allows you to select a Schematron schema that <ph keyref="product"/> uses for the
+              validation of DITA resources.</dd>
+          </dlentry>
+        </dl></p>
+    </section>
   </body>
   <related-links>
     <link keyref="dita_edit-maps"/>
-    <link href="../tasks/eppo-validate-map.dita#eppo-validate-map"/>
   </related-links>
 </topic>

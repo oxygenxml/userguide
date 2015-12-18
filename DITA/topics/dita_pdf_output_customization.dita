@@ -2,6 +2,13 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dita_pdf_output_customization">
   <title>Creating a Customization Directory for PDF Output</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>custom DITA to PDF output</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
     <p>DITA Open Toolkit PDF output can be customized in several ways: <ul id="ol_d4n_s5y_1j">
         <li>Creating a DITA Open Toolkit plugin which adds extensions to the PDF plugin. More
@@ -10,31 +17,33 @@
         <li>Creating a customization directory and using it from the PDF transformation scenario. A
           small example of this procedure can be found below.</li>
       </ul></p>
-    <p>The following procedure explains how to do a basic customization of the PDF output by setting
-      up a customization directory. An example of a common use case is embedding a company logo
-      image in the front matter of the book.</p>
-    <ol>
-      <li>Copy the entire directory:
-        <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\org.dita.pdf2\Customization</filepath>
-        to another location (for instance, <filepath>C:\Customization</filepath>).</li>
-      <li>Copy your logo image to:
-        <filepath>C:\Customization\common\artwork\logo.png</filepath>.</li>
-      <li>Rename <filepath>C:\Customization\catalog.xml.orig</filepath> to:
-          <filepath>C:\Customization\catalog.xml</filepath>.</li>
-      <li>Open the <filepath>catalog.xml</filepath> in <ph keyref="product"/> and <i>uncomment</i>
-        this line:
-          <codeblock outputclass="language-xml">  &lt;!--uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/--&gt;   </codeblock><p>So
-          now it looks like
-        this:</p><codeblock outputclass="language-xml">&lt;uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/></codeblock></li>
-      <li> Rename the file: <filepath> C:\Customization\fo\xsl\custom.xsl.orig</filepath> to:
-          <filepath>C:\Customization\fo\xsl\custom.xsl</filepath>
-      </li>
-      <li> Open the <filepath>custom.xsl</filepath> file in <ph keyref="product"/> and create the
-        template called <keyword>createFrontMatter_1.0</keyword>. This will override the same
-        template from the
-        <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath>.
-        Now, <filepath>custom.xsl</filepath> has the following content:
-        <codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
+    <section>
+      <title>How to Create a Customization Directory for PDF Output</title>
+      <p>The following procedure explains how to do a basic customization of the PDF output by
+        setting up a customization directory. An example of a common use case is embedding a company
+        logo image in the front matter of the book.</p>
+      <ol>
+        <li>Copy the entire directory: <filepath><term keyref="glossentry_dita_ot_dir"
+            />\plugins\org.dita.pdf2\Customization</filepath> to another location (for instance,
+            <filepath>C:\Customization</filepath>).</li>
+        <li>Copy your logo image to:
+          <filepath>C:\Customization\common\artwork\logo.png</filepath>.</li>
+        <li>Rename <filepath>C:\Customization\catalog.xml.orig</filepath> to:
+            <filepath>C:\Customization\catalog.xml</filepath>.</li>
+        <li>Open the <filepath>catalog.xml</filepath> in <ph keyref="product"/> and <i>uncomment</i>
+          this line:
+            <codeblock outputclass="language-xml">  &lt;!--uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/--&gt;   </codeblock><p>So
+            now it looks like
+          this:</p><codeblock outputclass="language-xml">&lt;uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/></codeblock></li>
+        <li> Rename the file: <filepath> C:\Customization\fo\xsl\custom.xsl.orig</filepath> to:
+            <filepath>C:\Customization\fo\xsl\custom.xsl</filepath>
+        </li>
+        <li> Open the <filepath>custom.xsl</filepath> file in <ph keyref="product"/> and create the
+          template called <keyword>createFrontMatter_1.0</keyword>. This will override the same
+          template from the <filepath><term keyref="glossentry_dita_ot_dir"
+            />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath>. Now,
+            <filepath>custom.xsl</filepath> has the following content:
+          <codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:fo="http://www.w3.org/1999/XSL/Format"
     version="1.1">
@@ -82,10 +91,11 @@
         &lt;xsl:call-template name="createNotices"/>
     &lt;/xsl:template>
 &lt;/xsl:stylesheet></codeblock></li>
-      <li>Edit the <uicontrol>DITA Map to PDF</uicontrol> transformation scenario and in the
-          <keyword>Parameters</keyword> tab, set the <keyword>customization.dir</keyword> parameter
-        to <filepath>C:\Customization</filepath>.</li>
-    </ol>
+        <li>Edit the <uicontrol>DITA Map to PDF</uicontrol> transformation scenario and in the
+            <keyword>Parameters</keyword> tab, set the <keyword>customization.dir</keyword>
+          parameter to <filepath>C:\Customization</filepath>.</li>
+      </ol>
+    </section>
   </body>
   <related-links>
     <link href="http://dita-generator-hrd.appspot.com/pdf-plugin/" format="html" scope="external">

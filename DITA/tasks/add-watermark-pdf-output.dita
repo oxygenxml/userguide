@@ -11,32 +11,32 @@
     </metadata>
   </prolog>
   <taskbody>
-    <context>
-      <p>To add a watermark to the PDF output of a DITA map transformation, create a DITA-OT
-        customization directory and use it from a DITA to PDF transformation scenario:<ol>
-          <li>Copy the entire directory: <filepath><term keyref="glossentry_dita_ot_dir"
-              />\plugins\org.dita.pdf2\Customization</filepath> to another location (for instance,
-              <filepath>C:\Customization</filepath>).</li>
-          <li>Copy your watermark image (let us suppose that its name is
-              <filepath>watermark.png</filepath>) to:
-              <filepath>C:\Customization\common\artwork\watermark.png</filepath>.</li>
-          <li>Rename the <filepath>C:\Customization\catalog.xml.orig</filepath> file to:
-              <filepath>C:\Customization\catalog.xml</filepath>.</li>
-          <li>Open the <filepath>catalog.xml</filepath> in <ph keyref="product"/> and
-              <i>uncomment</i> this line:
-              <codeblock outputclass="language-xml">&lt;!--uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/--&gt; </codeblock><p>The
-              uncommented line should look like
-            this:</p><codeblock outputclass="language-xml">&lt;uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/></codeblock></li>
-          <li>Rename the file: <filepath> C:\Customization\fo\xsl\custom.xsl.orig</filepath> to:
-              <filepath>C:\Customization\fo\xsl\custom.xsl</filepath></li>
-          <li>Open the <filepath>C:\Customization\fo\xsl\custom.xsl</filepath> file in <ph
-              keyref="product"/> to overwrite two XSLT templates:<ul>
-              <li>The first template is located in the XSLT stylesheet <filepath><term
-                    keyref="glossentry_dita_ot_dir"
-                  />\plugins\org.dita.pdf2\xsl\fo\static-content.xsl</filepath> and we override it
-                specifying a watermark image for every page in the PDF content, using a
-                  <term>block-container</term> element that references the watermark image
-                file:<codeblock outputclass="language-xml">&lt;fo:static-content flow-name="odd-body-header">
+    <context>To add a watermark to the PDF output of a DITA map transformation, create a DITA-OT
+      customization directory and use it from a DITA to PDF transformation scenario, as in the
+      following procedure:<ol>
+        <li>Copy the entire directory: <filepath><term keyref="glossentry_dita_ot_dir"
+            />\plugins\org.dita.pdf2\Customization</filepath> to another location (for instance,
+            <filepath>C:\Customization</filepath>).</li>
+        <li>Copy your watermark image (let us suppose that its name is
+            <filepath>watermark.png</filepath>) to:
+            <filepath>C:\Customization\common\artwork\watermark.png</filepath>.</li>
+        <li>Rename the <filepath>C:\Customization\catalog.xml.orig</filepath> file to:
+            <filepath>C:\Customization\catalog.xml</filepath>.</li>
+        <li>Open the <filepath>catalog.xml</filepath> in <ph keyref="product"/> and <i>uncomment</i>
+          this line:
+            <codeblock outputclass="language-xml">&lt;!--uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/--&gt; </codeblock><p>The
+            uncommented line should look like
+          this:</p><codeblock outputclass="language-xml">&lt;uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/></codeblock></li>
+        <li>Rename the file: <filepath> C:\Customization\fo\xsl\custom.xsl.orig</filepath> to:
+            <filepath>C:\Customization\fo\xsl\custom.xsl</filepath></li>
+        <li>Open the <filepath>C:\Customization\fo\xsl\custom.xsl</filepath> file in <ph
+            keyref="product"/> to overwrite two XSLT templates:<ul>
+            <li>The first template is located in the XSLT stylesheet <filepath><term
+                  keyref="glossentry_dita_ot_dir"
+                />\plugins\org.dita.pdf2\xsl\fo\static-content.xsl</filepath> and we override it
+              specifying a watermark image for every page in the PDF content, using a
+                <term>block-container</term> element that references the watermark image
+              file:<codeblock outputclass="language-xml">&lt;fo:static-content flow-name="odd-body-header">
             &lt;fo:block-container absolute-position="absolute"
                 top="-2cm" left="-3cm" width="21cm" height="29.7cm"
                 background-image="{concat($artworkPrefix, '/Customization/OpenTopic/common/artwork/watermark.png')}">
@@ -65,13 +65,13 @@
         &lt;/fo:static-content>
         
     &lt;/xsl:template></codeblock></li>
-              <li>The second template that we override is located in the XSLT stylesheet
-                    <filepath><term keyref="glossentry_dita_ot_dir"
-                  />\plugins\org.dita.pdf2\xsl\fo\commons.xsl</filepath> and is used for styling the
-                first page of the output. We also override it by copying the original template
-                content in our <filepath>custom.xsl</filepath> and adding the
-                  <codeph>block-container</codeph> element that references the watermark image
-                file:<codeblock outputclass="language-xml">&lt;xsl:template name="createFrontMatter_1.0">
+            <li>The second template that we override is located in the XSLT stylesheet
+                  <filepath><term keyref="glossentry_dita_ot_dir"
+                />\plugins\org.dita.pdf2\xsl\fo\commons.xsl</filepath> and is used for styling the
+              first page of the output. We also override it by copying the original template content
+              in our <filepath>custom.xsl</filepath> and adding the <codeph>block-container</codeph>
+              element that references the watermark image
+              file:<codeblock outputclass="language-xml">&lt;xsl:template name="createFrontMatter_1.0">
         &lt;fo:page-sequence master-reference="front-matter" xsl:use-attribute-sets="__force__page__count">
             &lt;xsl:call-template name="insertFrontMatterStaticContents"/>
             &lt;fo:flow flow-name="xsl-region-body">
@@ -116,11 +116,13 @@
             &lt;xsl:call-template name="createNotices"/>
         &lt;/xsl:if>
     &lt;/xsl:template></codeblock></li>
-            </ul></li>
-          <li>Edit your <uicontrol>DITA Map to PDF</uicontrol> transformation scenario. In the
-              <keyword>Parameters</keyword> tab, set the <keyword>customization.dir</keyword>
-            parameter to <filepath>C:\Customization</filepath>.</li>
-        </ol></p>
-    </context>
+          </ul></li>
+        <li>Edit your <uicontrol>DITA Map to PDF</uicontrol> transformation scenario. In the
+            <keyword>Parameters</keyword> tab, set the <keyword>customization.dir</keyword>
+          parameter to <filepath>C:\Customization</filepath>.</li>
+      </ol></context>
   </taskbody>
+  <related-links>
+    <link href="add-watermark-xhtml-output.dita#add-watermark-xhtml-output"/>
+  </related-links>
 </task>
