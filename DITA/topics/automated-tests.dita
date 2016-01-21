@@ -1,50 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="automated-tests">
-  <title><?oxy_comment_start author="steven_higgs" timestamp="20150622T153218+0300" comment="Work with Alex on the TODO comment."?>Creating
-    and Running Automated Tests<?oxy_comment_end?></title>
+  <title>Creating and Running Automated Tests</title>
   <body>
-    <!--TODO: update this procedure to use Maven.-->
     <p>If you have developed complex custom plugins and/or document types the best way to test your
       implementation and insure that further changes will not interfere with the current behavior is
       to make automated tests for your customization.</p>
     <p>An <ph><ph keyref="product"/></ph> standalone installation comes with a main
-        <filepath>oxygen.jar</filepath> library located in the <filepath><term
-          conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>. That JAR library contains a
-      base class for testing developer customizations named
-        <apiname>ro.sync.exml.workspace.api.PluginWorkspaceTCBase</apiname>.</p>
+				<filepath>oxygen.jar</filepath> library located in the <filepath><term
+					conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>. That JAR library
+			contains a base class for testing developer customizations named
+				<apiname>ro.sync.exml.workspace.api.PluginWorkspaceTCBase</apiname>.</p>
     <p>To develop <apiname>JUnit</apiname> tests for your customizations using the <b>Eclipse</b>
       workbench, follow these steps:</p>
     <ol id="ol_g45_pdc_mh">
       <li>Create a new Eclipse Java project and copy to it the entire contents of the
-            <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>.</li>
+						<filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
+					/></filepath>.</li>
       <li>Add to the <uicontrol>Java Build Path</uicontrol>-><uicontrol>Libraries</uicontrol> tab
-        all JAR libraries present in the <filepath><term
-            conkeyref="reusables-user-guide/oxy-install-dir"/>/lib</filepath> directory. Make sure
-        that the main JAR library <filepath>oxygen.jar</filepath> or
-          <filepath>oxygenAuthor.jar</filepath> is the first one in the Java classpath by moving it
-        up in the <uicontrol>Order and Export</uicontrol> tab.</li>
+				all JAR libraries present in the <filepath><term
+						conkeyref="reusables-user-guide/oxy-install-dir"/>/lib</filepath> directory.
+				Make sure that the main JAR library <filepath>oxygen.jar</filepath> or
+					<filepath>oxygenAuthor.jar</filepath> is the first one in the Java classpath by
+				moving it up in the <uicontrol>Order and Export</uicontrol> tab.</li>
       <li>Click <b>Add Library</b> and add the <codeph>JUnit</codeph> libraries.</li>
       <li>Create a new Java class which extends
           <apiname>ro.sync.exml.workspace.api.PluginWorkspaceTCBase</apiname>.</li>
       <li>Pass on to the constructor of the super class the following parameters: <ul
           id="ul_dnz_3fc_mh">
+					<li><codeph>File installationFolder</codeph> - The file path to the main
+						application installation directory. If not specified, it defaults to the
+						folder where the test is started.</li>
           <li><codeph>File frameworksFolder</codeph> - The file path to the frameworks directory. It
             can point to a custom frameworks directory where the custom framework resides.</li>
           <li><codeph>File pluginsFolder</codeph> - The file path to the plugins directory. It can
             point to a custom plugins directory where the custom plugins resides.</li>
+					<li><codeph>File optionsFolder</codeph> - The folder which contains the
+						application options. If not specified, the application will auto-detect the
+						location based on the started product ID.</li>
           <li><codeph>String licenseKey</codeph> - The license key used to license the test
             class.</li>
+					<li><codeph>int productID</codeph> - The ID of the product which should start,
+						one of: <codeph>PluginWorkspaceTCBase.XML_AUTHOR_PRODUCT</codeph>,
+							<codeph>PluginWorkspaceTCBase.XML_EDITOR_PRODUCT</codeph> or
+							<codeph>PluginWorkspaceTCBase.XML_DEVELOPER_PRODUCT</codeph>.</li>
         </ul></li>
       <li>Create test methods which use the API in the base class to open XML files and perform
-        different actions on them. Your test class could look something
-        like:<codeblock outputclass="language-java">public class MyTestClass extends PluginWorkspaceTCBase {
+				different actions on them. Your test class could look something
+				like:<codeblock outputclass="language-java">public class MyTestClass extends PluginWorkspaceTCBase {
 	
 	/**
 	 * Constructor.
 	 */
 	public MyTestClass() throws Exception {
-		super(new File("frameworks"), new File("plugins"), 
+		super(null, new File("frameworks"), new File("plugins"), null, 
         "------START-LICENSE-KEY------\n" + 
 				"\n" + 
 				"Registration_Name=Developer\n" + 
@@ -65,7 +74,8 @@
 				"\n" + 
 				"SGN=MCwCFGNoEGJSeiC3XCYIyalvjzHhGhhqAhRNRDpEu8RIWb8icCJO7HqfVP4++A\\=\\=\n" + 
 				"\n" + 
-		"-------END-LICENSE-KEY-------");
+		"-------END-LICENSE-KEY-------", 
+    		PluginWorkspaceTCBase.XML_AUTHOR_PRODUCT);
 	}
 	
 	 /**
