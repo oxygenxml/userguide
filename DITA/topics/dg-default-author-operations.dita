@@ -348,65 +348,8 @@ returnif (not(empty($toProcess))) then
         <li><b><apiname>ShowElementDocumentationOperation</apiname></b><p>Opens the associated
             specification HTML page for the current element. The operation accepts as parameter an
             URL pattern that points to the HTML page containing the documentation.</p></li>
-        <li><b><apiname>XQueryUpdateOperation</apiname></b><p>An implementation of an operation that
-            applies an XQuery Update script. The changes are performed directly over the
-              <codeph>AuthorNode</codeph> model. The operation accepts the following parameter:<ul
-              id="ul_zhk_rjg_ps">
-              <li><b><apiname>script</apiname></b> - can be either an XQuery script or an URL
-                pointing to the XQuery update script (you can use <codeph>${framework}</codeph> and
-                  <codeph>${frameworkDir}</codeph> to refer scripts from the framework
-                directory).</li>
-            </ul></p><p>The script will be executed in the context of the cursor node. If the XQuery
-            script declares the <codeph>selection</codeph> variable, it will also receive the
-            selected nodes (assuming that the selection consists entirely of nodes). </p></li>
       </ul>
     </p>
-    <example>The following example makes use of the <codeph>selection</codeph> variable to convert
-      selected paragraphs into a
-      list:<codeblock outputclass="language-xquery">declare namespace oxyxq = "http://www.oxygenxml.com/ns/xqu";
-(: This variable will be linked to the selected nodes assuming that there are 
-actually fully selected nodes. For example this selection will return null: 
-&lt;p>{SEL_START}text{SEL_END} in para&lt;/p>
-but this will give two "p" elements:
-{SEL_END}&lt;p>text&lt;/p>&lt;p>text2&lt;/p>{SEL_END}
-
-If a multiple selection exists it will also be processed and forwarded. 
-Again, only fully selected nodes will be passed.
-:)
-declare variable $oxyxq:selection external;
-
-(: We will process either the selection or the context node :)
-let $toProcess := if (empty($oxyxq:selection)) then
-    (.)
-else
-    ($oxyxq:selection)
-
-return
-    if (not(empty($toProcess))) then
-        (
-        (: Create the list :)
-        let $ul :=
-        &lt;ul>
-            {
-                for $sel in $toProcess
-                return
-                    &lt;li>{$sel}&lt;/li>
-            }
-        &lt;/ul>
-        
-        return
-            (
-            (: Delete the processed nodes :)
-            for $sel in $toProcess
-            return
-                delete node $sel,
-            (: Inserts the constructed list :)
-            insert node $ul
-                before $toProcess[1]
-            )
-        )
-    else
-        ()</codeblock></example>
     <p>
       <ul>
         <li><b><apiname>RemovePseudoClassOperation</apiname></b><p>An operation that removes a
