@@ -812,28 +812,47 @@
           search over the entire file content, disable <uicontrol>Enable XML search
             options</uicontrol>.</note></li>
     </ul>
-    <!--Open/Find Resource Dialog-->
+    <!--Open/Find Resource-->
     <p>
       <note id="note-lucene-professional">Full support for searching in document edits is available
         only in the Enterprise edition of <ph keyref="product"/>. The Professional edition offers
         support to search through a maximum of 10 edits.</note>
-      <note id="note-case-insensitive">Searches are case insensitive. For example, if you search for
-          <term>car</term> you get the same results as when you search for <term>Car</term>.</note>
-      <note id="note-suffix-searches">Suffix searches are supported, both for searching in the
-        content of your resources and in their name. For this, you can use wildcards. If you search
-          <uicontrol>in content</uicontrol> for <userinput>*ing</userinput> you will find documents
-        that contain the word <term>presenting</term>. If you search <uicontrol>in file
-          paths</uicontrol> for <term>*/samples/*.gif</term> you will find all the <term>gif</term>
-        images from the <filepath>samples</filepath> directory.</note>
     </p>
-    <p id="contextual-menu-open-find-resource">A contextual menu available on each search result
-      provides actions applicable to the document that contains it. These actions allow you to:<ul>
-        <li>Open the document in one of <ph keyref="product"/> internal editors.</li>
-        <li>Open the document in an external system application.</li>
-        <li>Identify the document in the system file explorer.</li>
-        <li>Copy the file's location.</li>
+    <section id="search-results-section">
+      <title>Search Results</title>
+      <p>Search results are presented instantly, after you finish typing the content. The matching
+        fragments of text are highlighted in the results list displayed in the dialog box. When you
+        open one of the documents from the results list, the matching fragments of text are
+        highlighted in the editing area. To remove the highlighting from your document, close the
+        corresponding tab in the <xref href="../../topics/results-view.dita#results-view"
+            ><uicontrol>Results</uicontrol> view</xref> at the bottom of the editor. To display the
+        search history, position the cursor in the search field and press <uicontrol
+          conkeyref="reusable_oxygen_shortcuts_list/ctrl_down_arrow"/> or <uicontrol
+          conkeyref="reusable_oxygen_shortcuts_list/ctrl_up_arrow"/> on your keyboard. Pressing only
+        the <uicontrol conkeyref="reusable_oxygen_shortcuts_list/down_arrow"/> key moves the
+        selection to the list of results.<note id="note-case-insensitive">Searches are not case
+          sensitive. For example, if you search for <term>car</term> you get the same results as
+          when you search for <term>Car</term>.</note><note id="note-suffix-searches" type="tip"
+          >Suffix searches are also supported, both for searching in the content of your resources
+          and in their name. For this, you can use wildcards. If you search for
+            <userinput>*ing</userinput> with the <uicontrol>in content</uicontrol> option selected,
+          you will find documents that contain the word <term>presenting</term>. If you search for
+            <term>*/samples/*.gif</term> with the <uicontrol>in file paths</uicontrol> option
+          selected, you will find all the <term>gif</term> images from the
+            <filepath>samples</filepath> directory.</note></p>
+    </section>
+    <p id="contextual-menu-open-find-resource">A contextual menu is available on each search result
+      and provides actions applicable to that particular document. These actions include:<ul>
+        <li><uicontrol>Open</uicontrol> - Opens the document in one of <ph keyref="product"/>
+          internal editors.</li>
+        <li><uicontrol>Open with</uicontrol> - Allows you to choose to open the document in the
+            <uicontrol>Internal editor</uicontrol> or an external <uicontrol>System
+            application</uicontrol>.</li>
+        <li><uicontrol>Show in Explorer</uicontrol> - Identifies the document in the system file
+          explorer.</li>
+        <li><uicontrol>Copy Location</uicontrol> - Copies the file path and places it in the
+          clipboard.</li>
       </ul></p>
-    <!--Open/Find Resource dialog options-->
     <p><ph id="clear-index"><uicontrol>Clear Index</uicontrol> - Clears the index.</ph></p>
     <p><ph id="options" product="author developer editor"><uicontrol>Options</uicontrol> - Opens the
           <xref
@@ -849,9 +868,45 @@
         resources.</ph></p>
     <p><ph id="in-reviews" product="author developer editor"><xref
           href="../../topics/searching-in-reviews.dita#searching-in-reviews"><uicontrol>In
-            reviews</uicontrol></xref> - Select this option to search through the comments,
-        insertions, and deletion in your resources.</ph></p>
-    <p><ph id="reindex"><uicontrol>Reindex</uicontrol> - Reindexes your resources.</ph></p>
+            reviews</uicontrol></xref> - Select this option to search through the comments, tracked
+        change insertions/deletions, or highlights in your resources.</ph></p>
+    <p><ph id="reindex"><uicontrol>Reindex</uicontrol> - Use this option to reindex your
+        resources.</ph></p>
+    <section id="indexing-process-section"><title>Indexing Process</title><p>The content of the
+        resources used to search in is parsed from an index. The indexing is performed both
+        automatically and on request. Automatic indexing is performed when you modify, add, or
+        remove resources in the currently indexed project. If the index was never initialized, the
+        index in not updated on project changes.</p>To improve performance, the indexing process
+      skips the following set of common English words (the so-called <term>stop words</term>):
+        <term>a, an, and, are, as, at, be, but, by, for, if, in, into, is, it, no, not, of, on, or,
+        such, that, the, their, then, there, these, they, this, to, was, will, with</term>. This
+      means that if you are searching for any of these words, the indexing process will not be able
+      to match any of them.<ph> However, you can configure the list of <term>stop words</term> in
+        the <xref
+          href="../../topics/preferences-open-find-resources.dita#preferences-open-find-resources"
+            ><uicontrol>Open/Find Resource</uicontrol> preferences page</xref>.</ph></section>
+    <section id="caching-mechanism-section">
+      <title>Caching Mechanism</title>
+      <p>When you perform a search, a caching mechanism is used to gather the paths of all files
+        linked in the current project. When the first search is performed, all project files are
+        indexed and added to the cache. The next search operations use the information extracted
+        from the cache, thus improving the processing time. The cache is kept for the currently
+        loaded project only, so when you perform a search in a new project, the cache is rewritten.
+        Also, the cache is reset when you press the <uicontrol>Reindex</uicontrol> button.<note
+          type="important">Files larger than 2GB are not indexed.</note></p>
+      <p>If there is no file found that matches your file pattern or text search, a possible cause
+        is that the file you are searching for was added to the <ph keyref="product"/> project after
+        the last caching operation. In this case, re-indexing the project files with the
+          <uicontrol>Reindex</uicontrol> button enables the file to be found. The date and time of
+        the last index operation are displayed below the file list.</p>
+    </section>
+    <section id="open-results-section">
+      <title>Opening the Results</title>
+      <p>Once you find the files that you want to open, select them in the list and press the
+          <uicontrol>Open</uicontrol> button (or double-click them). Each of the selected files is
+        opened in <xref href="../../topics/preferences-file-types.dita#preferences-file-types"
+          format="dita">the editor associated with the type of the file</xref>.</p>
+    </section>
     <!--Manage IDs submenu-->
     <dl>
       <dlentry id="rename-in">
