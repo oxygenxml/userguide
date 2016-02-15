@@ -101,23 +101,7 @@
         a reference. </sch:report>
     </sch:rule>
   </sch:pattern>
-  
-  <sch:pattern>
-    <!-- Image with its parent different than "fig" -->
-    <sch:rule context="*[contains(@class, ' topic/image ')]">
-      <sch:report test="not(ancestor::fig) and  not(ancestor::uicontrol)"> Image without
-        a fig parent. </sch:report>
-    </sch:rule>
-  </sch:pattern>
-  
-  <sch:pattern>
-    <!-- Fig element without a title child element -->
-    <sch:rule context="*[contains(@class, ' topic/fig ')]">
-      <sch:report test="not(child::title)"> Fig element without a title child element.</sch:report>
-    </sch:rule>
-  </sch:pattern>
-  
-  
+ 
   <sch:pattern>
     <!-- Report ul after ul -->
     <sch:rule context="*[contains(@class, ' topic/ul ')]">
