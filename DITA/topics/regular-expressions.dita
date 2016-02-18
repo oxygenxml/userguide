@@ -3,9 +3,10 @@
 <topic id="regular-expressions">
   <title>Regular Expressions Syntax</title>
   <body>
-    <p><ph keyref="product"/> uses the Java regular expression syntax. It is <b>similar</b> to that
-      used in Perl 5, with several exceptions. Thus, <ph keyref="product"/> does not support the
-      following constructs:<ul>
+    <p><ph keyref="product"/> uses the <xref
+        href="http://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html" format="html"
+        scope="external">Java regular expression syntax</xref>. It is <b>similar</b> to that used in
+      Perl 5, with several exceptions. Thus, <ph keyref="product"/> does not support the following constructs:<ul>
         <li>The conditional constructs <codeph>(?{X})</codeph> and
               <codeph>(?(<i>condition</i>)<i>X</i>|<i>Y</i>)</codeph>.</li>
         <li>The embedded code constructs <codeph>(?{code})</codeph> and
@@ -13,6 +14,17 @@
         <li>The embedded comment syntax <codeph>(?#comment)</codeph>.</li>
         <li>The preprocessing operations <codeph>\l</codeph>, <codeph>\u</codeph>,
             <codeph>\L</codeph>, and <codeph>\U</codeph>.</li>
+      </ul></p>
+    <p>When using regular expressions, note that some sets of characters from <xref
+        href="https://www.w3.org/TR/xmlschema-2/#dt-ccesN" format="html" scope="external">XPath/XML
+        Schema/Schematron</xref> are slightly different than the ones used by <ph keyref="product"
+      />/Java in the text searches from the <uicontrol>Find/Replace</uicontrol> dialog boxes. The
+      most common example is with the <codeph>\w</codeph> and <codeph>\W</codeph> set of characters.
+      To ensure consistent results between the two, it is recommended that you use the following
+      constructs in the <uicontrol>Find/Replace</uicontrol> dialog boxes:<ul>
+        <li><b>/w</b> - <codeph>[#x0000-#x10FFFF]-[\p{P}\p{Z}\p{C}]</codeph> instead of
+            <codeph>\w</codeph></li>
+        <li><b>/W</b> - <codeph>[\p{P}\p{Z}\p{C}]</codeph> instead of <codeph>\W</codeph></li>
       </ul></p>
     <p>There are some other notable differences that may cause unexpected results, including the following:<ul>
         <li>In Perl, <codeph>\1</codeph> through <codeph>\9</codeph> are always interpreted as back
