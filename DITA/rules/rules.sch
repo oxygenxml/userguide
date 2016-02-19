@@ -232,6 +232,31 @@
     </sch:rule>
   </sch:pattern>
   
+  <!-- Add Ids to all sections, in this way you can easly refer the section from documentation -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/section ')]">
+      <sch:assert test="@id" sqf:fix="addId addIds" role="warn">All sections must have an @id attribute</sch:assert>
+      
+      <sqf:fix id="addId">
+        <sqf:description>
+          <sqf:title>Add @id to the current section</sqf:title>
+          <sqf:p>Add an @id attribute to the current section. The ID is generated from the section title.</sqf:p>
+        </sqf:description>
+        <sqf:add target="id" node-type="attribute"
+          select="if (title) then lower-case(replace(normalize-space(title/text()), '\s', '_')) else generate-id()"/>
+      </sqf:fix>
+      
+      <sqf:fix id="addIds">
+        <sqf:description>
+          <sqf:title>Add @id to all sections</sqf:title>
+          <sqf:p>Add an @id attribute to each section from the document. The ID is generated from the section title.</sqf:p>
+        </sqf:description>
+        <sqf:add match="//section[not(@id)]" target="id" node-type="attribute" 
+          select="if (title) then lower-case(replace(normalize-space(title/text()), '\s', '_')) else generate-id()"/>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Template used to copy the current node -->
   <xsl:template match="node() | @*" mode="copyExceptClass">
     <xsl:copy copy-namespaces="no">
