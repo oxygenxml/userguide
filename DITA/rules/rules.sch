@@ -97,15 +97,43 @@
   <sch:pattern>
     <!-- Image without any kind of reference -->
     <sch:rule context="*[contains(@class, ' topic/image ')]">
-      <sch:report test="not(@href) and not(@keyref) and not(@conref) and not(@conkeyref)"> Image without
+      <sch:report test="not(@href) and not(@keyref) and not(@conref) and not(@conkeyref)" sqf:fix="add_href add_keyref add_conref add_conkeyref"> Image without
         a reference. </sch:report>
+      
+      <sqf:fix id="add_href">
+        <sqf:description>
+          <sqf:title>Add @href attribute</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="attribute" target="href"/>
+      </sqf:fix>
+      
+      <sqf:fix id="add_keyref">
+        <sqf:description>
+          <sqf:title>Add @keyref attribute</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="attribute" target="keyref"/>
+      </sqf:fix>
+      
+      <sqf:fix id="add_conref">
+        <sqf:description>
+          <sqf:title>Add @conref attribute</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="attribute" target="conref"/>
+      </sqf:fix>
+      
+      <sqf:fix id="add_conkeyref">
+        <sqf:description>
+          <sqf:title>Add @conkeyref attribute</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="attribute" target="conkeyref"/>
+      </sqf:fix>
     </sch:rule>
   </sch:pattern>
  
   <sch:pattern>
     <!-- Report ul after ul -->
     <sch:rule context="*[contains(@class, ' topic/ul ')]">
-      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ul ')]" role="warn"> Two
+      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ul ')]" role="warn" sqf:fix="mergeLists"> Two
         consecutive unordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
@@ -113,7 +141,7 @@
   <sch:pattern>
     <!-- Report dl after dl -->
     <sch:rule context="*[contains(@class, ' topic/dl ')]">
-      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/dl ')]" role="warn"> Two
+      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/dl ')]" role="warn" sqf:fix="mergeLists"> Two
         consecutive definition lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
@@ -121,23 +149,58 @@
   <sch:pattern>
     <!-- Report ol after ol -->
     <sch:rule context="*[contains(@class, ' topic/ol ')]">
-      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ol ')]" role="warn"> Two
+      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ol ')]" role="warn" sqf:fix="mergeLists"> Two
         consecutive ordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
+  
+  <sqf:fixes>
+    <!-- Merge the two lists into one -->
+    <sqf:fix id="mergeLists">
+      <sqf:description>
+        <sqf:title>Merge lists into one</sqf:title>
+      </sqf:description>
+      <sqf:add position="last-child">
+        <xsl:apply-templates mode="copyExceptClass" select="following-sibling::node()[1]/node()"/>
+      </sqf:add>
+      <sqf:delete match="following-sibling::node()[1]"/>
+    </sqf:fix>
+  </sqf:fixes>
+  
   <sch:pattern>
     <!-- Report possible case in which a codeblock containg XML was not marked appropriately. -->
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
-      <sch:report test="starts-with(text()[1], '&lt;') and not(@outputclass)"> Possible XML Codeblock
+      <sch:report test="starts-with(text()[1], '&lt;') and not(@outputclass)" sqf:fix="add_outputclass"> Possible XML Codeblock
         without @outputclass set to it. </sch:report>
+      
+      <sqf:fix id="add_outputclass">
+        <sqf:description>
+          <sqf:title>Add @outputclass attribute to codeblock</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="attribute" target="outputclass"></sqf:add>
+      </sqf:fix>
     </sch:rule>
   </sch:pattern>
   
   <sch:pattern>
     <!-- Report two consecutive note elements -->
     <sch:rule context="*[contains(@class, ' topic/note ')]">
-      <sch:report test="preceding-sibling::node()[1][contains(@class, ' topic/note ')] and 
-        @type=preceding-sibling::node()[1]/@type" role="warn"> Try to avoid inserting two consecutive notes with the same type. </sch:report>
+      <sch:report test="preceding-sibling::element()[1][contains(@class, ' topic/note ')] and 
+        @type=preceding-sibling::element()[1]/@type" role="warn" sqf:fix="changeType changeTypePrev"> Try to avoid inserting two consecutive notes with the same type. </sch:report>
+      <sqf:fix id="changeType">
+        <sqf:description>
+          <sqf:title>Change current note type</sqf:title>
+        </sqf:description>
+        <sqf:delete match="@type" use-when="@type"/>
+        <sqf:add node-type="attribute" target="type"/>
+      </sqf:fix>
+      <sqf:fix id="changeTypePrev">
+        <sqf:description>
+          <sqf:title>Change previous note type</sqf:title>
+        </sqf:description>
+        <sqf:delete match="preceding-sibling::element()[1]/@type" use-when="@type"/>
+        <sqf:add match="preceding-sibling::element()[1]" node-type="attribute" target="type"/>
+      </sqf:fix>
     </sch:rule>
   </sch:pattern>
   
@@ -165,7 +228,16 @@
     <sch:rule context="*[contains(@class, ' topic/tgroup ')]">
       <sch:assert
         test="max(.//*[contains(@class, ' topic/row ')]/count(*[contains(@class, ' topic/entry ')])) = @cols"
-        > Maximum number of entries must equal cols attribute specified on table.. </sch:assert>
+        > Maximum number of entries must equal cols attribute specified on table. </sch:assert>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- Template used to copy the current node -->
+  <xsl:template match="node() | @*" mode="copyExceptClass">
+    <xsl:copy copy-namespaces="no">
+      <xsl:apply-templates select="node() | @*" mode="copyExceptClass"/>
+    </xsl:copy>
+  </xsl:template>
+  <!-- Template used to skip the @class attribute from being copied -->
+  <xsl:template match="@class" mode="copyExceptClass"/>
 </sch:schema>
