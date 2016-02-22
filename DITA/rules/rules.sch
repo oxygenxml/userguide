@@ -234,7 +234,7 @@
   
   <!-- Add Ids to all sections, in this way you can easly refer the section from documentation -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/section ') and not(contains(@class, ' task/context '))]">
+    <sch:rule context="*[contains(@class, ' topic/section ') and not(contains(@class, ' task/context ')) and not(contains(@class, ' task/result '))]">
       <sch:assert test="@id" sqf:fix="addId addIds" role="warn">All sections must have an @id attribute</sch:assert>
       
       <sqf:fix id="addId">
