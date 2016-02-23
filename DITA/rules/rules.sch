@@ -242,8 +242,11 @@
           <sqf:title>Add @id to the current section</sqf:title>
           <sqf:p>Add an @id attribute to the current section. The ID is generated from the section title.</sqf:p>
         </sqf:description>
+        <!-- Generate an id based on the section title. If there is no title then generate a random id. -->
         <sqf:add target="id" node-type="attribute"
-          select="if (title) then lower-case(replace(normalize-space(title/text()), '\s', '_')) else generate-id()"/>
+          select="if (title) 
+                    then substring(lower-case(replace(replace(normalize-space(string(title)), '\s', '_'), '[^a-zA-Z0-9_]', '')), 0, 50) 
+                    else generate-id()"/>
       </sqf:fix>
       
       <sqf:fix id="addIds">
@@ -251,9 +254,19 @@
           <sqf:title>Add @id to all sections</sqf:title>
           <sqf:p>Add an @id attribute to each section from the document. The ID is generated from the section title.</sqf:p>
         </sqf:description>
+        <!-- Generate an id based on the section title. If there is no title then generate a random id. -->
         <sqf:add match="//section[not(@id)]" target="id" node-type="attribute" 
-          select="if (title) then lower-case(replace(normalize-space(title/text()), '\s', '_')) else generate-id()"/>
+          select="if (title) 
+                    then substring(lower-case(replace(replace(normalize-space(string(title)), '\s', '_'), '[^a-zA-Z0-9_]', '')), 0, 50) 
+                    else generate-id()"/>
       </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- The titles should not be longer than 55 characters. -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/title ')]" role="warn">
+      <sch:assert test="string-length(string(.)) lt 56">The title is too long. It should be less than 55 characters.</sch:assert>
     </sch:rule>
   </sch:pattern>
   
