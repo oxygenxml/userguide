@@ -268,6 +268,27 @@
     <sch:rule context="*[contains(@class, ' topic/title ')]" role="warn">
       <sch:assert test="string-length(string(.)) lt 56">The title is too long. It should be less than 55 characters.</sch:assert>
     </sch:rule>
+    
+    <sch:rule context="menucascade">
+      <sch:assert test="count(uicontrol) > 1" role="warn" sqf:fix="addUicontrol removeMenucascade">
+        "menucascade" should contain more than one "uicontrol"</sch:assert>
+      
+      <sqf:fix id="addUicontrol">
+        <sqf:description>
+          <sqf:title>Add new "uicontrol" element</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="element" position="last-child" target="uicontrol"/>
+      </sqf:fix>
+      
+      <sqf:fix id="removeMenucascade">
+        <sqf:description>
+          <sqf:title>Remove "menucascade" and just left as a "uicontrol"</sqf:title>
+        </sqf:description>
+        <sqf:replace>
+          <xsl:apply-templates mode="copyExceptClass" select="node()"/>
+        </sqf:replace>
+      </sqf:fix>
+    </sch:rule>
   </sch:pattern>
   
   <!-- Template used to copy the current node -->
