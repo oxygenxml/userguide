@@ -263,10 +263,12 @@
     </sch:rule>
   </sch:pattern>
   
-  <!-- The titles should not be longer than 55 characters. -->
+  <!-- The titles should not be longer than 75 characters. -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/title ')]" role="warn">
-      <sch:assert test="string-length(string(.)) lt 56">The title is too long. It should be less than 55 characters.</sch:assert>
+    <sch:rule context="*[contains(@class, ' topic/title ')and not(parent::node()/contains(@class, ' topic/section ')) and not(parent::node()/contains(@class, ' topic/fig '))]" role="warn">
+      <sch:assert test="string-length(string(.)) lt 76">
+        The title is too long (<sch:value-of select="string-length(string(.))"/> chars).
+        It should be less than 75 characters.</sch:assert>
     </sch:rule>
   </sch:pattern>
   
