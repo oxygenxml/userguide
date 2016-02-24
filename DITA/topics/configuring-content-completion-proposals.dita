@@ -1,52 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="configuring-content-completion-proposals">
-  <title>Configuring the Proposals in the Content Completion Assistant</title>
+  <title>Configuring the Proposed Values in the Content Completion Assistant</title>
   <prolog>
     <metadata>
       <keywords>
         <indexterm>Configuring Content Completion Proposals</indexterm>
+        <indexterm>Content Completion Assistant</indexterm>
+        <indexterm>Content completion configuration file
+          <indexterm>cc_config.xml</indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
-    <p><ph keyref="product"/> gathers information from the associated schemas (DTDs, XML Schema,
-      RelaxNG) to determine the proposals that appear in the <uicontrol>Content Completion
-        Assistant</uicontrol>. <ph keyref="product"/> also includes support that allows you to
-      configure the possible attribute or element values for the proposals. To do so, a
-      configuration file can be used, along with the associated schema, to add or replace possible
-      values for attributes or elements that are proposed in the <uicontrol>Content Completion
-        Assistant</uicontrol>.</p>
-    <p>An example of a specific use-case is if you want the <uicontrol>Content Completion
-        Assistant</uicontrol> to propose several possible values for the language code when you use
-      an <codeph>xml:lang</codeph> attribute.</p>
-    <section><title>How to Configure Content Completion Proposals</title>To configure content
-      completion proposals, follow these steps:<ol id="ol_js3_4k5_kq">
-        <li>Create a new <filepath>resources</filepath> folder (if it does not already exist) in the
-          frameworks directory for the document type. For instance:
-            <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/resources</filepath>.</li>
-        <li><ph conkeyref="reusables-preferences-pages/Open-the-preferences-page"/> and go to
-            <uicontrol>Document Type Association</uicontrol>. Edit the document type configuration
-          for your XML vocabulary, and in the <uicontrol>Classpath</uicontrol> tab add a link to
-          that <filepath>resources</filepath> folder.</li>
-        <li>Use the <uicontrol>New</uicontrol> document wizard to create a configuration file using
-          the <i>Content Completion Configuration</i> file template.</li>
-        <li>Make the appropriate changes to your custom configuration file. The file template
-          includes details about how each element and attribute is used in the configuration
-          file.</li>
-        <li>Save the file in the <filepath>resources</filepath> folder, using the fixed name:
-            <filepath>cc_value_config.xml</filepath>.</li>
-        <li>Restart the application and open an XML document. In the <uicontrol>Content Completion
-            Assistant</uicontrol> you should see your customizations.</li>
-      </ol></section>
-    <section>
-      <title>Configuration File</title>
-      <p>The configuration file is composed of a series of <codeph>match</codeph> instructions that
-        will match either an element or an attribute name. A new value is specified inside one or
-        more <codeph>item</codeph> elements, which are grouped inside an <codeph>items</codeph>
-        element. The behavior of the <codeph>items</codeph> element is specified with the help of
-        the <codeph>action</codeph> attribute, which can have any of the following values:<ul
-          id="ul_ghd_c55_kr">
+    <p><ph keyref="product"/> includes support for configuring the proposed values that appear in
+      the <uicontrol>Content Completion Assistant</uicontrol>. To do so, a configuration file is
+      used, along with the associated schema, to add or replace possible values for attributes or
+      elements that are proposed in the <uicontrol>Content Completion Assistant</uicontrol>.</p>
+    <p>For an example of a specific use-case, suppose that you want the <uicontrol>Content
+        Completion Assistant</uicontrol> to propose several possible values for the language code
+      when you use an <codeph>xml:lang</codeph> attribute.</p>
+    <section
+      conref="../reusables/topics/reusables-editing-documents.dita#reusables-editing-documents/how_to_configure_the_proposed_values_in_cc"
+      id="d2e47"/>
+    <section id="configuration_file">
+      <title>Configuration File - Configuring Proposed Values</title>
+      <p>For the purposes of adding or replacing the values that are proposed, the configuration
+        file (<filepath>cc_config.xml</filepath>) includes a series of <codeph>match</codeph>
+        instructions that will either match an element or attribute name. A new value is specified
+        inside one or more <codeph>item</codeph> elements, which are grouped inside an
+          <codeph>items</codeph> element. The behavior of the <codeph>items</codeph> element is
+        specified with the help of the <codeph>action</codeph> attribute, which can have any of the
+        following values:<ul id="ul_ghd_c55_kr">
           <li><codeph>append</codeph> - Adds new values to appear in the proposals list (default
             value).</li>
           <li><codeph>addIfEmpty</codeph> - Adds new values to the proposals list only if no other
@@ -55,10 +40,25 @@
             values to appear in the proposals list.</li>
         </ul></p>
       <p>The values in the configuration file can be specified either directly or by calling an
-        external XSLT file that will extract data from any external source.</p>
+        external XSLT file that will extract data from an external source.</p>
     </section>
-    <section>
-      <title>Example - Specifying Values Directly </title>
+    <section id="other_important_notes">
+      <title>Other Important Notes About the Configuration File</title>
+      <note type="important">
+        <ul>
+          <li>This configuration file only affects the content completion assistance, not
+            validation.</li>
+          <li>To test the effects of your changes, you should restart the application, although in
+            some cases, you can simply use the <uicontrol><image href="../img/Refresh16.png"
+              />Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
+            customizations.</li>
+        </ul>
+      </note>
+    </section>
+    <section id="example_specifying_values_directly">
+      <title>Example: Specifying Values Directly</title>
+      <p>If you want to specify the values directly, the configuration file should look like
+        this:</p>
       <p>
         <codeblock outputclass="language-xml">&lt;!-- Replaces the values for an element with the local name "lg", from the given namespace -->
 &lt;match elementName="lg" elementNS="http://www.oxygenxml.com/ns/samples">
@@ -77,8 +77,10 @@
 &lt;/match></codeblock>
       </p>
     </section>
-    <section>
-      <title>Example - Calling an External XSLT Script</title>
+    <section id="example_calling_an_external_xslt_script">
+      <title>Example: Calling an External XSLT Script</title>
+      <p>If you want to collect values from an external XSLT script, the configuration file should
+        include something like this:</p>
       <p>
         <codeblock outputclass="language-xml">&lt;xslt href="../xsl/get_values_from_db.xsl" useCache="false" action="replace"/></codeblock>
       </p>
@@ -86,15 +88,14 @@
         from a database.<note>A comprehensive XSLT sample is included in the <uicontrol>Content
             Completion Configuration</uicontrol> file template.</note></p>
     </section>
-    <section><title>Configuring Proposals in the Context that the Content Completion was
-        Invoked</title><p>A more complex scenario for configuring the content completion proposals
-        would be if you want to choose the possible values to provide, depending on the context of
-        the element in which the content completion was invoked.</p><p>Suppose that you want to
-        propose certain possible values for one property (for example, <i>color</i>) and other
-        values for another property (for example, <i>shape</i>). If the property represents a color,
-        then the values should represent applicable colors, while if the property represents a
-        shape, then the values should represent applicable shapes. See the following code
-        snippets:</p><p>Your main
+    <section id="configuring_proposed_values_in_context"><title>Configuring Proposed Values in the
+        Context that the Content Completion was Invoked</title><p>A more complex scenario is if you
+        want to choose the possible values to propose, depending on the context of the element in
+        which the content completion was invoked.</p><p>Suppose that you want to propose certain
+        possible values for one property (for example, <i>color</i>) and other values for another
+        property (for example, <i>shape</i>). If the property represents a color, then the values
+        should represent applicable colors, while if the property represents a shape, then the
+        values should represent applicable shapes. See the following code snippets:</p><p>Your main
         document:<codeblock outputclass="language-xml">&lt;sampleArticle>
   &lt;!-- The possible values for @value should be "red" and "blue" -->
   &lt;property name="color" value=""/>
@@ -143,4 +144,10 @@
       expression that identifies the element in the context for which the content completion was
       invoked.</section>
   </body>
+  <related-links>
+    <link
+      href="configure-elements-attr-cc-individually.dita#configure-elements-attr-cc-individually"/>
+    <link href="configure-elements-attr-cc-globally.dita#configure-elements-attr-cc-globally"/>
+    <link href="rendering-elements-cc-author.dita#rendering-elements-cc-author"/>
+  </related-links>
 </topic>
