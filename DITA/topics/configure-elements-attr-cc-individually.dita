@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="configure-elements-attr-cc-individually">
-  <title>Configuring Content Completion Proposals Individually for Each Element</title>
+  <title>Configuring the Proposals for Elements</title>
   <prolog>
     <metadata>
       <keywords>
@@ -28,15 +28,11 @@
       schema (XML Schema, DTD, RelaxNG), but this may be quite complicated in some cases.
       Fortunately, <ph keyref="product"/> offers a simple, alternative method of using a
       configuration file to customize the content completion proposals for each element.</p>
-    <section id="configure-cc-section">
-      <title>Configuring Content Completion Proposals for Each Element</title>
-      <p
-        conref="../reusables/topics/reusables-editing-documents.dita#reusables-editing-documents/customize-cc-proposals-p"
-      />
-    </section>
+    <section
+      conref="../reusables/topics/reusables-editing-documents.dita#reusables-editing-documents/how_to_configure_the_proposed_values_in_cc"
+      id="d2e47"/>
     <section id="configuration_file">
-      <title>Configuration File - Configuring Elements or Attributes that are Proposed for Each
-        Element</title>
+      <title>Configuring Elements or Attributes that are Proposed for Each Element</title>
       <p>For the purposes of customizing the elements or attributes that are proposed for each
         individual element, the configuration file (<filepath>cc_config.xml</filepath>) uses
           <codeph>elementProposals</codeph> elements. This element allows you to customize or filter
@@ -49,7 +45,19 @@
             matches all the <codeph>title</codeph> elements in the document, while
               <codeph>"chapter/title"</codeph> matches only the <codeph>title</codeph> elements that
             are direct children of the <codeph>chapter</codeph> element.<note>If this attribute is
-              missing, the customization will apply to the proposals for all elements.</note></li>
+              missing, the customization will apply to the proposals for all elements. You can
+              intentionally omit this attribute and use <xref
+                href="#configure-elements-attr-cc-individually/possible-elements" format="dita"
+                  ><codeph>possibleElements</codeph></xref> or <xref
+                href="#configure-elements-attr-cc-individually/reject-elements" format="dita"
+                  ><codeph>rejectElements</codeph></xref> to specify or restrict elements for an
+              entire framework.<p>For example, suppose that in your DITA documents, you want to
+                restrict your users from using image elements (<codeph>image</codeph>) because you
+                do not want images to be included in your output.  The configuration file should
+                look like
+                this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image" /></codeblock></p><p>Since
+                the <codeph>path</codeph> attribute is missing, the specified element will be
+                filtered out from the proposals for the entire framework.</p></note></li>
           <li><codeph>insertElements</codeph> - A space-separated sequence of child element names.
             Each time the element specified in the <codeph>path</codeph> attribute is inserted into
             the document, these child elements will also be inserted in the order that they are
@@ -58,13 +66,14 @@
               (<codeph>""</codeph>) means that no child elements should be inserted.<note> If this
               attribute is missing, the default required child elements will be inserted, as
               specified in the associated schema for the document.</note></li>
-          <li><codeph>possibleElements</codeph> - A space-separated list of element names that will
-            be shown in the content completion list when invoked inside an element that is specified
-            in the <codeph>path</codeph> attribute. For example, <codeph>"bold italic codeph
-              ph"</codeph> means that the <uicontrol>Content Completion Assistant</uicontrol> will
-            contain these four elements when invoked on the element specified in the
-              <codeph>path</codeph> attribute. The following other possible values are also supported:<ul>
-              <li><b><i>NONE</i></b> -  There will be no proposals in the content completion
+          <li id="possible-elements"><codeph>possibleElements</codeph> - A space-separated list of
+            element names that will be shown in the content completion list when invoked inside an
+            element that is specified in the <codeph>path</codeph> attribute. For example,
+              <codeph>"bold italic codeph ph"</codeph> means that the <uicontrol>Content Completion
+              Assistant</uicontrol> will contain these four elements when invoked on the element
+            specified in the <codeph>path</codeph> attribute. The following other possible values
+            are also supported:<ul>
+              <li><b><i>NONE</i></b> - There will be no proposals in the content completion
                 list.</li>
               <li><b><i>ALL</i></b> - All the possible elements specified in the associated schema
                 will be presented in the content completion list. This is also the default behavior
@@ -72,12 +81,13 @@
               <li><b><i>INSERTED</i></b> - The proposals will be the same list of elements that are
                 defined in the <codeph>insertElements</codeph> attribute.</li>
             </ul></li>
-          <li><codeph>rejectElements</codeph> - A space-separated list of element names that will be
-            filtered out from the list of proposals that are presented in the content completion
-            list. Each time the element specified in the <codeph>path</codeph> attribute is inserted
-            into the document, the list of proposals in the <uicontrol>Content Completion
-              Assistant</uicontrol> will include the entries that are defined in the associated
-            schema, minus the elements specified in this attribute.</li>
+          <li id="reject-elements"><codeph>rejectElements</codeph> - A space-separated list of
+            element names that will be filtered out from the list of proposals that are presented in
+            the content completion list. Each time the element specified in the
+              <codeph>path</codeph> attribute is inserted into the document, the list of proposals
+            in the <uicontrol>Content Completion Assistant</uicontrol> will include the entries that
+            are defined in the associated schema, minus the elements specified in this
+            attribute.</li>
         </ul></p>
       <p><b>Attributes:</b></p>
       <p>To control the <b>attributes</b> that are proposed for an element, you can use the
@@ -87,18 +97,31 @@
             the <codeph>title</codeph> elements in the document, while
               <codeph>"chapter/title"</codeph> matches only the <codeph>title</codeph> elements that
             are direct children of the <codeph>chapter</codeph> element.<note>If this attribute is
-              missing, the customization will apply to the proposals for all elements.</note></li>
+              missing, the customization will apply to the proposals for all elements. You can
+              intentionally omit this attribute and use <xref
+                href="#configure-elements-attr-cc-individually/possible-attributes" format="dita"
+                  ><codeph>possibleAttributes</codeph></xref> or <xref
+                href="#configure-elements-attr-cc-individually/reject-attributes" format="dita"
+                  ><codeph>rejectAttributes</codeph></xref> to specify or restrict attributes for an
+              entire framework.<p>For example, suppose that you only want to allow a limited set of
+                attributes in a customized framework. The configuration file should look like
+                this:</p><codeblock outputclass="language-xml">&lt;elementProposals possibleAttributes="
+               id domains href scope format type conref 
+        	props keyref class"/></codeblock><p>Since
+                the <codeph>path</codeph> attribute is missing, this applies to the entire framework
+                and only the specified attributes will be proposed.</p></note></li>
           <li><codeph>insertAttributes</codeph> - A space-separated sequence of attribute names that
             will be inserted along with the element.</li>
-          <li><codeph>possibleAttributes</codeph> - A space-separated list of attribute names that
-            will be shown in the content completion list when invoked inside an element that is
-            specified in the <codeph>path</codeph> attribute.</li>
-          <li><codeph>rejectAttributes</codeph> - A space-separated list of attribute names that will
-            be filtered out from the list of proposals that are presented in the content completion
-            list. Each time the element specified in the <codeph>path</codeph> attribute is inserted
-            into the document, the list of proposals in the <uicontrol>Content Completion
-              Assistant</uicontrol> will include the entries that are defined in the associated
-            schema, minus the attributes specified in this attribute.</li>
+          <li id="possible-attributes"><codeph>possibleAttributes</codeph> - A space-separated list
+            of attribute names that will be shown in the content completion list when invoked inside
+            an element that is specified in the <codeph>path</codeph> attribute.</li>
+          <li id="reject-attributes"><codeph>rejectAttributes</codeph> - A space-separated list of
+            attribute names that will be filtered out from the list of proposals that are presented
+            in the content completion list. Each time the element specified in the
+              <codeph>path</codeph> attribute is inserted into the document, the list of proposals
+            in the <uicontrol>Content Completion Assistant</uicontrol> will include the entries that
+            are defined in the associated schema, minus the attributes specified in this
+            attribute.</li>
         </ul></p>
     </section>
     <section id="other_important_notes">
@@ -131,11 +154,11 @@
       </note>
     </section>
     <section id="examples_configuring_elements">
-      <title>Examples: Configuring the Elements Proposed for an Individual Element</title>
+      <title>Examples: Configuring the Element Proposals </title>
       <p>
         <ul>
           <li>
-            <p><b>Example 1: Insert Elements</b></p>
+            <p><b>Example 1: Automatically Insert Elements</b></p>
             <p>Suppose that you want to automatically insert a paragraph element
               (<codeph>p</codeph>) whenever a DITA ordered list item element
               (<codeph>ol/li</codeph>) is inserted, and also to not allow any other element besides
@@ -169,9 +192,6 @@
               element to only allow the user to insert <codeph>audience</codeph> or
                 <codeph>keyword</codeph> elements. The configuration file should include the
               following:<codeblock outputclass="language-xml">&lt;elementProposals path="prolog/metadata" insertElements="keywords" possibleElements="audience keywords"/></codeblock></p>
-          </li>
-          <li>
-            <p><b>Example 4: Restrict Elements</b></p>
             <p>Suppose that you want to simply restrict your users from inserting
                 <codeph>image</codeph> elements inside DITA list item elements
               (<codeph>li</codeph>), but still propose all the other elements that are defined in
@@ -182,10 +202,10 @@
       </p>
     </section>
     <section id="examples_configuring_the_attributes">
-      <title>Examples: Configuring the Attributes Proposed for an Individual Element</title>
+      <title>Examples: Configuring the Attributes Proposals</title>
       <p>
         <ul>
-          <li><b>Example 1: Insert Attributes</b><p>Suppose that you want to insert an
+          <li><b>Example 1: Automatically Insert Attributes</b><p>Suppose that you want to insert an
                 <codeph>id</codeph> attribute (with an empty value) whenever a DITA list item
               element (<codeph>li</codeph>) is inserted. The configuration file should include the
               following:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id"/></codeblock></p></li>
@@ -193,15 +213,12 @@
               number of choices for attributes that are presented to the user whenever a DITA list
               item element (<codeph>li</codeph>) is inserted. The configuration file should look
               like
-              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id" possibleAttributes="id product platform audience"/></codeblock></p></li>
-          <li>
-            <p><b>Example 3: Restrict Attributes</b></p>
-            <p>Suppose that you want to simply restrict your users from inserting
-                <codeph>conref</codeph> attributes inside DITA topics (<codeph>topic</codeph>
-              element), but still propose all the other attributes that are defined in the
-              associated schema. The configuration file should look like
-              this:<codeblock outputclass="language-xml">&lt;elementProposals path="topic" rejectAttributes="conref" /></codeblock></p>
-          </li>
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id" possibleAttributes="id product platform audience"/></codeblock></p><p>Suppose
+              that you want to simply restrict your users from inserting <codeph>conref</codeph>
+              attributes inside DITA topics (<codeph>topic</codeph> element), but still propose all
+              the other attributes that are defined in the associated schema. The configuration file
+              should look like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="topic" rejectAttributes="conref" /></codeblock></p></li>
         </ul>
       </p>
     </section>
@@ -209,7 +226,6 @@
   <related-links>
     <link
       href="configuring-content-completion-proposals.dita#configuring-content-completion-proposals"/>
-    <link href="configure-elements-attr-cc-globally.dita#configure-elements-attr-cc-globally"/>
     <link href="rendering-elements-cc-author.dita#rendering-elements-cc-author"
       product="author editor authorEclipse editorEclipse"/>
   </related-links>
