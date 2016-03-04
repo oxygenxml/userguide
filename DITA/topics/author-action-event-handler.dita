@@ -39,17 +39,18 @@
     </section>
     <section>
       <title>Example</title>
-      <p>The following example illustrates an implementation for inserting a new line when the user
-        presses <uicontrol><shortcut>Enter</shortcut></uicontrol> in <uicontrol>Author</uicontrol>
-        mode. It uses the <apiname>canHandleEvent</apiname> method to make sure the insertion will
-        be performed in an element that will preserve the <term>new-line</term> character. Then the
+      <p>The following example illustrates the use-case mentioned in the introduction, that is an
+        implementation for inserting a new line when the user presses
+            <uicontrol><shortcut>Enter</shortcut></uicontrol> in <uicontrol>Author</uicontrol> mode.
+        It uses the <apiname>canHandleEvent</apiname> method to make sure the insertion will be
+        performed in an element that will preserve the <term>new-line</term> character. Then the
           <apiname>handleEvent</apiname> method inserts the new line at the current cursor
         position.</p>
       <codeblock outputclass="language-java">public class CustomAuthorActionEventHandler implements AuthorActionEventHandler {
 
-/**
- * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#canHandleEvent(AuthorAccess, AuthorActionEventType)
- */
+ /**
+  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#canHandleEvent(AuthorAccess, AuthorActionEventType)
+  */
   @Override
   public boolean canHandleEvent(AuthorAccess authorAccess, AuthorActionEventType type) {
     boolean canHandle = false;
@@ -76,16 +77,25 @@
     return canHandle;
   }
 
-/**
- * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#handleEvent(ro.sync.ecss.extensions.api.AuthorAccess, ro.sync.ecss.extensions.api.AuthorActionEventHandler.AuthorActionEventType)
- */
+ /**
+  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#handleEvent(ro.sync.ecss.extensions.api.AuthorAccess, ro.sync.ecss.extensions.api.AuthorActionEventHandler.AuthorActionEventType)
+  */
   @Override
   public boolean handleEvent(AuthorAccess authorAccess, AuthorActionEventType eventType) {
     int caretOffset = authorAccess.getEditorAccess().getCaretOffset();
     // Insert a new line
     authorAccess.getDocumentController().insertText(caretOffset, "\n");
     return true;
-  }</codeblock>
+  }
+
+  /**
+   * @see ro.sync.ecss.extensions.api.Extension#getDescription()
+   */
+  @Override
+  public String getDescription() {
+    return "Insert a new line";
+  }
+}</codeblock>
     </section>
   </body>
 </topic>
