@@ -11,45 +11,57 @@
     </metadata>
   </prolog>
   <body>
-    <p><ph keyref="product"/> includes support for MarkLogic database connections. Once you
-      configure a MarkLogic connection, you can use the <xref
-        href="relational-database-explorer.dita#relational-database-explorer"><uicontrol>Data Source
-          Explorer</uicontrol> view</xref> to display all the application servers that are
-      configured on the MarkLogic server. You can expand each application server and view all the
-      modules that it is configured to use, and the <uicontrol>Data Source Explorer</uicontrol> view
-      allows you to open and edit these modules.<note>To browse modules located in a database,
+    <p><ph keyref="product"/> includes support for MarkLogic database connections. Once you <xref
+        href="how-to-marklogic.dita#how-to-marklogic">configure a MarkLogic connection</xref>, you
+      can use the <xref href="relational-database-explorer.dita#relational-database-explorer"
+          ><uicontrol>Data Source Explorer</uicontrol> view</xref> to display all the application
+      servers that are configured on the MarkLogic server. You can expand each application server
+      and view all of its configured modules, and the <uicontrol>Data Source Explorer</uicontrol>
+      view allows you to open and edit these modules.<note>To browse modules located in a database,
         directory properties must be associated with them. These directory properties are generated
         automatically if the <term>directory creation</term> property of the database is set to
         automatic. If this property is set to <term>manual</term> or <term>manual-enforced</term>,
         add the directory properties of the modules manually, using the XQuery function
           <codeph>xdmp:directory-create()</codeph>. For example, for two documents with the
           <codeph>/code/modules/main.xqy</codeph> and
-          <codeph>/code/modules/imports/import.xqy</codeph> IDs, run this query:
-          <codeph>(xdmp:directory-create('/code/modules/'),
-          xdmp:directory-create('/code/modules/imports/'))</codeph>.<p>For more information about
-          directory properties go to: <xref
+          <codeph>/code/modules/imports/import.xqy</codeph> IDs, run the following
+          query:<codeblock outputclass="language-xml">(xdmp:directory-create('/code/modules/'), xdmp:directory-create('/code/modules/imports/'))</codeblock><p>For
+          more information about directory properties, go to: <xref
             href="http://blakeley.com/blogofile/2012/03/19/directory-assistance/" format="html"
             scope="external"/>.</p></note></p>
-    <p>When you execute or debug XQuery files opened from this view, the imported modules are better
-      identified by the MarkLogic server. In a module, you are also able to add breakpoints (in the
-      modules of the application server that executes the debugging) that the debugger takes into
-        account.<note>Open XQuery modules from the application server involved in the debugging or
-        execution process.</note></p>
-    <p>In the <uicontrol>Requests</uicontrol> container of each application server, <ph
-        keyref="product"/> displays both the queries that are stopped for debugging purposes and the
-      queries that are still running. To clean up the entire <uicontrol>Requests</uicontrol>
-      container at the end of your session, right-click it and use the <uicontrol>Cancel all running
-        requests</uicontrol> action.</p>
-    <p id="use-it-to-execute-queries">To change the XDBC application server that <ph
-        keyref="product"/> uses to process XQuery expressions, select the <uicontrol>Use it to
-        execute queries</uicontrol> option from its contextual menu in the <uicontrol>Data Source
-        Explorer</uicontrol> view.</p>
-    <p>To manage resources for a MarkLogic database through WebDAV, configure a WebDAV URL in <xref
-        href="../tasks/configure-marklogic-connection.dita#configure-marklogic-connection"
-        format="dita">the MarkLogic connection</xref>. </p>
+    <section id="marklogic_and_xquery">
+      <title>MarkLogic and XQuery</title>
+      <p>MarkLogic connections can be used in conjunction with XQuery scripts to debug and solve
+        problems with XQuery transformations. XQuery modules can also be validated using a MarkLogic
+        server to allow to you to spot possible issues without the need of actually executing the
+        XQuery script.</p>
+      <p product="developer editor developerEclipse editorEclipse">When <xref
+          href="xquery-debugging-with-marklogic.dita#xquery-debugging-with-marklogic">debugging
+          XQuery files with MarkLogic</xref>, you can use the <xref
+          href="relational-database-explorer.dita#relational-database-explorer"><uicontrol>Data
+            Source Explorer</uicontrol> view</xref> to open the files from the application server
+        that is involved in the debugging process. By using the <uicontrol>Data Source
+          Explorer</uicontrol> view, any imported modules are better identified by the MarkLogic
+        server. You can also <xref
+          href="xquery-debugging-marklogic-import-modules.dita#xquery-debugging-marklogic-import-modules"
+          >use step actions and breakpoints</xref> in the modules to help identify problems.</p>
+    </section>
+    <section id="requests_container"><title>Requests Container</title>Each MarkLogic application
+      server includes a <uicontrol><image href="../img/DBRequest16.png"/>Requests</uicontrol>
+      container. In this container, <ph keyref="product"/> displays both queries that are stopped
+      for debugging purposes and queries that are still running. To clean up the entire
+        <uicontrol>Requests</uicontrol> container at the end of your session, right-click it and use
+      the <xref
+        href="marklogic-contextual-actions.dita#marklogic-contextual-actions/cancel-all-requests"
+          ><uicontrol>Cancel all requests</uicontrol> action</xref>.</section>
     <fig>
       <title>MarkLogic Connection in Data Source Explorer</title>
       <image href="../img/marklogic_connection.png"/>
     </fig>
+    <p>
+      <note>You can also manage resources for a MarkLogic database through a WebDAV connection,
+        although it is not recommended if you work with XQuery files since imported modules may not
+        resolved correctly.</note>
+    </p>
   </body>
 </topic>
