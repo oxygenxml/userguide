@@ -11,79 +11,50 @@
   </prolog>
   <body>
     <p>The <ph keyref="webappProduct"/> includes a plugin that allows you to use the <ph
-        keyref="webappProduct"/> to edit files stored in a SharePoint repository.</p>
-    <p><?oxy_comment_start author="steven_higgs" timestamp="20160302T154013+0200" comment="Edit for SP"?>You
-      can configure your GitHub integration to use the <term>OAuth</term> authentication method to
-      access files stored in a public or private repository. You will then have access to a
-        <uicontrol>Login with GitHub</uicontrol> button in the GitHub login dialog box. You can
-      configure your integration either by using <i>github.com</i> or with a <i>GitHub
-        Enterprise</i> deployment.</p>
-    <section>
-      <title>Configure a GitHub Integration with <i>github.com</i></title>
-      <p>To configure your GitHub integration using <i>github.com</i>, follow this procedure:<ol>
-          <li>Login to GitHub and register a new developer application at <xref
-              href="https://github.com/settings/applications/new" format="html" scope="external"/>.<ol>
+        keyref="webappProduct"/> to edit files stored in a SharePoint repository. You can configure
+      your SharePoint integration to use the <term>OAuth</term> 2.0 authentication flow to access
+      files stored in a public or private
+      repository.<?oxy_comment_start author="steven_higgs" timestamp="20160318T102353+0200" comment="I assume that there is no such button for SharePoint, but ask Alin to make sure before deleting these sentences."?>
+      You will then have access to a <uicontrol>Login with GitHub</uicontrol> button in the GitHub
+      login dialog box. You can configure your integration either by using <i>github.com</i> or with
+      a <i>GitHub Enterprise</i> deployment.<?oxy_comment_end?></p>
+    <section id="configure_a_sharepoint_integration">
+      <title>Configure a SharePoint Integration</title>
+      <p>To configure your SharePoint integration, follow this procedure:<ol>
+          <li>Register a new application in the Azure Management Portal at: <xref
+              href="https://manage.windowsazure.com/" format="html" scope="external"/>.<?oxy_comment_start author="steven_higgs" timestamp="20160318T102903+0200" comment="Delete this unless there are multiple substeps to be completed on that website."?><ol>
               <li>Complete the form.</li>
               <li>The <uicontrol>Authorization callback URL</uicontrol> field should include the
                 following path: <filepath><term
                     conkeyref="reusables-user-guide/oxy-webapp-install-dir"
                   />/plugins-dispatcher/github-oauth/callback</filepath>.</li>
-            </ol></li>
-          <li>Click on <uicontrol>Register application</uicontrol> to obtain the <uicontrol>Client
-              ID</uicontrol> and <uicontrol>Client Secret</uicontrol> credentials (they are
-            displayed at the top-right section of the resulting page).</li>
-          <li>Set your <uicontrol>Client ID</uicontrol> and <uicontrol>Client Secret</uicontrol>
-            credentials in your plugin configuration by doing one of the following:<ul>
-              <li>Go to the <xref href="../topics/webapp-admin-page.dita#webapp-admin-page"
-                    ><uicontrol>Administration Page</uicontrol></xref>, in the
-                  <uicontrol>Plugins</uicontrol> section click on the <uicontrol><image
-                    href="../img/ConfigureSearchScope16.png"/>Configure</uicontrol> icon for the
-                GitHub plugin, and enter the <uicontrol>Client ID</uicontrol> and <uicontrol>Client
-                  Secret</uicontrol> in the <uicontrol>Plugin configuration</uicontrol> dialog
-                box.</li>
+            </ol><?oxy_comment_end?></li>
+          <li><?oxy_comment_start author="steven_higgs" timestamp="20160318T102939+0200" comment="What do you do in Azure to obtain these credentials?"?>Click
+            on <uicontrol>Register application</uicontrol><?oxy_comment_end?> to obtain the
+              <uicontrol>Client ID</uicontrol>, <uicontrol>Client Secret</uicontrol>, and
+              <uicontrol>Redirect URL</uicontrol>parameters
+            <?oxy_comment_start author="steven_higgs" timestamp="20160318T103046+0200" comment="Where are they displayed in Azure?"?>(they
+            are displayed at the top-right section of the resulting page)<?oxy_comment_end?>.</li>
+          <li>Go to the <xref href="../topics/webapp-admin-page.dita#webapp-admin-page"
+                ><uicontrol>Administration Page</uicontrol></xref>, in the
+              <uicontrol>Plugins</uicontrol> section click on the <uicontrol><image
+                href="../img/ConfigureSearchScope16.png"/>Configure</uicontrol> icon for the
+            SharePoint plugin, and enter the <uicontrol>Client ID</uicontrol>, <uicontrol>Client
+              Secret</uicontrol>, and <uicontrol>Redirect URL</uicontrol> parameters in the
+              <uicontrol>Plugin configuration</uicontrol> dialog box.<?oxy_comment_start author="steven_higgs" timestamp="20160318T103413+0200" comment="This was an alternate method for setting the credentials in GitHub. Can you also do this for SharePoint?"?><ul>
               <li>Create a new properties file called <filepath>github-plugin.properties</filepath>
                 in the <filepath>WEB-INF</filepath> folder of the <filepath>OXYGEN-WEBAPP</filepath>
                 directory and add your <uicontrol>Client ID</uicontrol> and <uicontrol>Client
                   Secret</uicontrol> credentials with the following
                 structure:<codeblock outputclass="language-ini">client_id=&lt;client_id>
 client_secret=&lt;client_secret></codeblock></li>
-            </ul></li>
+            </ul><?oxy_comment_end?></li>
           <li>Restart the <ph keyref="webappProduct"/>.</li>
         </ol></p>
-      <p><b>Result:</b> You now have access to the <uicontrol>Login with GitHub</uicontrol> button
-        in the GitHub login dialog box.</p>
-    </section>
-    <section>
-      <title>Configure a GitHub Integration with a <i>GitHub Enterprise</i> Deployment</title>
-      <p>To configure your GitHub integration using a <i>GitHub Enterprise</i> deployment, follow
-        this procedure:<ol>
-          <li>Login to GitHub Enterprise and register a new developer application. The URL is:
-              <filepath>[GithubEnterpriseUrl]/settings/applications/new</filepath>.<ol>
-              <li>Complete the form.</li>
-              <li>The <uicontrol>Authorization callback URL</uicontrol> field should include the
-                following path: <filepath><term
-                    conkeyref="reusables-user-guide/oxy-webapp-install-dir"
-                  />/plugins-dispatcher/github-oauth/callback</filepath>.</li>
-            </ol></li>
-          <li>Obtain the <uicontrol>Client ID</uicontrol> and <uicontrol>Client Secret</uicontrol>
-            credentials at: <filepath>[GithubEnterpriseUrl]/settings/developers</filepath>.</li>
-          <li>Set the <uicontrol>Client ID</uicontrol>, <uicontrol>Client Secret</uicontrol>, and
-            the <uicontrol>API URL</uicontrol> in your plugin configuration by doing the following:<ol>
-              <li>Go to the <xref href="../topics/webapp-admin-page.dita#webapp-admin-page"
-                    ><uicontrol>Administration Page</uicontrol></xref>.</li>
-              <li> In the <uicontrol>Plugins</uicontrol> section, click on the <uicontrol><image
-                    href="../img/ConfigureSearchScope16.png"/>Configure</uicontrol> icon for the
-                GitHub plugin, enable the <uicontrol>Use GitHub Enterprise</uicontrol> option, and
-                enter the <uicontrol>API URL</uicontrol>, <uicontrol>Client ID</uicontrol>, and
-                  <uicontrol>Client Secret</uicontrol> in the <uicontrol>Plugin
-                  configuration</uicontrol> dialog box. The <uicontrol>API URL</uicontrol> is the
-                URL of your GitHub Enterprise deployment
-                (<filepath>[GithubEnterpriseUrl]</filepath>).</li>
-            </ol></li>
-          <li>Restart the <ph keyref="webappProduct"/>.</li>
-        </ol></p>
-      <p><b>Result:</b> You now have access to the <uicontrol>Login with GitHub</uicontrol> button
-        in the GitHub login dialog box.<?oxy_comment_end?></p>
+      <p><b>Result:</b>
+        <?oxy_comment_start author="steven_higgs" timestamp="20160318T103447+0200" comment="This will need to be changed."?>You
+        now have access to the <uicontrol>Login with GitHub</uicontrol> button in the GitHub login
+        dialog box.<?oxy_comment_end?></p>
     </section>
   </body>
 </topic>
