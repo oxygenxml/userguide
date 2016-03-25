@@ -3,62 +3,68 @@
 <topic id="webhelp_template_components">
   <title>WebHelp Template Components</title>
   <body>
-    <draft-comment author="webapp">This topic will describe each WebHelp template's
-      components.</draft-comment>
-    <draft-comment author="webapp"><xref href="https://jira.sync.ro:8443/browse/EXM-35225"
-        format="html" scope="external" id="key-val">EXM-35225</xref><b>Which are the Webhelp
-        components and what is generated for each of them?</b></draft-comment>
-    <p><?oxy_comment_start author="Radu Pisoi" timestamp="20160321T121200+0200" comment="For each component we should document:
-* for what it designed
-* how it will be expanded in the output
-* which are the pages where the component could be specified."?>The
-      WebHelp template's components are listed below.<?oxy_comment_end?></p>
-    <section id="section_d5z_h1s_jv">
-      <title>Publication title (webhelp_main_title)</title>
-      <p>This component will be replaced when publishing the WebHelp output to the title the of the
-        publication. For the DITA case it corresponds to the DITA map title.</p>
-      <p>In the HTML output, for this component will be generate a 'div' element with the class
-        webhelp_main_title that will hold the title of the publication like in the following sample: </p>
-      <codeblock>&lt;div class=" webhelp_main_title ">&lt;a href="../index.html">Eclipse content aggregated by a map&lt;/a>&lt;/div></codeblock>
-      <p>This component will be expanded on all WebHelp template pages: main page template, topic
-        page template, search page template and index terms template.</p>
+    <draft-comment author="webapp">This topic will describe how Webhelp templates
+      works.</draft-comment>
+    <draft-comment author="webapp"><xref href="https://jira.sync.ro:8443/browse/EXM-35129"
+        format="html" scope="external" id="key-val">EXM-35129</xref><b>Create a special/separate
+        index.html page for responsive webhelp</b></draft-comment>
+    <p>A WebHelp template component gives dynamics to the Webhelp template page. It is expanded
+      differently depending on the context where it is placed or the current transformed DITA
+      Map.</p>
+    <p>Some WebHelp template components could be used in all the template pages and some of them
+      could be used in all pages. For instance, the Publication title could be used in all pages,
+      but topic breadcrumb could be used only when expand the Webhelp topic template.</p>
+    <p>To output a such component you have to refer a specific element in template pages. All the
+      elements associated with a template components should reside in the
+        <codeph>http://www.oxygenxml.com/webhelp/components</codeph> namespace.</p>
+    <section id="section_publication_title">
+      <title><ph id="wh_publication_title">Publication Title</ph></title>
+      <p>This component is bound to the publication title and it can be used in all template
+        pages.</p>
+      <p>To output this component in the Webhelp Responsive output you have to specify the element
+          <codeph>webhelp_publication_title</codeph> in a template page. This component can be
+        specified in all template pages.</p>
+      <p>Sample</p>
+      <p>If you specify the next element in a template page:</p>
+      <codeblock>&lt;whc:webhelp_publication_title xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock>
+      <p>you will find in the output a <codeph>div</codeph> containing the publication
+        title.<codeblock>&lt;div class=" webhelp_publication_title ">Growing Flowers&lt;/div></codeblock></p>
     </section>
-    <section id="section_hpq_r2s_jv">
-      <title>Publication logo (webhelp_logo)</title>
-      <p>This component is used to generate in the Webhelp output an image for the company or
-        publication logo. The path to the image is specified through the WebHelp parameter
-          <codeph>webhelp.logo.image</codeph>. Also, if you specify the
-          <codeph>webhelp.logo.image.target.url</codeph>parameter then a link to the specified value
-        will be generated when you hover the image.</p>
-      <p>A sample HTML output for this component is listed below:</p>
-      <codeblock>&lt;div class="webhelp_logo">
+    <section id="section_zzp_31v_kv"><title><ph>Publication logo</ph></title><p>This component can
+        be used to emit a logo image in WebHelp Responsive output. It will be processed only when a
+        logo image is specified through the <codeph>webhelp.logo.image</codeph> transformation
+        parameter. Additionally, you can set the <codeph>webhelp.logo.image.target.url</codeph>
+        parameter to generate a link to the specified URL when you hover the logo image.</p><p>The
+        element associated with this component is <codeph>webhelp_logo</codeph> and it can be
+        specified in all template pages.</p><p>Sample</p><p>If you specify the next element in a
+        template
+      page:</p><codeblock>&lt;whc:webhelp_logo xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock>and
+      the transformation
+        parameters:<codeblock>$webhelp.logo.image = logo.png
+$webhelp.logo.image.target.url = http://www.oxygenxml.com</codeblock><p>you
+        will find in the output a <codeph>div</codeph> containing the logo
+        image.<codeblock>&lt;div class=" webhelp_logo ">
   &lt;a href="http://oxygenxml.com" target="_blank">
-    &lt;img src="oxygen.logo.png" alt="Oxygen XML Editor">
+    &lt;img src="logo.png" alt="Growing Flowers">
   &lt;/a>
-&lt;/div></codeblock>
-      <p>Where next parameters were specified:<ul id="ul_ivj_d4t_jv">
-          <li>webhelp.logo.image = oxygen.logo.png</li>
-          <li>webhelp.logo.image.target.url = http://oxygenxml.com</li>
-          <li><i>Oxygen XML Editor</i> is the title of the publication</li>
-        </ul></p>
-      <p>This component can be specified in all
-        <?oxy_comment_start author="Radu Pisoi" timestamp="20160321T170614+0200" comment="Maybe a link to the section with all template pages."?>WebHelp
-        template pages<?oxy_comment_end?>.</p>
-    </section>
-    <section id="section_czn_5qt_jv">
-      <title>Search input (webhelp_search_input)</title>
-      <p>TODO: Short description</p>
-      <p>Sample HTML output:</p>
-      <codeblock>&lt;div id="webhelp_search_input" class="navbar-form navbar-right" role="form">
-  &lt;form onsubmit="return executeQuery();" id="searchForm" method="get" action="../search.html">
+&lt;/div></codeblock></p></section>
+    <section id="section_zrs_fqv_kv">
+      <title><ph>Search Input</ph></title>
+      <p>This component is used to emit the search text field. The element associated with this
+        component is <codeph>webhelp_search_input</codeph> and it can be specified in all template
+        pages.</p>
+      <p>Sample</p>
+      <p>If you specify the next element in a template page:</p>
+      <codeblock>&lt;whc:webhelp_search_input xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock>
+      <p>you will find the next <codeph>div</codeph> in the
+        output.<codeblock>&lt;div id="webhelp_search_input" class="navbar-form navbar-right" role="form">
+  &lt;form onsubmit="return executeQuery();" id="searchForm" method="get" action="search.html">
     &lt;div class="form-group">
       &lt;input placeholder="search" class="form-control" id="textToSearch" name="q" type="search">
     &lt;/div>
   &lt;/form>
-&lt;/div></codeblock>
-      <p>This component can be specified in all
-        <?oxy_comment_start author="Radu Pisoi" timestamp="20160321T170614+0200" comment="Maybe a link to the section with all template pages."?>WebHelp
-        template pages<?oxy_comment_end?>.</p>
+&lt;/div></codeblock></p>
     </section>
+    
   </body>
 </topic>
