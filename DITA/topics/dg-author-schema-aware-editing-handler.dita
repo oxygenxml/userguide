@@ -17,17 +17,16 @@
       implementing the <codeph>AuthorSchemaAwareEditingHandlerAdapter</codeph> makes it possible to
       handle events such as typing, the keyboard delete event at a given offset (using Delete or
       Backspace keys), delete element tags, delete selection, join elements, or paste fragment. It
-      also makes it possible to improve solutions that are proposed by the <xref
-        href="smart-paste-support.dita#smart-paste-support"><term>Smart Paste</term> feature</xref>
-      (through the use of <xref
+      also makes it possible to improve solutions that are proposed by the paste mechanism in <ph
+        keyref="product"/> when pasting content (through the use of <xref
         href="#dg-author-schema-aware-editing-handler/methods_for_improving_the_smart_paste_feature"
         format="dita">some specific methods</xref>).</p>
     <section id="how_to_implement_an_authorschemaawareeditinghandl">
       <title>How to Implement an <apiname>AuthorSchemaAwareEditingHandlerAdapter</apiname></title>
       <p>For this handler to be called, the <xref
-          keyref="options_editor_edit-modes_author_schema-aware"><uicontrol>Schema Aware
-            Editing</uicontrol> option</xref> must be set to <b>On</b> or <b>Custom</b> in the <xref
-          href="preferences-schema-aware.dita#preferences-schema-aware"
+          href="preferences-schema-aware.dita#preferences-schema-aware/schema-aware-editing-section"
+            ><uicontrol>Schema Aware Editing</uicontrol> option</xref> must be set to <b>On</b> or
+          <b>Custom</b> in the <xref href="preferences-schema-aware.dita#preferences-schema-aware"
             ><uicontrol>Schema-Aware</uicontrol> preferences page</xref>. The handler can either
         resolve a specific case, let the default implementation take place, or reject the edit
         entirely by throwing an <codeph>InvalidEditException</codeph>.</p>
@@ -50,10 +49,10 @@
       <title>Example</title>
       <p>Typing events can be handled using the <apiname>handleTyping</apiname> method. For example,
         the <codeph>AuthorSchemaAwareEditingHandler</codeph> checks if the schema is not a learned
-        one, was loaded successfully, and if <xref
-          keyref="options_editor_edit-modes_author_schema-aware"><uicontrol>Smart
-          Paste</uicontrol></xref> is active. If these conditions are met, the event will be
-        handled.</p>
+        one, was loaded successfully, and if the <xref
+          href="preferences-schema-aware.dita#preferences-schema-aware/smart-paste-drag-drop"
+            ><uicontrol>Smart paste and drag and drop</uicontrol> option</xref> is enabled. If these
+        conditions are met, the event will be handled.</p>
       <codeblock outputclass="language-java">public class AuthorSchemaAwareEditingHandlerAdapter extends AuthorSchemaAwareEditingHandler {
 
 /**
@@ -79,27 +78,24 @@ throws InvalidEditException {
       <note conkeyref="reusable_notes_java-files/sdf_project"/>
     </section>
     <section id="methods_for_improving_the_smart_paste_feature">
-      <title>Methods for Improving the Smart Paste Feature</title>
+      <title>Methods for Improving the Paste Mechanism</title>
       <p>
         <dl>
           <dlentry>
             <dt><apiname>getAncestorDetectionOptions</apiname></dt>
             <dd>When pasting content in <uicontrol>Author</uicontrol> mode, if the result causes the
-              document to become invalid, the <xref
-                href="smart-paste-support.dita#smart-paste-support"><term>Smart Paste</term>
-                feature</xref> will propose solutions to make it valid. As a possible solution, <ph
-                keyref="product"/> might surround the pasted content in a sequence of ancestor
-              elements. This
+              document to become invalid, <ph keyref="product"/> will propose solutions to make it
+              valid. As a possible solution, <ph keyref="product"/> might surround the pasted
+              content in a sequence of ancestor elements. This
                 <?oxy_comment_start author="steven_higgs" timestamp="20160329T120713+0300" comment="Add a link to the javadoc anchor when it&apos;s available."?><apiname>getAncestorDetectionOptions</apiname>
               method<?oxy_comment_end?> allows you to choose which parent elements might be a
               possible solution.</dd>
           </dlentry>
           <dlentry>
             <dt><apiname>canBeReplaced</apiname></dt>
-            <dd>Allows you to improve solutions that might be proposed by the <xref
-                href="smart-paste-support.dita#smart-paste-support"><term>Smart Paste</term>
-                feature</xref>. For example, when pasting an element inside an empty element with
-              the same name, this
+            <dd>Allows you to improve solutions that might be proposed by the paste mechanism when
+              pasting content in <ph keyref="product"/>. For example, when pasting an element inside
+              an empty element with the same name, this
                 <?oxy_comment_start author="steven_higgs" timestamp="20160329T120724+0300" comment="Add a link to the javadoc anchor when it&apos;s available."?><apiname>canBeReplaced</apiname>
               method<?oxy_comment_end?> allows <ph keyref="product"/> to replace the empty node
               rather than pasting it after or before the empty node. The callback could also reject
