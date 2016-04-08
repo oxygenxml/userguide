@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="track-changes-behaviour">
-  <title>Track Changes Behavior </title>
+  <title>Tracked Changes Behavior </title>
   <prolog>
     <metadata>
       <keywords>
@@ -11,12 +11,143 @@
     </metadata>
   </prolog>
   <body>
-    <p>This section explains the behavior of the <uicontrol>Track Changes</uicontrol> feature
-      depending on the context and whether or not it is activated.</p>
-    <p>You can use the <uicontrol>Track Changes</uicontrol> feature to keep track of multiple
-      actions.</p>
-    <p>To watch our video demonstration about the Track Changes support, go to <xref
-        href="http://oxygenxml.com/demo/DocBook_Editing_in_Author.html" format="html"
-        scope="external">http://oxygenxml.com/demo/Change_Tracking.html</xref>.</p>
+    <p>The behavior of the <uicontrol>Track Changes</uicontrol> feature depends on the context, the
+      type of change, and whether or not it is activated.</p>
+    <section id="inserting_content">
+      <title>Inserting Content</title>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is disabled and you insert content, the
+        following behavior is possible:<ul>
+          <li>Making an insertion in a <uicontrol>Delete</uicontrol> change results in the change
+            being split in two and the content is inserted without being marked as change.</li>
+          <li>Making an insertion in an <uicontrol>Insert</uicontrol> change results in the change
+            being split in two and the content is inserted without being marked as change.</li>
+          <li>Making an insertion in regular content results in a regular insertion.</li>
+        </ul>If the <uicontrol>Track Changes</uicontrol> feature is enabled and you insert content,
+        the following behavior is possible:<ul>
+          <li>Making an insertion in a <uicontrol>Delete</uicontrol> change results in the change
+            being split in two and the current inserted content appears marked as an INSERT.</li>
+          <li>Making an insertion in an <uicontrol>Insert</uicontrol> change results in the following:<ul>
+              <li>If the original insertion was made by another user, the change is split in two and
+                the current inserted content appears marked as an INSERT by the current author.</li>
+              <li>If the original <uicontrol>Insert</uicontrol> change was made by the same user,
+                the change is just expanded to contain the inserted content. The creation time-stamp
+                of the previous insert is preserved.</li>
+            </ul></li>
+          <li> If we insert in regular content, the current inserted content appears marked as an
+              <uicontrol>Insert</uicontrol> change.</li>
+        </ul></p>
+    </section>
+    <section id="surrounding_content">
+      <title>Surrounding Content</title>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is enabled and you surround content in
+        a new XML element, the following behavior is possible:<ul>
+          <li>Making a surround in a <uicontrol>Delete</uicontrol> change results in nothing
+            happening.</li>
+          <li>Making a surround in an <uicontrol>Insert</uicontrol> change results in the following:<ul>
+              <li>If the original insertion was made by another user, the change is split in two and
+                the surround operation appears marked as being performed by the current author.</li>
+              <li>If the original <uicontrol>Insert</uicontrol> change was made by the same user,
+                the existing change is just expanded to contain the surrounded content.</li>
+            </ul></li>
+          <li>Making a surround in regular content results in the operation being marked as a
+            surround change.</li>
+        </ul></p>
+    </section>
+    <section id="deleting_characters">
+      <title>Deleting Characters</title>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is disabled and you delete content
+        character by character, the following behavior is possible:<ul>
+          <li>Deleting content in an existing <uicontrol>Delete</uicontrol> change results in
+            nothing happening.</li>
+          <li>Deleting content in an existing <uicontrol>Insert</uicontrol> change results in the
+            content being deleted without being marked as a deletion and the INSERT change shrinks
+            accordingly.</li>
+          <li>Deleting in regular content results in a regular deletion. </li>
+        </ul></p>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is enabled and you delete content
+        character by character, the following behavior is possible:<ul>
+          <li>Deleting content in an existing <uicontrol>Delete</uicontrol> change results in the following:<ul>
+              <li>If the same author created the <uicontrol>Delete</uicontrol> change, the previous
+                change is marked as deleted by the current author.</li>
+              <li>If another author created the <uicontrol>Delete</uicontrol> change, nothing
+                happens. </li>
+            </ul></li>
+          <li>Deleting content in an existing <uicontrol>Insert</uicontrol> change results in the following:<ul>
+              <li>If the same author created the <uicontrol>Insert</uicontrol> change, the content
+                is deleted and the <uicontrol>Insert</uicontrol> change shrinks accordingly.</li>
+              <li>If another author created the <uicontrol>Insert</uicontrol> change, the
+                  <uicontrol>Insert</uicontrol> change is split in two and the deleted content
+                appears marked as a <uicontrol>Delete</uicontrol> change by the current author.
+              </li>
+            </ul></li>
+          <li>Deleting in regular content results in the content being marked as
+              <uicontrol>Delete</uicontrol> change by the current author.</li>
+        </ul></p>
+    </section>
+    <section id="deleting_selections_of_content">
+      <title>Deleting Selections of Content</title>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is disabled and you delete a selection
+        of content, the following behavior is possible:<ul>
+          <li>If the selection contains an entire <uicontrol>Delete</uicontrol> change, the change
+            disappears and the content is deleted.</li>
+          <li>If the selection intersects with a <uicontrol>Delete</uicontrol> change (starts or
+            ends in one), it results in nothing happening.</li>
+          <li>If the selection contains an entire <uicontrol>Insert</uicontrol> change, the change
+            disappears and the content is deleted.</li>
+          <li>If the selection intersects with an <uicontrol>Insert</uicontrol> change (starts or
+            ends in one), the <uicontrol>Insert</uicontrol> change is shrunk and the content is
+            deleted. </li>
+        </ul>If the <uicontrol>Track Changes</uicontrol> feature is enabled and you delete a
+        selection of content, the following behavior is possible:<ul>
+          <li>If the selection contains an entire <uicontrol>Delete</uicontrol> change, the change
+            is considered as rejected and then marked as deleted by the current author, along with
+            the other selected content.</li>
+          <li>If the selection intersects a <uicontrol>Delete</uicontrol> change (starts or ends in
+            one), the change is considered as rejected and marked as deleted by the current author,
+            along with the other selected content.</li>
+          <li>If the selection contains an entire <uicontrol>Insert</uicontrol> change, the
+            following is possible:<ul>
+              <li>If the <uicontrol>Insert</uicontrol> is made by the same author, the change
+                disappears and the content is deleted.</li>
+              <li>If the <uicontrol>Insert</uicontrol> is made by another author, the change is
+                considered as accepted and then marked as deleted by the current author, along with
+                the other selected content.</li>
+            </ul></li>
+          <li>If the selection intersects an <uicontrol>Insert</uicontrol> change (starts or ends in
+            one), the <uicontrol>Insert</uicontrol> change shrinks and the part of the
+              <uicontrol>Insert</uicontrol> change that intersects with the selection is
+            deleted.</li>
+        </ul></p>
+    </section>
+    <section id="copying_content">
+      <title>Copying Content</title>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is disabled and you copy content, the
+        following behavior is possible:<ul>
+          <li>If the copied area contains <uicontrol>Insert</uicontrol> or
+              <uicontrol>Delete</uicontrol> changes (or attribute edits), these are also copied to
+            the clipboard.</li>
+        </ul></p>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is enabled and you copy content, the
+        following behavior is possible:<ul>
+          <li>If the copied area contains <uicontrol>Insert</uicontrol> or
+              <uicontrol>Delete</uicontrol> changes (or attribute edits), these are all accepted in
+            the content of the clipboard (the changes will no longer be in the clipboard).</li>
+        </ul></p>
+    </section>
+    <section id="pasting_content">
+      <title>Pasting Content</title>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is disabled and you paste content, the
+        following behavior is possible:<ul>
+          <li>If the clipboard content contains <uicontrol>Insert</uicontrol> or
+              <uicontrol>Delete</uicontrol> changes (or attribute edits), they will be preserved on
+            paste. </li>
+        </ul></p>
+      <p>If the <uicontrol>Track Changes</uicontrol> feature is enabled and you paste content, the
+        following behavior is possible:<ul>
+          <li>If the clipboard content contains <uicontrol>Insert</uicontrol> or
+              <uicontrol>Delete</uicontrol> changes (or attribute edits), all the changes are
+            accepted and then the paste operation proceeds according to the insertion rules.</li>
+        </ul></p>
+    </section>
   </body>
 </topic>
