@@ -74,7 +74,7 @@
           <sqf:title>Set "<sch:value-of select="$reqId"/>" as a topic ID</sqf:title>
           <sqf:p>The topic ID must be equal to the file name.</sqf:p>
         </sqf:description>
-        <sqf:replace match="@id" node-type="attribute" target="id" select="$reqId"/>
+        <sqf:add node-type="attribute" target="id" select="$reqId"/>
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
