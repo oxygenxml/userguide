@@ -292,7 +292,25 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
+
+  <!-- XML Schema used instead of DTD. -->
+  <sch:pattern id="checkSchemaUseOnDITATopics">
+    <sch:rule context="/*">
+      <sch:report test="@*:noNamespaceSchemaLocation">We should not use XML Schema as schema for
+        DITA topics! Instead we should use the corresponding DTD!</sch:report>
+    </sch:rule>
+  </sch:pattern>
   
+  <!-- Titles without double quotes. -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/title ')]">
+      <sch:report test="contains(., '&quot;')"> Title contains quotes. This breaks the Java Help System. See EXM-36415.</sch:report>
+      <sch:report test="contains(.,'&amp;') "> Title contains markup. This breaks the Java Help System. See EXM-36415.</sch:report>
+      <sch:report test="contains(.,'&lt;')"> Title contains markup. This breaks the Java Help System. See EXM-36415.</sch:report>
+    </sch:rule>
+    
+  </sch:pattern>
+
   <!-- Template used to copy the current node -->
   <xsl:template match="node() | @*" mode="copyExceptClass">
     <xsl:copy copy-namespaces="no">
