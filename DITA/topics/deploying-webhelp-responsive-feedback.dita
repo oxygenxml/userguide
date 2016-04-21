@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="deploying-webhelp-responsive-feedback">
+  <title><?oxy_comment_start author="steven_higgs" timestamp="20160418T135404+0300" comment="This and &quot;Deploying the WebHelp Classic with Feedback System&quot; topics are identical except for the name of the system. At some point, maybe we should just reference the same topic in both sections and use a generic name in the topic (such as &quot;feedback-enabled WebHelp system&quot;).
+
+Also, we should have QA test this procedure to make sure it does work for WHR."?>Deploying
+    the WebHelp Responsive with Feedback System<?oxy_comment_end?></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>deploying WebHelp Responsive with Feedback</indexterm>
+        <indexterm>installing WebHelp Responsive with Feedback</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body id="installation">
+    <section id="system-requirements">
+      <title>System Requirements</title>
+      <p>The <term>WebHelp Responsive with Feedback</term> system of <ph keyref="product"/> requires
+        a standard server deployment. You can request this from your server admin and it needs the
+        following system components:<ul id="ul_qtg_mnh_ws">
+          <li>A Web server (such as <term>Apache Web Server</term>)</li>
+          <li>A <term>MySQL</term> or <term>MariaDB</term> database server</li>
+          <li>A database admin tool (such as <term>phpMyAdmin</term>)</li>
+          <li>PHP Version 5.1.6 or later</li>
+        </ul></p>
+      <p><ph keyref="webhelp"/> system supports most of the recent versions of the following
+        browsers: Chrome, Firefox, Internet Explorer, Safari, Opera.</p>
+    </section>
+    <section id="create-database-section"><title>Create WebHelp Responsive with Feedback
+        Database</title>The <term>WebHelp Responsive with Feedback</term> system needs a database to
+      store user details and the actual feedback, and a user added to it with all privileges. After
+      this is created, you should have the following information:<ul id="ul_f1m_3hk_vs">
+        <li>Database name</li>
+        <li>Username</li>
+        <li>Password</li>
+      </ul><p>Exactly how you create the database and user depends on your web host and your
+        particular needs. </p></section>
+    <example>
+      <p>For example, the following procedure uses <term>phpMyAdmin</term> to create a MySQL
+        database for the feedback system and a MySQL user with privileges for that database. The
+        feedback system uses these credentials to connect to the database.</p>
+      <p>Using <term>phpMyAdmin</term> to create a database: <ol id="ol_als_nkk_vs">
+          <li>Access the <term>phpMyAdmin</term> instance running on your server.</li>
+          <li>Click <i>Databases</i> (in the right frame) and then create a <i>database</i>. You can
+            give it any name you want (for example <i>comments</i>).</li>
+          <li>Create a user with connection privileges for this database. </li>
+          <li>Under <i>localhost</i>, in the right frame, click <i>Privileges</i> and then at the
+            bottom of the page click the <uicontrol>reload the privileges</uicontrol> link.</li>
+        </ol></p>
+    </example>
+    <section id="deploying-webhelp">
+      <title>Deploying the WebHelp Responsive with Feedback Output</title>
+      <p>If you have a web server configured with PHP and MySQL, you can deploy the <term>WebHelp
+          Responsive with Feedback</term> output by following these steps:<ol id="ol_jfm_3mk_vs">
+          <li>Connect to your server using an FTP client.</li>
+          <li>Locate the home directory (from now on, referred to as
+              <varname>DOCUMENT_ROOT</varname>) of your server.</li>
+          <li>Copy the transformation output folder into the <filepath>DOCUMENT_ROOT</filepath>
+            folder.</li>
+          <li>Rename it to something relevant (for example,
+            <filepath>myProductWebHelp</filepath>).</li>
+          <li>Open the output folder (for example,
+              <filepath>http://[YOUR_SERVER]/myProductWebHelp/)</filepath>. You are redirected to
+            the installation wizard. Proceed with the installation as follows:<ol id="ol_lgm_lnk_vs">
+              <li>Verify that the prerequisites are met.</li>
+              <li>Press <uicontrol>Start Installation</uicontrol>.</li>
+              <li>Configure the <uicontrol>Deployment Settings</uicontrol> section. Default values
+                are provided, but you should adjust them as needed.<note type="tip">You can change
+                  some of the options later. The installation creates a
+                    <filepath>config.php</filepath> file in
+                    <filepath>[OXYGEN_WEBHELP_INSTALL_DIR]/feedback/resources/php/config/config.php</filepath>
+                  where all your configuration options are stored.</note></li>
+              <li>Configure the <uicontrol>MySql Database Connection Settings</uicontrol> section.
+                Use the information (database name, username, password) from the <xref
+                  href="#deploying-webhelp-responsive-feedback/create-database-section"
+                  format="dita">Create WebHelp Responsive with Feedback Database section</xref> to
+                fill-in the appropriate text boxes.<note type="warning" id="create-db-note">Checking
+                  the <uicontrol>Create new database structure</uicontrol> option will overwrite any
+                  existing data in the selected database, if it already exists. Therefore, it is
+                  useful the first time you install the <term>WebHelp Responsive with
+                    Feedback</term> system, but you do not want to select this option on subsequent
+                  deployments.</note></li>
+              <li>If you are using a domain (such as <term>OpenLDAP</term> or <term>Active
+                  Directory</term>) to manage users in your organization, check the
+                  <uicontrol>Enable LDAP Autehntication</uicontrol> option. This will allow you to
+                configure the LDAP server, which will provide information and credentials for users
+                who will access the WebHelp system. Also, this will allow you to choose which of the
+                domain users will have administrator privileges.</li>
+              <li>If the <uicontrol>Create new database structure</uicontrol> option is checked, the
+                  <uicontrol>Create WebHelp Administrator Account</uicontrol> section becomes
+                available. Here you can set the administrator account data. The administrator is
+                able to moderate new posts and manage WebHelp users. <p>The same database can be
+                  used to store comments for multiple <term>WebHelp Responsive with Feedback</term>
+                  deployments. If a topic is available in multiple deployments and there are
+                  comments associated with it, you can choose to display the comments in all
+                  deployments that share the database. To do this, enable the <uicontrol>Display
+                    comments from other products</uicontrol> option. In the <uicontrol>Display
+                    comments from</uicontrol> section, a list with the deployments sharing the same
+                  database is displayed. Select the deployments allowed to share common
+                    feedback.<note>You can restrict the displayed comments of a product depending on
+                    its version. If you have two products that use the same database and you
+                    restrict one of them to display comments starting from a certain version, the
+                    comments of the other product are also displayed from the specified version
+                    onwards. </note></p></li>
+              <li>Press <uicontrol>Next Step</uicontrol>.</li>
+              <li>Remove the installation folder from your web server.<note type="important">When
+                  you publish subsequent iterations of your <term>WebHelp Responsive with
+                    Feedback</term> system, you will not upload the <filepath>/install</filepath>
+                  folder in the output, as you only need it uploaded the first time you create the
+                  installation. On subsequent uploads, you will just upload the other output
+                  files.</note></li>
+              <li>In your Web browser, go to your <term>WebHelp Responsive with Feedback</term>
+                system main page.</li>
+            </ol></li>
+        </ol></p>
+    </section>
+    <section id="testing_your_webhelp_classic_with_feedback_system"><title>Testing Your WebHelp
+        Responsive with Feedback System</title>To test your system, create a user and post a
+      comment. Check to see if the notification emails are delivered to your email inbox.<note>To
+        read debug messages generated by the system:<ol id="ol_hyx_lpk_vs">
+          <li>Enable <term>JavaScript</term> logging by doing one of the following:<ul
+              id="ul_iyx_lpk_vs">
+              <li>Open the <filepath>log.js</filepath> file, locate the <codeph>var log= new
+                  Log(Level.NONE);</codeph> line, and change the logging level to:
+                  <codeph>Level.INFO</codeph>, <codeph>Level.DEBUG</codeph>,
+                  <codeph>Level.WARN</codeph>, or <codeph>Level.ERROR</codeph>.</li>
+              <li>Append <codeph>?log=true</codeph> to the WebHelp URL.</li>
+            </ul></li>
+          <li>Inspect the PHP and Apache server log files.</li>
+        </ol></note></section>
+    <section id="documentation_product_id_and_version">
+      <title>Documentation Product ID and Version</title>
+      <p>When you run a <uicontrol>WebHelp Responsive with Feedback</uicontrol> transformation
+        scenario, by default you are prompted for a documentation product ID and version number.
+        This is needed when multiple WebHelp systems are deployed on the same server. Think of your
+        WebHelp output as a <term>product</term>. If you have three different WebHelp outputs, you
+        have three different <term>products</term> (each with their own unique documentation product
+        ID). This identifier is included in a configuration file so that comments are tied to a
+        particular output (product ID and version number).<note>The <term>WebHelp Responsive with
+            Feedback</term> installation includes a configuration option (<uicontrol>Display
+            comments from other products</uicontrol>) that allows you to choose to have comments
+          visible in other specified <term>products</term>.</note></p>
+    </section>
+  </body>
+  <related-links>
+    <link href="managing-webhelp-responsive-feedback.dita#managing-webhelp-responsive-feedback"/>
+  </related-links>
+</topic>

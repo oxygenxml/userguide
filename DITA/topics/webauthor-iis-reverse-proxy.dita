@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webauthor-iis-reverse-proxy">
+  <title>Using an IIS Reverse Proxy</title>
+  <shortdesc>Describes how to use <ph keyref="webappProduct"/> behind an IIS reverse
+    proxy.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Web Author <indexterm>IIS reverse proxy</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>If you want to use <ph keyref="webappProduct"/> with IIS as a reverse proxy, follow this procedure:<ol>
+        <li>Configure IIS to allow double escaping in URLs. See the following examples:<ul>
+            <li>For Microsoft Azure, the <filepath>applicationHost.xdt</filepath> file should
+              contain the
+              following:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="utf-8"?>
+&lt;configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+ &lt;system.webServer>
+  &lt;security>
+   &lt;requestFiltering allowDoubleEscaping="true" xdt:Transform="SetAttributes(allowDoubleEscaping)" />
+  &lt;/security>
+ &lt;/system.webServer>
+&lt;/configuration></codeblock></li>
+            <li>For other types, insert the following fragment inside the
+                <filepath>applicationHost.config</filepath>
+              file:<codeblock outputclass="language-xml">&lt;security>
+  &lt;requestFiltering allowDoubleEscaping="true"/>
+&lt;/security></codeblock></li>
+          </ul></li>
+        <li>Configure Tomcat to allow escaped slashes. Append the following line in the
+            <filepath>tomcat\conf\catalina.properties</filepath>
+          file:<codeblock outputclass="language-ini">org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true</codeblock></li>
+        <li> Set an environment variable to instruct <ph keyref="webappProduct"/> that the URL path
+          is already decoded. Insert the following line in the
+            <filepath>tomcat\bin\catalina.bat</filepath>
+          file:<codeblock outputclass="language-ini">set "URL_DECODING_PROXY=true"</codeblock></li>
+      </ol></p>
+  </body>
+</topic>

@@ -1,72 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task id="webapp-plugin-prototyping">
-  <title>How To Set-Up a Development Environment for <ph keyref="webappComponent"/> Plugins</title>
+  <title>How to Set-Up a Development Environment for <ph keyref="webappProduct"/> Plugins</title>
   <shortdesc>This procedure describes a development environment that can be used to increase your
-    productivity in writing plugins for the <ph keyref="webappComponent"/>.</shortdesc>
+    productivity in writing plugins for the <ph keyref="webappProduct"/>.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Webapp Component writing plugins</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <taskbody>
-    <prereq>You will need a recent Eclipse EE and standalone version of <ph keyref="product"/> with
-      the <xref href="http://oxygenxml.com/oxygen_webapp_add_on.html#oxygen_webapp_install"
-        format="html" scope="external"><ph keyref="webappComponent"/> Add-on</xref> installed.<note>If you do
-        not have a valid <ph keyref="product"/> license, then you will need to use the <xref
-          href="http://oxygenxml.com/oxygen_webapp_running_and_testing.html" format="html"
-          scope="external">standard procedure of testing the plugin</xref>.</note></prereq>
-    <context>Developing a plugin for the <ph keyref="webappComponent"/> might require repetitive
+    <prereq>You will need a recent Eclipse EE.</prereq>
+    <context>Developing a plugin for the <ph keyref="webappProduct"/> might require repetitive
       coding-testing cycle. Since the <xref
         href="http://oxygenxml.com/oxygen_webapp_running_and_testing.html" format="html"
         scope="external">process of building a whole SDK project</xref> requires a full Maven build,
       the whole process might prove to be time consuming. The following procedure provide a faster
-      alternative way of testing the plugin:</context>
+      alternate way of testing the plugin:</context>
     <steps>
       <step>
-        <cmd>Setup an SDK sample project as described in <xref
-            href="http://oxygenxml.com/oxygen_sdk_maven.html" format="html" scope="external">this
-            tutorial</xref></cmd>
+        <cmd>Setup an SDK sample project as described in the <xref
+            href="http://oxygenxml.com/oxygen_sdk_maven.html" format="html" scope="external">oXygen
+            XML SDK tutorial</xref>.</cmd>
       </step>
       <step>
-        <cmd>Copy one of the sample plugins found in <filepath>oxygen-sample-plugins/</filepath> in
-          the SDK project to the <filepath>plugins</filepath> folder of the oXygen XML Standalone
-          installation.</cmd>
-        <info>The plugin will also be used by the <ph keyref="product"/> standalone distribution,
-          which has some advantages. However, if <ph keyref="product"/> standalone is not compatible
-          with your plugin, it might display error messages at startup. In this case, you can
-          disable it by following <xref href="../topics/disable-plugin.dita#disable-plugin">this
-            procedure</xref>.</info>
+        <cmd id="create_plugin_project">Create a new plugin project as a sub-module of the
+            <filepath>oxygen-sample-plugins</filepath> module (from the SDK) or start from one of
+          the existing sample plugins.</cmd>
       </step>
       <step>
-        <cmd>Import the copied plugin in Eclipse.</cmd>
+        <cmd>Follow <xref href="http://oxygenxml.com/oxygen_webapp_running_and_testing.html"
+            format="html" scope="external">these instructions</xref> to run the <ph
+            keyref="webappProduct"/> in a Tomcat server.</cmd>
+      </step>
+      <step>
+        <cmd>Look in the Tomcat logs (or in the console) for a line like "<codeph>Loading plugins
+            from: ${path}</codeph>" and note the path of the plugins folder.</cmd>
+      </step>
+      <step>
+        <cmd>In the plugins folder, create a sub-folder with a name of your choice (for example,
+            <filepath>myplugin</filepath>).</cmd>
+      </step>
+      <step>
+        <cmd>In that folder (<filepath>myplugin</filepath>), create a
+            <filepath>plugin.redirect</filepath> file that contains the path to your plugin project
+          (created in step 2) on a single line.</cmd>
+      </step>
+      <step>
+        <cmd>Import your plugin project in Eclipse.</cmd>
         <substeps id="substeps_vy1_gpb_2s">
           <substep>
             <cmd>Click <menucascade>
                 <uicontrol>File</uicontrol>
                 <uicontrol>Import</uicontrol>
-              </menucascade></cmd>
+              </menucascade>.</cmd>
           </substep>
           <substep>
-            <cmd>Choose <uicontrol>Existing Maven Project</uicontrol></cmd>
+            <cmd>Choose <uicontrol>Existing Maven Project</uicontrol>.</cmd>
           </substep>
           <substep>
-            <cmd>Browse for the location where you copied the plugin</cmd>
+            <cmd>Browse for the location of your plugin.</cmd>
           </substep>
         </substeps>
       </step>
       <step>
-        <cmd>Modify the <filepath>plugin.xml</filepath> to add a library reference to the directory
-          where Eclipse places the compiled output.</cmd>
-        <info>With the default setup of a Maven project, this step requires to add the following
-          element:<pre>&lt;library name="target/classes/"/></pre></info>
+        <cmd>Modify the <filepath>plugin.xml</filepath> file to add a library reference to the
+          directory where Eclipse places the compiled output.</cmd>
+        <info>With the default setup of a Maven project, this step requires that you add the
+          following element:<pre>&lt;library name="target/classes/"/></pre></info>
       </step>
       <step>
-        <cmd>You can now open a document in <ph keyref="product"/> standalone and start the <ph
-          keyref="webappComponent"/> with the plugin installed, just by using the <uicontrol>Start WebApp
-            Editor</uicontrol> button on the <ph keyref="product"/> standalone toolbar.</cmd>
+        <cmd>You can now open a document in the <ph keyref="webappProduct"/> and it will
+          automatically load your plugin.</cmd>
         <info>Every time you make changes to the plugin sources, you will need to restart the <ph
-          keyref="webappComponent"/> using the <uicontrol>Close and Stop Server</uicontrol> button.</info>
+            keyref="webappProduct"/>.</info>
       </step>
     </steps>
     <postreq>Once you are happy with the result, you need to add the plugin back in your SDK project
       and follow <xref href="http://oxygenxml.com/oxygen_webapp_running_and_testing.html"
-        format="html" scope="external">these instructions </xref> to perform a final testing of the
+        format="html" scope="external">these instructions</xref> to perform a final testing of the
       project.</postreq>
   </taskbody>
   <related-links>

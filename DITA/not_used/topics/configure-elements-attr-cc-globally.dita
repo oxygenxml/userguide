@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="configure-elements-attr-cc-globally">
+  <title><?oxy_comment_start author="steven_higgs" timestamp="20160226T150435+0200" comment="We decided to just use some of this content in an example in the &quot;Configuring the Proposals for Elements&quot; topic. Moved to not_used."?>Filtering
+    Elements and Attributes<?oxy_comment_end?></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Configuring elements and attributes proposed in Content Completion
+          Assistant</indexterm>
+        <indexterm>Content Completion Assistant</indexterm>
+        <indexterm>Content completion configuration file
+          <indexterm>cc_config.xml</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="product"/> includes support for defining a global list of elements and attributes
+      that will appear in the <uicontrol>Content Completion Assistant</uicontrol>. To do so, a
+      configuration file is used to define or restrict the possible elements or attributes that can
+      be used for a particular document type.</p>
+    <p>For an example of a specific use-case, suppose that you want use a DITA framework, but you
+      only want to work with a limited set of elements and attributes (similar to the set specified
+      in <term>Lightweight DITA</term>). To accomplish this, you can use a configuration file to
+      specify a list of possible elements and attributes to be presented in the <uicontrol>Content
+        Completion Assistant</uicontrol> for a document type (framework).</p>
+    <section id="configure-cc-section">
+      <title>Configuring Global List of Content Completion Proposals</title>
+      <p
+        conref="../reusables/topics/reusables-editing-documents.dita#reusables-editing-documents/customize-cc-proposals-p"/>
+    </section>
+    <section id="configuration_file">
+      <title>Configuration File - Specifying Elements and Attributes that are Proposed for a
+        Framework</title>
+      <p>For the purposes of defining the elements and attributes that are proposed for the entire
+        framework (document type), you can use the <codeph>elementProposals</codeph> element to
+        specify the possible elements and attributes, or to restrict certain elements or attributes.
+        This is similar to the process for <xref
+          href="configure-elements-attr-cc-individually.dita#configure-elements-attr-cc-individually/configuration_file"
+          >Configuring Elements or Attributes that are Proposed for Each Element</xref>, but in this
+        case the <codeph>path</codeph> attribute is not used.</p>
+      <p><b>Elements:</b></p>
+      <p>To specify the <b>elements</b> that are proposed for a framework, you can use the following
+        attributes for the <codeph>elementProposals</codeph> element:<ul id="ul_ghd_c55_kr">
+          <li><codeph>possibleElements</codeph> - A space-separated list of element names that will
+            be available in the <uicontrol>Content Completion Assistant</uicontrol> for the entire
+            framework.</li>
+          <li><codeph>rejectElements</codeph> - A space-separated list of element names that will be
+            filtered out from the list of proposals that will be available for the entire framework.
+            The list of proposals in the <uicontrol>Content Completion Assistant</uicontrol> will
+            include the entries that are defined in the associated schema, minus the elements
+            specified in this attribute.</li>
+        </ul></p>
+      <p><b>Attributes:</b></p>
+      <p>To specify the <b>attributes</b> that are proposed for a framework, you can use the
+        following attributes for the <codeph>elementProposals</codeph> element:<ul>
+          <li><codeph>possibleAttributes</codeph> - A space-separated list of attribute names that
+            will be available in the <uicontrol>Content Completion Assistant</uicontrol> for the
+            entire framework.</li>
+          <li><codeph>rejectAttributes</codeph> - A space-separated list of attribute names that
+            will be filtered out from the list of proposals that will be available for the entire
+            framework. The list of proposals in the <uicontrol>Content Completion
+              Assistant</uicontrol> will include the entries that are defined in the associated
+            schema, minus the attributes specified in this attribute.</li>
+        </ul></p>
+    </section>
+    <section id="other_important_notes">
+      <title>Other Important Notes About the Configuration File</title>
+      <note type="important">
+        <ul>
+          <li>This configuration file only affects the content completion assistance, not
+            validation.</li>
+          <li>To test the effects of your changes, you should restart the application, although in
+            some cases, you can simply use the <uicontrol><image href="../img/Refresh16.png"
+              />Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
+            customizations.</li>
+          <li>Regular expression patterns can be used in the following attributes:
+              <codeph>possibleElements</codeph>, <codeph>rejectElements</codeph>,
+              <codeph>possibleAttributes</codeph>, and <codeph>rejectAttributes</codeph>. For
+            example, <codeph>code*</codeph>, <codeph>*block</codeph>, <codeph>con*ref</codeph>,
+              <codeph>_*</codeph>.</li>
+        </ul>
+      </note>
+    </section>
+    <section id="example_specifying_elements">
+      <title>Example: Specifying the Possible Elements and Attributes for an Entire
+        Framework</title>
+      <p>Suppose that you want to limit the possible elements and attributes that will be used in
+        your framework to be similar to those specified in <term>Lightweight DITA</term>. The
+        configuration file should look like
+        this:<codeblock outputclass="language-xml">&lt;elementProposals
+        possibleElements="
+	    	topic title shortdesc body section p 
+	    	ph xref ul ol li dl 
+	    	dlhead dthd dlentry dt dd pre 
+	    	simpletable sthead strow stentry 
+	    	image object desc alt note audio
+	    	steps step cmd
+	    	video localref webref"
+	    
+        possibleAttributes="
+        	id domains href scope format type conref 
+        	props keyref class"/></codeblock></p>
+    </section>
+    <section id="examples_restricting">
+      <title>Examples: Restricting Certain Elements and Attributes for an Entire Framework</title>
+      <p>Suppose that in your DITA documents, you want to restrict your users from using image
+        elements (<codeph>image</codeph>) because you do not want images to be included in your
+        output. Suppose that you also want to restrict your users from using content reference
+        attributes (<codeph>conref</codeph>, <codeph>conrefend</codeph>, <codeph>conaction</codeph>)
+        because you want them to use key references (<codeph>keyref</codeph>) instead. The
+        configuration file should look like
+        this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image" />
+&lt;elementProposals rejectAttributes="conref conrefend conaction" /></codeblock></p>
+      <p>Since the <codeph>path</codeph> attribute is missing, the specified elements and attributes
+        will be filtered out from the proposals for the entire framework.</p>
+    </section>
+  </body>
+  <related-links>
+    <link
+      href="configuring-content-completion-proposals.dita#configuring-content-completion-proposals"/>
+    <link
+      href="configure-elements-attr-cc-individually.dita#configure-elements-attr-cc-individually"/>
+    <link href="rendering-elements-cc-author.dita#rendering-elements-cc-author"
+      product="author editor authorEclipse editorEclipse"/>
+  </related-links>
+</topic>

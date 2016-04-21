@@ -1,57 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webapp_licensing">
-  <title>Licensing the <ph keyref="webappComponent"/></title>
+  <title>Licensing</title>
+  <shortdesc>How to license <ph keyref="webappProduct"/>.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Web Author / Webapp Component licensing</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
-    <p>The <ph keyref="webappComponent"/> uses a floating license model, where the license key is
+    <p>The <ph keyref="webappProduct"/> uses a floating license model, where the license key is
       stored on a server and individual users consume license seats from a common pool. </p>
-    <section>
+    <section id="how_it_works">
       <title>How it works</title>
       <p>The license key contains the maximum number of users that can simultaneously access the <ph
-        keyref="webappComponent"/> at any given moment. After a period of inactivity, the license allocated
-        to that user becomes available. </p>
+          keyref="webappProduct"/> at any given moment. After a period of inactivity, the license
+        allocated to that user becomes available. </p>
       <p>While no personal information is sent to the server, a cookie that identifies the user is
         auto-generated. Note that the use of two different browsers (for example, Firefox and
         Chrome) by a single user, will consume two floating licenses. However, using two or more
         windows or tabs of the same browser, consumes a single floating license.</p>
     </section>
-    <section>
+    <section id="licensing">
       <title>Licensing</title>
-      <p>Follow these steps to license a deployment of the <ph keyref="webappComponent"/>:</p>
+      <p>Follow these steps to license a deployment of the <ph keyref="webappProduct"/>:</p>
       <ol id="ol_ctz_bzr_1r">
-        <li>To obtain a license key, please contact <xref href="mailto:support@oxygenxml.com"
-            scope="external" format="html">support@oxygenxml.com</xref>.</li>
         <li><xref
             href="installation-setting-up-license-server.dita#installation-setting-up-license-server"
-            >Install a floating license server</xref>. If you decide to use an HTTP license server,
-          you can deploy it in the same Tomcat server, alongside with the <ph
-            keyref="webappComponent"/>.</li>
+            product="author editor">Install a floating license server</xref><ph product="webauthor"
+              ><xref href="floating-license-servlet-setup.dita#floating-license-servlet-setup"
+              >Install a floating license server</xref></ph>. You can deploy the HTTP license server
+          in the same Tomcat server, alongside with <ph keyref="webappProduct"/>.</li>
         <li>Configure the license server connection.<note>Information about your license will be
-            displayed in the <uicontrol>About</uicontrol> section of the <ph
-              keyref="webappComponent"/>
+            displayed in the <uicontrol>About</uicontrol> section of the <ph keyref="webappProduct"/>
             <uicontrol>Dashboard</uicontrol>.</note></li>
       </ol>
     </section>
-    <section><title>Configuring the License Server Connection (for <i>oXygen License Server
-          Servlet</i> version only)</title>For information on configuring the license server
-      connection with a simple GUI, see the <xref
-        href="webapp-configure-license-server.dita#webapp-configure-license-server"/>
-      topic.</section>
-    <section><title>Bundling the License Server Configuration in the <ph keyref="webappComponent"
-        /></title>If you need to build the <ph keyref="webappComponent"/> with the license
-      configuration bundled inside, use this method.<p>The connection to the server should be
-        configured in a file located at <filepath>WEB-INF/license.properties</filepath>. It should
-        have the following keys:<ul>
+    <section id="configuring_the_license_server_connection"><title>Configuring the License Server
+        Connection</title>For information on configuring the license server connection with a simple
+      GUI, see the <xref href="webapp-configure-license-server.dita#webapp-configure-license-server"
+      /> topic.</section>
+    <section id="bundling_license_server"><title>Bundling the License Server Configuration in the
+          <ph keyref="webappProduct"/></title>If you need to build the <ph keyref="webappProduct"/>
+      with the license configuration bundled inside, use this method.<p>The connection to the server
+        should be configured in a file located at <filepath>WEB-INF/license.properties</filepath>.
+        It should have the following keys:<ul>
           <li>
             <parml>
               <plentry>
                 <pt>licensing.server.type</pt>
-                <pd>Type of licensing server. Can be one of <codeph>http</codeph> or
-                    <codeph>standalone</codeph>.</pd>
+                <pd>Type of licensing server. Set it to <codeph>http</codeph>.</pd>
               </plentry>
             </parml>
           </li>
-        </ul></p><p>For an HTTP server, configure the following parameters:<ul>
           <li>
             <parml>
               <plentry>
@@ -76,20 +79,19 @@
               </plentry>
             </parml>
           </li>
-        </ul></p><p>For a standalone server, configure the following parameters:<ul>
           <li>
             <parml>
               <plentry>
-                <pt>licensing.server.host</pt>
-                <pd>The host name of the licensing standalone server.</pd>
-              </plentry>
-            </parml>
-          </li>
-          <li>
-            <parml>
-              <plentry>
-                <pt>licensing.server.port</pt>
-                <pd>The port of the licensing standalone server.</pd>
+                <pt>licensing.server.encryptedPassword</pt>
+                <pd>This is an alternative to <b>licensing.server.password</b>. The value should be
+                  the encrypted password. </pd>
+                <pd>To encrypt the password, setup the <xref
+                    href="https://www.oxygenxml.com/oxygen_sdk_maven.html" format="html">SDK
+                    project</xref> and run the following command in the
+                    <codeph>oxygen-sample-webapp</codeph>
+                  module:<codeblock>mvn exec:java -Dexec.mainClass="com.oxygenxml.webapp.EncryptionTool" -Dexec.args="encryptionKey passwd"</codeblock></pd>
+                <pd>where <codeph>passwd</codeph> is the password and <codeph>encriptionKey</codeph>
+                  is the encryption key used to encrypt the password.</pd>
               </plentry>
             </parml>
           </li>

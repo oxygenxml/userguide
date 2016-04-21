@@ -9,15 +9,15 @@
     </metadata>
   </prolog>
   <body>
-    <p>In order to have a complete integration between <ph keyref="product"/> and any CMS you
-      usually have to write a plugin which combines two available plugin extensions:<ul
+    <p>To have a complete integration between <ph keyref="product"/> and a CMS, you usually have to
+      write a plugin that combines the following two available plugin extensions:<ul
         id="ol_gnu_jbt_z">
         <li><xref href="../concepts/workspace-access-plugin.dita#workspace-access-plugin"
             format="dita">Workspace Access</xref></li>
         <li><xref href="../tasks/howto-custom-protocol-plugin.dita#howto-custom-protocol-plugin"
             format="dita">Custom protocol</xref></li>
       </ul>The usual set of requirements for an integration between <ph keyref="product"/> and the
-      CMS are the following:</p>
+      CMS are as follows:</p>
     <ul id="procedure-custom-protocol">
       <li>
         <p>Contribute to the <ph
@@ -32,12 +32,11 @@
       </li>
       <li><p>When <b>Check Out</b> is called, use the <ph keyref="product"/> API to open your custom URLs
           (URLs created using your custom protocol). It is important to implement and use a
-            <b>Custom Protocol</b> extension in order to be notified when the files are opened and
-          saved and to be able to provide the content for the relative references the files may
-          contain to <ph keyref="product"/> . Your custom
-            <apiname>java.net.URLStreamHandler</apiname> implementation checks out the resource
-          content from the server, stores it locally and provides its content. Sample <b>Check
-            Out</b>
+            <b>Custom Protocol</b> extension to be notified when the files are opened and saved and
+          to be able to provide the content for the relative references the files may contain to <ph
+            keyref="product"/> . Your custom <apiname>java.net.URLStreamHandler</apiname>
+          implementation checks out the resource content from the server, stores it locally and
+          provides its content. Sample <b>Check Out</b>
           implementation:<codeblock outputclass="language-java">  /**
    * Sample implementation for the "Check Out" method.
    *
@@ -46,7 +45,7 @@
    */
   private void checkOut(StandalonePluginWorkspace pluginWorkspaceAccess) throws MalformedURLException {
     //TODO Show the user a custom dialog box for browsing the CMS
-    //TODO after the user selected the resource create an URL with a custom protocol 
+    //TODO after the user selected the resource create a URL with a custom protocol 
     // which will uniquely map to the resource on the CMS using the URLHandler
     //something like:
     URL customURL = new URL("mycms://host/path/to/file.xml");
@@ -55,10 +54,11 @@
     //Oxygen will then your custom protocol handler to provide the contents for the resource "mycms://host/path/to/file.xml"
     //Your custom protocol handler will check out the file in a temporary directory for example and provide the content from it.
     //Oxygen will also pass through your URLHandler if you have any relative references which need to be opened/obtained.
-  } </codeblock>Here
-          is a diagram of the <uicontrol>Check Out</uicontrol> process:</p>
-        <p><image
-          href="../img/cmscheckout.png" id="image_yvg_bmg_ab"/></p>
+  } </codeblock></p>
+        <fig>
+          <title>Check Out Process Diagram</title>
+          <image href="../img/cmscheckout.png" id="image_yvg_bmg_ab"/>
+        </fig>
         <p>Each phase is described below:<ol id="ol_svs_qxm_hb">
           <li>Browse CMS repository</li>
           <li>User chooses a resource</li>
@@ -73,7 +73,7 @@
       <li>Contribute a special <b>Browse CMS</b> action to every dialog box in <ph keyref="product"
         /> where a URL can be chosen to perform a special action (such as the <b>Reuse Content</b>
         or <b>Insert Image</b> action). Sample
-          code:<codeblock outputclass="language-java">      //Add an additional browse action to all dialog boxes/places where Oxygen allows selecting an URL.
+          code:<codeblock outputclass="language-java">      //Add an additional browse action to all dialog boxes/places where Oxygen allows selecting a URL.
       pluginWorkspaceAccess.addInputURLChooserCustomizer(new InputURLChooserCustomizer() {
         public void customizeBrowseActions(List&lt;Action> existingBrowseActions, final InputURLChooser chooser) {
           //IMPORTANT, you also need to set a custom icon on the action for situations when its text is not used for display.
@@ -96,8 +96,8 @@
           inserting references to other resources using the actions already implemented in <ph
             keyref="product"/>, the reference to the resource is made by default relative to the
           absolute location of the edited XML file. You can gain control over the way in which the
-          reference is made relative for a specific protocol
-          like:<codeblock outputclass="language-java">      //Add a custom relative reference resolver for your custom protocol.
+          reference is made relative for a specific protocol like
+        this:</p><codeblock outputclass="language-java">      //Add a custom relative reference resolver for your custom protocol.
       //Usually when inserting references from one URL to another Oxygen makes the inserted path relative.
       //If your custom protocol needs special relativization techniques then it should set up a custom relative
       //references resolver to be notified when resolving needs to be done.
@@ -112,10 +112,10 @@
           //Or return null for the default behavior.
           return null;
         }
-      });</codeblock></p></li>
+      });</codeblock></li>
       <li>
         <p>Write the <filepath>plugin.xml</filepath> descriptor. Your plugin combines the two
-          extensions using a single set of libraries. The descriptor would look like:</p>
+          extensions using a single set of libraries. The descriptor would look like this:</p>
         <p>
           <pre>&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
 &lt;plugin
@@ -131,7 +131,7 @@
  &lt;!--See the "ro.sync.sample.plugin.workspace.CustomWorkspaceAccessPluginExtension" Java sample for more details-->
  &lt;extension type="WorkspaceAccess" 
   class="custom.cms.CustomWorkspaceAccessPluginExtension"/>
- &lt;!--The custom URL handler which will communicate with the CMS implementation-->
+ &lt;!--The custom URL handler that will communicate with the CMS implementation-->
  &lt;!--See the "ro.sync.sample.plugin.workspace.customprotocol.CustomProtocolURLHandlerExtension" Java sample for more details-->
  &lt;extension type="URLHandler" 
   class="custom.cms.CustomProtocolURLHandlerExtension"/>

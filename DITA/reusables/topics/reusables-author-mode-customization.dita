@@ -17,7 +17,7 @@
       <li><xref href="../../topics/combo-box-editor.dita"><ph>Combo Box</ph></xref> - A graphical
         user interface object that can be a drop-down menu or a combination of a drop-down menu and
         a single-line text field.</li>
-      <li><xref href="../../topics/check-box-editor.dita"><ph>Check Box</ph></xref> - A graphical
+      <li><xref href="../../topics/check-box-editor.dita"><ph>Checkbox</ph></xref> - A graphical
         user interface box that you can click to select or deselect a value.</li>
       <li><xref href="../../topics/pop-up-editor.dita"><ph>Pop-up</ph></xref> - A contextual menu
         that provides quick access to various actions.</li>
@@ -56,7 +56,7 @@
             <codeph>px</codeph>), and percentage (followed by the <codeph>%</codeph> character)
           length units. The <codeph>width</codeph> property takes precedence over the
             <codeph>columns</codeph> property (if the two are used together).</ph></p>
-      <p><ph id="fontInherit-property"><codeph>fontInherit</codeph> - This value specifies whether
+      <p><ph id="fontInherit-property"><codeph>fontInherit</codeph> - This value specifies whether or not
           the form control inherits its font from its parent element. The values of this property
           can be <codeph>true</codeph> or <codeph>false</codeph> (default value). To make the form
           control inherit its font from its parent element, set the <codeph>fontInherit</codeph>
@@ -76,8 +76,8 @@
             false)</codeph> will display a combo box having  the first value <userinput>1, 2,
             3</userinput> and the second value <userinput>4</userinput>.</note></p>
       <p><ph id="tooltips-property"><codeph>tooltips</codeph> - Associates tooltips to each value in
-          the <codeph>values</codeph> property. The value of this property is a list of tooltips
-          separated by commas. If you want the tooltip to display a comma, use the
+          the <codeph>values</codeph> property. The value of this property is a list of tooltip
+          messages separated by commas. If you want the tooltip to display a comma, use the
             <codeph>${comma}</codeph> variable.</ph></p>
       <p><ph id="tooltip-property"><codeph>tooltip</codeph> - Specifies a tooltip to be displayed
           when you hover over the form control.</ph></p>
@@ -90,7 +90,10 @@
           set on the element that contains the form control.</ph></p>
       <p><ph id="labels-property"><codeph>labels</codeph> - This property must have the same number
           of items as the <codeph>values</codeph> property. Each item provides a literal description
-          of the items listed in the <codeph>values</codeph> property.</ph></p>
+          of the items listed in the <codeph>values</codeph> property. These labels can be
+          translated using the <xref
+            href="../../topics/editor-variables.dita#editor-variables/localization"
+              ><codeph>${i18n()}</codeph> editor variable</xref>.</ph></p>
       <p>
         <note id="note-form-control-code-templates">You can use the <uicontrol>Content Completion
             Assistant</uicontrol> in the CSS or LESS editor to easily insert a sample of the form
@@ -239,5 +242,30 @@
         the wrapping action is valid. For example, if you try to wrap a <term>paragraph</term>
         element with a <term>bold</term> element, it would not be valid, so the operation will wrap
         the text inside the paragraph instead, since it would be valid at that position.</ph></p>
+    <!--CSS Subject Selector notes-->
+    <section id="processing-instruction-section">
+      <title>Taking Processing Instructions into Account in CSS Subject Selectors</title>
+      <p>You can test for the existence of specific processing instructions (<codeph>PI</codeph>) in
+        the child hierarchy of a subject selector.</p>
+      <p>For
+        example:<codeblock outputclass="language-css">@namespace oxy "http://www.oxygenxml.com/extensions/author";
+
+chapter! > oxy|processing-instruction[important][level="high"]{
+  color:red;
+}</codeblock></p>
+      <p>This would change the color of a DocBook chapter to red if it contains the
+          <codeph>important</codeph> processing
+        instruction:<codeblock outputclass="language-xml">&lt;chapter>
+   &lt;title>A title&lt;/title>
+   &lt;?important level='high'?>
+&lt;/chapter></codeblock></p>
+    </section>
+    <section id="descendant-selector-limitation">
+      <title>Descendant Selectors Limitation</title>
+      <note type="important">The current implementation has a known limitation. The general
+        descendant selectors are taken into account as direct child selectors. For example, the
+        following two CSS selectors are considered
+        equivalent:<codeblock>a! b c</codeblock>and:<codeblock>a! > b > c</codeblock></note>
+    </section>
   </body>
 </topic>

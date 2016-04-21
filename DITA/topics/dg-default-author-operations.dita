@@ -17,11 +17,12 @@
             the current XML document uses some namespace declarations then the inserted fragment
             must use the same declarations. The namespace declarations of the inserted fragment will
             be adapted to the existing namespace declarations of the XML document. For more details
-            about the list of parameters go to: <xref
+            about its list of parameters, see <xref
               href="dg-author-op-InsertFragmentOperation-arguments.dita"/>.</p></li>
         <li><b><apiname>InsertOrReplaceFragmentOperation</apiname></b><p>Similar to
                 <b><apiname>InsertFragmentOperation</apiname></b>, except it removes the selected
-            content before inserting the fragment.</p></li>
+            content before inserting the fragment. For more details about its list of parameters,
+            see <xref href="dg-author-op-InsertFragmentOperation-arguments.dita"/>.</p></li>
         <li><b><apiname>InsertOrReplaceTextOperation</apiname></b><p>Inserts a text at current
             position removing the selected content, if any. The argument of this operation is:<ul
               id="ul_hwk_qjh_ps">
@@ -46,7 +47,7 @@
             MathML equation at the cursor offset. The argument of this operation is:<ul
               id="ul_jwk_qjh_ps">
               <li><b><apiname>fragment</apiname></b> - The XML fragment containing the MathML
-                content which should be inserted.</li>
+                content that should be inserted.</li>
             </ul></p></li>
         <li><b><apiname>OpenInSystemAppOperation</apiname></b><p>Opens a resource in the system
             application that is associated with the resource in the operating system. The arguments
@@ -85,7 +86,7 @@
                 unwrapped.</li>
             </ul></p></li>
         <li><b><apiname>ToggleSurroundWithElementOperation</apiname></b><p>This operation allows
-            wrapping and unwrapping content in a specific wrapper element which can have certain
+          wrapping and unwrapping content in a specific wrapper element that can have certain
             attributes specified on it. It is useful to implement toggle actions such as
             highlighting text as bold, italic, or underline. The operation supports processing
             multiple selection intervals, such as multiple cells within a table column selection.
@@ -112,17 +113,17 @@
             </ul></p></li>
         <li><b><apiname>XSLTOperation</apiname></b> and
             <b><apiname>XQueryOperation</apiname></b><p>Applies an XSLT or XQuery script on a source element and then replaces or inserts the result in a
-              specified target element.<note type="notice">For the <ph keyref="webappComponent"/>, these
+              specified target element.<note type="notice">For the <ph keyref="webappProduct"/>, these
               operations cannot be invoked using the JavaScript API.</note></p><p>These operations have the following parameters:<ul id="ul_pwk_qjh_ps">
               <li><b><apiname>sourceLocation</apiname></b><p>An XPath expression indicating the
-                  element that the script will be applied on. If it is not defined then the element
+                  element that the script will be applied on. If it is not defined, then the element
                   at the cursor position will be used. </p><p>There may be situations in which you
                   want to look at an ancestor of the current element and take decisions in the
-                  script based on this. In order to do this you can set the
-                    <apiname>sourceLocation</apiname> to point to an ancestor node (for example /)
-                  then declare a parameter called <apiname>currentElementLocation</apiname> in your
-                  script and use it to re-position in the current element
-                  like:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" 
+                  script based on this. To do this, you can set the
+                    <apiname>sourceLocation</apiname> to point to an ancestor node then declare a
+                  parameter called <apiname>currentElementLocation</apiname> in your script and use
+                  it to re-position in the current element, as in the following
+                  example:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" 
   xpath-default-namespace="http://docbook.org/ns/docbook" 
   xmlns:saxon="http://saxon.sf.net/" exclude-result-prefixes="saxon">     
     &lt;!-- This is an XPath location which will be sent by the operation to the script -->
@@ -155,11 +156,21 @@
                   will be resolved relative to the <filepath>.framework</filepath> file that
                   contains this action definition.</p><p>For example, for the following script, the
                   imported <filepath>xslt_operation.xsl</filepath> needs to be located in the
-                  current framework's
-                directory.</p><codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                  current framework
+                  directory.</p><codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
              version="1.0">
     &lt;xsl:import href="xslt_operation.xsl"/>
-&lt;/xsl:stylesheet></codeblock></li>
+&lt;/xsl:stylesheet></codeblock><p>You
+                  can also use a path for an included or imported reference. When using a path, the
+                  following apply:<ul>
+                    <li>A relative path is resolved to the framework directory.</li>
+                    <li>The <codeph>${framework}</codeph> editor variable can also be used to
+                      reference resources from the framework directory.</li>
+                    <li>The path is passed through the catalog mappings. It helps to use an absolute
+                      URL (for instance, <filepath>http://www.oxygenxml.com/fr/testy.xsl</filepath>)
+                      and map it in the <filepath>catalog.xml</filepath> file from the framework
+                      directory to a resource from the framework.</li>
+                  </ul></p></li>
               <li><b><apiname>action</apiname></b><p>The insert action relative to the node
                   determined by the target XPath expression. It can be: Replace, At cursor position,
                   Before, After, Inside as first child or Inside as last child.</p></li>
@@ -175,7 +186,7 @@
             </ul></p></li>
         <li><b><apiname>XQueryUpdateOperation</apiname></b><p>Allows you to execute an XQuery Update script directly over content in
               <uicontrol>Author</uicontrol> mode.<note type="notice">This operation is not
-                applicable to the <ph keyref="authorComponent"/> or the <ph keyref="webappComponent"
+                applicable to the <ph keyref="authorComponent"/> or the <ph keyref="webappProduct"
             />.</note></p><p>It has one argument:<ul>
               <li><b><codeph>script</codeph></b><p>The XQuery Update script to be executed. The
                   value can either be an XQuery script or a URL that points to the XQuery Update
@@ -184,7 +195,7 @@
                   framework directory.</p><p>The script will be executed in the context of the node
                   at the cursor position. If the script declares the following variable, it will
                   also receive the selected nodes (assuming that entire nodes are
-                  selected):<codeblock outputclass="language-ini">declare variable $oxyxq:selection external;</codeblock></p></li>
+                selected):</p><codeblock outputclass="language-ini">declare variable $oxyxq:selection external;</codeblock></li>
             </ul></p><p>An example of an XQuery Update Script that converts paragraphs to list
             items:<codeblock outputclass="language-ini">declare namespace oxyxq = "http://www.oxygenxml.com/ns/xqu";
 (: This variable will be linked to the selected nodes assuming that there are 
@@ -232,7 +243,7 @@ returnif (not(empty($toProcess))) then
     <p>
       <ul>
         <li><b><apiname>JSOperation</apiname></b><p>Allows you to call the Java API from custom JavaScript content.<note type="notice">For the <ph
-          keyref="webappComponent"/>, this operation cannot be invoked using the JavaScript
+          keyref="webappProduct"/>, this operation cannot be invoked using the JavaScript
               API.</note></p><p>This operation accepts the following parameter:<ul
               id="ul_af1_4dr_qr">
               <li><b><apiname>script</apiname></b><p>The JavaScript content to execute. It must have
@@ -282,7 +293,7 @@ returnif (not(empty($toProcess))) then
             execution of a sequence of actions, defined as a list of action IDs. The actions must be
             defined by the corresponding framework, or one of the common actions for all frameworks
             supplied by <ph keyref="product"/>.<ul id="ul_hvc_pdd_vm">
-              <li><b><apiname>actionIDs</apiname></b> - The action IDs list which will be executed
+              <li><b><apiname>actionIDs</apiname></b> - The action IDs list that will be executed
                 in sequence, the list must be a string sequence containing the IDs separated by new
                 lines.</li>
             </ul></p></li>
@@ -305,92 +316,41 @@ returnif (not(empty($toProcess))) then
                 position.</li>
               <li><b><apiname>moveOnlySourceContentNodes</apiname></b> - When <codeph>true</codeph>,
                 only the content of the source element is moved.</li>
+              <li><b><apiname>processTrackedChangesForXpathLocations</apiname></b> - When nodes are
+                located via an XPath expression and the nodes are deleted with change tracking
+                enabled, they are considered as being present by default (thus, the change tracking
+                is ignored). If you set this argument to <codeph>true</codeph> and change tracking
+                is enabled, deleted nodes will be ignored when the XPath locations are computed
+                (thus, the change tracking is NOT ignored).</li>
             </ul></p></li>
         <li><b><apiname>ChangePseudoClassesOperation</apiname></b><p>Operation that sets a list of
             pseudo-class values to nodes identified by an XPath expression. It can also remove a
             list of values from nodes identified by an XPath expression. The operation accepts the
             following parameters:<ul id="ul_rwk_qjh_ps">
               <li><b><apiname>setLocations</apiname></b> - An XPath expression indicating a list of
-                nodes on which the specified list of pseudo-classes will be set. If it is not
+                nodes for which the specified list of pseudo-classes will be set. If it is not
                 defined, then the element at the cursor position will be used.</li>
               <li><b><apiname>setPseudoClassNames</apiname></b> - A space-separated list of
-                pseudo-class names which will be set on the matched nodes.</li>
+                pseudo-class names that will be set on the matched nodes.</li>
               <li><b><apiname>removeLocations</apiname></b> - An XPath expression indicating a list
                 of nodes from which the specified list of pseudo-classes will be removed. If it is
                 not defined, then the element at the cursor position will be used.</li>
               <li><b><apiname>removePseudoClassNames</apiname></b> - A space-separated list of
-                pseudo-class names which will be removed from the matched nodes.</li>
+                pseudo-class names that will be removed from the matched nodes.</li>
             </ul></p></li>
         <li><b><apiname>SetPseudoClassOperation</apiname></b><p>An operation that sets a
             pseudo-class to an element. The operation accepts the following parameters:<ul
               id="ul_swk_qjh_ps">
               <li><b><apiname>elementLocation</apiname></b> - An XPath expression indicating the
-                element on which the pseudo-class will be set. If it is not defined, then the
+                element for which the pseudo-class will be set. If it is not defined, then the
                 element at cursor position will be used.</li>
               <li><b><apiname>name</apiname></b> - The pseudo-class local name.</li>
             </ul></p></li>
         <li><b><apiname>ShowElementDocumentationOperation</apiname></b><p>Opens the associated
-            specification HTML page for the current element. The operation accepts as parameter an
+            specification HTML page for the current element. The operation accepts as parameter a
             URL pattern that points to the HTML page containing the documentation.</p></li>
-        <li><b><apiname>XQueryUpdateOperation</apiname></b><p>An implementation of an operation that
-            applies an XQuery Update script. The changes are performed directly over the
-              <codeph>AuthorNode</codeph> model. The operation accepts the following parameter:<ul
-              id="ul_zhk_rjg_ps">
-              <li><b><apiname>script</apiname></b> - can be either an XQuery script or an URL
-                pointing to the XQuery update script (you can use <codeph>${framework}</codeph> and
-                  <codeph>${frameworkDir}</codeph> to refer scripts from the framework
-                directory).</li>
-            </ul></p><p>The script will be executed in the context of the cursor node. If the XQuery
-            script declares the <codeph>selection</codeph> variable, it will also receive the
-            selected nodes (assuming that the selection consists entirely of nodes). </p></li>
       </ul>
     </p>
-    <example>The following example makes use of the <codeph>selection</codeph> variable to convert
-      selected paragraphs into a
-      list:<codeblock outputclass="language-xquery">declare namespace oxyxq = "http://www.oxygenxml.com/ns/xqu";
-(: This variable will be linked to the selected nodes assuming that there are 
-actually fully selected nodes. For example this selection will return null: 
-&lt;p>{SEL_START}text{SEL_END} in para&lt;/p>
-but this will give two "p" elements:
-{SEL_END}&lt;p>text&lt;/p>&lt;p>text2&lt;/p>{SEL_END}
-
-If a multiple selection exists it will also be processed and forwarded. 
-Again, only fully selected nodes will be passed.
-:)
-declare variable $oxyxq:selection external;
-
-(: We will process either the selection or the context node :)
-let $toProcess := if (empty($oxyxq:selection)) then
-    (.)
-else
-    ($oxyxq:selection)
-
-return
-    if (not(empty($toProcess))) then
-        (
-        (: Create the list :)
-        let $ul :=
-        &lt;ul>
-            {
-                for $sel in $toProcess
-                return
-                    &lt;li>{$sel}&lt;/li>
-            }
-        &lt;/ul>
-        
-        return
-            (
-            (: Delete the processed nodes :)
-            for $sel in $toProcess
-            return
-                delete node $sel,
-            (: Inserts the constructed list :)
-            insert node $ul
-                before $toProcess[1]
-            )
-        )
-    else
-        ()</codeblock></example>
     <p>
       <ul>
         <li><b><apiname>RemovePseudoClassOperation</apiname></b><p>An operation that removes a

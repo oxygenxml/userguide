@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webapp-loadbalancing">
+  <title>Setting up a <term>Load-Balanced</term> Server</title>
+  <shortdesc>Describes the required setup for scaling a deployment to a larger number of
+    users.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Web Author Administration page load balancing</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>To scale a deployment to a larger number of users and to increase the availability, <ph
+        keyref="webappProduct"/> can be deployed on a set of <term>load-balanced</term> servers.
+      This topic describes the required setup for such a scenario.</p>
+    <section id="section_ltq_rdb_n5">
+      <title>Configure Session <term>Stickyness</term></title>
+      <p>Every <ph keyref="webappProduct"/> server keeps the state of the edited documents in memory
+        for performance reasons. This implies that every user should connect to the same back-end
+        server for the duration of an editing session. To achieve this result in a
+          <term>load-balanced</term> setting, you should enable <b>session
+          <term>stickyness</term></b>.</p>
+    </section>
+    <section id="section_s1s_32b_n5"><title>Configure Server Health Checks</title>To detect
+      unhealthy servers, <ph keyref="webappProduct"/> offers a health check <apiname>REST
+        API</apiname>. The endpoint has the following interface:<dl>
+        <dlentry>
+          <dt>URL</dt>
+          <dd><filepath>rest-public/status</filepath></dd>
+        </dlentry>
+        <dlentry>
+          <dt>Response status code</dt>
+          <dd>200 for a healthy server and 503 for an unhealthy server.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Response body</dt>
+          <dd>For an unhealthy server, the response body contains a text description of the
+            problem.</dd>
+        </dlentry>
+      </dl></section>
+    <section id="section_ejm_1qr_gv">
+      <title>Configure the License Server</title>
+      <p>All <ph keyref="webappProduct"/> servers can use the same pool of floating licenses. To
+        this end, they all need to be <xref href="webapp_licensing.dita#webapp_licensing">configured
+          to use the same license server</xref>. </p>
+    </section>
+    <section id="share_options_between_all_instances">
+      <title>Share Options Between All Instances</title>
+      <p>The configuration options are stored in the file system in a directory that can be changed
+        using the <xref href="webapp_deployment.dita#webapp_deployment/other_notes"
+            ><codeph>oxygen.data.dir</codeph> system property</xref>. In order for all instances to
+        use the same options, <codeph>oxygen.data.dir</codeph> should point to the same directory on
+        a shared file system.</p>
+    </section>
+  </body>
+</topic>

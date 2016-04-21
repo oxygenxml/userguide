@@ -2,7 +2,7 @@
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="author-editing-markup">
-  <title>Editing the XML Markup</title>
+  <title>Editing XML Markup in Author Mode</title>
   <prolog>
     <metadata>
       <keywords><indexterm>Author Editor<indexterm>edit
@@ -10,94 +10,282 @@
     </metadata>
   </prolog>
   <body>
-    <p>One of the most useful features in <uicontrol>Author</uicontrol> mode is the content
-      completion support. The fastest way to invoke it is to press <uicontrol
-        conkeyref="reusable_oxygen_shortcuts_list/enter"/> or <uicontrol
-        conkeyref="reusable_oxygen_shortcuts_list/ctrl_space"/> in the editor panel.</p>
-    <p>The content completion window offers the following types of actions:</p>
-    <ul>
-      <li>Inserting allowed elements for the current context according to the associated
-        schema.</li>
-      <li>Inserting element values if such values are specified in the schema for the current
-        context.</li>
-      <li>Inserting new undeclared elements by entering their name in the text field.</li>
-      <li>Inserting CDATA sections, comments, processing instructions.</li>
-      <li>Inserting <xref href="../topics/code-templates.dita#code-templates" format="dita">code
-          templates</xref>.</li>
-      <li>If the <uicontrol>Show all possible elements in the content completion list</uicontrol>
-        option from the <xref keyref="options_editor_edit-modes_author_schema-aware">Schema aware
-          preferences page</xref> is enabled, the content completion pop-up window will present all
-        the elements defined by the schema. When choosing an element from this section, the
-        insertion will be performed using the schema aware smart editing features.</li>
-    </ul>
-    <fig>
-      <title>Content Completion Window</title>
-      <image href="../img/author_content_completion.png"/>
-    </fig>
-    <p>If you press <uicontrol><shortcut>(Enter)</shortcut></uicontrol> the displayed content
-      completion window will contain as first entries the <uicontrol>Split &lt;Element
-        name&gt;</uicontrol> items. Usually you can only split the closest block element to the
-      cursor position but if it is inside a list item, the list item will also be proposed for
-      split. Selecting <uicontrol>Split &lt;Element name&gt;</uicontrol> splits the content of the
-      specified element around the cursor position. Thus, if the cursor is positioned at the
-      beginning or at the end of the element, the newly created sibling will be empty.</p>
-    <p>If the cursor is positioned inside a space preserved element the first choice in the content
-      completion window is <uicontrol>Enter</uicontrol> which inserts a new line in the content of
-      the element. If there is a selection in the editor and you invoke content completion, a
-        <uicontrol>Surround with</uicontrol> operation can be performed. The tag used will be the
-      selected item from the content completion window.</p>
-    <p>By default you are not allowed to insert element names which are not defined by the schema.
-      This can be changed by unchecking the <uicontrol>Allow only insertion of valid elements and
-        attributes</uicontrol> check box from the <xref keyref="options_editor_edit-modes_author_schema-aware">Schema
-        aware preferences page</xref>.<note>The content completion list of proposals contains
-        elements depending on the elements inserted both before and after the cursor position.
-      </note></p>
-    <p><b>Joining two elements</b> - You can choose to join the content of two sibling elements with
-      the same name by using the <menucascade>
-        <uicontrol>contextual menu</uicontrol>
-        <uicontrol>Join elements</uicontrol>
-      </menucascade> action.</p>
-    <p>The same action can be triggered also in the next situations:<ul>
-        <li>The cursor is located before the end position of the first element and
-              <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
-        <li>The cursor is located after the end position of the first element and
-              <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
-        <li>The cursor is located before the start position of the second element and
-              <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
-        <li>The cursor is located after the start position of the second element and
-              <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
-      </ul></p>
-    <p>In either of the described cases, if the element has no sibling or the sibling element has a
-      different name, <uicontrol>Unwrap</uicontrol> operation will be performed automatically.</p>
-    <p><b>Unwrapping the content of an element</b> - You can unwrap the content of an element by
-      deleting its tags using the <menucascade>
-        <uicontrol>Delete element tags</uicontrol>
-      </menucascade> action from the editor contextual menu.</p>
-    <p>The same action can be triggered in the next situations: </p>
-    <ul>
-      <li>The cursor is located before the start position of the element and
-            <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
-      <li>The cursor is located after the start position of the element and
-            <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
-      <li>The cursor is located before the end position of the element and
-            <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
-      <li>The cursor is located after the end position of the element and
-            <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
-    </ul>
-    <p><b>Removing all the markup of an element</b> - You can remove the markup of the current
-      element and keep only the text content by highlighting the appropriate block of content and
-      use the <uicontrol><image href="../img/RemoveMarkup16.gif" id="image_dbr_tph_5r"/>Remove All
-        Markup</uicontrol> action that is available in the <uicontrol>Refactoring</uicontrol>
-      submenu of the contextual menu<ph product="author editor"> and in the <menucascade>
+    <p><ph keyref="product"/> includes some useful actions that allow you to easily edit XML markup
+      in <uicontrol>Author</uicontrol> mode. Most of these actions are available in the contextual
+      menu and some of them have simple keyboard shortcuts.</p>
+    <section product="author editor" id="using_the_breadcrumb_in_author_mode">
+      <title>Using the Breadcrumb in Author Mode </title>
+      <p>A <i>breadcrumb</i> on the top stripe indicates the path from document root to the current
+        element. It can also be used as a helpful tool to insert and edit specific elements in the
+        document structure.</p>
+      <fig>
+        <title>Breadcrumb in Author Mode</title>
+        <image href="../img/author_top_stripe.png"/>
+      </fig>
+      <p>The last element listed in the <term>breadcrumb</term> is the element at the current cursor
+        position. The last element is also highlighted by a thin light blue bar for easier
+        identification. Clicking an element from the <term>breadcrumb</term> selects the entire
+        element in the editor area and each element provides a contextual menu with access to the
+        following actions:<dl>
+          <dlentry>
+            <dt><uicontrol><image href="../img/Attribute16.gif" id="image_xzx_y1g_rs"/>Edit
+                Attributes</uicontrol></dt>
+            <dd>Opens the <xref
+                href="author-attributes-view.dita#author-attributes-view/in-place-attr-editor"
+                >in-place attributes editor</xref> that allows you to easily edit the attributes of
+              an element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Edit Profiling Attributes</uicontrol></dt>
+            <dd>Allows you to select the <xref
+                href="profiling-conditional-text.dita#profiling-conditional-text">profiling
+                attributes</xref> that apply to a certain element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Append child</uicontrol></dt>
+            <dd>Opens a content completion list that allows you to select an element to be inserted
+              as a child of the selected element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Insert before</uicontrol></dt>
+            <dd>Opens a content completion list that allows you to select an element to be inserted
+              (as a sibling) before the selected element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Insert after</uicontrol></dt>
+            <dd>Opens a content completion list that allows you to select an element to be inserted
+              (as a sibling) after the selected element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol><image href="../img/Cut16.png" id="image_jgq_lbg_rs"
+              />Cut</uicontrol></dt>
+            <dd>Removes the selected element and copies it to the clipboard, while preserving the
+              styles of the content.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol><image href="../img/Copy16.png" id="image_z1v_rbg_rs"
+              />Copy</uicontrol></dt>
+            <dd>Copies the selected element to the clipboard, while preserving the styles of the
+              copied content.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol><image href="../img/Paste16.png" id="image_hc1_tbg_rs"
+              />Paste</uicontrol></dt>
+            <dd>Pastes a well-formed element from the clipboard at currently selected position in
+              the breadcrumb.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Paste before</uicontrol></dt>
+            <dd>Insert a well-formed element (from the clipboard) before the currently selected
+              element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Paste after</uicontrol></dt>
+            <dd>Insert a well-formed element (from the clipboard) after the currently selected
+              element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Paste as XML</uicontrol></dt>
+            <dd>Inserts clipboard content that is considered to be well-formed XML content,
+              preserving its XML structure.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol><image href="../img/Remove16.png" id="image_v5f_3dg_rs"
+                />Delete</uicontrol></dt>
+            <dd>Deletes the currently selected element.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol><image href="../img/ToggleComment16.png" id="image_y4c_ldg_rs"/>Toggle
+                Comment</uicontrol></dt>
+            <dd>Encloses the currently selected element in an XML comment, if the element is not
+              commented, or removes the comment if it is commented.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol><image href="../img/RenameElement16.png" id="image_b4z_ldg_rs"/>Rename
+                Element</uicontrol></dt>
+            <dd>Opens the <uicontrol>Rename</uicontrol> dialog box that allows you to rename the
+              currently selected element and other elements with the same name.</dd>
+          </dlentry>
+        </dl></p>
+      <p>
+        <note type="tip">The tag names displayed in the <term>breadcrumb</term> can be customized
+          with an <uicontrol>Author</uicontrol> mode extension class that implements the
+            <apiname>AuthorBreadCrumbCustomizer</apiname> API. See the <xref
+            href="http://www.oxygenxml.com/developer.html" scope="external" format="html">Oxygen
+            SDK</xref> for more details.</note>
+      </p>
+    </section>
+    <section id="move_nodes"><title>Move Nodes</title>You can move XML nodes in the current document
+      by using the following actions in the <uicontrol>Refactoring</uicontrol> submenu of the
+      contextual menu<ph product="author editor"> (or from the <menucascade>
           <uicontrol>Document</uicontrol>
           <uicontrol>Markup</uicontrol>
-        </menucascade> menu</ph>.</p>
-    <p>When you press <uicontrol><shortcut>(Delete)</shortcut></uicontrol> or
-          <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> in the presented cases the element
-      is unwrapped or it is joined with its sibling. If the current element is empty, the element
-      tags will be deleted.</p>
-    <p>When you click a marker representing the start or end tag of an element, the entire element
-      is selected and numerous context specific actions are available in the various menus and <xref
-        href="author-contextual-menu.dita#author-contextual-menu">the contextual menu</xref>.</p>
+        </menucascade> menu)</ph>:<dl>
+        <dlentry conkeyref="reusables-editing-documents/move-up-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+        <dlentry conkeyref="reusables-editing-documents/move-down-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl><note type="tip">The easiest way to move nodes is to use the <uicontrol><shortcut
+            conkeyref="reusable_oxygen_shortcuts_list/alt_up_shortcut"/></uicontrol> and
+            <uicontrol><shortcut conkeyref="reusable_oxygen_shortcuts_list/alt_down_shortcut"
+          /></uicontrol> shortcut keys. </note></section>
+    <section id="promote_demote_list_item_nodes">
+      <title>Promote/Demote List Item Nodes</title>
+      <p>You can easily promote or demote list item nodes within ordered lists or unordered lists by
+        using the following keyboard shortcuts:<dl>
+          <dlentry>
+            <dt><uicontrol>Promote (<shortcut
+                  conref="../reusables/topics/oxygen-shortcuts-list.dita#oxygen-shortcuts-list/shift_tab_shortcut"
+                />)</uicontrol>
+            </dt>
+            <dd>Promotes the current list item node to be a sibling of its parent node (the list
+              item is moved to the left). It also works for selections of multiple list item nodes
+              as long as all the selected nodes are siblings (on the same hierarchical level).</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Demote (<shortcut
+                  conref="../reusables/topics/oxygen-shortcuts-list.dita#oxygen-shortcuts-list/tab_shortcut"
+                />)</uicontrol>
+            </dt>
+            <dd>Demotes the current list item node (the list item is moved to the right). It also
+              works for selections of multiple list item nodes as long as all the selected nodes are
+              siblings (on the same hierarchical level).</dd>
+          </dlentry>
+        </dl></p>
+    </section>
+    <section id="join_or_split_elements"><title>Join or Split Elements</title>You can join or split
+      elements in the current document by using the following actions in the
+        <uicontrol>Refactoring</uicontrol> submenu of the contextual menu<ph product="author editor"
+        > (or from the <menucascade>
+          <uicontrol>Document</uicontrol>
+          <uicontrol>Markup</uicontrol>
+        </menucascade> menu)</ph>:<dl>
+        <dlentry conkeyref="reusables-editing-documents/join-elements-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl><note type="tip">Specifically, the <uicontrol><shortcut>Delete</shortcut></uicontrol> or
+            <uicontrol><shortcut>Backspace</shortcut></uicontrol> keys can be used to join block
+        elements in the following situations:<ul>
+          <li>The cursor is located before the end position of the first element and
+                <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
+          <li>The cursor is located after the end position of the first element and
+                <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
+          <li>The cursor is located before the start position of the second element and
+                <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
+          <li>The cursor is located after the start position of the second element and
+                <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
+        </ul>If the element has no sibling or the sibling element has a different name, an
+          <uicontrol>Unwrap</uicontrol> operation will be performed.</note><dl>
+        <dlentry conkeyref="reusables-editing-documents/split-element-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl></section>
+    <section id="rename_elements"><title>Rename Elements</title>You can rename elements by using the
+      following action in the <uicontrol>Refactoring</uicontrol> submenu of the contextual menu<ph
+        product="author editor"> (or from the <menucascade>
+          <uicontrol>Document</uicontrol>
+          <uicontrol>Markup</uicontrol>
+        </menucascade> menu)</ph>:<dl>
+        <dlentry conkeyref="reusables-editing-documents/rename-element-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl></section>
+    <section id="surround_content_with_tags"><title>Surround Content with Tags (Wrap)</title>You can
+      surround a selection of content with tags (<term>wrap</term> the content) by using the
+      following action in the <uicontrol>Refactoring</uicontrol> submenu of the contextual menu<ph
+        product="author editor"> (or from the <menucascade>
+          <uicontrol>Document</uicontrol>
+          <uicontrol>Markup</uicontrol>
+        </menucascade> menu)</ph>:<dl>
+        <dlentry conkeyref="reusables-editing-documents/surround-with-tags-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+        <dlentry conkeyref="reusables-editing-documents/surround-with-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl></section>
+    <section id="unwrap_the_content_of_elements"><title>Unwrap the Content of Elements</title>You
+      can unwrap the content of an element by using the following action in the
+        <uicontrol>Refactoring</uicontrol> submenu of the contextual menu<ph product="author editor"
+        > (or from the <menucascade>
+          <uicontrol>Document</uicontrol>
+          <uicontrol>Markup</uicontrol>
+        </menucascade> menu)</ph>:<dl>
+        <dlentry conkeyref="reusables-editing-documents/delete-element-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl><note type="tip">Specifically, the <uicontrol><shortcut>Delete</shortcut></uicontrol> or
+            <uicontrol><shortcut>Backspace</shortcut></uicontrol> keys can be used to unwrap the
+        content of an element in the following situations:<ul>
+          <li>The cursor is located before the start position of the element and
+                <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
+          <li>The cursor is located after the start position of the element and
+                <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
+          <li>The cursor is located before the end position of the element and
+                <uicontrol><shortcut>(Delete)</shortcut></uicontrol> key is pressed.</li>
+          <li>The cursor is located after the end position of the element and
+                <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> key is pressed.</li>
+        </ul>If the element has no sibling or the sibling element has a different name, an
+          <uicontrol>Unwrap</uicontrol> operation will be performed.</note></section>
+    <section id="remove_markup_from_blocks_of_content"><title>Remove Markup from Blocks of
+        Content</title>You can remove the markup from the current element by highlighting the
+      appropriate block of content and using the following action in the
+        <uicontrol>Refactoring</uicontrol> submenu of the contextual menu<ph product="author editor"
+        > (or from the <menucascade>
+          <uicontrol>Document</uicontrol>
+          <uicontrol>Markup</uicontrol>
+        </menucascade> menu)</ph>:<dl>
+        <dlentry conkeyref="reusables-editing-documents/remove-markup-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl><note type="tip">You can use the <uicontrol><shortcut>(Delete)</shortcut></uicontrol> or
+            <uicontrol><shortcut>(Backspace)</shortcut></uicontrol> keys to remove markup, in which
+        case the elements in the selected block will be unwrapped or joined with their sibling, or
+        if the current element is empty, the element tags will be deleted.</note></section>
+    <section id="remove_text_from_selected_markup"><title>Remove Text from Selected
+      Markup</title>You can remove the text from elements by highlighting the appropriate block of
+      content and using the following action in the <uicontrol>Refactoring</uicontrol> submenu of
+      the contextual menu<ph product="author editor"> (or from the <menucascade>
+          <uicontrol>Document</uicontrol>
+          <uicontrol>Markup</uicontrol>
+        </menucascade> menu)</ph>:<dl>
+        <dlentry conkeyref="reusables-editing-documents/remove-text-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl></section>
+    <section id="other_refactoring_actions"
+        ><title><?oxy_comment_start author="steven_higgs" timestamp="20160406T143531+0300" comment="There are now more categories of XML refactoring operations. Add those submenus and actions."?>Other
+        Refactoring Actions<?oxy_comment_end?></title>You can also manage the structure of the
+      markup by using the other specific XML refactoring actions that are available in the
+        <uicontrol>Refactoring</uicontrol> submenu of the contextual menu:<dl>
+        <dlentry conkeyref="reusables-editing-documents/refactoring-attributes-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+        <dlentry conkeyref="reusables-editing-documents/refactoring-elements-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+        <dlentry conkeyref="reusables-editing-documents/refactoring-fragments-dlentry">
+          <dt/>
+          <dd/>
+        </dlentry>
+      </dl></section>
   </body>
+  <related-links>
+    <link href="refactoring-xml-documents.dita#refactoring-xml-documents"/>
+    <link href="author-contextual-menu.dita#author-contextual-menu"/>
+  </related-links>
 </topic>

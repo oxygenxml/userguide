@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="author-action-event-handler">
+  <title>Implementing an Author Mode Action Event Handler</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Author Settings<indexterm>Java API<indexterm>Author action event
+              handler</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <apiname>AuthorActionEventHandler</apiname> extension point allows you to handle certain
+        <uicontrol>Author</uicontrol> mode actions in a special way. For example, a specific
+      use-case would be if you want to insert new lines when you press
+          <uicontrol><shortcut>Enter</shortcut></uicontrol> instead of it opening the
+        <uicontrol>Content Completion Assistant</uicontrol>.</p>
+    <section id="implement_an_authoractioneventhandler">
+      <title>How to Implement an <apiname>AuthorActionEventHandler</apiname></title>
+      <p>To implement your own <apiname>AuthorActionEventHandler</apiname>, follow this procedure:<ol>
+          <li>Implement the
+              <?oxy_comment_start author="steven_higgs" timestamp="20160114T081735+0200" comment="add link to javadoc when available"?><apiname>ro.sync.ecss.extensions.api.AuthorActionEventHandler</apiname><?oxy_comment_end?>
+            interface.</li>
+          <li>To instruct <ph keyref="product"/> to use this newly created implementation, use
+            either of the following methods:<ol>
+              <li>If you have <xref href="../tasks/dg-extensions-bundle.dita#dg-extensions-bundle"
+                  >configured an extensions bundle</xref>, you can return the
+                  <apiname>AuthorActionEventHandler</apiname> implementation using the
+                  <apiname>ro.sync.ecss.extensions.api.ExtensionsBundle.getAuthorActionEventHandler()</apiname>
+                method.</li>
+              <li>Specify the <apiname>AuthorActionEventHandler</apiname> in the <uicontrol>Author
+                  action event handler</uicontrol> individual extension in the <xref
+                  href="document-type-extensions-tab.dita#document-type-extensions-tab"
+                    ><uicontrol>Extensions</uicontrol> tab</xref> of the <uicontrol>Document
+                  Type</uicontrol> configuration dialog box for your particular document type.</li>
+            </ol></li>
+        </ol></p>
+    </section>
+    <section id="example">
+      <title>Example</title>
+      <p>The following example illustrates the use-case mentioned in the introduction, that is an
+        implementation for inserting a new line when the user presses
+            <uicontrol><shortcut>Enter</shortcut></uicontrol> in <uicontrol>Author</uicontrol> mode.
+        It uses the <apiname>canHandleEvent</apiname> method to make sure the insertion will be
+        performed in an element that will preserve the <apiname>new-line</apiname> character. Then
+        the <apiname>handleEvent</apiname> method inserts the new line at the current cursor
+        position.</p>
+      <codeblock outputclass="language-java">public class CustomAuthorActionEventHandler implements AuthorActionEventHandler {
+
+ /**
+  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#canHandleEvent(AuthorAccess, AuthorActionEventType)
+  */
+  @Override
+  public boolean canHandleEvent(AuthorAccess authorAccess, AuthorActionEventType type) {
+    boolean canHandle = false;
+
+    if (type == AuthorActionEventType.ENTER) {
+      AuthorDocumentController documentController = authorAccess.getDocumentController();
+      int caretOffset = authorAccess.getEditorAccess().getCaretOffset();
+      try {
+        AuthorNode nodeAtOffset = documentController.getNodeAtOffset(caretOffset);
+        if (nodeAtOffset instanceof AuthorElement) {
+          AuthorElement elementAtOffset = (AuthorElement) nodeAtOffset;
+          AttrValue xmlSpace = elementAtOffset.getAttribute("xml:space");
+          if (xmlSpace != null &amp;&amp; xmlSpace.getValue().equals("preserve")) {
+            canHandle = true;
+          }
+        }
+      } catch (BadLocationException ex) {
+        if (logger.isDebugEnabled()) {
+          logger.error(ex.getMessage(), ex);
+        }
+      }
+    }
+
+    return canHandle;
+  }
+
+ /**
+  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#handleEvent(ro.sync.ecss.extensions.api.AuthorAccess, ro.sync.ecss.extensions.api.AuthorActionEventHandler.AuthorActionEventType)
+  */
+  @Override
+  public boolean handleEvent(AuthorAccess authorAccess, AuthorActionEventType eventType) {
+    int caretOffset = authorAccess.getEditorAccess().getCaretOffset();
+    // Insert a new line
+    authorAccess.getDocumentController().insertText(caretOffset, "\n");
+    return true;
+  }
+
+  /**
+   * @see ro.sync.ecss.extensions.api.Extension#getDescription()
+   */
+  @Override
+  public String getDescription() {
+    return "Insert a new line";
+  }
+}</codeblock>
+    </section>
+  </body>
+</topic>

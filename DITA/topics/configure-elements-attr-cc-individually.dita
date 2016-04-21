@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="configure-elements-attr-cc-individually">
+  <title>Configuring the Proposals for Elements</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Configuring elements and attributes in Content Completion Assistant</indexterm>
+        <indexterm>Content Completion Assistant</indexterm>
+        <indexterm>Content completion configuration file
+          <indexterm>cc_config.xml</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>There are many cases where elements have a relaxed content model and can accept a large
+      number of child elements. For example, the DITA list item element (<codeph>li</codeph>)
+      accepts more than 60 child elements. <ph keyref="product"/> includes support to allow the
+      content architect to put some constraints on the possible elements or attributes, or to impose
+      some best practices in the way content is edited.</p>
+    <p>For an example of a specific use-case, suppose that you want restrict DITA list item elements
+        (<codeph>li</codeph>) to only accept paragraph elements (<codeph>p</codeph>). In this case,
+      the <uicontrol>Content Completion Assistant</uicontrol> should not offer any other element
+      other than a paragraph (<codeph>p</codeph>) when a list item (<codeph>li</codeph>) is inserted
+      into a document. It would also be helpful if the required child element (<codeph>p</codeph>)
+      was automatically inserted whenever a list item (<codeph>li</codeph>) is inserted.</p>
+    <p>One method of changing the content model is to alter the element definition in the associated
+      schema (XML Schema, DTD, RelaxNG), but this may be quite complicated in some cases.
+      Fortunately, <ph keyref="product"/> offers a simple, alternative method of using a
+      configuration file to customize the content completion proposals for each element.</p>
+    <section
+      conref="../reusables/topics/reusables-editing-documents.dita#reusables-editing-documents/how_to_configure_the_proposed_values_in_cc"
+      id="d2e47"/>
+    <section id="configuration_file">
+      <title>Configuring Elements or Attributes that are Proposed for Each Element</title>
+      <p>For the purposes of customizing the elements or attributes that are proposed for each
+        individual element, the configuration file (<filepath>cc_config.xml</filepath>) uses
+          <codeph>elementProposals</codeph> elements. This element allows you to customize or filter
+        the child elements and attributes for an element.</p>
+      <p><b>Elements:</b></p>
+      <p>To control the <b>elements</b> that are proposed for an element, you can use the following
+        attributes for the <codeph>elementProposals</codeph> element:<ul id="ul_ghd_c55_kr">
+          <li><codeph>path</codeph> - A path within the document that matches the element that will
+            have its content completion proposals changed. For example, <codeph>"title"</codeph>
+            matches all the <codeph>title</codeph> elements in the document, while
+              <codeph>"chapter/title"</codeph> matches only the <codeph>title</codeph> elements that
+            are direct children of the <codeph>chapter</codeph> element.<note>If this attribute is
+              missing, the customization will apply to the proposals for all elements. You can
+              intentionally omit this attribute and use <xref
+                href="#configure-elements-attr-cc-individually/possible-elements" format="dita"
+                  ><codeph>possibleElements</codeph></xref> or <xref
+                href="#configure-elements-attr-cc-individually/reject-elements" format="dita"
+                  ><codeph>rejectElements</codeph></xref> to specify or restrict elements for an
+              entire framework.<p>For example, suppose that in your DITA documents, you want to
+                restrict your users from using image elements (<codeph>image</codeph>) because you
+                do not want images to be included in your output.  The configuration file should
+                look like
+                this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image" /></codeblock></p><p>Since
+                the <codeph>path</codeph> attribute is missing, the specified element will be
+                filtered out from the proposals for the entire framework.</p></note></li>
+          <li><codeph>insertElements</codeph> - A space-separated sequence of child element names.
+            Each time the element specified in the <codeph>path</codeph> attribute is inserted into
+            the document, these child elements will also be inserted in the order that they are
+            listed. For example, <codeph>insertElements="b i"</codeph> will insert exactly one
+              <codeph>b</codeph> element, followed by an <codeph>i</codeph> element. An empty value
+              (<codeph>""</codeph>) means that no child elements should be inserted.<note> If this
+              attribute is missing, the default required child elements will be inserted, as
+              specified in the associated schema for the document.</note></li>
+          <li id="possible-elements"><codeph>possibleElements</codeph> - A space-separated list of
+            element names that will be shown in the content completion list when invoked inside an
+            element that is specified in the <codeph>path</codeph> attribute. For example,
+              <codeph>"bold italic codeph ph"</codeph> means that the <uicontrol>Content Completion
+              Assistant</uicontrol> will contain these four elements when invoked on the element
+            specified in the <codeph>path</codeph> attribute. The following other possible values
+            are also supported:<ul>
+              <li><b><i>NONE</i></b> - There will be no proposals in the content completion
+                list.</li>
+              <li><b><i>ALL</i></b> - All the possible elements specified in the associated schema
+                will be presented in the content completion list. This is also the default behavior
+                if this attribute is missing.</li>
+              <li><b><i>INSERTED</i></b> - The proposals will be the same list of elements that are
+                defined in the <codeph>insertElements</codeph> attribute.</li>
+            </ul></li>
+          <li id="reject-elements"><codeph>rejectElements</codeph> - A space-separated list of
+            element names that will be filtered out from the list of proposals that are presented in
+            the content completion list. Each time the element specified in the
+              <codeph>path</codeph> attribute is inserted into the document, the list of proposals
+            in the <uicontrol>Content Completion Assistant</uicontrol> will include the entries that
+            are defined in the associated schema, minus the elements specified in this
+            attribute.</li>
+        </ul></p>
+      <p><b>Attributes:</b></p>
+      <p>To control the <b>attributes</b> that are proposed for an element, you can use the
+        following attributes for the <codeph>elementProposals</codeph> element:<ul>
+          <li><codeph>path</codeph> - A path within the document that matches the element that will
+            have its attribute proposals changed. For example, <codeph>"title"</codeph> matches all
+            the <codeph>title</codeph> elements in the document, while
+              <codeph>"chapter/title"</codeph> matches only the <codeph>title</codeph> elements that
+            are direct children of the <codeph>chapter</codeph> element.<note>If this attribute is
+              missing, the customization will apply to the proposals for all elements. You can
+              intentionally omit this attribute and use <xref
+                href="#configure-elements-attr-cc-individually/possible-attributes" format="dita"
+                  ><codeph>possibleAttributes</codeph></xref> or <xref
+                href="#configure-elements-attr-cc-individually/reject-attributes" format="dita"
+                  ><codeph>rejectAttributes</codeph></xref> to specify or restrict attributes for an
+              entire framework.<p>For example, suppose that you only want to allow a limited set of
+                attributes in a customized framework. The configuration file should look like
+                this:</p><codeblock outputclass="language-xml">&lt;elementProposals possibleAttributes="
+               id domains href scope format type conref 
+        	props keyref class"/></codeblock><p>Since
+                the <codeph>path</codeph> attribute is missing, this applies to the entire framework
+                and only the specified attributes will be proposed.</p></note></li>
+          <li><codeph>insertAttributes</codeph> - A space-separated sequence of attribute names that
+            will be inserted along with the element.</li>
+          <li id="possible-attributes"><codeph>possibleAttributes</codeph> - A space-separated list
+            of attribute names that will be shown in the content completion list when invoked inside
+            an element that is specified in the <codeph>path</codeph> attribute.</li>
+          <li id="reject-attributes"><codeph>rejectAttributes</codeph> - A space-separated list of
+            attribute names that will be filtered out from the list of proposals that are presented
+            in the content completion list. Each time the element specified in the
+              <codeph>path</codeph> attribute is inserted into the document, the list of proposals
+            in the <uicontrol>Content Completion Assistant</uicontrol> will include the entries that
+            are defined in the associated schema, minus the attributes specified in this
+            attribute.</li>
+        </ul></p>
+    </section>
+    <section id="other_important_notes">
+      <title>Other Important Notes About the Configuration File</title>
+      <note type="important">
+        <ul>
+          <li>By default, the element names that do not have a namespace prefix are considered from
+              <term>no-namespace</term>. Consider declaring the namespace mapping on the root of the
+            configuration file and prefixing the element names from the <codeph>elementPath</codeph>
+            and <codeph>model</codeph> attributes.</li>
+          <li>This configuration file only affects the content completion assistance, not
+            validation.</li>
+          <li>To test the effects of your changes, you should restart the application, although in
+            some cases, you can simply use the <uicontrol><image href="../img/Refresh16.png"
+              />Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
+            customizations.</li>
+          <li>When an XML element from the document is matched against a list of configured
+              <codeph>elementProposals</codeph>, the first one in sequence takes precedence.
+            Therefore, make sure you place the more specific <codeph>elementProposals</codeph>
+            (those with a longer path) first in your configuration file.</li>
+          <li>Regular expression patterns can be used in the following attributes:
+              <codeph>possibleElements</codeph>, <codeph>rejectElements</codeph>,
+              <codeph>possibleAttributes</codeph>, and <codeph>rejectAttributes</codeph>. For
+            example, <codeph>code*</codeph>, <codeph>*block</codeph>, <codeph>con*ref</codeph>,
+              <codeph>_*</codeph>.</li>
+          <li>Only simple recursion cases are detected and avoided by the editor, and logged to the
+            console. Therefore, if complex <codeph>elementProposals</codeph> patterns are defined,
+            you should avoid <term>infinite recursions</term>.</li>
+        </ul>
+      </note>
+    </section>
+    <section id="examples_configuring_elements">
+      <title>Examples: Configuring the Element Proposals </title>
+      <p>
+        <ul>
+          <li>
+            <p><b>Example 1: Automatically Insert Elements</b></p>
+            <p>Suppose that you want to automatically insert a paragraph element
+              (<codeph>p</codeph>) whenever a DITA ordered list item element
+              (<codeph>ol/li</codeph>) is inserted, and also to not allow any other element besides
+              a paragraph inside the ordered list items.</p>
+            <p>To achieve this, the configuration file should include the
+              following:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertElements="p"  possibleElements="_INSERTED_"/></codeblock></p>
+          </li>
+          <li>
+            <p><b>Example 2: Insert Complex Element Structure</b></p>
+            <p>For a more complex example, suppose that you want to insert a complex structure
+              whenever a DITA <codeph>prolog</codeph> element is inserted. </p>
+            <p>For instance, if you need to insert the following structure inside
+                <codeph>prolog</codeph>
+              elements:<codeblock outputclass="language-xml">    &lt;prolog>
+      &lt;author>&lt;/author>
+      &lt;metadata>
+          &lt;keywords>
+              &lt;keyword>&lt;/keyword>
+              &lt;keyword>&lt;/keyword>
+          &lt;/keywords>
+      &lt;/metadata>
+    &lt;/prolog></codeblock></p>
+            <p>The configuration file should include the
+              following:<codeblock outputclass="language-xml">    &lt;elementProposals path="prolog" insertElements="author metadata"/>
+    &lt;elementProposals path="prolog/metadata" insertElements="keywords"/>
+    &lt;elementProposals path="prolog/metadata/keywords" insertElements="keyword, keyword"/></codeblock></p>
+          </li>
+          <li>
+            <p><b>Example 3: Limit Possible Elements</b></p>
+            <p>Suppose that you also want to limit the proposals for the <codeph>keywords</codeph>
+              element to only allow the user to insert <codeph>audience</codeph> or
+                <codeph>keyword</codeph> elements. The configuration file should include the
+              following:<codeblock outputclass="language-xml">&lt;elementProposals path="prolog/metadata" insertElements="keywords" possibleElements="audience keywords"/></codeblock></p>
+            <p>Suppose that you want to simply restrict your users from inserting
+                <codeph>image</codeph> elements inside DITA list item elements
+              (<codeph>li</codeph>), but still propose all the other elements that are defined in
+              the associated schema. The configuration file should look like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" rejectElements="image" /></codeblock></p>
+          </li>
+        </ul>
+      </p>
+    </section>
+    <section id="examples_configuring_the_attributes">
+      <title>Examples: Configuring the Attributes Proposals</title>
+      <p>
+        <ul>
+          <li><b>Example 1: Automatically Insert Attributes</b><p>Suppose that you want to insert an
+                <codeph>id</codeph> attribute (with an empty value) whenever a DITA list item
+              element (<codeph>li</codeph>) is inserted. The configuration file should include the
+              following:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id"/></codeblock></p></li>
+          <li><b>Example 2: Limit Possible Attributes</b><p>Suppose that you also want to limit the
+              number of choices for attributes that are presented to the user whenever a DITA list
+              item element (<codeph>li</codeph>) is inserted. The configuration file should look
+              like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id" possibleAttributes="id product platform audience"/></codeblock></p><p>Suppose
+              that you want to simply restrict your users from inserting <codeph>conref</codeph>
+              attributes inside DITA topics (<codeph>topic</codeph> element), but still propose all
+              the other attributes that are defined in the associated schema. The configuration file
+              should look like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="topic" rejectAttributes="conref" /></codeblock></p></li>
+        </ul>
+      </p>
+    </section>
+  </body>
+  <related-links>
+    <link
+      href="configuring-content-completion-proposals.dita#configuring-content-completion-proposals"/>
+    <link href="rendering-elements-cc-author.dita#rendering-elements-cc-author"
+      product="author editor authorEclipse editorEclipse"/>
+  </related-links>
+</topic>

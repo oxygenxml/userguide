@@ -14,7 +14,9 @@
     <p><ph keyref="product"/> has an extensive set of options that you can configure. When <ph
         keyref="product"/> in installed, these options are set to default values. You can provide a
       different set of default values for an installation using an XML <term>options file</term>. </p>
-    <section><title>Creating an XML <term>Options File</term></title><p>To create an <term>options file</term>, follow these steps:<ol id="ol_uvs_f52_1p">
+    <section id="creating_an_xml_options_file">
+      <title>Creating an XML <term>Options File</term></title>
+      <p>To create an <term>options file</term>, follow these steps:<ol id="ol_uvs_f52_1p">
           <li>It is recommended that you use a fresh install for this procedure, to make sure that
             you do not copy personal or local preferences. </li>
           <li>Open <ph keyref="product"/> and <ph
@@ -30,43 +32,94 @@
                 <uicontrol>Export Global Options</uicontrol>
               </menucascade> to create an XML options file.</ph><ph
               product="authorEclipse developerEclipse editorEclipse">Go to back to the main
-              preferences page and click <menucascade>
-                <uicontrol>Export Global Options</uicontrol>
-              </menucascade> to create an XML options file.</ph></li>
-        </ol></p></section>
-    <section><title> Using Customized Default Options</title><p>Use either one of the following ways to configure an <ph keyref="product"/> installation to use
-        customized default options from a created XML options file:</p><ul id="ul_n5f_btb_md">
-        <li>In the [OXYGEN_DIR] installation folder, create a folder called
-            <filepath>preferences</filepath> and copy the XML options file into it <ph
-            product="author developer editor svnClient">(for example,
-              <filepath>[OXYGEN_DIR]/preferences/default.xml</filepath>)</ph><ph
-            product="authorEclipse developerEclipse editorEclipse">(for example,
-              <filepath>[Eclipse-platform-install-folder]/plugins/com.oxygenxml.editor/preferences/default.xml</filepath>
-            or
-              <filepath>[Eclipse-platform-install-folder]/dropins/[OXYGEN_DIR]/preferences/default.xml</filepath>
-            if the plugin was installed as a drop-in)</ph>.</li>
-        <li>Set the path to the XML options file as the value of the
-            <codeph>com.oxygenxml.default.options</codeph> system property in the <xref
-            href="set-parameter-in-startup-script.dita#set-parameter-in-startup-script"
-            product="author developer editor svnClient">startup parameters</xref><ph
-            product="authorEclipse developerEclipse editorEclipse">Eclipse configuration
-            file</ph>.<p product="author developer editor svnClient">The path must be specified with
-            a URL or file path relative to the application installation
-            folder:<screen>-Dcom.oxygenxml.default.options=options/default.xml</screen></p><p
-            product="authorEclipse developerEclipse editorEclipse">Add the following line in the
-              <filepath>[Eclipse-platform-install-folder]/configuration/config.ini</filepath>
-            file:<screen>com.oxygenxml.default.options=file\:@config.dir/../default.xml </screen></p><note
-            product="author developer editor">If you are using the <xref
+              preferences page and click <uicontrol>Export Global Options</uicontrol> to create an
+              XML options file.</ph></li>
+        </ol></p>
+    </section>
+    <section id="using_customized_default_options">
+      <title> Using Customized Default Options</title>
+      <p>There are two methods that you can use to configure an <ph keyref="product"/> installation
+        to use the customized default options from the created XML options file:</p>
+      <ul id="ul_n5f_btb_md">
+        <li><b>Copy the XML Options File to the Installation Directory</b><p>In the <filepath><term
+                conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>, create a folder
+            called <filepath>preferences</filepath> and copy the created XML options file into it
+              <ph product="author developer editor svnClient">(for example, <filepath><term
+                  conkeyref="reusables-user-guide/oxy-install-dir"
+                />/preferences/default.xml</filepath>)</ph><ph
+              product="authorEclipse developerEclipse editorEclipse">(for example: <filepath
+                product="editorEclipse"><term conkeyref="reusables-user-guide/eclipse-install-dir"
+                />/plugins/com.oxygenxml.editor/preferences/default.xml</filepath><filepath
+                product="authorEclipse"><term conkeyref="reusables-user-guide/eclipse-install-dir"
+                />/plugins/com.oxygenxml.author/preferences/default.xml</filepath><filepath
+                product="developerEclipse"><term
+                  conkeyref="reusables-user-guide/eclipse-install-dir"
+                />/plugins/com.oxygenxml.developer/preferences/default.xml</filepath>, or if the
+              plugin was installed as a drop-in: <filepath product="editorEclipse"><term
+                  conkeyref="reusables-user-guide/eclipse-install-dir"
+                />/dropins/com.oxygenxml.editor/preferences/default.xml</filepath><filepath
+                product="authorEclipse"><term conkeyref="reusables-user-guide/eclipse-install-dir"
+                />/dropins/com.oxygenxml.author/preferences/default.xml</filepath><filepath
+                product="developerEclipse"><term
+                  conkeyref="reusables-user-guide/eclipse-install-dir"
+                />/dropins/com.oxygenxml.developer/preferences/default.xml</filepath>)</ph>.</p></li>
+        <li product="author developer editor svnClient"><b>Specify a Path to the XML Options File in
+            a Startup Parameter</b><p>Set the path to the XML options file as the value of the
+              <codeph>com.oxygenxml.default.options</codeph> system property in the <xref
+              href="set-parameter-in-startup-script.dita#set-parameter-in-startup-script">startup
+              parameters</xref>. The path can be specified with any of the following:<ul>
+              <li>A URL or file path relative to the application installation folder. For
+                example:<codeblock outputclass="language-ini">-Dcom.oxygenxml.default.options=options/default.xml</codeblock></li>
+              <li>A system variable that specifies the file path. For
+                example:<codeblock outputclass="language-ini">com.oxygenxml.default.options=${system(CONFIG)}/default.xml</codeblock></li>
+              <li>An environmental variable that specifies the file path. For
+                example:<codeblock outputclass="language-ini">com.oxygenxml.default.options=${env(CONFIG)}/default.xml</codeblock></li>
+            </ul></p><note product="author developer editor">If you are using the <xref
               href="../tasks/jwsInstaller.dita">Java Webstart distribution</xref>, use the <xref
               href="../tasks/jwsInstaller.dita#jwsInstaller/optionsDir-choice"
                 ><codeph>optionsDir</codeph> property</xref> to specify the path of the options file
-            (in this case, the file needs to be named <filepath>default.xml</filepath>), or you can
-            edit the <xref
+            (in this case, the file must be named <filepath>default.xml</filepath>), or you can edit
+            the <xref
               href="http://download.oracle.com/javase/1,5.0/docs/guide/javaws/developersguide/syntax.html"
               format="html" scope="external"><filepath>.jnlp</filepath> file</xref> that launches
             the application and set the <codeph>com.oxygenxml.default.options</codeph> parameter
             using a <codeph>property</codeph> element, as in the following
             example:<screen> &lt;property name="oxy:com.oxygenxml.default.options" <b>value=</b>"http://host/path/to/default.xml"/&gt;</screen></note></li>
-      </ul></section>
+        <li product="authorEclipse developerEclipse editorEclipse"><b>Specify a Path to the XML
+            Options File in a Startup Parameter</b><p>Set the path to the XML options file as the
+            value of the <codeph>com.oxygenxml.default.options</codeph> system property in the
+            Eclipse configuration file (<filepath><term
+                conkeyref="reusables-user-guide/eclipse-install-dir"
+              />/configuration/config.ini</filepath>). The path can be specified with any of the following:<ul>
+              <li>A URL or file path relative to the application installation folder. For
+                  example:<codeblock outputclass="language-ini">com.oxygenxml.default.options=file\:default.xml</codeblock><p>This
+                  will make <ph keyref="product"/> look for <filepath>default.xml</filepath> inside
+                  the installation folder (for example: <filepath product="editorEclipse"><term
+                      conkeyref="reusables-user-guide/eclipse-install-dir"
+                    />/plugins/com.oxygenxml.editor/preferences/default.xml</filepath><filepath
+                    product="authorEclipse"><term
+                      conkeyref="reusables-user-guide/eclipse-install-dir"
+                    />/plugins/com.oxygenxml.author/preferences/default.xml</filepath><filepath
+                    product="developerEclipse"><term
+                      conkeyref="reusables-user-guide/eclipse-install-dir"
+                    />/plugins/com.oxygenxml.developer/preferences/default.xml</filepath>, or if the
+                  plugin was installed as a drop-in: <filepath product="editorEclipse"><term
+                      conkeyref="reusables-user-guide/eclipse-install-dir"
+                    />/dropins/com.oxygenxml.editor/preferences/default.xml</filepath><filepath
+                    product="authorEclipse"><term
+                      conkeyref="reusables-user-guide/eclipse-install-dir"
+                    />/dropins/com.oxygenxml.author/preferences/default.xml</filepath><filepath
+                    product="developerEclipse"><term
+                      conkeyref="reusables-user-guide/eclipse-install-dir"
+                    />/dropins/com.oxygenxml.developer/preferences/default.xml</filepath>).</p></li>
+              <li>A system variable that specifies the file path. For
+                example:<codeblock outputclass="language-ini">com.oxygenxml.default.options=file\:${system(CONFIG)}/default.xml</codeblock></li>
+              <li>An environmental variable that specifies the file path. For
+                example:<codeblock outputclass="language-ini">com.oxygenxml.default.options=file\:${env(CONFIG)}/default.xml</codeblock></li>
+            </ul><note>In the Eclipse configuration file, the backslash (<codeph>\</codeph>) is
+              considered a special character. Therefore, use forward slashes for separators inside
+              the file path.</note></p></li>
+      </ul>
+    </section>
   </body>
 </topic>

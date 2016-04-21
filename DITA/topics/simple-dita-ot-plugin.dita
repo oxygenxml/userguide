@@ -2,6 +2,13 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="simple-dita-ot-plugin">
   <title>Creating a DITA OT Customization Plugin</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>create DITA OT plugin</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
     <p>To describe the steps involved in creating a <b>DITA Open Toolkit</b> plugin, this section
       uses an example of creating an <b>XSLT</b> customization plugin that provides syntax
@@ -15,8 +22,9 @@
       <ol id="ol_icd_rdt_pm">
         <li>Create a folder for your plugin in the DITA OT <b>plugins</b> folder (<filepath><term
               keyref="glossentry_dita_ot_dir"/>/plugins/</filepath>).<p><b>For example, if you are
-              using DITA 1.8 the path would look like
-              this:</b></p><p><filepath>[OXYGEN_DIR]/frameworks/dita/DITA-OT/plugins/com.oxygenxml.highlight</filepath></p></li>
+              using DITA 1.8 the path would look like this:</b></p><p><filepath><term
+                conkeyref="reusables-user-guide/oxy-install-dir"
+              />/frameworks/dita/DITA-OT/plugins/com.oxygenxml.highlight</filepath></p></li>
         <li>Create a <b>plugin.xml</b> file (in the same plugin folder) that contains the extension
           points of the plugin.<note>You can easily create this file by using the <uicontrol>DITA OT
               Plugin</uicontrol> new file template that is included in <ph keyref="product"/>. From
@@ -49,7 +57,7 @@
             can take part of the class attribute value (<b>topic/pre</b>) and search the <b>DITA
               OT</b> resources for a similar stylesheet. <p>Our search found the XSLT stylesheet
                   <filepath><term keyref="glossentry_dita_ot_dir"
-                />/org.dita.xhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath>, which
+                />/org.dita.xhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath> that
               contains:<pre outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
   &lt;xsl:apply-templates select="."  mode="pre-fmt" /&gt;
 &lt;/xsl:template&gt;</pre></p>We
@@ -88,7 +96,7 @@
     &lt;xsl:apply-templates/&gt;
   &lt;/fo:block&gt;
 &lt;/xsl:template&gt;</pre><note>You
-            can edit the newly created stylesheets to customize different outputs in a variety of
+            can edit the newly created stylesheets to customize multiple outputs in a variety of
             ways. For example, in our case you could edit the <b>xhtmlHighlight.xsl</b> or
               <b>pdfHighlight.xsl</b> stylesheets that we created to customize various colors for
             syntax highlighting.</note></li>
@@ -96,18 +104,18 @@
           scenario called <uicontrol>Run DITA OT Integrator</uicontrol> by executing it from the
               <uicontrol><image href="../img/ApplyStyleSheet16.png" id="image_qwt_3ts_yq"/> Apply
             Transformation Scenario(s)</uicontrol> dialog box. If the integrator is not visible,
-          enable the <b>Show all scenarios</b> action that is available in the <image
-            href="../img/Settings16.png" id="image_km5_xrs_yq"/> settings drop-down menu. For more
-          information, see <xref href="dita-ot-install-plugin.dita"/>.<p><b>Results of running the
-              integrator using our example:</b></p><p>XSLT content is applied with priority when
-            publishing to both HTML and PDF outputs.</p><ol id="ol_vnx_h2t_pm">
+          enable the <b>Show all scenarios</b> action that is available in the <uicontrol><image
+              href="../img/Settings16.png" id="image_km5_xrs_yq"/>Settings</uicontrol> drop-down
+          menu. For more information, see <xref href="dita-ot-install-plugin.dita"/>.<p><b>Results
+              of running the integrator using our example:</b></p><p>XSLT content is applied with
+            priority when publishing to both HTML and PDF outputs.</p><ol id="ol_vnx_h2t_pm">
             <li>For the HTML output, in the XSLT stylesheet <filepath><term
                   keyref="glossentry_dita_ot_dir"/>/xsl/dita2html-base.xsl</filepath> a new import
               automatically
                 appeared:<pre outputclass="language-xml">&lt;xsl:import href="../plugins/com.oxygenxml.highlight/xhtmlHighlight.xsl"/&gt;</pre><p>This
-                import is placed after all base imports and thus has a higher priority. See more
-                about imported template precedence in the XSLT specs: <xref
-                  href="http://www.w3.org/TR/xslt#import" format="html" scope="external"/></p></li>
+                import is placed after all base imports and thus has a higher priority. For more
+                information about imported template precedence, see: <xref
+                  href="http://www.w3.org/TR/xslt#import" format="html" scope="external"/>.</p></li>
             <li>Likewise, for the PDF output, in the top-level stylesheet <filepath><term
                   keyref="glossentry_dita_ot_dir"
                 />/plugins/org.dita.pdf2/xsl/fo/topic2fo_shell_fop.xsl</filepath> a new import
@@ -120,4 +128,9 @@
       with some simple installation notes. Your customization will work provided that the templates
       you are overwriting have not changed from one DITA OT distribution to the other. </p>
   </body>
+  <related-links>
+    <link href="http://www.dita-ot.org/" format="html" scope="external">
+      <linktext>DITA Open Toolkit Documentation</linktext>
+    </link>
+  </related-links>
 </topic>
