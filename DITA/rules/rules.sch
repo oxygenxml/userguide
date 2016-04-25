@@ -235,7 +235,7 @@
   <!-- Add Ids to all sections, in this way you can easly refer the section from documentation -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/section ') and not(contains(@class, ' task/'))]">
-      <sch:assert test="@id" sqf:fix="addId addIds" role="warn">All sections must have an @id attribute</sch:assert>
+      <sch:assert test="@id" sqf:fix="addId addIds" role="warn">All sections should have an @id attribute</sch:assert>
       
       <sqf:fix id="addId">
         <sqf:description>
@@ -270,7 +270,8 @@
         The title is too long (<sch:value-of select="string-length(string(.))"/> chars).
         It should be less than 75 characters.</sch:assert>
     </sch:rule>
-    
+
+    <!-- Rules that checks the menucascade element has more than one uicontrol element -->
     <sch:rule context="menucascade">
       <sch:assert test="count(uicontrol) > 1" role="warn" sqf:fix="addUicontrol removeMenucascade">
         "menucascade" should contain more than one "uicontrol"</sch:assert>
@@ -296,7 +297,7 @@
   <!-- Rules that checks the fig element has a title and is not empty -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' pr-d/syntaxdiagram '))]">
-      <sch:assert test="child::*[contains(@class, ' topic/title ')]" sqf:fix="addTitle">
+      <sch:assert test="child::*[contains(@class, ' topic/title ')]" role="warn" sqf:fix="addTitle">
         The figure should have a title.
       </sch:assert>
       
@@ -314,7 +315,7 @@
     </sch:rule>
     
     <sch:rule context="*[contains(@class, ' topic/fig ')]/*[contains(@class, ' topic/title ')]">
-      <sch:report test="not(node())" sqf:fix="addTitleContent">
+      <sch:report test="not(node())" role="warn" sqf:fix="addTitleContent">
         The title should have content.
       </sch:report>
       <sqf:fix id="addTitleContent">
@@ -331,6 +332,44 @@
     </sch:rule>
   </sch:pattern>
 
+  <!-- Rules that checks the section element has a title and is not empty -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/section ')]">
+      <sch:assert test="child::*[contains(@class, ' topic/title ')]" role="warn" sqf:fix="addTitle">
+        The section should have a title.
+      </sch:assert>
+      
+      <sqf:fix id="addTitle">
+        <sqf:description>
+          <sqf:title>Add a title element inside section</sqf:title>
+        </sqf:description>
+        <sqf:user-entry name="titleVal">
+          <sqf:description>
+            <sqf:title>Title element content</sqf:title>
+          </sqf:description>
+        </sqf:user-entry>
+        <sqf:add node-type="element" target="title" position="first-child" select="$titleVal"/>
+      </sqf:fix>
+    </sch:rule>
+    
+    <sch:rule context="*[contains(@class, ' topic/section ')]/*[contains(@class, ' topic/title ')]">
+      <sch:report test="not(node())" role="warn" sqf:fix="addTitleContent">
+        The title should have content.
+      </sch:report>
+      <sqf:fix id="addTitleContent">
+        <sqf:description>
+          <sqf:title>Add title content</sqf:title>
+        </sqf:description>
+        <sqf:user-entry name="titleVal">
+          <sqf:description>
+            <sqf:title>Title element content</sqf:title>
+          </sqf:description>
+        </sqf:user-entry>
+        <sqf:add position="first-child" select="$titleVal"/>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- XML Schema used instead of DTD. -->
   <sch:pattern id="checkSchemaUseOnDITATopics">
     <sch:rule context="/*">
