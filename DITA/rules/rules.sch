@@ -295,7 +295,7 @@
   
   <!-- Rules that checks the fig element has a title and is not empty -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/fig ')]">
+    <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' pr-d/syntaxdiagram '))]">
       <sch:assert test="child::*[contains(@class, ' topic/title ')]" sqf:fix="addTitle">
         The figure should have a title.
       </sch:assert>
@@ -314,9 +314,9 @@
     </sch:rule>
     
     <sch:rule context="*[contains(@class, ' topic/fig ')]/*[contains(@class, ' topic/title ')]">
-      <sch:assert test="string-length(text()) > 0" sqf:fix="addTitleContent">
+      <sch:report test="not(node())" sqf:fix="addTitleContent">
         The title should have content.
-      </sch:assert>
+      </sch:report>
       <sqf:fix id="addTitleContent">
         <sqf:description>
           <sqf:title>Add title content</sqf:title>
