@@ -292,6 +292,44 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- Rules that checks the fig element has a title and is not empty -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/fig ')]">
+      <sch:assert test="child::*[contains(@class, ' topic/title ')]" sqf:fix="addTitle">
+        The figure should have a title.
+      </sch:assert>
+      
+      <sqf:fix id="addTitle">
+        <sqf:description>
+          <sqf:title>Add a title element inside figure</sqf:title>
+        </sqf:description>
+        <sqf:user-entry name="titleVal">
+          <sqf:description>
+            <sqf:title>Title element content</sqf:title>
+          </sqf:description>
+        </sqf:user-entry>
+        <sqf:add node-type="element" target="title" position="first-child" select="$titleVal"/>
+      </sqf:fix>
+    </sch:rule>
+    
+    <sch:rule context="*[contains(@class, ' topic/fig ')]/*[contains(@class, ' topic/title ')]">
+      <sch:assert test="string-length(text()) > 0" sqf:fix="addTitleContent">
+        The title should have content.
+      </sch:assert>
+      <sqf:fix id="addTitleContent">
+        <sqf:description>
+          <sqf:title>Add title content</sqf:title>
+        </sqf:description>
+        <sqf:user-entry name="titleVal">
+          <sqf:description>
+            <sqf:title>Title element content</sqf:title>
+          </sqf:description>
+        </sqf:user-entry>
+        <sqf:add position="first-child" select="$titleVal"/>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
 
   <!-- XML Schema used instead of DTD. -->
   <sch:pattern id="checkSchemaUseOnDITATopics">
