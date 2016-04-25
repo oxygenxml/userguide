@@ -334,7 +334,7 @@
 
   <!-- Rules that checks the section element has a title and is not empty -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/section ')]">
+    <sch:rule context="*[contains(@class, ' topic/section ') and not(contains(@class, ' task/context '))]">
       <sch:assert test="child::*[contains(@class, ' topic/title ')]" role="warn" sqf:fix="addTitle">
         The section should have a title.
       </sch:assert>
