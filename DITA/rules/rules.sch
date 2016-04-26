@@ -334,7 +334,11 @@
 
   <!-- Rules that checks the section element has a title and is not empty -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/section ') and not(contains(@class, ' task/result ')) and not(contains(@class, ' task/prereq ')) and not(contains(@class, ' task/postreq ')) and not(contains(@class, ' task/context '))]">
+    <sch:rule context="*[contains(@class, ' topic/section ') 
+      and not(contains(@class, ' task/result ')) 
+      and not(contains(@class, ' task/prereq ')) 
+      and not(contains(@class, ' task/postreq ')) 
+      and not(contains(@class, ' task/context '))]">
       <sch:assert test="child::*[contains(@class, ' topic/title ')]" role="warn" sqf:fix="addTitle">
         The section should have a title.
       </sch:assert>
@@ -367,6 +371,13 @@
         </sqf:user-entry>
         <sqf:add position="first-child" select="$titleVal"/>
       </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern>
+    <!-- The text is not allowed directly in the section, it should be in a paragraph. Otherwise the output will be rendered with no space after the section -->
+    <sch:rule context="*[contains(@class, ' topic/section ')]/text()">
+      <sch:report test="string-length(normalize-space(.)) > 0">The text in a section element should be in a paragraph.</sch:report>
     </sch:rule>
   </sch:pattern>
   
