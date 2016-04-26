@@ -340,6 +340,13 @@
     </sch:rule>
   </sch:pattern>
 
+  <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/fig ')]">
+      <sch:assert test="ancestor::node()/local-name() = 'p'">The fig element should be wrapped in a paragraph.</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Rules that checks the section element has a title and is not empty -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/section ') 
