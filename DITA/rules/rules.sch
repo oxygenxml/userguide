@@ -62,6 +62,14 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- The indexterm element should always be in a prolog because it creates output problems. -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/indexterm ')]">
+      <sch:assert test="ancestor::node()/local-name() = 'prolog'">The indexterm element should be in a prolog.</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Topic ID must be equal to file name -->
   <sch:pattern>
     <sch:rule context="/*[1][contains(@class, ' topic/topic ')]">
