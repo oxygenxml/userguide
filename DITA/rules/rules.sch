@@ -346,6 +346,13 @@
       <sch:assert test="parent::node()/local-name() = 'p'">The fig element should be wrapped in a paragraph.</sch:assert>
     </sch:rule>
   </sch:pattern>
+
+  <!-- The dl element should be wrapped in a paragraph to make the output look better. -->
+  <sch:pattern>
+    <sch:rule context="*[contains(@class, ' topic/dl ')]" role="warn">
+      <sch:assert test="parent::node()/local-name() = 'p'">The dl element should be wrapped in a paragraph.</sch:assert>
+    </sch:rule>
+  </sch:pattern>
   
   <!-- Rules that checks the section element has a title and is not empty -->
   <sch:pattern>
