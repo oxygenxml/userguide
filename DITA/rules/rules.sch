@@ -173,6 +173,17 @@
       </sqf:add>
       <sqf:delete match="following-sibling::node()[1]"/>
     </sqf:fix>
+    
+    <!-- Wrap the current element in a paragraph. -->
+    <sqf:fix id="wrapInParagraph">
+      <sqf:description>
+        <sqf:title>Wrap "<sch:name/>" element in a paragraph</sqf:title>
+      </sqf:description>
+      <sqf:add node-type="element" target="p" position="after">
+        <xsl:apply-templates mode="copyExceptClass" select="."/>
+      </sqf:add>
+      <sqf:delete/>
+    </sqf:fix>
   </sqf:fixes>
   
   <sch:pattern>
@@ -343,25 +354,27 @@
   <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/fig ')]" role="warn">
-      <sch:assert test="parent::node()/local-name() = 'p'">The fig element should be wrapped in a paragraph.</sch:assert>
+      <sch:assert test="parent::node()/local-name() = 'p'" sqf:fix="wrapInParagraph">The fig element should be wrapped in a paragraph.</sch:assert>
     </sch:rule>
   </sch:pattern>
 
   <!-- The dl element should be wrapped in a paragraph to make the output look better. -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/dl ')]" role="warn">
-      <sch:assert test="parent::node()/local-name() = 'p'">The dl element should be wrapped in a paragraph.</sch:assert>
+      <sch:assert test="parent::node()/local-name() = 'p'" sqf:fix="wrapInParagraph">The dl element should be wrapped in a paragraph.</sch:assert>
     </sch:rule>
   </sch:pattern>
   
   <!-- Rules that checks the section element has a title and is not empty -->
   <sch:pattern>
+    <!-- Check that the section should have a title. -->
     <sch:rule context="*[contains(@class, ' topic/section ') 
       and not(contains(@class, ' task/result ')) 
       and not(contains(@class, ' task/prereq ')) 
       and not(contains(@class, ' task/postreq ')) 
       and not(contains(@class, ' task/context '))]">
-      <sch:assert test="child::*[contains(@class, ' topic/title ')]" role="warn" sqf:fix="addTitle">
+      <!-- The section should have a title or a conKeyref or a conref -->
+      <sch:assert test="child::*[contains(@class, ' topic/title ')] or @conkeyref or @conref" role="warn" sqf:fix="addTitle">
         The section should have a title.
       </sch:assert>
       
