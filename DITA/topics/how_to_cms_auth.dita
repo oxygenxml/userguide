@@ -15,44 +15,47 @@
   <body>
     <p>The <ph keyref="webappProduct"/> provides both a server-side and client-side API that allows
       you to implement such a mechanism.</p>
-    <section id="implement_cms_authentication_mechanism"><title>Implement CMS Authentication
-        Mechanism</title>The following is a list of the basic building blocks of the authentication
-        mechanism:<ul id="ul_ucx_slc_cr">
-        <li>Develop a plugin that implements the <xref
-            href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLStreamHandlerPluginExtension.html"
-            format="html" scope="external"
-              ><apiname>ro.sync.exml.plugin.urlstreamhandler.URLStreamHandlerPluginExtension</apiname></xref>
-          interface. Considering the multiple user context of the <ph keyref="webappProduct"/>, the
-            <codeph>getURLStreamHandler</codeph> method should return an instance of the <xref
-            href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
-            format="html" scope="external"
-              ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.URLStreamHandlerWithContext</codeph></xref>
-          class. This class tracks the user, based on the URL connection that will be made.</li>
-        <li>If the CMS rejects the connection attempt with a message that the user is not
-          authenticated, you should throw a <xref
-            href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/UserActionRequiredException.html"
-            format="html" scope="external"
-              ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.UserActionRequiredException</codeph></xref>
-          exception. This exception is automatically relayed to the client-side as a <xref
-            href="http://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/sync.api.WebappMessage.html"
-            format="html" scope="external"><codeph>sync.api.WebappMessage</codeph></xref> JavaScript
-          object.</li>
-        <li>On the client side, follow these steps:<ol id="ul_gxr_n4c_cr">
-            <li>Use the <xref
-                href="http://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/sync.api.Editor.html"
-                format="html" scope="external"
-                  ><codeph>sync.api.Editor.EventTypes.CUSTOM_MESSAGE_RECEIVED</codeph></xref> event
-              to intercept the messages sent from the server-side.</li>
-            <li>Display a dialog box to collect more authentication information from the user.</li>
-            <li>Send the credentials to the server, more specifically to the <xref
-                href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
-                format="html" scope="external"
-                  ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.URLStreamHandlerWithContext</codeph></xref>
-              instance defined at step 1. For this part, you will need to implement a secure way to
-              transmit the credentials. This can range from a simple servlet that runs in the <ph
-                keyref="webappProduct"/> to an <term>OAuth</term> implementation.</li>
-            <li>Retry the operation that triggered the authentication procedure.</li>
-          </ol></li>
-      </ul></section>
+    <section id="implement_cms_authentication_mechanism">
+      <title>Implement CMS Authentication Mechanism</title>
+      <p>The following is a list of the basic building blocks of the authentication mechanism:<ul
+          id="ul_ucx_slc_cr">
+          <li>Develop a plugin that implements the <xref
+              href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLStreamHandlerPluginExtension.html"
+              format="html" scope="external"
+                ><apiname>ro.sync.exml.plugin.urlstreamhandler.URLStreamHandlerPluginExtension</apiname></xref>
+            interface. Considering the multiple user context of the <ph keyref="webappProduct"/>,
+            the <codeph>getURLStreamHandler</codeph> method should return an instance of the <xref
+              href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
+              format="html" scope="external"
+                ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.URLStreamHandlerWithContext</codeph></xref>
+            class. This class tracks the user, based on the URL connection that will be made.</li>
+          <li>If the CMS rejects the connection attempt with a message that the user is not
+            authenticated, you should throw a <xref
+              href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/UserActionRequiredException.html"
+              format="html" scope="external"
+                ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.UserActionRequiredException</codeph></xref>
+            exception. This exception is automatically relayed to the client-side as a <xref
+              href="http://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/sync.api.WebappMessage.html"
+              format="html" scope="external"><codeph>sync.api.WebappMessage</codeph></xref>
+            JavaScript object.</li>
+          <li>On the client side, follow these steps:<ol id="ul_gxr_n4c_cr">
+              <li>Use the <xref
+                  href="http://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/17.1.0/jsdoc/sync.api.Editor.html"
+                  format="html" scope="external"
+                    ><codeph>sync.api.Editor.EventTypes.CUSTOM_MESSAGE_RECEIVED</codeph></xref>
+                event to intercept the messages sent from the server-side.</li>
+              <li>Display a dialog box to collect more authentication information from the
+                user.</li>
+              <li>Send the credentials to the server, more specifically to the <xref
+                  href="http://archives.oxygenxml.com/Oxygen/Editor/InstData17.0/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
+                  format="html" scope="external"
+                    ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.URLStreamHandlerWithContext</codeph></xref>
+                instance defined at step 1. For this part, you will need to implement a secure way
+                to transmit the credentials. This can range from a simple servlet that runs in the
+                  <ph keyref="webappProduct"/> to an <term>OAuth</term> implementation.</li>
+              <li>Retry the operation that triggered the authentication procedure.</li>
+            </ol></li>
+        </ul></p>
+    </section>
   </body>
 </topic>

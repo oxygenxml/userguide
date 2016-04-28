@@ -13,44 +13,46 @@
     </metadata>
   </prolog>
   <body>
-    <section><title>Custom Form Controls Implementation</title>You can specify custom form controls
-      using the following properties:<ul id="ul_r3b_3wy_js">
-        <li><uicontrol>rendererClassName</uicontrol> - The name of the class that draws the edited
-          value. It must be an implementation of <xref
-            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceRenderer.html"
-            format="html" scope="external"
-              ><codeph>ro.sync.ecss.extensions.api.editor.InplaceRenderer</codeph></xref>. The
-          renderer has to be a <b>SWING</b> implementation and can be used both in the standalone
-          and Eclipse distributions.</li>
-        <li><uicontrol>swingEditorClassName</uicontrol> - You can use this property for the
-          standalone (<b>Swing</b>-based) distribution to specify the name of the class used for
-          editing. It is a <b>Swing</b> implementation of <xref
-            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceEditor.html"
-            format="html" scope="external"
-              ><codeph>ro.sync.ecss.extensions.api.editor.InplaceEditor</codeph></xref>.</li>
-        <li><uicontrol>swtEditorClassName</uicontrol> - You can use this property for the Eclipse
-          plugin distribution to specify the name of the class used for editing. It is a <b>SWT</b>
-          implementation of the <xref
-            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceEditor.html"
-            format="html" scope="external"
-              ><codeph>ro.sync.ecss.extensions.api.editor.InplaceEditor</codeph></xref>.<note>If the
-            custom form control is intended to work in the <ph keyref="product"/> standalone
-            distribution, the declaration of <uicontrol>swtEditorClassName</uicontrol> is not
-            required. The <term>renderer</term> (the class that draws the value) has different
-            properties from the <term>editor</term> (the class that edits the value) because you can
-            present a value in one way and edit it in another.</note></li>
-        <li><uicontrol>classpath</uicontrol> - You can use this property to specify the location of
-          the classes used for a custom form control. The value of the
-            <uicontrol>classpath</uicontrol> property is an enumeration of URLs separated by
-          comma.</li>
-        <li><uicontrol>edit</uicontrol> - If your form control edits the value of an attribute or
-          the text value of an element, you can use the <codeph>@attribute_name</codeph> and
-            <codeph>#text</codeph> predefined values and <ph keyref="product"/> will perform the
-          commit logic by itself. You can use the <codeph>custom</codeph> value to perform the
-          commit logic yourself.</li>
-      </ul><p>The following is a sample Java code for implementing a custom combo box form control
-        that inserts an XML element in the content when the editing
-        stops:</p><codeblock outputclass="language-java">public class ComboBoxEditor  extends AbstractInplaceEditor {
+    <section id="custom_form_controls_implementation">
+      <title>Custom Form Controls Implementation</title>
+      <p>You can specify custom form controls using the following properties:<ul id="ul_r3b_3wy_js">
+          <li><uicontrol>rendererClassName</uicontrol> - The name of the class that draws the edited
+            value. It must be an implementation of <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceRenderer.html"
+              format="html" scope="external"
+                ><codeph>ro.sync.ecss.extensions.api.editor.InplaceRenderer</codeph></xref>. The
+            renderer has to be a <b>SWING</b> implementation and can be used both in the standalone
+            and Eclipse distributions.</li>
+          <li><uicontrol>swingEditorClassName</uicontrol> - You can use this property for the
+            standalone (<b>Swing</b>-based) distribution to specify the name of the class used for
+            editing. It is a <b>Swing</b> implementation of <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceEditor.html"
+              format="html" scope="external"
+                ><codeph>ro.sync.ecss.extensions.api.editor.InplaceEditor</codeph></xref>.</li>
+          <li><uicontrol>swtEditorClassName</uicontrol> - You can use this property for the Eclipse
+            plugin distribution to specify the name of the class used for editing. It is a
+              <b>SWT</b> implementation of the <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceEditor.html"
+              format="html" scope="external"
+                ><codeph>ro.sync.ecss.extensions.api.editor.InplaceEditor</codeph></xref>.<note>If
+              the custom form control is intended to work in the <ph keyref="product"/> standalone
+              distribution, the declaration of <uicontrol>swtEditorClassName</uicontrol> is not
+              required. The <term>renderer</term> (the class that draws the value) has different
+              properties from the <term>editor</term> (the class that edits the value) because you
+              can present a value in one way and edit it in another.</note></li>
+          <li><uicontrol>classpath</uicontrol> - You can use this property to specify the location
+            of the classes used for a custom form control. The value of the
+              <uicontrol>classpath</uicontrol> property is an enumeration of URLs separated by
+            comma.</li>
+          <li><uicontrol>edit</uicontrol> - If your form control edits the value of an attribute or
+            the text value of an element, you can use the <codeph>@attribute_name</codeph> and
+              <codeph>#text</codeph> predefined values and <ph keyref="product"/> will perform the
+            commit logic by itself. You can use the <codeph>custom</codeph> value to perform the
+            commit logic yourself.</li>
+        </ul></p>
+      <p>The following is a sample Java code for implementing a custom combo box form control that
+        inserts an XML element in the content when the editing stops:</p>
+      <codeblock outputclass="language-java">public class ComboBoxEditor  extends AbstractInplaceEditor {
   /**
    * @see ro.sync.ecss.extensions.api.editor.InplaceEditor#stopEditing()
    */
@@ -65,12 +67,12 @@
     };
     EditingEvent event =  new EditingEvent(customCommit,  true);
     fireEditingStopped(event);
-  }</codeblock><p>The
-        custom form controls can use any of the predefined properties of the <xref
+  }</codeblock>
+      <p>The custom form controls can use any of the predefined properties of the <xref
           href="../concepts/form-controls.dita#form-controls">built-in form controls</xref>, as well
-        as specified custom properties.</p>This following is an example of how to specify a custom
-      form control in the
-      CSS:<codeblock outputclass="language-css">myElement {
+        as specified custom properties.</p>
+      <p>This following is an example of how to specify a custom form control in the
+        CSS:<codeblock outputclass="language-css">myElement {
     content: oxy_editor(
         rendererClassName, "com.custom.editors.CustomRenderer",
         swingEditorClassName, "com.custom.editors.SwingCustomEditor",
@@ -79,8 +81,9 @@
         customProperty1, "customValue1",
         customProperty2, "customValue2"
     )
-}</codeblock></section>
-    <section>
+}</codeblock></p>
+    </section>
+    <section id="how_to_implement_custom_form_controls">
       <title>How to Implement Custom Form Controls</title>
       <p>To implement a custom form control, follow these steps:<ol id="ol_dkr_1xy_js">
           <li>Download the <ph keyref="product"/> SDK at <xref
