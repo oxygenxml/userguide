@@ -96,61 +96,64 @@ class HelloWorld
         significant and when to treat it as insignificant. However it is not always possible to tell
         this from the XML source file alone. To determine what whitespace is significant, <ph
           keyref="product"/> assigns each element in the document to one of four categories: </p>
-      <dl>
-        <dlentry>
-          <dt>Ignore space</dt>
-          <dd>
-            <p>In the ignore space category, all whitespace is considered insignificant. This
-              generally applies to content that consists only of elements nested inside other
-              elements, with no text content.</p>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Normalize space</dt>
-          <dd>
-            <p>In the normalize space category, a single whitespace character between character
-              strings is considered significant and all other spaces are considered insignificant.
-              This generally applies to elements that contain text content only. This content can be
-              normalized by removing insignificant whitespace. Insignificant whitespace may then be
-              added to format and indent the content.</p>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Mixed content</dt>
-          <dd>
-            <p>In the mixed content category, a single whitespace between text characters is
-              considered significant and all other spaces are considered insignificant. However, </p>
-            <ul id="ul_awx_mwk_jp">
-              <li>
-                <p>Whitespace between two child elements embedded in the text is normalized to a
-                  single space (rather than to zero spaces as would normally be the case for a text
-                  node with only whitespace characters, or the space between elements
-                  generally).</p>
-              </li>
-              <li>The lack of whitespace between a child element embedded in the text and either
-                adjacent text or another child element is considered significant. That is, no
-                whitespace can be introduced here when formatting and indenting the file.</li>
-            </ul>
-            <p>For example:</p>
-            <codeblock outputclass="language-xml">&lt;p>The file is located in &lt;i>HOME&lt;/i>/&lt;i>USER&lt;/i>/hello. This is s &lt;strong>big&lt;/strong> 
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Ignore space</dt>
+            <dd>
+              <p>In the ignore space category, all whitespace is considered insignificant. This
+                generally applies to content that consists only of elements nested inside other
+                elements, with no text content.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Normalize space</dt>
+            <dd>
+              <p>In the normalize space category, a single whitespace character between character
+                strings is considered significant and all other spaces are considered insignificant.
+                This generally applies to elements that contain text content only. This content can
+                be normalized by removing insignificant whitespace. Insignificant whitespace may
+                then be added to format and indent the content.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Mixed content</dt>
+            <dd>
+              <p>In the mixed content category, a single whitespace between text characters is
+                considered significant and all other spaces are considered insignificant. However, </p>
+              <ul id="ul_awx_mwk_jp">
+                <li>
+                  <p>Whitespace between two child elements embedded in the text is normalized to a
+                    single space (rather than to zero spaces as would normally be the case for a
+                    text node with only whitespace characters, or the space between elements
+                    generally).</p>
+                </li>
+                <li>The lack of whitespace between a child element embedded in the text and either
+                  adjacent text or another child element is considered significant. That is, no
+                  whitespace can be introduced here when formatting and indenting the file.</li>
+              </ul>
+              <p>For example:</p>
+              <codeblock outputclass="language-xml">&lt;p>The file is located in &lt;i>HOME&lt;/i>/&lt;i>USER&lt;/i>/hello. This is s &lt;strong>big&lt;/strong> 
 
 &lt;emphasis>deal&lt;/emphasis>.
 &lt;/p></codeblock>
-            <p>In this example, whitespace should not be introduced around the i tags as it would
-              introduce extra significant whitespace into the document. The space between the end
-                <codeph>&lt;/strong></codeph> tag and the beginning <codeph>&lt;emphasis></codeph>
-              tag should be normalized to a single space, not zero spaces. </p>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Preserve space</dt>
-          <dd>
-            <p>In the preserve space category, all whitespace in the element is regarded as
-              significant. No changes are made to the spaces in elements in this category. However,
-              child elements may be in another category, and may be treated differently.</p>
-          </dd>
-        </dlentry>
-      </dl>
+              <p>In this example, whitespace should not be introduced around the i tags as it would
+                introduce extra significant whitespace into the document. The space between the end
+                  <codeph>&lt;/strong></codeph> tag and the beginning <codeph>&lt;emphasis></codeph>
+                tag should be normalized to a single space, not zero spaces. </p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Preserve space</dt>
+            <dd>
+              <p>In the preserve space category, all whitespace in the element is regarded as
+                significant. No changes are made to the spaces in elements in this category.
+                However, child elements may be in another category, and may be treated
+                differently.</p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
       <p>Attribute values are always in the preserve space category. The spaces between attributes
         in an element tag are always in the default space category.</p>
       <p><ph keyref="product"/> consults several pieces of information to assign an element to one
@@ -164,127 +167,130 @@ class HelloWorld
         list, it will be assigned to the mixed content category.</p>
       <p>To assign elements to these categories, <ph keyref="product"/> consults information from
         the following sources: </p>
-      <dl>
-        <dlentry>
-          <dt><codeph>xml:space</codeph></dt>
-          <dd>If the XML element contains the <codeph>xml:space</codeph> attribute, the element is
-            promoted to the appropriate category based on the value of the attribute.</dd>
-        </dlentry>
-        <dlentry product="author editor authorEclipse editorEclipse">
-          <dt>CSS whitespace property</dt>
-          <dd>If the CSS stylesheet controlling the <uicontrol>Author</uicontrol> mode editor
-            applies the <codeph>whitespace: pre</codeph> setting to an element, it is promoted to
-            the preserve space category.</dd>
-        </dlentry>
-        <dlentry product="author editor authorEclipse editorEclipse">
-          <dt>CSS display property</dt>
-          <dd>If a text node contains only white-spaces: <ul id="ul_dvk_dxk_jp">
-              <li>If the node has a parent element with the CSS <codeph>display</codeph> property
-                set to <codeph>inline</codeph> then the node is promoted to the mixed content
-                category.</li>
-              <li>If the left or right sibling is an element with the CSS <codeph>display</codeph>
-                property set to <codeph>inline</codeph> then the node is promoted to the mixed
-                content category.</li>
-              <li>
-                <p>If one of its ancestors is an element with the CSS <codeph>display</codeph>
-                  property set to <codeph>table</codeph> then the node is assigned to the ignore
-                  space category. </p>
-              </li>
-            </ul></dd>
-        </dlentry>
-        <dlentry>
-          <dt>Schema aware formatting</dt>
-          <dd>
-            <p>If a schema is available for the XML document, <ph keyref="product"/> can use
-              information from the schema to promote the element to the appropriate category. For
-              example:</p>
-            <ul id="ul_r4g_vll_jp">
-              <li>
-                <p>If the schema declares an element to be of type <codeph>xs:string</codeph>, the
-                  element will be promoted to the preserve space category because the string
-                  built-in type has the whitespace facet with the value preserve. </p>
-              </li>
-              <li>
-                <p>If the schema declares an element to be mixed content, it will be promoted to the
-                  mixed content category.</p>
-              </li>
-            </ul>
-            <p>Schema aware formatting can be turned on and off. </p>
-            <ul id="ul_wth_1ml_jp">
-              <li product="author editor authorEclipse editorEclipse">
-                <p>To turn it on or off for <uicontrol>Author</uicontrol> mode, <ph
-                    conkeyref="reusables-preferences-pages/open-the-preferences-page"/>, go to <menucascade>
-                    <uicontrol>Editor</uicontrol>
-                    <uicontrol>Edit modes</uicontrol>
-                    <uicontrol>Author</uicontrol>
-                    <uicontrol>Schema aware</uicontrol>
-                  </menucascade>, and enable/disable the <xref
-                    href="preferences-schema-aware.dita#preferences-schema-aware/schema-aware-normalization"
-                      ><uicontrol>Schema aware normalization, format and indent</uicontrol>
-                    option</xref>. </p>
-              </li>
-              <li>
-                <p>To turn it on or off for the <uicontrol>Text</uicontrol> editing mode ,<ph
-                    conkeyref="reusables-preferences-pages/open-the-preferences-page"/>, go to <menucascade>
-                    <uicontrol>Editor</uicontrol>
-                    <uicontrol>Format</uicontrol>
-                    <uicontrol>XML</uicontrol>
-                  </menucascade>, and enable/disable the <xref
-                    href="preferences-editor-format-xml.dita#preferences-editor-format-xml/schema-aware-format-indent"
-                      ><uicontrol>Schema aware format and indent</uicontrol> option</xref>.</p>
-              </li>
-            </ul>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Preserve space elements list</dt>
-          <dd>
-            <p>If an element is listed in the <xref
-                href="preferences-editor-format-xml.dita#preferences-editor-format-xml/element-spacing-section"
-                  ><uicontrol>Preserve space</uicontrol> tab of the <uicontrol>Element
-                  Spacing</uicontrol> list</xref> in the <xref keyref="options_editor_format_xml"
-                >XML formatting preferences</xref>, it is promoted to the preserve space
-              category.</p>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Default space elements list</dt>
-          <dd>
-            <p>If an element is listed in the <xref
-                href="preferences-editor-format-xml.dita#preferences-editor-format-xml/element-spacing-section"
-                  ><uicontrol>Default space</uicontrol> tab of the <uicontrol>Element
-                  Spacing</uicontrol> list</xref> in the <xref keyref="options_editor_format_xml"
-                >XML formatting preferences</xref>, it is promoted to the default space category</p>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Mixed content elements list</dt>
-          <dd>
-            <p>If an element is listed in the <xref
-                href="preferences-editor-format-xml.dita#preferences-editor-format-xml/element-spacing-section"
-                  ><uicontrol>Mixed content</uicontrol> tab of the <uicontrol>Element
-                  Spacing</uicontrol> list</xref> in the <xref keyref="options_editor_format_xml"
-                >XML formatting preferences</xref>, it is promoted to the mixed content category.
-            </p>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Element content</dt>
-          <dd>
-            <p>If an element contains mixed content, that is, a mix of text and other elements, it
-              is promoted to the mixed content category. (Note that, in accordance with these rules,
-              this happens even if the schema declares the element to have element only
-              content.)</p>
-            <p>If an element contains text content, it is promoted to the default space
-              category.</p>
-          </dd>
-        </dlentry>
-        <dlentry>
-          <dt>Text node content</dt>
-          <dd>If a text node contains any non-whitespace characters then the text node is promoted
-            to the normalize space category.</dd>
-        </dlentry>
-      </dl>
+      <p>
+        <dl>
+          <dlentry>
+            <dt><codeph>xml:space</codeph></dt>
+            <dd>If the XML element contains the <codeph>xml:space</codeph> attribute, the element is
+              promoted to the appropriate category based on the value of the attribute.</dd>
+          </dlentry>
+          <dlentry product="author editor authorEclipse editorEclipse">
+            <dt>CSS whitespace property</dt>
+            <dd>If the CSS stylesheet controlling the <uicontrol>Author</uicontrol> mode editor
+              applies the <codeph>whitespace: pre</codeph> setting to an element, it is promoted to
+              the preserve space category.</dd>
+          </dlentry>
+          <dlentry product="author editor authorEclipse editorEclipse">
+            <dt>CSS display property</dt>
+            <dd>If a text node contains only white-spaces: <ul id="ul_dvk_dxk_jp">
+                <li>If the node has a parent element with the CSS <codeph>display</codeph> property
+                  set to <codeph>inline</codeph> then the node is promoted to the mixed content
+                  category.</li>
+                <li>If the left or right sibling is an element with the CSS <codeph>display</codeph>
+                  property set to <codeph>inline</codeph> then the node is promoted to the mixed
+                  content category.</li>
+                <li>
+                  <p>If one of its ancestors is an element with the CSS <codeph>display</codeph>
+                    property set to <codeph>table</codeph> then the node is assigned to the ignore
+                    space category. </p>
+                </li>
+              </ul></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Schema aware formatting</dt>
+            <dd>
+              <p>If a schema is available for the XML document, <ph keyref="product"/> can use
+                information from the schema to promote the element to the appropriate category. For
+                example:</p>
+              <ul id="ul_r4g_vll_jp">
+                <li>
+                  <p>If the schema declares an element to be of type <codeph>xs:string</codeph>, the
+                    element will be promoted to the preserve space category because the string
+                    built-in type has the whitespace facet with the value preserve. </p>
+                </li>
+                <li>
+                  <p>If the schema declares an element to be mixed content, it will be promoted to
+                    the mixed content category.</p>
+                </li>
+              </ul>
+              <p>Schema aware formatting can be turned on and off. </p>
+              <ul id="ul_wth_1ml_jp">
+                <li product="author editor authorEclipse editorEclipse">
+                  <p>To turn it on or off for <uicontrol>Author</uicontrol> mode, <ph
+                      conkeyref="reusables-preferences-pages/open-the-preferences-page"/>, go to <menucascade>
+                      <uicontrol>Editor</uicontrol>
+                      <uicontrol>Edit modes</uicontrol>
+                      <uicontrol>Author</uicontrol>
+                      <uicontrol>Schema aware</uicontrol>
+                    </menucascade>, and enable/disable the <xref
+                      href="preferences-schema-aware.dita#preferences-schema-aware/schema-aware-normalization"
+                        ><uicontrol>Schema aware normalization, format and indent</uicontrol>
+                      option</xref>. </p>
+                </li>
+                <li>
+                  <p>To turn it on or off for the <uicontrol>Text</uicontrol> editing mode ,<ph
+                      conkeyref="reusables-preferences-pages/open-the-preferences-page"/>, go to <menucascade>
+                      <uicontrol>Editor</uicontrol>
+                      <uicontrol>Format</uicontrol>
+                      <uicontrol>XML</uicontrol>
+                    </menucascade>, and enable/disable the <xref
+                      href="preferences-editor-format-xml.dita#preferences-editor-format-xml/schema-aware-format-indent"
+                        ><uicontrol>Schema aware format and indent</uicontrol> option</xref>.</p>
+                </li>
+              </ul>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Preserve space elements list</dt>
+            <dd>
+              <p>If an element is listed in the <xref
+                  href="preferences-editor-format-xml.dita#preferences-editor-format-xml/element-spacing-section"
+                    ><uicontrol>Preserve space</uicontrol> tab of the <uicontrol>Element
+                    Spacing</uicontrol> list</xref> in the <xref keyref="options_editor_format_xml"
+                  >XML formatting preferences</xref>, it is promoted to the preserve space
+                category.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Default space elements list</dt>
+            <dd>
+              <p>If an element is listed in the <xref
+                  href="preferences-editor-format-xml.dita#preferences-editor-format-xml/element-spacing-section"
+                    ><uicontrol>Default space</uicontrol> tab of the <uicontrol>Element
+                    Spacing</uicontrol> list</xref> in the <xref keyref="options_editor_format_xml"
+                  >XML formatting preferences</xref>, it is promoted to the default space
+                category</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Mixed content elements list</dt>
+            <dd>
+              <p>If an element is listed in the <xref
+                  href="preferences-editor-format-xml.dita#preferences-editor-format-xml/element-spacing-section"
+                    ><uicontrol>Mixed content</uicontrol> tab of the <uicontrol>Element
+                    Spacing</uicontrol> list</xref> in the <xref keyref="options_editor_format_xml"
+                  >XML formatting preferences</xref>, it is promoted to the mixed content category.
+              </p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Element content</dt>
+            <dd>
+              <p>If an element contains mixed content, that is, a mix of text and other elements, it
+                is promoted to the mixed content category. (Note that, in accordance with these
+                rules, this happens even if the schema declares the element to have element only
+                content.)</p>
+              <p>If an element contains text content, it is promoted to the default space
+                category.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Text node content</dt>
+            <dd>If a text node contains any non-whitespace characters then the text node is promoted
+              to the normalize space category.</dd>
+          </dlentry>
+        </dl>
+      </p>
     </section>
     <section product="author editor authorEclipse editorEclipse" id="exception_to_the_rule">
       <title>Exception to the Rule</title>
