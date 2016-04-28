@@ -284,7 +284,12 @@
   
   <!-- The topic titles should not be longer than 75 characters. -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/title ')and not(parent::node()/contains(@class, ' bookmap/booktitle '))and not(parent::node()/contains(@class, ' topic/section ')) and not(parent::node()/contains(@class, ' topic/fig ')) and not(parent::node()/contains(@class, ' topic/table ')) and not(parent::node()/contains(@class, ' topic/example '))]" role="warn">
+    <sch:rule context="*[contains(@class, ' topic/title ') 
+      and not(contains(@class, ' bookmap/booktitle '))
+      and not(parent::node()/contains(@class, ' topic/section '))
+      and not(parent::node()/contains(@class, ' topic/fig '))
+      and not(parent::node()/contains(@class, ' topic/table '))
+      and not(parent::node()/contains(@class, ' topic/example '))]" role="warn">
       <sch:assert test="string-length(string(.)) lt 76">
         The title is too long (<sch:value-of select="string-length(string(.))"/> chars).
         It should be less than 75 characters.</sch:assert>
