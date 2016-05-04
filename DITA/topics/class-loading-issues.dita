@@ -24,22 +24,33 @@
         keyref="product"/>
       <codeph>LateDelegationClassLoader</codeph>.</p>
     <p>If you experience additional problems, such
-      as:<codeblock>java.lang.LinkageError: ClassCastException: attempting to cast jar:file:/C:/jdk1.6.0_06/jre/lib/rt.jar!/javax/xml/ws/spi/Provider.classtojar:file:/D:/Program
-    Files/Oxygen XML Editor
-    12/plugins/wspcaccess/../../xdocs/lib/jaxws/jaxws-api.jar!/javax/xml/ws/spi/Provider.class
-    at javax.xml.ws.spi.Provider.provider(Provider.java:94) at
-    javax.xml.ws.Service.&lt;init>(Service.java:56)
-......................................................................</codeblock>The
+      as:<codeblock>java.lang.LinkageError: ClassCastException: 
+attempting to cast 
+jar:file:/C:/jdk1.6.0_06/jre/lib/rt.jar!/
+javax/xml/ws/spi/Provider.class
+tojar:file:/D:/Program
+ Files/Oxygen XML Editor
+ 12/plugins/wspcaccess/../../xdocs/lib/jaxws/
+jaxws-api.jar!/javax/xml/ws/spi/Provider.class
+ at javax.xml.ws.spi.Provider.provider(
+Provider.java:94) at
+ javax.xml.ws.Service.&lt;init>(Service.java:56)
+.............................................
+</codeblock>The
       cause could be the fact that some classes are instantiated using the context class loader of
       the current thread. The most straightforward fix is to write your code in a <i>try/finally</i>
-      statement:<codeblock outputclass="language-java">  ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
-  try {
-    //This is the implementation of the WorkspaceAccessPluginExtension plugin interface.
-    Thread.currentThread().setContextClassLoader(
-        CustomWorkspaceAccessPluginExtension.this.getClass().getClassLoader());
-    //WRITE YOUR CODE HERE
-  } finally {
-    Thread.currentThread().setContextClassLoader(oldClassLoader);
-  }</codeblock></p>
+      statement:<codeblock outputclass="language-java">ClassLoader oldClassLoader = 
+    Thread.currentThread().getContextClassLoader();
+try {
+  //This is the implementation of the 
+  //WorkspaceAccessPluginExtension plugin interface.
+  Thread.currentThread().setContextClassLoader(
+    CustomWorkspaceAccessPluginExtension.
+      this.getClass().getClassLoader());
+  //WRITE YOUR CODE HERE
+} finally {
+  Thread.currentThread().
+   setContextClassLoader(oldClassLoader);
+}</codeblock></p>
   </body>
 </topic>

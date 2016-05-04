@@ -9,7 +9,9 @@
 <sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
   xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  
   queryBinding="xslt2">
+  <sch:ns uri="http://www.oxygenxml.com/customFunction" prefix="oxyF"/>
    <sch:include href="library.sch#avoidWordInElement"/>
    <sch:include href="library.sch#avoidEndFragment"/>
    <sch:include href="library.sch#avoidAttributeInElement"/>
@@ -185,6 +187,17 @@
       <sqf:delete/>
     </sqf:fix>
   </sqf:fixes>
+  
+  <sch:pattern>
+    <!-- Report cases when the lines in a codeblock exceeds 60 characters -->
+    <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
+      <sch:let name="offendingLines" value="oxyF:lineLengthCheck(text(), 60)"/>
+      <sch:report test="string-length($offendingLines) > 0">
+        Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 60 characters. </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  
   
   <sch:pattern>
     <!-- Report possible case in which a codeblock containg XML was not marked appropriately. -->
@@ -447,4 +460,17 @@
   </xsl:template>
   <!-- Template used to skip the @class attribute from being copied -->
   <xsl:template match="@class" mode="copyExceptClass"/>
+  
+  <!-- Template that breaks a text into its composing lines of text -->
+  <xsl:function name="oxyF:lineLengthCheck" as="xs:string">
+    <xsl:param name="textToBeChecked" as="xs:string"/>
+    <xsl:param name="maxLength" as="xs:integer"/>
+    <xsl:value-of>
+      <xsl:for-each select="tokenize($textToBeChecked, '\n')">
+        <xsl:if test="string-length(current()) > $maxLength">
+          <xsl:value-of select="concat(position(), ', ') "/>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:value-of>
+  </xsl:function>
 </sch:schema>
