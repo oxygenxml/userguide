@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task id="generate-certificate">
-  <title>Generate a Testing Certificate For Signing an Applet</title>
+  <title>Generate a Testing Certificate for Signing an Applet</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Oxygen XML Author Component<indexterm>Web deployment<indexterm>Signing an
+              Applet</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <taskbody>
     <context>
       <p>All jar files of an applet deployed on a remote Web server must be signed with the same
         certificate before the applet is deployed. The following steps describe how to generate a
         test certificate for signing the jar files. We will use the tool called
-          <keyword>keytool</keyword>, which is included in the Oracle's Java Development Kit.</p>
+          <keyword>keytool</keyword>, which is included in the Oracle Java Development Kit.</p>
     </context>
     <steps>
       <step>
         <cmd>Create a <term>keystore</term> with a RSA encryption key.</cmd>
         <info>
           <p>Invoke the following in a command line
-            terminal:<codeblock><cmdname>keytool -genkey -alias myAlias -keystore keystore.pkcs -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "cn=your name here, ou=organization unit name,  o=organization name, c=US"</cmdname></codeblock></p>
+            terminal:<codeblock>keytool -genkey -alias myAlias -keystore keystore.pkcs -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "cn=your name here, ou=organization unit name,  o=organization name, c=US"</codeblock></p>
           <p>This command creates a <term>keystore</term> file called
               <filepath>keystore.pkcs</filepath>. The certificate attributes are specified in the
               <codeph>dname</codeph> parameter: common name of the certificate, organization unit
@@ -26,16 +34,16 @@
         <cmd>Generate a self-signed certificate.</cmd>
         <info>
           <p>Invoke the following in a command line
-            terminal:<codeblock><b>keytool -selfcert -alias myAlias -keystore keystore.pkcs -storetype PKCS12</b></codeblock></p>
+            terminal:<codeblock>keytool -selfcert -alias myAlias -keystore keystore.pkcs -storetype PKCS12</codeblock></p>
         </info>
       </step>
       <step>
         <cmd>Optionally display the certificate details in a human readable form.</cmd>
         <info>
           <p>First, the certificate must be exported to a separate file with the following
-            command:<codeblock><b>keytool -export -alias myAlias -keystore keystore.pkcs -storetype PKCS12 -file certfile.cer</b></codeblock></p>
+            command:<codeblock>keytool -export -alias myAlias -keystore keystore.pkcs -storetype PKCS12 -file certfile.cer</codeblock></p>
           <p>The certificate details are displayed with the
-            command:<codeblock><b>keytool -printcert -file certfile.cer</b></codeblock></p>
+            command:<codeblock>keytool -printcert -file certfile.cer</codeblock></p>
         </info>
       </step>
       <step>
