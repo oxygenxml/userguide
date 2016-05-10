@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="api_faq_add_form_control_from_filter">
-  <title>Dynamically Adding Form Controls Using a StylesFilter</title>
-  <prolog>
-    <metadata>
-      <keywords>
-        <indexterm>Add Form Controls <indexterm>StylesFilter API for adding form
-            controls</indexterm></indexterm>
-      </keywords>
-    </metadata>
-  </prolog>
+  <title>Dynamically Add Form Controls Using a Styles Filter</title>
   <body>
-    <p>Usually, a form control is added from the CSS using one of the <xref
-        href="../concepts/form-controls.dita#form-controls">built-in form controls</xref>. However,
-      in some cases you do not have all the information you need to properly initialize the form
-      control at CSS level. In these cases you can add the form controls by using the API, more
-      specifically <xref
-        href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/StylesFilter.html"
-        format="html" scope="external"><apiname>
-        ro.sync.ecss.extensions.api.StylesFilter</apiname></xref>. </p>
-    <p>For instance, if you want a combo box form control and the values to populate the combo are
-      specified inside a file (or they come from a database). Here is how to add the form control
-      from the API:</p>
-    <codeblock outputclass="language-java">public class SDFStylesFilter implements StylesFilter {
+    <section id="question">
+      <title>Question</title>
+      <p>How do I add form controls using an API?</p>
+    </section>
+    <section id="answer">
+      <title>Answer</title>
+      <p>Usually, a form control is added from the CSS using one of the <xref
+          href="../concepts/form-controls.dita#form-controls">built-in form controls</xref>.
+        However, in some cases you do not have all the information you need to properly initialize
+        the form control at CSS level. In these cases you can add the form controls by using the
+        API, more specifically <xref
+          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/StylesFilter.html"
+          format="html" scope="external"><apiname>
+            ro.sync.ecss.extensions.api.StylesFilter</apiname></xref>. </p>
+      <p>For instance, if you want a combo box form control and the values to populate the combo are
+        specified inside a file (or they come from a database). Here is how to add the form control
+        from the API:</p>
+      <codeblock outputclass="language-java">public class SDFStylesFilter implements StylesFilter {
 
   public Styles filter(Styles styles, AuthorNode authorNode) {
     if(authorNode.getType() == AuthorNode.NODE_TYPE_PSEUDO_ELEMENT 
@@ -56,26 +54,27 @@
     return styles;
   }
 }</codeblock>
-    <p>If the execution of the
-        <codeph>formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, countries);</codeph>
-      line consumes too much execution time (for example, if it connects to a database or if it needs
-      to extract data from a very large file), you can choose to delay it until the values are
-      actually needed by the form control. This approach is called <term>lazy evaluation</term> and
-      can be implemented as
-      follows:<codeblock outputclass="language-java">formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, new LazyValue&lt;List&lt;CIValue>>() {
+      <p>If the execution of the
+          <codeph>formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES,
+          countries);</codeph> line consumes too much execution time (for example, if it connects to
+        a database or if it needs to extract data from a very large file), you can choose to delay
+        it until the values are actually needed by the form control. This approach is called
+          <term>lazy evaluation</term> and can be implemented as
+        follows:<codeblock outputclass="language-java">formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, new LazyValue&lt;List&lt;CIValue>>() {
   public java.util.List&lt;CIValue> get() {
     // We avoid reading the possible values until they are actually requested.
     // This will be a List with CIValues created over countries: France, Spain, Great Britain
     return readCountriesFromFile();
   }
 });</codeblock></p>
-    <p>The lazy evaluation approach can be used for the following form controls properties:<ul>
-        <li><codeph>InplaceEditorArgumentKeys.PROPERTY_VALUES</codeph></li>
-        <li><codeph>InplaceEditorArgumentKeys.PROPERTY_LABELS</codeph></li>
-        <li><codeph>InplaceEditorArgumentKeys.PROPERTY_TOOLTIPS</codeph></li>
-      </ul></p>
-    <p>The full source code for this example is available inside the <xref
-        href="http://www.oxygenxml.com/oxygen_sdk.html#XML_Editor_Authoring_SDK" format="html"
-        scope="external">oXygen SDK</xref>.</p>
+      <p>The lazy evaluation approach can be used for the following form controls properties:<ul>
+          <li><codeph>InplaceEditorArgumentKeys.PROPERTY_VALUES</codeph></li>
+          <li><codeph>InplaceEditorArgumentKeys.PROPERTY_LABELS</codeph></li>
+          <li><codeph>InplaceEditorArgumentKeys.PROPERTY_TOOLTIPS</codeph></li>
+        </ul></p>
+      <p>The full source code for this example is available inside the <xref
+          href="http://www.oxygenxml.com/oxygen_sdk.html#XML_Editor_Authoring_SDK" format="html"
+          scope="external">oXygen SDK</xref>.</p>
+    </section>
   </body>
 </topic>
