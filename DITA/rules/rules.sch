@@ -38,7 +38,8 @@
              value="List items should not end with a semi-column (;). If it is&#xA;            a sentence then end it with a full stop (.), otherwise leave&#xA;            it without an ending character."/>
    </sch:pattern>
   
-  <!-- Check the the indexterm exist. -->
+<!-- ***Commented out since index terms were updated in the entire UG
+  <!-\- Check the the indexterm exist. -\->
   <sch:pattern>
     <sch:rule context="/*">
       <sch:assert test="prolog/metadata/keywords/indexterm" role="warn" sqf:fix="addFragment">
@@ -50,7 +51,7 @@
           <sqf:title>Add the 'indexterm' element</sqf:title>
         </sqf:description>
         
-        <!-- Add the indexterm element element and its parents -->
+        <!-\- Add the indexterm element element and its parents -\->
         <sqf:add match="(title | titlealts | abstract | shortdesc)[last()]" position="after" use-when="not(prolog)">
           <xsl:text>
           </xsl:text><prolog><xsl:text>
@@ -64,6 +65,7 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
+-->
   
   <!-- The indexterm element should always be in a prolog because it creates output problems. -->
   <sch:pattern>
@@ -189,15 +191,15 @@
   </sqf:fixes>
   
   <sch:pattern>
-    <!-- Report cases when the lines in a codeblock exceeds 60 characters -->
+    <!-- Report cases when the lines in a codeblock exceeds 80 characters -->
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
-      <sch:let name="offendingLines" value="oxyF:lineLengthCheck(text(), 60)"/>
+      <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 80)"/>
       <sch:report test="string-length($offendingLines) > 0">
-        Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 60 characters. </sch:report>
+        Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 75 characters. </sch:report>
     </sch:rule>
   </sch:pattern>
   
-  
+    
   
   <sch:pattern>
     <!-- Report possible case in which a codeblock containg XML was not marked appropriately. -->
@@ -468,7 +470,7 @@
     <xsl:value-of>
       <xsl:for-each select="tokenize($textToBeChecked, '\n')">
         <xsl:if test="string-length(current()) > $maxLength">
-          <xsl:value-of select="concat(position(), ', ') "/>
+          <xsl:value-of select="concat(position(), ' - ', string-length(current()), ', ') "/>
         </xsl:if>
       </xsl:for-each>
     </xsl:value-of>
