@@ -18,27 +18,36 @@
         XML document is opened in the <uicontrol>Author</uicontrol> visual editing mode you can use
         our <i>Author API</i> to change attributes before the save takes
         place:<codeblock outputclass="language-java">      @Override
-      public void applicationStarted(final StandalonePluginWorkspace pluginWorkspaceAccess) {
-       pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener(){
+      public void applicationStarted
+(final StandalonePluginWorkspace pluginWorkspaceAccess) {
+       pluginWorkspaceAccess.addEditorChangeListener
+(new WSEditorChangeListener(){
          //An editor was opened
         @Override
         public void editorOpened(URL editorLocation) {
-          final WSEditor editorAccess = pluginWorkspaceAccess.getEditorAccess(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
+          final WSEditor editorAccess = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
           if(editorAccess != null){
-            editorAccess.addEditorListener(new ro.sync.exml.workspace.api.listeners.WSEditorListener(){
+            editorAccess.addEditorListener
+(new ro.sync.exml.workspace.api.listeners.WSEditorListener(){
               //Editor is about to be saved
               @Override
               public boolean editorAboutToBeSavedVeto(int operationType) {
-                if(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())){
-                  WSAuthorEditorPage authorPage = (WSAuthorEditorPage) editorAccess.getCurrentPage();
-                  AuthorDocumentController controller = authorPage.getDocumentController();
+                if(EditorPageConstants.PAGE_AUTHOR.equals
+(editorAccess.getCurrentPageID())){
+                  WSAuthorEditorPage authorPage = 
+(WSAuthorEditorPage) editorAccess.getCurrentPage();
+                  AuthorDocumentController controller = 
+authorPage.getDocumentController();
                   try {
                     //Find the revised element
-                    AuthorNode[] nodes = controller.findNodesByXPath("//revised", true, true, true);
+                    AuthorNode[] nodes = controller.findNodesByXPath
+("//revised", true, true, true);
                     if(nodes != null &amp;&amp; nodes.length > 0){
                       AuthorElement revised = (AuthorElement) nodes[0];
                       //Set the modified attribute to it...
-                      controller.setAttribute("modified", new AttrValue(new Date().toString()), revised);
+                      controller.setAttribute("modified", 
+new AttrValue(new Date().toString()), revised);
                     }
                   } catch (AuthorOperationException e) {
                     e.printStackTrace();

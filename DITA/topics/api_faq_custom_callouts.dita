@@ -25,50 +25,58 @@
           <image href="../img/apiErrorCallouts.png" id="image_b5x_xhk_wh"/>
         </fig></p>
       <p>Here is a working
-        example:<codeblock outputclass="language-java">    /**
-    * Plugin extension - workspace access extension.
-    */
-    public class CustomWorkspaceAccessPluginExtension 
-                          implements WorkspaceAccessPluginExtension {
+        example:<codeblock outputclass="language-java">/**
+* Plugin extension - workspace access extension.
+*/
+public class CustomWorkspaceAccessPluginExtension 
+                     implements WorkspaceAccessPluginExtension {
      
-      /**
-       * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension
-               #applicationStarted(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
-       */
-      public void applicationStarted(final StandalonePluginWorkspace pluginWorkspaceAccess) {
-        pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
+/**
+* @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension
+   #applicationStarted(
+ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
+*/
+    public void applicationStarted
+(final StandalonePluginWorkspace pluginWorkspaceAccess) {
+        pluginWorkspaceAccess.addEditorChangeListener
+(new WSEditorChangeListener() {
           /**
-           * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorOpened(java.net.URL)
+           * @see WSEditorChangeListener#editorOpened(java.net.URL)
            */
           @Override
           public void editorOpened(URL editorLocation) {
-            final WSEditor currentEditor = pluginWorkspaceAccess.getEditorAccess(editorLocation, StandalonePluginWorkspace.MAIN_EDITING_AREA);
+            final WSEditor currentEditor = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, StandalonePluginWorkspace.MAIN_EDITING_AREA);
             WSEditorPage currentPage = currentEditor.getCurrentPage();
             if(currentPage instanceof WSAuthorEditorPage) {
-              final WSAuthorEditorPage currentAuthorPage = (WSAuthorEditorPage)currentPage;
-              currentAuthorPage.getPersistentHighlighter().setHighlightRenderer(new PersistentHighlightRenderer() {
+              final WSAuthorEditorPage currentAuthorPage = 
+(WSAuthorEditorPage)currentPage;
+              currentAuthorPage.getPersistentHighlighter().setHighlightRenderer
+(new PersistentHighlightRenderer() {
                 @Override
                 public String getTooltip(AuthorPersistentHighlight highlight) {
                   return highlight.getClonedProperties().get("message");
                 }
                 @Override
-                public HighlightPainter getHighlightPainter(AuthorPersistentHighlight highlight) {
+                public HighlightPainter getHighlightPainter
+(AuthorPersistentHighlight highlight) {
                   //Depending on severity could have different color.
-                  ColorHighlightPainter painter = new ColorHighlightPainter(Color.COLOR_RED, -1, -1);
+                  ColorHighlightPainter painter = new ColorHighlightPainter
+(Color.COLOR_RED, -1, -1);
                   painter.setBgColor(Color.COLOR_RED);
                   return painter;
                 }
               });
-              currentAuthorPage.getReviewController()
-                .getAuthorCalloutsController().setCalloutsRenderingInformationProvider(
-                    new CalloutsRenderingInformationProvider() {
-                @Override
-                public boolean shouldRenderAsCallout(AuthorPersistentHighlight highlight) {
+         currentAuthorPage.getReviewController()
+         .getAuthorCalloutsController().setCalloutsRenderingInformationProvider(
+               new CalloutsRenderingInformationProvider() {
+               @Override
+     public boolean shouldRenderAsCallout(AuthorPersistentHighlight highlight) {
                   //All custom highlights are ours
                   return true;
                 }
                 @Override
-                public AuthorCalloutRenderingInformation getCalloutRenderingInformation(
+     public AuthorCalloutRenderingInformation getCalloutRenderingInformation(
                     final AuthorPersistentHighlight highlight) {
                   return new AuthorCalloutRenderingInformation() {
                     @Override
@@ -103,126 +111,129 @@
                   };
                 }
               });
-              currentEditor.addValidationProblemsFilter(new ValidationProblemsFilter() {
-                List&lt;int[]> lastStartEndOffsets = new ArrayList&lt;int[]>();
-                /**
-                 * @see ro.sync.exml.workspace.api.editor.validation.ValidationProblemsFilter
-                    #filterValidationProblems(ro.sync.exml.workspace.api.editor.validation.ValidationProblems)
-                 */
-                @Override
-                public void filterValidationProblems(ValidationProblems validationProblems) {
-                  List&lt;int[]> startEndOffsets = new ArrayList&lt;int[]>();
-                  List&lt;DocumentPositionedInfo> problemsList = validationProblems.getProblemsList();
-                  if(problemsList != null) {
-                    for (int i = 0; i &lt; problemsList.size(); i++) {
-                      try {
-                        startEndOffsets.add(currentAuthorPage.getStartEndOffsets(problemsList.get(i)));
-                      } catch (BadLocationException e) {
-                        e.printStackTrace();
-                      }
-                    }
-                  }
-                    if(lastStartEndOffsets.size() != startEndOffsets.size()) {
-                      //Continue
-                    } else {
-                      boolean equal = true;
-                      for (int i = 0; i &lt; startEndOffsets.size(); i++) {
-                        int[] o1 = startEndOffsets.get(i);
-                        int[] o2 = lastStartEndOffsets.get(i);
-                        if(o1 == null &amp;&amp; o2 == null) {
-                          //Continue
-                        } else  if(o1 != null &amp;&amp; o2 != null
-                            &amp;&amp; o1[0] == o2[0] &amp;&amp; o1[1] == o2[1]){
-                          //Continue
-                        } else {
-                          equal = false;
-                          break;
-                        }
-                      }
-                      if(equal) {
-                        //Same list of problems already displayed.
-                        return;
-                      }
-                    }
-                    //Keep last used offsets.
-                    lastStartEndOffsets = startEndOffsets;
-                  try {
-                    if(! SwingUtilities.isEventDispatchThread()) {
-                      SwingUtilities.invokeAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                          //First remove all custom highlights.
-                          currentAuthorPage.getPersistentHighlighter().removeAllHighlights();
-                        }
-                      });
-                    }
-                  } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                  } catch (InvocationTargetException e1) {
-                    e1.printStackTrace();
-                  }
-                  if(problemsList != null) {
-                    for (int i = 0; i &lt; problemsList.size(); i++) {
-                      //A reported problem (could be warning, could be error).
-                      DocumentPositionedInfo dpi = problemsList.get(i);
-                      try {
-                        final int[] currentOffsets = startEndOffsets.get(i);
-                        if(currentOffsets != null) {
-                          //These are offsets in the Author content.
-                          final LinkedHashMap&lt;String, String> highlightProps = new LinkedHashMap&lt;String, String>();
-                          highlightProps.put("message", dpi.getMessage());
-                          highlightProps.put("severity", dpi.getSeverityAsString());
-                          if(! SwingUtilities.isEventDispatchThread()) {
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                              @Override
-                              public void run() {
-                                currentAuthorPage.getPersistentHighlighter().addHighlight(
-                                    currentOffsets[0], currentOffsets[1] - 1, highlightProps);
-                              }
-                            });
-                          }
-                        }
-                      } catch (InterruptedException e) {
-                        e.printStackTrace();
-                      } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                      }
-                    }
-                  }
-                }
-              });
-              currentEditor.addEditorListener(new WSEditorListener() {
-                /**
-                 * @see ro.sync.exml.workspace.api.listeners.WSEditorListener#editorAboutToBeSavedVeto(int)
-                 */
-                @Override
-                public boolean editorAboutToBeSavedVeto(int operationType) {
-                  try {
-                    if(! SwingUtilities.isEventDispatchThread()) {
-                      SwingUtilities.invokeAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                          //Remove all persistent highlights before saving
-                          currentAuthorPage.getPersistentHighlighter().removeAllHighlights();
-                        }
-                      });
-                    }
-                  } catch (InterruptedException e) {
-                    e.printStackTrace();
-                  } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                  }
-                  return true;
-                }
-              });
+ currentEditor.addValidationProblemsFilter(new ValidationProblemsFilter() {
+    List&lt;int[]> lastStartEndOffsets = new ArrayList&lt;int[]>();
+    /**
+    * @see ro.sync.exml.workspace.api.editor.validation.ValidationProblemsFilter
+    #filterValidationProblems
+(ro.sync.exml.workspace.api.editor.validation.ValidationProblems)
+      */
+   @Override
+   public void filterValidationProblems(ValidationProblems validationProblems) {
+     List&lt;int[]> startEndOffsets = new ArrayList&lt;int[]>();
+     List&lt;DocumentPositionedInfo> problemsList = 
+validationProblems.getProblemsList();
+     if(problemsList != null) {
+       for (int i = 0; i &lt; problemsList.size(); i++) {
+         try {
+ startEndOffsets.add(currentAuthorPage.getStartEndOffsets(problemsList.get(i)));
+         } catch (BadLocationException e) {
+           e.printStackTrace();
+         }
+       }
+     }
+       if(lastStartEndOffsets.size() != startEndOffsets.size()) {
+         //Continue
+       } else {
+         boolean equal = true;
+         for (int i = 0; i &lt; startEndOffsets.size(); i++) {
+           int[] o1 = startEndOffsets.get(i);
+           int[] o2 = lastStartEndOffsets.get(i);
+           if(o1 == null &amp;&amp; o2 == null) {
+             //Continue
+           } else  if(o1 != null &amp;&amp; o2 != null
+               &amp;&amp; o1[0] == o2[0] &amp;&amp; o1[1] == o2[1]){
+             //Continue
+           } else {
+             equal = false;
+             break;
+           }
+         }
+         if(equal) {
+           //Same list of problems already displayed.
+           return;
+         }
+       }
+       //Keep last used offsets.
+       lastStartEndOffsets = startEndOffsets;
+     try {
+       if(! SwingUtilities.isEventDispatchThread()) {
+         SwingUtilities.invokeAndWait(new Runnable() {
+           @Override
+         public void run() {
+             //First remove all custom highlights.
+     currentAuthorPage.getPersistentHighlighter().removeAllHighlights();
+           }
+         });
+     }
+     } catch (InterruptedException e1) {
+     e1.printStackTrace();
+     } catch (InvocationTargetException e1) {
+       e1.printStackTrace();
+     }
+     if(problemsList != null) {
+       for (int i = 0; i &lt; problemsList.size(); i++) {
+         //A reported problem (could be warning, could be error).
+         DocumentPositionedInfo dpi = problemsList.get(i);
+         try {
+           final int[] currentOffsets = startEndOffsets.get(i);
+           if(currentOffsets != null) {
+             //These are offsets in the Author content.
+             final LinkedHashMap&lt;String, String> highlightProps = 
+new LinkedHashMap&lt;String, String>();
+             highlightProps.put("message", dpi.getMessage());
+             highlightProps.put("severity", dpi.getSeverityAsString());
+             if(! SwingUtilities.isEventDispatchThread()) {
+               SwingUtilities.invokeAndWait(new Runnable() {
+                 @Override
+                 public void run() {
+                  currentAuthorPage.getPersistentHighlighter().addHighlight(
+                   currentOffsets[0], currentOffsets[1] - 1, highlightProps);
             }
+               });
+             }
           }
-        }, StandalonePluginWorkspace.MAIN_EDITING_AREA);
+         } catch (InterruptedException e) {
+           e.printStackTrace();
+         } catch (InvocationTargetException e) {
+           e.printStackTrace();
+         }
+      }
+     }
+   }
+});
+ currentEditor.addEditorListener(new WSEditorListener() {
+  /**
+  * @see WSEditorListener#editorAboutToBeSavedVeto(int)
+  */
+  @Override
+  public boolean editorAboutToBeSavedVeto(int operationType) {
+      try {
+       if(! SwingUtilities.isEventDispatchThread()) {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          @Override
+          public void run() {
+            //Remove all persistent highlights before saving
+             currentAuthorPage.getPersistentHighlighter().removeAllHighlights();
+           }
+        });
+       }
+     } catch (InterruptedException e) {
+     e.printStackTrace();
+    } catch (InvocationTargetException e) {
+       e.printStackTrace();
+    }
+    return true;
+    }
+   });
+  }
+ }
+}, StandalonePluginWorkspace.MAIN_EDITING_AREA);
       }
      
 
-      /**
-       * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationClosing()
+/**
+* @see WorkspaceAccessPluginExtension#applicationClosing()
        */
       public boolean applicationClosing() {
         return true;

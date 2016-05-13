@@ -51,30 +51,30 @@ public class TableColumnWidthProvider
           such cases you must collect the span information by analyzing the <codeph>table</codeph>
           element.</cmd>
         <info>
-          <codeblock outputclass="language-java">	public void init(AuthorElement tableElement) {
-		this.tableElement = tableElement;
-		AuthorElement[] colChildren = tableElement.getElementsByLocalName("customcol");
-		if (colChildren != null &amp;&amp; colChildren.length &gt; 0) {
-			for (int i = 0; i &lt; colChildren.length; i++) {
-				AuthorElement colChild = colChildren[i];
-				if (i == 0) {
-					colsStartOffset = colChild.getStartOffset();
-				} 
-				if (i == colChildren.length - 1) {
-					colsEndOffset = colChild.getEndOffset();
-				}
-				// Determine the 'width' for this col.
-				AttrValue colWidthAttribute = colChild.getAttribute("width");
-				String colWidth = null;
-				if (colWidthAttribute != null) {
-					colWidth = colWidthAttribute.getValue();
-					// Add WidthRepresentation objects for the columns this 'customcol' specification
-					// spans over.
-					colWidthSpecs.add(new WidthRepresentation(colWidth, true));
-				}
-			}
-		}
-	}</codeblock>
+          <codeblock outputclass="language-java">public void init(AuthorElement tableElement) {
+	this.tableElement = tableElement;
+ AuthorElement[] colChildren = tableElement.getElementsByLocalName("customcol");
+    if (colChildren != null &amp;&amp; colChildren.length &gt; 0) {
+	for (int i = 0; i &lt; colChildren.length; i++) {
+	  AuthorElement colChild = colChildren[i];
+	    if (i == 0) {
+		colsStartOffset = colChild.getStartOffset();
+	} 
+	    if (i == colChildren.length - 1) {
+		colsEndOffset = colChild.getEndOffset();
+	}
+	    // Determine the 'width' for this col.
+	    AttrValue colWidthAttribute = colChild.getAttribute("width");
+	    String colWidth = null;
+	    if (colWidthAttribute != null) {
+	      colWidth = colWidthAttribute.getValue();
+           // Add WidthRepresentation objects for the columns this 'customcol'
+	    //  specification spans over.
+		colWidthSpecs.add(new WidthRepresentation(colWidth, true));
+	}
+     }
+   }
+}</codeblock>
         </info>
       </step>
       <step>
@@ -121,7 +121,8 @@ public class TableColumnWidthProvider
 		}
 		return toReturn;
 	}</codeblock>
-          <codeblock outputclass="language-java">	public List&lt;WidthRepresentation&gt; getCellWidth(AuthorElement cellElement, int colNumberStart,
+          <codeblock outputclass="language-java">        public List&lt;WidthRepresentation&gt; 
+getCellWidth(AuthorElement cellElement, int colNumberStart,
 			int colSpan) {
 		List&lt;WidthRepresentation&gt; toReturn = null;
 		int size = colWidthSpecs.size();
@@ -141,40 +142,44 @@ public class TableColumnWidthProvider
             <apiname>commitColumnWidthModifications</apiname> are used to commit changes made to the
           width of the table or its columns when using the mouse drag gestures.</cmd>
         <info>
-          <codeblock outputclass="language-java">	public void commitTableWidthModification(AuthorDocumentController authorDocumentController,
-			int newTableWidth, String tableCellsTagName) throws AuthorOperationException {
-		if ("td".equals(tableCellsTagName)) {
-			if (newTableWidth &gt; 0) {
-				if (tableElement != null) {
-					String newWidth = String.valueOf(newTableWidth);
+          <codeblock outputclass="language-java">	public void commitTableWidthModification
+(AuthorDocumentController authorDocumentController,
+	int newTableWidth, String tableCellsTagName) throws AuthorOperationException {
+	if ("td".equals(tableCellsTagName)) {
+		if (newTableWidth &gt; 0) {
+			if (tableElement != null) {
+				String newWidth = String.valueOf(newTableWidth);
 
-					authorDocumentController.setAttribute(
-							"width",
-							new AttrValue(newWidth),
-							tableElement);
-				} else {
-					throw new AuthorOperationException("Cannot find the element representing the table.");
+				authorDocumentController.setAttribute(
+						"width",
+						new AttrValue(newWidth),
+						tableElement);
+			} else {
+	throw new AuthorOperationException("Cannot find the table element.");
 				}
 			}
 		}
 	}</codeblock>
-          <codeblock outputclass="language-java">public void commitColumnWidthModifications(AuthorDocumentController authorDocumentController,
-			WidthRepresentation[] colWidths, String tableCellsTagName) throws AuthorOperationException {
-		if ("td".equals(tableCellsTagName)) {
-			if (colWidths != null &amp;&amp; tableElement != null) {
-				if (colsStartOffset &gt;= 0 &amp;&amp; colsEndOffset &gt;= 0 &amp;&amp; colsStartOffset &lt; colsEndOffset) {
-					authorDocumentController.delete(colsStartOffset,
-							colsEndOffset);
-				}
-				String xmlFragment = createXMLFragment(colWidths);
-				int offset = -1;
-				AuthorElement[] header = tableElement.getElementsByLocalName("header");
-				if (header != null &amp;&amp; header.length &gt; 0) {
-					// Insert the cols elements before the 'header' element 
-					offset = header[0].getStartOffset();
-				}
-				if (offset == -1) {
-					throw new AuthorOperationException("No valid offset to insert the columns width specification.");
+          <codeblock outputclass="language-java">public void commitColumnWidthModifications
+ (AuthorDocumentController authorDocumentController,
+			WidthRepresentation[] colWidths, String tableCellsTagName)
+ throws AuthorOperationException {
+   if ("td".equals(tableCellsTagName)) {
+     if (colWidths != null &amp;&amp; tableElement != null) {
+	if (colsStartOffset &gt;= 0 &amp;&amp; colsEndOffset &gt;= 0 
+&amp;&amp; colsStartOffset &lt; colsEndOffset) {
+		authorDocumentController.delete(colsStartOffset,
+				colsEndOffset);
+		}
+		String xmlFragment = createXMLFragment(colWidths);
+			int offset = -1;
+		AuthorElement[] header = tableElement.getElementsByLocalName("header");
+			if (header != null &amp;&amp; header.length &gt; 0) {
+				// Insert the cols elements before the 'header' element 
+				offset = header[0].getStartOffset();
+			}
+			if (offset == -1) {
+  throw new AuthorOperationException("No valid offset to insert column width");
 				}
 				authorDocumentController.insertXMLFragment(xmlFragment, offset);
 			}

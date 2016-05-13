@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="import-dynamic-conversions">
-  <title>Import Content Dynamically</title>
+  <title><?oxy_comment_start author="steven_higgs" timestamp="20160512T162441+0300" comment="Check to see how the &quot;screen&quot; elements are rendered."?>Import
+    Content Dynamically<?oxy_comment_end?></title>
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>import</indexterm>
+        <indexterm>Import data dynamically</indexterm>
       </keywords>
     </metadata>
   </prolog>
@@ -14,19 +15,21 @@
         keyref="product"/> also provides special support for a <i>convert</i> protocol that can be
       used to chain predefined processors to dynamically import content from various sources.</p>
     <p>A <term>dynamic conversion URL</term> chains various processors that can be applied, in
-      sequence, on a target resource and has the following general
-      syntax:<codeblock>convert:/processor=xslt;ss=urn:processors:excel2d.xsl/processor=excel!/urn:files:sample.xls</codeblock></p>
+      sequence, on a target resource and has the following general syntax:</p>
+    <p>
+      <screen>convert:/processor=xslt;ss=urn:processors:excel2d.xsl/processor=excel!/urn:files:sample.xls</screen>
+    </p>
     <p>The previous example first applies a processor (<codeph>excel</codeph>) on a target
       identified by the identifier (<filepath>urn:files:sample.xls</filepath>) and converts the <tm
         tmtype="tm">Excel</tm> resource to XML. The second applied processor (<codeph>xslt</codeph>)
       applies an XSLT stylesheet identified using the identifier
-        (<filepath>urn:processors:excel2d.xsl</filepath>) over the resulting content  from the first
+        (<filepath>urn:processors:excel2d.xsl</filepath>) over the resulting content from the first
       applied processor. These identifiers are all mapped to real resources on disk via an <term>XML
         catalog</term> that is configured in the application, as in the following
-      example:<codeblock outputclass="language-xml">&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-	&lt;rewriteURI uriStartString="urn:files:" rewritePrefix="./resources/"/>
-	&lt;rewriteURI uriStartString="urn:processors:" rewritePrefix="./processors/"/>
-&lt;/catalog></codeblock></p>
+      example:<screen outputclass="language-xml">&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  &lt;rewriteURI uriStartString="urn:files:" rewritePrefix="./resources/"/>
+  &lt;rewriteURI uriStartString="urn:processors:" rewritePrefix="./processors/"/>
+&lt;/catalog></screen></p>
     <p>The target resource part of the conversion URL must always follow the <codeph>!/</codeph>
       pattern. It can be any of the following:<ul id="ul_hbw_t3j_25">
         <li>An absolute URL that points to a resource.</li>
@@ -37,7 +40,7 @@
           <p>A relative location. This location can only be resolved to an actual resource URL when
             the application has enough information about the location where the URL is referenced. </p>
           <p><i>For example</i>, for a DITA map with a <codeph>topicref</codeph> such
-            as:<codeblock outputclass="language-xml">&lt;topicref href="convert:/.../processor=excel!/resources/sample.xls"/></codeblock>the
+            as:<screen outputclass="language-xml">&lt;topicref href="convert:/.../processor=excel!/resources/sample.xls"/></screen>the
               <filepath>resources/sample.xls</filepath> path will be resolved relative to the DITA
             map location.</p>
         </li>
@@ -59,37 +62,37 @@
           <li><b><codeph>xslt</codeph> Processor</b> - Converts an XML input using XSLT 2.0
             processing. The <codeph>ss</codeph> parameter indicates the stylesheet resource to be
             loaded. All other specified parameters will be set as parameters to the XSLT
-            transformation.<codeblock>convert:/<b>processor=xslt;ss=urn:processors:convert.xsl;p1=v1</b>!/urn:files:sample.xml</codeblock></li>
+            transformation.<screen>convert:/processor=xslt;ss=urn:processors:convert.xsl;p1=v1!/urn:files:sample.xml</screen></li>
           <li><b><codeph>xquery</codeph> Processor</b> - Converts an XML input using XQuery
             processing. The <codeph>ss</codeph> parameter indicates the XQuery script to be loaded.
             All other specified parameters will be set as parameters to the XSLT
-            transformation.<codeblock>convert:/<b>processor=xquery;ss=urn:processors:convert.xquery;p1=v1</b>!/urn:files:sample.xml</codeblock></li>
+            transformation.<screen>convert:/processor=xquery;ss=urn:processors:convert.xquery;p1=v1!/urn:files:sample.xml</screen></li>
           <li><b><codeph>excel</codeph> Processor</b> - Converts an <tm tmtype="tm">Excel</tm> input
             to an XML format that can later be converted by other piped processors. It has a single
             parameter <codeph>sn</codeph>, which indicates the name of the sheet that needs to be
             converted. If this parameter is missing, the XML will contain the combined content of
             all sheets included in the <tm tmtype="tm">Excel</tm> document.
-            <codeblock>convert:/<b>processor=excel;sn=test</b>!/urn:files:sample.xls</codeblock></li>
+            <screen>convert:/processor=excel;sn=test!/urn:files:sample.xls</screen></li>
           <li><b><codeph>java</codeph> Processor</b> - Converts an input to another format by
             applying a specific Java method. The <codeph>jars</codeph> parameter is a
             comma-separated list of JAR libraries, or folders that libraries will be loaded from.
             The <codeph>ccn</codeph> parameter is the fully qualified name of the conversion class
             that will be instantiated. The conversion class needs to have a method with the
             following
-            signature:<codeblock>  public void convert(String systemID, String originalSourceSystemID, InputStream is, 
-OutputStream os, LinkedHashMap&lt;String, String> properties) throws IOException </codeblock><codeblock>convert:/<b>processor=java;jars=libs;ccn=test.JavaToXML</b>!/
-urn:files:java/WSEditorBase.java</codeblock></li>
+            signature:<screen>  public void convert(String systemID, String originalSourceSystemID,
+ InputStream is, OutputStream os, LinkedHashMap&lt;String, String> properties)
+ throws IOException </screen><screen>convert:/processor=java;jars=libs;ccn=test.JavaToXML!/
+urn:files:java/WSEditorBase.java</screen></li>
           <li><b><codeph>js</codeph> Processor</b> - Converts an input to another format by applying
             a JavaScript method. The <codeph>js</codeph> parameter indicates the script that will be
             used. The <codeph>fn</codeph> parameter is the name of the method that will be called
             from the script. The method must take a string as an argument and return a string. If
             any of the parameters are missing, an error is thrown and the conversion
-            stops.<codeblock>convert:/<b>processor=js;js=urn:processors:md.js;fn=convertExternal</b>!/urn:files:sample.md</codeblock></li>
+            stops.<screen>convert:/processor=js;js=urn:processors:md.js;fn=convertExternal!/urn:files:sample.md</screen></li>
           <li><b><codeph>json</codeph> Processor</b> - Converts a JSON input to XML. It has no
-            parameters.<codeblock>convert:/<b>processor=json</b>!/urn:files:personal.json</codeblock></li>
+            parameters.<screen>convert:/processor=json!/urn:files:personal.json</screen></li>
           <li><b><codeph>xhtml</codeph> Processor</b> - Converts HTML content to well-formed XHTML.
-            It has no
-            parameters.<codeblock>convert:/<b>processor=xhtml</b>!/urn:files:test.html</codeblock></li>
+            It has no parameters.<screen>convert:/processor=xhtml!/urn:files:test.html</screen></li>
           <li><b><codeph>wrap</codeph> Processor</b> - Wraps content in a tag name making it
             well-formed XML. The <codeph>rn</codeph> parameter indicates the name of the root tag to
             use. By default, it is <codeph>wrapper</codeph>. The <codeph>encoding</codeph> parameter
@@ -98,7 +101,7 @@ urn:files:java/WSEditorBase.java</codeblock></li>
             process a comma-separated values file with an XSLT stylesheet to produce XML content.
             The CSV file is first wrapped as well-formed XML, which is then processed with an
               <codeph>xslt</codeph>
-            processor.<codeblock>convert:/<b>processor=wrap</b>!/urn:files:test.csv</codeblock></li>
+            processor.<screen>convert:/processor=wrap!/urn:files:test.csv</screen></li>
           <li><b><codeph>cache</codeph> Processor</b> - Caches the converted content obtained from
             the original document to a temporary file. The cache will be used on subsequent uses of
             the same URL, thus increasing the speed for the application returning the converted
@@ -108,7 +111,7 @@ urn:files:java/WSEditorBase.java</codeblock></li>
               <uicontrol>File</uicontrol>
               <uicontrol><image href="../img/Refresh16.png"/>Reload (F5)</uicontrol>
             </menucascade>) the URL content that is opened in the editor.
-            <codeblock>convert:/<b>processor=cache</b>/processor=xslt;…..!/urn:files:test.csv</codeblock></li>
+            <screen>convert:/processor=cache/processor=xslt;…..!/urn:files:test.csv</screen></li>
         </ul></p>
     </section>
     <section id="reverse_conversion_processors">
@@ -121,7 +124,7 @@ urn:files:java/WSEditorBase.java</codeblock></li>
           <filepath>h2d.xsl</filepath> stylesheet and converts DITA to HTML when the content is
         saved in the application using the <filepath>d2h.xsl</filepath> stylesheet.</p>
       <p>
-        <codeblock>convert:/processor=xslt;ss=h2d.xsl/rprocessor=xslt;ss=d2h.xsl!/urn:files:sample.html</codeblock>
+        <screen>convert:/processor=xslt;ss=h2d.xsl/rprocessor=xslt;ss=d2h.xsl!/urn:files:sample.html</screen>
       </p>
       <note type="important">If you are publishing a DITA map that has such conversion URL
         references inside, you need to edit the transformation scenario and set the value of the

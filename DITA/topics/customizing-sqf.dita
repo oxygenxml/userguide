@@ -73,18 +73,19 @@
             <dd>
               <p><b>An Example of the <codeph>&lt;sqf:add></codeph>
                 Element:</b><codeblock outputclass="language-xml">&lt;schema xmlns="http://purl.oclc.org/dsdl/schematron"
-    xmlns:sqf="http://www.schematron-quickfix.com/validator/process" queryBinding="xslt2">
-    &lt;pattern>
-        &lt;rule context="head">
-            &lt;assert test="title" sqf:fix="addTitle">title element is missing.&lt;/assert>
-            &lt;sqf:fix id="addTitle">
-                &lt;sqf:description>
-                    &lt;sqf:title>Insert title element.&lt;/sqf:title>
-                &lt;/sqf:description>
-                &lt;sqf:add target="title" node-type="element">Title text&lt;/sqf:add>
-            &lt;/sqf:fix>
-        &lt;/rule>
-    &lt;/pattern>
+   xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+ queryBinding="xslt2">
+   &lt;pattern>
+     &lt;rule context="head">
+        &lt;assert test="title" sqf:fix="addTitle">title element missing.&lt;/assert>
+        &lt;sqf:fix id="addTitle">
+            &lt;sqf:description>
+                &lt;sqf:title>Insert title element.&lt;/sqf:title>
+            &lt;/sqf:description>
+           &lt;sqf:add target="title" node-type="element">Title text&lt;/sqf:add>
+        &lt;/sqf:fix>
+     &lt;/rule>
+   &lt;/pattern>
 &lt;/schema></codeblock></p>
             </dd>
             <dd><b>Specific Add Operations:</b><ul id="ul_a53_5nf_3r">
@@ -147,7 +148,8 @@
               nodes to be replaced, defines the replacing nodes, and defines their content.<p><b>An
                   Example of the <codeph>&lt;sqf:replace></codeph>
                 Element:</b><codeblock outputclass="language-xml">&lt;schema xmlns="http://purl.oclc.org/dsdl/schematron"
-    xmlns:sqf="http://www.schematron-quickfix.com/validator/process" queryBinding="xslt2">
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+ queryBinding="xslt2">
     &lt;pattern>
         &lt;rule context="title">
             &lt;report test="exists(ph)" sqf:fix="resolvePh" role="warn">
@@ -199,19 +201,21 @@
                       be matched by the regular expression. </note></li>
                 </ul></p><note type="attention">The context of the content within the
                   <codeph>&lt;sqf:stringReplace></codeph> element is set to the whole text node,
-                rather than the current sub-string.</note><p><b>An Example of the
-                    <codeph>&lt;sqf:stringReplace></codeph>
+                rather than the current sub-string.</note><p><b>An Example of the <codeph>&lt;sqf:stringReplace></codeph>
                 Element:</b><codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-    xmlns:sqf="http://www.schematron-quickfix.com/validator/process" queryBinding="xslt2">
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+ queryBinding="xslt2">
     &lt;sch:pattern>
         &lt;sch:rule context="text()">
-            &lt;sch:report test="matches(., '[oO][xX]ygen')" sqf:fix="changeWord">The oXygen word is not allowed&lt;/sch:report>
+            &lt;sch:report test="matches(., '[oO][xX]ygen')"
+ sqf:fix="changeWord">The oXygen word is not allowed&lt;/sch:report>
             &lt;sqf:fix id="changeWord">
                 &lt;sqf:description>
                     &lt;sqf:title>Replace word with product&lt;/sqf:title>
                 &lt;/sqf:description>
-                &lt;sqf:stringReplace regex="[oO][xX]ygen">&lt;ph keyref="product"/>&lt;/sqf:stringReplace>
+                &lt;sqf:stringReplace regex="[oO][xX]ygen">&lt;ph keyref="product"/>
+                &lt;/sqf:stringReplace>
             &lt;/sqf:fix>
         &lt;/sch:rule>
     &lt;/sch:pattern>
@@ -257,15 +261,16 @@
         of the <codeph>use-when</codeph> attribute is an XPath expression and the fix or operation
         will be performed only if the condition is satisfied. In the following example, the
           <codeph>use-when</codeph> condition is applied to the <codeph>&lt;sqf:fix></codeph>
-        element:<codeblock outputclass="language-xml">&lt;sqf:fix id="last" use-when="$colWidthSummarized - 100 lt  $lastWidth" role="replace">
-     &lt;sqf:description>
-         &lt;sqf:title>Subtract the excessive width from the last element.&lt;/sqf:title>
-     &lt;/sqf:description>
-     &lt;let name="delta" value="$colWidthSummarized - 100"/>
-     &lt;sqf:add match="html:col[last()]" target="width" node-type="attribute">
-         &lt;let name="newWidth" value="number(substring-before(@width,'%')) - $delta"/>
-         &lt;value-of select="concat($newWidth,'%')"/>
-     &lt;/sqf:add>
+        element:<codeblock outputclass="language-xml">&lt;sqf:fix id="last" use-when="$colWidthSummarized - 100 lt $lastWidth"
+ role="replace">
+   &lt;sqf:description>
+       &lt;sqf:title>Subtract excessive width from the last element.&lt;/sqf:title>
+   &lt;/sqf:description>
+   &lt;let name="delta" value="$colWidthSummarized - 100"/>
+   &lt;sqf:add match="html:col[last()]" target="width" node-type="attribute">
+    &lt;let name="newWidth" value="number(substring-before(@width,'%')) - $delta"/>
+       &lt;value-of select="concat($newWidth,'%')"/>
+   &lt;/sqf:add>
 &lt;/sqf:fix>    </codeblock></p>
     </section>
     <section id="executing_schematron_quick_fixes_in_documents_oth">
@@ -276,7 +281,8 @@
       <p>Also, you can apply the quick fixes over other documents using the <codeph>doc()</codeph>
         function in the value of the <codeph>match</codeph> attribute. For example, you can add a
         new key in the <filepath>keylist.xml</filepath> file using the following
-        operation:<codeblock outputclass="language-xml">&lt;sqf:add match="doc('keylist.xml')/KeyList" target="Key" node-type="element" select="Key2"></codeblock></p>
+        operation:<codeblock outputclass="language-xml">&lt;sqf:add match="doc('keylist.xml')/KeyList" target="Key"
+ node-type="element" select="Key2"></codeblock></p>
     </section>
       <section id="additional_elements_supported_in_the_schematron_q">
       <title>Additional Elements Supported in the Schematron Quick Fixes</title>

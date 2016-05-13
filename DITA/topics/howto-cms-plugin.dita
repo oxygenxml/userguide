@@ -42,20 +42,24 @@
           implementation:<codeblock outputclass="language-java">  /**
    * Sample implementation for the "Check Out" method.
    *
-   * @param pluginWorkspaceAccess The plugin workspace access (Workspace Access plugin).
+   * @param pluginWorkspaceAccess (Workspace Access plugin).
    * @throws MalformedURLException 
    */
-  private void checkOut(StandalonePluginWorkspace pluginWorkspaceAccess) throws MalformedURLException {
+    private void checkOut(StandalonePluginWorkspace pluginWorkspaceAccess) 
+throws MalformedURLException {
     //TODO Show the user a custom dialog box for browsing the CMS
-    //TODO after the user selected the resource create a URL with a custom protocol 
-    // which will uniquely map to the resource on the CMS using the URLHandler
+    //TODO after user selected the resource create a URL with a custom protocol 
+    //which will uniquely map to the resource on the CMS using the URLHandler
     //something like:
     URL customURL = new URL("mycms://host/path/to/file.xml");
     //Ask Oxygen to open the URL
     pluginWorkspaceAccess.open(customURL);
-    //Oxygen will then your custom protocol handler to provide the contents for the resource "mycms://host/path/to/file.xml"
-    //Your custom protocol handler will check out the file in a temporary directory for example and provide the content from it.
-    //Oxygen will also pass through your URLHandler if you have any relative references which need to be opened/obtained.
+    //Oxygen will then your custom protocol handler to provide the contents for 
+    //the resource "mycms://host/path/to/file.xml"
+    //Your custom protocol handler will check out the file in a temporary
+    //directory, for example, and provide the content from it.
+    //Oxygen will also pass through your URLHandler if you have any relative 
+    //references which need to be opened/obtained.
   } </codeblock></p>
         <p>
           <fig>
@@ -77,10 +81,14 @@
       <li>Contribute a special <b>Browse CMS</b> action to every dialog box in <ph keyref="product"
         /> where a URL can be chosen to perform a special action (such as the <b>Reuse Content</b>
         or <b>Insert Image</b> action). Sample
-          code:<codeblock outputclass="language-java">      //Add an additional browse action to all dialog boxes/places where Oxygen allows selecting a URL.
-      pluginWorkspaceAccess.addInputURLChooserCustomizer(new InputURLChooserCustomizer() {
-        public void customizeBrowseActions(List&lt;Action> existingBrowseActions, final InputURLChooser chooser) {
-          //IMPORTANT, you also need to set a custom icon on the action for situations when its text is not used for display.
+          code:<codeblock outputclass="language-java">      //Add an additional browse action to all dialog boxes/places 
+      //where Oxygen allows selecting a URL.
+      pluginWorkspaceAccess.addInputURLChooserCustomizer
+(new InputURLChooserCustomizer() {
+        public void customizeBrowseActions
+(List&lt;Action> existingBrowseActions, final InputURLChooser chooser) {
+          //IMPORTANT, you also need to set a custom icon on the action 
+          //for situations when its text is not used for display.
           Action browseCMS = new AbstractAction("CMS") {
             public void actionPerformed(ActionEvent e) {
               URL chosenResource = browseCMSAndChooseResource();
@@ -102,11 +110,14 @@
           absolute location of the edited XML file. You can gain control over the way in which the
           reference is made relative for a specific protocol like
         this:</p><codeblock outputclass="language-java">      //Add a custom relative reference resolver for your custom protocol.
-      //Usually when inserting references from one URL to another Oxygen makes the inserted path relative.
-      //If your custom protocol needs special relativization techniques then it should set up a custom relative
+      //Usually when inserting references from one URL to another Oxygen 
+      //makes the inserted path relative.
+      //If your custom protocol needs special relativization techniques then 
+      //it should set up a custom relative
       //references resolver to be notified when resolving needs to be done.
       pluginWorkspaceAccess.addRelativeReferencesResolver(
-          //Your custom URL protocol for which you already have a custom URLStreamHandlerPluginExtension set up.
+          //Your custom URL protocol for which you already have a 
+          //custom URLStreamHandlerPluginExtension set up.
           "mycms", 
           //The relative references resolver
           new RelativeReferenceResolver() {

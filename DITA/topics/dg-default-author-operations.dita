@@ -118,16 +118,15 @@
                 API</xref>.</note></p><p>These operations have the following parameters:<ul id="ul_pwk_qjh_ps">
               <li><b><apiname>sourceLocation</apiname></b><p>An XPath expression indicating the
                   element that the script will be applied on. If it is not defined, then the element
-                  at the cursor position will be used. </p><p>There may be situations in which you
-                  want to look at an ancestor of the current element and take decisions in the
-                  script based on this. To do this, you can set the
+                  at the cursor position will be used. </p><p>There may be situations in which you want to look at an ancestor of the current element and take
+                  decisions in the script based on this. To do this, you can set the
                     <apiname>sourceLocation</apiname> to point to an ancestor node then declare a
                   parameter called <apiname>currentElementLocation</apiname> in your script and use
                   it to re-position in the current element, as in the following
                   example:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" 
   xpath-default-namespace="http://docbook.org/ns/docbook" 
   xmlns:saxon="http://saxon.sf.net/" exclude-result-prefixes="saxon">     
-    &lt;!-- This is an XPath location which will be sent by the operation to the script -->
+    &lt;!-- This is an XPath location to be sent by the operation to the script -->
     &lt;xsl:param name="currentElementLocation"/>
     
     &lt;xsl:template match="/">
@@ -205,7 +204,8 @@ actually fully selected nodes. For example this selection will returnnull:
 but this will give two "p" elements:
 {SEL_END}&lt;p>text&lt;/p>&lt;p>text2&lt;/p>{SEL_END}
 
-If a multiple selection exists it will also be processed and forwarded. Again, only fully selected nodes will be passed.
+If a multiple selection exists it will also be processed and forwarded.
+ Again, only fully selected nodes will be passed.
 :)
 declare variable $oxyxq:selection external;
 
@@ -243,10 +243,10 @@ returnif (not(empty($toProcess))) then
       </ul></p>
     <p>
       <ul>
-        <li><b><apiname>JSOperation</apiname></b><p>Allows you to call the Java API from custom JavaScript content.<note type="notice">For the <ph
-          keyref="webappProduct"/>, this operation cannot be invoked using the JavaScript
-              API.</note></p><p>This operation accepts the following parameter:<ul
-              id="ul_af1_4dr_qr">
+        <li><b><apiname>JSOperation</apiname></b><p>Allows you to call the Java API from custom
+            JavaScript content.<note type="notice">For the <ph keyref="webappProduct"/>, this
+              operation cannot be invoked using the JavaScript API.</note></p><p>This operation
+            accepts the following parameter:<ul id="ul_af1_4dr_qr">
               <li><b><apiname>script</apiname></b><p>The JavaScript content to execute. It must have
                   a function called <codeph>doOperation()</codeph>, which can use the predefined
                     <codeph>authorAccess</codeph> variable. The <codeph>authorAccess</codeph>
@@ -254,21 +254,17 @@ returnif (not(empty($toProcess))) then
                     href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorAccess.html"
                     format="html" scope="external"
                       ><apiname>ro.sync.ecss.extensions.api.AuthorAccess</apiname></xref> Java API.
-                </p></li>
-            </ul></p></li>
-      </ul>
-    </p>
-    <example>
-      <p>The following example is a script that retrieves the current value of the <b>type</b>
-        attribute on the current element, allows the end user to edit its new value and sets the new
-        value in the
-        document:<codeblock outputclass="language-javascript">function doOperation(){ 
-  //The current node is either entirely selected...
+                  </p><p>The following example is a script that retrieves the current value of the
+                    <b>type</b> attribute on the current element, allows the end user to edit its
+                  new value and sets the new value in the
+                  document:<codeblock outputclass="language-javascript">function doOperation(){ 
+ //The current node is either entirely selected...
  currentNode = authorAccess.getEditorAccess().getFullySelectedNode();
  if(currentNode == null){
-  //or the cursor is placed in it
-  caretOffset = authorAccess.getEditorAccess().getCaretOffset(); 
-  currentNode = authorAccess.getDocumentController().getNodeAtOffset(caretOffset);
+ //or the cursor is placed in it
+ caretOffset = authorAccess.getEditorAccess().getCaretOffset(); 
+ currentNode = authorAccess.getDocumentController().getNodeAtOffset
+                          (caretOffset);
  }
  //Get current value of the @type attribute
   currentTypeValue = "";
@@ -277,17 +273,21 @@ returnif (not(empty($toProcess))) then
     currentTypeValue = currentTypeValueAttr.getValue();
   }
  //Ask user for new value for attribute.
- newTypeValue = javax.swing.JOptionPane.showInputDialog("Input @type value", currentTypeValue);
+ newTypeValue = javax.swing.JOptionPane.showInputDialog
+                         ("Input @type value", currentTypeValue);
  if(newTypeValue != null){
    //Create and set the new attribute value for the @type attribute.
-   attrValue = new Packages.ro.sync.ecss.extensions.api.node.AttrValue(newTypeValue);
-   authorAccess.getDocumentController().setAttribute("type", attrValue, currentNode);
+   attrValue = new Packages.ro.sync.ecss.extensions.api.node.AttrValue
+                         (newTypeValue);
+   authorAccess.getDocumentController().setAttribute
+                         ("type", attrValue, currentNode);
  }
-} </codeblock></p>
-      <note>If you have a script called <filepath>commons.js</filepath> in the framework directory,
-        you can call functions defined inside it from your custom script content so that you can use
-        that external script file as a library of functions.</note>
-    </example>
+} </codeblock></p></li>
+            </ul><note>If you have a script called <filepath>commons.js</filepath> in the framework
+              directory, you can call functions defined inside it from your custom script content so
+              that you can use that external script file as a library of functions.</note></p></li>
+      </ul>
+    </p>
     <p>
       <ul id="ul_ksy_w4h_ps">
         <li><b><apiname>ExecuteMultipleActionsOperation</apiname></b><p>This operation allows the

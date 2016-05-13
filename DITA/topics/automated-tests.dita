@@ -16,22 +16,21 @@
       implementation and ensure that further changes will not interfere with the current behavior is
       to make automated tests for your customization.</p>
     <p>An <ph><ph keyref="product"/></ph> standalone installation includes a main
-				<filepath>oxygen.jar</filepath> library located in the <filepath><term
-					conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>. That JAR library
-			contains a base class for testing developer customizations named:
-				<apiname>ro.sync.exml.workspace.api.PluginWorkspaceTCBase</apiname>.</p>
+        <filepath>oxygen.jar</filepath> library located in the <filepath><term
+          conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>. That JAR library contains a
+      base class for testing developer customizations named:
+        <apiname>ro.sync.exml.workspace.api.PluginWorkspaceTCBase</apiname>.</p>
     <p>To develop <apiname>JUnit</apiname> tests for your customizations using the <b>Eclipse</b>
       workbench, follow these steps:</p>
     <ol id="ol_g45_pdc_mh">
       <li>Create a new Eclipse Java project and copy to it the entire contents of the
-						<filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
-					/></filepath>.</li>
+            <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>.</li>
       <li>Add all JAR libraries present in the <filepath><term
-						conkeyref="reusables-user-guide/oxy-install-dir"/>/lib</filepath> directory
-				to the <uicontrol>Java Build Path</uicontrol>-><uicontrol>Libraries</uicontrol> tab.
-				Make sure that the main JAR library <filepath>oxygen.jar</filepath> or
-					<filepath>oxygenAuthor.jar</filepath> is the first one in the Java classpath by
-				moving it up in the <uicontrol>Order and Export</uicontrol> tab.</li>
+            conkeyref="reusables-user-guide/oxy-install-dir"/>/lib</filepath> directory to the
+          <uicontrol>Java Build Path</uicontrol>-><uicontrol>Libraries</uicontrol> tab. Make sure
+        that the main JAR library <filepath>oxygen.jar</filepath> or
+          <filepath>oxygenAuthor.jar</filepath> is the first one in the Java classpath by moving it
+        up in the <uicontrol>Order and Export</uicontrol> tab.</li>
       <li>Click <b>Add Library</b> and add the <xref
 					href="https://github.com/junit-team/junit/wiki/Download-and-Install"
 					format="html" scope="external"><codeph>JUnit</codeph></xref> and <xref
@@ -59,55 +58,57 @@
               <codeph>PluginWorkspaceTCBase.XML_DEVELOPER_PRODUCT</codeph>.</li>
         </ul></li>
       <li>Create test methods that use the API in the base class to open XML files and perform
-        various actions on them. Your test class could look something
-        like this:<codeblock outputclass="language-java">public class MyTestClass extends PluginWorkspaceTCBase {
+        various actions on them. Your test class could look something like
+        this:<codeblock outputclass="language-java">public class MyTestClass extends PluginWorkspaceTCBase {
 	
-	/**
-	 * Constructor.
-	 */
-	public MyTestClass() throws Exception {
-		super(null, new File("frameworks"), new File("plugins"), null, 
-        "------START-LICENSE-KEY------\n" + 
-				"\n" + 
-				"Registration_Name=Developer\n" + 
-				"\n" + 
-				"Company=\n" + 
-				"\n" + 
-				"Category=Enterprise\n" + 
-				"\n" + 
-				"Component=XML-Editor, XSLT-Debugger, Saxon-SA\n" + 
-				"\n" + 
-				"Version=14\n" + 
-				"\n" + 
-				"Number_of_Licenses=1\n" + 
-				"\n" + 
-				"Date=09-04-2012\n" + 
-				"\n" + 
-				"Trial=31\n" + 
-				"\n" + 
-				"SGN=MCwCFGNoEGJSeiC3XCYIyalvjzHhGhhqAhRNRDpEu8RIWb8icCJO7HqfVP4++A\\=\\=\n" + 
-				"\n" + 
-		"-------END-LICENSE-KEY-------", 
-    		PluginWorkspaceTCBase.XML_AUTHOR_PRODUCT);
+/**
+ * Constructor.
+ */
+public MyTestClass() throws Exception {
+	super(null, new File("frameworks"), new File("plugins"), null, 
+"------START-LICENSE-KEY------\n" + 
+	"\n" + 
+	"Registration_Name=Developer\n" + 
+	"\n" + 
+	"Company=\n" + 
+	"\n" + 
+	"Category=Enterprise\n" + 
+	"\n" + 
+	"Component=XML-Editor, XSLT-Debugger, Saxon-SA\n" + 
+	"\n" + 
+	"Version=14\n" + 
+	"\n" + 
+	"Number_of_Licenses=1\n" + 
+	"\n" + 
+	"Date=09-04-2012\n" + 
+	"\n" + 
+	"Trial=31\n" + 
+	"\n" + 
+	"SGN=MCwCFGNoEGJSeiC3XCYIyalvjzHhGhhqAhRNRDpEu8RIWb8icCJO7HqfVP4++A\\=\\=\n" + 
+	"\n" + 
+"-------END-LICENSE-KEY-------", 
+ PluginWorkspaceTCBase.XML_AUTHOR_PRODUCT);
 	}
 	
-	 /**
-	   * &lt;p>&lt;b>Description:&lt;/b> TC for opening a file and using the bold operation&lt;/p>
-	   * &lt;p>&lt;b>Bug ID:&lt;/b> EXM-20417&lt;/p>
-	   *
-	   * @author radu_coravu
-	   *
-	   * @throws Exception
-	   */
-	  public void testOpenFileAndBoldEXM_20417() throws Exception {
-	    WSEditor ed = open(new File("D:/projects/eXml/test/authorExtensions/dita/sampleSmall.xml").toURL());
+ /**
+   * &lt;p>&lt;b>Description:&lt;/b> TC for opening a file and using a bold operation&lt;/p>
+   * &lt;p>&lt;b>Bug ID:&lt;/b> EXM-20417&lt;/p>
+   *
+   * @author radu_coravu
+   *
+   * @throws Exception
+   */
+public void testOpenFileAndBoldEXM_20417() throws Exception {
+      WSEditor ed = open(new File
+("D:/projects/eXml/test/authorExtensions/dita/sampleSmall.xml").toURL());
 	    //Move caret
 	    moveCaretRelativeTo("Context", 1, false);
 	    
 	    //Insert &lt;b>
 	    invokeAuthorExtensionActionForID("bold");
 	    assertEquals("&lt;?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + 
-	    		"&lt;!DOCTYPE task PUBLIC \"-//OASIS//DTD DITA Task//EN\" \"http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd\">\n" + 
+	    		"&lt;!DOCTYPE task PUBLIC \"-//OASIS//DTD DITA Task//EN\"
+ \"http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd\">\n" + 
 	    		"&lt;task id=\"taskId\">\n" + 
 	    		"    &lt;title>Task &lt;b>title&lt;/b>&lt;/title>\n" + 
 	    		"    &lt;prolog/>\n" + 

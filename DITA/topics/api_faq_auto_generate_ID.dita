@@ -20,31 +20,34 @@
         (which occur when a new editor is created) and generate a new ID attribute value on the root
         element.</p>
       <p>The Java code would look like
-        this:<codeblock outputclass="language-java">      pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
-      /**
-       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorOpened(java.net.URL)
-       */
-      @Override
-      public void editorOpened(URL editorLocation) {
-        WSEditor ed = pluginWorkspaceAccess.getEditorAccess(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
+        this:<codeblock outputclass="language-java">pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
+/**
+* @see WSEditorChangeListener#editorOpened(java.net.URL)
+*/
+@Override
+public void editorOpened(URL editorLocation) {
+    WSEditor ed = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
         generateID(ed);
-      }
-      /**
-       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorPageChanged(java.net.URL)
-       */
-      @Override
-      public void editorPageChanged(URL editorLocation) {
-        WSEditor ed = pluginWorkspaceAccess.getEditorAccess(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
+}
+/**
+* @see WSEditorChangeListener#editorPageChanged(java.net.URL)
+*/
+@Override
+public void editorPageChanged(URL editorLocation) {
+    WSEditor ed = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
         generateID(ed);
-      }
+}
       
-      private void generateID(WSEditor ed) {
-        if(ed.getCurrentPage() instanceof WSAuthorEditorPage) {
-          WSAuthorEditorPage authorEditPage = (WSAuthorEditorPage) ed.getCurrentPage();
-          AuthorDocumentController ctrl = authorEditPage.getDocumentController();
-          AuthorElement root = ctrl.getAuthorDocumentNode().getRootElement();
-          if(root.getAttribute("id") == null || !root.getAttribute("id").getValue().startsWith("generated_")) {
-            ctrl.setAttribute("id", new AttrValue("generated_" + Math.random()), root);
+private void generateID(WSEditor ed) {
+ if(ed.getCurrentPage() instanceof WSAuthorEditorPage) {
+  WSAuthorEditorPage authorEditPage = (WSAuthorEditorPage) ed.getCurrentPage();
+  AuthorDocumentController ctrl = authorEditPage.getDocumentController();
+  AuthorElement root = ctrl.getAuthorDocumentNode().getRootElement();
+   if(root.getAttribute("id") == null || 
+!root.getAttribute("id").getValue().startsWith("generated_")) {
+    ctrl.setAttribute("id", new AttrValue("generated_" + Math.random()), root);
           }
         }
       }

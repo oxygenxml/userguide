@@ -19,24 +19,31 @@
           <codeph>AuthorSchemaManager.createAuthorDocumentFragment(CIElement)</codeph>, you can
         convert the proposed elements to document fragments (which have all the required content
         filled in) that can then be inserted in the
-        document.<codeblock outputclass="language-java">AuthorSchemaManager schemaManager = this.authorAccess.getDocumentController().getAuthorSchemaManager();
-WhatElementsCanGoHereContext context = schemaManager.createWhatElementsCanGoHereContext(this.authorAccess.getEditorAccess().getCaretOffset());
-List&lt;CIElement> possibleElementsAtCaretPosition = schemaManager.whatElementsCanGoHere(context);
-loop: for (int i = 0; i &lt; possibleElementsAtCaretPosition.size(); i++) {
-  CIElement possibleElement = possibleElementsAtCaretPosition.get(i);
-  List&lt;CIAttribute> attrs = possibleElement.getAttributes();
-  if(attrs != null) {
-    for (int j = 0; j &lt; attrs.size(); j++) {
-      CIAttribute ciAttribute = attrs.get(j);
-      if (ciAttribute.getName().equals("class")) {
-        if (ciAttribute.getDefaultValue() != null
-            &amp;&amp; ciAttribute.getDefaultValue().contains("  topic/image ")) {
-          //Found a CIElement for image
-          //Create a fragment for it. The fragment contains all required child elements already built.
-          AuthorDocumentFragment frag = schemaManager.createAuthorDocumentFragment(possibleElement);
-          //Now set the @href to it.
-          //Ask the user and obtain a value for the @href
-          //Then:
+        document.<codeblock outputclass="language-java">    AuthorSchemaManager schemaManager = 
+this.authorAccess.getDocumentController().getAuthorSchemaManager();
+
+    WhatElementsCanGoHereContext context = 
+schemaManager.createWhatElementsCanGoHereContext
+(this.authorAccess.getEditorAccess().getCaretOffset());
+
+    List&lt;CIElement> possibleElementsAtCaretPosition = 
+schemaManager.whatElementsCanGoHere(context);
+    loop: for (int i = 0; i &lt; possibleElementsAtCaretPosition.size(); i++) {
+      CIElement possibleElement = possibleElementsAtCaretPosition.get(i);
+      List&lt;CIAttribute> attrs = possibleElement.getAttributes();
+      if(attrs != null) {
+        for (int j = 0; j &lt; attrs.size(); j++) {
+          CIAttribute ciAttribute = attrs.get(j);
+          if (ciAttribute.getName().equals("class")) {
+            if (ciAttribute.getDefaultValue() != null
+                 &amp;&amp; ciAttribute.getDefaultValue().contains("  topic/image ")) {
+              //Found a CIElement for image
+   //Create a fragment that contains all required child elements already built.
+              AuthorDocumentFragment frag = 
+schemaManager.createAuthorDocumentFragment(possibleElement);
+              //Now set the @href to it.
+              //Ask the user and obtain a value for the @href
+              //Then:
 
           String href = "test.png";
           List&lt;AuthorNode> nodes = frag.getContentNodes();
@@ -45,7 +52,8 @@ loop: for (int i = 0; i &lt; possibleElementsAtCaretPosition.size(); i++) {
             imageEl.setAttribute("href", new AttrValue(href));
           }
           //And insert the fragment.
-          this.authorAccess.getDocumentController().insertFragment(this.authorAccess.getEditorAccess().getCaretOffset(), frag);
+          this.authorAccess.getDocumentController().insertFragment
+(this.authorAccess.getEditorAccess().getCaretOffset(), frag);
           break loop;
         }
       }

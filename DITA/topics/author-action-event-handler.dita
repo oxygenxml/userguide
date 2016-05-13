@@ -46,28 +46,32 @@
         performed in an element that will preserve the <apiname>new-line</apiname> character. Then
         the <apiname>handleEvent</apiname> method inserts the new line at the current cursor
         position.</p>
-      <codeblock outputclass="language-java">public class CustomAuthorActionEventHandler implements AuthorActionEventHandler {
+      <codeblock outputclass="language-java">public class CustomAuthorActionEventHandler implements AuthorActionEventHandler
+{
 
  /**
-  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#canHandleEvent(AuthorAccess, AuthorActionEventType)
+  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#canHandleEvent
+(AuthorAccess, AuthorActionEventType)
   */
   @Override
-  public boolean canHandleEvent(AuthorAccess authorAccess, AuthorActionEventType type) {
+  public boolean canHandleEvent(AuthorAccess authorAccess,
+AuthorActionEventType type) {
     boolean canHandle = false;
 
     if (type == AuthorActionEventType.ENTER) {
-      AuthorDocumentController documentController = authorAccess.getDocumentController();
-      int caretOffset = authorAccess.getEditorAccess().getCaretOffset();
-      try {
-        AuthorNode nodeAtOffset = documentController.getNodeAtOffset(caretOffset);
-        if (nodeAtOffset instanceof AuthorElement) {
-          AuthorElement elementAtOffset = (AuthorElement) nodeAtOffset;
-          AttrValue xmlSpace = elementAtOffset.getAttribute("xml:space");
-          if (xmlSpace != null &amp;&amp; xmlSpace.getValue().equals("preserve")) {
-            canHandle = true;
-          }
+      AuthorDocumentController documentController = 
+authorAccess.getDocumentController();
+    int caretOffset = authorAccess.getEditorAccess().getCaretOffset();
+    try {
+      AuthorNode nodeAtOffset = documentController.getNodeAtOffset(caretOffset);
+      if (nodeAtOffset instanceof AuthorElement) {
+        AuthorElement elementAtOffset = (AuthorElement) nodeAtOffset;
+        AttrValue xmlSpace = elementAtOffset.getAttribute("xml:space");
+        if (xmlSpace != null &amp;&amp; xmlSpace.getValue().equals("preserve")) {
+          canHandle = true;
         }
-      } catch (BadLocationException ex) {
+      }
+    } catch (BadLocationException ex) {
         if (logger.isDebugEnabled()) {
           logger.error(ex.getMessage(), ex);
         }
@@ -78,10 +82,13 @@
   }
 
  /**
-  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#handleEvent(ro.sync.ecss.extensions.api.AuthorAccess, ro.sync.ecss.extensions.api.AuthorActionEventHandler.AuthorActionEventType)
+  * @see ro.sync.ecss.extensions.api.AuthorActionEventHandler#handleEvent
+(ro.sync.ecss.extensions.api.AuthorAccess, 
+ro.sync.ecss.extensions.api.AuthorActionEventHandler.AuthorActionEventType)
   */
   @Override
-  public boolean handleEvent(AuthorAccess authorAccess, AuthorActionEventType eventType) {
+  public boolean handleEvent(AuthorAccess authorAccess,
+ AuthorActionEventType eventType) {
     int caretOffset = authorAccess.getEditorAccess().getCaretOffset();
     // Insert a new line
     authorAccess.getDocumentController().insertText(caretOffset, "\n");
