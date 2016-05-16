@@ -276,9 +276,10 @@
           <sqf:title>Add @id to the current section</sqf:title>
           <sqf:p>Add an @id attribute to the current section. The ID is generated from the section title.</sqf:p>
         </sqf:description>
+        
         <!-- Generate an id based on the section title. If there is no title then generate a random id. -->
         <sqf:add target="id" node-type="attribute"
-          select="if (title) 
+          select="if (exists(title) and string-length(title) > 0) 
                     then substring(lower-case(replace(replace(normalize-space(string(title)), '\s', '_'), '[^a-zA-Z0-9_]', '')), 0, 50) 
                     else generate-id()"/>
       </sqf:fix>
@@ -290,7 +291,7 @@
         </sqf:description>
         <!-- Generate an id based on the section title. If there is no title then generate a random id. -->
         <sqf:add match="//section[not(@id)]" target="id" node-type="attribute" 
-          select="if (title) 
+          select="if (exists(title) and string-length(title) > 0) 
                     then substring(lower-case(replace(replace(normalize-space(string(title)), '\s', '_'), '[^a-zA-Z0-9_]', '')), 0, 50) 
                     else generate-id()"/>
       </sqf:fix>
