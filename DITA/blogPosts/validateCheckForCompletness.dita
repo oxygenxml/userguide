@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_mp2_l4q_g5">
+  <title>DITA Map Validate and Check for Completeness Overview</title>
+  <body>
+    <p>The <b>Validate and Check For Completeness</b> is an action available on the <b>DITA Maps
+        Manager</b> view toolbar and it can be used to perform thorough checks on the entire <b>DITA
+        Map</b> structure and set of referenced topics. We've made this action available to you a
+      couple of years ago and during these years, based on your direct feedback we kept adding
+      additional checks and functionality to it. We always took care to optimize the processing
+      speed in order to allow for validating projects containing thousands of resources in 10-15
+      seconds.</p>
+    <p>In this blog post I will try to make a list of all the checks that the action does in order
+      to ensure you that your DITA content is valid and proper:<ul id="ul_kwg_jpq_g5">
+        <li>Validate each <b>DITA</b> resource directly or indirectly referenced from your <b>DITA
+            Map</b> with its associated <b>DTD</b> or <b>XML Schema</b> and report any errors which
+          may arise.</li>
+        <li>Validate each <b>DITA</b> resource with an additional <b>Schematron</b> resource which
+          you can provide. <b>Schematron</b> is quite handy when it comes to enforcing internal
+          rules on the DITA content and we use it quite a lot for checking our <xref
+            href="http://blog.oxygenxml.com/2015/05/schematron-checks-to-help-technical.html"
+            format="html" scope="external">user's manual</xref>.</li>
+        <li>Batch validate referenced DITA resources. This setting validates each <b>DITA</b>
+          resource according to the validation scenario associated with it in <b>Oxygen</b>. This
+          will decrease the validation speed quite a bit but if you have <b>DITA</b> 1.3 resources
+          which are <b>Relax NG</b> based you should check it in order to validate each resource
+          according to the <b>Relax NG</b> Schema.</li>
+        <li>Use specific <b>DITAVAL</b> or profiling condition filters when performing the
+          validation. From a single published <b>DITA Map</b> you may get multiple publications
+          based on the profiling filters applied. Because these filters are used to remove entire
+          topics or parts of topics, you may have <b>links</b> and <b>conrefs</b> which become
+          invalid when certain filters are applied on the map. So it makes sense to validate your
+          DITA project by applying all profiling filters you would apply when publishing it in order
+          to be aware of these potential broken references.</li>
+        <li>Report profiling attributes or values which are not valid according to the <b>Subject
+            Scheme Map</b> associated with your project. You can read more about controlling
+          profiling attributes and values here:<xref
+            href="http://blog.oxygenxml.com/2015/07/controlled-attribute-values-for-your.html"
+            format="html" scope="external"/>.</li>
+        <li>Identify possible conflicts in profile attribute values. When the profiling attributes
+          of a topic contain values that are not found in parent topic profiling attributes, the
+          content of the topic is overshadowed when generating profiled output.</li>
+        <li>Check the existence of <b>non-DITA</b> referenced resources. You will get reports if
+          links to local images or other resources are broken. You can also decide to verify the
+          existence of remote links. For example if you have links to various external web sites,
+          you might be interested in seeing if those remote servers are still there.</li>
+        <li> Report links to topics not referenced in DITA maps. Checks that all referenced topics
+          are linked in the DITA map. Otherwise you may get working links to topics which are not
+          included in the table of contents.</li>
+        <li>Check for duplicate topic IDs within the DITA map context. By default the topic ID can
+          be used in the WebHelp output for <xref
+            href="https://www.oxygenxml.com/doc/versions/17.1/ug-editor/index.html#topics/context-sensitive-help-system.html"
+            format="html" scope="external">context sensitive help</xref>. Also certain CMSs require
+          that a certain topic ID would be unique in the entire DITA Map.</li>
+        <li>Report elements with the same ID placed in the same DITA Topic according to the
+          specification.</li>
+        <li>Report missing <b>domains</b> attribute which may indicate an improper DITA
+          specialization.</li>
+        <li>Report invalid <b>class</b> attribute values according to the specification.</li>
+        <li>Report invalid <b>key</b> names according to the specification.</li>
+        <li>Report references to <b>missing keys</b> or <b>links</b> which refer to <b>keys</b>
+          which have no target resource defined on them.</li>
+        <li>Report problems when elements referenced using DITA content reference range are not
+          siblings or are not properly sequenced.</li>
+        <li>Report links which have no target set on them either via <b>href</b> or
+          <b>keyref</b>.</li>
+        <li>Report non-portable absolute references to <b>DITA</b> resources.</li>
+        <li>Report when links contain invalid encoded characters or <b>Windows-like</b> path
+          separators.</li>
+        <li>Report when resources are referenced with incorrect path capitalization. </li>
+        <li>Report a mismatch between the referenced resource type and its <b>format</b>
+          attribute.</li>
+        <li>Report a mismatch between the referenced resource type and its <b>type</b>
+          attribute.</li>
+        <li>Report topic references in a <b>DITA Map</b> pointing to non-topic elements in the
+          target topics.</li>
+        <li>Report invalid content references and content key references, references to non-existing
+          resources, to non-existing IDs, report when the source element is not a specialization of
+          the target element.</li>
+      </ul></p>
+    <p>I think I covered most of the checks that this validation does. </p>
+    <p>Are there other checks you would like to see in a future version? Would you like to see this
+      validation available as a separate process which could be run on a server?</p>
+  </body>
+</topic>

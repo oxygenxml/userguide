@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_kqb_nb3_ls">
+  <title>DITA OT PDF Customization - Table with Alternate Row Background Colors</title>
+  <body>
+    <p>Based on this <xref href="http://www.oxygenxml.com/forum/topic11623.html" format="html" scope="external">forum thread</xref> I will try to give some steps in which you can create your own DITA Open Toolkit PDF customization folder for customizing a table to have alternate row background colors.</p>
+    <ol id="ol_ygl_kc3_ls">
+      <li>First of all you need to know the XSLT template that you need to override. <ul id="ul_rgm_lc3_ls">
+          <li>You can open a DITA topic which has a table inside it and select in the <b>Outline</b> view the table row. The <b>Attributes</b> view will show you its <b>@class</b> attribute value which is <b>- topic/row</b> .</li>
+          <li>Use the <b>Find/Replace in Files</b> tool to search in the PDF plugin folder (for example <filepath>DITA-OT-DIR/plugins/org.dita.pdf2/</filepath>) for the string <b>topic/row</b>.</li>
+          <li>In the XSLT stylesheet <filepath>DITA-OT-DIR/plugins/org.dita.pdf2/xsl/fo/tables.xsl</filepath> you will find a template which matches all rows from a table body:<codeblock outputclass="language-xml">    &lt;xsl:template match="*[contains(@class, ' topic/tbody ')]/*[contains(@class, ' topic/row ')]">
+        &lt;fo:table-row xsl:use-attribute-sets="tbody.row">
+            &lt;xsl:call-template name="commonattributes"/>
+            &lt;xsl:apply-templates/>
+        &lt;/fo:table-row>
+    &lt;/xsl:template></codeblock>That is the template which you will need to overwrite in your customization.</li>
+        </ul></li>
+      <li>Copy the entire folder <filepath>DITA-OT-DIR/plugins/org.dita.pdf2/Customization</filepath> to an external location. For example in my case I copied it to my Desktop.</li>
+      <li>Renamed in that copied folder the <filepath>catalog.xml.orig</filepath> file to <filepath>catalog.xml</filepath>, edit it and uncomment the line:<codeblock outputclass="language-xml">  &lt;uri name="cfg:fo/xsl/custom.xsl" uri="fo/xsl/custom.xsl"/></codeblock>This custom catalog file will be automatically used to contribute in the PDF publishing process with high priority the XSLT stylesheet located in <filepath>Customization/fo/xsl/custom.xsl</filepath>.</li>
+      <li>Rename in the <filepath>Customization/fo/xsl</filepath> folder the <filepath>custom.xsl.orig</filepath> file to <filepath>custom.xsl</filepath>. This stylesheet will contain all your template overrides.</li>
+      <li>Overwrite in the <filepath>custom.xsl</filepath> the original template like:<codeblock outputclass="language-xml">    &lt;xsl:template match="*[contains(@class, ' topic/tbody ')]/*[contains(@class, ' topic/row ')]">
+        &lt;fo:table-row xsl:use-attribute-sets="tbody.row">
+            &lt;xsl:choose>
+                &lt;xsl:when test="(count(preceding-sibling::*[contains(@class, ' topic/row ')]) mod 2) = 0">
+                    &lt;!-- Even row, light blue -->
+                    &lt;xsl:attribute name="background-color">rgb(210, 222, 253)&lt;/xsl:attribute>
+                &lt;/xsl:when>
+                &lt;xsl:otherwise>
+                    &lt;!-- Odd row, white -->
+                    &lt;xsl:attribute name="background-color">white&lt;/xsl:attribute>
+                &lt;/xsl:otherwise>
+            &lt;/xsl:choose>
+            &lt;xsl:call-template name="commonattributes"/>
+            &lt;xsl:apply-templates/>
+        &lt;/fo:table-row>
+    &lt;/xsl:template></codeblock></li>
+      <li>If you want the table frame border colors to have a custom color you can override some attribute sets defined in the <filepath>DITA-OT-DIR/plugins/org.dita.pdf2/cfg/fo/attrs/tables-attr.xsl</filepath>:<codeblock outputclass="language-xml">    &lt;xsl:attribute-set name="table__tableframe__top" use-attribute-sets="common.border__top">
+        &lt;xsl:attribute name="border-top-color">blue&lt;/xsl:attribute>
+    &lt;/xsl:attribute-set>
+    &lt;xsl:attribute-set name="table__tableframe__bottom" use-attribute-sets="common.border__bottom">
+        &lt;xsl:attribute name="border-bottom-color">blue&lt;/xsl:attribute>
+    &lt;/xsl:attribute-set>
+    &lt;xsl:attribute-set name="table__tableframe__right" use-attribute-sets="common.border__right">
+        &lt;xsl:attribute name="border-right-color">blue&lt;/xsl:attribute>
+    &lt;/xsl:attribute-set>
+    &lt;xsl:attribute-set name="table__tableframe__left" use-attribute-sets="common.border__left">
+        &lt;xsl:attribute name="border-left-color">blue&lt;/xsl:attribute>
+    &lt;/xsl:attribute-set>ou</codeblock></li>
+      <li>Edit your PDF transformation scenario and set the parameter <b>customization.dir</b> to point to your customization folder.</li>
+      <li>Publish and enjoy :)</li>
+    </ol>
+        <p>If you want to create a <b>DITA Open Toolkit</b> plugin to achieve the same result you can use the <b>dita.xsl.xslfo</b> plugin extension to contribute your own XSLT stylesheet to the publishing process: <xref href="http://blog.oxygenxml.com/2013/12/creating-simple-dita-open-toolkit.html" format="html" scope="external"/></p>
+  </body>
+</topic>

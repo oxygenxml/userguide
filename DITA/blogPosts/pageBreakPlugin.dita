@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_ih3_fkg_wr">
+  <title>DITA PDF publishing - Force page breaks between two block elements</title>
+  <body>
+    <p>Let's say that at some point in your DITA content you have two block level elements, like for
+      example two
+      paragraphs:<codeblock outputclass="language-xml">        &lt;p>First para&lt;/p>
+        &lt;p>Second para&lt;/p></codeblock>and
+      you want to force in the PDF output a page break between them. </p>
+    <p>Here's how a DITA Open Toolkit plugin which would achieve this could be implemented:<ol
+        id="ol_wsk_4kg_wr">
+        <li>You define your custom processing instruction which marks the place where a page break
+          should be inserted in the PDF, for
+          example:<codeblock outputclass="language-xml">        &lt;p>First para&lt;/p>
+        &lt;?pagebreak?>
+        &lt;p>Second para&lt;/p></codeblock></li>
+        <li>In the <b>DITA Open Toolkit</b> distribution in the <filepath>plugins</filepath>
+          directory you create a new plugin folder named for example
+            <filepath>pdf-page-break</filepath>.</li>
+        <li>In this new folder create a new <filepath>plugin.xml</filepath> file with the
+          content:<codeblock outputclass="language-xml">&lt;plugin id="com.yourpackage.pagebreak">
+  &lt;feature extension="package.support.name" value="Force Page Break Plugin"/>
+  &lt;feature extension="package.support.email" value="support@youremail.com"/>
+  &lt;feature extension="package.version" value="1.0.0"/>
+  &lt;feature extension="dita.xsl.xslfo" value="pageBreak.xsl" type="file"/>
+&lt;/plugin></codeblock>The
+          most important feature in the plugin is that it will add a new XSLT stylesheet to the XSL
+          processing which produces the PDF content.</li>
+        <li>Create in the same folder an <b>XSLT</b> stylesheet named
+            <filepath>pageBreak.xsl</filepath> with the
+          content:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format"
+    version="1.0">
+  &lt;xsl:template match="processing-instruction('pagebreak')">
+    &lt;fo:block break-after="page"/>
+  &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+        <li>
+          <p>Install your plugin in the <b>DITA Open Toolkit</b> by running the DITA OT ANT
+            integrator task. </p>
+          <p>If you are running the publishing from <b>Oxygen XML Editor</b> you can use the
+            predefined transformation scenario: <xref
+              href="http://www.oxygenxml.com/doc/ug-oxygen/#topics/dita-ot-install-plugin.html"
+              format="html" scope="external"/>. </p>
+          <p>If you run DITA OT from the command line please follow these guidelines: <xref
+              href="http://www.dita-ot.org/2.0/dev_ref/plugins-installing.html" format="html"
+              scope="external"/>.</p>
+        </li>
+      </ol></p>
+  </body>
+</topic>

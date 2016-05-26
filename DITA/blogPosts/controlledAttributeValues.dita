@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_exv_hwt_rs">
+  <title>Controlled Attribute Values for your DITA Project</title>
+  <body>
+    <p>Frequently when editing DITA content you will feel the need to enforce a controlled set of
+      values when editing certain attributes. For example you may want to impose that the values for
+      the <b>@outputclass</b> attribute on the element <b>codeblock</b> are either
+        <b>language-xml</b> or <b>language-css</b>. This is useful in order to remind writers that
+      any other value will not be interpreted by the build process in a significant manner.</p>
+    <p>Oxygen has a couple of easy ways in which controlled values can be imposed for certain
+        attributes:<ol id="ol_qw5_gyt_rs">
+        <li>You can edit the XML configuration file
+            <b>OXYGEN_INSTALL_DIR/frameworks/dita/resources/cc_value_config.xml</b> and provide
+          additional entries. In the case of our small example for providing controlled values for
+          the <b>@attribute</b> the configuration file should contain an additional
+          entry:<codeblock outputclass="language-xml">&lt;match elementName="codeblock" attributeName="outputclass">
+ &lt;items action="addIfEmpty">
+  &lt;item value="language-xml" annotation="XML Syntax Highlight"/>
+  &lt;item value="language-css" annotation="CSS Syntax Highlight"/>
+ &lt;/items>     
+&lt;/match></codeblock>Besides
+          providing a hard-coded list of values the content completion configuration file is
+          flexible enough to allow <xref
+            href="http://www.oxygenxml.com/doc/versions/17.0/ug-editor/#topics/configuring-content-completion-proposals.html"
+            format="html" scope="external">calling an XSLT stylesheet</xref> which could retrieve
+          those values from other sources (for example via HTTP from an Exist database). </li>
+        <li>Provide those controlled values via a <xref
+            href="http://www.oxygenxml.com/doc/versions/17.0/ug-editor/#topics/subject-scheme-map.html"
+            format="html" scope="external">Subject Scheme Map</xref> (my favorite). Coming back to
+          our example, you can create a small Subject Scheme map with the file name
+            <filepath>controlledValues.ditamap</filepath> and the
+          content:<codeblock outputclass="language-xml">&lt;!DOCTYPE subjectScheme PUBLIC "-//OASIS//DTD DITA Subject Scheme Map//EN""map.dtd"> 
+&lt;subjectScheme>
+    &lt;subjectHead>
+        &lt;subjectHeadMeta>
+            &lt;navtitle>Provide controlled attributes&lt;/navtitle>
+        &lt;/subjectHeadMeta>
+    &lt;/subjectHead>
+    &lt;hasInstance>
+        &lt;subjectdef keys="languageTypeKey">
+            &lt;subjectdef keys="language-xml">
+                &lt;topicmeta>
+                    &lt;navtitle>XML Syntax Highlight&lt;/navtitle>
+                &lt;/topicmeta>
+            &lt;/subjectdef>
+            &lt;subjectdef keys="language-css">
+                &lt;topicmeta>
+                    &lt;navtitle>CSS Syntax Highlight&lt;/navtitle>
+                &lt;/topicmeta>
+            &lt;/subjectdef>
+        &lt;/subjectdef>
+    &lt;/hasInstance>
+    &lt;enumerationdef>
+        &lt;elementdef name="codeblock"/>
+        &lt;attributedef name="outputclass"/>
+        &lt;subjectdef keyref="languageTypeKey"/>
+    &lt;/enumerationdef>
+&lt;/subjectScheme></codeblock>then
+          you can refer to it from your main DITA Map
+          like:<codeblock outputclass="language-xml">&lt;topicref href="controlledValues.ditamap" format="ditamap" type="subjectScheme"/></codeblock></li>
+        <li>If the attributes on which you want to impose certain values are <xref
+            href="http://docs.oasis-open.org/dita/v1.2/os/spec/archSpec/condproc.html#condproc"
+            format="html" scope="external">DITA profiling attributes</xref>, you can go to the
+          Oxygen <b>Preferences</b>-><b>Editor / Edit modes / Author / Profiling/Conditional
+            Text</b> page and define the set of allowed values for them.</li>
+      </ol></p>
+    <p>The only problem with the first approach is the fact that validation will not impose those
+      values and writers will not receive validation error messages if they set another value for
+      the specific attribute. So you will probably need to add a Schematron check in order to signal
+      errors when a certain attribute's value does not match the list of controlled attribute
+      values. For both the second and third approaches, validation will warn the writers if certain
+      attribute values do not match values in the controller values list.</p>
+  </body>
+</topic>
