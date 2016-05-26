@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_jc4_mvm_ft">
+  <title>DITA 1.3 Branch Filtering - Next Generation of Reuse</title>
+  <body>
+    <p>Thanks to the hard working <xref
+        href="https://www.oasis-open.org/committees/membership.php?wg_abbrev=dita" format="html"
+        scope="external">OASIS DITA TC Group</xref> the DITA 1.3 standard is quite close to being
+      released. Oxygen 17.1 which will be released probably in September this year will have
+      experimental DITA 1.3 support. This will include publishing using a custom build of the latest
+        <xref href="http://www.dita-ot.org/" format="html" scope="external"><b>DITA Open Toolkit
+          2.x</b></xref> engine in which the main developer <xref href="http://www.elovirta.com/"
+        format="html" scope="external">Jarno Elovirta</xref> has already added incipient support for
+      key scopes and branch filtering.</p>
+    <p>In this blog post I'm going to give you a small example of how branch filtering can benefit
+      two cases of reuse which could not be done previously. You can read more about branch
+      filtering in the <xref
+        href="http://www.oxygenxml.com/dita/1.3/specs/index.html#archSpec/base/branch-filtering.html"
+        format="html" scope="external">DITA 1.3 specs</xref>.</p>
+    <section>
+      <title>Case 1 - Combine Two Profiles in the Same Publication</title>
+      <p>Let's say you have a <b>DITA Project</b> about preparing and cooking vegetables. And your
+        DITA Map looks like
+        this:<codeblock outputclass="language-xml">&lt;!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+&lt;map>
+ &lt;title>Cooking vegetables&lt;/title>
+ &lt;topicref href="cleaningTableArea.dita" audience="novice"/>
+ &lt;topicref href="preparingVegetables.dita"/>
+ &lt;topicref href="addingExtraFlavor.dita" audience="expert"/>
+ &lt;/map></codeblock>
+        You have some content common both for <b>expert</b> and <b>novice</b> users but you also
+        have content which is specific for a target audience. You do not need to teach <b>expert</b>
+        chefs how to clean the table and you do not want to teach <b>novice</b> cooks about enhanced
+        flavoring techniques. </p>
+      <p>All is fine until at some point you decide to produce a publication which contains merged
+        inside both the novice and the expert map contents. And here's where branch filtering comes
+        for help. You can create a main DITA Map which reuses your current DITA Map with two
+        profiling
+        contexts:<codeblock outputclass="language-xml">&lt;!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+&lt;map>
+ &lt;title>Cooking Vegetables.&lt;/title>
+ &lt;topichead navtitle="Cooking for Beginners" keyscope="novice">
+  &lt;topicref href="vegetables.ditamap" format="ditamap">
+   &lt;ditavalref href="novice.ditaval"/>
+  &lt;/topicref>
+ &lt;/topichead>
+ 
+ &lt;topichead navtitle="Cooking for Experts" keyscope="expert">
+  &lt;topicref href="vegetables.ditamap" format="ditamap">
+   &lt;ditavalref href="expert.ditaval"/>
+  &lt;/topicref>
+ &lt;/topichead>
+&lt;/map></codeblock></p>
+    </section>
+    <section><title>Case 2 - Reusing Common Topics with Different Product Names</title><p>Let's say
+        you have a simple <b>DITA</b> task in which you have described how a certain task can be
+        performed for a certain product. In our case, the task describes peeling
+        <b>potatoes</b>:</p><image
+        href="data:image/png;base64,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"
+        id="image_npn_dcn_ft"/></section>
+    <p>The task works and at some point in your <b>Vegetables Soup</b> publication you realise you
+      need to write a similar task about peeling <b>cucumbers</b>. The task is exactly the same,
+      except the product name. So naturally you want to reuse the existing written task. For this we
+      re-write the task so that instead of of the product <b>potatoes</b> it contains two
+      consecutive profiled product
+      names:<codeblock outputclass="language-xml">Peeling &lt;ph product="potatoes">potatoes&lt;/ph>&lt;ph product="cucumbers">cucumbers&lt;/ph></codeblock>and
+      include the task in the main DITA Map in two places with different ditaval filters
+      applied:<codeblock outputclass="language-xml">&lt;!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+&lt;map>
+ &lt;title>Peeling Vegetables.&lt;/title>
+ &lt;topichead navtitle="Potatoes">
+  &lt;topicref href="peeling.dita">
+   &lt;ditavalref href="potatoes.ditaval"/>
+  &lt;/topicref>
+ &lt;/topichead>
+ 
+ &lt;topichead navtitle="Cucumbers">
+  &lt;topicref href="peeling.dita">
+   &lt;ditavalref href="cucumbers.ditaval"/>
+  &lt;/topicref>
+ &lt;/topichead>
+&lt;/map></codeblock></p>
+    <p>This kind of usage will produce in the HTML output folder two topic HTML files from the
+      single <filepath>peeling.dita</filepath>, one for each filter context.</p>
+    <p>The DITA samples for this post can be downloaded from <xref
+        href="http://www.oxygenxml.com/forum/files/branchFilteringBlogSamples.zip" format="zip"
+        scope="external"/>.</p>
+    <p>As usual any feedback is welcomed.</p>
+    <p>If you would like to beta test <b>Oxygen XML Editor 17.1</b> with experimental DITA 1.3
+      support please contact us: <b>support@oxygenxml.com</b>.</p>
+  </body>
+</topic>
