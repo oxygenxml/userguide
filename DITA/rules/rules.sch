@@ -145,7 +145,11 @@
   <sch:pattern>
     <!-- Report ul after ul -->
     <sch:rule context="*[contains(@class, ' topic/ul ')]">
-      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ul ')]" role="warn" sqf:fix="mergeLists"> Two
+      <sch:report test="following-sibling::node()[1]
+          [contains(@class, ' topic/ul ') or 
+          (self::text() and normalize-space(.)='') and 
+            following-sibling::node()[1][self::*][contains(@class, ' topic/ul ')]]" 
+      role="warn" sqf:fix="mergeLists"> Two
         consecutive unordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
@@ -173,9 +177,9 @@
         <sqf:title>Merge lists into one</sqf:title>
       </sqf:description>
       <sqf:add position="last-child">
-        <xsl:apply-templates mode="copyExceptClass" select="following-sibling::node()[1]/node()"/>
+        <xsl:apply-templates mode="copyExceptClass" select="following-sibling::*[1]/node()"/>
       </sqf:add>
-      <sqf:delete match="following-sibling::node()[1]"/>
+      <sqf:delete match="following-sibling::*[1]"/>
     </sqf:fix>
     
     <!-- Wrap the current element in a paragraph. -->
