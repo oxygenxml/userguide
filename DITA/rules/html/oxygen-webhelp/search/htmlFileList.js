@@ -1,0 +1,20 @@
+//List of files which are indexed.
+fl = new Array();
+fl["0"]= "commonGrammarErrors.html";
+fl["1"]= "commonGrammarRuleMythsMisperceptions.html";
+fl["2"]= "ditaStructure.html";
+fl["3"]= "documentationRules.html";
+fl["4"]= "generalStyleRules.html";
+fl["5"]= "grammarRules.html";
+fl["6"]= "introduction.html";
+fl["7"]= "oxygenRelatedNamingConventionRules.html";
+fl["8"]= "punctuationRules.html";
+fl["9"]= "punctuationStyleRules.html";
+fl["10"]= "specificGrammarRulesConjunctionsAdverbs.html";
+fl["11"]= "specificGrammarRulesWordsPhrases.html";
+fl["12"]= "styleRules.html";
+fl["13"]= "tenses.html";
+fl["14"]= "useSpecificWords.html";
+fl["15"]= "websiteRules.html";
+fl["16"]= "writingTips.html";
+var doStem = false;searchLoaded = true;
