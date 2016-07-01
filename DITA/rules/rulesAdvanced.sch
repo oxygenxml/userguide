@@ -23,7 +23,7 @@
       <sch:param name="fragment" value=";"/>
       <sch:param name="element" value="li"/>
       <sch:param name="message"
-             value="List items should not end with a semi-column (;). If it is&#xA;            a sentence then end it with a full stop (.), otherwise leave&#xA;            it without an ending character."/>
+             value="List items should not end with a semi-colon (;). If it is&#xA;            a sentence then end it with a full stop (.), otherwise leave&#xA;            it without an ending character."/>
    </sch:pattern>
   
 <!-- ***Commented out since index terms were updated in the entire UG

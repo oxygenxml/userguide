@@ -44,7 +44,7 @@
       text that we need to check, <emph>element</emph> that points to
       the element we will check to not end with that fragment and
       <emph>message</emph> that contains the message we should display
-      to the user in case the fragment appears at the end of the the
+      to the user in case the fragment appears at the end of the
       specified element.</p>
     <parameters xmlns="http://oxygenxml.com/ns/schematron/params">
       <parameter>
@@ -61,7 +61,7 @@
       </parameter>
     </parameters> 
     <rule context="$element">
-      <assert test="not(ends-with(normalize-space(.), '$fragment'))"
+      <assert test="not(ends-with(normalize-space(.), '$fragment')) or local-name(node()[last()]) = 'codeblock' or local-name(node()[last()]) = 'screen'"
         role="warn" sqf:fix="avoidEndFragment_deleteFragment avoidEndFragment_replaceFragment">
         $message
       </assert>
