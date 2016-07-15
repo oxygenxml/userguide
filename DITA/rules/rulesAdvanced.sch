@@ -27,7 +27,7 @@
    </sch:pattern>
   
 <!-- ***Commented out since index terms were updated in the entire UG
-  <!-\- Check the the indexterm exist. -\->
+  <!-\- Check the indexterm exist. -\->
   <sch:pattern>
     <sch:rule context="/*">
       <sch:assert test="prolog/metadata/keywords/indexterm" role="warn" sqf:fix="addFragment">

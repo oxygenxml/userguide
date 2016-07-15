@@ -329,14 +329,13 @@
   
   <pattern id="restrictChildrenElements" abstract="true">
     <title>Restrict the elements that can appear inside a parent element</title>
-    <p>You can use this to constrain the elements that can appear inside a parent element 
-      to a set of allowed elements.</p>
-    <p>As parameters we have <emph>parentElement</emph> that specifies
-      the the element to be checked,
-      <emph>allowedChildren</emph> that specifies the comma separated 
-      list of allowed child element names and
-      <emph>message</emph> that specifies an additional message we should output in 
-      case the matched element contains elements that are not in the list of allowed elements.</p>
+    <p>You can use this to constrain the elements that can appear inside a parent element to a set
+      of allowed elements.</p>
+    <p>As parameters we have <emph>parentElement</emph> that specifies the element to be checked,
+        <emph>allowedChildren</emph> that specifies the comma separated list of allowed child
+      element names and <emph>message</emph> that specifies an additional message we should output
+      in case the matched element contains elements that are not in the list of allowed
+      elements.</p>
     <parameters xmlns="http://oxygenxml.com/ns/schematron/params">
       <parameter>
         <name>parentElement</name>
@@ -348,17 +347,16 @@
       </parameter>
       <parameter>
         <name>message</name>
-        <desc>An additional message we should display to the user in case the 
-          matched element contains children that are not in the list of allowed elements.</desc>
+        <desc>An additional message we should display to the user in case the matched element
+          contains children that are not in the list of allowed elements.</desc>
       </parameter>
     </parameters>
     <rule context="$parentElement/*">
-      <let name="elements" 
+      <let name="elements"
         value="tokenize(translate(normalize-space('$allowedChildren'), ' ', ''), ',')"/>
-      <assert test="local-name() = $elements" role="warn" sqf:fix="unwrapElement removeCurrentElement"> 
-        $message
-        The element '<value-of select="local-name()"/>' is not in the list 
-        of allowed elements: ($allowedChildren).
+      <assert test="local-name() = $elements" role="warn"
+        sqf:fix="unwrapElement removeCurrentElement"> $message The element '<value-of
+          select="local-name()"/>' is not in the list of allowed elements: ($allowedChildren).
       </assert>
     </rule>
   </pattern>
