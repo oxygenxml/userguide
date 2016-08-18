@@ -32,17 +32,61 @@
             <filepath>C:\Customization\fo\xsl\custom.xsl</filepath>
         </li>
         <li> Open the <filepath>custom.xsl</filepath> file in <ph keyref="product"/> and create the
-          template called <keyword>createFrontMatter_1.0</keyword> for DITA-OT 1.8 or
-            <keyword>createFrontCoverContents</keyword> for DITA-OT 2.x (you can copy the same
-          template from <filepath><term keyref="glossentry_dita_ot_dir"
-            />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath> and modify it in whatever
-          way necessary to achieve your specific goal). This new template in the
-            <filepath>custom.xsl</filepath> file will override the same template from
-              <filepath><term keyref="glossentry_dita_ot_dir"
-            />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath>.<p><b>DITA OT 1.8
-              Example:</b></p><p>For example, if you are using DITA OT 1.8, the
+          template called <keyword>createFrontCoverContents</keyword> for DITA-OT 2.x (or
+            <keyword>createFrontMatter_1.0</keyword> for DITA-OT 1.8).<note type="tip">You can copy
+            the same template from <filepath><term keyref="glossentry_dita_ot_dir"
+              />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath> and modify it in whatever
+            way necessary to achieve your specific goal. This new template in the
+              <filepath>custom.xsl</filepath> file will override the same template from
+                <filepath><term keyref="glossentry_dita_ot_dir"
+              />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath>.</note><p><b>DITA OT 2.x
+              Example:</b></p><p>For example, if you are using DITA OT 2.x, the
               <filepath>custom.xsl</filepath> could look like this:
               </p><codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format"
+    version="2.0">
+  
+&lt;xsl:template name="createFrontCoverContents">
+ &lt;!-- set the title -->
+ &lt;fo:block xsl:use-attribute-sets="__frontmatter__title">
+  &lt;xsl:choose>
+   &lt;xsl:when test="$map/*[contains(@class,' topic/title ')][1]">
+    &lt;xsl:apply-templates select="$map/*[contains(@class,' topic/title ')][1]"/>
+      &lt;/xsl:when>
+      &lt;xsl:when test="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]">
+        &lt;xsl:apply-templates select="$map//*[contains
+                                       (@class,' bookmap/mainbooktitle ')][1]"/>
+      &lt;/xsl:when>
+      &lt;xsl:when test="//*[contains(@class, ' map/map ')]/@title">
+        &lt;xsl:value-of select="//*[contains(@class, ' map/map ')]/@title"/>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;xsl:value-of select="/descendant::*[contains
+           (@class, ' topic/topic ')][1]/*[contains(@class, ' topic/title ')]"/>
+   &lt;/xsl:otherwise>
+  &lt;/xsl:choose>
+ &lt;/fo:block>
+    
+ &lt;!-- set the subtitle -->
+ &lt;xsl:apply-templates select="$map//*[contains
+                                          (@class,' bookmap/booktitlealt ')]"/>
+ &lt;fo:block xsl:use-attribute-sets="__frontmatter__owner">
+  &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/bookmeta ')]"/>
+ &lt;/fo:block>
+  
+ &lt;!-- Load the image logo -->
+  &lt;fo:block text-align="center" width="100%">
+   &lt;fo:external-graphic
+      src="url({concat($artworkPrefix, '/Customization/artwork/logo.png')})"
+    />
+  &lt;/fo:block>
+ &lt;/xsl:template>
+
+&lt;/xsl:stylesheet></codeblock><p><b>DITA
+              OT 1.8 Example:</b></p><p>For example, if you are using DITA OT 1.8, the
+              <filepath>custom.xsl</filepath> could look like this:
+          </p><codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:fo="http://www.w3.org/1999/XSL/Format"
     version="1.1">
@@ -95,50 +139,6 @@
         &lt;/fo:page-sequence>
         &lt;xsl:call-template name="createNotices"/>
     &lt;/xsl:template>
-&lt;/xsl:stylesheet></codeblock><p><b>DITA
-              OT 2.x Example:</b></p><p>For example, if you are using DITA OT 2.x, the
-              <filepath>custom.xsl</filepath> could look like this:
-          </p><codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
-&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:fo="http://www.w3.org/1999/XSL/Format"
-    version="2.0">
-  
-&lt;xsl:template name="createFrontCoverContents">
- &lt;!-- set the title -->
- &lt;fo:block xsl:use-attribute-sets="__frontmatter__title">
-  &lt;xsl:choose>
-   &lt;xsl:when test="$map/*[contains(@class,' topic/title ')][1]">
-    &lt;xsl:apply-templates select="$map/*[contains(@class,' topic/title ')][1]"/>
-      &lt;/xsl:when>
-      &lt;xsl:when test="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]">
-        &lt;xsl:apply-templates select="$map//*[contains
-                                       (@class,' bookmap/mainbooktitle ')][1]"/>
-      &lt;/xsl:when>
-      &lt;xsl:when test="//*[contains(@class, ' map/map ')]/@title">
-        &lt;xsl:value-of select="//*[contains(@class, ' map/map ')]/@title"/>
-      &lt;/xsl:when>
-      &lt;xsl:otherwise>
-        &lt;xsl:value-of select="/descendant::*[contains
-           (@class, ' topic/topic ')][1]/*[contains(@class, ' topic/title ')]"/>
-   &lt;/xsl:otherwise>
-  &lt;/xsl:choose>
- &lt;/fo:block>
-    
- &lt;!-- set the subtitle -->
- &lt;xsl:apply-templates select="$map//*[contains
-                                          (@class,' bookmap/booktitlealt ')]"/>
- &lt;fo:block xsl:use-attribute-sets="__frontmatter__owner">
-  &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/bookmeta ')]"/>
- &lt;/fo:block>
-  
- &lt;!-- Load the image logo -->
-  &lt;fo:block text-align="center" width="100%">
-   &lt;fo:external-graphic
-      src="url({concat($artworkPrefix, '/Customization/artwork/logo.png')})"
-    />
-  &lt;/fo:block>
- &lt;/xsl:template>
-
 &lt;/xsl:stylesheet></codeblock></li>
         <li>Edit the <uicontrol>DITA Map to PDF</uicontrol> transformation scenario and in the
             <keyword>Parameters</keyword> tab, set the <keyword>customization.dir</keyword>
