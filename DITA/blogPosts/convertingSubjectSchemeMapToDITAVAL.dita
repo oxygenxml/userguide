@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_qfl_l5z_1x">
+  <title>Converting Subject Scheme Map Values to a DITAVAL</title>
+  <body>
+    <p>Let's say you already have a Subject Scheme Map in your project and you use it to control
+      attribute values: <xref
+        href="http://blog.oxygenxml.com/2015/07/controlled-attribute-values-for-your.html"
+        format="html"/>. </p>
+    <p>In the Oxygen <b>Colors and Styles</b> Preferences page you can also assign various colors
+      and styles to each profiling attribute (name, value) combination. One option for this is to
+      manually re-add attributes and values in that list. Another option would be to create an XSLT
+      stylesheet to gather all profiling attribute names and values from the Subject Scheme map and
+      create a <b>DITAVAL</b> file. The stylesheet would look like this:</p>
+    <codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs"
+    version="2.0">
+    &lt;xsl:output indent="yes"/>
+    &lt;xsl:template match="/">
+        &lt;val>
+            &lt;xsl:for-each select="subjectScheme/enumerationdef">
+                &lt;!-- For each attribute name -->
+                &lt;xsl:if test="subjectdef/@keyref and attributedef/@name">
+                    &lt;xsl:variable name="attrName" select="attributedef/@name"/>
+                    &lt;xsl:variable name="keyref" select="subjectdef/@keyref"/>
+                    &lt;!-- For each key value -->
+                    &lt;xsl:for-each select="//*[@keys=$keyref]/*//@keys">
+                        &lt;xsl:variable name="attributeValue" select="."/>
+                        &lt;prop action="flag" att="{$attrName}" val="{$attributeValue}"/>
+                    &lt;/xsl:for-each>
+                &lt;/xsl:if>
+            &lt;/xsl:for-each>
+        &lt;/val>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock>
+    <p>After you obtain the <b>DITAVAL</b>, you can import it directly in the <b>Colors and
+        Styles</b> preferences page. If the <b>DITAVAL</b> file has flagging information, that
+      information will be directly used to style each attribute value.</p>
+    <p>A possibility to enhance this workaround is to specify profiling styles for each attribute
+      value directly in the Subject Scheme map using the <xmlelement>data</xmlelement> element
+      like:<codeblock outputclass="language-xml">&lt;subjectdef keys="linux">
+    &lt;data name="color" value="yellow"/>
+&lt;/subjectdef></codeblock></p>
+    <p>in which case the <b>XSLT</b> stylesheet would create the <b>DITAVAL</b> by picking colors
+      directly from the <b>Subject Scheme
+      Map</b>:<codeblock outputclass="language-xml">….….…....
+&lt;prop action="flag" att="{$attrName}" val="{$attributeValue}">
+    &lt;xsl:choose>
+        &lt;!-- Here you can also set flagging colors depending on the profiling attribute value -->
+        &lt;xsl:when test="data[@name='color']">
+            &lt;xsl:attribute name="color" select="data/@value"/>
+        &lt;/xsl:when>
+    &lt;/xsl:choose>
+&lt;/prop>
+….….….….</codeblock>In
+      this way your <b>Subject Scheme Map</b> will keep both the controlled attribute values and
+      various colors and styles which can later be used to create a <b>DITAVAL</b> and either
+      publish with those styles or import the <b>DITAVAL</b> in Oxygen in order to highilight
+      various elements with various colors:<xref
+        href="https://www.oxygenxml.com/demo/Colors_and_Styles_for_Profiled_Content.html"
+        format="html"/>.</p>
+  </body>
+</topic>
