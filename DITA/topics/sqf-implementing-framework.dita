@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="sqf-implementing-framework">
+  <title>Integrating SQF in a Framework</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Schematron Quick Fixes<indexterm>Integrating in a
+          framework</indexterm></indexterm>
+        <indexterm>SQF<indexterm>Integrating in a framework</indexterm></indexterm>
+        <indexterm>Integrate Schematron Quick Fixes in a framework</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>You can use Schematron Quick Fixes to assist your content authors by imposing rules for an
+      entire framework (document type) and offering fixes when a rule violation is detected.</p>
+    <p>For example, if you are using DITA, you may want your contributors to avoid inserting a
+      figure (<codeph>fig</codeph> element) inside a paragraph (<codeph>p</codeph> element) that
+      contains other content since it may result in undesirable placement or spacing in the output.
+      The Schematron rule and its Quick Fix for this particular use-case could look like this:</p>
+    <p>
+      <codeblock outputclass="language-xml">&lt;schema xmlns="http://purl.oclc.org/dsdl/schematron"
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+ queryBinding="xslt2">
+   &lt;pattern id="check.figure.location">
+     &lt;rule context="p/fig">
+         &lt;report test="true()" role="warn" sqf:fix="moveAfter">
+         A figure inside a paragraph doesn't transform well into PDF. &lt;/report>
+         &lt;sqf:fix id="moveAfter">
+             &lt;sqf:description>
+                 &lt;sqf:title>Move after the paragraph.&lt;/sqf:title>
+             &lt;/sqf:description>
+             &lt;let name="figToMove" value="."/>
+             &lt;sqf:add match="parent::p" select="$figToMove" position="after"/>
+             &lt;sqf:delete match="."/>
+         &lt;/sqf:fix>
+     &lt;/rule>
+   &lt;/pattern>
+&lt;/schema></codeblock>
+    </p>
+    <p>The result of this example would be that the user will see a warning if they try to insert a
+        <codeph>fig</codeph> element inside a <codeph>p</codeph> element and they are presented with
+      the option of selecting the Quick Fix that would move the figure outside the paragraph.</p>
+    <section id="how_to_integrate_sqf_in_a_framework">
+      <title>How to Integrate SQF in a Framework</title>
+      <p>To integrate a Schematron Quick Fix in a framework, follow these steps:<ol>
+          <li><xref href="customizing-sqf.dita#customizing-sqf">Define a Schematron rule</xref> and
+              <xref href="sqf-operations.dita#sqf-operations">create a Quick Fix for the rule</xref>
+            in an existing or new Schematron file.</li>
+          <li>Save it somewhere in your framework directory. For example, the default framework
+            directory for DITA is located in: <filepath><term
+                conkeyref="reusables-user-guide/oxy-install-dir"/>/frameworks/dita/</filepath>.</li>
+          <li>Add a reference to the Schematron file that includes the SQF in your framework by
+            following the procedure in <xref
+              href="associate-schema-framework-validation.dita#associate-schema-framework-validation"
+            />.</li>
+          <li>Open a document in your framework and test the new rule and quick fix.</li>
+          <li>You can continue to refine the rule and develop additional rules as needed.</li>
+        </ol></p>
+    </section>
+  </body>
+  <related-links>
+    <link href="customizing-sqf.dita#customizing-sqf"/>
+    <link href="sqf-operations.dita#sqf-operations"/>
+    <link href="associate-schema-framework-validation.dita#associate-schema-framework-validation"/>
+  </related-links>
+</topic>
