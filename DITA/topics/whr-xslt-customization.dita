@@ -1,44 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="whr-xslt-customization">
-  <title>Changing the topics displayed in the Webhelp Responsive side TOC </title>
+  <title>Changing the topics displayed by the Webhelp Responsive side TOC </title>
   <body>
-    <p>This topic presents an XSLT customization for changing the topics displayed by the topic side
-      TOC. The default transformation generates a mini table of contents for the current topic. It
-      will contain links to the children of current topic, its siblings, and all of its ancestors.
-      We want to customize this generation to include only the current topic together with its
-      children.</p>
-    <p>The XSLT template responsible for this functionality is defined in the
-      {DITA-OT-folder}/plugins/com.oxygenxml.webhelp/xsl/dita/responsive/navigationLinks.xsl.<codeblock outputclass="language-xml">&lt;xsl:template
+    <section id="section_ljw_jhg_dx"><title>Webhelp<b><b> XSLT-import extension
+        point</b></b></title><p>This topic presents an XSLT customization for changing the structure
+        of the topics generated for the Webhelp Responsive side TOC component. The default
+        transformation generates a mini table of contents for the current topic. It will contain
+        links to the children of current topic, its siblings, and all of its ancestors. We want to
+        customize this generation to include only the current topic together with its
+        children.</p><image href="../img/WH-XSLT-customization.png" id="image_h4x_prg_dx"/><p>The
+        XSLT template responsible for this functionality is defined in the
+        {DITA-OT-folder}/plugins/com.oxygenxml.webhelp/xsl/dita/responsive/navigationLinks.xsl.<codeblock outputclass="language-xml">&lt;xsl:template
     match="
     toc:topic
     [not(@toc = 'no')]
     [not(@processing-role = 'resource-only')]"
-    mode="toc-pull" priority="10">
-
-    &lt;xsl:param name="pathFromMaplist" as="xs:string"/>
-    &lt;xsl:param name="children" select="()" as="element()*"/>
-    &lt;xsl:param name="parent" select="parent::*" as="element()?"/></codeblock></p>
-    <p>This templates computes the link for the current matched topic together with the links for
-      the sibling topics and propagate them recursively to the parent topic. We need to override it
-      to emit the link for the current topic together with the child links that the template already
-      receive.</p>
-    <p>To add this functionality without modifying the sources of the Webhelp plugin we can
-      implement an external DITA-OT plugin that use the
-        <?oxy_comment_start author="radu_pisoi" timestamp="20160829T172659+0300" comment="Link to the extension point from the parent topic."?>'<b>com.oxygenxml.webhelp.xsl.dita2webhelp</b>'<?oxy_comment_end?>
-      extension point. This extension point allows you to specify a customization stylesheet that
-      will override the template above.</p>
-    <p>The procedure for adding this functionality as a DITA-OT plugin is:<ol id="ol_at4_wk1_dx">
-        <li>In the DITA-OT/plugins folder create a directory for this plugin, lets say:
-          com.oxygenxml.webhelp.custom.sidetoc.</li>
-        <li>Create the <b>plugin.xml</b> file in the main plugin folder that specify the
-          customization
-          stylesheet:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.custom.navlinks">
+    mode="toc-pull" priority="10"></codeblock></p><p>This
+        templates computes the link for the current matched topic together with the links for the
+        sibling topics and then propagate them recursively to the parent topic. We need to override
+        it to emit the link for the current topic together with the child links that the template
+        already receives.</p><p>To add this functionality without modifying the sources of the
+        Webhelp plugin we can implement an external DITA-OT plugin that uses the
+          <?oxy_comment_start author="radu_pisoi" timestamp="20160829T172659+0300" comment="Link to the extension point from the parent topic."?>'<b>com.oxygenxml.webhelp.xsl.dita2webhelp</b>'<?oxy_comment_end?>
+        extension point. This extension point allows you to specify a customization stylesheet that
+        will override the template above.</p><p>The procedure for adding this functionality as a
+        DITA-OT plugin is:<ol id="ol_at4_wk1_dx">
+          <li>In the DITA-OT/plugins folder create a directory for this plugin, lets say:
+            com.oxygenxml.webhelp.custom.sidetoc.</li>
+          <li>Create the <b>plugin.xml</b> file in the plugin folder that specify the customization
+            stylesheet:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.custom.navlinks">
     &lt;feature extension="com.oxygenxml.webhelp.xsl.dita2webhelp" file="custom_side_TOC.xsl"/>    
 &lt;/plugin></codeblock></li>
-        <li>Create the customization stylesheet, custom_side_TOC.xsl, and edit it to override the
-          template that emits the side
-          TOC:<codeblock outputclass="language-xml">&lt;xsl:template
+          <li>Create the customization stylesheet, custom_side_TOC.xsl, and edit it to override the
+            template that emits the side
+            TOC:<codeblock outputclass="language-xml">&lt;xsl:template
         match="
         toc:topic
         [not(@toc = 'no')]
@@ -50,22 +46,26 @@
         &lt;xsl:param name="children" select="()" as="element()*"/>
         &lt;xsl:param name="parent" select="parent::*" as="element()?"/>
         
-        &lt;!-- Current processed topicref -->
         &lt;xsl:apply-templates select="." mode="sideTocEntry">
           &lt;xsl:with-param name="pathFromMaplist" select="$pathFromMaplist"/>
           &lt;xsl:with-param name="children" select="$children"/>
         &lt;/xsl:apply-templates>
 &lt;/xsl:template></codeblock></li>
-        <li>Run the <i>Run DITA OT Integrator</i> transformation scenario to run the DITA-OT
-          Integrator tool.</li>
-      </ol></p>
-    <p>Another use case when implement a XSLT customization is to declare parameters in your
-      stylesheets to make the processing dynamic. For this use case, we can use other Webhelp
-      extension point <b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b>. </p>
-    <p>Lets extend our example and suppose that we want to add a parameter to control if side TOC
-      will be generated only containing the current topic with its children. We can do this by
-      declaring the <i>side_toc_only_children</i> parameter and modify the template to look at
-      it:<codeblock outputclass="language-xml">&lt;xsl:param name="side_toc_only_children" select="'yes'"/>
+          <li>Run the <i>Run DITA OT Integrator</i> transformation scenario to run the DITA-OT
+            Integrator tool.</li>
+          <li>Run a <b>DITA Map WebHelp Responsive</b> transformation scenario and you should obtain
+            the customized side TOC.</li>
+        </ol></p></section>
+    <section id="section_hp1_phg_dx">
+      <title>Webhelp <b>XSLT-parameter extension point</b></title>
+      <p>Another use case when implement an XSLT customization is to declare a parameters in your
+        stylesheets to make the processing dynamic. For this use case, we can use another Webhelp
+        extension point <b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b>. </p>
+      <p>Lets extend our example and suppose that we want to add a parameter to control if side TOC
+        will be generated only containing the current topic with its children or in the default
+        form. We can do this by declaring the <i>side_toc_only_children</i> parameter and modify the
+        template to match the topic only when <i>side_toc_only_children</i> parameter is set to
+          <i>yes</i>:<codeblock outputclass="language-xml">&lt;xsl:param name="side_toc_only_children" select="'yes'"/>
 ...
 &lt;xsl:template
         match="
@@ -74,15 +74,16 @@
         [not(@processing-role = 'resource-only')]
         [$side_toc_only_children = 'yes']"
 ...</codeblock></p>
-    <p>To add the possibility to specify this parameter from the transformation scenario we can use
-      the <b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b> XSLT-parameter extension points.
-      Simply edit the plugin.xml file and add the next
-      line:<codeblock outputclass="language-xml">&lt;feature extension="com.oxygenxml.webhelp.xsl.dita2webhelp.param" file="custom_params.xml"/></codeblock></p>
-    <p>The custom_params.xml file should look
-      like:<codeblock>&lt;dummy>
+      <p>To add the possibility to specify this parameter from the transformation scenario we can
+        use the <b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b> XSLT-parameter extension points.
+        Simply edit the plugin.xml file and add the next
+        line:<codeblock outputclass="language-xml">&lt;feature extension="com.oxygenxml.webhelp.xsl.dita2webhelp.param" file="custom_params.xml"/></codeblock></p>
+      <p>The custom_params.xml file should look
+        like:<codeblock outputclass="language-xml">&lt;dummy>
     &lt;param name="side_toc_only_children" expression="${side_toc_only_children}"/>
 &lt;/dummy></codeblock></p>
-    <p>Before you use this parameter, you have to execute the <i>Run DITA OT Integrator</i>
-      transformation scenario. This will to run the DITA-OT Integrator tool.</p>
+      <p>Before you use this parameter, you have to execute the <i>Run DITA OT Integrator</i>
+        transformation scenario. This will to run the DITA-OT Integrator tool.</p>
+    </section>
   </body>
 </topic>
