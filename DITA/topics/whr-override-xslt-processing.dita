@@ -6,13 +6,13 @@
     <metadata>
       <keywords>
         <indexterm>WebHelp Responsive system<indexterm>Overriding the XSLT processing
-          step</indexterm></indexterm>
+            step</indexterm></indexterm>
         <indexterm>WebHelp Classic system<indexterm>Overriding the XSLT processing
           step</indexterm></indexterm>
         <indexterm>WebHelp Responsive system<indexterm>Customizing<indexterm>Overriding the XSLT
-          processing step</indexterm></indexterm></indexterm>
+              processing step</indexterm></indexterm></indexterm>
         <indexterm>WebHelp Classic system<indexterm>Customizing<indexterm>Overriding the XSLT
-          processing step</indexterm></indexterm></indexterm>
+              processing step</indexterm></indexterm></indexterm>
         <indexterm>XSLT Import extension points for WebHelp</indexterm>
         <indexterm>XSLT Parameter extension points for WebHelp</indexterm>
       </keywords>
@@ -34,39 +34,44 @@
           <dlentry id="xsl-dita2webhelp">
             <dt><b>com.oxygenxml.webhelp.xsl.dita2webhelp</b></dt>
             <dd>You can use this extension point to override a template of the XSLT stylesheet
-              (<filepath>dita2webhelpImpl.xsl</filepath>) that produces an HTML file for each DITA
+                (<filepath>dita2webhelpImpl.xsl</filepath>) that produces an HTML file for each DITA
               topic. Depending on the type of WebHelp transformation you are currently using, the
               path to this stylesheet is as follows:<ul>
                 <li><b><i>WebHelp Classic</i> Transformations</b> - <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\dita2webhelpImpl.xsl</filepath></li>
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\dita2webhelpImpl.xsl</filepath></li>
                 <li><b><i>WebHelp Classic Mobile</i> Transformations</b> - <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />\plugins\com.oxygenxml.webhelp\xsl\dita\mobile\dita2webhelpImpl.xsl</filepath></li>
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\mobile\dita2webhelpImpl.xsl</filepath></li>
                 <li><b><i>WebHelp Responsive</i> Transformations</b> - <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />\plugins\com.oxygenxml.webhelp\xsl\dita\responsive\dita2webhelpImpl.xsl</filepath></li>
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\responsive\dita2webhelpImpl.xsl</filepath></li>
               </ul></dd>
           </dlentry>
           <dlentry id="xsl-creatMainFiles">
             <dt><b>com.oxygenxml.webhelp.xsl.createMainFiles</b></dt>
             <dd>You can use this extension point to override a template of the XSLT stylesheet
-              (<filepath>createMainFilesImpl.xsl</filepath>) that produces the WebHelp main HTML
+                (<filepath>createMainFilesImpl.xsl</filepath>) that produces the WebHelp main HTML
               page. Depending on the type of WebHelp transformation you are currently using, the
               path to this stylesheet is as follows:<ul>
                 <li><b><i>WebHelp Classic</i> Transformations</b> - <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\createMainFilesImpl.xsl</filepath></li>
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\createMainFilesImpl.xsl</filepath></li>
                 <li><b><i>WebHelp Classic Mobile</i> Transformations</b> - <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />\plugins\com.oxygenxml.webhelp\xsl\dita\mobile\createMainFilesImpl.xsl</filepath></li>
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\mobile\createMainFilesImpl.xsl</filepath></li>
                 <li><b><i>WebHelp Responsive</i> Transformations</b> - <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />\plugins\com.oxygenxml.webhelp\xsl\dita\responsive\createMainFilesImpl.xsl</filepath></li>
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\responsive\createMainFilesImpl.xsl</filepath></li>
               </ul></dd>
           </dlentry>
         </dl>
       </p>
+      <note type="attention"
+        ><?oxy_comment_start author="radu_pisoi" timestamp="20160920T122315+0300" comment="EXM-37387 - Added a note"?>Please
+        note that the customizations you made by using this extension point will affect all Webhelp
+        transformations. If you want to have a customization that is available only for a certain
+        plugin please use the last method.<?oxy_comment_end?></note>
     </section>
     <section id="section_qvc_d1y_bx">
       <title>XSLT-Parameter Extension Points</title>
@@ -84,11 +89,162 @@
           <dlentry>
             <dt><b>com.oxygenxml.webhelp.xsl.createMainFiles.param</b></dt>
             <dd>Use this extension point to pass parameters to the stylesheet specified using the
-              <xref href="#whr-override-xslt-processing/xsl-creatMainFiles" format="dita"
-                ><b>com.oxygenxml.webhelp.xsl.createMainFiles</b> extension point</xref>.</dd>
+                <xref href="#whr-override-xslt-processing/xsl-creatMainFiles" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.createMainFiles</b> extension point</xref>.</dd>
           </dlentry>
         </dl>
       </p>
+    </section>
+    <section id="section_dwp_fcw_3x">
+      <title><?oxy_comment_start author="radu_pisoi" timestamp="20160920T122252+0300" comment="EXM-37387 - Procedure for specifying a customization XSLT "?>Overriding
+        the XSLT stylesheet from a customization ANT build file</title>
+      <p>This method is useful when you want to create a customization available only for a certain
+        DITA-OT extension plugin. This method implies to create a DITA-OT plugin that defines a
+        custom transtype. From the ANT target associated with the plugin transtype you will specify
+        a custom XSLT stylesheet. This customization XSLT stylesheet will import the original
+        Webhelp stylesheet and also will add some customization templates.</p>
+      <p>If you want to use this method you need to create a DITA-OT extension plugin. A sample
+        procedure for customing the Webehelp Responsive is:</p>
+      <ol id="ol_mz4_n2w_3x">
+        <li>In the <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\</filepath> folder,
+          create a folder for this plugin (for example,
+            <filepath>com.oxygenxml.webhelp.responsive.custom</filepath>).</li>
+        <li>Create a <b>plugin.xml</b> file (in the folder you created in step 1) that specifies a
+          new DITA-OT transtype ant the build file associated with the plugin. For
+          example:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.responsive.customization">
+    &lt;feature extension="dita.conductor.target.relative" file="integrator.xml"/>
+    &lt;transtype name="webhelp-responsive-custom" extends="webhelp-responsive" desc="WebHelp Responsive Customization"/>
+&lt;/plugin></codeblock></li>
+        <li>Create the <b>integrator.xml</b> file that will import the actual plugin ANT build
+          file.<codeblock>&lt;project basedir="." name="Webhelp Responsive Customization">    
+    &lt;import file="build.xml"/>
+&lt;/project></codeblock></li>
+        <li>Create the <b>build.xml</b> file that overrides the value of properties associated with
+          the XSLT stylesheets used to produce HTML files. Two ANT properties can be overridden in
+          order to specify your customization stylesheets:<p>
+            <dl>
+              <dlentry>
+                <dt>args.wh.xsl</dt>
+                <dd>Override this property if you want to customize the XSLT stylesheet used to
+                  produce an HTML file for each topic.</dd>
+              </dlentry>
+              <dlentry>
+                <dt>args.create.main.files.xsl</dt>
+                <dd>Override this property if you want to customize the XSLT stylesheet used to
+                  produce the main HTML file.</dd>
+              </dlentry>
+            </dl>
+          </p><p>For customizing the Webhelp Responsive, the build file should look
+            like:</p><codeblock outputclass="language-xml">&lt;project basedir="." name="Webhelp Responsive Customization">  
+  &lt;target name="dita2webhelp-custom">    
+    &lt;!-- 
+      Override this property if you want to customize the XSLT stylesheet 
+      used to produce an HTML file for each topic 
+    -->    
+    &lt;property 
+      name="args.wh.xsl" 
+      value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}/xsl/dita2webhelpCustom.xsl"/>
+    
+    &lt;!-- 
+      Override this property if you want to customize the XSLT stylesheet 
+      used to produce the main HTML file.
+    -->    
+    &lt;property 
+      name="args.create.main.files.xsl" 
+      value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}/xsl/createMainFilesCustom.xsl"/>
+    
+    &lt;!--
+      Depending on what version of Webhelp you want cu customize, 
+      you need to delegate to different build targets:
+      * dita2webhelp-responsive - when you are customizing the Webhelp Responsive
+      * dita2webhelp-mobile - when you are customizing the Webhelp Mobile
+      * dita2webhelp - when you are customizing the Webhelp Classic
+    -->
+    &lt;antcall target="dita2webhelp-responsive"/>
+  &lt;/target>  
+&lt;/project></codeblock><note>Depending
+            on what version of Webhelp you want cu customize, you need to delegate to different
+            build targets:<ul id="ul_iq2_knw_3x">
+              <li>
+                <p>dita2webhelp-responsive - to customize the Webhelp Responsive.</p>
+              </li>
+              <li>
+                <p>dita2webhelp-mobile - to customize the Webhelp Mobile</p>
+              </li>
+              <li>
+                <p>dita2webhelp - to customize the Webhelp Classic</p>
+              </li>
+            </ul></note></li>
+        <li>Create the 'xsl' directory in the plugin customization directory to hold the
+          customization XSLT stylesheets.<p>To customize the stylesheet used to produce an HTML file
+            for each topic (defined with property <b>args.wh.xsl</b>), create the
+            'dita2webhelpCustom.xsl' stylesheet in the plugin 'xsl' directory. This stylesheet will
+            import the original stylesheet and will contain the customization templates. It should
+            look
+            like:</p><codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+    exclude-result-prefixes="xs math"
+    version="2.0">    
+    &lt;!--
+        Import the original stylesheet used to produce an HTML file for each topic.
+    -->
+    &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/dita2webhelp.xsl"/>
+    
+    &lt;!--
+        Please add your customization templates here.
+    -->
+&lt;/xsl:stylesheet></codeblock><note>Depending
+            on what version of Webhelp you want cu customize, you need to import a different XSLT
+              stylesheet:<ul id="ul_xfs_vnw_3x">
+              <li>
+                <p>dita2webhelp-responsive</p>
+                <codeblock><b>&lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/dita2webhelp.xsl"/></b></codeblock>
+              </li>
+              <li>
+                <p>dita2webhelp-mobile</p>
+                <codeblock><b>&lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/mobile/dita2webhelp.xsl"/></b></codeblock>
+              </li>
+              <li>
+                <p>dita2webhelp</p>
+                <codeblock><b>&lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/desktop/dita2webhelp.xsl"/></b></codeblock>
+              </li>
+            </ul></note><p>For the case when you want to customize the stylesheet used to create the
+            main HTML file (defined with property <b>args.create.main.files.xsl</b>), you need to
+            create the <b>createMainFilesCustom.xsl</b> XSLT stylesheet. It will contain an import
+            to the original stylesheet together with the customization templates. It should look
+            like:<codeblock>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+    exclude-result-prefixes="xs math"
+    version="2.0">    
+    &lt;!--
+        Import the original stylesheet used to produce the main HTML file.
+    -->
+    &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/createMainFiles.xsl"/>
+    
+    &lt;!--
+        Please add your customization templates here.
+    -->
+        
+&lt;/xsl:stylesheet></codeblock></p></li>
+      </ol>
+      <note>Depending on what version of Webhelp you want cu customize, you need to import a
+        different XSLT stylesheet:<ul id="ul_om2_z4w_3x">
+          <li>
+            <p>dita2webhelp-responsive</p>
+            <codeblock><b>&lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/createMainFiles.xsl"/></b></codeblock>
+          </li>
+          <li>
+            <p>dita2webhelp-mobile</p>
+            <codeblock><b>&lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/mobile/createMainFiles.xsl"/></b></codeblock>
+          </li>
+          <li>
+            <p>dita2webhelp</p>
+            <codeblock><b>&lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/desktop/createMainFiles.xsl"/></b><?oxy_comment_end?></codeblock>
+          </li>
+        </ul></note>
     </section>
   </body>
   <related-links>
