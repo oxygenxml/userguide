@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="markdown-rules">
-  <title>Markdown Rules and Specifications</title>
+  <title>Markdown Syntax Rules and Specifications</title>
   <prolog>
     <metadata>
       <keywords>
@@ -10,6 +10,496 @@
     </metadata>
   </prolog>
   <body>
-    <p>...</p>
+    <p>The Markdown editor in <ph keyref="product"/> uses rules that were integrated from the most
+      common set of <xref href="http://daringfireball.net/projects/markdown/syntax" format="html"
+        scope="external">default Markdown syntax rules</xref> along with many of the <xref
+        href="https://help.github.com/categories/writing-on-github/" format="html" scope="external"
+        >GitHub Flavored Markdown rules</xref>.</p>
+    <p>The <ph keyref="product"/> implementation of the most commonly used syntax rules are as
+      follows:</p>
+    <section id="headers">
+      <title>Headers</title>
+      <p>The Markdown editor supports two styles of headers, <term>Setext</term> and
+          <term>Atx</term>.</p>
+      <p>
+        <ul>
+          <li><b>Setext Style</b><p>Setext-style headers are underlined using equal signs (for
+              first-level headers) and dashes (for second-level headers). Any number of equal signs
+              or dashes will result in the same output.</p><p><b><u>Example: Setext Style
+                  Headers</u></b><screen>First-Level Header (H1)
+========
+
+Second-Level Header (H2)
+------------</screen></p></li>
+          <li><b>Atx Style</b><p>Atx-style headers use 1-6 hash characters at the start of the line,
+              corresponding to header levels 1-6. Optionally, you may close atx-style headers. This
+              is purely cosmetic and the closing hashes do not need to match the number of hashes
+              used to open the header. It is the number of opening hashes that determines the header
+              level.</p><p><b><u>Example: Atx Style
+              Headers</u></b><screen># H1 text #
+## H2 text 
+### H3 text ###### 
+#### H4 text
+##### H5 text ###
+###### H6 text</screen></p></li>
+        </ul>
+      </p>
+    </section>
+    <section id="horizontal_rules">
+      <title>Horizontal Rules</title>
+      <p>You can produce a horizontal rule tag (<codeph>&lt;hr /></codeph>) by placing three or more
+        hyphens, asterisks, or underscores on a line by themselves. Optionally, they can be
+        separated by spaces.</p>
+      <p>
+        <ul>
+          <li><b><u>Example: Horizontal
+            Rules</u></b><screen>* * *
+
+*****
+
+---------------------------------------
+
+_ _ _ _</screen></li>
+        </ul>
+      </p>
+    </section>
+    <section id="paragraphs_and_line_breaks">
+      <title>Paragraphs and Line Breaks</title>
+      <p>A paragraph is simply one or more consecutive lines of text, separated by one or more blank
+        lines. The text at the beginning of a paragraph should not be indented with spaces or tabs.
+        To create a new paragraph, simply insert a blank line in between them.<note type="important"
+          >When converting to HTML, if you break a paragraph on multiple lines (without a blank line
+          in between them), it will create a break tag (<codeph>&lt;br /></codeph>. When converting
+          to DITA, the text is kept in a single paragraph in this case and a blank line is required
+          to break a paragraph. This behavior differs slightly from the default Markdown
+          rules.</note></p>
+      <p>
+        <ul>
+          <li><b><u>Example:
+            Paragraphs</u></b><screen>This is a paragraph that contains
+two lines of text. (In HTML, a break tag is created in between the two lines)
+
+This is a new paragraph.</screen></li>
+        </ul>
+      </p>
+    </section>
+    <section id="styling_text">
+      <title>Styling Text</title>
+      <p>The Markdown editor supports some syntax rules for styling text (such as bold, italic, or strikethrough).<ul>
+          <li><b>Italic (Emphasis)</b> - Text wrapped with one asterisk or underscore produces an
+            italic (emphasis) tag.<screen>*italic*
+_italic_</screen></li>
+          <li><b>Bold (Strong)</b> - Text wrapped with two asterisks or underscores produces a bold
+            (strong) tag.<screen>**bold**
+__bold__</screen></li>
+          <li><b>Strikethrough</b> - In HTML only, text wrapped with two tildes
+              (<userinput>~~</userinput>) produces a strikethrough
+            tag.<screen>~~strikethrough~~</screen></li>
+        </ul><note type="tip">You can also combine these styling rules. For example,
+            <userinput>**BoldText_ItalicText_BoldText**</userinput> would produce italicized text
+          within bold text. Also, if you surround an asterisk or underscore with spaces, it will be
+          treated as a literal asterisk or underscore. To produce a literal asterisk or underscore
+          at a position where it would otherwise be used as an styling delimiter, you can escape it
+          with a backslash (for example, <userinput>\*literal asterisks\*</userinput>.</note></p>
+    </section>
+    <section id="links">
+      <title>Links</title>
+      <p>The Markdown editor supports two types of links, <i>inline</i> and <i>reference</i>. In
+        both cases, it begins with link text that is delimited by [square brackets].</p>
+      <p>
+        <ul>
+          <li><b>Inline Links</b><p>To create an inline link, use a set of regular parentheses
+              immediately after the closing square bracket for the link text. Inside the
+              parentheses, put the URL where you want the link to point, and optionally a title
+              surrounded in quotes. Also, if you referencing a local resource on the same server,
+              you can use relative paths.</p><p><b><u>Examples: Inline Link</u></b></p><p>With a
+              title:<screen>Text with [example link text](http://www.example.com/path "Title") an inline link with a title.</screen></p><p>Without
+              a
+              title:<screen>Text with [example link text](http://www.example.com/path) an inline link without a title.</screen></p><p>Relative
+              path:<screen>Text with [example link text](/relative_path/) an inline link with relative path.</screen></p></li>
+          <li><b>Reference Links</b><p>Reference-type links use a second set of square brackets that
+              include a label (link identifier) to identify the link (it may consist of letters,
+              numbers, spaces, and punctuation and it is not case sensitive). You can optionally use
+              a space to separate the sets of brackets. The labels (link identifiers) are only used
+              for creating the links and do not appear in the
+              output.<screen>Text with [link text1][id 1] a reference-type link and [link text2][id_2] another one.</screen></p><p>Then,
+              somewhere in the document, you need to define your link label on a line by itself. The
+              link identifier must be within square brackets followed by a colon, then after one or
+              more spaces the URL for the link. Optionally this can be followed by a title enclosed
+              in single quotes, double quotes, or parentheses. Also, the link may optionally be
+              enclosed in angle brackets (<userinput>&lt;
+              ></userinput>).<screen>[id 1]: http://example1.com/ "Optional Title"
+[id_2]: &lt;http://example2.com/> "Optional Title2"</screen></p><p>Other
+              notes about Reference Links:<ul>
+                <li>You can put the title on a second line and use extra spaces or tabs for padding.
+                  This is useful for aesthetics when the URL is
+                  long.<screen>[id]: http://example.com/long/path/to/resource/here
+    "Optional Title Here"</screen></li>
+                <li>The label (link identifier) can be missing, in which case the link text (in
+                  square brackets) is used as the name.<screen>[My Link][]</screen><p>and then
+                    defined as:<screen>[My Link]: http://example.com/</screen></p></li>
+              </ul></p></li>
+        </ul>
+      </p>
+    </section>
+    <section id="automatic_links">
+      <title>Automatic Links</title>
+      <p>The Markdown editor supports a shortcut style for creating automatic links for URLs and
+        email addresses. You simply surround the URL or email address with angle
+          brackets.<note>These automatic links only work properly in HTML conversions. The
+            <uicontrol>Preview</uicontrol> pane may display them properly in the DITA tab, but the
+          DITA output will not properly recognize the format.</note></p>
+      <p>
+        <ul>
+          <li><b>URLs</b><p>By surrounding a URL with angle brackets, you can show the actual text
+              of the URL while also making it clickable in the
+              output.<screen>&lt;http://example.com/></screen></p><p>In HTML, it is converted
+              to:<screen>&lt;a href="http://example.com/">http://example.com/&lt;/a></screen></p></li>
+          <li><b>Email Addresses</b><p>Automatic links for email addresses work similarly, except
+              that Markdown will also perform a bit of randomized decimal and hex entity-encoding to
+              help obscure your address from address-harvesting
+              <term>spambots</term>.<screen>&lt;address@example.com></screen></p><p>In HTML, it is
+              converted to something
+              like:<screen>&lt;a href="&amp;#x6D;&amp;#x61;i&amp;#x6C;&amp;#x74;&amp;#x6F;:&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;
+&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;&amp;#109;&amp;#x70;&amp;#x6C;e&amp;#x2E;&amp;#99;&amp;#111;
+&amp;#109;">&amp;#x61;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#x65;&amp;#115;&amp;#115;&amp;#64;&amp;#101;&amp;#120;&amp;#x61;
+&amp;#109;&amp;#x70;&amp;#x6C;e&amp;#x2E;&amp;#99;&amp;#111;&amp;#109;&lt;/a></screen></p></li>
+        </ul>
+      </p>
+    </section>
+    <section id="images">
+      <title>Images</title>
+      <p>The Markdown editor uses an image syntax that is intended to resemble the syntax for links,
+        allowing for the same two types: <i>inline</i> and <i>reference</i>. In both cases, the
+        syntax for images begin with an exclamation mark, followed by <codeph>alt</codeph> attribute
+        text surrounded by square brackets., and then followed by a set of parentheses that contain
+        the URL or path to the image.</p>
+      <p>
+        <ul>
+          <li><b>Inline Images</b><p>For inline images, use a set of regular parentheses immediately
+              after the closing square bracket for the <codeph>alt</codeph> attribute text. Inside
+              the parentheses, put the URL or path of the image, and optionally a title surrounded
+              in quotes.</p><p><b><u>Examples: Inline Images</u></b></p><p>With a
+              title:<screen>Text with ![Alt text](/path/to/img.jpg "Optional title") an inline image with a title.</screen></p><p>Without
+              a
+              title:<screen>Text with ![Alt text](/path/to/img.jpg) an inline link without a title.</screen></p></li>
+          <li><b>Reference Images</b><p>For reference-type images, use a second set of square
+              brackets that include a label (image identifier) to identify the image (it may consist
+              of letters, numbers, spaces, and punctuation and it is not case sensitive). You can
+              optionally use a space to separate the sets of brackets. The labels (image
+              identifiers) do not appear in the
+              output.<screen>Text with ![Alt text1][id] a reference-type image.</screen></p><p>Then,
+              somewhere in the document, you need to define your image label on a line by itself.
+              The image identifier must be within square brackets followed by a colon, then after
+              one or more spaces the URL or path of the image. Optionally this can be followed by a
+              title enclosed in single quotes, double quotes, or
+              parentheses.<screen>[id]: url/to/image "Optional Title"</screen></p></li>
+        </ul>
+      </p>
+    </section>
+    <section id="blockquotes">
+      <title>Blockquotes</title>
+      <p>The Markdown editor uses email-style greater than characters (<userinput>></userinput>) for
+          <term>blockquotes</term>. You only need to put the <userinput>></userinput> before the
+        first line of a hard-wrapped paragraph, but it looks better (and is more clear) if you put a
+          <userinput>></userinput> before every line.</p>
+      <p>
+        <ul>
+          <li><b><u>Example:
+            Blockquotes</u></b><screen>> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+> consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+> Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+> 
+> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+> id sem consectetuer libero luctus adipiscing.</screen></li>
+          <li>
+            <p><term>Blockquotes</term> can be nested by adding additional levels of
+                <userinput>></userinput> characters.</p>
+            <p><b><u>Example: Nested
+              Blockquotes</u></b><screen>> This is the first level of quoting.
+>
+> > This is nested blockquote.
+>
+> Back to the first level.</screen></p>
+          </li>
+          <li>
+            <p><term>Blockquotes</term> can also contain other Markdown elements (such as headers,
+              lists, and code blocks).</p>
+            <p><b><u>Example: Blockquotes with Other Markdown
+              Elements</u></b><screen>> ## This is a header.
+> 
+> 1.   This is the first list item.
+> 2.   This is the second list item.
+> 
+> Here's some example code:
+> 
+>     return shell_exec("echo $input | $markdown_script")</screen></p>
+          </li>
+        </ul>
+      </p>
+    </section>
+    <section id="quoting_code_inline_and_code_blocks">
+      <title>Quoting Code (Inline and Code Blocks)</title>
+      <p>The Markdown editor supports quoting code or commands inline within a sentence or in
+        distinct blocks.</p>
+      <p>
+        <ul>
+          <li><b>Inline</b><p>You can quote or emphasize code within a sentence (inline) with single
+              backticks (<userinput>`</userinput>). The text within the backticks will not be
+              formatted.</p><p><b><u>Example: Inline Code
+              Emphasis</u></b><screen>This is a normal sentence with a `code` in the middle. </screen></p></li>
+          <li><b>Code Blocks</b><p>You can format code or text into its own distinct block by using
+              at least 4 spaces (or 1 tab), or by using opening and closing triple backticks
+                (<userinput>```</userinput>) on separate lines.</p><p><b><u>Example: Code
+                Block</u></b><screen>This is a normal paragraph:
+
+    This is a code block
+
+This is a normal paragraph:
+
+```
+This is a code block
+```</screen></p><p>One
+              level of indentation is removed from each line of a codeblock and it continues until
+              it reaches a line that is not indented (or until the closing
+                  backticks).</p><p><b><u>Example: Code Block with
+              Indentation</u></b><screen>    tell application "something"
+        beep
+    end tell</screen></p><p>In
+              HTML, the result would look like
+              this:<screen>&lt;pre>&lt;code>tell application "Foo"
+    beep
+end tell
+&lt;/code>&lt;/pre></screen></p><p>You
+              can also add an optional language identifier to enable syntax highlighting in your
+              code blocks. The <ph keyref="product"/> Markdown editor supports the following
+              languages: <i>Java</i>, <i>JavaScript</i>, <i>CSS</i>, and
+                <i>Python</i>.</p><b><u>Example: Syntax Highlighting in Code
+            Block</u></b><screen>```css
+input[type="submit"] {
+    color: white;
+    font-weight: bold;
+```</screen></li>
+        </ul>
+      </p>
+    </section>
+    <section id="inline_xhtml">
+      <title>Inline XHTML</title>
+      <p>The Markdown editor supports writing inline XHTML. Since Markdown is just a writing format,
+        it requires a conversion for publishing purposes. If you are using the HTML conversion, for
+        any markup that is not covered by Markdown syntax, you can simply use XHTML syntax.</p>
+      <p>
+        <ul>
+          <li><b><u>Example: Inline
+            XHTML</u></b><screen>This is a regular paragraph.
+
+&lt;table>
+    &lt;tr>
+        &lt;td>Col 1&lt;/td>
+        &lt;td>Col 2&lt;/td>
+    &lt;/tr>
+&lt;/table>
+
+This is another regular paragraph.</screen></li>
+        </ul>
+      </p>
+    </section>
+    <section id="lists">
+      <title>Lists</title>
+      <p>The Markdown editor supports ordered and unordered lists. You can also insert <xref
+          href="#markdown-rules/blockquotes" format="dita"><term>blockquotes</term></xref> and <xref
+          href="#markdown-rules/quoting_code_inline_and_code_blocks" format="dita"><term>code
+            blocks</term></xref> inside list items. List markers typically start at the left margin,
+        but may be indented by up to three spaces.</p>
+      <p>
+        <ul>
+          <li><b>Unordered Lists</b><p>For unordered lists, you can use asterisks
+                (<userinput>*</userinput>), plus signs (<userinput>+</userinput>), and hyphens
+                (<userinput>-</userinput>)
+              interchangeably.<screen>* List item 1
++ List item 2
+- List item 3</screen></p></li>
+          <li><b>Ordered Lists</b><p>For ordered lists, use numbers followed by periods. The actual
+              numbers you use have no effect on the output. It simply converts them to list items
+              within an ordered list an the actual number of list items will determine the numbers
+              in the output.<screen>1. List item 1
+8. List item 2
+5. List item 3</screen></p></li>
+          <li><b>Nested Lists</b><p>You can create nested lists by indenting lines by two
+              spaces.<screen>1. Ordered list item 1
+  1. Nested ordered list item 1
+  2. Nested ordered list item 2
+    * 2nd level nested unordered list item 1
+    * 2nd level nested unordered list item 2
+      * 3rd level nested unordered list item 1
+2. Ordered list item 2  </screen></p></li>
+          <li><b>Paragraphs Inside Lists</b><p>If list items are separated by blank lines, Markdown
+              will wrap the items in a paragraph in the
+              output.<screen>* List item 1
+
+* List item 2</screen></p><p>This would result
+              in:<screen>&lt;ul>
+&lt;li>&lt;p>List item 1&lt;/p>&lt;/li>
+&lt;li>&lt;p>List item 2&lt;/p>&lt;/li>
+&lt;/ul></screen></p></li>
+          <li><b>Multiple Paragraphs Inside Lists</b><p>List items may consist of multiple
+              paragraphs. Each subsequent paragraph in a list item must be indented by either 4
+              spaces or one tab. Optionally, you can also indent each line of a paragraph to make it
+              look
+              nicer.<screen>1.  This is a list item with two paragraphs. Lorem ipsum dolor
+    sit amet, consectetuer adipiscing elit. Aliquam hendrerit
+    mi posuere lectus.
+
+    Vestibulum enim wisi, viverra nec, fringilla in, laoreet
+    vitae, risus. Donec sit amet nisl. Aliquam semper ipsum
+    sit amet velit.
+
+2.  Suspendisse id sem consectetuer libero luctus adipiscing.</screen></p></li>
+          <li><b>Blockquotes Inside Lists</b><p>To put a <term>blockquote</term> within a list item,
+              the blockquote delimiters (<userinput>></userinput>) need to be indented so that it is
+              under the first letter of the text after the list item
+              marker.<screen>*   A list item with a blockquote:
+    > This is a blockquote
+    > inside a list item.</screen></p></li>
+          <li><b>Code Blocks Inside Lists</b><p>To put a code block within a list item, insert an
+              empty line in between the list item and the code block, and the code block needs to be
+              indented twice (with 8 spaces or 2 tabs), or if you are using the triple backticks
+              method, the opening triple backtick needs to be indented with 4 spaces or 1
+              tab.<screen>*   A list item with a code block:
+
+        This is a code block inside a list item
+
+    ```
+    This is a code block inside a list item using the backticks method
+    ```</screen></p></li>
+        </ul>
+      </p>
+    </section>
+    <section id="task_lists">
+      <title>Task Lists</title>
+      <p>You can create task lists by prefacing list items with square brackets (<userinput>[
+          ]</userinput>). To mark a task as complete, use <userinput>[x]</userinput>.</p>
+      <p>
+        <ul>
+          <li><b><u>Example: Task
+            Lists</u></b><screen>- [ ] Unfinished task 1
+- [x] Finished task 2</screen></li>
+        </ul>
+      </p>
+    </section>
+    <section id="tables">
+      <title>Tables</title>
+      <p>You can create tables in the Markdown editor by using pipes (<userinput>|</userinput>) and
+        hyphens (<userinput>-</userinput>).</p>
+      <p>
+        <ul>
+          <li><b>Creating a Table</b><p>Pipes are used to separate each column, while hyphens are
+              used to create column headers. The pipes on either end of the table are optional.
+              Cells can vary in width and do not need to be perfectly aligned within columns, but
+              there must be at least three hyphens in each column of the header
+            row.</p><screen>| First Header  | Second Header |
+| ------------- | ------------- |
+| Column 1 Row 1 Cell  | Column 2 Row 1 Cell  |
+| Column 1 Row 2 Cell  | Column 2 Row 2 Cell  |</screen></li>
+          <li>
+            <p><b>Formatting Rules in Table Cells</b></p>
+            <p>You can use formatting rules inside the cells of the table (such as links, inline
+              code blocks, and text
+              styling).<screen>| First Header  | Second Header |
+| --- | --- |
+| `inline code`  | Content with **bold text** inside cell  |</screen></p>
+          </li>
+          <li>
+            <p><b>Aligning Text in Tables</b></p>
+            <p>You can align text to the left, right, or center of a column by including colons
+                (<userinput>:</userinput>) to the left, right, or on both sides of the hyphens
+              within the header
+              row.<screen>| Left-aligned | Center-aligned | Right-aligned |
+| :---         |     :---:      |          ---: |
+| Content Cell | Content Cell   | Content Cell  |</screen></p>
+          </li>
+        </ul>
+      </p>
+    </section>
+    <section id="emoji">
+      <title>Emoji</title>
+      <p>You can add <term>emoji</term> in the Markdown editor by surrounding the EMOJICODE with
+        colons (<userinput>:EMOJICODE:</userinput>).</p>
+      <p>
+        <ul>
+          <li><b><u>Example: Emoji</u></b><screen>:smile:
+:laughing:</screen><p>The resulting
+              emoticons will appear in the output, but they are not displayed in the
+                <uicontrol>Preview</uicontrol> pane.</p><p>For a full list of available emoji codes,
+              see <xref href="http://www.webpagefx.com/tools/emoji-cheat-sheet/" format="html"
+                scope="external">Emoji Cheat Sheet</xref>.</p></li>
+        </ul>
+      </p>
+    </section>
+    <section id="backslash_escapes">
+      <title>Backslash Escapes</title>
+      <p>You can ignore Markdown formatting by using backslash escapes (<userinput>\</userinput>) to
+        generate literal characters that would otherwise have special meaning in the Markdown
+        syntax. For example, if you want to surround a word with literal asterisks (instead of an
+        italic or emphasis tag), you can use backslashes to escape the
+        asterisks.<screen>\*literal asterisks\*</screen></p>
+      <p>The Markdown editor provides backslash escapes for the following
+        characters:<screen>\   backslash
+`   backtick
+*   asterisk
+_   underscore
+{}  curly braces
+[]  square brackets
+()  parentheses
+#   hash mark
++   plus sign
+-   minus sign (hyphen)
+.   dot
+!   exclamation mark</screen></p>
+    </section>
+    <section id="automatic_escaping_for_special_characters">
+      <title>Automatic Escaping for Special Characters</title>
+      <p>The Markdown editor includes support for automatically escaping special characters such as
+        angle brackets (<userinput>&lt; ></userinput>) and ampersands
+        (<userinput>&amp;</userinput>). If you want to use them as literal characters, you must
+        escape them as entities, as in the table below.</p>
+      <p>
+        <table frame="all" rowsep="1" colsep="1">
+          <tgroup cols="2" align="left">
+            <colspec colname="c1" colnum="1" colwidth="108.75pt"/>
+            <colspec colname="c2" colnum="2" colwidth="105.75pt"/>
+            <thead>
+              <row>
+                <entry align="center">Literal Character</entry>
+                <entry align="center">Escaping Code</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry align="center"><b>&lt;</b></entry>
+                <entry align="center"><b>&amp;lt;</b></entry>
+              </row>
+              <row>
+                <entry align="center"><b>></b></entry>
+                <entry align="center"><b>&amp;gt;</b></entry>
+              </row>
+              <row>
+                <entry align="center"><b>&amp;</b></entry>
+                <entry align="center"><b>&amp;amp;</b></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </p>
+    </section>
   </body>
+  <related-links>
+    <link href="http://daringfireball.net/projects/markdown/syntax" format="html" scope="external">
+      <linktext>Default Markdown Syntax</linktext>
+    </link>
+    <link href="https://help.github.com/categories/writing-on-github/" format="html"
+      scope="external">
+      <linktext>GitHub Flavored Markdown Rules</linktext>
+    </link>
+  </related-links>
 </topic>
