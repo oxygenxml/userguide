@@ -241,6 +241,7 @@
       [not(contains(@class, ' topic/vrm '))]
       [not(contains(@class, ' topic/entry '))]
       [not(contains(@class, ' topic/stentry '))]
+      [not(contains(@class, ' topic/object '))]
       [not(@conref)]
       [not(@conkeyref)]
       [not(@keyref)]
