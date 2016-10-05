@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="reusables-transforming-documents">
-  <title>Reusable Components in Transforming Documents</title>
+  <title>Reusable Components in Publishing</title>
   <body>
     <p><ph id="intro-for-transformation-tabs">When you <xref
           href="../../topics/defining-new-transformation-scenario.dita#defining-new-transformation-scenario"
@@ -591,5 +591,56 @@
         </dlentry>
       </dl>
     </p>
+    <!--WebHelp customization misc-->
+    <ol>
+      <li id="insert-html-li1">Insert the HTML content in a well-formed XML file. There are several
+        things to consider in regards to this XML file:<ul>
+          <li><b>Well-Formedness</b> - If the file is not a <xref
+              href="../../topics/checking-xml-well-formedness.dita#checking-xml-well-formedness"><i>Well-formed
+                XML</i> document</xref> (or fragments are not well-formed), the transformation will
+              fail.<p>A common use case is if you want to include several <codeph>script</codeph> or
+                <codeph>link</codeph> elements. In this case, the XML fragment has multiple root
+              elements and to make it well-formed, you can wrap it in an <codeph>html</codeph>
+              element. This element tag will be filtered out and only its children will be copied to
+              the output documents. Similarly, you can wrap your content in <codeph>head</codeph>,
+                <codeph>body</codeph>, <codeph>html/head</codeph>, or <codeph>html/body</codeph>
+              elements.</p></li>
+          <li><b>Referencing Resources in the XML File</b> - You can include references to resources
+            (such as JavaScript or CSS files) by adding them in the <codeph>head</codeph> element of
+            your HTML content. The content of the XML file should look like this
+              :<codeblock outputclass="language-xml">&lt;html>
+  &lt;script type="text/javascript" src="<b>${oxygen-webhelp-output-dir}</b>/js/test.js"/>
+  &lt;link rel="stylesheet" type="text/css" 
+        href="<b>${oxygen-webhelp-output-dir}</b>/css/test.css" />
+&lt;/html></codeblock><p>In
+              the example above, the <codeph>${oxygen-webhelp-output-dir}</codeph> macro is used to
+              specify the paths of the referenced JavaScript and CSS files relative to the output
+              directory.</p><p>If you want that the path of your resource to be relative to the
+                <xref href="../../topics/webhelp_template_resources.dita#webhelp_template_resources">templates
+                directory</xref>, you can use the <codeph>${oxygen-webhelp-template-dir}</codeph>
+              macro.</p>To copy the referenced resources to the output directory, follow the
+            procedure in: <xref href="../../tasks/copy_resources.dita#copy_resources"/>.</li>
+          <li><b>Inline JavaScript or CSS Content</b> - If you want to include inline JavaScript or
+            CSS content in the XML file, it is important to place this content inside an XML
+            comment, as in the following
+              examples:<p>JavaScript:</p><codeblock outputclass="language-xml">&lt;script type="text/javascript">
+  <b>&lt;!--</b>
+    /* Include JavaScript code here. */
+ 
+    function myFunction() {
+      return true;
+    }
+  <b>--></b>
+&lt;/script> </codeblock><p>CSS:</p><codeblock outputclass="language-xml">&lt;style>
+  <b>&lt;!--</b> 
+    /* Include CSS style rules here. */
+
+    *{
+      color:red
+    } 
+  <b>--></b>
+&lt;/style></codeblock></li>
+        </ul></li>
+    </ol>
   </body>
 </topic>
