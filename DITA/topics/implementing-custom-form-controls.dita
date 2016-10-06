@@ -40,8 +40,8 @@
               required. The <term>renderer</term> (the class that draws the value) has different
               properties from the <term>editor</term> (the class that edits the value) because you
               can present a value in one way and edit it in another.</note></li>
-          <li><uicontrol>classpath</uicontrol> - You can use this property to specify the location
-            of the classes used for a custom form control. The value of the
+          <li id="classpath"><uicontrol>classpath</uicontrol> - You can use this property to specify
+            the location of the classes used for a custom form control. The value of the
               <uicontrol>classpath</uicontrol> property is an enumeration of URLs separated by
             comma.</li>
           <li><uicontrol>edit</uicontrol> - If your form control edits the value of an attribute or
@@ -49,7 +49,44 @@
               <codeph>#text</codeph> predefined values and <ph keyref="product"/> will perform the
             commit logic by itself. You can use the <codeph>custom</codeph> value to perform the
             commit logic yourself.</li>
+          <li product="author editor"><b>saHeavyFormControlClassName</b> - This is useful if you
+            need form controls that can provide interaction with SVG documents (for example, if you
+            have an SVG document that displays tooltips when hovering over certain areas). This type
+            of form control is effectively present at all times at its allocated bounds and
+            therefore works better for this type of use case than other implementations. It is also
+            helpful if you want to use JavaFX, since JavaFX-based form controls are not compatible
+            with the other form control implementations.<p>The value of this property is a class
+              name that must implement the <xref
+                href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceHeavyEditor.html"
+                format="html" scope="external"
+                  ><codeph>ro.sync.ecss.extensions.api.editor.InplaceHeavyEditor</codeph></xref>
+              method. The JAR that contains this implementation can either be added in the <xref
+                href="document-type-classpath-tab.dita#document-type-classpath-tab"
+                  ><uicontrol>Classpath</uicontrol> tab in the Document type configuration dialog
+                box</xref> for your particular framework or specified with the <xref
+                href="#implementing-custom-form-controls/classpath" format="dita"
+                  ><parmname>classpath</parmname> property</xref>.</p></li>
+          <li product="authorEclipse editorEclipse"><b>ecHeavyFormControlClassName</b> - This is
+            useful if you need form controls that can provide interaction with SVG documents (for
+            example, if you have an SVG document that displays tooltips when hovering over certain
+            areas). This type of form control is effectively present at all times at its allocated
+            bounds and therefore works better for this type of use case than other implementations.
+            It is also helpful if you want to use JavaFX, since JavaFX-based form controls are not
+            compatible with the other form control implementations.<p>The value of this property is
+              a class name that must implement the <xref
+                href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/editor/InplaceHeavyEditor.html"
+                format="html" scope="external"
+                  ><codeph>ro.sync.ecss.extensions.api.editor.InplaceHeavyEditor</codeph></xref>
+              method. The JAR that contains this implementation can either be added in the <xref
+                href="document-type-classpath-tab.dita#document-type-classpath-tab"
+                  ><uicontrol>Classpath</uicontrol> tab in the Document type configuration dialog
+                box</xref> for your particular framework or specified with the <xref
+                href="#implementing-custom-form-controls/classpath" format="dita"
+                  ><parmname>classpath</parmname> property</xref>.</p></li>
         </ul></p>
+    </section>
+    <section id="example_java_code">
+      <title>Example: Java Code</title>
       <p>The following is a sample Java code for implementing a custom combo box form control that
         inserts an XML element in the content when the editing stops:</p>
       <codeblock outputclass="language-java">public class ComboBoxEditor  extends AbstractInplaceEditor {
@@ -72,7 +109,10 @@
       <p>The custom form controls can use any of the predefined properties of the <xref
           href="../concepts/form-controls.dita#form-controls">built-in form controls</xref>, as well
         as specified custom properties.</p>
-      <p>This following is an example of how to specify a custom form control in the
+    </section>
+    <section id="example_css">
+      <title>Example: CSS</title>
+      <p>The following is an example of how to specify a custom form control in the
         CSS:<codeblock outputclass="language-css">myElement {
     content: oxy_editor(
         rendererClassName, "com.custom.editors.CustomRenderer",
