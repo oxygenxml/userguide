@@ -45,10 +45,33 @@
             matches all the <codeph>title</codeph> elements in the document, while
               <codeph>"chapter/title"</codeph> matches only the <codeph>title</codeph> elements that
             are direct children of the <codeph>chapter</codeph> element. You can use simplified
-            forms of XPath in this attribute. For examples of such forms of XPath expressions, see
-            the <xref
-              href="preferences-editor-format-xml.dita#preferences-editor-format-xml/simplified-XPath"
-              >note in XML Preferences</xref>.<note>If this attribute is missing, the customization
+            forms of XPath in this attribute.<p>The XPath expressions can accept multiple attribute
+              conditions and inside each condition you can use <i>AND/OR</i> boolean operators and
+              parentheses to override the priority.</p><p>You can use one or more of the following
+              attribute conditions (default attribute values are not taken into account):<ul>
+                <li><i>element[@attr]</i> - Matches all instances of the specified element that
+                  include the specified attribute.</li>
+                <li><i>element[not(@attr)]</i> - Matches all instances of the specified element that
+                  do not include the specified attribute.</li>
+                <li><i>element[@attr = "value"]</i> - Matches all instances of the specified element
+                  that include the specified attribute with the given value.</li>
+                <li><i>element[@attr != "value"]</i> - Matches all instances of the specified
+                  element that include the specified attribute and its value is different than the
+                  one given.</li>
+              </ul></p><p><b>Example:</b> The following is an example of how you could use multiple
+              boolean operators and parentheses inside an attribute
+              condition:</p><codeblock>*[@a and @b or @c and @d]
+*[@a and (@b or @c) and @d]</codeblock><p>The
+              following are just examples of how simplified XPath expressions might look like:<ul>
+                <li><codeph>elementName</codeph></li>
+                <li><codeph>//elementName</codeph></li>
+                <li><codeph>/elementName1/elementName2/elementName3</codeph></li>
+                <li><codeph>//xs:localName</codeph> Note: Using a namespace prefix requires that you
+                  declare it in the configuration file. For example: <codeph>&lt;elementProposals
+                    xmlns:db5="http://docbook.org/ns/docbook" path="db5:listitem"
+                    insertElements="db5:para" /></codeph></li>
+                <li><codeph>//xs:documentation[@lang="en"]</codeph></li>
+              </ul></p><note>If the <codeph>path</codeph> attribute is missing, the customization
               will apply to the proposals for all elements. You can intentionally omit this
               attribute and use <xref
                 href="#configure-elements-attr-cc-individually/possible-elements" format="dita"
