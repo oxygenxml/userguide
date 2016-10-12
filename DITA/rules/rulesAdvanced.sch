@@ -91,6 +91,17 @@
         </sqf:description>
         <sqf:delete match="text()"/>
       </sqf:fix>
+      
+      <!-- Check that the scope attribute is set. -->
+      <sch:report test="@format='html' and (not(@scope) or @scope!='external')" sqf:fix="setScopeAttr" role="warn">
+        External link should have a scope attribute set to external
+      </sch:report>
+      <sqf:fix id="setScopeAttr">
+        <sqf:description>
+          <sqf:title>Set scope attribute to external</sqf:title>
+        </sqf:description>
+        <sqf:add node-type="attribute" target="scope" select="'external'"/>
+      </sqf:fix>
     </sch:rule>
   </sch:pattern>
   
