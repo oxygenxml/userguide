@@ -194,9 +194,9 @@
   </sqf:fixes>
   
   <sch:pattern>
-    <!-- Report cases when the lines in a codeblock exceeds 80 characters -->
+    <!-- Report cases when the lines in a codeblock exceeds 90 characters -->
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
-      <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 80)"/>
+      <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 90)"/>
       <sch:report test="string-length($offendingLines) > 0">
         Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 80 characters. </sch:report>
     </sch:rule>
