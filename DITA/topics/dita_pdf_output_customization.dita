@@ -2,11 +2,21 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dita_pdf_output_customization">
   <title>Creating a Customization Directory for PDF Output</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>DITA<indexterm>Output<indexterm>PDF output customization<indexterm>Creating a
+                customization directory</indexterm></indexterm></indexterm></indexterm>
+        <indexterm>DITA<indexterm>PDF output customization<indexterm>Creating a customization
+              directory</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
     <p>DITA Open Toolkit PDF output can be customized in several ways: <ul id="ol_d4n_s5y_1j">
-      <li>Creating a DITA Open Toolkit plugin that adds extensions to the PDF plugin. More
-          details can be found in the <xref href="http://dita-ot.sourceforge.net/1.8/" format="html"
-            scope="external">DITA Open Toolkit user manual</xref>.</li>
+      <li>Creating a DITA Open Toolkit plugin that adds extensions to the PDF plugin. More details
+          can be found in the <xref href="http://www.dita-ot.org/" format="html" scope="external"
+            >DITA Open Toolkit Documentation</xref>.</li>
         <li>Creating a customization directory and using it from the PDF transformation scenario. A
           small example of this procedure can be found below.</li>
       </ul></p>
@@ -32,64 +42,120 @@
             <filepath>C:\Customization\fo\xsl\custom.xsl</filepath>
         </li>
         <li> Open the <filepath>custom.xsl</filepath> file in <ph keyref="product"/> and create the
-          template called <keyword>createFrontMatter_1.0</keyword> (you can copy the same template
-          from <filepath><term keyref="glossentry_dita_ot_dir"
-            />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath> and modify it in whatever
-          way necessary to achieve your specific goal). This new template in the
-            <filepath>custom.xsl</filepath> file will override the same template from
-              <filepath><term keyref="glossentry_dita_ot_dir"
-            />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath>.<p>For example, the
-              <filepath>custom.xsl</filepath> could now have the following content:
+          template called <keyword>createFrontCoverContents</keyword> for DITA-OT <ph
+            keyref="webhelpPluginDITAOT2xVer"/> (or <keyword>createFrontMatter_1.0</keyword> for
+          DITA-OT <ph keyref="webhelpPluginDITAOT18Ver"/>).<note type="tip">You can copy the same
+            template from <filepath><term keyref="glossentry_dita_ot_dir"
+              />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath> and modify it in whatever
+            way necessary to achieve your specific goal. This new template in the
+              <filepath>custom.xsl</filepath> file will override the same template from
+                <filepath><term keyref="glossentry_dita_ot_dir"
+              />\plugins\org.dita.pdf2\xsl\fo\front-matter.xsl</filepath>.</note><p><b>DITA OT <ph
+                keyref="webhelpPluginDITAOT2xVer"/> Example:</b></p><p>For example, if you are using
+            DITA OT <ph keyref="webhelpPluginDITAOT2xVer"/>, the <filepath>custom.xsl</filepath>
+            could look like this:
+              </p><codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format"
+    version="2.0">
+  
+&lt;xsl:template name="createFrontCoverContents">
+ &lt;!-- set the title -->
+ &lt;fo:block xsl:use-attribute-sets="__frontmatter__title">
+  &lt;xsl:choose>
+   &lt;xsl:when test="$map/*[contains(@class,' topic/title ')][1]">
+    &lt;xsl:apply-templates select="$map/*[contains(@class,' topic/title ')][1]"/>
+      &lt;/xsl:when>
+      &lt;xsl:when test="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]">
+        &lt;xsl:apply-templates select="$map//*[contains
+                                       (@class,' bookmap/mainbooktitle ')][1]"/>
+      &lt;/xsl:when>
+      &lt;xsl:when test="//*[contains(@class, ' map/map ')]/@title">
+        &lt;xsl:value-of select="//*[contains(@class, ' map/map ')]/@title"/>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;xsl:value-of select="/descendant::*[contains
+           (@class, ' topic/topic ')][1]/*[contains(@class, ' topic/title ')]"/>
+   &lt;/xsl:otherwise>
+  &lt;/xsl:choose>
+ &lt;/fo:block>
+    
+ &lt;!-- set the subtitle -->
+ &lt;xsl:apply-templates select="$map//*[contains
+                                          (@class,' bookmap/booktitlealt ')]"/>
+ &lt;fo:block xsl:use-attribute-sets="__frontmatter__owner">
+  &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/bookmeta ')]"/>
+ &lt;/fo:block>
+  
+ &lt;!-- Load the image logo -->
+  &lt;fo:block text-align="center" width="100%">
+   &lt;fo:external-graphic
+      src="url({concat($artworkPrefix, 
+                          '/Customization/OpenTopic/common/artwork/logo.png')})"
+    />
+  &lt;/fo:block>
+ &lt;/xsl:template>
+
+&lt;/xsl:stylesheet></codeblock><p><b>DITA
+              OT <ph keyref="webhelpPluginDITAOT18Ver"/> Example:</b></p><p>For example, if you are
+            using DITA OT <ph keyref="webhelpPluginDITAOT18Ver"/>, the
+              <filepath>custom.xsl</filepath> could look like this:
           </p><codeblock outputclass="language-xml">&lt;?xml version='1.0'?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:fo="http://www.w3.org/1999/XSL/Format"
     version="1.1">
 
 &lt;xsl:template name="createFrontMatter_1.0">
-        &lt;fo:page-sequence master-reference="front-matter" xsl:use-attribute-sets="__force__page__count">
-            &lt;xsl:call-template name="insertFrontMatterStaticContents"/>
-            &lt;fo:flow flow-name="xsl-region-body">
-                &lt;fo:block xsl:use-attribute-sets="__frontmatter">
-                    &lt;!-- set the title -->
-                    &lt;fo:block xsl:use-attribute-sets="__frontmatter__title">
-                        &lt;xsl:choose>
-                            &lt;xsl:when test="$map/*[contains(@class,' topic/title ')][1]">
-                                &lt;xsl:apply-templates select="$map/*[contains(@class,' topic/title ')][1]"/>
-                            &lt;/xsl:when>
-                            &lt;xsl:when test="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]">
-                                &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]"/>
-                            &lt;/xsl:when>
-                            &lt;xsl:when test="//*[contains(@class, ' map/map ')]/@title">
-                                &lt;xsl:value-of select="//*[contains(@class, ' map/map ')]/@title"/>
-                            &lt;/xsl:when>
-                            &lt;xsl:otherwise>
-                                &lt;xsl:value-of select="/descendant::*[contains(@class, ' topic/topic ')][1]/*[contains(@class, ' topic/title ')]"/>
-                            &lt;/xsl:otherwise>
-                        &lt;/xsl:choose>
-                    &lt;/fo:block>
+   &lt;fo:page-sequence master-reference="front-matter" 
+                         xsl:use-attribute-sets="__force__page__count">
+     &lt;xsl:call-template name="insertFrontMatterStaticContents"/>
+       &lt;fo:flow flow-name="xsl-region-body">
+         &lt;fo:block xsl:use-attribute-sets="__frontmatter">
+     &lt;!-- set the title -->
+           &lt;fo:block xsl:use-attribute-sets="__frontmatter__title">
+            &lt;xsl:choose>
+             &lt;xsl:when test="$map/*[contains(@class,' topic/title ')][1]">
+     &lt;xsl:apply-templates select="$map/*[contains(@class,' topic/title ')][1]"/>
+                  &lt;/xsl:when>
+    &lt;xsl:when test="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]">
+     &lt;xsl:apply-templates select="$map//*[contains
+                                    (@class,' bookmap/mainbooktitle ')][1]"/>
+         &lt;/xsl:when>
+    &lt;xsl:when test="//*[contains(@class, ' map/map ')]/@title">
+      &lt;xsl:value-of select="//*[contains(@class, ' map/map ')]/@title"/>
+         &lt;/xsl:when>
+      &lt;xsl:otherwise>
+    &lt;xsl:value-of select="/descendant::*[contains
+           (@class, ' topic/topic ')][1]/*[contains(@class, ' topic/title ')]"/>
+      &lt;/xsl:otherwise>
+         &lt;/xsl:choose>
+     &lt;/fo:block>
 
-                    &lt;!-- set the subtitle -->
-                    &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/booktitlealt ')]"/>
+  &lt;!-- set the subtitle -->
+     &lt;xsl:apply-templates select="$map//*[contains
+                                           (@class,' bookmap/booktitlealt ')]"/>
 
-                    &lt;fo:block xsl:use-attribute-sets="__frontmatter__owner">
-                        &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/bookmeta ')]"/>
-                    &lt;/fo:block>
+        &lt;fo:block xsl:use-attribute-sets="__frontmatter__owner">
+            &lt;xsl:apply-templates select="$map//*[contains
+                                               (@class,' bookmap/bookmeta ')]"/>
+        &lt;/fo:block>
                    
-                    &lt;fo:block text-align="center" width="100%">
-                        &lt;fo:external-graphic src="url({concat($artworkPrefix, '/Customization/OpenTopic/common/artwork/logo.png')})"/>
-                     &lt;/fo:block>
+        &lt;fo:block text-align="center" width="100%">
+           &lt;fo:external-graphic src="url({concat($artworkPrefix,
+                        '/Customization/OpenTopic/common/artwork/logo.png')})"/>
+         &lt;/fo:block>
 
-                &lt;/fo:block>
+    &lt;/fo:block>
 
-                &lt;!--&lt;xsl:call-template name="createPreface"/>-->
+   &lt;!--&lt;xsl:call-template name="createPreface"/>-->
 
             &lt;/fo:flow>
         &lt;/fo:page-sequence>
         &lt;xsl:call-template name="createNotices"/>
     &lt;/xsl:template>
 &lt;/xsl:stylesheet></codeblock></li>
-        <li>Edit the <uicontrol>DITA Map to PDF</uicontrol> transformation scenario and in the
-            <keyword>Parameters</keyword> tab, set the <keyword>customization.dir</keyword>
+        <li>Edit the <uicontrol>DITA Map PDF</uicontrol> transformation scenario and in the
+            <uicontrol>Parameters</uicontrol> tab, set the <parmname>customization.dir</parmname>
           parameter to <filepath>C:\Customization</filepath>.</li>
       </ol>
     </section>

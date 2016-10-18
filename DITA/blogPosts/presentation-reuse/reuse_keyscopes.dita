@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="reuse_keyscopes">
+  <title>Reuse with Key Scopes</title>
+  <body>
+    <p>Using DITA 1.3 <b>key scopes</b> you can reuse a topic in multiple places in the DITA Map
+      with slightly different content.</p>
+    <example>
+      <title>Reuse using key scopes</title>
+      <p>Let's say you write a topic about <b>Windows</b> installation for your software
+        product:<codeblock outputclass="language-xml">&lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+&lt;topic id="installation">
+  &lt;title>&lt;ph keyref="osName"/> Installation&lt;/title>
+  &lt;body>
+    &lt;p>
+      &lt;ol id="ol_g5h_st4_zt">
+        &lt;li>Download the executable.&lt;/li>
+        &lt;li>Run the executable by double clicking it.&lt;/li>
+        &lt;li>Follow steps described in the installation wizard.&lt;/li>
+      &lt;/ol>
+    &lt;/p>
+  &lt;/body>
+&lt;/topic></codeblock>and
+        at some point your realise that exactly the same steps need to be followed for the Linux
+        installation. The only difference is the name of the operating system. You use a keyref to
+        refer to the operating system name but just with DITA 1.2 support the key will resolve to a
+        single value.</p>
+      <p>Using keyscopes in the DITA Map you can define multiple values for your key depending on
+        the context:</p>
+      <codeblock outputclass="language-xml"> &lt;topicgroup keyscope="windows">
+  &lt;keydef keys="osName">
+   &lt;topicmeta>
+    &lt;keywords>
+     &lt;keyword>Windows&lt;/keyword>
+    &lt;/keywords>
+   &lt;/topicmeta>
+  &lt;/keydef>
+  &lt;topicref href="installation.dita"/>
+ &lt;/topicgroup>
+ &lt;topicgroup keyscope="linux">
+  &lt;keydef keys="osName">
+   &lt;topicmeta>
+    &lt;keywords>
+     &lt;keyword>Linux&lt;/keyword>
+    &lt;/keywords>
+   &lt;/topicmeta>
+  &lt;/keydef>
+  &lt;topicref href="installation.dita"/>
+ &lt;/topicgroup></codeblock>
+    </example>
+    <p>You can find a more detailed example and download samples for reuse based on key scopes in
+      this blog post: <xref
+        href="http://blog.oxygenxml.com/2015/08/dita-13-key-scopes-next-generation-of.html"
+        format="html" scope="external"/>.</p>
+  </body>
+</topic>

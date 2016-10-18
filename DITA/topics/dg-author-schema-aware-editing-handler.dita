@@ -53,24 +53,30 @@
           href="preferences-schema-aware.dita#preferences-schema-aware/smart-paste-drag-drop"
             ><uicontrol>Smart paste and drag and drop</uicontrol> option</xref> is enabled. If these
         conditions are met, the event will be handled.</p>
-      <codeblock outputclass="language-java">public class AuthorSchemaAwareEditingHandlerAdapter extends AuthorSchemaAwareEditingHandler {
+      <codeblock outputclass="language-java">public class AuthorSchemaAwareEditingHandlerAdapter 
+              extends AuthorSchemaAwareEditingHandler {
 
 /**
- * @see ro.sync.ecss.extensions.api.AuthorSchemaAwareEditingHandler#handleTyping(int, char, ro.sync.ecss.extensions.api.AuthorAccess)
+ * @see AuthorSchemaAwareEditingHandler#handleTyping
+(int, char, ro.sync.ecss.extensions.api.AuthorAccess)
  */
 public boolean handleTyping(int offset, char ch, AuthorAccess authorAccess)
 throws InvalidEditException {
   boolean handleTyping = false;
-  AuthorSchemaManager authorSchemaManager = authorAccess.getDocumentController().getAuthorSchemaManager();
+  AuthorSchemaManager authorSchemaManager = 
+authorAccess.getDocumentController().getAuthorSchemaManager();
   if (!authorSchemaManager.isLearnSchema() &amp;&amp; 
       !authorSchemaManager.hasLoadingErrors() &amp;&amp;
       authorSchemaManager.getAuthorSchemaAwareOptions().isEnableSmartTyping()) {
     try {
       AuthorDocumentFragment characterFragment = 
-        authorAccess.getDocumentController().createNewDocumentTextFragment(String.valueOf(ch));    
-      handleTyping = handleInsertionEvent(offset, new AuthorDocumentFragment[] {characterFragment}, authorAccess);
+authorAccess.getDocumentController().createNewDocumentTextFragment
+(String.valueOf(ch));    
+      handleTyping = handleInsertionEvent
+(offset, new AuthorDocumentFragment[] {characterFragment}, authorAccess);
     } catch (AuthorOperationException e) {
-      throw new InvalidEditException(e.getMessage(), "Invalid typing event: " + e.getMessage(), e, false);
+      throw new InvalidEditException
+(e.getMessage(), "Invalid typing event: " + e.getMessage(), e, false);
     }
   }
   return handleTyping;    
@@ -107,7 +113,7 @@ throws InvalidEditException {
   </body>
   <related-links>
     <link
-      href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorDocumentFragment.html"
+      href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorDocumentFragment.html"
       format="html" scope="external">
       <linktext><apiname>AuthorDocumentFragment Class</apiname></linktext>
     </link>

@@ -12,7 +12,7 @@
     </section>
     <section id="answer">
       <title>Answer</title>
-      <p>The Plugins SDK: <xref href="http://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins"
+      <p>The Plugins SDK: <xref href="https://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins"
           format="html" scope="external"/> contains a sample Plugin Type called
           <varname>WorkspaceAccess</varname>. Such a plugin is notified when the application starts
         and it can do what you want in a couple of ways:</p>
@@ -21,16 +21,19 @@
           <li>Add a listener that notifies you when the user opens an XML document. Then if the XML
             document is opened in the <uicontrol>Author</uicontrol> visual editing mode you can use
             our <i>Author API</i> to change
-            attributes:<codeblock outputclass="language-java">    pluginWorkspaceAccess.addEditorChangeListener(new  WSEditorChangeListener() {
+            attributes:<codeblock outputclass="language-java">   pluginWorkspaceAccess.addEditorChangeListener(new  WSEditorChangeListener() {
       /**
-       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorOpened(java.net.URL) 
+       * @see WSEditorChangeListener#editorOpened(java.net.URL) 
        */
       @Override
       public void editorOpened(URL editorLocation) {
-        WSEditor openedEditor = pluginWorkspaceAccess.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA); 
+        WSEditor openedEditor = pluginWorkspaceAccess.getCurrentEditorAccess
+(StandalonePluginWorkspace.MAIN_EDITING_AREA); 
         if(openedEditor.getCurrentPage() instanceof WSAuthorEditorPage) {     
-        WSAuthorEditorPage authPage = (WSAuthorEditorPage)  openedEditor.getCurrentPage();
-        AuthorDocumentController docController = authPage.getDocumentController();
+        WSAuthorEditorPage authPage = (WSAuthorEditorPage)  
+openedEditor.getCurrentPage();
+        AuthorDocumentController docController = 
+authPage.getDocumentController();
         try {
          //All changes will be undone by pressing Undo once.            
          docController.beginCompoundEdit();
@@ -42,10 +45,12 @@
         }   
       }
 
-      private void fixupImageRefs(AuthorDocumentController docController, AuthorNode authorNode) {
+      private void fixupImageRefs
+(AuthorDocumentController docController, AuthorNode authorNode) {
           if(authorNode instanceof AuthorParentNode) {
             //Recurse
-            List&lt;AuthorNode&gt; contentNodes = ((AuthorParentNode)authorNode).getContentNodes();   
+            List&lt;AuthorNode&gt; contentNodes = 
+((AuthorParentNode)authorNode).getContentNodes();   
             if(contentNodes != null) {
                for (int i = 0; i &lt; contentNodes.size(); i++) {
                  fixupImageRefs(docController, contentNodes.get(i));
@@ -57,10 +62,10 @@
             if("image".equals(elem.getLocalName())) {           
                if(elem.getAttribute("href") != null) {
                  String originalHref = elem.getAttribute("href").getValue();
-                 URL currentLocation = docController.getAuthorDocumentNode().getXMLBaseURL();
+    URL currentLocation = docController.getAuthorDocumentNode().getXMLBaseURL();
                 //TODO here you compute the new href.
                 String newHref = null;   
-                docController.setAttribute("href", new AttrValue(newHref), elem); 
+              docController.setAttribute("href", new AttrValue(newHref), elem); 
              }
           }
         }

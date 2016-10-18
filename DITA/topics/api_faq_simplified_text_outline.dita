@@ -43,9 +43,10 @@ sec 16 Section title</codeblock></p>
         </ol></p>
       <p>A simple implementation using a Workspace Access plugin type could be something like
         this:<codeblock outputclass="language-java">/**
- * Simple Outline for the Text mode based on executing XPaths over the text content.
+ * Simple Outline for Text mode based on executing XPaths over the text content.
  */
-public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPluginExtension {
+ public class CustomWorkspaceAccessPluginExtension implements 
+WorkspaceAccessPluginExtension {
   /**
    * The custom outline list.
    */
@@ -67,13 +68,17 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
   private boolean enableCaretListener = true;
   
   /**
-   * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationStarted(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
+   * @see WorkspaceAccessPluginExtension#applicationStarted
+(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
    */
   @Override
-  public void applicationStarted(final StandalonePluginWorkspace pluginWorkspaceAccess) {
-    pluginWorkspaceAccess.addViewComponentCustomizer(new ViewComponentCustomizer() {
+  public void applicationStarted
+(final StandalonePluginWorkspace pluginWorkspaceAccess) {
+    pluginWorkspaceAccess.addViewComponentCustomizer
+(new ViewComponentCustomizer() {
       /**
-       * @see ro.sync.exml.workspace.api.standalone.ViewComponentCustomizer#customizeView(ro.sync.exml.workspace.api.standalone.ViewInfo)
+       * @see ViewComponentCustomizer#customizeView
+(ro.sync.exml.workspace.api.standalone.ViewInfo)
        */
       @Override
       public void customizeView(ViewInfo viewInfo) {
@@ -83,60 +88,68 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
           customOutlineList = new JList();
           //Render the content in the Outline.
           customOutlineList.setCellRenderer(new DefaultListCellRenderer() {
-            /**
-             * @see javax.swing.DefaultListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
-             */
-            @Override
-            public Component getListCellRendererComponent(JList&lt;?> list, Object value, int index,
-                boolean isSelected, boolean cellHasFocus) {
-              JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-              String val = null;
-              if(value instanceof Element) {
-                Element element = ((Element)value);
-                val = element.getNodeName();
-                if(!"".equals(element.getAttribute("startnumber"))) {
-                  val += " " + "'" + element.getAttribute("startnumber") + "'";
-                }
-                NodeList titles = element.getElementsByTagName("title");
-                if(titles.getLength() > 0) {
-                  val += " \"" + titles.item(0).getTextContent() + "\"";
-                }
-              }
-              label.setText(val);
-              return label;
-            }
-          });
-          //When we click a node, select it in the text page.
-          customOutlineList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-              if(SwingUtilities.isLeftMouseButton(e) &amp;&amp; e.getClickCount() == 2) {
-                int sel = customOutlineList.getSelectedIndex();
-                enableCaretListener = false;
-                try {
-                  currentTextPage.select(currentTextPage.getOffsetOfLineStart(currentOutlineRanges[sel].getStartLine()) + currentOutlineRanges[sel].getStartColumn() - 1, 
-                      currentTextPage.getOffsetOfLineStart(currentOutlineRanges[sel].getEndLine()) + currentOutlineRanges[sel].getEndColumn());
-                } catch (BadLocationException e1) {
-                  e1.printStackTrace();
-                }
-                enableCaretListener = true;
-              }
-            }
-          });
-          viewInfo.setComponent(new JScrollPane(customOutlineList));
-          viewInfo.setTitle("Custom Outline");
-        } 
-      }
-    }); 
-    
-    pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
-      /**
-       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorOpened(java.net.URL)
-       */
+       /**
+        * @see javax.swing.DefaultListCellRenderer#getListCellRendererComponent
+(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+        */
       @Override
-      public void editorOpened(URL editorLocation) {
-        //An editor was opened
-        WSEditor editorAccess = pluginWorkspaceAccess.getEditorAccess(editorLocation, StandalonePluginWorkspace.MAIN_EDITING_AREA);
+      public Component getListCellRendererComponent
+(JList&lt;?> list, Object value, int index,
+          boolean isSelected, boolean cellHasFocus) {
+        JLabel label = (JLabel) super.getListCellRendererComponent
+(list, value, index, isSelected, cellHasFocus);
+        String val = null;
+        if(value instanceof Element) {
+          Element element = ((Element)value);
+          val = element.getNodeName();
+          if(!"".equals(element.getAttribute("startnumber"))) {
+            val += " " + "'" + element.getAttribute("startnumber") + "'";
+          }
+          NodeList titles = element.getElementsByTagName("title");
+          if(titles.getLength() > 0) {
+            val += " \"" + titles.item(0).getTextContent() + "\"";
+         }
+       }
+        label.setText(val);
+        return label;
+      }
+    });
+    //When we click a node, select it in the text page.
+    customOutlineList.addMouseListener(new MouseAdapter() {
+     @Override
+     public void mouseClicked(MouseEvent e) {
+       if(SwingUtilities.isLeftMouseButton(e) &amp;&amp; e.getClickCount() == 2) {
+          int sel = customOutlineList.getSelectedIndex();
+          enableCaretListener = false;
+         try {
+          currentTextPage.select(currentTextPage.getOffsetOfLineStart
+(currentOutlineRanges[sel].getStartLine()) + 
+currentOutlineRanges[sel].getStartColumn() - 1, 
+            currentTextPage.getOffsetOfLineStart
+(currentOutlineRanges[sel].getEndLine()) + 
+currentOutlineRanges[sel].getEndColumn());
+          } catch (BadLocationException e1) {
+           e1.printStackTrace();
+         }
+          enableCaretListener = true;
+        }
+      }
+    });
+     viewInfo.setComponent(new JScrollPane(customOutlineList));
+     viewInfo.setTitle("Custom Outline");
+  } 
+ }
+}); 
+    
+pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
+  /**
+  * @see WSEditorChangeListener#editorOpened(java.net.URL)
+  */
+  @Override
+  public void editorOpened(URL editorLocation) {
+   //An editor was opened
+   WSEditor editorAccess = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, StandalonePluginWorkspace.MAIN_EDITING_AREA);
         if(editorAccess != null) {
           WSEditorPage currentPage = editorAccess.getCurrentPage();
           if(currentPage instanceof WSXMLTextEditorPage) {
@@ -161,13 +174,15 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
             textComponent.addCaretListener(new CaretListener() {
               @Override
               public void caretUpdate(CaretEvent e) {
-                if(currentOutlineRanges != null &amp;&amp; currentTextPage != null &amp;&amp; enableCaretListener) {
+              if(currentOutlineRanges != null &amp;&amp; currentTextPage != null &amp;&amp; 
+enableCaretListener) {
                   enableCaretListener = false;
                   //Find the node to select in the outline.
                   try {
                     int line = xmlTP.getLineOfOffset(e.getDot());
                     for (int i = currentOutlineRanges.length - 1; i >= 0; i--) {
-                      if(line > currentOutlineRanges[i].getStartLine() &amp;&amp; line &lt; currentOutlineRanges[i].getEndLine()) {
+              if(line > currentOutlineRanges[i].getStartLine() &amp;&amp; 
+line &lt; currentOutlineRanges[i].getEndLine()) {
                         customOutlineList.setSelectedIndex(i);
                         break;
                       }
@@ -183,12 +198,13 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
         }
       }
       /**
-       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorActivated(java.net.URL)
+       * @see WSEditorChangeListener#editorActivated(java.net.URL)
        */
       @Override
       public void editorActivated(URL editorLocation) {
         //An editor was selected, reconfigure the common outline
-        WSEditor editorAccess = pluginWorkspaceAccess.getEditorAccess(editorLocation, StandalonePluginWorkspace.MAIN_EDITING_AREA);
+        WSEditor editorAccess = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, StandalonePluginWorkspace.MAIN_EDITING_AREA);
         if(editorAccess != null) {
           WSEditorPage currentPage = editorAccess.getCurrentPage();
           if(currentPage instanceof WSXMLTextEditorPage) {
@@ -226,7 +242,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
   }
 
   /**
-   * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationClosing()
+   * @see WorkspaceAccessPluginExtension#applicationClosing()
    */
   @Override
   public boolean applicationClosing() {

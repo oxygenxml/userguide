@@ -2,11 +2,7 @@
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="including-document-parts-with-XInclude">
-  <title>Including Document Parts with XInclude</title><prolog>
-    <metadata>
-      <keywords><indexterm>Editing XML Documents<indexterm>including document parts with XInclude</indexterm></indexterm></keywords>
-    </metadata>
-  </prolog>
+  <title>Including Document Parts with XInclude</title>
   <body>
     <p>XInclude is a standard for assembling XML instances into another XML document through
       inclusion. It enables larger documents to be dynamically created from smaller XML documents
@@ -20,9 +16,8 @@
       managing XML instances that need to be stand-alone documents and part of a much larger
       project.</p>
     <p>The main application for XInclude is in the document-oriented content frameworks such as
-      manuals and Web pages. Employing XInclude enables authors and content managers to manage
-      content in a modular fashion that is akin to Object Oriented methods used in languages such as
-      Java, C++ or C#.</p>
+      manuals and Web pages. Employing XInclude enables you to manage content in a modular fashion
+      that is akin to Object Oriented methods used in languages such as Java, C++ or C#.</p>
     <p>The advantages of modular documentation include: reusable content units, smaller file units
       that are easier to be edited, better version control and distributed authoring.</p>
     <example>
@@ -59,27 +54,34 @@
       &lt;/xi:fallback&gt;
     &lt;/xi:include&gt;
 &lt;/article&gt;</codeblock>
+      <p>In this example, note the following:<ul>
+          <li>
+            <p>The DOCTYPE declaration defines an entity that references a file containing the
+              information to add the <i>xi</i> namespace to certain elements defined by the DocBook
+              DTD.</p>
+          </li>
+          <li>The href attribute of the xi:include element specifies that the
+              <filepath>introduction.xml</filepath> file will replace the <i>xi:include</i> element
+            when the document is parsed.</li>
+          <li>
+            <p>If the <filepath>introduction.xml</filepath> file cannot be found, the parser will
+              use the value of the <i>xi:fallback</i> element - a FIXME message.</p>
+          </li>
+        </ul></p>
     </example>
-    <p>In this example the following is of note:</p>
-    <ul>
-      <li>
-        <p>The DOCTYPE declaration defines an entity that references a file containing the
-          information to add the <i>xi</i> namespace to certain elements defined by the DocBook
-          DTD.</p>
-      </li>
-      <li>The href attribute of the xi:include element specifies that the
-          <filepath>introduction.xml</filepath> file will replace the <i>xi:include</i> element when
-        the document is parsed.</li>
-      <li>
-        <p>If the <filepath>introduction.xml</filepath> file cannot be found, the parser will use
-          the value of the <i>xi:fallback</i> element - a FIXME message.</p>
-      </li>
-    </ul>
     <p>If you want to include only a fragment of a file in the master file, the fragment must be
       contained in a tag having an <i>xml:id</i> attribute and you must use an XPointer expression
-      pointing to the <codeph>xml:id</codeph> value. For example, if the master file is:</p>
+      pointing to the <codeph>xml:id</codeph> value.<note type="notice"><ph keyref="product"/>
+        supports the <xref href="http://www.w3.org/TR/2003/REC-xptr-framework-20030325/"
+          format="html" scope="external">XPointer Framework</xref> and the <xref
+          href="http://www.w3.org/TR/2003/REC-xptr-element-20030325/" format="html" scope="external"
+          >XPointer element() Scheme</xref>, but it does NOT support the <xref
+          href="https://www.w3.org/TR/xptr-xpointer/" format="html" scope="external">XPointer
+          xpointer() Scheme</xref>.</note></p>
+    <p>For example, if the master file is:</p>
     <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;?xml-model href="test.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
+&lt;?xml-model href="test.rng" type="application/xml" 
+        schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
 &lt;test&gt;
     &lt;xi:include href="a.xml" xpointer="a1"
         xmlns:xi="http://www.w3.org/2001/XInclude"/&gt;
@@ -91,7 +93,8 @@
 &lt;/test&gt;        </codeblock>
     <p>after resolving the XPointer reference the document is:</p>
     <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;?xml-model href="test.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
+&lt;?xml-model href="test.rng" type="application/xml" 
+          schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
 &lt;test&gt;
     &lt;a xml:id="a1" xml:base="a.xml"&gt;test&lt;/a&gt;
 &lt;/test&gt;</codeblock>

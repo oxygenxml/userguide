@@ -2,7 +2,6 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webapp_licensing">
   <title>Licensing</title>
-  <shortdesc>How to license <ph keyref="webappProduct"/>.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -45,11 +44,17 @@
           href="webapp-configure-license-server.dita#webapp-configure-license-server"/>.</p>
     </section>
     <section id="bundling_license_server">
-      <title>Bundling the License Server Configuration in the <ph keyref="webappProduct"/></title>
-      <p>If you need to build the <ph keyref="webappProduct"/> with the license configuration
+      <title>Bundling a default License Server Configuration in the <ph keyref="webappProduct"
+        /></title>
+      <p>If you need to build the <ph keyref="webappProduct"/> with a default license configuration
         bundled inside, use this method.</p>
-      <p>The connection to the server should be configured in a file located at
-          <filepath>WEB-INF/license.properties</filepath>. It should have the following keys: <parml>
+      <p>The connection to the server should be configured in a properties file located in
+          <filepath>WEB-INF/license.properties</filepath>. This file might look like this:</p>
+      <pre>licensing.server.type=http
+licensing.server.url=http://example.com:8080/oxygenLicenseServlet/license-servlet
+licensing.server.user=&lt;USER>
+licensing.server.password=&lt;CHANGE-ME></pre>
+      <p>The following keys are supported: <parml>
           <plentry>
             <pt>licensing.server.type</pt>
             <pd>Type of licensing server. Set it to <codeph>http</codeph>.</pd>
@@ -60,7 +65,8 @@
           </plentry>
           <plentry>
             <pt>licensing.server.user</pt>
-            <pd>The user name used for the license server.</pd>
+            <pd>The name of the user with role <apiname>user</apiname> used to connect to the
+              license server.</pd>
           </plentry>
           <plentry>
             <pt>licensing.server.password</pt>
@@ -71,19 +77,36 @@
             <pd>This is an alternative to <b>licensing.server.password</b>. The value should be the
               encrypted password. </pd>
             <pd>To encrypt the password, setup the <xref
-                href="https://www.oxygenxml.com/oxygen_sdk_maven.html" format="html">SDK
+                href="https://www.oxygenxml.com/oxygen_sdk_maven.html" format="html" scope="external">SDK
                 project</xref> and run the following command in the
                 <codeph>oxygen-sample-webapp</codeph>
-              module:<codeblock>mvn exec:java -Dexec.mainClass="com.oxygenxml.webapp.EncryptionTool" -Dexec.args="encryptionKey passwd"</codeblock></pd>
+              module:<screen>mvn exec:java -Dexec.mainClass="com.oxygenxml.webapp.EncryptionTool" -Dexec.args="encryptionKey passwd"</screen></pd>
             <pd>where <codeph>passwd</codeph> is the password and <codeph>encriptionKey</codeph> is
               the encryption key used to encrypt the password. </pd>
           </plentry>
+          <plentry>
+            <pt>backup.licensing.server.url</pt>
+            <pd>(optional) For some of the licensing packages we offer a backup license key that can
+              be deployed on a second license server in order to provide higher availability in
+              presence of  machine and network failures. This key contains the URL of this backup
+              license server.</pd>
+          </plentry>
+          <plentry>
+            <pt>backup.licensing.server.user</pt>
+            <pd>(optional) The name of the user with role <apiname>user</apiname> used to connect to
+              the backup license server.</pd>
+          </plentry>
+          <plentry>
+            <pt>backup.licensing.server.password</pt>
+            <pd>(optional) The password to use for the backup license server.</pd>
+          </plentry>
+          <plentry>
+            <pt>backup.licensing.server.encryptedPassword</pt>
+            <pd>(optional) This is an alternative to <b>backup.licensing.server.password</b>. In
+              order to generate its value, see the instructions for
+                <b>licensing.server.encryptedPassword</b>.</pd>
+          </plentry>
         </parml></p>
-      <p>A configuration file might look like this:</p>
-      <pre>licensing.server.type=http
-licensing.server.url=http://example.com:8080/oxygenLicenseServlet/license-servlet
-licensing.server.user=admin
-licensing.server.password=******</pre>
     </section>
   </body>
 </topic>

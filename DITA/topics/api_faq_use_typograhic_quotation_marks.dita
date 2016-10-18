@@ -13,24 +13,30 @@
         document in <uicontrol>Author</uicontrol> mode. You can use this method to change the
         insertion of double quotes with the typographic quotes. </p>
       <p>Here is some sample code:
-        <codeblock outputclass="language-java">authorAccess.getDocumentController().setDocumentFilter(new AuthorDocumentFilter() {
-  /**
-   * @see ro.sync.ecss.extensions.api.AuthorDocumentFilter#insertText(ro.sync.ecss.extensions.api.AuthorDocumentFilterBypass, int, java.lang.String)
-   */
-  @Override
-  public void insertText(AuthorDocumentFilterBypass filterBypass, int offset, String toInsert) {
-    if(toInsert.length() == 1 &amp;&amp; "\"".equals(toInsert)) {
-      //User typed a quote but he actually needs a smart quote.
-      //So we either have to add \u201E (start smart quote)
-      //Or we add \u201C (end smart quote)
-      //Depending on whether we already have a start smart quote inserted in the current paragraph.
+        <codeblock outputclass="language-java">    authorAccess.getDocumentController().setDocumentFilter
+(new AuthorDocumentFilter() {
+    /**
+     * @see ro.sync.ecss.extensions.api.AuthorDocumentFilter#insertText
+(ro.sync.ecss.extensions.api.AuthorDocumentFilterBypass, int, java.lang.String)
+     */
+    @Override
+    public void insertText(AuthorDocumentFilterBypass filterBypass, 
+int offset, String toInsert) {
+      if(toInsert.length() == 1 &amp;&amp; "\"".equals(toInsert)) {
+        //User typed a quote but he actually needs a smart quote.
+        //So we either have to add \u201E (start smart quote)
+        //Or we add \u201C (end smart quote)
+        //Depending on whether there's already a start smart quote inserted
+in the current paragraph.
      
       try {
-        AuthorNode currentNode = authorAccess.getDocumentController().getNodeAtOffset(offset);
+        AuthorNode currentNode = 
+authorAccess.getDocumentController().getNodeAtOffset(offset);
         int startofTextInCurrentNode = currentNode.getStartOffset();
         if(offset > startofTextInCurrentNode) {
           Segment seg = new Segment();
-          authorAccess.getDocumentController().getChars(startofTextInCurrentNode, offset - startofTextInCurrentNode, seg);
+        authorAccess.getDocumentController().getChars(startofTextInCurrentNode, 
+offset - startofTextInCurrentNode, seg);
           String previosTextInNode = seg.toString();
           boolean insertStartQuote = true;
           for (int i = previosTextInNode.length() - 1; i >= 0; i--) {
@@ -61,10 +67,10 @@
 });
 </codeblock></p>
       <p>You can find the online Javadoc for <codeph>AuthorDocumentFilter</codeph> API here: <xref
-          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentFilter.html"
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentFilter.html"
           format="html" scope="external"/></p>
       <p>An alternative to using a document filtering is the use of a <xref
-          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorSchemaAwareEditingHandlerAdapter.html"
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorSchemaAwareEditingHandlerAdapter.html"
           format="html" scope="external"
             ><apiname>ro.sync.ecss.extensions.api.AuthorSchemaAwareEditingHandlerAdapter</apiname></xref>,
         which has clear callbacks indicating the source from where the API is called (Paste, Drag

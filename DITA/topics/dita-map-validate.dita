@@ -6,8 +6,8 @@
   <prolog>
     <metadata>
       <keywords>
-        <indexterm><indexterm>DITA<indexterm>Maps<indexterm>Validate and Check for
-                Completeness</indexterm></indexterm></indexterm></indexterm>
+        <indexterm>DITA<indexterm>Maps<indexterm>Validate and Check for
+            Completeness</indexterm></indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
@@ -71,15 +71,15 @@
           <image href="../img/ec_completeness_check.png" id="image_zns_dlx_js"/>
         </fig> You can configure the validation process with the following options that are
         available in the <uicontrol>DITA Map Completeness Check</uicontrol> dialog box:<dl>
-          <dlentry>
+          <dlentry id="batch-validate-referenced">
             <dt><uicontrol>Batch validate referenced DITA resources</uicontrol></dt>
             <dd>This option specifies the level of validation that applies to referenced DITA
                 files:<ul id="ul_bfw_1kx_js">
                 <li>If the checkbox is left unchecked (default setting), the DITA files will be
                   validated using the rules defined in the DTD or XML Schema declared in the
                   document.</li>
-                <li>If the checkbox is checked, the DITA files will be validated using rules
-                  defined in their associated <xref
+                <li>If the checkbox is checked, the DITA files will be validated using rules defined
+                  in their associated <xref
                     href="../concepts/validation-scenario.dita#validation-scenario">validation
                     scenario</xref>.</li>
               </ul></dd>
@@ -103,22 +103,27 @@
                 href="dita-profiling-conditional-text.dita#dita-profiling-conditional-text"
                 format="dita">profiling condition set</xref> before validation. You can choose
               between the following options:<ul id="ul_k2l_z33_kd">
-                <li><uicontrol>From the current condition set</uicontrol> - The map is filtered
-                  using the condition set currently applied in the <uicontrol>DITA Maps
-                    Manager</uicontrol> view. Clicking the <uicontrol><image
-                      href="../img/HelpToc16.png" id="image_lss_jkx_js"/>Details</uicontrol> icon
-                  opens a topic in the <ph keyref="product"/> User Guide that explains how to create
-                  a profiling condition set.</li>
-                <li><uicontrol>From all available condition sets</uicontrol> - For each available
-                  condition set, the map content is filtered using the condition set before
-                  validation.</li>
-                <li><uicontrol>From the associated transformation scenario</uicontrol> - The
-                  filtering condition set is specified explicitly as a DITAVAL file in the current
-                  transformation scenario associated with the DITA map.</li>
-                <li><uicontrol>Other DITAVAL files</uicontrol> -For each DITAVAL file from this
-                  list, the map content is filtered using the DITAVAL file before validation. Use
-                  the <uicontrol>Add</uicontrol> or <uicontrol>Remove</uicontrol> buttons to
-                  configure the list.</li>
+                <li id="DITAVAL-from-current-set"><uicontrol>From the current condition
+                    set</uicontrol> - The map is filtered using the condition set currently applied
+                  in the <uicontrol>DITA Maps Manager</uicontrol> view. Clicking the
+                      <uicontrol><image href="../img/HelpToc16.png" id="image_lss_jkx_js"
+                    />Details</uicontrol> icon opens a topic in the <ph keyref="product"/> User
+                  Guide that explains how to create a profiling condition set.</li>
+                <li id="DITAVAL-from-all-sets"><uicontrol>From all available condition
+                    sets</uicontrol> - For each available condition set, the map content is filtered
+                  using that set before validation.</li>
+                <li id="DITAVAL-from-associated-sets"><uicontrol>From the associated transformation
+                    scenario</uicontrol> - The filtering condition set is specified explicitly as a
+                  DITAVAL file in the current transformation scenario associated with the DITA
+                  map.</li>
+                <li id="DITAVAL-other-files"><uicontrol>Other DITAVAL files</uicontrol> - For each
+                  DITAVAL file from this list, the map content is filtered using the DITAVAL file
+                  before validation. Use the <uicontrol>Add</uicontrol> or
+                    <uicontrol>Remove</uicontrol> buttons to configure the list. The
+                    <uicontrol>Add</uicontrol> button opens a dialog box that allows you to select a
+                  local or remote path to a DITAVAL file. <ph
+                    conref="../reusables/topics/reusables-user-guide.dita#reusables-user-guide/specify-path-ph"
+                  /></li>
               </ul></dd>
           </dlentry>
           <dlentry>
@@ -128,7 +133,26 @@
           </dlentry>
           <dlentry>
             <dt><uicontrol>Report links to topics not referenced in DITA maps</uicontrol></dt>
-            <dd>Checks that all referenced topics are linked in the DITA map.</dd>
+            <dd>Checks that all the topics referenced by other topics are also linked in the DITA
+              map.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Report multiple references to the same topic</uicontrol></dt>
+            <dd>If enabled, it will report warnings when a topic is referenced multiple times in the
+              DITA map, unless a unique <codeph>copy-to</codeph> attribute is used on the
+                <codeph>topicref</codeph> element for any topic that is referenced multiple
+                times.<p>For example, it will <b>not</b> report a warning if there is a topic
+                referenced twice, but the second <codeph>topicref</codeph> has a
+                  <codeph>copy-to</codeph> attribute
+                set:<codeblock outputclass="language-xml">&lt;topicref href="topic.dita"/>
+.....
+ &lt;topicref href="topic.dita" copy-to="topic2.dita"/></codeblock></p><p>On
+                the other hand, it <b>will</b> report a warning if there is a topic referenced twice
+                and none of the reference-type elements has a <codeph>copy-to</codeph> attribute set
+                or both of them have the <codeph>copy-to</codeph> attribute set to the same
+                value:<codeblock outputclass="language-xml">&lt;topicref href="topic.dita" copy-to="topic2.dita"/>
+......
+ &lt;topicref href="topic.dita" copy-to="topic2.dita"/></codeblock></p></dd>
           </dlentry>
           <dlentry>
             <dt><uicontrol>Identify possible conflicts in profile attribute values</uicontrol></dt>
@@ -169,14 +193,29 @@
                 </ul>
               </p></dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="additional-schematron-checks">
             <dt><uicontrol>Additional schematron checks</uicontrol></dt>
-            <dd>Allows you to select a Schematron schema that <ph keyref="product"/> uses for the
-              validation of DITA resources.</dd>
+            <dd>Allows you to select a Schematron file that <ph keyref="product"/> will use for the
+              validation of DITA resources. <ph
+                conref="../reusables/topics/reusables-user-guide.dita#reusables-user-guide/specify-path-ph"
+              /></dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Export settings</uicontrol></dt>
+            <dd>Allows you to export the settings assigned in this dialog box to an XML file that
+              you can share with other users or use on other systems.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Load settings</uicontrol></dt>
+            <dd>Allows you to load settings for this dialog box from an XML file that was created by
+              the <uicontrol>Export settings</uicontrol> action.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Check</uicontrol></dt>
+            <dd>Use the <uicontrol>Check</uicontrol> button to begin the validation process. The
+              options that you choose in this dialog box are preserved between sessions.</dd>
           </dlentry>
         </dl></p>
-      <p>Click the <uicontrol>Check</uicontrol> button to begin the validation process. The options
-        that you choose in this dialog box are preserved between sessions.</p>
     </section>
   </body>
   <related-links>

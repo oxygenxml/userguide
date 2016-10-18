@@ -20,10 +20,10 @@
       some best practices in the way content is edited.</p>
     <p>For an example of a specific use-case, suppose that you want restrict DITA list item elements
         (<codeph>li</codeph>) to only accept paragraph elements (<codeph>p</codeph>). In this case,
-      the <uicontrol>Content Completion Assistant</uicontrol> should not offer any other element
-      other than a paragraph (<codeph>p</codeph>) when a list item (<codeph>li</codeph>) is inserted
-      into a document. It would also be helpful if the required child element (<codeph>p</codeph>)
-      was automatically inserted whenever a list item (<codeph>li</codeph>) is inserted.</p>
+      the <uicontrol>Content Completion Assistant</uicontrol> should not offer any element other
+      than a paragraph (<codeph>p</codeph>) when a list item (<codeph>li</codeph>) is inserted into
+      a document. It would also be helpful if the required child element (<codeph>p</codeph>) was
+      automatically inserted whenever a list item (<codeph>li</codeph>) is inserted.</p>
     <p>One method of changing the content model is to alter the element definition in the associated
       schema (XML Schema, DTD, RelaxNG), but this may be quite complicated in some cases.
       Fortunately, <ph keyref="product"/> offers a simple, alternative method of using a
@@ -44,17 +44,44 @@
             have its content completion proposals changed. For example, <codeph>"title"</codeph>
             matches all the <codeph>title</codeph> elements in the document, while
               <codeph>"chapter/title"</codeph> matches only the <codeph>title</codeph> elements that
-            are direct children of the <codeph>chapter</codeph> element.<note>If this attribute is
-              missing, the customization will apply to the proposals for all elements. You can
-              intentionally omit this attribute and use <xref
+            are direct children of the <codeph>chapter</codeph> element. You can use simplified
+            forms of XPath in this attribute.<p>The XPath expressions can accept multiple attribute
+              conditions and inside each condition you can use <i>AND/OR</i> boolean operators and
+              parentheses to override the priority.</p><p>You can use one or more of the following
+              attribute conditions (default attribute values are not taken into account):<ul>
+                <li><i>element[@attr]</i> - Matches all instances of the specified element that
+                  include the specified attribute.</li>
+                <li><i>element[not(@attr)]</i> - Matches all instances of the specified element that
+                  do not include the specified attribute.</li>
+                <li><i>element[@attr = "value"]</i> - Matches all instances of the specified element
+                  that include the specified attribute with the given value.</li>
+                <li><i>element[@attr != "value"]</i> - Matches all instances of the specified
+                  element that include the specified attribute and its value is different than the
+                  one given.</li>
+              </ul></p><p><b>Example:</b> The following is an example of how you could use multiple
+              boolean operators and parentheses inside an attribute
+              condition:</p><codeblock>*[@a and @b or @c and @d]
+*[@a and (@b or @c) and @d]</codeblock><p>The
+              following are just examples of how simplified XPath expressions might look like:<ul>
+                <li><codeph>elementName</codeph></li>
+                <li><codeph>//elementName</codeph></li>
+                <li><codeph>/elementName1/elementName2/elementName3</codeph></li>
+                <li><codeph>//xs:localName</codeph> Note: Using a namespace prefix requires that you
+                  declare it in the configuration file. For example: <codeph>&lt;elementProposals
+                    xmlns:db5="http://docbook.org/ns/docbook" path="db5:listitem"
+                    insertElements="db5:para" /></codeph></li>
+                <li><codeph>//xs:documentation[@lang="en"]</codeph></li>
+              </ul></p><note>If the <codeph>path</codeph> attribute is missing, the customization
+              will apply to the proposals for all elements. You can intentionally omit this
+              attribute and use <xref
                 href="#configure-elements-attr-cc-individually/possible-elements" format="dita"
                   ><codeph>possibleElements</codeph></xref> or <xref
                 href="#configure-elements-attr-cc-individually/reject-elements" format="dita"
                   ><codeph>rejectElements</codeph></xref> to specify or restrict elements for an
               entire framework.<p>For example, suppose that in your DITA documents, you want to
                 restrict your users from using image elements (<codeph>image</codeph>) because you
-                do not want images to be included in your output.  The configuration file should
-                look like
+                do not want images to be included in your output. The configuration file should look
+                like
                 this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image" /></codeblock></p><p>Since
                 the <codeph>path</codeph> attribute is missing, the specified element will be
                 filtered out from the proposals for the entire framework.</p></note></li>
@@ -96,9 +123,13 @@
             have its attribute proposals changed. For example, <codeph>"title"</codeph> matches all
             the <codeph>title</codeph> elements in the document, while
               <codeph>"chapter/title"</codeph> matches only the <codeph>title</codeph> elements that
-            are direct children of the <codeph>chapter</codeph> element.<note>If this attribute is
-              missing, the customization will apply to the proposals for all elements. You can
-              intentionally omit this attribute and use <xref
+            are direct children of the <codeph>chapter</codeph> element. You can use simplified
+            forms of XPath in this attribute. For examples of such forms of XPath expressions, see
+            the <xref
+              href="preferences-editor-format-xml.dita#preferences-editor-format-xml/simplified-XPath"
+              >note in XML Preferences</xref>.<note>If this attribute is missing, the customization
+              will apply to the proposals for all elements. You can intentionally omit this
+              attribute and use <xref
                 href="#configure-elements-attr-cc-individually/possible-attributes" format="dita"
                   ><codeph>possibleAttributes</codeph></xref> or <xref
                 href="#configure-elements-attr-cc-individually/reject-attributes" format="dita"
@@ -164,7 +195,8 @@
               (<codeph>ol/li</codeph>) is inserted, and also to not allow any other element besides
               a paragraph inside the ordered list items.</p>
             <p>To achieve this, the configuration file should include the
-              following:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertElements="p"  possibleElements="_INSERTED_"/></codeblock></p>
+              following:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertElements="p"  
+       possibleElements="_INSERTED_"/></codeblock></p>
           </li>
           <li>
             <p><b>Example 2: Insert Complex Element Structure</b></p>
@@ -184,14 +216,16 @@
             <p>The configuration file should include the
               following:<codeblock outputclass="language-xml">    &lt;elementProposals path="prolog" insertElements="author metadata"/>
     &lt;elementProposals path="prolog/metadata" insertElements="keywords"/>
-    &lt;elementProposals path="prolog/metadata/keywords" insertElements="keyword, keyword"/></codeblock></p>
+    &lt;elementProposals path="prolog/metadata/keywords" 
+           insertElements="keyword, keyword"/></codeblock></p>
           </li>
           <li>
             <p><b>Example 3: Limit Possible Elements</b></p>
             <p>Suppose that you also want to limit the proposals for the <codeph>keywords</codeph>
               element to only allow the user to insert <codeph>audience</codeph> or
                 <codeph>keyword</codeph> elements. The configuration file should include the
-              following:<codeblock outputclass="language-xml">&lt;elementProposals path="prolog/metadata" insertElements="keywords" possibleElements="audience keywords"/></codeblock></p>
+              following:<codeblock outputclass="language-xml">&lt;elementProposals path="prolog/metadata" insertElements="keywords" 
+           possibleElements="audience keywords"/></codeblock></p>
             <p>Suppose that you want to simply restrict your users from inserting
                 <codeph>image</codeph> elements inside DITA list item elements
               (<codeph>li</codeph>), but still propose all the other elements that are defined in
@@ -209,11 +243,11 @@
                 <codeph>id</codeph> attribute (with an empty value) whenever a DITA list item
               element (<codeph>li</codeph>) is inserted. The configuration file should include the
               following:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id"/></codeblock></p></li>
-          <li><b>Example 2: Limit Possible Attributes</b><p>Suppose that you also want to limit the
-              number of choices for attributes that are presented to the user whenever a DITA list
-              item element (<codeph>li</codeph>) is inserted. The configuration file should look
-              like
-              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id" possibleAttributes="id product platform audience"/></codeblock></p><p>Suppose
+          <li><b>Example 2: Limit Possible Attributes</b><p>Suppose that you also want to limit the number of choices for attributes that are presented to
+              the user whenever a DITA list item element (<codeph>li</codeph>) is inserted. The
+              configuration file should look like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id" 
+          possibleAttributes="id product platform audience"/></codeblock></p><p>Suppose
               that you want to simply restrict your users from inserting <codeph>conref</codeph>
               attributes inside DITA topics (<codeph>topic</codeph> element), but still propose all
               the other attributes that are defined in the associated schema. The configuration file

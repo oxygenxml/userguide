@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_cs4_cvh_px">
+  <title>Replacing Direct Image References with Key References in a DITA Project.</title>
+  <body>
+    <p>Suppose that you have a large <b>DITA</b> project and all the image references in your topics
+      are direct references, using the <b>@href</b> attribute like
+      this:<codeblock outputclass="language-xml">&lt;image href="../../images/Iris_sanguinea.jpg" scale="50"/></codeblock>For
+      better scalability and reuse possibilities, suppose you want to convert these direct
+      references to DITA 1.2 key
+      references:<codeblock outputclass="language-xml">&lt;image keyref="Iris_sanguinea.jpg" scale="50"/></codeblock></p>
+    <p>Doing something like this manually means making replacements in hundreds of places and also
+      manually building a DITA map that maps the image file name to the image location.</p>
+    <p>This blog post will try to describe some steps that you will help you to automate this change
+      in your project:<ol id="ol_s51_bwh_px">
+        <li>The first big step is to generate the DITA Map that maps each image file name (which
+          will be used as a key) to the image location. So, the generated DITA map will look like
+          this:<codeblock outputclass="language-xml">&lt;!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+&lt;map>
+….…....
+&lt;keydef href="Iris_sanguinea.jpg" keys="Iris_sanguinea.jpg"/>
+…...
+&lt;/map></codeblock>We
+          will assume that all images are placed in an <b>images</b> folder and we can create an
+            <b>ANT</b> build file that lists all the images in a parameter and then calls an
+            <b>XSLT</b> script to process the list of images
+            further:<codeblock outputclass="language-xml">&lt;project basedir="." name="Create Image Keys Definition Map">
+    &lt;fileset id="dist.contents" dir="images/" includes="*"/>
+    &lt;property name="prop.dist.contents" refid="dist.contents"/>
+    &lt;xslt in="createKeyrefsMap.xsl" style="createKeyrefsMap.xsl" out="images/imageKeydefs.ditamap" destdir=".">
+        &lt;param name="filesList" expression="${prop.dist.contents}"/>
+    &lt;/xslt>
+&lt;/project></codeblock><p>The
+              <b>XSLT</b> stylesheet <b>createKeyrefsMap.xsl</b> is responsible for creating the
+            mapping DITA
+            map:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs"
+    version="1.0">
+    &lt;xsl:param name="filesList"/>
+    &lt;xsl:output doctype-public="-//OASIS//DTD DITA Map//EN" doctype-system="map.dtd" indent="yes"/>
+    &lt;xsl:template match="/">
+        &lt;map>
+            &lt;xsl:call-template name="tokenizeString">
+                &lt;xsl:with-param name="list" select="$filesList"/>
+            &lt;/xsl:call-template>
+        &lt;/map>
+    &lt;/xsl:template>
+    &lt;xsl:template name="tokenizeString">
+        &lt;xsl:param name="list"/>
+        &lt;xsl:param name="delimiter" select="';'"/>
+        &lt;xsl:choose>
+            &lt;xsl:when test="contains($list, $delimiter)">
+                &lt;keydef href="{substring-before($list,$delimiter)}" keys="{substring-before($list,$delimiter)}"/>
+                &lt;xsl:call-template name="tokenizeString">
+                    &lt;xsl:with-param name="list" select="substring-after($list,$delimiter)"/>
+                &lt;/xsl:call-template>
+            &lt;/xsl:when>
+            &lt;xsl:otherwise>
+                &lt;keydef href="{$list}" keys="{$list}"/>
+            &lt;/xsl:otherwise>
+        &lt;/xsl:choose>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></p><p>After
+            this step you will have a new DITA map with all image mappings and afterwards you can
+            link it in your main project's DITA map.</p></li>
+        <li>We still need to make changes to all DITA topics and replace all image hrefs with
+          keyrefs. Oxygen has support for <xref
+            href="https://www.oxygenxml.com/doc/versions/18.0/ug-editor/topics/xslt-refactoring-actions.html"
+            format="html" scope="external">XML Refactoring</xref> actions and you can define custom
+          XSLT scripts that can be applied to modify an entire set of topics. In the
+            <b>OXYGEN_INSTALL_DIR/refactoring</b> folder, you can add an XSLT script along with an
+          XML description of the refactoring action. An <b>XSLT</b> script that would replace
+            <b>@href</b> attributes on images with <b>@keyref</b> would look like
+          this:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    version="2.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:f="http://www.oxygenxml.com/ns/functions">
+    &lt;xsl:function name="f:getKeyref" as="xs:string">
+        &lt;xsl:param name="element" as="element()"/>
+        &lt;xsl:variable name="imageFile" select="tokenize(translate($element/@href, '\', '/'), '/')[last()]"/>
+        &lt;xsl:variable name="key" select="substring-before($imageFile, '.')"/>
+        &lt;xsl:value-of select="$key"/>
+    &lt;/xsl:function>
+    &lt;xsl:template match="node() | @*">
+        &lt;xsl:copy>
+            &lt;xsl:apply-templates select="node() | @*"/>
+        &lt;/xsl:copy>
+    &lt;/xsl:template>
+    &lt;xsl:template match="image[@href and not(@keyref)]">
+        &lt;xsl:copy>
+            &lt;xsl:apply-templates select="@* except @href"/>
+            &lt;xsl:attribute name="keyref" select="f:getKeyref(.)">&lt;/xsl:attribute>
+            &lt;xsl:apply-templates select="node()"/>
+        &lt;/xsl:copy>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet> </codeblock>You
+          can right-click anywhere in the <b>DITA Maps Manager</b> view and choose
+            <b>Refactoring->XML Refactoring</b>, then use your custom refactoring action to modify
+          all resources.</li>
+      </ol></p>
+    <p>A set of samples, including the build file, XSLT stylesheets, and refactoring action XML
+      descriptor can be found here:<xref
+        href="https://www.oxygenxml.com/forum/files/batchImageHrefToKeyref.zip" format="zip"
+        scope="external"/>.</p>
+  </body>
+</topic>

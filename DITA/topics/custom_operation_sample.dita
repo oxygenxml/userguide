@@ -36,7 +36,8 @@
           <li>Computes the <term>QName</term> of the new element to be inserted and inserts it as
             the first child of the parent element.</li>
         </ul><codeblock>(: 
-    XQuery document used to implement 'Convert attribute to element' operation from XML Refactoring tool.
+    XQuery document used to implement 'Convert attribute to element'
+      operation from XML Refactoring tool.
 :)
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
@@ -79,15 +80,16 @@ let $new_element_qName :=
     if (empty($prefix) or $prefix[1] = '') then $new_element_localName
     else $prefix[1] || ':' || $new_element_localName
     
-  where ('&lt;ANY>' = $element_localName or local-name($node) = $element_localName) and 
-        ($element_namespace = '&lt;ANY>' or $element_namespace = namespace-uri($node))
+ where ('&lt;ANY>' = $element_localName or local-name($node) = $element_localName)
+   and 
+ ($element_namespace = '&lt;ANY>' or $element_namespace = namespace-uri($node))
         
   return 
-      if (exists($attribute)) then
-        (insert node element {QName($new_element_namespace, $new_element_qName)} 
-        {string($attribute)} as first into $node,
-        delete node $attribute)
-        else ()</codeblock></p>
+    if (exists($attribute)) then
+      (insert node element {QName($new_element_namespace, $new_element_qName)} 
+      {string($attribute)} as first into $node,
+      delete node $attribute)
+      else ()</codeblock></p>
     </section>
     <section id="xslt-example-section">
       <title>Example of an XSLT Script for Creating a Custom Operation to <i>Convert an Attribute to
@@ -99,62 +101,65 @@ let $new_element_qName :=
           <li>Adds the new element as the first child of the parent
             element.<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    exclude-result-prefixes="xs"
-    xmlns:xr="http://www.oxygenxml.com/ns/xmlRefactoring"
-    version="2.0">
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs"
+  xmlns:xr="http://www.oxygenxml.com/ns/xmlRefactoring"
+  version="2.0">
     
-    &lt;xsl:import href="http://www.oxygenxml.com/ns/xmlRefactoring/resources/commons.xsl"/>
+  &lt;xsl:import 
+href="http://www.oxygenxml.com/ns/xmlRefactoring/resources/commons.xsl"/>
     
-    &lt;xsl:param name="element_localName" as="xs:string" required="yes"/>
-    &lt;xsl:param name="element_namespace" as="xs:string" required="yes"/>
-    &lt;xsl:param name="attribute_localName" as="xs:string" required="yes"/>
-    &lt;xsl:param name="attribute_namespace" as="xs:string" required="yes"/>
-    &lt;xsl:param name="new_element_localName" as="xs:string" required="yes"/>
-    &lt;xsl:param name="new_element_namespace" as="xs:string" required="yes"/>
+  &lt;xsl:param name="element_localName" as="xs:string" required="yes"/>
+  &lt;xsl:param name="element_namespace" as="xs:string" required="yes"/>
+  &lt;xsl:param name="attribute_localName" as="xs:string" required="yes"/>
+  &lt;xsl:param name="attribute_namespace" as="xs:string" required="yes"/>
+  &lt;xsl:param name="new_element_localName" as="xs:string" required="yes"/>
+  &lt;xsl:param name="new_element_namespace" as="xs:string" required="yes"/>
     
-    &lt;xsl:template match="node() | @*">
-        &lt;xsl:copy>
-            &lt;xsl:apply-templates select="node() | @*"/>
-        &lt;/xsl:copy>
-    &lt;/xsl:template>
-    &lt;xsl:template match="//*[xr:check-local-name($element_localName, ., true()) and
+  &lt;xsl:template match="node() | @*">
+      &lt;xsl:copy>
+          &lt;xsl:apply-templates select="node() | @*"/>
+      &lt;/xsl:copy>
+  &lt;/xsl:template>
+  &lt;xsl:template match="//*[xr:check-local-name($element_localName, ., true())
+     and
         xr:check-namespace-uri($element_namespace, .)]">
         
-        &lt;xsl:variable name="attributeToConvert" 
-            select="@*[xr:check-local-name($attribute_localName, ., true()) and
-            xr:check-namespace-uri($attribute_namespace, .)]"/>
+      &lt;xsl:variable name="attributeToConvert" 
+         select="@*[xr:check-local-name($attribute_localName, ., true())
+     and
+        xr:check-namespace-uri($attribute_namespace, .)]"/>
         
-        &lt;xsl:choose>
-            &lt;xsl:when test="empty($attributeToConvert)">
-                &lt;xsl:copy>
-                    &lt;xsl:apply-templates select="node() | @*"/>
-                &lt;/xsl:copy>
-            &lt;/xsl:when>
-            &lt;xsl:otherwise>
-                &lt;xsl:copy>
-                    &lt;xsl:for-each select="@*[empty(. intersect $attributeToConvert)]">
-                        &lt;xsl:copy-of select="."/>                        
-                    &lt;/xsl:for-each>
-                    &lt;!-- The new element namespace -->
-                    &lt;xsl:variable name="nsURI" as="xs:string">
-                        &lt;xsl:choose>
-                            &lt;xsl:when test="$new_element_namespace eq $xr:NO-NAMESPACE">
-                                &lt;xsl:value-of select="''"/>
-                            &lt;/xsl:when>
-                            &lt;xsl:otherwise>
-                                &lt;xsl:value-of select="$new_element_namespace"/>
-                            &lt;/xsl:otherwise>
-                        &lt;/xsl:choose>
-                    &lt;/xsl:variable>
-                    &lt;xsl:element name="{$new_element_localName}" namespace="{$nsURI}">
-                        &lt;xsl:value-of select="$attributeToConvert"/>
-                    &lt;/xsl:element>
-                    &lt;xsl:apply-templates select="node()"/>
-                &lt;/xsl:copy>
-            &lt;/xsl:otherwise>
-        &lt;/xsl:choose>
-    &lt;/xsl:template>
+      &lt;xsl:choose>
+          &lt;xsl:when test="empty($attributeToConvert)">
+              &lt;xsl:copy>
+                  &lt;xsl:apply-templates select="node() | @*"/>
+              &lt;/xsl:copy>
+          &lt;/xsl:when>
+      &lt;xsl:otherwise>
+          &lt;xsl:copy>
+              &lt;xsl:for-each select="@*[empty(. intersect $attributeToConvert)]">
+                   &lt;xsl:copy-of select="."/>                        
+              &lt;/xsl:for-each>
+                &lt;!-- The new element namespace -->
+                &lt;xsl:variable name="nsURI" as="xs:string">
+                    &lt;xsl:choose>
+           &lt;xsl:when test="$new_element_namespace eq $xr:NO-NAMESPACE">
+                           &lt;xsl:value-of select="''"/>
+                        &lt;/xsl:when>
+                        &lt;xsl:otherwise>
+                            &lt;xsl:value-of select="$new_element_namespace"/>
+                        &lt;/xsl:otherwise>
+                    &lt;/xsl:choose>
+                 &lt;/xsl:variable>
+          &lt;xsl:element name="{$new_element_localName}" namespace="{$nsURI}">
+                    &lt;xsl:value-of select="$attributeToConvert"/>
+                 &lt;/xsl:element>
+              &lt;xsl:apply-templates select="node()"/>
+         &lt;/xsl:copy>
+       &lt;/xsl:otherwise>
+     &lt;/xsl:choose>
+  &lt;/xsl:template>
 &lt;/xsl:stylesheet></codeblock></li>
         </ul><note>The XSLT stylesheet imports a module library that contains utility functions and
           variables. The location of this module is resolved via an XML catalog set in the <i>XML
@@ -169,47 +174,50 @@ let $new_element_qName :=
       <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 
 &lt;refactoringOperationDescriptor 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://www.oxygenxml.com/ns/xmlRefactoring" 
-    id="convert-attribute-to-element" 
-    name="Convert attribute to element">
-    &lt;description>Converts the specified attribute to an element. The new element will be inserted as first child of the attribute's parent element.&lt;/description>    
-    &lt;!-- For the XSLT stylesheet option uncomment the following line and comment the line referring the XQuery Update script -->
-    &lt;!-- &lt;script type="XSLT" href="convert-attribute-to-element.xsl"/> --> 
-    &lt;script type="XQUERY_UPDATE" href="convert-attribute-to-element.xq"/>
-    &lt;parameters>
-        &lt;description>Specify the attribute to be converted to element.&lt;/description>
-        &lt;section label="Parent element">
-            &lt;elementParameter id="elemID">
-                &lt;localName label="Name" name="element_localName" allowsAny="true">
-                    &lt;description>The local name of the attribute's parent element.&lt;/description>            
-                &lt;/localName>
-                &lt;namespace label="Namespace" name="element_namespace" allowsAny="true">
-                    &lt;description>The local name of the attribute's parent element&lt;/description>            
-                &lt;/namespace>        
-            &lt;/elementParameter>
-        &lt;/section>
-        &lt;section label="Attribute">
-            &lt;attributeParameter dependsOn="elemID">
-                &lt;localName label="Name" name="attribute_localName">
-                    &lt;description>The name of the attribute to be converted.&lt;/description>
-                &lt;/localName>
-                &lt;namespace label="Namespace" name="attribute_namespace" allowsAny="true">
-                    &lt;description>The namespace of the attribute to be converted.&lt;/description>
-                &lt;/namespace>        
-            &lt;/attributeParameter>
-        &lt;/section>
-        &lt;section label="New element">
-            &lt;elementParameter>
-                &lt;localName label="Name" name="new_element_localName">
-                    &lt;description>The name of the new element.&lt;/description>
-                &lt;/localName>
-                &lt;namespace label="Namespace" name="new_element_namespace">
-                    &lt;description>The namespace of the new element.&lt;/description>
-                &lt;/namespace>        
-            &lt;/elementParameter>
-        &lt;/section>
-    &lt;/parameters>
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://www.oxygenxml.com/ns/xmlRefactoring" 
+ id="convert-attribute-to-element" 
+ name="Convert attribute to element">
+ &lt;description>Converts the specified attribute to an element. 
+           The new element will be inserted as first child of the attribute's
+           parent element.&lt;/description>    
+ &lt;!-- For the XSLT stylesheet option uncomment the following line and comment
+           the line referring the XQuery Update script -->
+ &lt;!-- &lt;script type="XSLT" href="convert-attribute-to-element.xsl"/> --> 
+ &lt;script type="XQUERY_UPDATE" href="convert-attribute-to-element.xq"/>
+  &lt;parameters>
+   &lt;description>Specify the attribute to be converted to element.&lt;/description>
+    &lt;section label="Parent element">
+     &lt;elementParameter id="elemID">
+      &lt;localName label="Name" name="element_localName" allowsAny="true">
+       &lt;description>Local name of the parent element.&lt;/description>            
+        &lt;/localName>
+       &lt;namespace label="Namespace" name="element_namespace" allowsAny="true">
+         &lt;description>Local name of the parent element&lt;/description>            
+       &lt;/namespace>        
+     &lt;/elementParameter>
+    &lt;/section>
+    &lt;section label="Attribute">
+     &lt;attributeParameter dependsOn="elemID">
+      &lt;localName label="Name" name="attribute_localName">
+       &lt;description>Name of the attribute to be converted.&lt;/description>
+      &lt;/localName>
+     &lt;namespace label="Namespace" name="attribute_namespace" allowsAny="true">
+       &lt;description>Namespace of the attribute to be converted.&lt;/description>
+     &lt;/namespace>        
+     &lt;/attributeParameter>
+    &lt;/section>
+    &lt;section label="New element">
+        &lt;elementParameter>
+           &lt;localName label="Name" name="new_element_localName">
+               &lt;description>The name of the new element.&lt;/description>
+           &lt;/localName>
+           &lt;namespace label="Namespace" name="new_element_namespace">
+               &lt;description>The namespace of the new element.&lt;/description>
+           &lt;/namespace>        
+        &lt;/elementParameter>
+    &lt;/section>
+  &lt;/parameters>
 &lt;/refactoringOperationDescriptor></codeblock>
       <note>If you are using an XSLT file, the line with the <codeph>script</codeph> element would
         look like

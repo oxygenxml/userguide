@@ -23,10 +23,38 @@
         opened by running its executable file (<filepath>diffFiles.exe</filepath>) from the Syncro
         SVN Client installation folder. The functionality of this standalone tool is similar to the
           <xref href="diff-view.dita#diff-view">comparison feature in the Syncro SVN client</xref>
-        with a few slight differences in the interface and some options.</ph><fig>
+        with a few slight differences in the interface and some options.</ph></p>
+    <p>
+      <fig>
         <title>Compare Files Tool</title>
         <image href="../img/sa_compare_files1.png"/>
-      </fig></p>
+      </fig>
+    </p>
+    <section id="starting_the_tools_from_a_command_line">
+      <title>Starting the Tool from a Command Line</title>
+      <p>The file comparison tool can also be started by using command-line arguments. In the
+        installation folder there is an executable shell (<filepath>diffFiles.bat</filepath> on
+        Windows, <filepath>diffFiles.sh</filepath> on Unix/Linux,
+          <filepath>diffFilesMac.sh</filepath> on OS X). To specify the files to compare, you can
+        pass command-line arguments using the following construct:
+          <codeph>diffFiles.bat/diffFiles.sh/diffFilesMac.sh [path to left file] [path to right
+          file] [path to 3-way base file]</codeph>.</p>
+      <p>If three files are specified, the tool will start in the <xref
+          href="#file-comparison/threeway_comparisons" format="dita">3-way comparison mode</xref>.
+        If only two files are specified, the tool will start in the <xref
+          href="#file-comparison/twoway_comparisons">2-way comparison
+          mode</xref>. The first specified file will be added to the left panel in the comparison
+        tool, the second file to the right panel, and the optional third file will be the base
+        (ancestor) file used for a 3-way comparison.  If you pass only one argument, you are
+        prompted to manually choose another file.</p>
+      <p>You can also start the file comparison tool from an external application by using the
+          <codeph>[-ext]</codeph> argument and there are some additional arguments that are allowed.
+        To see all the details for the command line construct, type <userinput>diffFiles.bat
+          --help</userinput> in the command line.</p>
+      <p>For example, to do a 3-way comparison on Windows, the command line might look like
+        this:<codeblock outputclass="language-ini">diffFiles.bat "c:\docs\file 1" "c:\docs\file 2" c:\docs\basefile</codeblock></p>
+      <note type="tip">If there are spaces in the path names, surround the paths with quotes.</note>
+    </section>
     <section id="twoway_comparisons">
       <title>Two-Way Comparisons</title>
       <p>The <uicontrol>Compare Files</uicontrol> tool can be used to compare the differences
@@ -95,7 +123,7 @@
             <li conref="../reusables/topics/reusables-tools.dita#reusables-tools/characters"/>
             <li conref="../reusables/topics/reusables-tools.dita#reusables-tools/words"/>
             <li conref="../reusables/topics/reusables-tools.dita#reusables-tools/lines"/>
-            <li>
+            <li id="syntax-aware-alg">
               <p>
                 <uicontrol>Syntax Aware</uicontrol> - Computes differences for known file types or
                 fragments. This algorithm splits the files or fragments into sequences of
@@ -135,7 +163,7 @@
       <p><ph keyref="product"/> also includes a three-way comparison feature to help you solve
         conflicts and merge changes between multiple modifications. It is especially helpful for
         teams who have multiple authors editing and committing the same documents. It provides a
-        comparison between a local change, a remote change, and the original base revision. Some
+        comparison between a local change, another change, and the original base revision. Some
         additional advantages include:<ul>
           <li>Visualize and merge content that was modified by you and another member of your
             team.</li>
@@ -154,7 +182,7 @@
               differences.</p></li>
             <li>Click the <uicontrol><image href="../img/ThreeWayComparison16.png"/>Three-Way
                 Comparison</uicontrol> button on the toolbar and select the base file in the
-                <uicontrol>Ancestor</uicontrol> field. <ph
+                <uicontrol>Base</uicontrol> field. <ph
                 conref="../reusables/topics/reusables-user-guide.dita#reusables-user-guide/specify-path"
               /></li>
             <li>To highlight the differences, click the <uicontrol><image
@@ -170,10 +198,12 @@
           </ol>The resulting comparison will show you differences between the two files, as well as
           differences between either of them and the base (ancestor) file. The line numbers on each
           side and colored marks on the right-side vertical stripe help you to quickly identify the
-          locations of the differences. Adjacent changes are grouped into blocks of changes.<fig>
+          locations of the differences. Adjacent changes are grouped into blocks of changes.</p><p>
+          <fig>
             <title>Three-Way Differences</title>
             <image href="../img/three-way-compare-source.png"/>
-          </fig></p></sectiondiv>
+          </fig>
+        </p></sectiondiv>
       <sectiondiv
         conref="../reusables/topics/reusables-tools.dita#reusables-tools/highlighting-colors"/>
       <sectiondiv
@@ -189,28 +219,40 @@
     </section>
     <section id="second_level_comparisons">
       <title>Second Level Comparisons</title>
-      <p><ph keyref="product"/> automatically performs a second level comparison for the
-          <uicontrol>Lines</uicontrol>, <uicontrol>XML Fast</uicontrol>, and <uicontrol>XML
-          Accurate</uicontrol> algorithms. After the first comparison is finished, the second level
-        comparisons are processed on text nodes using a word level comparison, meaning that it looks
-        for identical words. This second level comparison makes it easier to spot precise
-        differences and you can merge or reject the precise modifications.<fig>
+      <p>For both two-way and three-way comparisons, <ph keyref="product"/> automatically performs a
+        second level comparison for the <uicontrol>Lines</uicontrol>, <uicontrol>XML
+          Fast</uicontrol>, and <uicontrol>XML Accurate</uicontrol> algorithms. After the first
+        comparison is finished, the second level comparisons for the <uicontrol>Lines</uicontrol>
+        algorithm is processed on text nodes using a word level comparison, meaning that it looks
+        for identical words. For the <uicontrol>XML Fast</uicontrol> and <uicontrol>XML
+          Accurate</uicontrol> algorithms, the second level comparison is processed using a <xref
+          href="#file-comparison/syntax-aware-alg" format="dita">syntax-aware comparison</xref>,
+        meaning that it looks for identical <i>tokens</i>. This second level comparison makes it
+        easier to spot precise differences and you can merge or reject the precise
+        modifications.</p>
+      <p>
+        <fig>
           <title>Second Level Diff Comparison</title>
           <image href="../img/second-level-comparison.png"/>
-        </fig></p>
+        </fig>
+      </p>
       <note>If a modified text fragment contains XML markup (such as processing instructions, XML
         comments, CData, or elements), the second level comparison will not automatically be
         performed. In this case you can manually select a second level comparison by doing a word
         level or character level comparison.<p>To do a word level comparison, select <uicontrol>Show
             word level details</uicontrol> from the contextual menu or
-            <uicontrol>Compare</uicontrol> menu.<fig>
+            <uicontrol>Compare</uicontrol> menu.</p><p>
+          <fig>
             <title>Word Level Comparison</title>
             <image href="../img/sa_compare_files_word.png"/>
-          </fig></p><p>To do a character level comparison, select <uicontrol>Show Character Level
-            details</uicontrol> from the contextual menu or <uicontrol>Compare</uicontrol> menu.<fig>
+          </fig>
+        </p><p>To do a character level comparison, select <uicontrol>Show Character Level
+            details</uicontrol> from the contextual menu or <uicontrol>Compare</uicontrol> menu.</p><p>
+          <fig>
             <title>Character Level Comparison</title>
             <image href="../img/sa_compare_files_char.png"/>
-          </fig></p></note>
+          </fig>
+        </p></note>
     </section>
   </body>
   <related-links>

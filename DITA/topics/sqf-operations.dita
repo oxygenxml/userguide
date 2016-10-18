@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="sqf-operations">
+  <title>Basic Schematron Quick Fix Operations</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Schematron Quick Fixes<indexterm>SQF Operations</indexterm></indexterm>
+        <indexterm>SQF<indexterm>Operations</indexterm></indexterm>
+        <indexterm>Schematron Quick Fix Operations<indexterm>Add</indexterm></indexterm>
+        <indexterm>Schematron Quick Fix Operations<indexterm>Delete</indexterm></indexterm>
+        <indexterm>Schematron Quick Fix Operations<indexterm>Replace</indexterm></indexterm>
+        <indexterm>Schematron Quick Fix Operations<indexterm>String Replace</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>There are four basic operations that can be executed in a Schematron Quick Fix:
+        <term>Add</term>, <term>Delete</term>, <term>Replace</term>, and <term>String
+      Replace</term>.</p>
+    <p>
+      <dl>
+        <dlentry>
+          <dt><b>Add</b></dt>
+         <dd><p>The <codeph>&lt;sqf:add></codeph> element allows you to add a node to the instance. An
+            anchor node is required to select the position for the new node. The anchor node can be
+            selected by the <codeph>match</codeph> attribute. Otherwise, it is selected by the
+              <codeph>context</codeph> attribute of the rule.</p>
+          <p>The <codeph>target</codeph> attribute defines the name of the node to be added. It is
+            required if the value of the <codeph>node-type</codeph> attribute is set to anything
+            other than "comment".</p>
+          <p>The <codeph>&lt;sqf:add></codeph> element has a <codeph>position</codeph> attribute
+            and it determines the position relative to the anchor node. The new node could be
+            specified as the first child of the anchor node, the last child of the anchor node,
+            before the anchor node, or after the anchor node (<codeph>first-child</codeph> is the
+            default value). If you want to add an attribute to the anchor node, do not use the
+              <codeph>position</codeph> attribute.</p>
+          <p>
+            <note>If you insert an element and its content is empty, <ph keyref="product"/> will
+              insert the required element content.</note>
+          </p>
+            <p><b>An Example of the <codeph>&lt;sqf:add></codeph>
+              Element:</b><codeblock outputclass="language-xml">&lt;schema xmlns="http://purl.oclc.org/dsdl/schematron"
+   xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+ queryBinding="xslt2">
+   &lt;pattern>
+     &lt;rule context="head">
+        &lt;assert test="title" sqf:fix="addTitle">title element missing.&lt;/assert>
+        &lt;sqf:fix id="addTitle">
+            &lt;sqf:description>
+                &lt;sqf:title>Insert title element.&lt;/sqf:title>
+            &lt;/sqf:description>
+           &lt;sqf:add target="title" node-type="element">Title text&lt;/sqf:add>
+        &lt;/sqf:fix>
+     &lt;/rule>
+   &lt;/pattern>
+&lt;/schema></codeblock></p>
+          <p><b>Specific Add Operations:</b><ul id="ul_a53_5nf_3r">
+              <li><b>Insert Element</b> - To insert an element, use the
+                  <codeph>&lt;sqf:add></codeph> element, set the value of the
+                  <codeph>node-type</codeph> to "element", and specify the element
+                  <term>QName</term> with the <codeph>target</codeph> attribute. If the element has
+                a prefix, it must be defined in the Schematron using a namespace declaration
+                  (<codeph>&lt;ns uri="namespace" prefix="prefix"/></codeph>).</li>
+              <li><b>Insert Attribute</b> - To insert an attribute, use the
+                  <codeph>&lt;sqf:add></codeph> element, set the value of the
+                  <codeph>node-type</codeph> to "attribute", and specify the attribute
+                  <term>QName</term> with the <codeph>target</codeph> attribute. If the attribute
+                has a prefix, it must be defined in the Schematron using a namespace declaration
+                  (<codeph>&lt;ns uri="namespace" prefix="prefix"/></codeph>).</li>
+              <li><b>Insert Fragment</b> - If the <codeph>node-type</codeph> is not specified, the
+                  <codeph>&lt;sqf:add></codeph> element will insert an XML fragment. The XML
+                fragment must be well formed. You can specify the fragment in the
+                  <codeph>add</codeph> element or by using the <codeph>select</codeph> attribute. </li>
+              <li><b>Insert Comment</b> - To insert a comment, use the <codeph>&lt;sqf:add></codeph>
+                element and set the value of the <codeph>node-type</codeph> to "comment".</li>
+              <li><b>Insert Processing Instruction</b> - To insert a processing instruction, use the
+                  <codeph>&lt;sqf:add></codeph> element, set the value of the
+                  <codeph>node-type</codeph> to "pi" or "processing-instruction", and specify the
+                name of the processing instruction in the <codeph>target</codeph> attribute.</li>
+            </ul></p></dd>
+        </dlentry>
+        <dlentry>
+          <dt><b>Delete</b></dt>
+          <dd>The <codeph>&lt;sqf:delete></codeph> element allows you to remove any type of node
+            (such as elements, attributes, text, comments, or processing instructions). To specify
+            nodes for deletion the <codeph>&lt;sqf:delete></codeph> element can include a
+              <codeph>match</codeph> attribute that is an XPath expression (the default value is
+              <codeph>.</codeph>). If the <codeph>match</codeph> attribute is not included, it
+            deletes the context node of the Schematron rule. <p><b>An Example of the
+                  <codeph>&lt;sqf:delete></codeph>
+              Element:</b><codeblock outputclass="language-xml">&lt;schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2" 
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+    &lt;pattern>
+        &lt;rule context="*[@xml:lang]">
+            &lt;report test="@xml:lang" sqf:fix="remove_lang">
+                The attribute "xml:lang" is forbidden.&lt;/report>
+            &lt;sqf:fix id="remove_lang">
+                &lt;sqf:description>
+                    &lt;sqf:title>Remove "xml:lang" attribute&lt;/sqf:title>
+                &lt;/sqf:description>
+                &lt;sqf:delete match="@xml:lang"/>
+            &lt;/sqf:fix>
+        &lt;/rule>
+    &lt;/pattern>
+&lt;/schema></codeblock></p></dd>
+        </dlentry>
+        <dlentry>
+          <dt><b>Replace</b></dt>
+          <dd>The <codeph>&lt;sqf:replace></codeph> element allows you to replace nodes. Similar to
+            the <codeph>&lt;sqf:delete></codeph> element, it can include a <codeph>match</codeph>
+            attribute. Otherwise, it replaces the context node of the rule. The
+              <codeph>&lt;sqf:replace></codeph> element has three tasks. It identifies the nodes to
+            be replaced, defines the replacing nodes, and defines their content.<p><b>An Example of
+                the <codeph>&lt;sqf:replace></codeph>
+              Element:</b><codeblock outputclass="language-xml">&lt;schema xmlns="http://purl.oclc.org/dsdl/schematron"
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+ queryBinding="xslt2">
+    &lt;pattern>
+        &lt;rule context="title">
+            &lt;report test="exists(ph)" sqf:fix="resolvePh" role="warn">
+                ph element is not allowed in title.&lt;/report>
+            &lt;sqf:fix id="resolvePh">
+                &lt;sqf:description>
+                    &lt;sqf:title>Change the ph element into text&lt;/sqf:title>
+                &lt;/sqf:description>
+                &lt;sqf:replace match="ph">
+                    &lt;value-of select="."/>
+                &lt;/sqf:replace>
+            &lt;/sqf:fix>
+        &lt;/rule>
+    &lt;/pattern>
+&lt;/schema></codeblock></p><p><b>Other
+                Attributes for Replace Operations:</b><ul id="ul_upg_3zf_3r">
+                <li><b><codeph>node-type</codeph></b> - Determines the type of the replacing node.
+                  The permitted values include:<ul id="ul_pfj_mzf_3r">
+                    <li><codeph>keep</codeph> - Keeps the node type of the node to be replaced.</li>
+                    <li><codeph>element</codeph> - Replaces the node with an element.</li>
+                    <li><codeph>attribute</codeph> - Replaces the node with an attribute.</li>
+                    <li><codeph>pi</codeph> - Replaces the node with a processing instruction.</li>
+                    <li><codeph>comment</codeph> - Replaces the node with a comment.</li>
+                  </ul></li>
+                <li><b><codeph>target</codeph></b> - By using a <term>QName</term> it gives the
+                  replacing node a name. This is necessary when the value of the
+                    <codeph>node-type</codeph> attribute is anything other than "comment".</li>
+                <li><b><codeph>select</codeph></b> - Allows you to choose the content of the
+                  replacing nodes. You can use XPath expressions with the <codeph>select</codeph>
+                  attribute. If the <codeph>select</codeph> attribute is not specified then the
+                  content of the <codeph>&lt;sqf:replace></codeph> element is used instead. </li>
+              </ul></p></dd></dlentry>
+        <dlentry>
+          <dt><b>String Replace</b></dt>
+          <dd>The <codeph>&lt;sqf:stringReplace></codeph> element is different from the others. It
+            can be used to find a sub-string of text content and replace it with nodes or other
+                strings.<p><b>Attributes for the String Replace Operation:</b><ul id="ul_dwx_xxl_kr">
+                <li><b><codeph>match</codeph></b> - Allows you to select text nodes that contain the
+                  sub-strings you want to replace.</li>
+                <li><b><codeph>select</codeph></b> - Allows you to select the replacing fragment, in
+                  case you do not want to set it in the content of the
+                    <codeph>stringReplace</codeph> element.</li>
+                <li><b><codeph>regex</codeph></b> - Matches the sub-strings using a regular
+                    expression.<note>Consider the following information about using regular
+                    expressions in the <codeph>stringReplace</codeph> element:<ul>
+                      <li>The regular expressions from this operation are compiled as Java regular
+                        expressions. For more information, see <xref
+                          href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html"
+                          format="html" scope="external"/>.</li>
+                      <li>The <i><b>j flag</b></i> allows you to use the standard Java regular
+                        expression engine, which allows native Java regular expression syntax. This
+                        allows, for example, the use of <codeph><b>\b</b></codeph> in a regular
+                        expression to match word boundaries. For more information, see <xref
+                          href="http://www.saxonica.com/html/documentation/functions/fn/matches.html"
+                          format="html" scope="external"/>.</li>
+                      <li>Regular expressions in the <codeph>&lt;sqf:stringReplace></codeph> element
+                        always have the <i>dot matches all</i> flag set to "true". Therefore, the
+                        line terminator will also be matched by the regular expression. </li>
+                    </ul></note></li>
+              </ul></p><note type="attention">The context of the content within the
+                <codeph>&lt;sqf:stringReplace></codeph> element is set to the whole text node,
+              rather than the current sub-string.</note><p><b>An Example of the
+                  <codeph>&lt;sqf:stringReplace></codeph>
+              Element:</b><codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+ queryBinding="xslt2">
+    &lt;sch:pattern>
+        &lt;sch:rule context="text()">
+            &lt;sch:report test="matches(., '[oO][xX]ygen')"
+ sqf:fix="changeWord">The oXygen word is not allowed&lt;/sch:report>
+            &lt;sqf:fix id="changeWord">
+                &lt;sqf:description>
+                    &lt;sqf:title>Replace word with product&lt;/sqf:title>
+                &lt;/sqf:description>
+                &lt;sqf:stringReplace regex="[oO][xX]ygen">&lt;ph keyref="product"/>
+                &lt;/sqf:stringReplace>
+            &lt;/sqf:fix>
+        &lt;/sch:rule>
+    &lt;/sch:pattern>
+&lt;/sch:schema></codeblock></p></dd>
+        </dlentry>
+      </dl>
+    </p>
+  </body>
+  <related-links>
+    <link href="user-entry-sqf-operation.dita#user-entry-sqf-operation"/>
+    <link href="use-when-sqf-condition.dita#use-when-sqf-condition"/>
+  </related-links>
+</topic>

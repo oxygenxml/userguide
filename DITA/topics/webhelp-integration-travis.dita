@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webhelp-integration-travis">
+  <title>Building <ph keyref="webhelp"/> Output on Travis CI</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>WebHelp Plugin<indexterm>DITA<indexterm>Integrate Output with Travis
+              CI</indexterm></indexterm></indexterm>
+        <indexterm>Travis CI integration with WebHelp plugin</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>This topic assumes you have a DITA project hosted on a GitHub public or private repository. </p>
+    <p>The goal of this tutorial is to help you setup a Travis continuous integration job that
+      automatically publishes your DITA project to <xref href="https://pages.github.com/"
+        format="html" scope="external">GitHub pages</xref> after every commit. The published website
+      will contain a feedback link on each page that would allow a contributor to easily suggest
+      changes to the documentation by creating a pull request on GitHub with just a few clicks.</p>
+    <section id="section_ync_vx4_bw">
+      <title>Enable the Travis CI Build</title>
+      <ol>
+        <li><xref href="https://travis-ci.org/auth" format="html" scope="external">Sign in to Travis
+            CI</xref> with your GitHub account, accepting the GitHub <xref
+            href="https://docs.travis-ci.com/user/github-oauth-scopes" format="html"
+            scope="external">access permissions confirmation</xref>.</li>
+        <li>Once you are signed in, and you have synchronized your GitHub repositories, go to your
+            <xref href="https://travis-ci.org/profile" format="html" scope="external">profile
+            page</xref> and enable Travis CI for the repository you want to build.</li>
+      </ol>
+    </section>
+    <section id="section_mdp_xx4_bw">
+      <title>Configure the Travis CI Build in your GitHub Project</title>
+      <ol id="ol_hdj_1y4_bw">
+        <li>Checkout your GitHub project locally.</li>
+        <li>Copy the <filepath>.travis</filepath> folder from <xref
+            href="https://github.com/ctalau/userguide/tree/master/.travis" format="html"
+            scope="external">here</xref> to the root directory of your project.</li>
+        <li>In the root of your GitHub project, add a file called <filepath>.travis.yml</filepath>
+          with the following content:<codeblock outputclass="language-ini">language: dita
+install:
+  - echo "Installed"
+script:
+  - sh .travis/publish.sh
+after_success:
+  - sh .travis/deploy.sh
+env:
+  global:
+    - DITAMAP=/path/to/your/ditamap/file
+    - DITAVAL=/path/to/your/ditaval/file
+    - ANT_OPTS=-Xmx1024M</codeblock><p>
+            <note>Replace <codeph>/path/to/your/ditamap/file</codeph> and
+                <codeph>/path/to/your/ditaval/file</codeph> with the appropriate paths to your DITA
+              Map and <filepath>ditaval</filepath> files.</note>
+          </p></li>
+        <li>Create a GitHub personal access token by following <xref
+            href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/"
+            format="html" scope="external">this procedure</xref>.</li>
+        <li><xref
+            href="https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings"
+            format="html" scope="external">Define an environment variable in the repository
+            settings</xref> that has the name <codeph>GH_TOKEN</codeph> and the value equal with the
+          GitHub personal access token created earlier. </li>
+      </ol>
+    </section>
+    <section id="section_hy4_1y4_bw">
+      <title>Register Your License Key</title>
+      <p>
+        <ol id="ol_xzz_by4_bw">
+          <li>Edit your <filepath>.gitignore</filepath> file (or create it if it does not already
+            exist) and add the following line:
+            <codeblock outputclass="language-ini">licenseKey.txt</codeblock></li>
+          <li>Copy your WebHelp license to the root of your GitHub project in a file called
+              <filepath>licenseKey.txt</filepath>. <note type="important">The
+                <filepath>licenseKey.txt</filepath> file should not be committed to GitHub as it
+              contains a license key that is issued only to you.</note></li>
+          <li><xref href="https://docs.travis-ci.com/user/encrypting-files/#Automated-Encryption"
+              format="html" scope="external">Encrypt the license key file</xref> and <b>add</b> it
+            to the <filepath>.travis.yml</filepath> configuration file. This way only the Travis CI
+            server will be able to decrypt it during the build process.</li>
+        </ol>
+      </p>
+    </section>
+    <section id="section_z3f_cy4_bw">
+      <title>Commit to GitHub</title>
+      <ol id="ol_u3c_dy4_bw">
+        <li>Commit the following files and folders and push the commit to GitHub:
+          <codeblock outputclass="language-ini">git add .gitignore licenseKey.txt.enc .travis.yml .travis/
+git commit -m "Set up the Travis CI publishing system"
+git push</codeblock></li>
+        <li>Create a <codeph>gh-pages</codeph> branch in your GitHub project where the WebHelp
+          output will be published. You can follow the procedure <xref
+            href="https://help.github.com/articles/creating-project-pages-manually/" format="html"
+            scope="external">here</xref>.</li>
+      </ol>
+    </section>
+  </body>
+</topic>

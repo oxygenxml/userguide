@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_c3q_lqd_vt">
+  <title>How Special Paste works in Oxygen</title>
+  <body>
+    <p>If you've worked with one of the <b>XML</b> vocabularies for which Oxygen has out of the box
+      support like <b>DITA</b>, <b>Docbook</b>, <b>TEI</b>, <b>XHTML</b> you've probably already
+      used the support Oxygen has for converting content pasted in the application from external
+      applications like <b>Microsoft Word</b>, <b>Excel</b> or from any <b>web browser</b>. This is
+      a very useful feature for converting various types of content to XML because it preserves and
+      converts styling, links, lists, tables and image references. </p>
+    <p>The feature relies on the fact that when copying content in the applications mentioned above,
+      they set in the clipboard the HTML equivalent of the copied content. So all Oxygen has to do
+      is clean up that HTML, make it wellformed XHTML and apply conversion XSLT stylesheets over
+      it.</p>
+    <p>This support is not hardcoded and anybody who is developing an <xref
+        href="http://blog.oxygenxml.com/2014/08/the-oxygen-sdk-part-2-frameworks.html" format="html"
+        scope="external">Oxygen framework customization</xref> for a certain XML vocabulary can
+      provide conversion stylesheets for external pasted HTML content.</p>
+    <p>I will describe how this works for the <b>DITA</b> framework and you can do the same for
+      yours. You can also use this information to modify the way in which smart paste works for the
+      bundled framework configurations.<ol id="ol_hpf_cc2_vt">
+        <li>In the <uicontrol>Preferences->Document Type Association</uicontrol> page you can choose
+          to edit (or extend) the <b>DITA</b> document type association.</li>
+        <li>In the <b>Extensions</b> tab the <b>Extensions bundle</b> implementation is set to
+            <b>DITAExtensionsBundle</b> which resides in the <b>DITA</b> Java extensions archive
+            <b>dita.jar</b>.</li>
+        <li>The <b>DITAExtensionsBundle</b> is an extension of the <xref
+            href="https://www.oxygenxml.com/doc/versions/17.0/ug-editor/index.html#tasks/dg-extensions-bundle.html"
+            format="html" scope="external"><b>ExtensionsBundle</b></xref> API and it provides its
+          own external object extension
+          handler:<codeblock outputclass="language-java">  /**
+   * @see ro.sync.ecss.extensions.api.ExtensionsBundle#createExternalObjectInsertionHandler()
+   */
+  @Override
+  public AuthorExternalObjectInsertionHandler createExternalObjectInsertionHandler() {
+    return new DITAExternalObjectInsertionHandler();
+  }</codeblock></li>
+        <li>The <b>DITAExternalObjectInsertionHandler</b> extends the base class <xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorExternalObjectInsertionHandler.html"
+            format="html" scope="external"><b>AuthorExternalObjectInsertionHandler</b></xref> and
+          provides a reference to its specific conversion
+            stylesheet:<codeblock outputclass="language-java">  /**
+   * @see ro.sync.ecss.extensions.api.AuthorExternalObjectInsertionHandler#getImporterStylesheetFileName(ro.sync.ecss.extensions.api.AuthorAccess)
+   */
+  @Override
+  protected String getImporterStylesheetFileName(AuthorAccess authorAccess) {
+    return "xhtml2ditaDriver.xsl";
+  }</codeblock><note>The
+              <b>Extensions</b> tab also allows you to specify the external object insertion handler
+            as a separate extension.</note></li>
+        <li>In the same <b>Document Type</b> edit dialog in the <b>Classpath</b> tab you will see
+          that there is a reference to a framework-specific resources folder
+            like:<filepath>${framework}/resources/</filepath></li>
+        <li>If you look on disk in the DITA framework <b>resources</b> folder:
+            <filepath>"OXYGEN_INSTALL_DIR\frameworks\dita\resources"</filepath> you will find the
+            <b>xhtml2ditaDriver.xsl</b> stylesheet there. The stylesheet imports various other
+          stylesheets which you could probably fully reuse and which apply various cleanups on HTML
+          produced with MS Word. It also handles the conversion between the pasted HTML content and
+          DITA so it is a good starting point, you can copy the entire set of XSLT stylesheets to
+          your framework and use those as a starting point.</li>
+      </ol></p>
+  </body>
+</topic>

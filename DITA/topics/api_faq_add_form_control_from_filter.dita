@@ -14,7 +14,7 @@
         However, in some cases you do not have all the information you need to properly initialize
         the form control at CSS level. In these cases you can add the form controls by using the
         API, more specifically <xref
-          href="http://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/StylesFilter.html"
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/StylesFilter.html"
           format="html" scope="external"><apiname>
             ro.sync.ecss.extensions.api.StylesFilter</apiname></xref>. </p>
       <p>For instance, if you want a combo box form control and the values to populate the combo are
@@ -22,31 +22,33 @@
         from the API:</p>
       <codeblock outputclass="language-java">public class SDFStylesFilter implements StylesFilter {
 
-  public Styles filter(Styles styles, AuthorNode authorNode) {
-    if(authorNode.getType() == AuthorNode.NODE_TYPE_PSEUDO_ELEMENT 
-        &amp;&amp; "before".equals(authorNode.getName())) {
-      authorNode = authorNode.getParent();
-      if ("country".equals(authorNode.getName())) {
-        // This is the BEFORE pseudo element of the "country" element.
-        // Read the supported countries from the configuration file.
-        Map&lt;String, Object> formControlArgs = new HashMap&lt;String, Object>();
-        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_EDIT, "#text");
-        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_TYPE, InplaceEditorArgumentKeys.TYPE_COMBOBOX);
-        // This will be a comma separated enumeration: France, Spain, Great Britain
-        String countries = readCountriesFromFile();
-        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, countries);
-        formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_EDITABLE, "false");
+ public Styles filter(Styles styles, AuthorNode authorNode) {
+  if(authorNode.getType() == AuthorNode.NODE_TYPE_PSEUDO_ELEMENT 
+      &amp;&amp; "before".equals(authorNode.getName())) {
+    authorNode = authorNode.getParent();
+   if ("country".equals(authorNode.getName())) {
+    // This is the BEFORE pseudo element of the "country" element.
+    // Read the supported countries from the configuration file.
+    Map&lt;String, Object> formControlArgs = new HashMap&lt;String, Object>();
+    formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_EDIT, "#text");
+    formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_TYPE, 
+          InplaceEditorArgumentKeys.TYPE_COMBOBOX);
+    // This will be a comma separated enumeration: France, Spain, Great Britain
+    String countries = readCountriesFromFile();
+    formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, countries);
+    formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_EDITABLE, "false");
 
-        // We also add a label in form of the form control.
-        Map&lt;String, Object> labelProps = new HashMap&lt;String, Object>();
-        labelProps.put("text", "Country: ");
-        labelProps.put("styles", "* {width: 100px; color: gray;}");
-        StaticContent[] mixedContent = new StaticContent[] {new LabelContent(labelProps), new EditorContent(formControlArgs)};
-        styles.setProperty(Styles.KEY_MIXED_CONTENT, mixedContent);
+    // We also add a label in form of the form control.
+    Map&lt;String, Object> labelProps = new HashMap&lt;String, Object>();
+    labelProps.put("text", "Country: ");
+    labelProps.put("styles", "* {width: 100px; color: gray;}");
+    StaticContent[] mixedContent = new StaticContent[] 
+           {new LabelContent(labelProps),new EditorContent(formControlArgs)};
+    styles.setProperty(Styles.KEY_MIXED_CONTENT, mixedContent);
       }
     }
     
-    // The previously added form control is the only way the element can be edited.
+    // The added form control is the only way the element can be edited.
     if ("country".equals(authorNode.getName())) {
       styles.setProperty(Styles.KEY_VISIBITY, "-oxy-collapse-text");
     }
@@ -60,10 +62,12 @@
         a database or if it needs to extract data from a very large file), you can choose to delay
         it until the values are actually needed by the form control. This approach is called
           <term>lazy evaluation</term> and can be implemented as
-        follows:<codeblock outputclass="language-java">formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, new LazyValue&lt;List&lt;CIValue>>() {
+        follows:<codeblock outputclass="language-java">formControlArgs.put(InplaceEditorArgumentKeys.PROPERTY_VALUES, 
+           new LazyValue&lt;List&lt;CIValue>>() {
   public java.util.List&lt;CIValue> get() {
     // We avoid reading the possible values until they are actually requested.
-    // This will be a List with CIValues created over countries: France, Spain, Great Britain
+    // This will be a List with CIValues created over countries:
+           France, Spain, Great Britain
     return readCountriesFromFile();
   }
 });</codeblock></p>
@@ -73,7 +77,7 @@
           <li><codeph>InplaceEditorArgumentKeys.PROPERTY_TOOLTIPS</codeph></li>
         </ul></p>
       <p>The full source code for this example is available inside the <xref
-          href="http://www.oxygenxml.com/oxygen_sdk.html#XML_Editor_Authoring_SDK" format="html"
+          href="https://www.oxygenxml.com/oxygen_sdk.html#XML_Editor_Authoring_SDK" format="html"
           scope="external">oXygen SDK</xref>.</p>
     </section>
   </body>

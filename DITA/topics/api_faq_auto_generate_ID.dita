@@ -12,7 +12,7 @@
       <title>Answer</title>
       <p>This could be done implementing a plugin for <ph keyref="product"/> using the Plugins
         SDK:</p>
-      <p><xref href="http://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins" format="html"
+      <p><xref href="https://www.oxygenxml.com/oxygen_sdk.html#Developer_Plugins" format="html"
           scope="external"/></p>
       <p>There is a type of plugin called "Workspace Access" that can be used to add a listener to
         be notified when an editor is opened.</p>
@@ -20,31 +20,34 @@
         (which occur when a new editor is created) and generate a new ID attribute value on the root
         element.</p>
       <p>The Java code would look like
-        this:<codeblock outputclass="language-java">      pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
-      /**
-       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorOpened(java.net.URL)
-       */
-      @Override
-      public void editorOpened(URL editorLocation) {
-        WSEditor ed = pluginWorkspaceAccess.getEditorAccess(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
+        this:<codeblock outputclass="language-java">pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
+/**
+* @see WSEditorChangeListener#editorOpened(java.net.URL)
+*/
+@Override
+public void editorOpened(URL editorLocation) {
+    WSEditor ed = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
         generateID(ed);
-      }
-      /**
-       * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorPageChanged(java.net.URL)
-       */
-      @Override
-      public void editorPageChanged(URL editorLocation) {
-        WSEditor ed = pluginWorkspaceAccess.getEditorAccess(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
+}
+/**
+* @see WSEditorChangeListener#editorPageChanged(java.net.URL)
+*/
+@Override
+public void editorPageChanged(URL editorLocation) {
+    WSEditor ed = pluginWorkspaceAccess.getEditorAccess
+(editorLocation, PluginWorkspace.MAIN_EDITING_AREA);
         generateID(ed);
-      }
+}
       
-      private void generateID(WSEditor ed) {
-        if(ed.getCurrentPage() instanceof WSAuthorEditorPage) {
-          WSAuthorEditorPage authorEditPage = (WSAuthorEditorPage) ed.getCurrentPage();
-          AuthorDocumentController ctrl = authorEditPage.getDocumentController();
-          AuthorElement root = ctrl.getAuthorDocumentNode().getRootElement();
-          if(root.getAttribute("id") == null || !root.getAttribute("id").getValue().startsWith("generated_")) {
-            ctrl.setAttribute("id", new AttrValue("generated_" + Math.random()), root);
+private void generateID(WSEditor ed) {
+ if(ed.getCurrentPage() instanceof WSAuthorEditorPage) {
+  WSAuthorEditorPage authorEditPage = (WSAuthorEditorPage) ed.getCurrentPage();
+  AuthorDocumentController ctrl = authorEditPage.getDocumentController();
+  AuthorElement root = ctrl.getAuthorDocumentNode().getRootElement();
+   if(root.getAttribute("id") == null || 
+!root.getAttribute("id").getValue().startsWith("generated_")) {
+    ctrl.setAttribute("id", new AttrValue("generated_" + Math.random()), root);
           }
         }
       }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="use-when-sqf-condition">
+  <title>Restricting Quick Fix Operations</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Schematron Quick Fixes<indexterm>Restricting operations</indexterm></indexterm>
+        <indexterm>Schematron Quick Fixes<indexterm>Use-When Condition</indexterm></indexterm>
+        <indexterm>SQF<indexterm>Restricting operations</indexterm></indexterm>
+        <indexterm>SQF<indexterm>Use-When Condition</indexterm></indexterm>
+        <indexterm>Restricting Schematron Quick Fix operations</indexterm>
+        <indexterm>Use-When SQF Condition</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>To restrict a quick fix or a specific operation to only be available if certain conditions
+      are met, the <codeph>use-when</codeph> attribute can be included in the
+        <codeph>&lt;sqf:fix></codeph> element or any of the SQF operation elements. The condition of
+      the <codeph>use-when</codeph> attribute is an XPath expression and the fix or operation will
+      be performed only if the condition is satisfied. In the following example, the
+        <codeph>use-when</codeph> condition is applied to the <codeph>&lt;sqf:fix></codeph>
+      element:<codeblock outputclass="language-xml">&lt;sqf:fix id="last" use-when="$colWidthSummarized - 100 lt $lastWidth"
+ role="replace">
+   &lt;sqf:description>
+       &lt;sqf:title>Subtract excessive width from the last element.&lt;/sqf:title>
+   &lt;/sqf:description>
+   &lt;let name="delta" value="$colWidthSummarized - 100"/>
+   &lt;sqf:add match="html:col[last()]" target="width" node-type="attribute">
+    &lt;let name="newWidth" value="number(substring-before(@width,'%')) - $delta"/>
+       &lt;value-of select="concat($newWidth,'%')"/>
+   &lt;/sqf:add>
+&lt;/sqf:fix>    </codeblock></p>
+  </body>
+  <related-links>
+    <link href="sqf-operations.dita#sqf-operations"/>
+  </related-links>
+</topic>
