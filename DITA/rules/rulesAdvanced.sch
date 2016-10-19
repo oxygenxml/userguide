@@ -379,7 +379,8 @@
   <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/fig ')]" role="warn">
-      <sch:assert test="parent::node()/local-name() = 'p'" sqf:fix="wrapInParagraph">The fig element should be wrapped in a paragraph.</sch:assert>
+      <sch:assert test=".[parent::p][count(preceding-sibling::node()) =1][string-length(normalize-space(preceding-sibling::node())) =0]" sqf:fix="wrapInParagraph">
+        The fig element should be wrapped in a paragraph.</sch:assert>
     </sch:rule>
   </sch:pattern>
 
