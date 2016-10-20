@@ -182,7 +182,7 @@
     </sqf:fix>
     
     <!-- Wrap the current element in a paragraph. -->
-    <sqf:fix id="wrapInParagraph">
+    <sqf:fix id="wrapInParagraph" use-when="not(parent::p)">
       <sqf:description>
         <sqf:title>Wrap "<sch:name/>" element in a paragraph</sqf:title>
       </sqf:description>
@@ -190,6 +190,30 @@
         <xsl:apply-templates mode="copyExceptClass" select="."/>
       </sqf:add>
       <sqf:delete/>
+    </sqf:fix>
+    
+    <!-- Split the paragraph before and after and leve the current element as the only child in its parent paragraph. -->
+    <sqf:fix id="splitParagraphBeforeAndAfter" use-when="parent::p">
+      <sqf:description>
+        <sqf:title>Wrap "<sch:name/>" element in its own paragraph</sqf:title>
+      </sqf:description>
+      <sch:let name="currentNode" value="."/>
+      <sch:let name="nodesAfter" value="following-sibling::node()"/>
+      <sch:let name="nodesBefore" value="preceding-sibling::node()"/>
+      <!-- Add the content that is after the current element in a separate paragraph -->
+      <sqf:add match="parent::node()" node-type="element" target="p" position="after" use-when="count($nodesAfter) > 1 or (count($nodesAfter) = 1 and normalize-space($nodesAfter)!='')">
+        <xsl:apply-templates mode="copyExceptClass" select="$nodesAfter"/>
+      </sqf:add>
+      <!-- Add the content that is before the current element in a separate paragraph -->
+      <sqf:add match="parent::node()" node-type="element" target="p" position="after">
+        <xsl:apply-templates mode="copyExceptClass" select="$currentNode"/>
+      </sqf:add>
+      <!-- Add the the current element in a separate paragraph -->
+      <sqf:add match="parent::node()" node-type="element" target="p" position="after" use-when="count($nodesBefore) > 1 or (count($nodesBefore) = 1 and normalize-space($nodesBefore)!='')">
+        <xsl:apply-templates mode="copyExceptClass" select="$nodesBefore"/>
+      </sqf:add>
+      <!-- Delete the parent node. -->
+      <sqf:delete match="parent::node()"/>
     </sqf:fix>
   </sqf:fixes>
   
@@ -379,7 +403,11 @@
   <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/fig ')]" role="warn">
-      <sch:assert test="parent::node()/local-name() = 'p'" sqf:fix="wrapInParagraph">The fig element should be wrapped in a paragraph.</sch:assert>
+      <sch:assert test=".[parent::p][count(parent::node()/child::*) = 1]
+        [string-length(normalize-space(preceding-sibling::text())) =0]
+        [string-length(normalize-space(following-sibling::text())) =0]" 
+        sqf:fix="splitParagraphBeforeAndAfter wrapInParagraph">
+        The fig element should be wrapped in a paragraph.</sch:assert>
     </sch:rule>
   </sch:pattern>
 
