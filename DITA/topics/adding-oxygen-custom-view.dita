@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="adding-oxygen-custom-view">
+  <title>Adding a Custom View in <ph keyref="product"/></title>
+  <body>
+    <p>To add a custom view in <ph keyref="product"/>, please follow this procedure:</p>
+    <p>
+      <ul>
+        <li>In your plugin's directory locate the plugin.xml descriptor file and define the ID of
+          the view you want to add. Also, specify the location on screen where it will be
+          placed:<codeblock outputclass="language-xml">&lt;view id="SampleWorkspaceAccessID" initialSide="WEST" initialRow="0"/></codeblock></li>
+        <li>In your <xref href="../concepts/workspace-access-plugin.dita"/> implementation when the
+            <codeph>applicationStarted</codeph> callback is received, add a view components
+          customizer like
+          this:<codeblock outputclass="language-java">pluginWorkspaceAccess.addViewComponentCustomizer(new ViewComponentCustomizer() {
+ public void customizeView(ViewInfo viewInfo) {
+   if(
+     //The view ID defined in the "plugin.xml"
+     "SampleWorkspaceAccessID".equals(viewInfo.getViewID())) {
+     cmsMessagesArea = new JTextArea("CMS Session History:");
+     viewInfo.setComponent(new JScrollPane(cmsMessagesArea));
+     viewInfo.setTitle("CMS Messages");
+     viewInfo.setIcon(Icons.getIcon(Icons.CMS_MESSAGES_CUSTOM_VIEW_STRING));
+   }
+ }
+});</codeblock></li>
+        <li>Define the <codeph>cmsMessagesArea</codeph> as a <term>static</term> field if you can
+          access the messages area from anywhere in your code.</li>
+      </ul>
+    </p>
+  </body>
+  <related-links>
+    <link href="https://www.oxygenxml.com/oxygen_sdk/oxygen_standalone_plugins.html" format="html"
+      scope="external"/>
+  </related-links>
+</topic>
