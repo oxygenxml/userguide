@@ -35,13 +35,13 @@
               <uicontrol>plugin</uicontrol>
             </menucascade>.</note>
           <b>For example, our syntax highlighting plugin example contains the
-            following:</b><pre outputclass="language-xml">&lt;plugin id="com.oxygenxml.highlight"&gt;
+            following:</b><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.highlight"&gt;
   &lt;feature extension="package.support.name" value="Oxygen XML Editor Support"/&gt;
   &lt;feature extension="package.support.email" value="support@oxygenxml.com"/&gt;
   &lt;feature extension="package.version" value="1.0.0"/&gt;
   &lt;feature extension="dita.xsl.xhtml" value="xhtmlHighlight.xsl" type="file"/&gt;
   &lt;feature extension="dita.xsl.xslfo" value="pdfHighlight.xsl" type="file"/&gt;
-&lt;/plugin&gt;</pre><p>The
+&lt;/plugin&gt;</codeblock><p>The
             most important extensions in it are the references to the XSLT stylesheets that will be
             used to style the HTML and PDF outputs. </p><p>You can find other <b>DITA OT</b> plugin
             extension points here: <xref
@@ -59,14 +59,16 @@
               OT</b> resources for a similar stylesheet. <p>Our search found the XSLT stylesheet
                   <filepath><term keyref="glossentry_dita_ot_dir"
                 />/org.dita.xhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath> that
-              contains:<pre outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
+              contains:<codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
   &lt;xsl:apply-templates select="."  mode="pre-fmt" /&gt;
-&lt;/xsl:template&gt;</pre></p>We
+&lt;/xsl:template&gt;</codeblock></p>We
             use it to overwrite our <b>xhtmlHighlight.xsl</b> stylesheet, which results in the
-              following:<pre outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
-    &lt;!-- This template is deprecated in DITA-OT 1.7. Processing will moved into the main element rule. --&gt;
+              following:<codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
+    &lt;!-- This template is deprecated in DITA-OT 1.7. 
+         Processing will moved into the main element rule. --&gt;
     &lt;xsl:if test="contains(@frame,'top')"&gt;&lt;hr /&gt;&lt;/xsl:if&gt;
-    &lt;xsl:apply-templates select="*[contains(@class,' ditaot-d/ditaval-startprop ')]" mode="out-of-line"/&gt;
+    &lt;xsl:apply-templates select="*[contains(@class,' ditaot-d/ditaval-startprop ')]" 
+          mode="out-of-line"/&gt;
     &lt;xsl:call-template name="spec-title-nospace"/&gt;
     &lt;pre&gt;
       &lt;xsl:attribute name="class"&gt;&lt;xsl:value-of select="name()"/&gt;&lt;/xsl:attribute&gt;
@@ -76,9 +78,10 @@
      &lt;!--Here I'm calling the styler of the content inside the codeblock.--&gt;
      &lt;xsl:call-template name="outputStyling"/&gt;
     &lt;/pre&gt;
-    &lt;xsl:apply-templates select="*[contains(@class,' ditaot-d/ditaval-endprop ')]" mode="out-of-line"/&gt;
+    &lt;xsl:apply-templates select="*[contains(@class,' ditaot-d/ditaval-endprop ')]" 
+          mode="out-of-line"/&gt;
     &lt;xsl:if test="contains(@frame,'bot')"&gt;&lt;hr /&gt;&lt;/xsl:if&gt;&lt;xsl:value-of select="$newline"/&gt;
-  &lt;/xsl:template&gt;</pre><p>You
+  &lt;/xsl:template&gt;</codeblock><p>You
               could also use another XSLT template that applies the XSLTHL library as a Java
               extension to style the content. </p></note></li>
         <li>Create additional XSLT stylesheets to customize all other desired output types. In our
@@ -87,7 +90,7 @@
             appropriate XSLT stylesheet <filepath><term keyref="glossentry_dita_ot_dir"
               />/plugins/legacypdf/xslfo/dita2fo-elems.xsl</filepath> to use as a template that we
             use to overwrite our <b>pdfHighlight.xsl</b> stylesheet, which results in the
-            following:</p><pre outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]"&gt;
+            following:</p><codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]"&gt;
   &lt;xsl:call-template name="gen-att-label"/&gt;
   &lt;fo:block xsl:use-attribute-sets="pre"&gt;
     &lt;!-- setclass --&gt;
@@ -96,7 +99,7 @@
     &lt;xsl:call-template name="setframe"/&gt;
     &lt;xsl:apply-templates/&gt;
   &lt;/fo:block&gt;
-&lt;/xsl:template&gt;</pre><note>You
+&lt;/xsl:template&gt;</codeblock><note>You
             can edit the newly created stylesheets to customize multiple outputs in a variety of
             ways. For example, in our case you could edit the <b>xhtmlHighlight.xsl</b> or
               <b>pdfHighlight.xsl</b> stylesheets that we created to customize various colors for
@@ -113,7 +116,7 @@
             <li>For the HTML output, in the XSLT stylesheet <filepath><term
                   keyref="glossentry_dita_ot_dir"/>/xsl/dita2html-base.xsl</filepath> a new import
               automatically
-                appeared:<pre outputclass="language-xml">&lt;xsl:import href="../plugins/com.oxygenxml.highlight/xhtmlHighlight.xsl"/&gt;</pre><p>This
+                appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../plugins/com.oxygenxml.highlight/xhtmlHighlight.xsl"/&gt;</codeblock><p>This
                 import is placed after all base imports and thus has a higher priority. For more
                 information about imported template precedence, see: <xref
                   href="http://www.w3.org/TR/xslt#import" format="html" scope="external"/>.</p></li>
@@ -121,7 +124,7 @@
                   keyref="glossentry_dita_ot_dir"
                 />/plugins/org.dita.pdf2/xsl/fo/topic2fo_shell_fop.xsl</filepath> a new import
               statement
-              appeared:<pre outputclass="language-xml">&lt;xsl:import href="../../../com.oxygenxml.highlight/pdfHighlight.xsl"/&gt;</pre></li>
+              appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../../../com.oxygenxml.highlight/pdfHighlight.xsl"/&gt;</codeblock></li>
           </ol></li>
       </ol>
     </p>
