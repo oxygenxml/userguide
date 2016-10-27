@@ -403,9 +403,11 @@
   <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/fig ')]" role="warn">
+      <sch:let name="precedingText" value="preceding-sibling::text()"/>
+      <sch:let name="followingText" value="following-sibling::text()"/>
       <sch:assert test=".[parent::p][count(parent::node()/child::*) = 1]
-        [string-length(normalize-space(preceding-sibling::text())) =0]
-        [string-length(normalize-space(following-sibling::text())) =0]" 
+        [not($precedingText) or $precedingText[normalize-space()='']]
+        [not($followingText) or $followingText[normalize-space()='']]" 
         sqf:fix="splitParagraphBeforeAndAfter wrapInParagraph">
         The fig element should be wrapped in a paragraph.</sch:assert>
     </sch:rule>
