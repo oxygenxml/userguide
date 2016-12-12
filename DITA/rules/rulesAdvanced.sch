@@ -505,11 +505,7 @@
           <sqf:title>Move all the links in a link list</sqf:title>
         </sqf:description>
         <!-- The value for the title element must be specified by the user. -->
-        <sqf:user-entry name="title">
-          <sqf:description>
-            <sqf:title>Specify the linklist title</sqf:title>
-          </sqf:description>
-        </sqf:user-entry>
+        <sch:let name="title" value="'Related Information:'"/>
         <sqf:add node-type="element" target="linklist" position="before">
           <title><xsl:value-of select="$title"/></title>
           <xsl:apply-templates mode="copyExceptClass" select="parent::node()/link"/>
@@ -530,6 +526,19 @@
       </sqf:fix>
     </sch:rule>
     
+    <sch:rule context="related-links/linklist/title">
+      <sch:assert test="text() = 'Related Information:'" sqf:fix="correctTitle" role="warn">
+        The title of a linklist must be 'Related Information:'
+      </sch:assert>
+      
+      <sqf:fix id="correctTitle">
+        <sqf:description>
+          <sqf:title>Set the title to 'Related Information:'</sqf:title>
+        </sqf:description>
+        <sqf:replace match="text()" select="'Related Information:'"></sqf:replace>
+      </sqf:fix>
+    </sch:rule>
+    
     <sch:rule context="related-links/linklist">
       <!-- The link list should have a title -->
       <sch:assert test="title" sqf:fix="add_title" role="warn">The linklist should have a title</sch:assert>
@@ -540,11 +549,7 @@
           <sqf:title>Add a title for the linklist</sqf:title>
         </sqf:description>
         <!-- The value for the title element must be specified by the user. -->
-        <sqf:user-entry name="title">
-          <sqf:description>
-            <sqf:title>Specify the linklist title</sqf:title>
-          </sqf:description>
-        </sqf:user-entry>
+        <sch:let name="title" value="'Related Information:'"/>
         <sqf:add node-type="element" position="first-child" target="title" select="$title"/>
       </sqf:fix>
     
