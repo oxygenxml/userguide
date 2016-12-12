@@ -488,6 +488,82 @@
     </sch:rule>
     
   </sch:pattern>
+  
+  <!-- Rules for 'related-links':
+    - we want the 'related-links' to contain only one 'linklist'
+    - the 'linklist' must have a title
+    - if there is a 'link' added directly in a ''related-links', it sould be moved in a 'linklist'
+   -->
+  <sch:pattern>
+    <sch:rule context="related-links/link">
+      <sch:assert test="false()" sqf:fix="wrapInLinkList moveInExistingLinkList">The 'link' element should be added in a 'linklist'</sch:assert>
+      
+      <!-- Create a new link list -->
+      <sqf:fix id="wrapInLinkList" use-when="not(parent::node()/linklist)">
+        <sqf:description>
+          <sqf:title>Move all the links in a link list</sqf:title>
+        </sqf:description>
+        <!-- The value for the title element must be specified by the user. -->
+        <sqf:user-entry name="title">
+          <sqf:description>
+            <sqf:title>Specify the linklist title</sqf:title>
+          </sqf:description>
+        </sqf:user-entry>
+        <sqf:replace node-type="element" target="linklist">
+          <title><xsl:value-of select="$title"/></title>
+          <xsl:apply-templates mode="copyExceptClass" select="parent::node()/link"/>
+        </sqf:replace>
+        <sqf:delete match="parent::node()/link"/>
+      </sqf:fix>
+      
+      <!-- Move all the links in the existing link list -->
+      <sqf:fix id="moveInExistingLinkList" use-when="parent::node()/linklist">
+        <sqf:description>
+          <sqf:title>Move all the links in the existing link list</sqf:title>
+        </sqf:description>
+        <sch:let name="links" value="parent::node()/link"/>
+        <sqf:add match="parent::node()/linklist[1]" position="last-child">
+          <xsl:apply-templates mode="copyExceptClass" select="$links"/>
+        </sqf:add>
+        <sqf:delete match="$links"/>
+      </sqf:fix>
+    </sch:rule>
+    
+    <sch:rule context="related-links/linklist">
+      <!-- The link list should have a title -->
+      <sch:assert test="title" sqf:fix="add_title">The linklist should have a title</sch:assert>
+      
+      <!-- Quick fix that adds a title element in a linklist -->
+      <sqf:fix id="add_title">
+        <sqf:description>
+          <sqf:title>Add a title for the linklist</sqf:title>
+        </sqf:description>
+        <!-- The value for the title element must be specified by the user. -->
+        <sqf:user-entry name="title">
+          <sqf:description>
+            <sqf:title>Specify the linklist title</sqf:title>
+          </sqf:description>
+        </sqf:user-entry>
+        <sqf:add node-type="element" position="first-child" target="title" select="$title"/>
+      </sqf:fix>
+    
+     <!-- Only one link list allowed -->
+      <sch:report test="following-sibling::linklist" sqf:fix="mergeLinkLists">
+        Only one link list allowed
+      </sch:report>
+      
+      <!-- Merge flowing link lists into current one -->
+      <sqf:fix id="mergeLinkLists">
+        <sqf:description>
+          <sqf:title>Merge flowing link lists into current one</sqf:title>
+        </sqf:description>
+        <sqf:add position="last-child">
+          <xsl:apply-templates mode="copyExceptClass" select="following-sibling::linklist/link"/>
+        </sqf:add>
+        <sqf:delete match="following-sibling::linklist"/>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
 
   <!-- Template used to copy the current node -->
   <xsl:template match="node() | @*" mode="copyExceptClass">
