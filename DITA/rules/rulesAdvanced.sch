@@ -496,7 +496,8 @@
    -->
   <sch:pattern>
     <sch:rule context="related-links/link">
-      <sch:assert test="false()" sqf:fix="wrapInLinkList moveInExistingLinkList">The 'link' element should be added in a 'linklist'</sch:assert>
+      <sch:assert test="false()" sqf:fix="wrapInLinkList moveInExistingLinkList" role="warn">
+        The 'link' element should be added in a 'linklist'</sch:assert>
       
       <!-- Create a new link list -->
       <sqf:fix id="wrapInLinkList" use-when="not(parent::node()/linklist)">
@@ -509,10 +510,10 @@
             <sqf:title>Specify the linklist title</sqf:title>
           </sqf:description>
         </sqf:user-entry>
-        <sqf:replace node-type="element" target="linklist">
+        <sqf:add node-type="element" target="linklist" position="before">
           <title><xsl:value-of select="$title"/></title>
           <xsl:apply-templates mode="copyExceptClass" select="parent::node()/link"/>
-        </sqf:replace>
+        </sqf:add>
         <sqf:delete match="parent::node()/link"/>
       </sqf:fix>
       
@@ -531,7 +532,7 @@
     
     <sch:rule context="related-links/linklist">
       <!-- The link list should have a title -->
-      <sch:assert test="title" sqf:fix="add_title">The linklist should have a title</sch:assert>
+      <sch:assert test="title" sqf:fix="add_title" role="warn">The linklist should have a title</sch:assert>
       
       <!-- Quick fix that adds a title element in a linklist -->
       <sqf:fix id="add_title">
@@ -548,7 +549,7 @@
       </sqf:fix>
     
      <!-- Only one link list allowed -->
-      <sch:report test="following-sibling::linklist" sqf:fix="mergeLinkLists">
+      <sch:report test="following-sibling::linklist" sqf:fix="mergeLinkLists" role="warn">
         Only one link list allowed
       </sch:report>
       
