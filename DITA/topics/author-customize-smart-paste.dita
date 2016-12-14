@@ -41,6 +41,32 @@
         that matches the particular framework, the styling from the
           <filepath>xhtml2content.xsl</filepath> stylesheet will be applied on the clipboard
         contents.</p>
+      <p><b>Customized Smart Paste Stylesheet
+        Sample:</b><codeblock outputclass="language-xml">&lt;xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns="urn:hl7-org:v3"
+  exclude-result-prefixes="xsl xhtml">
+
+  &lt;xsl:output method="xml" indent="no" omit-xml-declaration="yes"/>
+
+  &lt;xsl:template match="xhtml:b | xhtml:strong">
+    &lt;content styleCode="bold" >
+      &lt;xsl:apply-templates select="@* | node()"/>
+    &lt;/content>
+  &lt;/xsl:template>
+
+  &lt;xsl:template match="*">
+    &lt;xsl:apply-templates select="@* | node()"/>
+  &lt;/xsl:template>
+
+  &lt;xsl:template match="@* | node()">
+    &lt;xsl:copy>
+      &lt;xsl:apply-templates select="@* | node()"/>
+    &lt;/xsl:copy>
+  &lt;/xsl:template>
+
+&lt;/xsl:stylesheet></codeblock></p>
     </section>
   </body>
   <related-links>
