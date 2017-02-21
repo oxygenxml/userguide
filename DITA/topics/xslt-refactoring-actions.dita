@@ -90,6 +90,37 @@
     &lt;/xsl:otherwise>
 &lt;/xsl:choose></codeblock></p><p>(where
           the <codeph>|</codeph> character is the current cursor position)</p></li>
+      <li><uicontrol>Convert xsl:choose/xsl:when into xsl:if</uicontrol> - Converts each
+          <codeph>xsl:when</codeph> block into an <codeph>xsl:if</codeph> block. For the
+          <i>otherwise</i> branch, it also adds an <i>and</i> statement to each negated form of the
+        conditions. For example, the following
+          block:<codeblock outputclass="language-xml">&lt;xsl:choose>
+    &lt;xsl:when test="c1">
+        &lt;!-- XSLT statement 1 -->
+    &lt;/xsl:when>
+    &lt;xsl:when test="c2">
+        &lt;!-- XSLT statement 2 -->
+    &lt;/xsl:when>
+    &lt;xsl:when test="c3">
+        &lt;!-- XSLT statement 3 -->
+    &lt;/xsl:when>
+    &lt;xsl:otherwise>
+        &lt;!-- XSLT "otherwise" statement-->
+    &lt;/xsl:otherwise>
+&lt;/xsl:choose></codeblock><p>is
+          converted
+          to:<codeblock outputclass="language-xml">&lt;xsl:if test="c1">
+    &lt;!-- XSLT statement 1 -->
+&lt;/xsl:if>
+&lt;xsl:if test="c2">
+    &lt;!-- XSLT statement 2 -->
+&lt;/xsl:if>
+&lt;xsl:if test="c3">
+    &lt;!-- XSLT statement 3 -->
+&lt;/xsl:if>
+&lt;xsl:if test="not(c1) and not(c2) and not(c3)">
+    &lt;!-- XSLT "otherwise" statement-->
+&lt;/xsl:if></codeblock></p></li>
       <li><uicontrol><image href="../img/XSLLocalVariable16.png"/>Extract local variable</uicontrol>
         (Active on a selection made inside an attribute that contains an XPath expression) - <ph
           conkeyref="reusables-editing-documents/extract_local_var_sh_desc"/> After creating the new
