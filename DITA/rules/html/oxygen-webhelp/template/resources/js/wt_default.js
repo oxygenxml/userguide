@@ -18,18 +18,26 @@ $(document).ready(function () {
 
     // If we have a contextID, we must to redirect to the corresponding topic
     var contextId = getParameter('contextId');
-    if ( contextId != undefined && contextId != "" ) {
+    var appname = getParameter('appname');
+
+    if ( contextId != undefined && contextId != "") {
         var scriptTag = document.createElement("script");
         scriptTag.type = "text/javascript";
         scriptTag.src = "context-help-map.js";
         document.getElementsByTagName('head')[0].appendChild(scriptTag);
 
         var ready = setInterval(function () {
-                if (contextIds != undefined) {
-                    if (contextIds[contextId] != undefined) {
-                        window.location = contextIds[contextId];
+                if (helpContexts != undefined) {
+                    for(var i = 0; i < helpContexts.length; i++) {
+                        var ctxt = helpContexts[i];
+                        if (contextId == ctxt["appid"] && (appname == undefined || appname == ctxt["appname"])) {
+                            var path = ctxt["path"];
+                            if (path != undefined) {
+                                window.location = path;
+                            }
+                            break;
+                        }
                     }
-
                     clearInterval(ready);
                 }
         }, 100);
@@ -135,20 +143,33 @@ function highlightSearchTerm() {
         return;
     }
     try {
-        var $body = $('.body');
-        $body.removeHighlight();
-    
-        var jsonString = decodeURIComponent(String(getParameter('hl')));
-        debug("jsonString: ", jsonString);
-        
-        if (jsonString !== undefined && jsonString != "") {
-            var words = jsonString.split(',');
-            debug("words: ", words);
-            
-            for (var i = 0; i < words.length; i++) {
-                debug('highlight(' + words[i] + ');');
-                $body.highlight(words[i]);
+        var $body = $('.wh_topic_content');
+        var $relatedLinks = $('.wh_related_links');
+				var $childLinks = $('.wh_child_links');
+
+        // Test if highlighter library is available
+        if (typeof $body.removeHighlight != 'undefined') {
+            $body.removeHighlight();
+            $relatedLinks.removeHighlight();
+
+            var hlParameter = getParameter('hl');
+            if (hlParameter != undefined) {
+                var jsonString = decodeURIComponent(String(hlParameter));
+                debug("jsonString: ", jsonString);
+                if (jsonString !== undefined && jsonString != "") {
+                    var words = jsonString.split(',');
+                    debug("words: ", words);
+
+                    for (var i = 0; i < words.length; i++) {
+                        debug('highlight(' + words[i] + ');');
+                        $body.highlight(words[i]);
+                        $relatedLinks.highlight(words[i]);
+                        $childLinks.highlight(words[i]);
+                    }
+                }
             }
+        } else {
+            // JQuery highlights library is not loaded
         }
     }
     catch (e) {

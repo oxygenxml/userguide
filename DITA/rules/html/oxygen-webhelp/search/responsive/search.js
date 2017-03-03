@@ -2,199 +2,187 @@
 /*
     
 Oxygen WebHelp Plugin
-Copyright (c) 1998-2016 Syncro Soft SRL, Romania.  All rights reserved.
+Copyright (c) 1998-2017 Syncro Soft SRL, Romania.  All rights reserved.
 
 */
+
+var txt_browser_not_supported = "Your browser is not supported. Use of Mozilla Firefox is recommended.";
+
+/**
+ * Constant with maximum search items presented for a single page.
+ * @type {number}
+ */
+var MAX_ITEMS_PER_PAGE = 10;
+
+/**
+ * Variable with total page number.
+ *
+ * @type {number}
+ */
+var totalPageNumber = -1;
 
 function debug(msg, obj) {
   logLocal(msg);
 }
 
+if(typeof String.prototype.trim !== 'function') {
+    String.prototype.trim = function() {
+        return $.trim(this);
+    }
+}
+
+$(document).ready(function () {
+    $('.wh_indexterms_link').find('a').text('');
+
+    $('.gcse-searchresults-only').attr('data-queryParameterName', 'searchQuery');
+
+    // Select page from parameter in the pages widget
+    window.onpopstate = function(event) {
+        if (lastSearchResultItems != null && lastSearchResult != null) {
+            // Get the value for the 'page' parameter
+            var pageToShow = getParameter("page");
+
+            // Set to 1 if it is undefined
+            if (pageToShow == undefined || pageToShow == "undefined" || pageToShow == "") {
+                pageToShow = 1;
+            }
+
+            displayPageResults(pageToShow);
+
+            // Update the active page
+            $('.pagination li[class~="active"]').removeClass("active");
+            $('.pagination li[data-lp="' + pageToShow + '"]:not([class~="prev"]):not([class~="next"])').addClass("active");
+
+        }
+    };
+});
+
+
 /**
+ * @description Search using Google Search if it is available, otherwise use our search engine to execute the query
+ * @return {boolean} Always return false
+ */
+function executeQuery() {
+    var input = document.getElementById('textToSearch');
+    try {
+        var element = google.search.cse.element.getElement('searchresults-only0');
+    } catch (e) {
+        debug(e);
+    }
+    if (element != undefined) {
+        if (input.value == '') {
+            element.clearAllResults();
+        } else {
+            element.execute(input.value);
+        }
+    } else {
+        executeSearchQuery($("#textToSearch").val());
+    }
+
+    return false;
+}
+
+function clearHighlights() {
+
+}
+
+/**
+ * Execute search query with internal search engine.
+ *
  * @description This function find all matches using the search term
  * @param {HTMLObjectElement} ditaSearch_Form The search form from WebHelp page as HTML Object
  */
-function SearchToc(query) {
+function executeSearchQuery(query) {
     debug('SearchToc(..)');
 
-    result = new Pages([]);
-    noWords = [];
-    excluded = [];
-    stackResults = [];
-
-    //START - EXM-30790
-    var $searchResults = $("#searchResults");
-    var footer = $searchResults.find(".footer");
-    //END - EXM-30790
     // Check browser compatibility
     if (navigator.userAgent.indexOf("Konquerer") > -1) {
         alert(getLocalization(txt_browser_not_supported));
         return;
     }
 
-    searchTextField = trim(query);
-    // Eliminate the cross site scripting possibility.
-    searchTextField = searchTextField.replace(/</g, " ")
-        .replace(/>/g, " ")
-        .replace(/"/g, " ")
-        .replace(/'/g, " ")
-        .replace(/=/g, " ")
-        .replace(/0\\/g, " ")
-        .replace(/\\/g, " ")
-        .replace(/\//g, " ")
-        .replace(/  +/g, " ");
+    searchAndDisplayResults(query);
+}
 
-    var expressionInput = searchTextField;
-    debug('Search for: ' + expressionInput);
-
-    var wordsArray = [];
-    var splittedExpression = expressionInput.split(" ");
-    for (var t in splittedExpression) {
-        if (!contains(stopWords, splittedExpression[t]) || contains(knownOperators, splittedExpression[t])) {
-            wordsArray.push(splittedExpression[t]);
-        } else {
-            excluded.push(splittedExpression[t]);
-        }
-    }
-    expressionInput = wordsArray.join(" ");
-
-    realSearchQuery = expressionInput;
-
-    if (expressionInput.trim().length > 0 || excluded.length > 0) {
-        searchAndDisplayResults(expressionInput);
-
-        //START - EXM-30790
-        $searchResults.append(footer);
-        $searchResults.scrollTop(0);
-        //END - EXM-30790
-    } else {
-        clearHighlights();
+function searchAndDisplayResults(query) {
+    var searchResult = performSearch(query);
+    if (searchResult.searchExpression.trim().length > 0 || searchResult.excluded.length > 0) {
+        displayResults(searchResult);
     }
 }
 
 /**
  * @description Display results in HTML format
- * @param {Array} fileAndWordList Array with pages and indices that will be displayed
+ * @param {SearchResult} searchResult The search result.
  */
-function displayResults(fileAndWordList) {
-    var linkTab = [];
+function displayResults(searchResult) {
 
-    var results = "";
+    preprocessSearchResult(searchResult, 'wh-responsive');
 
-    var txt_wordsnotfound = "";
+    // Compute the total page number
+    totalPageNumber =
+        Math.ceil(lastSearchResultItems.length / MAX_ITEMS_PER_PAGE);
 
-    for (var i = 0; i < excluded.length; i++) {
-        txt_wordsnotfound += excluded[i] + " ";
+    // Get the value for the 'page' parameter
+    var pageToShow = getParameter("page");
+
+    // Set to 1 if it is undefined
+    if (pageToShow == undefined || pageToShow == "undefined" || pageToShow == "") {
+        pageToShow = 1;
     }
 
-    if (fileAndWordList.value !== undefined) {
-        var allPages = fileAndWordList.sort().value;
+    // Display a page
+    displayPageResults(pageToShow);
 
-        if (excluded.length > 0) {
-            var tempString = "<p>" + partialSearch1;
-            tempString += "<br />" + partialSearch2 + " " + txt_wordsnotfound + "</p>";
-            linkTab.push(tempString);
-        }
+    if (totalPageNumber > 1) {
+        // Add pagination widget
+        $('#wh-search-pagination').bootpag({
+            total: totalPageNumber,          // total pages
+            page: pageToShow,            // default page
+            maxVisible: 10,     // visible pagination
+            leaps: true         // next/prev leaps through maxVisible
+        }).on("page", function(event, num){
+            console.log("Display page with number: ", num);
 
-        if (realSearchQuery.length > 0) {
-            linkTab.push("<p>" + getLocalization(txt_results_for) + " " + "<span class=\"wh_search_expression\">" + realSearchQuery + "</span>" + "</p>");
-        }
-        linkTab.push("<ul class='searchresult'>");
-        var ttScore_first = 1;
-        if (allPages.length > 0) {
-            ttScore_first = allPages[0].scoring;
-        }
-        for (var page = 0; page < allPages.length; page++) {
-            debug("Page number: " + page);
+            // Replace or add the page query
+            var oldPage = getParameter("page");
+            var oldQuery = window.location.search;
+            var oldHref = window.location.href;
+            var oldLocation = oldHref.substr(0, oldHref.indexOf(oldQuery));
 
-            var hundredPercent = allPages[page].scoring + 100 * allPages[page].motsnb;
-            var numberOfWords = allPages[page].motsnb;
-            debug("hundredPercent: " + hundredPercent + "; ttScore_first: " + ttScore_first + "; numberOfWords: " + numberOfWords);
-
-            var ttInfo = allPages[page].filenb;
-            // Get scoring
-            var ttScore = allPages[page].scoring;
-
-            debug('score for' + allPages[page].motslisteDisplay + ' = ' + ttScore);
-
-            var tempInfo = fil[ttInfo];
-            var pos1 = tempInfo.indexOf("@@@");
-            var pos2 = tempInfo.lastIndexOf("@@@");
-            var tempPath = tempInfo.substring(0, pos1);
-            // EXM-27709 START
-            // Display words between '<' and '>' in title of search results.
-            var tempTitle = tempInfo.substring(pos1 + 3, pos2)
-                .replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            // EXM-27709 END
-            var tempShortDesc = tempInfo.substring(pos2 + 3, tempInfo.length);
-
-            if (tempPath == 'toc.html') {
-                continue;
-            }
-            //var split = allPages[page].motsliste.split(",");
-            var finalArray = allPages[page].motsliste.split(", ");
-            debug(finalArray);
-            var arrayString = '';
-            for (var x in finalArray) {
-                if (finalArray[x].length >= 2 || useCJKTokenizing || (indexerLanguage == "ja" && finalArray[x].length >= 1)) {
-                    arrayString += finalArray[x] + ",";
-                }
+            var newQuery = "";
+            if (oldPage == undefined || oldPage == "undefined" || oldPage == "") {
+                newQuery = oldQuery + "&page=" + num;
+            } else {
+                var re = new RegExp("(\\?|&)page\=" + oldPage);
+                newQuery = oldQuery.replace(re, "$1page="+num);
             }
 
-            arrayString = arrayString.substring(0, arrayString.length - 1);
-            tempPath += '?hl=' + encodeURIComponent(arrayString);
-            var idLink = 'foundLink' + page;
-            var linkString = '<li><a id="' + idLink + '" href="' + tempPath + '" class="foundResult">' + tempTitle + '</a>';
-            // Fake value
-            var maxNumberOfWords = allPages[page].motsnb;
-            var starWidth = (ttScore * 100 / hundredPercent) / (ttScore_first / hundredPercent) * (numberOfWords / maxNumberOfWords);
-            starWidth = starWidth < 10 ? (starWidth + 5) : starWidth;
-            // Keep the 5 stars format
-            if (starWidth > 85) {
-                starWidth = 85;
-            }
-            // Also check if we have a valid description
-            if ((tempShortDesc != "null" && tempShortDesc != '...')) {
-                linkString += "\n<div class=\"shortdesclink\">" + tempShortDesc + "</div>";
-            }
+            window.history.pushState("searchPage" + num, document.title, oldLocation + newQuery);
 
-            try {
-                if (webhelpSearchRanking) {
-                    // Add rating values for scoring at the list of matches
-                    linkString += "<div id=\"rightDiv\">";
-                    linkString += "<div id=\"star\">";
-                    linkString += "<div id=\"star0\" class=\"star\">";
-                    linkString += "<div id=\"starCur0\" class=\"curr\" style=\"width: " + starWidth + "px;\">&nbsp;</div>";
-                    linkString += "</div>";
-                    linkString += "<br style=\"clear: both;\">";
-                    linkString += "</div>";
-                    linkString += "</div>";
-                }
-            } catch (e) {
-                debug(e);
-            }
-
-            linkString += "</li>";
-            linkTab.push(linkString);
-        }
-
-
-        linkTab.push("</ul>");
-
-        if (linkTab.length > 2) {
-            results = "<p>";
-            for (var t in linkTab) {
-                results += linkTab[t].toString();
-            }
-            results += "</p>";
-        } else {
-            results = "<p>" + getLocalization("Search no results") + " " + "<span class=\"wh_search_expression\">" + txt_wordsnotfound + "</span>" + "</p>";
-        }
-    } else {
-        results = "<p>" + getLocalization("Search no results") + " " + "<span class=\"wh_search_expression\">" + txt_wordsnotfound + "</span>" + "</p>";
+            displayPageResults(num);
+            /*$("#content").html("Page " + num); // or some ajax content loading...
+             // ... after content load -> change total to 10
+             $(this).bootpag({total: 10, maxVisible: 10});*/
+        });
     }
 
-    document.getElementById('searchResults').innerHTML = results;
 
     $("#search").trigger('click');
+}
+
+/**
+ * Display search results for a specific page.
+ *
+ * @param pageIdx The page index.
+ */
+function displayPageResults(pageIdx) {
+    var s = pageIdx * MAX_ITEMS_PER_PAGE;
+    var e = s + MAX_ITEMS_PER_PAGE;
+
+    var searchResultHTML =
+        computeHTMLResult('wh-responsive', pageIdx, totalPageNumber, MAX_ITEMS_PER_PAGE);
+
+    document.getElementById('searchResults').innerHTML = searchResultHTML;
+    window.scrollTo(0, 0);
 }
