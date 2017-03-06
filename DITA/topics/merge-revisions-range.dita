@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="merge-revisions-range">
+  <title>Merge Revisions</title>
+  <taskbody>
+    <context>
+      <p>This case is when you have made one or more changes to a branch and you want to duplicate
+        them in another branch. For example, we know that a problem has been fixed by committing
+        revisions <codeph>17</codeph>, <codeph>20</codeph>, and <codeph>25</codeph> on branch
+          <codeph>B1</codeph>. These changes are also needed in branch <codeph>B2</codeph>. Thus, to
+        merge them, we need a working copy of the <codeph>B2</codeph> branch.</p>
+      <p>To merge revisions from a different branch, follow these steps:</p>
+    </context>
+    <steps>
+      <step id="start-wizard">
+        <cmd>Go to menu <menucascade>
+            <uicontrol>Tools</uicontrol>
+            <uicontrol>Merge</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>The <uicontrol>Merge</uicontrol> wizard is opened.</stepresult>
+      </step>
+      <step>
+        <cmd>Select the <uicontrol>Merge revisions</uicontrol> option.</cmd>
+      </step>
+      <step id="pre-merge-checks-step">
+        <cmd>It is recommended that you select the <uicontrol>Perform pre-merge best practices
+            checks of the working copy target</uicontrol> option to make sure that the working copy
+          target item is ready for the merge operation.</cmd>
+        <substeps id="substeps_b4c_vqr_4r">
+          <substep>
+            <cmd>Press the <uicontrol>Next</uicontrol> button.</cmd>
+            <stepresult>If the <uicontrol>Perform pre-merge best practices checks of the working
+                copy target</uicontrol> option is selected, <xref
+                href="pre-merge-checks.dita#pre-merge-checks">the <uicontrol>Pre-Merge
+                  Checks</uicontrol> wizard page</xref> is displayed.<note>If errors are found you
+                need to solve them before proceeding.</note></stepresult>
+          </substep>
+        </substeps>
+      </step>
+      <step id="merge_wizard_second_page">
+        <cmd>Press the <uicontrol>Next</uicontrol> button.</cmd>
+        <stepresult>The <uicontrol>Merge revisions</uicontrol> wizard page is
+          displayed.</stepresult>
+      </step>
+      <step>
+        <cmd>In the <b>Merge from (URL)</b> text box, enter <xref
+            href="entering-local-paths-urls.dita#entering-local-paths-urls/url-section"
+            >the URL of the <term>branch</term> or <term>tag</term></xref> that contain the changes
+          that you want to duplicate in your working copy. In our example, it is the URL of the
+            <codeph>B1</codeph> branch.</cmd>
+        <info><ph id="merge_browse_source_repository">You may also click the
+              <uicontrol>Browse</uicontrol> button to browse the repository and find the desired
+            branch. If you have previously merged from this branch, then you can simply use the drop
+            down menu, which displays a history of previously used URLs.</ph><note type="note"
+            id="different-repository-note">If the URL belongs to a different repository than the
+            working copy, the <uicontrol>Ignore ancestry / Disable merge tracking</uicontrol> option
+            (in the <xref href="merge-options.dita#merge-options"><uicontrol>Merge
+                Options</uicontrol> wizard page</xref>) will be selected automatically (and you
+            cannot change this). This is because the <xref
+              href="final-words-merge.dita#final-words-merge/merge-from-foreign-repositories"
+              >Subversion client cannot track changes between different
+            repositories</xref>.</note><note id="merge-source-peg-revision-note" type="tip"><ph
+              id="merge-source-peg-revision">You can also specify a <xref
+                href="using-peg-revisions.dita#using-peg-revisions"><term>peg
+                  revision</term></xref> at the end of the URL (for example,
+                <codeph>URL@rev1234</codeph>).</ph> The peg revision does not affect the merge range
+            you select. By default, the <codeph>HEAD</codeph> revision is assumed.</note></info>
+      </step>
+      <step>
+        <cmd><ph id="step6-ph">In the <uicontrol>Revisions to merge</uicontrol> section, choose
+            between the <uicontrol>all revisions</uicontrol> and <uicontrol>specific
+              revision(s)</uicontrol> options.</ph></cmd>
+        <info>
+          <p>
+            <ul id="ul_jcc_h5r_4r">
+              <li><uicontrol>all revisions</uicontrol> - The operation will include <i>all eligible
+                  revisions</i> that were not yet merged.</li>
+              <li><uicontrol>specific revision(s)</uicontrol> - You can specify one or more
+                individual revisions and/or revision ranges. Also, you can mix <i>forward</i> ranges
+                (for example, <codeph>1-5</codeph>), <i>backward</i> ranges (for example,
+                  <codeph>20-15</codeph>), and subtract specific revisions from a range (for
+                example, <codeph>1-5, -3</codeph>).</li>
+            </ul>
+          </p>
+          <p>
+            <note>If using the Subversion command-line client, a revision range of the form
+                <codeph>1-5</codeph> means all changes starting from revision 2 up to revision 5
+              (the changes necessary to reach revision 5, committed after revision 1). Unlike the
+              Subversion command-line client, in <ph keyref="svnProduct"/> the revision ranges are
+              inclusive, meaning that it will process all revisions, starting with revision 1, up to
+              and including revision 5. </note>
+            <note type="attention">The <codeph>HEAD</codeph> revision is the only non-numerical
+              revision allowed, and it can only be used when specifying revision ranges as one of
+              the ends of the range (for example, <codeph>10-HEAD</codeph>). Be careful when using
+              it, as it might not refer to the desired revision, if it has recently been committed
+              by another user.</note>
+            <note type="tip" id="tip_negative_revisions">If you want to perform a <i>reverse
+                merge</i> and roll-back your working copy changes that have already been committed
+              to the repository, use the <i>negative revisions</i> notation (for example,
+                <codeph>-7</codeph>) or <i>backward revision ranges</i> (for example,
+                <codeph>20-10</codeph>).</note>
+          </p>
+        </info>
+        <substeps id="substeps_inx_z5r_4r">
+          <substep>
+            <cmd>If you press the <uicontrol>History</uicontrol> button, <xref
+                href="history-dialog.dita#history-dialog" format="dita">the
+                  <uicontrol>History</uicontrol> dialog box</xref> is displayed, which allows you to
+              select one or more revisions to be merged.</cmd>
+          </substep>
+        </substeps>
+      </step>
+      <step id="next-button">
+        <cmd><ph id="config-options-ph">Optionally, if you want to <xref
+              href="merge-options.dita#merge-options">configure the options</xref> for
+            your merge, press the <uicontrol>Next</uicontrol> button.</ph></cmd>
+        <stepresult><ph id="options-set-result">The <xref
+              href="merge-options.dita#merge-options"><uicontrol>Merge Options</uicontrol>
+              wizard page</xref> is displayed that allows you to configure options for the
+            operation.</ph><note type="warning">If the <uicontrol>Ignore ancestry / Disable merge
+              tracking</uicontrol> option is selected and you chose <uicontrol>all
+              revisions</uicontrol> in the <uicontrol>Revisions to merge</uicontrol> section,
+            revisions that were previously merged will also be included, which may result in
+            conflicts.</note></stepresult>
+      </step>
+      <step id="perform-merge">
+        <cmd>Press the <uicontrol>Merge</uicontrol> button.</cmd>
+        <stepresult>The merge operation is performed.</stepresult>
+      </step>
+    </steps>
+    <result id="merge-result">
+      <p>If the merge is completed successfully, all the changes corresponding to the selected
+        revisions should be merged in your working copy.</p>
+    </result>
+    <postreq id="merge-postreq">
+      <p>It is recommended to look at the results of the merge, in the working copy, to review the
+        changes and see if it meets your expectations. Since merging can sometimes be complicated,
+          <xref href="resolve-merge-conflicts.dita#resolve-merge-conflicts" format="dita"
+          >you may need to resolve conflicts</xref> after making major changes.<note type="note"><ph
+            id="commit-merge-result">The merge result is only in your local working copy and needs
+            to be committed to the repository for it to be available to others.</ph></note></p>
+    </postreq>
+  </taskbody>
+</task>

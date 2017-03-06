@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="workspace-access-plugin-js">
+  <title>Workspace Access Plugin Extension (JavaScript-Based)</title>
+  <shortdesc>This is a JavaScript-based <xref keyref="glossentry_plugin"><term>plugin</term></xref>
+    extension that allows you to contribute actions to the main menu and toolbars, create custom
+    views, interact with the application workspace, make modifications to opened documents, and add
+    listeners for various events. </shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Plugin extensions<indexterm>Workspace Access (JS-based)</indexterm></indexterm>
+        <indexterm>Workspace Access (JS-based) plugin extension</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>This extension can use the same API as the <xref href="workspace-access-plugin.dita"
+        >Workspace Access plugin extension</xref>, but the implementation is JavaScript-based and
+      uses the bundled <xref
+        href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Scripting_Java"
+        format="html" scope="external">Rhino</xref> library to create and work with Java API from
+      the JavaScript code.</p>
+    <p>The <term>plugin</term> descriptor file (named <filepath>plugin.xml</filepath>) needs to
+      reference a JavaScript file, as in the following
+      example:<codeblock outputclass="language-xml">&lt;!DOCTYPE plugin PUBLIC "-//Oxygen Plugin" "../plugin.dtd">
+&lt;plugin
+ id="unique.id.value"
+ name="Add Action To DITA Maps Manager popup-menu"
+ description="Plugin adds action to DITA Maps Manager contextual menu."
+ version="1.0"
+ vendor="Syncro Soft"
+ class="ro.sync.exml.plugin.Plugin"
+ classLoaderType="preferReferencedResources">
+ &lt;extension type="WorkspaceAccessJS" href="wsAccess.js"/>
+&lt;/plugin></codeblock>In
+      the example above, the JavaScript file <filepath>wsAccess.js</filepath>, located in the
+        <filepath>plugin</filepath> folder, will be called. This JavaScript file needs to have two
+      JavaScript methods defined inside. Methods that will be called when the application starts and
+      when it
+      ends:<codeblock outputclass="language-javascript">function applicationStarted(pluginWorkspaceAccess) {
+..........
+}
+
+function applicationClosing(pluginWorkspaceAccess) {
+..........
+}</codeblock></p>
+    <p>In regards to the <codeph>applicationStarted</codeph> callback, besides using the <xref
+        href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/workspace/api/standalone/StandalonePluginWorkspace.html"
+        format="html" scope="external"
+          ><apiname>ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace</apiname></xref>
+      API with the <codeph>pluginWorkspaceAccesspluginWorkspaceAccess</codeph> parameter, you can
+      also use a globally defined field called <codeph>jsDirURL</codeph> that points to the folder
+      where the JavaScript file is located.</p>
+    <p>Below is a much larger example with a JavaScript Workspace Access <term>plugin</term>
+      extension implementation that adds a new action in the contextual menu<ph
+        product="author editor authorEclipse editorEclipse"> of the <xref
+          href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
+            Manager</uicontrol> view</xref></ph>. The action starts the
+        <filepath>notepad.exe</filepath> application and passes the reference to the currently
+      selected <codeph>topicref</codeph> to
+      it.<codeblock outputclass="language-javascript">function applicationStarted(pluginWorkspaceAccess) {
+ Packages.java.lang.System.err.println("Application started "
+      + pluginWorkspaceAccess);
+ edChangedListener = {
+  /*Called when a DITA Map is opened*/
+   editorOpened: function (editorLocation) {
+   Packages.java.lang.System.err.println("\nrunning " + editorLocation);
+  /*Get the opened DITA Map*/
+   editor = pluginWorkspaceAccess.getEditorAccess(editorLocation, 
+   Packages.ro.sync.exml.workspace.api.PluginWorkspace.DITA_MAPS_EDITING_AREA);
+   ditaMapPage = editor.getCurrentPage();
+  /*Add listener called when right-click is done in the DITA Maps manager*/
+   customizerObj = {
+   customizePopUpMenu: function (popUp, ditaMapDocumentController) {
+   Packages.java.lang.System.err.println("RIGHT CLICK" + popUp);
+   tree = ditaMapPage.getDITAMapTreeComponent();
+  /*Selected tree path*/
+   sel = tree.getSelectionPath();
+   if (sel != null) {
+   selectedElement = sel.getLastPathComponent();
+  /*Reference attribute*/
+   href = selectedElement.getAttribute("href");
+   if (href != null) {
+     try {
+  /*Create absolute reference*/
+   absoluteRef = new Packages.java.net.URL(selectedElement.getXMLBaseURL(), 
+           href.getValue());
+   Packages.java.lang.System.err.println("Computed absolute reference "
+         + absoluteRef);
+   mi = new Packages.javax.swing.JMenuItem("Run notepad");
+        popUp.add(mi);
+        actionPerfObj = {
+        actionPerformed: function (e) {
+          try {
+           Packages.java.lang.Runtime.getRuntime().exec("notepad.exe " 
+               + pluginWorkspaceAccess.getUtilAccess().locateFile(absoluteRef));
+          }
+        catch (e1) {
+         e1.printStackTrace();
+          }
+         }
+        }
+   mi.addActionListener(new JavaAdapter(Packages.java.awt.event.ActionListener, 
+            actionPerfObj));
+       }
+       catch (e1) {
+        Packages.java.lang.System.err.println(e1);
+       }
+      }
+     }
+    }
+   }
+   
+   ditaMapPage.setPopUpMenuCustomizer(new Packages.ro.sync.exml.workspace.api.
+editor.page.ditamap.DITAMapPopupMenuCustomizer(customizerObj));
+  }
+ }
+   edChangedListener = new JavaAdapter(Packages.ro.sync.exml.workspace.api.
+listeners.WSEditorChangeListener, edChangedListener);
+   pluginWorkspaceAccess.addEditorChangeListener(
+   edChangedListener,
+   Packages.ro.sync.exml.workspace.api.PluginWorkspace.DITA_MAPS_EDITING_AREA);
+}
+
+ function applicationClosing(pluginWorkspaceAccess) {
+   Packages.java.lang.System.err.println("Application closing "
+        + pluginWorkspaceAccess);
+}</codeblock></p>
+    <p>For more information and some samples, see <xref
+        href="https://github.com/oxygenxml/wsaccess-javascript-sample-plugins" format="html"
+        scope="external">GitHub Project with Multiple Workspace Access JavaScript-Based Plugin
+        Samples</xref>.</p>
+  </conbody>
+</concept>
