@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="whr-override-xslt-dita-xslt-import">
+  <title>WebHelp XSLT-Import and XSLT-parameter Extension Points</title>
+  <body>
+    <p>The WebHelp XSLT-Import extension points allows you to extend the XSLT stylesheets associated
+      with some WebHelp transformation steps. The DITA-OT plug-in installer adds an XSLT import
+      statement into the default WebHelp XSLT, so that the XSLT stylesheet referenced by the
+      extension point becomes part of the normal build. </p>
+    <example>
+      <codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.extension">
+  &lt;feature extension="com.oxygenxml.webhelp.xsl.dita2webhelp" file="xsl/fixup.xsl"/>
+&lt;/plugin></codeblock>
+    </example>
+    <note type="attention">The customizations you made by using this extension point will affect all
+      WebHelp transformations. If you want to have a customization that is only available for a
+      certain plugin, please use the <xref href="#whr-override-xslt-processing/section_dwp_fcw_3x"
+        format="dita">Overriding a WebHelp XSLT Stylesheet from an Ant Build File</xref>
+      method.</note>
+    <section id="section_uyr_b1y_bx">
+      <title>XSLT-Import Extension Points</title>
+      <p>The following extension points are available:</p>
+      <p>
+        <dl>
+          <dlentry id="xsl-dita2webhelp">
+            <dt><b>com.oxygenxml.webhelp.xsl.dita2webhelp</b></dt>
+            <dd>Extension point to override the XSLT stylesheet
+                (<filepath>dita2webhelpImpl.xsl</filepath>) that produces an HTML file for each DITA
+              topic. Depending on the type of WebHelp transformation you are currently using, the
+              path to this stylesheet is as follows:<ul>
+                <li><b><i>WebHelp Classic</i> Transformations</b> - <filepath><term
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\dita2webhelpImpl.xsl</filepath></li>
+                <li><b><i>WebHelp Classic Mobile</i> Transformations</b> - <filepath><term
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\mobile\dita2webhelpImpl.xsl</filepath></li>
+                <li><b><i>WebHelp Responsive</i> Transformations</b> - <filepath><term
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\responsive\dita2webhelpImpl.xsl</filepath></li>
+              </ul></dd>
+          </dlentry>
+          <dlentry id="xsl-creatMainFiles">
+            <dt><b>com.oxygenxml.webhelp.xsl.createMainFiles</b></dt>
+            <dd>Extension point to override the XSLT stylesheet
+                (<filepath>createMainFilesImpl.xsl</filepath>) that produces the WebHelp main HTML
+              page (index.html). Depending on the type of WebHelp transformation you are currently
+              using, the path to this stylesheet is as follows:<ul>
+                <li><b><i>WebHelp Classic</i> Transformations</b> - <filepath><term
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\createMainFilesImpl.xsl</filepath></li>
+                <li><b><i>WebHelp Classic Mobile</i> Transformations</b> - <filepath><term
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\mobile\createMainFilesImpl.xsl</filepath></li>
+                <li><b><i>WebHelp Responsive</i> Transformations</b> - <filepath><term
+                      keyref="glossentry_dita_ot_dir"
+                    />\plugins\com.oxygenxml.webhelp\xsl\dita\responsive\createMainFilesImpl.xsl</filepath></li>
+              </ul></dd>
+          </dlentry>
+          <dlentry>
+            <dt><b>com.oxygenxml.webhelp.xsl.createTocXML</b></dt>
+            <dd>Extension point to override the XSLT stylesheet (<filepath>tocDita.xsl</filepath>)
+              that produces the <filepath>toc.xml</filepath> file. This file contains information
+              extracted from the DITA Map and it is mainly used to construct the WebHelp Table of
+              Contents and navigational links. The path to this stylesheet is: <filepath><term
+                  keyref="glossentry_dita_ot_dir"
+                />\plugins\com.oxygenxml.webhelp\xsl\dita\tocDita.xsl</filepath>.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    <section id="section_qvc_d1y_bx">
+      <title>XSLT-Parameter Extension Points</title>
+      <p>In case your customization stylesheet declares one or more XSLT parameters and you want to
+        control their value from the transformation scenario, you can use one of the following XSLT
+        parameter extension points:</p>
+      <p>
+        <dl>
+          <dlentry id="param-ext-point">
+            <dt><b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+                <xref href="#whr-override-xslt-processing/xsl-dita2webhelp" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.dita2webhelp</b> extension point</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><b>com.oxygenxml.webhelp.xsl.createMainFiles.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+                <xref href="#whr-override-xslt-processing/xsl-creatMainFiles" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.createMainFiles</b> extension point</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><b>com.oxygenxml.webhelp.xsl.createTocXml.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+                <xref href="#whr-override-xslt-processing/xsl-creatMainFiles" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.createTocXml</b> extension point</xref>.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html"
+        href="http://www.dita-ot.org/dev/extension-points/plugin-extension-points-xslt-import.html"
+        scope="external">
+        <linktext>[DITA-OT] XSLT-Import Extension Points</linktext>
+      </link>
+      <link format="html"
+        href="http://www.dita-ot.org/dev/extension-points/plugin-extension-points-xslt-parameters.html"
+        scope="external">
+        <linktext>[DITA-OT] XSLT-Parameter Extension Points</linktext>
+      </link>
+    </linklist>
+  </related-links>
+</topic>
