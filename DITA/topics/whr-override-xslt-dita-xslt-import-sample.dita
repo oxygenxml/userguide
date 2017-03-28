@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="whr-override-xslt-dita-xslt-import-sample">
-  <title>Example: Customizing WebHelp Side TOC Using XSLT-Import Extension Point</title>
+  <title>Example: Customizing Side TOC Using XSLT-Import/Parameter Extension Points</title>
+  <prolog>
+    <metadata>
+       <keywords>
+         <indexterm>WebHelp Responsive system<indexterm>Customizing side TOC</indexterm></indexterm>
+       </keywords>
+    </metadata>
+  </prolog>
   <body>
     
-      <p>To demonstrate the usage of WebHelp XSLT-Import extension points, we'll try to change how
-      the topics are displayed in the side table of contents. The default transformation generates a
-      mini table of contents for the current topic and it contains links to the children of current
-      topic, its siblings, and all of its ancestors.</p>
+      <p>This topic provides some common use-cases to demonstrate how to use the WebHelp XSLT-Import
+      extension points to customize the Table of Contents displayed on the right side of the WebHelp
+      output (the default transformation generates a mini table of contents for the current topic
+      and it contains links to the children of current topic, its siblings, and all of its
+      ancestors). The first use-case uses an XSLT-Import extension point while the second uses an
+      XSLT-Parameter extention point.</p>
     <section id="section_edl_ycb_3z">
-      <title><b>Use Case 1: How to Use a WebHelp XSLT-Import extension point to Customize the Side
-          TOC</b></title>
+      <title>Use Case 1: WebHelp XSLT-Import extension point to change which topics are displayed in
+        the Side TOC</title>
       <p>Suppose you want to customize the side TOC to only include the current topic and its child
         topics (while excluding its siblings and ancestors).</p>
       <p>
@@ -28,16 +37,16 @@
           [not(@processing-role = 'resource-only')]"
           mode="toc-pull" priority="10"></codeblock></p>
       <p>This template computes the link for the current topic along with the links for the sibling
-        topics, and then propagates them recursively to the parent topic. For the specific use-case
-        described above, you need to override this template so that it will produce the link for the
+        topics, and then propagates them recursively to the parent topic. For this specific
+        use-case, you need to override this template so that it will produce the link for the
         current topic along with just the child links that the template already receives.</p>
-      <p>Next we'll see how to implement this functionality with a WebHelp extension plugin that
-        uses the <xref
+      <p>You can implement this functionality with a WebHelp extension plugin that uses the <xref
           href="whr-override-xslt-dita-xslt-import.dita#whr-override-xslt-dita-xslt-import/xsl-dita2webhelp"
             ><b>com.oxygenxml.webhelp.xsl.dita2webhelp</b> extension point</xref>. This extension
         point allows you to specify a customization stylesheet that will override the template
         described above.</p>
-      <p>To add this functionality as a DITA-OT plugin, follow these steps:<ol id="ol_at4_wk1_dx">
+      <p id="first-procedure">To add this functionality as a DITA-OT plugin, follow these steps:<ol
+          id="ol_at4_wk1_dx">
           <li>In the <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\</filepath> folder,
             create a folder for this plugin (for example,
               <filepath>com.oxygenxml.webhelp.custom.sidetoc</filepath>).</li>
@@ -66,7 +75,10 @@
               &lt;xsl:with-param name="children" select="$children"/>
               &lt;/xsl:apply-templates>
 &lt;/xsl:template></codeblock></li>
-          <li>Run the <uicontrol>Run DITA OT Integrator</uicontrol> transformation scenario.</li>
+          <li>Use the <uicontrol>Run DITA OT Integrator</uicontrol> transformation scenario found in
+            the <uicontrol>DITA Map</uicontrol> section in the <xref
+              href="configure-transformation-dialog.dita#configure-transformation-dialog"
+                ><uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box</xref>.</li>
           <li>Run a <uicontrol>DITA Map WebHelp Responsive</uicontrol> transformation scenario to
             obtain the customized side TOC.</li>
         </ol></p>
@@ -74,11 +86,11 @@
       
     
     <section id="section_hp1_phg_dx">
-      <title>Use-Case 2: Control the Side TOC generation with a WebHelp transformation
-        parameter</title>
-      <p>Another use-case might be to control what is displayed in the side table of contents, to
-        add a transformation parameter that will enable or not the XSLT customization described
-        above. For this use-case, you can use the <xref
+      <title>Use-Case 2: WebHelp XSLT-Parameter extension point to control which topics are
+        displayed in the Side TOC from the transformation scenario</title>
+      <p>Another possibility to customize what is displayed in the side Table of Contents is to add
+        a transformation parameter that will control the XSLT customization when the transformation
+        scenario is applied. For this use-case, you can use the <xref
           href="whr-override-xslt-dita-xslt-import.dita#whr-override-xslt-dita-xslt-import/param-ext-point"
             ><b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b> extension point</xref>. </p>
       <p>To add this functionality, follow these steps:<ol>
@@ -108,10 +120,14 @@
               &lt;param name="side_toc_only_children" expression="${side_toc_only_children}"
               if="side_toc_only_children"/>
 &lt;/dummy></codeblock></li>
-          <li>Run the <uicontrol>Run DITA OT Integrator</uicontrol> transformation scenario.</li>
+          <li>Use the <uicontrol>Run DITA OT Integrator</uicontrol> transformation scenario found in
+            the <uicontrol>DITA Map</uicontrol> section in the <xref
+              href="configure-transformation-dialog.dita#configure-transformation-dialog"
+                ><uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box</xref>.</li>
           <li>Edit a <uicontrol>DITA Map WebHelp Responsive</uicontrol> transformation scenario and
-            in the <uicontrol>Parameters</uicontrol> tab, specify the desired value (<i>yes</i> or
-              <i>no</i>) for your custom parameter (<codeph>side_toc_only_children</codeph>).</li>
+            in the <xref href="dita-map-edit-parameters.dita#dita-map-edit-parameters"
+                ><uicontrol>Parameters</uicontrol> tab</xref>, specify the desired value (<i>yes</i>
+            or <i>no</i>) for your custom parameter (<codeph>side_toc_only_children</codeph>).</li>
           <li>Run the transformation scenario.</li>
         </ol></p>
     </section>
