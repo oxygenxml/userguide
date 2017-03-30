@@ -128,6 +128,70 @@ filenameSuffix=_test</codeblock></p><p>
             your prefix or suffix in the file name that is proposed in that dialog box.</li>
         </ol></p>
     </section>
+    <section id="configure_the_displayed_names_for_document_templa">
+      <title>Configure the Displayed Names for Document Templates</title>
+      <p>To change the name that is displayed for a document template, use the following procedure:<ol>
+          <li>Create a new properties file or edit an existing one. If you create a new properties
+            file, use the same name as the template file except with a
+              <filepath>.properties</filepath> extension (for example,
+              <filepath>MyTemplate.properties</filepath>).</li>
+          <li>Add a <codeph>displayName</codeph> property in the properties file:<codeblock>displayName=myTemplateName</codeblock><p>
+              <note type="tip">The names for <xref keyref="glossentry_framework"
+                    ><term>framework</term></xref>-specific document templates  (such as DITA
+                  <i>Topic</i> or DocBook <i>Article</i> as you would see in the
+                  <uicontrol>Framework templates</uicontrol> section in the
+                  <uicontrol>New</uicontrol> file wizard) can be translated via the
+                internationalization support. In this case, the properties file should contain
+                something like:<codeblock>displayName=${i18n(tag)}</codeblock><p>where <i>tag</i>
+                  refers to an entry in the <filepath>translation.xml</filepath> file for that
+                  specific framework (for example,
+                    <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/i18n/translation.xml</filepath> for
+                  DITA).</p></note>
+            </p></li>
+          <li>Save the properties file in the same directory as the document template.</li>
+          <li>Open the new file wizard (<menucascade product="author developer editor">
+              <uicontrol>File</uicontrol>
+              <uicontrol>New</uicontrol>
+            </menucascade><menucascade product="authorEclipse developerEclipse editorEclipse">
+              <uicontrol>File</uicontrol>
+              <uicontrol>New</uicontrol>
+              <uicontrol>New from Templates</uicontrol>
+            </menucascade>) and you should see the new name for the template.</li>
+        </ol></p>
+    </section>
+    <section id="adding_placeholders_or_hints_in_a_document_templa">
+      <title>Adding Placeholders or Hints in a Document Template</title>
+      <p>Document templates sometimes contain empty elements and it may not be clear to the Author
+        what should be inserted. You can define placeholders in document templates that provide
+        hints for Authors to help them understand what type of content should be added in any
+        particular empty element within the document. The placeholder text is specified using a
+        processing instruction and the placeholders are removed when the Author inserts content in
+        the corresponding element.</p>
+      <p>To define placeholders in a document template to provide authors with hints, follow this procedure:<ol>
+          <li>Edit the document template.</li>
+          <li>Add placeholders in the form of processing instructions within the elements where you
+            want hints to be displayed when an Author creates a document from the template. For
+            example:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+&lt;topic id="pi">
+  &lt;title>&lt;?oxy-placeholder content="Please give a title"?>&lt;/title>
+    &lt;shortdesc>&lt;?oxy-placeholder content="Writing short descriptions 
+         induces the writer to clarify the main thesis of the topic.
+         We recommended a 50 word limit."?>&lt;/shortdesc>
+  &lt;body>
+    &lt;p>&lt;?oxy-placeholder content="A paragraph element should be a self-contained
+         unit dealing with one idea or point."?>&lt;/p>
+  &lt;/body>
+&lt;/topic></codeblock></li>
+          <li>Save the template file.</li>
+          <li>Use the <xref href="new-dialog-sa.dita#new-dialog-sa"
+              product="author developer editor"><uicontrol>New</uicontrol> document
+              wizard</xref><xref href="creating-from-templates.dita#creating-from-templates"
+              product="authorEclipse developerEclipse editorEclipse"><uicontrol>New from
+                templates</uicontrol> wizard</xref> to create a new document using your customized
+            template and you should see the hints in the opened document.</li>
+        </ol></p>
+    </section>
   </body>
   <related-links>
     <linklist><title>Related Information:</title><link href="create-your-own-templates.dita#create-your-own-templates"/></linklist>
