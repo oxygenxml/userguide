@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
   <topic id="custom_operation_sample">
-  <title><?oxy_comment_start author="Steven" timestamp="20170324T113922+0200" comment="Split this into two files. One for XQuery and one for XSLT. A new section that explains the new functions (EXM-38680) should be added in the XSLT topic."?>Example
-    of an XML Refactoring Operation<?oxy_comment_end?></title>
+  <title>XSLT Stylesheet for Creating a Custom Operation</title>
   <body>
     <p>To demonstrate creating a custom operation, consider that we have a task where we need to
       convert an attribute into an element and insert it inside another element. A specific example
@@ -18,80 +17,10 @@
         <image href="../img/xml_refactor3.png" id="image_xwx_yww_gr"/>
       </fig>
     </p>
-    <p>A new custom XML refactoring operation requires:<ul id="ul_k4j_fs3_ns">
-        <li>An <xref href="#custom_operation_sample/xquery-example-section" format="dita">XQuery
-            Update script</xref> or <xref href="#custom_operation_sample/xslt-example-section"
-            format="dita">XSLT stylesheet</xref>.</li>
-        <li>An <xref href="#custom_operation_sample/descriptor-example-section" format="dita">XML
-            Refactoring operation descriptor file</xref> that contains the path to the XQuery Update
-          script or XSLT stylesheet.</li>
-      </ul></p>
-    <section id="xquery-example-section">
-      <title>Example of an XQuery Update Script for Creating a Custom Operation to <i>Convert an
-          Attribute to an Element</i>
-      </title>
-      <p>The XQuery Update script does the following:<ul id="ul_rhp_bsn_kr">
-          <li>Iterates over all elements from the document that have the specified local name and
-            namespace.</li>
-          <li>Finds the attribute that will be converted to an element. </li>
-          <li>Computes the <xref keyref="glossentry_qname"><term>QName</term></xref> of the new
-            element to be inserted and inserts it as the first child of the parent element.</li>
-        </ul><codeblock>(: 
-    XQuery document used to implement 'Convert attribute to element'
-      operation from XML Refactoring tool.
-:)
-
-declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare option output:method   "xml";
-declare option output:indent   "no"; 
-
-(: Local name of the attribute's parent element. :)
-declare variable $element_localName as xs:string external;
-
-(: Namespace of the attribute's parent element. :)
-declare variable $element_namespace as xs:string external;
-
-(: The local name of the attribute to be converted :)
-declare variable $attribute_localName as xs:string external;
-
-(: The namespace of the attribute to be converted :)
-declare variable $attribute_namespace as xs:string external;
-
-(: Local name of the new element. :)
-declare variable $new_element_localName as xs:string external;
-
-(: Namespace of the new element. :)
-declare variable $new_element_namespace as xs:string external;
-
-(: Convert attribute to element:)
-for $node in //*
-(: Find the attribute to convert :)
-let $attribute := 
-    $node/@*[local-name() = $attribute_localName and
-    ($attribute_namespace = '&lt;ANY>' or $attribute_namespace = namespace-uri())]
-    
-(: Compute the prefix for the new element to insert :)
-let $prefix := 
-    for $p in in-scope-prefixes($node)
-      where $new_element_namespace = namespace-uri-for-prefix($p, $node)
-return $p
-
-(: Compute the qname for the new element to insert :)    
-let $new_element_qName :=
-    if (empty($prefix) or $prefix[1] = '') then $new_element_localName
-    else $prefix[1] || ':' || $new_element_localName
-    
- where ('&lt;ANY>' = $element_localName or local-name($node) = $element_localName)
-   and 
- ($element_namespace = '&lt;ANY>' or $element_namespace = namespace-uri($node))
-        
-  return 
-    if (exists($attribute)) then
-      (insert node element {QName($new_element_namespace, $new_element_qName)} 
-      {string($attribute)} as first into $node,
-      delete node $attribute)
-      else ()</codeblock></p>
-    </section>
+    <p>We can use an XSLT stylesheet to implement the new custom XML refactoring operation. The
+      second requirement is an <xref href="#custom_operation_sample/descriptor-example-section"
+        format="dita">XML Refactoring operation descriptor file</xref> that contains the path to the
+      XSLT stylesheet.</p>
     <section id="xslt-example-section">
       <title>Example of an XSLT Script for Creating a Custom Operation to <i>Convert an Attribute to
           an Element</i></title>
@@ -168,11 +97,11 @@ href="http://www.oxygenxml.com/ns/xmlRefactoring/resources/commons.xsl"/>
           Refactoring <xref keyref="glossentry_framework"><term>framework</term></xref>.</note></p>
     </section>
     <section id="descriptor-example-section">
-      <title>Example of an Operation Descriptor File for Creating a Custom Operation to <i>Convert
-          an Attribute to an Element</i></title>
-      <p>After you have developed the XQuery script or XSLT stylesheet, you have to create an XML
-        Refactoring operation descriptor. This descriptor is used by the application to load the
-        operation details such as name, description, or parameters.</p>
+      <title>Example of an Operation Descriptor File That References the XSLT Stylesheet for
+        Creating a Custom Operation to <i>Convert an Attribute to an Element</i></title>
+      <p>After you have developed the XSLT stylesheet, you have to create an XML Refactoring
+        operation descriptor. This descriptor is used by the application to load the operation
+        details such as name, description, or parameters.</p>
       <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 
 &lt;refactoringOperationDescriptor 
@@ -241,6 +170,50 @@ href="http://www.oxygenxml.com/ns/xmlRefactoring/resources/commons.xsl"/>
             placement="inline"/>
         </fig>
       </p>
+    </section>
+    <section id="using_saxon_extension_functions_to_allow_custom_r">
+      <title>Using Saxon Extension Functions to Allow Custom Refactoring Operations to Read and
+        Modify Content Outside the Root Node</title>
+      <p>One advantage to using an XSLT stylesheet is that there is limitation when using an <xref
+          href="custom_operation_sample_xquery.dita#custom_operation_sample_xquery">XQuery Update
+          script</xref> in that refactoring operations can only be performed on <i>comments</i> or
+          <i>processing instructions</i> that are inside the root element. Thus, using the XQuery
+        method, <i>comments</i> or <i>processing instructions</i> that are in any node before or
+        after the root element cannot be modified by an XML Refactoring operation.</p>
+      <p>The XSLT stylesheet method offers a work around to this limitation through the use of the
+        following Saxon extension functions:<ul>
+          <li><b>get-content-after-root()</b> - Returns the content after root as
+              <codeph>xs:string</codeph>.</li>
+          <li><b>set-content-after-root(xs:string)</b> - Updates the content that will be serialized
+            in the refactored document after the root node.</li>
+          <li><b>get-content-before-root()</b> - Returns the content before root as
+              <codeph>xs:string</codeph>.</li>
+          <li><b>set-content-before-root(xs:string)</b> - Updates the content that will be
+            serialized in the refactored document after the root node.</li>
+        </ul></p>
+      <p>For example, to process content after the root, the XLST would look like
+        this:<codeblock outputclass="language-css">&lt;xsl:template match="/">
+        &lt;!-- The comment content that will be inserted after the root element -->
+        &lt;xsl:variable name="commentAsText">&amp;lt;!-- COMMENT ADDED FROM XR OPERATION-->
+        &lt;/xsl:variable>
+        &lt;!-- Retrieve the content after the root element as is -->
+        &lt;xsl:variable name="after-root-content" as="xs:string" 
+                            select="xrf:get-content-after-root()"/>
+
+        &lt;xsl:variable name="processedContent" 
+                            select="concat($after-root-content, $commentAsText)"/>
+        
+        &lt;!-- Update the content after the root element -->
+        &lt;xsl:value-of select="xrf:set-content-after-root($processedContent)"/>
+
+        &lt;xsl:apply-templates/>
+    &lt;/xsl:template>
+
+    &lt;xsl:template match="node() | @*">
+        &lt;xsl:copy>
+            &lt;xsl:apply-templates select="node() | @*"/>
+        &lt;/xsl:copy>
+    &lt;/xsl:template></codeblock></p>
     </section>
   </body>
 </topic>
