@@ -180,19 +180,74 @@ href="http://www.oxygenxml.com/ns/xmlRefactoring/resources/commons.xsl"/>
           <i>processing instructions</i> that are inside the root element. Thus, using the XQuery
         method, <i>comments</i> or <i>processing instructions</i> that are in any node before or
         after the root element cannot be modified by an XML Refactoring operation.</p>
-      <p>The XSLT stylesheet method offers a work around to this limitation through the use of the
-        following Saxon extension functions:<ul>
-          <li><b>get-content-after-root()</b> - Returns the content after root as
-              <codeph>xs:string</codeph>.</li>
+      <p>The XSLT stylesheet method offers a work around to this limitation through the use of some
+        Saxon extension functions.</p>
+      <p>To illustrate the use of these functions, consider the following sample XML
+        file:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!-- comment before root -->
+&lt;?pi before root ?>
+&lt;root>
+    &lt;child>&lt;/child>
+&lt;/root>
+&lt;!-- comment after root -->
+&lt;?pi after root ?></codeblock></p>
+    </section>
+    <p>The following Saxon extension functions can be used to read and modify content outside the
+      root node:<note>They belong to the
+          <codeph>http://www.oxygenxml.com/ns/xmlRefactoring/functions</codeph> namespace.</note><ul
+        id="ul_ndh_cm4_kz">
+        <li><b>get-content-after-root()</b> - Returns the content after root as
+            <codeph>xs:string</codeph>.<p>For the XML above, the call of this function will return
+            the following string
+            value:<codeblock outputclass="language-xml">&lt;!-- comment after root -->
+&lt;?pi after root ?></codeblock></p></li>
+      </ul></p>
+      <p>
+        <ul id="ul_pdh_cm4_kz">
           <li><b>set-content-after-root(xs:string)</b> - Updates the content that will be serialized
-            in the refactored document after the root node.</li>
+          in the refactored document after the root node.<p>The function call
+              <codeph>set-content-after-root('&amp;lt;!-- Inserted comment -->')</codeph> will
+            result in replacing the nodes after the root element with the comment passed as string
+            argument. The XML document will be modified as
+            follows:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!-- comment before root -->
+&lt;?pi before root ?>
+&lt;root>
+    &lt;child>&lt;/child>
+&lt;/root>&lt;!-- Inserted comment --></codeblock></p></li>
+        </ul>
+      </p>
+      <p>
+        <ul id="ul_ozl_mm4_kz">
           <li><b>get-content-before-root()</b> - Returns the content before root as
-              <codeph>xs:string</codeph>.</li>
+            <codeph>xs:string</codeph>.<p>For the XML above, the call of this function will return
+            the following string
+            value:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!-- comment before root -->
+&lt;?pi before root ?></codeblock></p></li>
+        </ul>
+      </p>
+      <p>
+        <ul id="ul_ujp_d44_kz">
           <li><b>set-content-before-root(xs:string)</b> - Updates the content that will be
-            serialized in the refactored document after the root node.</li>
-        </ul></p>
-      <p>For example, to process content after the root, the XLST would look like
-        this:<codeblock outputclass="language-css">&lt;xsl:template match="/">
+          serialized in the refactored document after the root node.<p>The function call
+              <codeph>set-content-before-root('&amp;lt;!-- Inserted comment -->')</codeph> will
+            result in replacing the nodes before the root element with the comment passed as string
+            argument. The XML document will be modified as
+            follows:<codeblock outputclass="language-xml">&lt;!-- Inserted comment -->&lt;root>
+    &lt;child>&lt;/child>
+&lt;/root>
+&lt;!-- comment after root -->
+&lt;?pi after root ?></codeblock></p></li>
+        </ul>
+      </p>
+    <p><u><b>XSLT Example:</b></u></p>
+    <p>To process content after the root node, the XSLT would look like
+        this:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"
+    xmlns:xrf="http://www.oxygenxml.com/ns/xmlRefactoring/functions" version="3.0">
+    &lt;xsl:template match="/">
         &lt;!-- The comment content that will be inserted after the root element -->
         &lt;xsl:variable name="commentAsText">&amp;lt;!-- COMMENT ADDED FROM XR OPERATION-->
         &lt;/xsl:variable>
@@ -213,8 +268,10 @@ href="http://www.oxygenxml.com/ns/xmlRefactoring/resources/commons.xsl"/>
         &lt;xsl:copy>
             &lt;xsl:apply-templates select="node() | @*"/>
         &lt;/xsl:copy>
-    &lt;/xsl:template></codeblock></p>
-    </section>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock><note
+        type="note">The above XSLT retrieves the nodes after the root element as string, appends a
+        new comment, and then sets back the updated content into the XML document.</note></p>
+    
   </body>
 </topic>
-
