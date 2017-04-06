@@ -17,46 +17,46 @@
           href="../img/ConfigureSearchScope16.png"/> Configure</uicontrol> icon displayed in the
         <uicontrol>Administration</uicontrol> page, follow these steps:<ol>
         <li>Register a <codeph>WebappServlet</codeph> extension type with a <codeph>role</codeph>
-          attribute set to <userinput>config</userinput> in your <filepath>plugin.xml</filepath>
-          file, as in the following
+          attribute set to <b>config</b> in your <filepath>plugin.xml</filepath> file, as in the
+          following
             example:<codeblock outputclass="language-xml">&lt;extension type="WebappServlet" role="config" class="com.ex.MyPluginConfigExt"/></codeblock><p>The
               <codeph>class</codeph> attribute value should point to an extension of the <xref
               href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/PluginConfigExtension.html"
-              format="html" scope="external"><apiname>PluginConfigExtension</apiname></xref>
+              format="html" scope="external"><i>PluginConfigExtension</i></xref>
             class.</p></li>
         <li>When extending the <xref
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/PluginConfigExtension.html"
-            format="html" scope="external"><apiname>PluginConfigExtension</apiname></xref> class,
+            format="html" scope="external"><i>PluginConfigExtension</i></xref> class,
           consider the following notes:<ul>
-            <li>Implement the <apiname>getOptionsForm</apiname> method to return an HTML form and
+            <li>Implement the <i>getOptionsForm</i> method to return an HTML form and
               make sure that contains inputs with the <codeph>name</codeph> attribute the same as
               the option you want to configure.</li>
-            <li>Implement the <apiname>getOptionsJson</apiname> method to return a JSON string that
+            <li>Implement the <i>getOptionsJson</i> method to return a JSON string that
               contains the options that you want to make available to the JavaScript code. They will
               be accessible in your <term>plugin's</term> JavaScript code using the
                 <codeph>sync.options.PluginsOptions.getClientOption(optionName)</codeph> method.
                 <note>The JSON should only contain key values, where values are of the type
-                  <userinput>string|number|boolean</userinput> with no arrays or other
+                  <codeph>string|number|boolean</codeph> with no arrays or other
                 objects.</note><note type="tip">You should not include any sensitive information
                 (e.g. OAuth secrets) in the options returned by this method.</note></li>
-            <li>Implement the <apiname>getPath</apiname> method to return a non-empty string that
+            <li>Implement the <i>getPath</i> method to return a non-empty string that
               represents the path for which this extension will be served.<p>For
               example:</p><codeblock outputclass="language-ini"> {webapp-context}/plugins-dispatcher/RESULT_OF_GETPATH</codeblock></li>
-            <li>If you need to override the <apiname>init</apiname> method, make sure you call
-                <apiname>super.init()</apiname>. Otherwise, options will not be saved to disk and
+            <li>If you need to override the <i>init</i> method, make sure you call
+                <i>super.init()</i>. Otherwise, options will not be saved to disk and
               will be lost when you restart the application.</li>
-            <li>If you need to override any of the <apiname>doPut/doDelete</apiname> methods, make
-              sure you call the <apiname>saveOptions</apiname> method at the end to save the options
+            <li>If you need to override any of the <i>doPut/doDelete</i> methods, make
+              sure you call the <i>saveOptions</i> method at the end to save the options
               to disk.</li>
-            <li>If you need to override the <apiname>doGet</apiname> method, make sure it responds
-              with the result of <apiname>getOptionsForm</apiname> for header
+            <li>If you need to override the <i>doGet</i> method, make sure it responds
+              with the result of <i>getOptionsForm</i> for header
                 <codeph>Accept=text/html</codeph>, and with the result of
-                <apiname>getOptionsJson</apiname> when called with header
-                <codeph>Accept=application/json</codeph>. Use the <apiname>getOption</apiname> or
-                <apiname>getDefaultOptions</apiname> methods to access the current or default
+                <i>getOptionsJson</i> when called with header
+                <codeph>Accept=application/json</codeph>. Use the <i>getOption</i> or
+                <i>getDefaultOptions</i> methods to access the current or default
               options.</li>
           </ul><note type="tip">For an implementation example, you can look at
-              <apiname>com.oxygenxml.sdksamples.github.GithubPluginConfigExtension</apiname> in the
+              <i>com.oxygenxml.sdksamples.github.GithubPluginConfigExtension</i> in the
               <xref
               href="https://github.com/oxygenxml/webapp-github-plugin/blob/SNAPSHOT/src/main/java/com/oxygenxml/examples/github/GithubPluginConfigExtension.java/"
               format="html" scope="external"><i>webapp-github-plugin</i>
