@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="dg-xml-catalogs">
+  <title>Configuring XML Catalogs</title><prolog>
+    <metadata>
+      <keywords><indexterm>Framework customization<indexterm>Configuring XML catalogs</indexterm></indexterm></keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <p>For cases where you need to reference the location of a schema file from a remote web
+        location and an Internet connection may not be available, an <xref
+          keyref="glossentry_xml-catalog"><term>XML Catalog</term></xref> may be used to map the web
+        location to a local file system entry. The following procedure presents an example of using
+        an <term>XML catalog</term> in a custom <xref keyref="glossentry_framework"
+            ><term>framework</term></xref> by modifying an XML Schema file.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Create a catalog file that will help the parser locate the schema for validating the
+          XML document. The file must map the location of the schema to a local version of the
+          schema.</cmd>
+        <info><b><u>Example:</u></b><p>Create a new XML file called <filepath>catalog.xml</filepath>
+            and save it in your custom <term>framework</term> directory (<filepath><term
+                conkeyref="reusables-user-guide/oxy-install-dir"
+              />\frameworks\[CUSTOM_FRAMEWORK_DIR]</filepath>). The content of the file should look
+            like
+            this:<codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt; 
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"&gt;
+    &lt;uri name="http://www.oxygenxml.com/SDF/abs.xsd"
+            uri="schema/abs.xsd"/&gt;
+    &lt;uri name="http://www.oxygenxml.com/SDF/abs.xsd" 
+               uri="schema/abs.xsd"/&gt;
+&lt;/catalog&gt;</codeblock></p></info>
+      </step>
+      <step>
+        <cmd>Add catalog files to your custom <term>framework</term> using the <xref
+            href="document-type-catalogs-tab.dita#document-type-catalogs-tab"
+              ><uicontrol>Catalogs</uicontrol> tab</xref> from the <xref
+            href="the-document-type-dialog.dita#the-document-type-dialog"
+              ><uicontrol>Document Type</uicontrol> configuration dialog box</xref>.</cmd>
+      </step>
+    </steps>
+    <result>
+      <p>To test the catalog settings, restart <ph keyref="product"/> and try to validate a new
+        sample document for your custom <term>framework</term>. There should be no errors.</p>
+      <p><b><u>Example:</u></b></p>
+      <p>The schema that validates the document refers the other file <filepath>abs.xsd</filepath>
+        through an <keyword>import</keyword>
+        element:<codeblock outputclass="language-xml">&lt;xs:import namespace=
+ "http://www.oxygenxml.com/sample/documentation/abstracts" 
+ schemaLocation="http://www.oxygenxml.com/SDF/abs.xsd"/&gt;</codeblock></p>
+      <p>The <codeph>schemaLocation</codeph> attribute references the <filepath>abs.xsd</filepath>
+        file:<codeblock outputclass="language-xml">xsi:schemaLocation="http://www.oxygenxml.com/sample/documentation/abstracts"
+    http://www.oxygenxml.com/SDF/abs.xsd"/&gt;</codeblock></p>
+      <p>The catalog mapping
+        is:<codeblock outputclass="language-ini">http://www.oxygenxml.com/SDF/abs.xsd -&gt; schema/abs.xsd</codeblock></p>
+      <p>This means that all the references to <ph>http://www.oxygenxml.com/SDF/abs.xsd</ph> must be
+        resolved to the <filepath>abs.xsd</filepath> file located in the <filepath>schema</filepath>
+        directory (note that the <filepath>schema</filepath> directory needs to be in the same
+        folder as the <term>XML Catalog</term>). The URI element is used by URI resolvers (for
+        example, to resolve a URI reference used in an XSLT stylesheet).</p>
+    </result>
+  </taskbody>
+</task>

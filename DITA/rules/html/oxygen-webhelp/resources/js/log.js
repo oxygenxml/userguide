@@ -1,7 +1,7 @@
 /*
 
 Oxygen WebHelp Plugin
-Copyright (c) 1998-2016 Syncro Soft SRL, Romania.  All rights reserved.
+Copyright (c) 1998-2017 Syncro Soft SRL, Romania.  All rights reserved.
 
 */
 
@@ -93,7 +93,7 @@ Log.prototype.openDebugWindow = function() {
       <html>\n\
 <head>\n\
 <title>Debug window for oXygen Web Help</title>\n\
-<script type="text/javascript" src="./oxygen-webhelp/resources/js/jquery-1.11.3.min.js"> </script>\n\
+<script type="text/javascript" src="./oxygen-webhelp/resources/js/jquery-3.1.1.min.js"> </script>\n\
 <style type="text/css">\n\
 #debug{\n\
 width: 100%;\n\

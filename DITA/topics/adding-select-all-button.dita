@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="adding-select-all-button">
+  <title>Adding a Button in Code Snippet Areas in DITA WebHelp Classic Output</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>WebHelp Classic system<indexterm>Add button in code snippets
+          (DITA)</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <p>This task will get you started with how to add an action (such as a button or link) in the
+        code snippet areas that are displayed in WebHelp Classic output created from a <xref
+          keyref="glossentry_ditamap"><term>DITA map</term></xref> transformation. You can then
+        attach your code that does the actual processing for the action.</p>
+      <p>Follow these steps:</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Open the
+          <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\org.dita.xhtml\xsl\xslhtml\dita2htmlImpl.xsl</filepath>
+          file.</cmd>
+      </step>
+      <step>
+        <cmd>Locate the <codeph>&lt;xsl:template match="*[contains(@class, ' topic/pre ')]"
+            mode="pre-fmt"></codeph> template to check the default behavior of this template.</cmd>
+      </step>
+      <step>
+        <cmd>Open the
+          <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\com.oxygenxml.webhelp\xsl\dita\desktop\fixup.xsl</filepath>
+          file.</cmd>
+      </step>
+      <step>
+        <cmd>Create a <codeph>&lt;xsl:template match="*[contains(@class, ' topic/pre ')]"
+            mode="pre-fmt"></codeph> template to override the default processing.</cmd>
+      </step>
+      <step>
+        <cmd>This new template will include your code for creating the button. It will have the
+          action code that does the actual processing attached to it (this can be written in
+          JavaScript, for example).</cmd>
+        <info>Example of a <i>Select all</i>
+          button:<codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class, ' topic/pre ')]" mode="pre-fmt">
+    &lt;button onclick="SelectText(element)">Select all&lt;/button>
+    &lt;script>
+      function SelectText(element) {
+        var text = document.getElementById(element);
+        var range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+      }
+    &lt;/script>
+  &lt;/xsl:template></codeblock></info>
+      </step>
+    </steps>
+  </taskbody>
+</task>

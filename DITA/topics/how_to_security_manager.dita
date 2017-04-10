@@ -14,11 +14,11 @@
   <body>
     <p>The <ph keyref="webappProduct"/> requires access to the following file resources:<ul
         id="ul_rjs_5hd_cr">
-        <li><term>READ</term> access to the directory where the <ph keyref="webappProduct"/> is
+        <li><i>READ</i> access to the directory where the <ph keyref="webappProduct"/> is
           deployed.</li>
-        <li><term>READ</term> and <term>WRITE</term> access to the application's working
+        <li><i>READ</i> and <i>WRITE</i> access to the application's working
           directory.</li>
-        <li><term>READ</term> and <term>WRITE</term> access to JVM's temporary directory.</li>
+        <li><i>READ</i> and <i>WRITE</i> access to JVM's temporary directory.</li>
       </ul></p>
     <p>It is a good security practice to allow a component to access only the information and
       resources that are necessary for its purpose. In an environment that uses Apache Tomcat, you
@@ -31,7 +31,7 @@
         </li>
       </ul></p>
     <p>
-      <codeblock>grant codeBase "file:${catalina.base}/webapps/oxygen-webapp/-" {
+      <codeblock>grant codeBase "file:${catalina.base}/webapps/oxygenxml-web-author/-" {
   // Oxygen uses System properties for various configuration purposes.
   permission java.util.PropertyPermission "*", "read,write";
   // Oxygen custom protocols need access to network.
@@ -55,25 +55,26 @@
   permission java.io.FilePermission "${java.io.tmpdir}/-", "read,write,delete";
   permission java.io.FilePermission "${java.io.tmpdir}", "read,write,delete";
 
-  // Folder used by oXygen to deploy the plugins to.
+  // Folder used by Oxygen to deploy the plugins to.
   permission java.io.FilePermission "${oxygen.data.dir}/-", "read,write,delete";
   permission java.io.FilePermission "${oxygen.data.dir}", "read,write,delete";
 };
 // The jar that contains sandboxing code.
 grant codeBase 
-  "jar:file:${catalina.base}/oxygen-webapp/WEB-INF/lib/oxygen-sandbox.jar!/-" {
+  "jar:file:${catalina.base}/webapps/oxygenxml-web-author/WEB-INF/lib/
+oxygen-sandbox.jar!/-" {
     permission java.security.AllPermission;
 };
 // Give all permissions to plugins code unless otherwise instructed by vendor.
-grant codeBase "file:${oxygen.data.dir}/plugins-v<ph keyref="minorVersion"/>/-" {
+grant codeBase "file:${oxygen.data.dir}/plugins/-" {
     permission java.security.AllPermission;
 };
 // Give all permissions to frameworks code unless otherwise instructed by vendor
-grant codeBase "file:${oxygen.data.dir}/frameworks-v<ph keyref="minorVersion"/>/-" {
+grant codeBase "file:${oxygen.data.dir}/frameworks/-" {
     permission java.security.AllPermission;
 };</codeblock>
-      <note>In the previous example, in the first line, replace <codeph>oxygen-webapp</codeph> with
-        the name of your deployment of the <ph keyref="webappProduct"/>.</note>
+      <note>In the previous example, replace <codeph>oxygenxml-web-author</codeph> with the name of
+        your deployment of the <ph keyref="webappProduct"/>.</note>
     </p>
     <section id="configuring_file_permissions_to_custom_locations">
       <title>Configuring File Permissions to Custom Locations</title>

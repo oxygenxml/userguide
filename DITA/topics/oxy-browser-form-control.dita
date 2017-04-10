@@ -3,8 +3,11 @@
 <topic id="oxy-browser-form-control">
   <title>Browser Form Control</title>
   <shortdesc>The <codeph>oxy_browser</codeph> built-in form control is used for providing a
-    mechanism to render HTML frames or interact with SVG documents in <uicontrol>Author</uicontrol>
-    mode.</shortdesc>
+    mechanism to integrate HTML frames or interact with SVG documents directly in the
+      <uicontrol>Author</uicontrol> mode editor. It can also be used to load HTML that executes
+    JavaScript and from that JavaScript you can access the <ph keyref="product"/> workspace. For
+    example, you could use this method to change the value of an attribute, insert XML fragments, or
+    open a new editor.  </shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -26,23 +29,96 @@
       <li><ph conkeyref="reusables-author-mode-customization/width-property-simple"/></li>
       <li><ph conkeyref="reusables-author-mode-customization/height-property"/></li>
     </ul>
-    <example>
-      <title>Browser Form Control </title>
-      <codeblock outputclass="language-css">object {
+    <p><b><u>Example: <i>oxy_browser</i> Form
+      Control</u></b><codeblock outputclass="language-css">object {
     content:
         oxy_browser(
             href, 'http://example.page',
             width, 600px,
-            height, 400px,
-}</codeblock>
-    </example>
+            height, 400px),
+}</codeblock></p>
     <note type="tip">To insert a sample of the <codeph>oxy_browser</codeph> form control in a CSS
-      file <ph product="author developer editor">(or LESS file)</ph>, invoke the <wintitle>Content
-        Completion Assistant</wintitle> by pressing <uicontrol
-        conkeyref="reusable_oxygen_shortcuts_list/ctrl_space"/> and select the <image
+      file <ph product="author developer editor">(or LESS file)</ph>, invoke the <xref
+        keyref="glossentry_content-completion-assistant"><term>Content Completion
+        Assistant</term></xref> by pressing <uicontrol
+        conkeyref="reusable-oxygen-shortcuts-list/ctrl_space"/> and select the <image
         href="../img/CodeTemplates12.gif" id="image_fg1_12h_5r"/>
       <codeph>oxy_browser</codeph> code template.<p><ph
-          conref="../reusables/topics/reusables-author-mode-customization.dita#reusables-author-mode-customization/samples-ph"
-        /></p></note>
+          conkeyref="reusables-author-mode-customization/samples-ph"/></p></note>
+    <section id="interacting_with_the_workspace">
+      <title>Interacting with the <ph keyref="product"/> Workspace</title>
+      <p>The <codeph>oxy_browser</codeph> form control also provides the possibility of creating
+        custom form control without having to use the Java-based API. You can use the
+          <codeph>oxy_browser</codeph> form control to load HTML that executes JavaScript. In the
+        JavaScript, you can use some predefined global variables that provide a gateway between the
+        JavaScript and the <ph keyref="product"/> Java API. This allows you to perform changes in
+        the document, open resources, and more, solely from the JavaScript.<note type="important"
+          >This will only work if the loaded HTML is located inside a <xref
+            href="framework-location.dita#framework-location">framework or plugin directory</xref>,
+          such as: <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
+            />/frameworks/</filepath> or <filepath><term
+              conkeyref="reusables-user-guide/oxy-install-dir"/>/plugins/</filepath>.</note></p>
+      <p>The following global variables can be used:<ul>
+          <li><b>authorAccess</b> - This object is an instance of <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorAccess.html"
+              format="html" scope="external"
+            ><i>ro.sync.ecss.extensions.api.AuthorAccess</i></xref>.</li>
+          <li><b>contextElement</b> - An instance of <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorNode.html"
+              format="html" scope="external">ro.sync.ecss.extensions.api.node.AuthorNode</xref>. The
+            form control is added over this node.</li>
+          <li><b>pluginWorkspace</b> - An instance of <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/workspace/api/standalone/StandalonePluginWorkspace.html"
+              format="html" scope="external"
+              >ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace</xref>.</li>
+          <li><b>fcArguments</b> - A <codeph>java.util.Map</codeph> implementation with the
+            properties (name and value pairs) passed on the form control function.</li>
+          <li><b>apiHelper</b> - A helper object for creating Java objects. It allows you to create
+            Java objects from within the JavaScript code. These objects can then be passed to the
+            Java methods as in the following
+            example:<codeblock outputclass="language-javascript">var newAttrValue = apiHelper.newInstance(
+           "ro.sync.ecss.extensions.api.node.AttrValue",
+           ["normalizedValue", "rawValue", true]);
+authorAccess.getDocumentController().setAttribute(
+        "counter", newAttrValue, contextElement);</codeblock></li>
+        </ul></p>
+      <p>For more information, open the <filepath>form-controls.xml</filepath> file in the
+              <b><filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
+            />/samples/form-controls</filepath></b> directory and go to section <b>11.1 -
+          Interacting with the Oxygen Workspace</b>. For debugging information, continue reading
+        below.</p>
+    </section>
+    <section id="debugging_javascript_used_for_custom_form_control">
+      <title>Debugging JavaScript Used for Custom Form Controls</title>
+      <p>If you encounter unexpected results when using the <xref
+          href="#oxy-browser-form-control/interacting_with_the_workspace" format="dita">method
+          described above</xref>, you can debug the script by using the following guidelines:<ul>
+          <li>Calls to <codeph>alert("message.to.present")</codeph> or
+              <codeph>console.log("message.to.present")</codeph> will be presented in the <xref
+              href="results-view.dita#results-view">Results panel</xref>.</li>
+          <li>You can install the <xref href="http://getfirebug.com/" format="html" scope="external"
+                ><b>Firebug</b> extension</xref> by executing the following
+            script:<codeblock>{code:javascript}
+function installFB() {
+  if (!document.getElementById('FirebugLite')) {
+    E = document['createElement' + 'NS'] &amp;&amp; document.documentElement.namespaceURI;
+    E = E ? document['createElement' + 'NS'](E, 'script') 
+          : document['createElement']('script');
+    E['setAttribute']('id', 'FirebugLite');
+    E['setAttribute']('src', 
+                      'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');
+    E['setAttribute']('FirebugLite', '4');
+    (document['getElementsByTagName']('head')[0] 
+          || document['getElementsByTagName']('body')[0]).appendChild(E);
+    E = new Image;
+    E['setAttribute']('src', 'https://getfirebug.com/' + '#startOpened');
+  }
+}
+{code}</codeblock></li>
+        </ul></p>
+      <note>To force the <i>Browser Form Control</i> to reload after making changes to the
+        JavaScript file, you need to use the <uicontrol>Reload page</uicontrol> action from the form
+        control's contextual menu.</note>
+    </section>
   </body>
 </topic>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept
+  PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="oxygen-plugin">
+  <title>General Configuration of an <ph keyref="product"/> Plugin</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Oxygen SDK<indexterm>Configuration</indexterm></indexterm>
+        <indexterm>Plugins<indexterm>Configuration</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>The <ph keyref="product"/> functionality can be extended with <xref
+        keyref="glossentry_plugin"><term>plugins</term></xref> that implement a clearly specified
+      API. On the <ph keyref="product"/> website, there is an <xref
+        href="https://www.oxygenxml.com/oxygen_sdk_maven.html" scope="external" format="html"
+        >SDK</xref> with sample <term>plugins</term> (source and compiled Java code) and the Javadoc
+      API necessary for developing custom <term>plugins</term>.</p>
+    <p>The minimal implementation of a <term>plugin</term> must provide:</p>
+    <ul>
+      <li>A Java class that extends the <apiname>ro.sync.exml.plugin.Plugin</apiname> class.</li>
+      <li>A Java class that implements the <apiname>ro.sync.exml.plugin.PluginExtension</apiname>
+        interface.</li>
+      <li>A <term>plugin</term> descriptor file called <filepath>plugin.xml</filepath>.</li>
+    </ul>
+    <p>A <apiname>ro.sync.exml.plugin.PluginDescriptor</apiname> object is passed to the constructor
+      of the subclass of the <apiname>ro.sync.exml.plugin.Plugin</apiname> class. It contains the
+      following data items about the <term>plugin</term>:</p>
+    <ul>
+      <li><parmname>basedir</parmname> (<i>File</i> object) - The base directory of the
+          <term>plugin</term>.</li>
+      <li><parmname>description</parmname> (<i>String</i> object) - The description of the
+          <term>plugin</term>.</li>
+      <li><parmname>name</parmname> (<i>String</i> object) - The name of the
+        <term>plugin</term>.</li>
+      <li><parmname>vendor</parmname> (<i>String</i> object) - The vendor name of the
+          <term>plugin</term>.</li>
+      <li><parmname>version</parmname> (<i>String</i> object) - The <term>plugin</term>
+        version.</li>
+      <li><ph id="plugin-id"><parmname>id</parmname> (<i>String</i> object) - A unique
+          identifier.</ph></li>
+      <li><ph><parmname>classLoaderType</parmname> - You can choose between
+            <codeph>preferOxygenResources</codeph> (default value) and
+            <codeph>preferReferencedResources</codeph>. When choosing
+            <codeph>preferOxygenResources</codeph>, the libraries that are referenced in the <ph
+            keyref="product"/>
+          <filepath>lib</filepath> directory will have precedence over those referenced in the
+            <filepath>plugin.xml</filepath> configuration file, if they have the same package names.
+          When choosing <codeph>preferReferencedResources</codeph>, the libraries that are
+          referenced in the <filepath>plugin.xml</filepath> configuration file will have precedence
+          over those found in the <ph keyref="product"/>
+          <filepath>lib</filepath> directory, if they have the same package names.</ph></li>
+    </ul>
+    <p>The <term>plugin</term> descriptor is an XML file that defines how the <term>plugin</term> is
+      integrated in <ph keyref="product"/> and what libraries are loaded. The structure of the
+        <term>plugin</term> descriptor file is fully described in a DTD grammar located in
+          <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
+        />/plugins/plugin.dtd</filepath>. Here is a sample <term>plugin</term> descriptor used by
+      the <i>Capitalize Lines</i> sample <term>plugin</term>: </p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd"&gt;
+&lt;plugin
+    name="Capitalize Lines"
+    description="Capitalize the first character on each line"
+    version="1.0.0"
+    vendor="SyncRO"
+    class="ro.sync.sample.plugin.caplines.CapLinesPlugin"&gt;
+    &lt;runtime&gt;
+        &lt;library name="lib/caplines.jar"/&gt;
+    &lt;/runtime&gt;
+    &lt;extension type="selectionProcessor" 
+    class="ro.sync.sample.plugin.caplines.CapLinesPluginExtension" 
+           keyboardShortcut="ctrl shift EQUALS"/&gt;
+&lt;/plugin&gt;</codeblock>
+    <p>If your <term>plugin</term> is of the <b>Selection</b>, <b>Document</b> or <b>General</b>
+      types, and thus contributes an action either to the contextual menu or to the main menu of the
+        <uicontrol>Text</uicontrol> editing mode, then you can assign a keyboard shortcut for it.
+      You can use the <codeph>keyboardShortcut</codeph> attribute for each
+        <codeph>extension</codeph> element to specify the desired shortcut.</p>
+    <note type="tip">To compose string representations of the desired shortcut keys you can go to
+      the <ph keyref="product"/>
+      <uicontrol>Menu Shortcut Keys</uicontrol> preferences page, press <uicontrol>Edit</uicontrol>
+      on any action, press the desired key sequence and use the representation that appears in the
+        <uicontrol>Edit</uicontrol> dialog box.</note>
+    <section id="referencing_libraries">
+      <title>Referencing Libraries</title>
+      <p>To reference libraries, use either of the following elements:<ul>
+          <li><codeph>&lt;library name="libraryName" scope="global"/&gt;</codeph> - To point to
+            specific libraries.<note>You can use the <xref
+                href="editor-variables.dita#editor-variables/edVar-oxygenInstallDir"
+                  ><codeph>${oxygenInstallDir}</codeph> editor variable</xref> as part of the value
+              of the <codeph>name</codeph> attribute. You can also use a system variable
+                (<codeph>${system(var.name)}</codeph>) or environment variable
+                (<codeph>${env(VAR_NAME)}</codeph>).</note></li>
+          <li><codeph>&lt;librariesFolder name="libraryFolderPath" scope="global"/&gt;</codeph> - To
+            point to multiple libraries located in the specified folder.</li>
+        </ul></p>
+      <p>Both elements support the <codeph>scope</codeph> attribute that defines the loading
+        priority. It can have one of the following three values:<ul id="ul_cw1_gd3_c4">
+          <li><term>local</term> - The library is loaded in the <term>plugin's</term> own class
+            loader. This is the default behavior.</li>
+          <li><term>global</term> - The library is loaded in the main application class loader as
+            the last library in the list (as if it would be present in the application
+              <filepath>lib</filepath> directory).</li>
+          <li><term>globalHighPriority</term> - The library is loaded in the main application class
+            loader as the first library in the list (useful to patch certain resources located in
+            other <xref keyref="glossentry_jar"><term>JARs</term></xref> of the application).</li>
+        </ul></p>
+    </section>
+  </conbody>
+</concept>

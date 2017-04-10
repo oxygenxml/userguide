@@ -5,32 +5,35 @@
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>Document Type Association (Framework)<indexterm>Customizing Smart Paste
-            mapping</indexterm></indexterm>
+        <indexterm>Framework customization<indexterm>Customizing Smart Paste
+          mapping</indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
-    <p>The <term>Smart Paste</term> feature preserves certain style and structure information when
-      copying content from some of the most common applications and pasting into <xref
-        href="smart-paste-support.dita#smart-paste-support/doc-types-sp-p">document types that
-        support Smart Paste</xref> in <ph keyref="product"/>. For other document types, the default
-      behavior of the paste operation is to keep only the text content without the styling.</p>
+    <p>The <xref href="smart-paste-support.dita#smart-paste-support"><term>Smart Paste</term>
+        feature</xref> preserves certain style and structure information when copying content from
+      some of the most common applications and pasting into <xref
+        href="smart-paste-support.dita#smart-paste-support/doc-types-sp-p"><term>frameworks</term>
+        (document types) that support <term>Smart Paste</term></xref> in <ph keyref="product"/>. For
+      other document types, the default behavior of the paste operation is to keep only the text
+      content without the styling.</p>
     <p>The style of the pasted content can be customized by editing an XSLT stylesheet for a
-      particular document type (framework). The XSLT stylesheet must accept an XHTML flavor of the
-      copied content as input, and transform it to the equivalent XML markup that is appropriate for
-      the target document type of the paste operation.</p>
+      particular document type (<xref keyref="glossentry_framework"><term>framework</term></xref>).
+      The XSLT stylesheet must accept an XHTML flavor of the copied content as input, and transform
+      it to the equivalent XML markup that is appropriate for the target document type of the paste
+      operation.</p>
     <section id="how_to_customize_the_smart_paste_mapping">
       <title>How to Customize the Smart Paste Mapping</title>
       <p>To customize the mapping between the markup of the copied content and the markup of the
         pasted content for a particular document type, follow these steps:<ol>
-          <li>Make sure the particular framework contains a folder named
+          <li>Make sure the particular <term>framework</term> contains a folder named
               <filepath>resources</filepath> in the following path structure:<p><filepath><term
                   conkeyref="reusables-user-guide/oxy-install-dir"/>/frameworks/[Document
                 Type]/resources</filepath></p></li>
           <li>Create an XSLT file named <filepath>xhtml2content.xsl</filepath> and save it in the
-              <filepath>resources</filepath> folder for the particular framework.<p>For example:
-                  <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
+              <filepath>resources</filepath> folder for the particular <term>framework</term>.<p>For
+              example: <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
                 />/frameworks/dita/resources/xhtml2content.xsl</filepath></p></li>
           <li>Add your customized styling in the XSLT file.</li>
           <li>You can test modifications done in the stylesheet by pasting content without having to
@@ -38,16 +41,41 @@
         </ol></p>
       <p><b>Result:</b> When you paste content from external applications (such as a web browser or
         and Office document) to a document that is opened in <uicontrol>Author</uicontrol> mode, and
-        that matches the particular framework, the styling from the
+        that matches the particular <term>framework</term>, the styling from the
           <filepath>xhtml2content.xsl</filepath> stylesheet will be applied on the clipboard
         contents.</p>
+      <p><b>Customized Smart Paste Stylesheet
+        Sample:</b><codeblock outputclass="language-xml">&lt;xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns="urn:hl7-org:v3"
+  exclude-result-prefixes="xsl xhtml">
+
+  &lt;xsl:output method="xml" indent="no" omit-xml-declaration="yes"/>
+
+  &lt;xsl:template match="xhtml:b | xhtml:strong">
+    &lt;content styleCode="bold" >
+      &lt;xsl:apply-templates select="@* | node()"/>
+    &lt;/content>
+  &lt;/xsl:template>
+
+  &lt;xsl:template match="*">
+    &lt;xsl:apply-templates select="@* | node()"/>
+  &lt;/xsl:template>
+
+  &lt;xsl:template match="@* | node()">
+    &lt;xsl:copy>
+      &lt;xsl:apply-templates select="@* | node()"/>
+    &lt;/xsl:copy>
+  &lt;/xsl:template>
+
+&lt;/xsl:stylesheet></codeblock></p>
     </section>
   </body>
   <related-links>
-    <link href="smart-paste-support.dita#smart-paste-support"/>
-    <link href="http://blog.oxygenxml.com/2015/10/how-special-paste-works-in-oxygen.html"
-      format="html" scope="external">
-      <linktext>oXygen XML Blog: How Special Paste Works in oXygen</linktext>
-    </link>
+    <linklist><title>Related Information:</title><link href="smart-paste-support.dita#smart-paste-support"/><link format="html" href="http://blog.oxygenxml.com/2015/10/how-special-paste-works-in-oxygen.html" scope="external">
+      <linktext>Oxygen XML Blog: How Special Paste Works in Oxygen</linktext>
+    </link></linklist>
+    
   </related-links>
 </topic>

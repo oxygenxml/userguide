@@ -31,7 +31,7 @@
         Extracts the selected XSLT instructions sequence into a new function. It opens a dialog box
         that allows you to specify the name of the new function. It then moves the selected lines to
         a newly created XSLT function and inserts a function call in the place of the selected
-        lines. </li>
+        lines. You can also use parts of an XPath expression to create the new functions. </li>
       <li><uicontrol><image href="../img/XSLCreateLocalVariable16.png"/>Create local
           variable</uicontrol> - Creates an XSLT variable, wrapped around the selection. It opens a
         dialog box that allows you to specify the name of the new variable. It then wraps the
@@ -74,10 +74,14 @@
         &lt;xsl:text>Boss&lt;/xsl:text>
     &lt;/xsl:attribute>
 &lt;/person></codeblock></li>
-      <li><uicontrol>Convert xsl:if into xsl:choose/xsl:when</uicontrol> - Converts an
-          <codeph>xsl:if</codeph> block to an <codeph>xsl:when</codeph> block surrounded by an
-          <codeph>xsl:choose</codeph> element. For example, the following
-          block:<codeblock outputclass="language-xml">&lt;xsl:if test="a">
+      <li id="convert-xsl-if-to-xsl-choose"><uicontrol>Convert xsl:if into
+          xsl:choose/xsl:when</uicontrol> - Converts one or more <codeph>xsl:if</codeph> element
+        blocks into one or more <codeph>xsl:when</codeph> blocks surrounded by an
+          <codeph>xsl:choose</codeph> element. If it is invoked on a selection, the selection must
+        contain a well-formed fragment. If there is no selection, the <codeph>xsl:if</codeph>
+        element that surrounds the content at the current cursor position is converted.<p>For
+          example, the following
+          block:</p><codeblock outputclass="language-xml">&lt;xsl:if test="a">
   &lt;!-- XSLT code -->
 &lt;/xsl:if></codeblock><p>is
           converted
@@ -90,6 +94,37 @@
     &lt;/xsl:otherwise>
 &lt;/xsl:choose></codeblock></p><p>(where
           the <codeph>|</codeph> character is the current cursor position)</p></li>
+      <li><uicontrol>Convert xsl:choose/xsl:when into xsl:if</uicontrol> - Converts each
+          <codeph>xsl:when</codeph> block into an <codeph>xsl:if</codeph> block. For the
+          <i>otherwise</i> branch, it also adds an <i>and</i> statement to each negated form of the
+        conditions. For example, the following
+          block:<codeblock outputclass="language-xml">&lt;xsl:choose>
+    &lt;xsl:when test="c1">
+        &lt;!-- XSLT statement 1 -->
+    &lt;/xsl:when>
+    &lt;xsl:when test="c2">
+        &lt;!-- XSLT statement 2 -->
+    &lt;/xsl:when>
+    &lt;xsl:when test="c3">
+        &lt;!-- XSLT statement 3 -->
+    &lt;/xsl:when>
+    &lt;xsl:otherwise>
+        &lt;!-- XSLT "otherwise" statement-->
+    &lt;/xsl:otherwise>
+&lt;/xsl:choose></codeblock><p>is
+          converted
+          to:<codeblock outputclass="language-xml">&lt;xsl:if test="c1">
+    &lt;!-- XSLT statement 1 -->
+&lt;/xsl:if>
+&lt;xsl:if test="c2">
+    &lt;!-- XSLT statement 2 -->
+&lt;/xsl:if>
+&lt;xsl:if test="c3">
+    &lt;!-- XSLT statement 3 -->
+&lt;/xsl:if>
+&lt;xsl:if test="not(c1) and not(c2) and not(c3)">
+    &lt;!-- XSLT "otherwise" statement-->
+&lt;/xsl:if></codeblock></p></li>
       <li><uicontrol><image href="../img/XSLLocalVariable16.png"/>Extract local variable</uicontrol>
         (Active on a selection made inside an attribute that contains an XPath expression) - <ph
           conkeyref="reusables-editing-documents/extract_local_var_sh_desc"/> After creating the new
@@ -114,13 +149,12 @@
             keyref="product"/> checks if the selected expression depends on local variables or
           parameters that are not available in the global context where the new parameter is
           created.</note></li>
-      <li
-        conref="../reusables/topics/search-refactoring-actions.dita#search-refactoring-actions/rename-component-li"/>
-      <li
-        conref="../reusables/topics/search-refactoring-actions.dita#search-refactoring-actions/rename-component-in-li"/>
+      <li conkeyref="reusables-search-refactoring-actions/rename-component-li"/>
+      <li conkeyref="reusables-search-refactoring-actions/rename-component-in-li"/>
     </ul>
     <note>Many of these refactoring actions are also proposed by the <xref
-        href="xslt-quick-assist.dita#xslt-quick-assist">Quick Assist support</xref>.</note>
+        href="xslt-quick-assist.dita#xslt-quick-assist"><term>Quick Assist</term>
+      support</xref>.</note>
     <p>To watch our video demonstration about XSLT refactoring, go to <xref
         href="https://www.oxygenxml.com/demo/XSL_Refactoring.html" format="html" scope="external"/>.</p>
   </body>

@@ -182,7 +182,7 @@
     </sqf:fix>
     
     <!-- Wrap the current element in a paragraph. -->
-    <sqf:fix id="wrapInParagraph">
+    <sqf:fix id="wrapInParagraph" use-when="not(parent::p)">
       <sqf:description>
         <sqf:title>Wrap "<sch:name/>" element in a paragraph</sqf:title>
       </sqf:description>
@@ -190,6 +190,30 @@
         <xsl:apply-templates mode="copyExceptClass" select="."/>
       </sqf:add>
       <sqf:delete/>
+    </sqf:fix>
+    
+    <!-- Split the paragraph before and after and leve the current element as the only child in its parent paragraph. -->
+    <sqf:fix id="splitParagraphBeforeAndAfter" use-when="parent::p">
+      <sqf:description>
+        <sqf:title>Wrap "<sch:name/>" element in its own paragraph</sqf:title>
+      </sqf:description>
+      <sch:let name="currentNode" value="."/>
+      <sch:let name="nodesAfter" value="following-sibling::node()"/>
+      <sch:let name="nodesBefore" value="preceding-sibling::node()"/>
+      <!-- Add the content that is after the current element in a separate paragraph -->
+      <sqf:add match="parent::node()" node-type="element" target="p" position="after" use-when="count($nodesAfter) > 1 or (count($nodesAfter) = 1 and normalize-space($nodesAfter)!='')">
+        <xsl:apply-templates mode="copyExceptClass" select="$nodesAfter"/>
+      </sqf:add>
+      <!-- Add the content that is before the current element in a separate paragraph -->
+      <sqf:add match="parent::node()" node-type="element" target="p" position="after">
+        <xsl:apply-templates mode="copyExceptClass" select="$currentNode"/>
+      </sqf:add>
+      <!-- Add the the current element in a separate paragraph -->
+      <sqf:add match="parent::node()" node-type="element" target="p" position="after" use-when="count($nodesBefore) > 1 or (count($nodesBefore) = 1 and normalize-space($nodesBefore)!='')">
+        <xsl:apply-templates mode="copyExceptClass" select="$nodesBefore"/>
+      </sqf:add>
+      <!-- Delete the parent node. -->
+      <sqf:delete match="parent::node()"/>
     </sqf:fix>
   </sqf:fixes>
   
@@ -379,7 +403,13 @@
   <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/fig ')]" role="warn">
-      <sch:assert test="parent::node()/local-name() = 'p'" sqf:fix="wrapInParagraph">The fig element should be wrapped in a paragraph.</sch:assert>
+      <sch:let name="precedingText" value="preceding-sibling::text()"/>
+      <sch:let name="followingText" value="following-sibling::text()"/>
+      <sch:assert test=".[parent::p][count(parent::node()/child::*) = 1]
+        [not($precedingText) or $precedingText[normalize-space()='']]
+        [not($followingText) or $followingText[normalize-space()='']]" 
+        sqf:fix="splitParagraphBeforeAndAfter wrapInParagraph">
+        The fig element should be wrapped in a paragraph.</sch:assert>
     </sch:rule>
   </sch:pattern>
 
@@ -457,6 +487,88 @@
       <sch:report test="contains(.,'&lt;')"> Title contains markup. This breaks the Java Help System. See EXM-36415.</sch:report>
     </sch:rule>
     
+  </sch:pattern>
+  
+  <!-- Rules for 'related-links':
+    - we want the 'related-links' to contain only one 'linklist'
+    - the 'linklist' must have a title
+    - if there is a 'link' added directly in a ''related-links', it sould be moved in a 'linklist'
+   -->
+  <sch:pattern>
+    <sch:rule context="related-links/link">
+      <sch:assert test="false()" sqf:fix="wrapInLinkList moveInExistingLinkList" role="warn">
+        The 'link' element should be added in a 'linklist'</sch:assert>
+      
+      <!-- Create a new link list -->
+      <sqf:fix id="wrapInLinkList" use-when="not(parent::node()/linklist)">
+        <sqf:description>
+          <sqf:title>Move all the links in a link list</sqf:title>
+        </sqf:description>
+        <!-- The value for the title element must be specified by the user. -->
+        <sch:let name="title" value="'Related Information:'"/>
+        <sqf:add node-type="element" target="linklist" position="before">
+          <title><xsl:value-of select="$title"/></title>
+          <xsl:apply-templates mode="copyExceptClass" select="parent::node()/link"/>
+        </sqf:add>
+        <sqf:delete match="parent::node()/link"/>
+      </sqf:fix>
+      
+      <!-- Move all the links in the existing link list -->
+      <sqf:fix id="moveInExistingLinkList" use-when="parent::node()/linklist">
+        <sqf:description>
+          <sqf:title>Move all the links in the existing link list</sqf:title>
+        </sqf:description>
+        <sch:let name="links" value="parent::node()/link"/>
+        <sqf:add match="parent::node()/linklist[1]" position="last-child">
+          <xsl:apply-templates mode="copyExceptClass" select="$links"/>
+        </sqf:add>
+        <sqf:delete match="$links"/>
+      </sqf:fix>
+    </sch:rule>
+    
+    <sch:rule context="related-links/linklist/title">
+      <sch:assert test="text() = 'Related Information:'" sqf:fix="correctTitle" role="warn">
+        The title of a linklist must be 'Related Information:'
+      </sch:assert>
+      
+      <sqf:fix id="correctTitle">
+        <sqf:description>
+          <sqf:title>Set the title to 'Related Information:'</sqf:title>
+        </sqf:description>
+        <sqf:replace match="text()" select="'Related Information:'"></sqf:replace>
+      </sqf:fix>
+    </sch:rule>
+    
+    <sch:rule context="related-links/linklist">
+      <!-- The link list should have a title -->
+      <sch:assert test="title" sqf:fix="add_title" role="warn">The linklist should have a title</sch:assert>
+      
+      <!-- Quick fix that adds a title element in a linklist -->
+      <sqf:fix id="add_title">
+        <sqf:description>
+          <sqf:title>Add a title for the linklist</sqf:title>
+        </sqf:description>
+        <!-- The value for the title element must be specified by the user. -->
+        <sch:let name="title" value="'Related Information:'"/>
+        <sqf:add node-type="element" position="first-child" target="title" select="$title"/>
+      </sqf:fix>
+    
+     <!-- Only one link list allowed -->
+      <sch:report test="following-sibling::linklist" sqf:fix="mergeLinkLists" role="warn">
+        Only one link list allowed
+      </sch:report>
+      
+      <!-- Merge flowing link lists into current one -->
+      <sqf:fix id="mergeLinkLists">
+        <sqf:description>
+          <sqf:title>Merge flowing link lists into current one</sqf:title>
+        </sqf:description>
+        <sqf:add position="last-child">
+          <xsl:apply-templates mode="copyExceptClass" select="following-sibling::linklist/link"/>
+        </sqf:add>
+        <sqf:delete match="following-sibling::linklist"/>
+      </sqf:fix>
+    </sch:rule>
   </sch:pattern>
 
   <!-- Template used to copy the current node -->

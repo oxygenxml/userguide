@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="dg-insert-table-action">
+  <title>Configure the Insert Table Action for a Framework</title>
+  <taskbody>
+    <context>
+      <p>This topic describes the procedure for defining the <uicontrol>Insert Table</uicontrol>
+        action for a custom <xref keyref="glossentry_framework"><term>framework</term></xref>.
+        Suppose that you want to create an action that inserts a table with three rows and three
+        columns into a document and the first row is the table header. As with <xref
+          href="dg-insert-section-action.dita">the insert section action</xref>, you will use the
+          <apiname>InsertFragmentOperation</apiname> built-in operation.</p>
+      <p>Place the icon files for the menu item, and for the toolbar, in your custom
+          <term>framework</term> directory (<filepath><term
+            conkeyref="reusables-user-guide/oxy-install-dir"
+          />\frameworks\[CUSTOM_FRAMEWORK_DIR]</filepath>).</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Set <b>ID</b> field to <b>insert_table</b>.</cmd>
+      </step>
+      <step>
+        <cmd>Set <b>Name</b> field to <b>Insert table</b>.</cmd>
+      </step>
+      <step>
+        <cmd>Set <b>Menu access key</b> field to <b>t</b>.</cmd>
+      </step>
+      <step>
+        <cmd>Set <b>Description</b> field to <b>Adds a table element</b>.</cmd>
+      </step>
+      <step>
+        <cmd>Set <b>Toolbar icon</b> to <b>${framework} / toolbarIcon.png</b>.</cmd>
+      </step>
+      <step>
+        <cmd>Set <b>Menu icon</b> to <b>${framework} / menuIcon.png</b>.</cmd>
+      </step>
+      <step>
+        <cmd>Set <b>Shortcut key</b> to <uicontrol
+          conkeyref="reusable-oxygen-shortcuts-list/ctrl_shift_t"
+          />.</cmd>
+      </step>
+      <step>
+        <cmd>Set up the action's functionality:</cmd>
+        <substeps id="substeps_ab0a8a57-a4c5-4535-9ad1-47b84c9df44e">
+          <substep>
+            <cmd>Set <b>XPath expression</b> field to <codeph>true()</codeph>.</cmd>
+            <info><codeph>true()</codeph> is equivalent with leaving this field empty.</info>
+          </substep>
+          <substep>
+            <cmd>Set <b>Invoke operation</b> to use <b>InsertFragmentOperation</b> built-in
+              operation that inserts an XML fragment to the cursor position.</cmd>
+          </substep>
+          <substep>
+            <cmd>Configure operation's arguments as follows:</cmd>
+            <info>
+              <p><b>fragment</b> - set it to:</p>
+              <codeblock outputclass="language-xml">&lt;table xmlns=
+"http://www.oxygenxml.com/sample/documentation"&gt;
+  &lt;header&gt;&lt;td/&gt;&lt;td/&gt;&lt;td/&gt;&lt;/header&gt;
+  &lt;tr&gt;&lt;td/&gt;&lt;td/&gt;&lt;td/&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td/&gt;&lt;td/&gt;&lt;td/&gt;&lt;/tr&gt;
+&lt;/table&gt;</codeblock>
+              <p><apiname>insertLocation</apiname> - to add tables at the end of the section use the
+                following code:</p>
+              <codeblock>ancestor::section/*[last()]</codeblock>
+              <p><apiname>insertPosition</apiname> - Select <b>After</b>.</p>
+            </info>
+          </substep>
+        </substeps>
+      </step>
+    </steps>
+  </taskbody>
+</task>

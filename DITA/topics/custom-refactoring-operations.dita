@@ -22,21 +22,24 @@
           will run to refactor the XML files.</li>
         <li>An <i>XML Operation Descriptor</i> file that contains information about the operation
           (such as the name, description, and parameters).</li>
-      </ul><fig id="fig_dgt_f4c_jr">
+      </ul></p>
+    <p>
+      <fig id="fig_dgt_f4c_jr">
         <title>Diagram of an XML Refactoring Operation</title>
-        <image href="../img/xml_refactoring_diagram.png" id="image_ktw_k4c_jr"/>
-      </fig></p>
-    <p>All the defined custom operations are loaded by the <term>XML Refactoring Tool</term> and
-      presented in <xref
+        <image href="../img/xml_refactoring_diagram.png" id="image_ktw_k4c_jr" placement="inline"/>
+      </fig>
+    </p>
+    <p>All the defined custom operations are loaded by the <b>XML Refactoring Tool</b> and presented
+      in <xref
         href="refactoring-xml-documents.dita#refactoring-xml-documents/refactoring_operations_dlentry"
         >the <uicontrol>Refactoring Operations</uicontrol> wizard page</xref>, along with the
       predefined built-in operations. </p>
     <p>After the user chooses an operation and specifies its parameters, <ph keyref="product"/>
       processes an XQuery Update or XSLT transformation over the input file. This transformation is
-      executed in a <term>safe mode</term>, which implies the following:<ul id="ul_psd_jpm_kr">
+      executed in a <b>safe mode</b>, which implies the following:<ul id="ul_psd_jpm_kr">
         <li>When loading the document:<ul id="ul_jgd_kpm_kr">
-            <li>The <term>XInclude</term> mechanism is disabled. This means that the resources
-              included by using XInclude will not be visible in the transformation.</li>
+            <li>The <b>XInclude</b> mechanism is disabled. This means that the resources included by
+              using XInclude will not be visible in the transformation.</li>
             <li>The DTD entities will be processed without being expanded.</li>
             <li>The associated DTD will be not loaded, so the default attributes declared in the DTD
               will not be visible in the transformation.</li>
@@ -45,7 +48,9 @@
     <p>
       <ul id="ul_ytl_npm_kr">
         <li>When saving the updated XML document:<ul id="ul_bcl_ppm_kr">
-            <li>The <codeph>DOCTYPE</codeph> will be preserved.</li>
+            <li>The <codeph>DOCTYPE</codeph> will be preserved.<note>This can be changed using <xref
+                  href="custom_operation_sample.dita#custom_operation_sample/using_saxon_extension_functions_to_allow_custom_r"
+                  >Saxon extension functions in XSLT</xref>.</note></li>
             <li>The DTD entities will be preserved as they are in the original document when the
               document is saved.</li>
             <li>The attribute values will be kept in their original form without being
@@ -63,15 +68,25 @@
         document since they are discarded when the transformed document is serialized.</note><note
         type="restriction"><i>Comments</i> or <i>processing instructions</i> that are in any node
         before or after the root element cannot be modified by an XML Refactoring operation. In
-        other words, XML Refactoring operations can only be performed on <i>comments</i> or
-          <i>processing instructions</i> that are inside the root element.</note></p>
+        other words, XML Refactoring operations can only be applied on the root element and the
+        nodes inside it. However, as a work around to this limitation, you can use <xref
+          href="custom_operation_sample.dita#custom_operation_sample/using_saxon_extension_functions_to_allow_custom_r"
+          >Saxon extension functions and the XSLT stylesheet method</xref> to implement the new
+        custom XML refactoring operation.</note></p>
     <section id="creating_a_custom_refactoring_operation">
       <title>Creating a Custom Refactoring Operation</title>
       <p>To create a custom refactoring operation, follow these steps:<ol id="ol_swm_crc_jr">
-          <li><xref href="custom-refactoring-xquery-script.dita">Create an XQuery Update script or
-              XSLT file</xref>.</li>
-          <li><xref href="xml-refactoring-operation-descriptor.dita">Create an <b>XML Refactoring
-                Operation Descriptor</b> file</xref>.</li>
+          <li>Create an <xref
+              href="custom_operation_sample_xquery.dita#custom_operation_sample_xquery">XQuery
+              Update script</xref> or <xref
+              href="custom_operation_sample.dita#custom_operation_sample">XSLT stylesheet
+              file</xref>.</li>
+          <li>Create an <b>XML Refactoring Operation Descriptor</b> file contains the path to the
+              <xref
+              href="custom_operation_sample_xquery.dita#custom_operation_sample_xquery/descriptor-example-section"
+              >XQuery Update script</xref> or <xref
+              href="custom_operation_sample.dita#custom_operation_sample/descriptor-example-section"
+              >XSLT stylesheet</xref>.</li>
           <li>Store both files in <xref
               href="sharing-custom-refactoring-operations.dita#sharing-custom-refactoring-operations"
               >one of the locations that <ph keyref="product"/></xref> scans when loading the custom
@@ -83,6 +98,6 @@
     </section>
   </body>
   <related-links>
-    <link href="sharing-custom-refactoring-operations.dita#sharing-custom-refactoring-operations"/>
+    <linklist><title>Related Information:</title><link href="sharing-custom-refactoring-operations.dita#sharing-custom-refactoring-operations"/></linklist>
   </related-links>
 </topic>

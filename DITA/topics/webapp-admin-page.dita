@@ -28,15 +28,14 @@
         enabled.</p>
       <p>If you used the <uicontrol>Web Application Archive</uicontrol> version, you need to
         manually enable the <uicontrol>Administration Page</uicontrol> by following these steps:<ol>
-          <li>Configure Tomcat to use a security <codeph>Realm</codeph> element. Refer to the <xref
-              href="http://tomcat.apache.org/tomcat-7.0-doc/config/realm.html" format="html"
-              scope="external">Tomcat Documentation</xref> for more information.</li>
-          <li>Edit the <filepath>tomcat-users.xml</filepath> file from your Tomcat installation and
-            configure a user for the <term>admin</term> role, as in the following
-            example:<codeblock outputclass="language-ini">&lt;tomcat-users>
-  &lt;role rolename="admin"/>
-  &lt;user username="USERNAME" password="PASSWORD" roles="admin"/>
-&lt;/tomcat-users></codeblock></li>
+          <li>Edit the <filepath>shiro-users.ini</filepath> file located in the <xref
+              href="webapp_deployment.dita#webapp_deployment/other_notes"><i>Oxygen Data
+                Directory</i></xref>.<ol>
+              <li>To define a user, use this
+                format:<codeblock outputclass="language-ini">user.USERNAME = PASSWORD,ROLE</codeblock></li>
+              <li>To define a role, use this
+                format:<codeblock outputclass="language-ini">role.ROLENAME = PERMISSIONS</codeblock></li>
+            </ol></li>
           <li>Your Administration Page is now enabled. To access it, go to the following URL:
             <codeblock outputclass="language-ini">http://example.com:8080/oxygen-webapp/app/admin.html</codeblock>where
               <filepath>http://example.com:8080/oxygen-webapp</filepath> is the URL of your instance
@@ -45,6 +44,8 @@
             configured in the steps above.</li>
         </ol><?oxy_insert_start author="Gabriel Titerlea" timestamp="20160525T162343+0300"?></p>
       <?oxy_insert_end?>
+      <p>For information about resetting the admin credentials, see <xref
+          href="wa-reset-admin-credentials.dita#wa-reset-admin-credentials"/>.</p>
     </section>
     <section id="accessing_the_administration_page">
       <title>Accessing the Administration Page</title>
@@ -60,7 +61,7 @@
     <section id="how_to_hide_the_administration_page_link">
       <title>How to Hide the Administration Page Link</title>
       <p>You can hide the <uicontrol>Administration Page</uicontrol> link from regular users by
-        disabling the <uicontrol>Show a link to the Administration Page</uicontrol> option that is
+        deselecting the <uicontrol>Show a link to the Administration Page</uicontrol> option that is
         available in the <uicontrol>Settings</uicontrol> section of the <uicontrol>Administration
           Page</uicontrol>.</p>
       <p>
@@ -71,28 +72,115 @@
       </p>
     </section>
     <section id="types_of_settings_in_the_administration_page">
-      <title>Types of Settings in the Administration Page</title>
+      <title>Administration Page Settings</title>
       <p>You can click on any of the listed types of settings to access configurable options for
-        each type. The <uicontrol>Administration Page</uicontrol> allows you to configure settings
-        for the following:<ul>
-          <li id="general-tab"><uicontrol>General</uicontrol> - Allows you to choose the initial
-            state of the Change Tracking feature. You can choose between <uicontrol>Stored in
-              document</uicontrol>, <uicontrol>Always On</uicontrol>, and <uicontrol>Always
-              Off</uicontrol>. This tab also displays the location of logging files.</li>
-          <li><uicontrol>License</uicontrol> - Allows you to configure a license server
-            connection.</li>
-          <li><uicontrol>Plugins</uicontrol> - Allows you to add and configure plugins for your <ph
-              keyref="webappProduct"/>.</li>
-          <li><uicontrol>Frameworks</uicontrol> - Allows you to add or remove frameworks for your
-              <ph keyref="webappProduct"/>.</li>
-          <li><uicontrol>Connection</uicontrol> - Includes an option for automatically accepting
-            invalid security certificates.</li>
-          <li><menucascade>
-              <uicontrol>Connection</uicontrol>
-              <uicontrol>Proxy</uicontrol>
-            </menucascade> - Allows you to configure the proxy settings for your <ph
-              keyref="webappProduct"/>.</li>
-        </ul></p>
+        each type. The <uicontrol>Administration Page</uicontrol> allows you to configure or view
+        the following settings in the various links:<dl>
+          <dlentry>
+            <dt><uicontrol id="general-tab">General</uicontrol></dt>
+            <dd>
+              <p>
+                <dl>
+                  <dlentry>
+                    <dt><uicontrol id="change-track-initial-state">Change tracking initial
+                        state</uicontrol></dt>
+                    <dd>Allows you the choose the initial state of the <xref
+                        keyref="glossentry_track-changes"><i>Change Tracking</i> feature</xref>. You
+                      can choose between <uicontrol>Stored in document</uicontrol>,
+                        <uicontrol>Always On</uicontrol>, and <uicontrol>Always
+                      Off</uicontrol>.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><uicontrol>Show all possible elements in content completion
+                      list</uicontrol></dt>
+                    <dd>When enabled, the <xref keyref="glossentry_content-completion-assistant"
+                          ><term>Content Completion Assistant</term></xref> includes all possible
+                      elements, including those that are invalid at the current location, but those
+                      proposals are rendered in a lighter shade of gray, italicized, and appear
+                      after the valid proposals. </dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><uicontrol>Logging</uicontrol></dt>
+                    <dd>This section displays the location of the <b>Log file</b> or <b>Config
+                        file</b> that <ph keyref="webappProduct"/> uses for logging purposes.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><uicontrol>Options</uicontrol></dt>
+                    <dd>This section displays the location of the <b>Options file</b> that <ph
+                        keyref="webappProduct"/> uses for various default settings.</dd>
+                  </dlentry>
+                </dl>
+              </p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>License</uicontrol></dt>
+            <dd>Displays licensing information and allows you to <xref
+                href="webapp-configure-license-server.dita#webapp-configure-license-server"
+                >configure a license server connection</xref> with <uicontrol>Change
+                Server</uicontrol> and <uicontrol>Manage Server</uicontrol> buttons.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Plugins</uicontrol></dt>
+            <dd>Displays the various <xref keyref="glossentry_plugin"><term>plugins</term></xref>
+              for your <ph keyref="webappProduct"/> and allows you to <xref
+                href="webapp-configure-plugins.dita#webapp-configure-plugins">add and configure
+                them</xref>. It also includes an <uicontrol>Upload plugin</uicontrol> button for
+              adding new ones to the list.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Frameworks</uicontrol></dt>
+            <dd>Displays the various <xref keyref="glossentry_framework"
+                ><term>frameworks</term></xref> for your <ph keyref="webappProduct"/> and allows you
+              to <xref href="webapp-add-framework.dita#webapp-add-framework">add and configure
+                them</xref>. It also includes an <uicontrol>Upload framework</uicontrol> button for
+              adding new ones to the list.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>Connection</uicontrol></dt>
+            <dd>
+              <p>
+                <dl>
+                  <dlentry>
+                    <dt><uicontrol>Automatically accept a security certificate, even if
+                        invalid</uicontrol></dt>
+                    <dd>If enabled, security certificates are automatically accepted, regardless of
+                      their validity.</dd>
+                  </dlentry>
+                </dl>
+              </p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><menucascade>
+                <uicontrol>Connection</uicontrol>
+                <uicontrol>Proxy</uicontrol>
+              </menucascade></dt>
+            <dd>Allows you to <xref href="webapp-proxy-settings.dita#webapp-proxy-settings"
+                >configure the proxy settings</xref> for your <ph keyref="webappProduct"/>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><uicontrol>DITA</uicontrol></dt>
+            <dd>Allows you to specify the default directory of the DITA Open Toolkit distribution
+              (bundled with the <ph keyref="webappProduct"/> installation) to be used for validating
+              and publishing DITA content. You can select from the following:<p>
+                <dl>
+                  <dlentry>
+                    <dt><uicontrol>Built-in DITA-OT 1.8</uicontrol></dt>
+                    <dd>If this is set, all defined DITA transformation scenarios will run with
+                      DITA-OT 1.8.</dd>
+                  </dlentry>
+                  <dlentry id="ditaOT2x-dlentry">
+                    <dt><uicontrol>Built-in DITA-OT 2.x (with support for DITA 1.3 and Lightweight
+                        DITA)</uicontrol></dt>
+                    <dd>All defined DITA transformation scenarios will run with DITA-OT 2.x. This
+                      also gives you access to DITA 1.3 and Lightweight DITA file templates when you
+                      create new documents.</dd>
+                  </dlentry>
+                </dl>
+              </p></dd>
+          </dlentry>
+        </dl></p>
     </section>
   </body>
 </topic>

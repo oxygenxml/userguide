@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="dg-oxy-label-function">
+  <title><codeph>oxy_label()</codeph> Function</title>
+  <shortdesc>This function can be used in conjunction with the CSS <codeph>content</codeph> property
+    to change the style of generated text.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>CSS extensions<indexterm>Custom
+            functions<indexterm>oxy_label</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>The arguments of the function are <i>property name - property value</i> pairs. The following
+      properties are supported:<ul>
+        <li><ph conkeyref="reusables-author-mode-customization/text-property"
+          /></li>
+        <li><ph conkeyref="reusables-author-mode-customization/width-property"
+          /></li>
+        <li><ph conkeyref="reusables-author-mode-customization/color-property"
+          /></li>
+        <li><ph
+            conkeyref="reusables-author-mode-customization/background-color-property"
+          /></li>
+        <li><codeph>styles</codeph> - Specifies styles for the form control. The values of this
+          property are a set of CSS properties:<ul id="ul_rrh_nyh_sr">
+            <li><codeph>font-weight</codeph>, <codeph>font-size</codeph>,
+                <codeph>font-style</codeph>, <codeph>font</codeph></li>
+            <li><codeph>text-align</codeph>, <codeph>text-decoration</codeph></li>
+            <li><codeph>width</codeph></li>
+            <li><codeph>color</codeph>, <codeph>background-color</codeph></li>
+            <li><codeph>link</codeph> - For more information about this property see <xref
+                href="dg-link-elements.dita#dg-link-elements">the <codeph>link</codeph>
+                property section</xref>.</li>
+          </ul><codeblock outputclass="language-css">element{
+    content: oxy_label(text, "Label Text", styles,
+      "font-size:2em;color:red;link:attr(href);");
+}</codeblock><p>Instead
+            of using the values of the <codeph>styles</codeph> property individually, you can define
+            them in a CSS file as in the following
+            example:<codeblock outputclass="language-css">* {
+    width: 40%;
+    text-align:center;
+}</codeblock>Then
+            refer that file with an <codeph>@import</codeph> directive, as
+              follows:<codeblock outputclass="language-css">elem {
+  content: oxy_label(text, 'my_label', styles, "@import 'labels.css';")
+}</codeblock><note
+              type="caution">Extensive use of the <codeph>styles</codeph> property may lead to
+              performance issues.</note></p></li>
+      </ul>If the text from an <codeph>oxy_label()</codeph> function contains new lines, for example
+        <codeph>oxy_label(text, 'LINE1\A LINE2', width, 100px)</codeph>, the text is split in two.
+      Each of the two new lines has the specified width of 100 pixels.<note>The text is split after
+          <codeph>\A</codeph>, which represents a new line character.</note></p>
+    <p>You can use the <codeph>oxy_label()</codeph> function together with a <xref
+        href="form-controls.dita#form-controls">built-in form control</xref> function to create a
+      form control based layouts.</p>
+    <p><b><u>Example: <i>oxy_label</i> Function</u></b></p>
+    <p>An example of a use case is if you have multiple attributes on a single element and you want
+      use form controls on separate lines and style them differently. Consider the following CSS
+      rule:<codeblock>person:before {
+  content: "Name:*" oxy_textfield(edit, '@name', columns, 20) 
+    "\A Address:" oxy_textfield(edit, '@address', columns, 20)
+}</codeblock></p>
+    <p>Suppose you only want the <uicontrol>Name</uicontrol> label to be set to <b>bold</b>, while
+      you want both labels aligned to look like a table (the first column with labels and the second
+      with a text field). To achieve this, you can use the <codeph>oxy_label()</codeph> to style
+      each label
+      differently.<codeblock>person:before {
+ content: oxy_label(text, "Name:*", styles, "font-weight:bold;width:200px")
+          oxy_textfield(edit, '@name', columns, 20) "\A "
+          oxy_label(text, "Address:", styles, "width:200px")
+          oxy_textfield(edit, '@address', columns, 20)
+}</codeblock></p>
+    <note type="tip">A code template is available to make it easy to add the
+        <codeph>oxy_label</codeph> function with the <xref
+        keyref="glossentry_content-completion-assistant"><term>Content Completion
+        Assistant</term></xref> by pressing <uicontrol
+        conkeyref="reusable-oxygen-shortcuts-list/ctrl_space"/> and select the <image
+        href="../img/CodeTemplates12.gif" id="image_wb2_ghh_5r"/>
+      <codeph>oxy_label</codeph> code template..</note>
+  </conbody>
+</concept>

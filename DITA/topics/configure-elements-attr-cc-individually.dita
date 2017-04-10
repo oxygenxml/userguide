@@ -5,7 +5,7 @@
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>Document Type Association (Framework)<indexterm>Configuring content completion
+        <indexterm>Framework customization<indexterm>Configuring content completion
             proposals</indexterm></indexterm>
         <indexterm>Configuring content completion proposals</indexterm>
         <indexterm>Content completion configuration file (cc_config.xml)</indexterm>
@@ -20,16 +20,16 @@
       some best practices in the way content is edited.</p>
     <p>For an example of a specific use-case, suppose that you want restrict DITA list item elements
         (<codeph>li</codeph>) to only accept paragraph elements (<codeph>p</codeph>). In this case,
-      the <uicontrol>Content Completion Assistant</uicontrol> should not offer any element other
-      than a paragraph (<codeph>p</codeph>) when a list item (<codeph>li</codeph>) is inserted into
-      a document. It would also be helpful if the required child element (<codeph>p</codeph>) was
-      automatically inserted whenever a list item (<codeph>li</codeph>) is inserted.</p>
+      the <xref keyref="glossentry_content-completion-assistant"><term>Content Completion
+          Assistant</term></xref> should not offer any element other than a paragraph
+        (<codeph>p</codeph>) when a list item (<codeph>li</codeph>) is inserted into a document. It
+      would also be helpful if the required child element (<codeph>p</codeph>) was automatically
+      inserted whenever a list item (<codeph>li</codeph>) is inserted.</p>
     <p>One method of changing the content model is to alter the element definition in the associated
       schema (XML Schema, DTD, RelaxNG), but this may be quite complicated in some cases.
       Fortunately, <ph keyref="product"/> offers a simple, alternative method of using a
       configuration file to customize the content completion proposals for each element.</p>
-    <section
-      conref="../reusables/topics/reusables-editing-documents.dita#reusables-editing-documents/how_to_configure_the_proposed_values_in_cc"
+    <section conkeyref="reusables-editing-documents/how_to_configure_the_proposed_values_in_cc"
       id="d2e47"/>
     <section id="configuration_file">
       <title>Configuring Elements or Attributes that are Proposed for Each Element</title>
@@ -58,7 +58,7 @@
                 <li><i>element[@attr != "value"]</i> - Matches all instances of the specified
                   element that include the specified attribute and its value is different than the
                   one given.</li>
-              </ul></p><p><b>Example:</b> The following is an example of how you could use multiple
+              </ul></p><p><b>Example:</b> The following are examples of how you could use multiple
               boolean operators and parentheses inside an attribute
               condition:</p><codeblock>*[@a and @b or @c and @d]
 *[@a and (@b or @c) and @d]</codeblock><p>The
@@ -77,27 +77,28 @@
                 href="#configure-elements-attr-cc-individually/possible-elements" format="dita"
                   ><codeph>possibleElements</codeph></xref> or <xref
                 href="#configure-elements-attr-cc-individually/reject-elements" format="dita"
-                  ><codeph>rejectElements</codeph></xref> to specify or restrict elements for an
-              entire framework.<p>For example, suppose that in your DITA documents, you want to
-                restrict your users from using image elements (<codeph>image</codeph>) because you
-                do not want images to be included in your output. The configuration file should look
-                like
-                this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image" /></codeblock></p><p>Since
+                  ><codeph>rejectElements</codeph></xref> to specify or restrict particular elements
+              for a <xref keyref="glossentry_framework"><term>framework</term></xref>.<p>For
+                example, suppose that in your DITA documents, you want to restrict your users from
+                using <codeph>image</codeph> and <codeph>fig</codeph> elements because you do not
+                want images to be included in your output. The configuration file should look like
+                this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image fig" /></codeblock></p><p>Since
                 the <codeph>path</codeph> attribute is missing, the specified element will be
-                filtered out from the proposals for the entire framework.</p></note></li>
+                filtered out from the proposals for the entire
+            <term>framework</term>.</p></note></li>
           <li><codeph>insertElements</codeph> - A space-separated sequence of child element names.
             Each time the element specified in the <codeph>path</codeph> attribute is inserted into
             the document, these child elements will also be inserted in the order that they are
             listed. For example, <codeph>insertElements="b i"</codeph> will insert exactly one
               <codeph>b</codeph> element, followed by an <codeph>i</codeph> element. An empty value
-              (<codeph>""</codeph>) means that no child elements should be inserted.<note> If this
+              (<codeph>""</codeph>) means that no child elements should be inserted.<note>If this
               attribute is missing, the default required child elements will be inserted, as
               specified in the associated schema for the document.</note></li>
           <li id="possible-elements"><codeph>possibleElements</codeph> - A space-separated list of
             element names that will be shown in the content completion list when invoked inside an
             element that is specified in the <codeph>path</codeph> attribute. For example,
-              <codeph>"bold italic codeph ph"</codeph> means that the <uicontrol>Content Completion
-              Assistant</uicontrol> will contain these four elements when invoked on the element
+              <codeph>"bold italic codeph ph"</codeph> means that the <term>Content Completion
+              Assistant</term> will contain these four elements when invoked on the element
             specified in the <codeph>path</codeph> attribute. The following other possible values
             are also supported:<ul>
               <li><b><i>NONE</i></b> - There will be no proposals in the content completion
@@ -107,14 +108,18 @@
                 if this attribute is missing.</li>
               <li><b><i>INSERTED</i></b> - The proposals will be the same list of elements that are
                 defined in the <codeph>insertElements</codeph> attribute.</li>
-            </ul></li>
+            </ul><p>When using this attribute to specify multiple elements, only use one entry with
+              the element names separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleElements="bold italic codeph ph" /></codeblock></p></li>
           <li id="reject-elements"><codeph>rejectElements</codeph> - A space-separated list of
             element names that will be filtered out from the list of proposals that are presented in
             the content completion list. Each time the element specified in the
               <codeph>path</codeph> attribute is inserted into the document, the list of proposals
-            in the <uicontrol>Content Completion Assistant</uicontrol> will include the entries that
-            are defined in the associated schema, minus the elements specified in this
-            attribute.</li>
+            in the <term>Content Completion Assistant</term> will include the entries that are
+            defined in the associated schema, minus the elements specified in this attribute.<p>When
+              using this attribute to specify multiple elements, only use one entry with the element
+              names separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image fig imagemap foreign" /></codeblock></p></li>
         </ul></p>
       <p><b>Attributes:</b></p>
       <p>To control the <b>attributes</b> that are proposed for an element, you can use the
@@ -134,25 +139,32 @@
                   ><codeph>possibleAttributes</codeph></xref> or <xref
                 href="#configure-elements-attr-cc-individually/reject-attributes" format="dita"
                   ><codeph>rejectAttributes</codeph></xref> to specify or restrict attributes for an
-              entire framework.<p>For example, suppose that you only want to allow a limited set of
-                attributes in a customized framework. The configuration file should look like
+              entire <term>framework</term>.<p>For example, suppose that you only want to allow a
+                limited set of attributes in a customized <term>framework</term>. The configuration
+                file should look like
                 this:</p><codeblock outputclass="language-xml">&lt;elementProposals possibleAttributes="
                id domains href scope format type conref 
         	props keyref class"/></codeblock><p>Since
-                the <codeph>path</codeph> attribute is missing, this applies to the entire framework
-                and only the specified attributes will be proposed.</p></note></li>
+                the <codeph>path</codeph> attribute is missing, this applies to the entire
+                  <term>framework</term> and only the specified attributes will be
+              proposed.</p></note></li>
           <li><codeph>insertAttributes</codeph> - A space-separated sequence of attribute names that
             will be inserted along with the element.</li>
           <li id="possible-attributes"><codeph>possibleAttributes</codeph> - A space-separated list
             of attribute names that will be shown in the content completion list when invoked inside
-            an element that is specified in the <codeph>path</codeph> attribute.</li>
+            an element that is specified in the <codeph>path</codeph> attribute.<p>When using this
+              attribute to specify multiple attributes, only use one entry with the attribute names
+              separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleAttributes="scope format type" /></codeblock></p></li>
           <li id="reject-attributes"><codeph>rejectAttributes</codeph> - A space-separated list of
             attribute names that will be filtered out from the list of proposals that are presented
             in the content completion list. Each time the element specified in the
               <codeph>path</codeph> attribute is inserted into the document, the list of proposals
-            in the <uicontrol>Content Completion Assistant</uicontrol> will include the entries that
-            are defined in the associated schema, minus the attributes specified in this
-            attribute.</li>
+            in the <term>Content Completion Assistant</term> will include the entries that are
+            defined in the associated schema, minus the attributes specified in this
+              attribute.<p>When using this attribute to specify multiple attributes, only use one
+              entry with the attribute names separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals rejectAttributes="importance platform product" /></codeblock></p></li>
         </ul></p>
     </section>
     <section id="other_important_notes">
@@ -160,7 +172,7 @@
       <note type="important">
         <ul>
           <li>By default, the element names that do not have a namespace prefix are considered from
-              <term>no-namespace</term>. Consider declaring the namespace mapping on the root of the
+              <i>no-namespace</i>. Consider declaring the namespace mapping on the root of the
             configuration file and prefixing the element names from the <codeph>elementPath</codeph>
             and <codeph>model</codeph> attributes.</li>
           <li>This configuration file only affects the content completion assistance, not
@@ -180,7 +192,7 @@
               <codeph>_*</codeph>.</li>
           <li>Only simple recursion cases are detected and avoided by the editor, and logged to the
             console. Therefore, if complex <codeph>elementProposals</codeph> patterns are defined,
-            you should avoid <term>infinite recursions</term>.</li>
+            you should avoid <i>infinite recursions</i>.</li>
         </ul>
       </note>
     </section>
@@ -258,9 +270,7 @@
     </section>
   </body>
   <related-links>
-    <link
-      href="configuring-content-completion-proposals.dita#configuring-content-completion-proposals"/>
-    <link href="rendering-elements-cc-author.dita#rendering-elements-cc-author"
-      product="author editor authorEclipse editorEclipse"/>
+    <linklist><title>Related Information:</title><link href="configuring-content-completion-proposals.dita#configuring-content-completion-proposals"/><link href="rendering-elements-cc-author.dita#rendering-elements-cc-author" product="author editor authorEclipse editorEclipse"/></linklist>
+    
   </related-links>
 </topic>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task
+  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="synchronize-branch">
+  <title>Synchronize a Branch</title>
+  <taskbody>
+    <context>
+      <p>While working on your own branch, other people on your team might continue to make
+        important changes in the parent branch (which can be the <i>trunk</i> itself or any other
+        branch). It is recommended to periodically duplicate those changes in your branch to make
+        sure your changes are compatible with them. This is done by performing a <i>synchronize
+          merge</i>, which will bring your branch up-to-date with any changes made to its ancestral
+        parent branch since your branch was last created or synchronized. Subversion is aware of the
+        history of your branch and can detect when it split away from the parent branch.</p>
+      <p>Frequently keeping your branch in sync with the parent branch helps you to prevent
+        unexpected conflicts when the time comes for you to duplicate your changes back into the
+        parent branch. The synchronization uses <i>merge tracking</i> to skip all those revisions
+        that have already been merged, thus a sync merge can be repeated periodically to fetch all
+        the latest changes of the parent branch to keep up-to-date with it.</p>
+      <p>
+        <note type="important">It is recommended to synchronize the whole working copy that was
+          created from the child branch (the root of the working copy), rather than just a part of
+          it.</note>
+      </p>
+      <p>After running the <i>synchronize merge</i>, your working copy from the child branch now
+        contains new local modifications, and these edits are duplications of all of the changes
+        that have happened on the <i>trunk</i> since you first created your branch. At this point,
+        your private branch is now synchronized with the trunk.</p>
+      <p>To synchronize your branch with its parent branch, follow these steps: </p>
+    </context>
+    <steps id="steps_ejx_brz_h4">
+      <step id="start-wizard">
+        <cmd>Go to <menucascade>
+            <uicontrol>Tools</uicontrol>
+            <uicontrol>Merge</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>The <uicontrol>Merge</uicontrol> wizard is opened.</stepresult>
+      </step>
+      <step>
+        <cmd>Select the <uicontrol>Synchronize branch</uicontrol> option.</cmd>
+      </step>
+      <step id="pre-merge-checks-step">
+        <cmd>It is recommended that you select the <uicontrol>Perform pre-merge best practices
+            checks of the working copy target</uicontrol> option to make sure that the working copy
+          target item is ready for the merge operation.</cmd>
+        <substeps id="substeps_b4c_vqr_4r">
+          <substep>
+            <cmd>Press the <uicontrol>Next</uicontrol> button.</cmd>
+            <stepresult>If the <uicontrol>Perform pre-merge best practices checks of the working
+                copy target</uicontrol> option is selected, <xref
+                href="pre-merge-checks.dita#pre-merge-checks">the <uicontrol>Pre-Merge
+                  Checks</uicontrol> wizard page</xref> is displayed.<note>If errors are found you
+                need to solve them before proceeding.</note></stepresult>
+          </substep>
+        </substeps>
+      </step>
+      <step id="merge_wizard_second_page">
+        <cmd>Press the <uicontrol>Next</uicontrol> button.</cmd>
+        <stepresult>The <uicontrol>Synchronize branch</uicontrol> wizard page is
+          displayed.</stepresult>
+      </step>
+      <step>
+        <cmd>In the <b>Parent branch (URL)</b> text box, enter <xref
+            href="entering-local-paths-urls.dita#entering-local-paths-urls/url-section"
+            >the URL of the <i>branch</i> from which you created your branch</xref>. This means that
+          the URL must belong to the same repository as your working copy that was created from the
+          child branch.</cmd>
+        <info> You may also click the <uicontrol>Browse</uicontrol> button to browse the repository
+          and find the desired branch. If you have previously merged from this branch, then you can
+          simply use the drop down menu, which displays a history of previously used URLs. <note
+            type="tip">You can also specify a <xref
+              href="using-peg-revisions.dita#using-peg-revisions"><i>peg
+              revision</i></xref> at the end of the URL (for example, <codeph>URL@rev1234</codeph>).
+            The peg revision specifies both the peg revision of the URL and the latest revision that
+            will be considered for merging. By default, the <codeph>HEAD</codeph> revision is
+            assumed.</note></info>
+      </step>
+      <step>
+        <cmd><ph id="config-options-ph">Optionally, if you want to <xref
+              href="merge-options.dita#merge-options">configure the options</xref> for
+            your merge, press the <uicontrol>Next</uicontrol> button.</ph></cmd>
+        <stepresult><ph id="options-set-result">The <xref
+              href="merge-options.dita#merge-options"><uicontrol>Merge Options</uicontrol>
+              wizard page</xref> is displayed that allows you to configure options for the
+            operation.</ph><note>The <uicontrol>Ignore ancestry / Disable merge tracking</uicontrol>
+            option is not available for this merge type, since a synchronization merge should always
+            be recorded in the destination branch.</note></stepresult>
+      </step>
+      <step id="perform-merge">
+        <cmd>Press the <uicontrol>Merge</uicontrol> button.</cmd>
+        <stepresult>The merge operation is performed.</stepresult>
+      </step>
+    </steps>
+    <result id="merge-result">
+      <p>If the merge is completed successfully, all the changes corresponding to the selected
+        revisions should be merged in your working copy.</p>
+    </result>
+    <postreq id="merge-postreq">
+      <p>It is recommended to look at the results of the merge, in the working copy, to review the
+        changes and see if it meets your expectations. Since merging can sometimes be complicated,
+          <xref href="resolve-merge-conflicts.dita#resolve-merge-conflicts" format="dita"
+          >you may need to resolve conflicts</xref> after making major changes.<note type="note"><ph
+            id="commit-merge-result">The merge result is only in your local working copy and needs
+            to be committed to the repository for it to be available to others.</ph></note></p>
+    </postreq>
+  </taskbody>
+</task>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="adding-oxygen-custom-view">
+  <title>Adding a Custom View in <ph keyref="product"/></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Plugin extensions<indexterm>Workspace Access<indexterm>Adding custom
+              views</indexterm></indexterm></indexterm>
+        <indexterm>Adding custom views</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>To add a custom view in <ph keyref="product"/>, follow this procedure:</p>
+    <p>
+      <ol>
+        <li>In your <filepath>plugins</filepath> directory, locate the
+            <filepath>plugin.xml</filepath> descriptor file. Define the ID of the view you want to
+          add and specify the location where it will be
+          placed:<codeblock outputclass="language-xml">&lt;view id="SampleWorkspaceAccessID" initialSide="WEST" initialRow="0"/></codeblock></li>
+        <li>In your <xref href="workspace-access-plugin.dita"/> implementation, where the
+            <codeph>applicationStarted</codeph> callback is received, add a view component
+          customizer like
+          this:<codeblock outputclass="language-java">pluginWorkspaceAccess.addViewComponentCustomizer(new ViewComponentCustomizer() {
+ public void customizeView(ViewInfo viewInfo) {
+   if(
+     //The view ID defined in the "plugin.xml"
+     "SampleWorkspaceAccessID".equals(viewInfo.getViewID())) {
+     cmsMessagesArea = new JTextArea("CMS Session History:");
+     viewInfo.setComponent(new JScrollPane(cmsMessagesArea));
+     viewInfo.setTitle("CMS Messages");
+     viewInfo.setIcon(Icons.getIcon(Icons.CMS_MESSAGES_CUSTOM_VIEW_STRING));
+   }
+ }
+});</codeblock></li>
+        <li>Define the <codeph>cmsMessagesArea</codeph> as a <i>static</i> field (if you can access
+          the messages area from anywhere in your code).</li>
+      </ol>
+    </p>
+  </body>
+  <related-links>
+    <linklist><title>Related Information:</title><link href="https://www.oxygenxml.com/oxygen_sdk/oxygen_standalone_plugins.html" format="html"
+      scope="external"/></linklist>
+  </related-links>
+</topic>

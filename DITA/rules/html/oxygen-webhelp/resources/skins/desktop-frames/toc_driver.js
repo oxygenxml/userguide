@@ -1,7 +1,7 @@
 /*
 
 Oxygen WebHelp Plugin
-Copyright (c) 1998-2016 Syncro Soft SRL, Romania.  All rights reserved.
+Copyright (c) 1998-2017 Syncro Soft SRL, Romania.  All rights reserved.
 
 */
  
@@ -54,7 +54,13 @@ function markSelectItem(url) {
         if ($(loc).length == 0) {
             loc = '#contentBlock li:eq(' + closest + ') a[href="' + toFind + '"]';
         }
-        $.cookie("wh_pn", closest);
+        
+        if ( wh.protocol == 'https' ) {
+            $.cookie('wh_pn', closest, { secure: true });
+        } else {
+            $.cookie('wh_pn', closest);
+        }
+        
     } else {
         var loc = '#contentBlock a[href^="' + toFind + '"]';
     }

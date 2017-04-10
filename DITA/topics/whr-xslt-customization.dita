@@ -1,134 +1,226 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="whr-xslt-customization">
-  <title>Changing the Topics Displayed in the WebHelp Responsive Side TOC</title>
+  <title>Overriding a WebHelp XSLT Stylesheet from an Ant Build File</title>
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>WebHelp Responsive system<indexterm>Change topics displayed in side
-            TOC</indexterm></indexterm>
-        <indexterm>WebHelp Responsive system<indexterm>Customizing<indexterm>Change topics displayed
-              in side TOC</indexterm></indexterm></indexterm>
+        <indexterm>WebHelp Responsive system<indexterm>Overriding XSLT stylesheet from Ant build
+            file</indexterm></indexterm>
+        <indexterm>WebHelp Classic system<indexterm>Overriding XSLT stylesheet from Ant build
+            file</indexterm></indexterm>
+        <indexterm>WebHelp Responsive system<indexterm>Customizing<indexterm>Overriding XSLT
+              stylesheet from Ant build file</indexterm></indexterm></indexterm>
+        <indexterm>WebHelp Classic system<indexterm>Customizing<indexterm>Overriding XSLT stylesheet
+              from Ant build file</indexterm></indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
-    <p>A specific use-case for customizing your WebHelp Responsive output by overriding the default
-      XSLT templates is if you want to change how the topics are displayed in the side table of
-      contents. The default transformation generates a mini table of contents for the current topic
-      and it contains links to the children of current topic, its siblings, and all of its
-      ancestors.</p>
-    <section id="customizing_the_side_table_of_contents">
-      <title>Use-Case 1: Customizing the Side TOC Using a WebHelp <i>XSLT-Import Extension
-        Point</i></title>
-      <p>Suppose you want to customize this mini table of contents to only include the current topic
-        and its child topics (while excluding its siblings and ancestors).</p>
-      <p>
-        <fig>
-          <title>Example: Filtered Side Table of Contents</title>
-          <image href="../img/WH-XSLT-customization.png" id="image_h4x_prg_dx"/>
-        </fig>
-      </p>
-      <p>The default XSLT template responsible for this functionality is defined in: <filepath><term
-            keyref="glossentry_dita_ot_dir"
-          />\plugins\com.oxygenxml.webhelp\xsl\dita\responsive\navigationLinks.xsl</filepath>.<codeblock outputclass="language-xml">&lt;xsl:template
-    match="
-    toc:topic
-    [not(@toc = 'no')]
-    [not(@processing-role = 'resource-only')]"
-    mode="toc-pull" priority="10"></codeblock></p>
-      <p>This templates computes the link for the current topic along with the links for the sibling
-        topics, and then propagates them recursively to the parent topic. For the specific use-case
-        described above, you need to override this template so that it will produce the link for the
-        current topic along with just the child links that the template already receives.</p>
-      <p>To add this functionality without modifying the sources of the WebHelp plugin, you can
-        implement an external DITA-OT plugin that uses the <xref
-          href="whr-override-xslt-processing.dita#whr-override-xslt-processing/xsl-dita2webhelp"
-            ><b>com.oxygenxml.webhelp.xsl.dita2webhelp</b> extension point</xref>. This extension
-        point allows you to specify a customization stylesheet that will override the template
-        described above.</p>
-      <sectiondiv id="how-to-customize-side-toc"><b>How to Use a DITA-OT Plugin to Customize the
-          Side TOC</b></sectiondiv>
-      <p>To add this functionality as a DITA-OT plugin, follow these steps:<ol id="ol_at4_wk1_dx">
-          <li>In the <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\</filepath> folder,
-            create a folder for this plugin (for example,
-              <filepath>com.oxygenxml.webhelp.custom.sidetoc</filepath>).</li>
-          <li>Create a <b>plugin.xml</b> file (in the folder you created in step 1) that specifies
-            the extension point and your customization stylesheet. For
-            example:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.custom.sidetoc">
-    &lt;feature extension="com.oxygenxml.webhelp.xsl.dita2webhelp"
-     file="custom_side_TOC.xsl"/>    
+    <p>To create a WebHelp XSLT customization that is only available for a certain DITA OT
+      transformation, the extension plugin should <xref
+        href="http://www.dita-ot.org/dev/dev_ref/plugin-newtranstype.html" format="html"
+        scope="external">declare a custom <i>transtype</i></xref>. The WebHelp XSLT stylesheets can
+      be overridden from an ANT file provided by the DITA-OT extension plugin. From the Ant target
+      associated with the plugin, you will specify a custom XSLT stylesheet that imports the
+      original WebHelp stylesheet and add some customization templates.</p>
+    <p>The following procedure explains how to create a DITA-OT extension plugin that uses this
+      extension method:</p>
+    <ol id="ol_mz4_n2w_3x">
+      <li>In the <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\</filepath> folder,
+        create a folder for this plugin (for example,
+        <filepath>com.oxygenxml.webhelp.responsive.custom</filepath>).</li>
+      <li>Create a <b>plugin.xml</b> file (in the folder you created in step 1) that specifies a
+        new DITA-OT <codeph>transtype</codeph> and the build file associated with the plugin. For
+        example:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.responsive.customization">
+    &lt;feature extension="dita.conductor.target.relative" file="integrator.xml"/>
+    &lt;transtype name="webhelp-responsive-custom" extends="webhelp-responsive" 
+      desc="WebHelp Responsive Customization"/>
 &lt;/plugin></codeblock></li>
-          <li>Create your customization stylesheet (for example, <b>custom_side_TOC.xsl</b>), and
-            edit it to override the template that produces the side
-            TOC:<codeblock outputclass="language-xml">&lt;xsl:template
-        match="
-        toc:topic
-        [not(@toc = 'no')]
-        [not(@processing-role = 'resource-only')]"
-        mode="toc-pull" 
-        priority="10">
+      <li>Create the <b>integrator.xml</b> file that will import the actual plugin Ant build
+        file.<codeblock outputclass="language-xml">&lt;project basedir="." name="Webhelp Responsive Customization">    
+    &lt;import file="build.xml"/>
+&lt;/project></codeblock></li>
+      <li>Create the <b>build.xml</b> file that overrides the value of properties associated with
+        the <xref href="#whr-xslt-customization/section_r3r_tp1_3z" format="dita">XSLT stylesheets
+          used to produce HTML files</xref>. The following Ant properties can be overridden to
+        specify your customization stylesheets:<p>
+          <dl>
+            <dlentry>
+              <dt><codeph>args.wh.xsl</codeph></dt>
+              <dd>Specify this property if you want to customize the <xref
+                  href="#whr-xslt-customization/dita2webhelp-stylesheet" format="dita">XSLT
+                  stylesheet used to produce an HTML file for each topic</xref>.</dd>
+            </dlentry>
+            <dlentry>
+              <dt><codeph>args.create.main.files.xsl</codeph></dt>
+              <dd>Specify this property if you want to customize the <xref
+                  href="#whr-xslt-customization/main-files-stylesheet" format="dita">XSLT stylesheet
+                  used to produce the main HTML file</xref>.</dd>
+            </dlentry>
+          </dl>
+          <dl>
+            <dlentry>
+              <dt><codeph>args.createTocXML.xsl</codeph></dt>
+              <dd>Specify this property if you want to customize the <xref
+                  href="#whr-xslt-customization/toc-stylesheet" format="dita">XSLT stylesheet used
+                  to produce the <filepath>toc.xml</filepath> file</xref>. The toc.xml file contains
+                information extracted from DITA map and it is mainly used to create the WebHelp
+                TOC.</dd>
+            </dlentry>
+          </dl>
+        </p><p>For example, to customize a WebHelp Responsive transformation type, the build file
+          should look
+          like:</p><codeblock outputclass="language-xml">&lt;project basedir="." name="Webhelp Responsive Customization">  
+ &lt;target name="dita2webhelp-responsive-custom">    
+   &lt;!-- 
+     Override this property if you want to customize the XSLT stylesheet 
+     used to produce an HTML file for each topic 
+   -->    
+   &lt;property 
+     name="args.wh.xsl" 
+     value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}
+                                                 /xsl/dita2webhelpCustom.xsl"/>
+   &lt;!-- 
+     Override this property if you want to customize the XSLT stylesheet 
+     used to produce the main HTML file.
+   -->    
+   &lt;property 
+     name="args.create.main.files.xsl" 
+     value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}
+                                              /xsl/createMainFilesCustom.xsl"/>
+   &lt;!-- 
+     Override this property if you want to customize the XSLT stylesheet 
+     used to produce the toc.xml file.
+   -->    
+   &lt;property 
+     name="args.createTocXML.xsl" 
+     value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}
+                                              /xsl/createTocXMLCustom.xsl"/>
+   &lt;!--
+     Depending on which version of WebHelp you want to customize, 
+     you need to delegate to different build targets:
+     * dita2webhelp-responsive - when you are customizing the Webhelp Responsive
+     * dita2webhelp-mobile - when you are customizing the Webhelp Mobile
+     * dita2webhelp - when you are customizing the Webhelp Classic
+   -->
+   &lt;antcall target="dita2webhelp-responsive"/>
+ &lt;/target>  
+&lt;/project></codeblock><note>Depending
+          on which version of WebHelp you want to customize, you need to call one of the following
+          build targets:<ul id="ul_iq2_knw_3x">
+            <li>
+              <p><b>dita2webhelp-responsive</b> - For WebHelp Responsive (with or without feedback)
+                output.</p>
+            </li>
+            <li>
+              <p><b>dita2webhelp</b> - For WebHelp Classic (with or without feedback) output.</p>
+            </li>
+            <li>
+              <p><b>dita2webhelp-mobile</b> - For WebHelp Classic Mobile output (deprecated).</p>
+            </li>
+          </ul></note></li>
+      <li>Create an <b>xsl</b> directory in the plugin customization directory (that you created
+        in step 1) to store the customized XSLT stylesheets.</li>
+    </ol>
+    <section id="section_r3r_tp1_3z">
+      <title>Referencing the WebHelp XSLT Stylesheets from Your Customizations</title>
+      <p>Note that your customization stylesheets should import the original stylesheets that they
+        override. To reference the WebHelp stylesheets, you can use the
+          <b>plugin:com.oxygenxml.dita-ot.plugin.webhelp</b> prefix. This prefix is rewritten by an
+        XML catalog to the WebHelp root directory.</p>
+      <sectiondiv id="dita2webhelp-stylesheet"><u><b>Customizing the
+              <filepath>dita2webhelp.xsl</filepath> Stylesheet</b></u></sectiondiv>
+      <p>The XSLT stylesheet that customizes the WebHelp <b>dita2webhelp.xsl</b> stylesheet should
+        look
+        like:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+   exclude-result-prefixes="xs math"
+   version="2.0">    
+   &lt;!--
+     Import the original stylesheet used to produce an HTML file for each topic.
+   -->
+   &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/
+                                             dita/responsive/dita2webhelp.xsl"/>
+   &lt;!--
+     Please add your customization templates here.
+   -->
+&lt;/xsl:stylesheet></codeblock></p>
+      <p>Depending on which version of WebHelp you want to customize, you need to import one of the
+        following XSLT stylesheets:<ul id="ul_xfs_vnw_3x">
+          <li>
+            <p><b>dita2webhelp-responsive</b> (WebHelp Responsive) - </p>
+            <p><codeph>&lt;xsl:import
+                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/dita2webhelp.xsl"/></codeph></p>
+          </li>
+          <li>
+            <p><b>dita2webhelp</b> (WebHelp Classic) -</p>
+            <p><codeph>&lt;xsl:import
+                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/desktop/dita2webhelp.xsl"/></codeph></p>
+          </li>
+          <li>
+            <p><b>dita2webhelp-mobile</b> (WebHelp Classic Mobile) - </p>
+            <p><codeph>&lt;xsl:import
+                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/mobile/dita2webhelp.xsl"/></codeph></p>
+          </li>
+        </ul></p>
+      <sectiondiv id="main-files-stylesheet"><u><b>Customizing the
+              <filepath>createMainFiles.xsl</filepath> Stylesheet</b></u></sectiondiv>
+      <p>The XSLT stylesheet that customizes the WebHelp <b>createMainFiles.xsl</b> stylesheet
+        should look
+        like:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+    exclude-result-prefixes="xs math"
+    version="2.0">    
+    &lt;!--
+        Import the original stylesheet used to produce the main HTML file.
+    -->
+    &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/
+                                               responsive/createMainFiles.xsl"/>
+    &lt;!--
+        Please add your customization templates here.
+    -->
         
-        &lt;xsl:param name="pathFromMaplist" as="xs:string"/>
-        &lt;xsl:param name="children" select="()" as="element()*"/>
-        &lt;xsl:param name="parent" select="parent::*" as="element()?"/>
+&lt;/xsl:stylesheet></codeblock></p>
+      <p>Depending on which version of WebHelp you want to customize, you need to import one of the
+        following XSLT stylesheets:<ul id="ul_mhw_xp1_3z">
+          <li>
+            <p><b>dita2webhelp-responsive</b> (WebHelp Responsive) - </p>
+            <p><codeph>&lt;xsl:import
+                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/createMainFiles.xsl"/></codeph></p>
+          </li>
+          <li>
+            <p><b>dita2webhelp</b> (WebHelp Classic) -</p>
+            <p><codeph>&lt;xsl:import
+                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/desktop/createMainFiles.xsl"/></codeph></p>
+          </li>
+          <li>
+            <p><b>dita2webhelp-mobile</b> (WebHelp Classic Mobile) - </p>
+            <p><codeph>&lt;xsl:import
+                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/mobile/createMainFiles.xsl"/></codeph></p>
+          </li>
+        </ul></p>
+      <sectiondiv id="toc-stylesheet"><u><b>Customizing the <filepath>tocDita.xsl</filepath>
+            File</b></u></sectiondiv>
+      <p>The XSLT stylesheet that customizes the WebHelp <b>tocDita.xsl</b> stylesheet should look
+        like:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+    exclude-result-prefixes="xs math"
+    version="2.0">    
+    &lt;!--
+        Import the original stylesheet used to produce the toc.xml file.
+    -->
+    &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/tocDita.xsl"/>
+    &lt;!--
+        Please add your customization templates here.
+    -->
         
-        &lt;xsl:apply-templates select="." mode="sideTocEntry">
-          &lt;xsl:with-param name="pathFromMaplist" select="$pathFromMaplist"/>
-          &lt;xsl:with-param name="children" select="$children"/>
-        &lt;/xsl:apply-templates>
-&lt;/xsl:template></codeblock></li>
-          <li>Run the <uicontrol>Run DITA OT Integrator</uicontrol> transformation scenario.</li>
-          <li>Run a <b>DITA Map WebHelp Responsive</b> transformation scenario to obtain the
-            customized side TOC.</li>
-        </ol></p>
-    </section>
-    <section id="section_hp1_phg_dx">
-      <title>Use-Case 2: Customizing the Side TOC Dynamically with a WebHelp <i>XSLT-Parameter
-          Extension Point</i></title>
-      <p>Another use-case might be if you want to control what is displayed in the side table of
-        contents more dynamically, meaning that you can declare XSLT parameters in your
-        customization stylesheet and control the parameter values from the transformation scenario.
-        For this use-case, you can use the <xref
-          href="whr-override-xslt-processing.dita#whr-override-xslt-processing/param-ext-point"
-            ><b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b> extension point</xref>. </p>
-      <p>Suppose that you want to add a parameter to control whether the side TOC will only contain
-        the current topic along with its children or if it will contain all the topics in the
-        default form (with the current, sibling, child, and parent topics all displayed).</p>
-      <sectiondiv><b>How to Customize the Side TOC Dynamically by Using Parameters</b></sectiondiv>
-      <p>To add this functionality, follow these steps:<ol>
-          <li>Create a DITA-OT plugin structure by following the first 3 steps in the <xref
-              href="#whr-xslt-customization/how-to-customize-side-toc" format="dita">procedure
-              above</xref>. </li>
-          <li>In the customization stylesheet that you created in step 3, declare the
-              <codeph>side_toc_only_children</codeph> parameter and modify the template to match the
-            topic only when the <codeph>side_toc_only_children</codeph> parameter is set to
-              <i>yes</i>:<codeblock outputclass="language-xml">&lt;xsl:param name="side_toc_only_children" select="'yes'"/>
-...
-&lt;xsl:template
-        match="
-        toc:topic
-        [not(@toc = 'no')]
-        [not(@processing-role = 'resource-only')]
-        [$side_toc_only_children = 'yes']"
-...</codeblock></li>
-          <li>Edit the <b>plugin.xml</b> file to specify the
-              <b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b> extension point and a custom
-            parameter file by adding the following
-            line:<codeblock outputclass="language-xml">&lt;feature extension="com.oxygenxml.webhelp.xsl.dita2webhelp.param" 
- file="custom_params.xsl"/></codeblock></li>
-          <li>Create a custom parameter file (for example, <b>custom_params.xml</b>). It should look
-            like
-            this:<codeblock outputclass="language-xml">&lt;dummy>
-    &lt;param name="side_toc_only_children" expression="${side_toc_only_children}"
-     if="side_toc_only_children"/>
-&lt;/dummy></codeblock></li>
-          <li>Run the <uicontrol>Run DITA OT Integrator</uicontrol> transformation scenario.</li>
-          <li>Edit a <b>DITA Map WebHelp Responsive</b> transformation scenario and in the
-              <uicontrol>Parameters</uicontrol> tab, specify the desired value (<i>yes</i> or
-              <i>no</i>) for your custom parameter (<codeph>side_toc_only_children</codeph>).</li>
-          <li>Run the transformation scenario.</li>
-        </ol></p>
+&lt;/xsl:stylesheet></codeblock></p>
     </section>
   </body>
 </topic>

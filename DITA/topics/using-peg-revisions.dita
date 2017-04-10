@@ -5,8 +5,8 @@
   <body>
     <p>Usually, you point to an item from a repository using a URL. However, sometimes this might
       not be enough because the URL alone might point to a different item than the one you want and
-      a <term>peg revision</term> is needed.</p>
-    <p>A Subversion repository tracks any change made to its items by using <term>revisions</term>,
+      a <i>peg revision</i> is needed.</p>
+    <p>A Subversion repository tracks any change made to its items by using <i>revisions</i>,
       which contain information such as the name of the author who made the changes, the date when
       they were made, and a number that uniquely identifies each of them. Over time, an item from a
       specific location in a repository evolves as a result of committing changes to it. When an
@@ -14,45 +14,48 @@
       remains recorded in the history of the repository. If a new item is created, with the same
       name and in the same location of the repository as a previously existing one, then both items
       are identified by the same URL even though they are located in different time frames. This is
-      when a <term>peg revision</term> comes in handy. A <term>peg revision</term> is nothing more
+      when a <i>peg revision</i> comes in handy. A <i>peg revision</i> is nothing more
       than a normal revision, but the difference between them is made by their usage. Many of the
       Subversion commands accept also a peg revision as a way to precisely identify an item in time,
-      beside an <term>operative revision</term> (the revision we are interested in, regarding the
+      beside an <i>operative revision</i> (the revision we are interested in, regarding the
       used command).</p>
-    <example>To illustrate an example, consider the following:<ul id="ul_yd4_yys_34">
+    <p><b><u>Example:</u></b></p>
+    <p>To illustrate an example, consider the following:<ul id="ul_yd4_yys_34">
         <li>We created a new repository file <codeph>config</codeph>, identified by the URL
             <codeph>http://host.com/myRepository/dir/config</codeph>.</li>
         <li>The file has been created at revision <codeph>10</codeph>.</li>
         <li>Over time, the file was modified by committing revisions <codeph>12, 15,
           17</codeph>.</li>
-      </ul><p>To access a specific version of the file identified by the
-          <codeph>http://host.com/myRepository/dir/config</codeph> URL, we need to use a
-        corresponding revision (the operative revision):<ul id="ul_a1t_b1t_34">
-          <li>If we use a revision number less than <codeph>10</codeph>, an error is triggered,
-            because the file has not been created yet.</li>
-          <li>If we use a revision number between <codeph>10</codeph> and <codeph>19</codeph>, we
-            will obtain the specific version we are interested in.<note>Although the file was
-              modified in revisions <codeph>12, 15, 17</codeph>, it existed in all revisions between
-                <codeph>10</codeph> and <codeph>19</codeph>. Starting with a revision at which the
-              file is modified, it has the same content across all revisions generated in the
-              repository until another revision in which it is modified again.</note></li>
-        </ul></p><p>At this point, we delete the file, creating revision <codeph>20</codeph>. Now,
-        we cannot access any version of the file, because it does not exist anymore in the latest
-        repository revision. This is due to the fact that Subversion automatically uses the
-          <codeph>HEAD</codeph> revision as a peg revision (it assumes any item currently exists in
-        the repository if not instructed otherwise). However, using any of the revision numbers from
-        the <codeph>10-19</codeph> interval (when the file existed) as a peg revision (beside the
-        operative revision), will help Subversion to properly identify the time frame when the file
-        existed, and access the file version corresponding to the operative revision. If we use a
-        revision number greater than <codeph>19</codeph>, this will also trigger an
-        error.</p><p>Continuing our example, suppose that at revision <codeph>30</codeph> we create
-        a directory called <codeph>config</codeph> in the same repository location as our deleted
-        file. This means that our new directory will be identified by the same repository address:
-          <codeph>http://host.com/myRepository/dir/config</codeph>. If we use only this URL in any
-        Subversion command, we will access the new directory. We will also access the same directory
-        if we use any revision number equal with or greater than <codeph>30</codeph> as peg
-        revision. However, if we are interested in accessing an old version of the previously
-        existing file, then we must use one of the revisions that existed (<codeph>10-19</codeph>),
-        as a peg revision, similar to the previous case.</p></example>
+      </ul></p>
+    <p>To access a specific version of the file identified by the
+        <codeph>http://host.com/myRepository/dir/config</codeph> URL, we need to use a corresponding
+      revision (the operative revision):<ul id="ul_a1t_b1t_34">
+        <li>If we use a revision number less than <codeph>10</codeph>, an error is triggered,
+          because the file has not been created yet.</li>
+        <li>If we use a revision number between <codeph>10</codeph> and <codeph>19</codeph>, we will
+          obtain the specific version we are interested in.<note>Although the file was modified in
+            revisions <codeph>12, 15, 17</codeph>, it existed in all revisions between
+              <codeph>10</codeph> and <codeph>19</codeph>. Starting with a revision at which the
+            file is modified, it has the same content across all revisions generated in the
+            repository until another revision in which it is modified again.</note></li>
+      </ul></p>
+    <p>At this point, we delete the file, creating revision <codeph>20</codeph>. Now, we cannot
+      access any version of the file, because it does not exist anymore in the latest repository
+      revision. This is due to the fact that Subversion automatically uses the <codeph>HEAD</codeph>
+      revision as a peg revision (it assumes any item currently exists in the repository if not
+      instructed otherwise). However, using any of the revision numbers from the
+        <codeph>10-19</codeph> interval (when the file existed) as a peg revision (beside the
+      operative revision), will help Subversion to properly identify the time frame when the file
+      existed, and access the file version corresponding to the operative revision. If we use a
+      revision number greater than <codeph>19</codeph>, this will also trigger an error.</p>
+    <p>Continuing our example, suppose that at revision <codeph>30</codeph> we create a directory
+      called <codeph>config</codeph> in the same repository location as our deleted file. This means
+      that our new directory will be identified by the same repository address:
+        <codeph>http://host.com/myRepository/dir/config</codeph>. If we use only this URL in any
+      Subversion command, we will access the new directory. We will also access the same directory
+      if we use any revision number equal with or greater than <codeph>30</codeph> as peg revision.
+      However, if we are interested in accessing an old version of the previously existing file,
+      then we must use one of the revisions that existed (<codeph>10-19</codeph>), as a peg
+      revision, similar to the previous case.</p>
   </body>
 </topic>
