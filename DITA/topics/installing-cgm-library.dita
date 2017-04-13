@@ -15,10 +15,16 @@
   </prolog>
   <taskbody>
     <prereq>
-      <p>To render CGM images in <uicontrol>Author</uicontrol> mode, <ph keyref="product"/> requires
-        the use of an <i>ISOView Active X</i> component for Internet Explorer, so this component
-        must be installed even if you do not use Internet Explorer. If you have used PTC products,
-        you may already have the <i>PTC IsoView ActiveX</i> component installed.<note
+      <p>To
+        r<?oxy_comment_start author="Alex Jitianu" timestamp="20170412T090835+0000" comment="There is another CGM related issue: EXM-39144. 
+
+We should present that first as it address all users, not just those that have IsoView.
+
+Afterwards, we should have a section: &quot;If you already have IsoView then we recommend installing this add-on. Afterwards, IsoView will be used in Oxygen to render CGMs. &quot;"?>ender
+        CGM images in <uicontrol>Author<?oxy_comment_end?></uicontrol> mode, <ph keyref="product"/>
+        requires the use of an <i>ISOView Active X</i> component for Internet Explorer, so this
+        component must be installed even if you do not use Internet Explorer. If you have used PTC
+        products, you may already have the <i>PTC IsoView ActiveX</i> component installed.<note
           type="restriction">This support will only work on 32 bit versions of <ph keyref="product"
           />.</note></p>
     </prereq>
@@ -48,9 +54,21 @@
         <cmd>Restart the application.</cmd>
       </step>
       <step>
-        <cmd>Modify your CSS according to your particular framework.</cmd>
-        <stepresult>You should be able to see CGM images in <uicontrol>Author</uicontrol>
-          mode.</stepresult>
+        <cmd>For <xref keyref="glossentry_framework"><term>frameworks</term></xref> other than DITA,
+          DocBook, or XHTML,
+          m<?oxy_comment_start author="Alex Jitianu" timestamp="20170412T090911+0000" comment="EXM-39154 If you have DITA, DocBook or HTML document then you don&apos;t need to modify the document"?>odify
+          your CSS according to your particular <?oxy_comment_end?><term>framework</term>. The
+            <b>CGM Form Control</b> plugin recognizes CGM files in DITA, DocBook, and XHTML, so for
+          those <term>frameworks</term>, this step is not necessary.</cmd>
+        <stepresult><p>If you have an XML: <pre>&lt;image href="MyCGMFile.cgm"/></pre></p><p>You
+            need a CSS rule like
+            this:<pre>image[<b>href</b>$=".cgm"],
+image[<b>href</b>$=".CGM"]{
+    content: oxy_editor(
+            saHeavyFormControlClassName , "com.oxygenxml.activex.fctrl.ActiveXFormControl", 
+            href, oxy_url(oxy_base-uri() , attr(<b>href</b>)));
+} </pre></p>You
+          should be able to see CGM images in <uicontrol>Author</uicontrol> mode.</stepresult>
       </step>
     </steps>
   </taskbody>
