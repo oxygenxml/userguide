@@ -222,7 +222,7 @@
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
       <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 90)"/>
       <sch:report test="string-length($offendingLines) > 0">
-        Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 80 characters. </sch:report>
+        Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 90 characters. </sch:report>
     </sch:rule>
   </sch:pattern>
   
