@@ -11,10 +11,10 @@
   </prolog>
   <taskbody>
     <context>
-      <p>You need to provide a handler for resolving references and obtain the content they
-        reference. In our case the element that has references is <b>ref</b> and the attribute
-        indicating the referenced resource is <b>location</b>. You will have to implement a Java
-        extension class for obtaining the referenced resources.</p>
+      <p>This information is helpful if you need to provide a handler for resolving references and
+        obtain the content they reference. For example, suppose the element that has references is
+          <b>ref</b> and the attribute indicating the referenced resource is <b>location</b>. You
+        need to implement a Java extension class for obtaining the referenced resources.</p>
     </context>
     <steps>
       <step>
@@ -36,12 +36,11 @@ public class ReferencesResolver
         </info>
       </step>
       <step>
-        <cmd>The <i>hasReferences</i> method verifies if the handler considers the node
-          to have references. It takes as argument an <i>AuthorNode</i> that represents
-          the node that will be verified. The method will return <codeph>true</codeph> if the node
-          is considered to have references. In our case, to be a reference the node must be an
-          element with the name <i>ref</i> and it must have an attribute named
-          <i>location</i>.</cmd>
+        <cmd>The <i>hasReferences</i> method verifies if the handler considers the node to have
+          references. It takes <i>AuthorNode</i> as an argument that represents the node that will
+          be verified. The method will return <codeph>true</codeph> if the node is considered to
+          have references. For our example, to be a reference, the node must be an element with the
+          name <i>ref</i> and it must have an attribute named <i>location</i>.</cmd>
         <info>
           <codeblock outputclass="language-java">public boolean hasReferences(AuthorNode node) {
   boolean hasReferences = false;
@@ -57,12 +56,11 @@ public class ReferencesResolver
         </info>
       </step>
       <step>
-        <cmd>The method <i>getDisplayName</i> returns the display name of the node that
-          contains the expanded referenced content. It takes as argument an
-            <i>AuthorNode</i> that represents the node for which the display name is
-          needed. The referenced content engine will ask this
-            <i>AuthorReferenceResolver</i> implementation for the display name for each
-          node that is considered a reference. In our case, the display name is the value of the
+        <cmd>The method <i>getDisplayName</i> returns the display name of the node that contains the
+          expanded referenced content. It takes <i>AuthorNode</i> as an argument that represents the
+          node for which the display name is needed. The referenced content engine will ask this
+            <i>AuthorReferenceResolver</i> implementation for the display name for each node that is
+          considered a reference. For our example, the display name is the value of the
             <i>location</i> attribute from the <i>ref</i> element.</cmd>
         <info>
           <codeblock outputclass="language-java">public String getDisplayName(AuthorNode node) {
@@ -82,13 +80,13 @@ public class ReferencesResolver
       </step>
       <step>
         <cmd>The method <i>resolveReference</i> resolves the reference of the node and returns a
-            <i>SAXSource</i> with the parser and its input source. It takes as arguments an
-            <i>AuthorNode</i> that represents the node for which the reference needs resolving, the
+            <i>SAXSource</i> with the parser and its input source. It takes <i>AuthorNode</i> as an
+          argument that represents the node for which the reference needs resolving, the
             <codeph>systemID</codeph> of the node, the <i>AuthorAccess</i> with access methods to
           the <uicontrol>Author</uicontrol> mode data model and a SAX <i>EntityResolver</i> that
           resolves resources that are already opened in another editor or resolve resources through
           the <xref keyref="glossentry_xml-catalog"><term>XML Catalog</term></xref>. In the
-          implementation you need to resolve the reference relative to the
+          implementation, you need to resolve the reference relative to the
             <codeph>systemID</codeph>, and create a parser and an input source over the resolved
           reference.</cmd>
         <info>
@@ -135,11 +133,11 @@ public class ReferencesResolver
         </info>
       </step>
       <step>
-        <cmd>The method <i>getReferenceUniqueID</i> should return a unique identifier
-          for the node reference. The unique identifier is used to avoid resolving the references
-          recursively. The method takes as argument an <i>AuthorNode</i> that represents
-          the node with the reference. In the implementation the unique identifier is the value of
-          the <i>location</i> attribute from the <i>ref</i> element.</cmd>
+        <cmd>The method <i>getReferenceUniqueID</i> should return a unique identifier for the node
+          reference. The unique identifier is used to avoid resolving the references recursively.
+          The method takes <i>AuthorNode</i> as an argument that represents the node with the
+          reference. In our example, the unique identifier is the value of the <i>location</i>
+          attribute from the <i>ref</i> element.</cmd>
         <info>
           <codeblock outputclass="language-java">public String getReferenceUniqueID(AuthorNode node) {
   String id = null;
@@ -157,13 +155,12 @@ public class ReferencesResolver
         </info>
       </step>
       <step>
-        <cmd>The method <i>getReferenceSystemID</i>should return the
-            <codeph>systemID</codeph> of the referenced content. It takes as arguments an
-            <i>AuthorNode</i> that represents the node with the reference and the
-            <i>AuthorAccess</i> with access methods to the <uicontrol>Author</uicontrol>
-          mode data model. In the implementation you use the value of the <i>location</i> attribute
-          from the <i>ref</i> element and resolve it relatively to the XML base URL of the
-          node.</cmd>
+        <cmd>The method <i>getReferenceSystemID</i>should return the <codeph>systemID</codeph> of
+          the referenced content. It takes <i>AuthorNode</i> as an argument that represents the node
+          with the reference and the <i>AuthorAccess</i> with access methods to the
+            <uicontrol>Author</uicontrol> mode data model. In our example, the value of the
+            <i>location</i> attribute is used from the <i>ref</i> element and resolved relatively to
+          the XML base URL of the node.</cmd>
         <info>
           <p>
             <codeblock outputclass="language-java">public String getReferenceSystemID(AuthorNode node, 
@@ -188,7 +185,6 @@ public class ReferencesResolver
   return systemID;
 }</codeblock>
           </p>
-          <note conkeyref="reusable_notes_java-files/sdf_project"/>
           <p>In the listing below, the XML document contains the <b>ref</b> element:</p>
           <codeblock outputclass="language-xml">&lt;ref location="referenced.xml"&gt;Reference&lt;/ref&gt;</codeblock>
         </info>
