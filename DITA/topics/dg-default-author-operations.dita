@@ -122,8 +122,7 @@
             JavaScript content. For some sample <b>JSOperation</b> implementations, see <xref
               href="https://github.com/oxygenxml/javascript-sample-operations" format="html"
               scope="external"/>.<note type="notice">For the <ph keyref="webappProduct"/>, this
-              operation cannot be invoked using the JavaScript API.</note></p><p>This operation
-            accepts the following parameter:<ul id="ul_af1_4dr_qr">
+              operation cannot be invoked using the JavaScript API.</note></p><p>This operation accepts the following parameter:<ul id="ul_af1_4dr_qr">
               <li><b>script</b><p>The JavaScript content to execute. It must have a function called
                     <codeph>doOperation()</codeph>, which can use the predefined
                     <codeph>authorAccess</codeph> variable. The <codeph>authorAccess</codeph>
@@ -465,7 +464,65 @@ returnif (not(empty($toProcess))) then
               <li><b>expandEditorVariables</b><p>Parameter controlling the expansion of <xref
                     href="editor-variables.dita#editor-variables">editor variables</xref> returned
                   by the script processing. Expansion is enabled by default.</p></li>
-            </ul></p></li>
+            </ul></p><p><b>XSLTOperation Example: Sort a list with respect to the language declared
+              on the root element-</b></p><p>Suppose we want an action that will sort a list with
+            respect to the language declared on the root element and we have an XML file like
+            this:<codeblock outputclass="language-xml">&lt;article xml:lang="en">
+  &lt;ul>
+     &lt;li>B&lt;/li>
+     &lt;li>C&lt;/li>
+     &lt;li>A&lt;/li>
+  &lt;/ul>
+&lt;/article></codeblock></p><p>The
+              <b>XSLTOperation</b> needs to be configured as follows:</p><ul>
+            <li><b>sourceLocation</b> is set to /* so that the script has access to the root element
+              and its children.</li>
+            <li><b>targetLocation</b> is left untouched (assuming that the action is active only
+              when the cursor is inside the list).</li>
+          </ul><p>The XSLT script would look like
+            this:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns:saxon="http://saxon.sf.net/"
+  xmlns:lds="http://www.lds.org/schema/lds-meta/v1" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs saxon" version="2.0">
+
+  &lt;xsl:param name="currentElementLocation"/>
+
+  &lt;xsl:template match="/">
+      &lt;!-- 
+          sourceLocation parameter was set to /* to have a larger context.
+          We can pinpoint the element that contained the caret 
+          using $currentElementLocation
+      -->
+     &lt;xsl:apply-templates select="saxon:eval(saxon:expression($currentElementLocation))"/>
+  &lt;/xsl:template>
+
+  &lt;xsl:template match="ul">
+        
+    &lt;!-- Because the sourceLocation parameter was set to /* we now have access to 
+         the root element and its attributes. -->
+    &lt;xsl:variable name="lang" select="/*/@xml:lang"/>
+    &lt;xsl:variable name="collationURI">
+      &lt;xsl:value-of select="concat('http://www.w3.org/2013/collation/UCA?lang=', $lang)"/>
+    &lt;/xsl:variable>
+        
+      &lt;xsl:copy>
+          &lt;xsl:copy-of select="@*"/>
+            
+          &lt;!-- Copy the list items, but sorted. -->
+          &lt;xsl:apply-templates select="li">
+              &lt;xsl:sort collation="{$collationURI}" select="text()"/>
+          &lt;/xsl:apply-templates>
+      &lt;/xsl:copy>
+  &lt;/xsl:template>
+    
+  &lt;!-- This copy template will handle the contents of the list items. -->
+  &lt;xsl:template match="@* | node()">
+      &lt;xsl:copy>
+          &lt;xsl:apply-templates select="@* | node()"/>
+      &lt;/xsl:copy>
+  &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></p></li>
       </ul></p>
     <section id="editor_variables_in_author_mode_operations">
       <title>Editor Variables in Author Mode Operations</title>
