@@ -277,12 +277,13 @@
       [not(contains(@class, ' topic/entry '))]
       [not(contains(@class, ' topic/stentry '))]
       [not(contains(@class, ' topic/object '))]
+      [not(contains(@class, ' topic/param '))]
       [not(@conref)]
       [not(@conkeyref)]
       [not(@keyref)]
       [not(@href)]
       [not(ancestor::*[@conref or @conkeyref])]">
-      <sch:report test="not(node())"> Empty element. </sch:report>
+      <sch:report test="not(node())"> Empty element. Most DITA elements should not be empty.</sch:report>
     </sch:rule>
   </sch:pattern>
   <sch:pattern>
