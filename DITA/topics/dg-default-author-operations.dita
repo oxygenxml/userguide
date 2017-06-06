@@ -333,18 +333,29 @@ paragraph{
         <li><b id="XQueryUpdateOperation">XQueryUpdateOperation</b><p>Allows you to execute an
             XQuery Update script directly over content in <uicontrol>Author</uicontrol> mode.<note
               type="notice">This operation is not applicable to the <ph keyref="authorComponent"/>
-              or the <ph keyref="webappProduct"/>.</note></p><p>It has one argument:<ul>
-              <li><b>script</b><p>The XQuery Update script to be executed. The value can either be
-                  an XQuery script or a URL that points to the XQuery Update script. You can use the
-                    <xref href="editor-variables.dita#editor-variables/edvar-framework"
-                      ><i>${framework}</i></xref> or <xref
-                    href="editor-variables.dita#editor-variables/edVar-frameworkDir"
-                      ><i>${frameworkDir}</i></xref> editor variables to refer the scripts from the
-                    <term>framework</term> directory.</p><p>The script will be executed in the
-                  context of the node at the cursor position. If the script declares the following
-                  variable, it will also receive the selected nodes (assuming that entire nodes are
-                  selected):</p><codeblock outputclass="language-ini">declare variable $oxyxq:selection external;</codeblock></li>
-            </ul></p><p>An example of an XQuery Update Script that converts paragraphs to list
+              or the <ph keyref="webappProduct"/>.</note></p><p>It has the following arguments:<ul>
+              <li><b>script</b> - The XQuery Update script to be executed. The value can either be
+                an XQuery script or a URL that points to the XQuery Update script. You can use the
+                  <xref href="editor-variables.dita#editor-variables/edvar-framework"
+                    ><i>${framework}</i></xref> or <xref
+                  href="editor-variables.dita#editor-variables/edVar-frameworkDir"
+                    ><i>${frameworkDir}</i></xref> editor variables to refer the scripts from the
+                  <term>framework</term> directory.<p>The script will be executed in the context of
+                  the node at the cursor position. If the script declares the following variable, it
+                  will also receive the selected nodes (assuming that entire nodes are
+                  selected):</p><codeblock outputclass="language-ini">declare variable $oxyxq:selection external;</codeblock><p>In
+                  the <xref href="#dg-default-author-operations/example1" format="dita">example
+                    below</xref>, you can see how this argument is used.</p></li>
+              <li><b>externalParams</b> - A string that can assign multiple key-value pairs
+                separated by a comma or a new line character.<p>For example, if an XQuery script
+                  declares two external parameters like this:
+                </p><codeblock>declare variable $param1 external;
+declare variable $param2 external;</codeblock>You
+                can pass custom values for each parameter by setting the
+                  <apiname>externalParams</apiname> to
+                <codeph>param1=value1,param2=value2</codeph>.</li>
+            </ul></p><p id="example1">An example of an XQuery Update Script that converts paragraphs
+            to list
             items:<codeblock outputclass="language-ini">declare namespace oxyxq = "http://www.oxygenxml.com/ns/xqu";
 (: This variable will be linked to the selected nodes assuming that there are 
 actually fully selected nodes. For example this selection will return null: 
