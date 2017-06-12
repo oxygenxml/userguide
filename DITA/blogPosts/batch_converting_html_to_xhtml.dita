@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="batch_converting_html_to_xhtml">
+    <title>Batch converting HTML to XHTML</title>
+    <body>
+        <p>Let's say you have a bunch of possible not-wellformed <b>HTML</b> documents already
+            created and you want to process them using <b>XSLT</b>. For example you may want to
+            migrate the <b>HTML</b> to <b>DITA</b> using the predefined <b>XHTML to DITA Topic</b>
+            transformation scenario available in Oxygen. So you need to create valid XML wellformed
+                <b>XHTML</b> documents from the existing <b>HTML</b> documents and you need to do
+            this in a batch processing automated fashion. </p>
+        <p>There are lots of open source projects which deliver processors which can convert
+                <b>HTML</b> to its wellformed <b>XHTML</b> equivalent. For this blog post we'll use
+                <xref href="http://www.html-tidy.org/" format="html" scope="external">HTML
+                Tidy</xref>. Here are a couple of steps to automate this process:<ol
+                id="ol_qmj_mmz_21b">
+                <li>Create a new folder on your hard drive (for example I created one on my
+                        <b>Desktop</b>: <codeph>C:\Users\radu_coravu\Desktop\tidy</codeph>) and
+                    download there the HTML Tidy executable specific for your platform: <xref
+                        href="http://binaries.html-tidy.org/" format="html" scope="external"/>.</li>
+                <li>In the same folder with the <b>Tidy</b> executable create an <b>ANT</b> build
+                    file called <codeph>build.xml</codeph> having the following content:
+                    <codeblock outputclass="language-xml">&lt;project basedir="." name="TidyUpHTMLtoXHTML" default="main">
+    &lt;basename property="filename" file="${file}"/>
+  &lt;target name="main">
+      &lt;exec command="tidy.exe -o ${output.dir}/${filename} ${file}"/>
+  &lt;/target>
+&lt;/project></codeblock></li>
+                <li>Link in the Oxygen <b>Project</b> view the entire folder where the original
+                        <b>HTML</b> documents are located.</li>
+                <li>Right click the folder, choose <b>Transform->Configure Transformation
+                        Scenarios...</b> and create a new transformation scenario of type <b>ANT
+                        Scenario</b>. Modify the following properties in the transformation
+                        scenario:<ol id="ol_nxx_dnz_21b">
+                        <li>Change the scenario name to something relevant like <b>HTML to
+                            XHTML</b>.</li>
+                        <li>Change the <b>Working Directory</b> to point to the folder where the ANT
+                            build file is located, in my case:
+                                <codeph>C:\Users\radu_coravu\Desktop\tidy</codeph>.</li>
+                        <li>Change the <b>Build file</b> to point to your custom <b>build.xml</b>,
+                            in my case:
+                            <codeph>C:\Users\radu_coravu\Desktop\tidy\build.xml</codeph>.</li>
+                        <li>In the <b>Parameters</b> tab add a parameter called <b>file</b> with
+                            value <b>${cf}</b> and a parameter called <b>output.dir</b> with value
+                            the path to the output folder where the equivalent XHTML files will be
+                            stored, in my case I set it to:
+                                <codeph>C:\Users\radu_coravu\Desktop\testOutputXHTML</codeph>.</li>
+                    </ol></li>
+                <li>Apply the newly transformation scenario on the entire folder containing the HTML
+                    documents. At the end in the output folder you will find the XHTML equivalents
+                    of the original HTML files, XHTML documents which can later be processed using
+                    XML technologies like <b>XSLT</b> or <b>XQuery</b>.</li>
+            </ol></p>
+    </body>
+</topic>
