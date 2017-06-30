@@ -96,6 +96,56 @@ authorAccess.getDocumentController().setAttribute(
             />/samples/form-controls</filepath></b> directory and go to section <b>11.1 -
           Interacting with the Oxygen Workspace</b>.</p>
     </section>
+    <section id="listening_for_changes_in_the_document">
+      <title>Listening for Changes in the Document</title>
+      <p>If the form control presents some information from the document (for example, the value of
+        an attribute), then it needs to be notified on changes in the document so that it can update
+        that information. To do this, follow these steps:<ol>
+          <li>In the JavaScript, the <b><codeph>bridgeReady()</codeph></b> method is invoked as soon
+            as the form control is loaded and our API bridge is installed. This is where you can add
+            a
+            listener:<codeblock outputclass="language-javascript">function bridgeReady () {
+      // We declare a member function for each method of the 
+          ro.sync.ecss.extensions.api.AuthorListener interface (same function signature)
+      var handler = {
+        attributeChanged : function(event) {
+            var node = event.getOwnerAuthorNode();
+            var attrName = event.getAttributeName();
+            
+            if (node.equals(contextElement) &amp;&amp; attrName === "counter") {
+              init();
+            }
+        },
+        contentDeleted : function(event) {},
+        contentInserted : function(event) {}
+    };
+     
+     // We create a proxy over an ro.sync.ecss.extensions.api.AuthorListener that will 
+         delegate its methods to the JS object's functions.
+     // We assign the listener to a global variable so that we can remove it later on, 
+         on the dispose() method.
+     authorDocumentListener = apiHelper.createProxyListener(
+     	"ro.sync.ecss.extensions.api.AuthorListener", handler);
+     
+      var ctrl = authorAccess.getDocumentController();
+
+      // Add the proxy listener.
+      ctrl.addAuthorListener(authorDocumentListener);
+}</codeblock></li>
+          <li>Since a listener was added on the document, it is important to remove it once the form
+            control is not used anymore. When a form control is discarded, you can call the
+                <b><codeph>dispose()</codeph></b> method from the JavaScript. This is where the
+            previously created listener can be
+            removed:<codeblock outputclass="language-javascript">/**
+ * The form control will not be used anymore. Clean up.
+ */
+function dispose() {
+    // Dispose all added listeners.
+     var ctrl = authorAccess.getDocumentController();
+     ctrl.removeAuthorListener(authorDocumentListener);
+}</codeblock></li>
+        </ol></p>
+    </section>
     <section id="debugging_javascript_used_for_custom_form_control">
       <title>Debugging JavaScript Used for Custom Form Controls</title>
       <p>If you encounter unexpected results when using the <xref
