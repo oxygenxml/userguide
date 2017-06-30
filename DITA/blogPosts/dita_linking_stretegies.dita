@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dita_linking_stretegies">
+    <title>DITA Linking Strategies</title>
+    <body>
+        <p>This small tutorial is based on the "DITA Linking Strategies" presentations I made for
+            the DITA Europe 2016 and DITA North America 2017 conferences. It's a general overview
+            about DITA linking possibilities and best practices. And it's meant as a continuation of
+            the <xref
+                href="http://blog.oxygenxml.com/2015/11/dita-reuse-strategies-short-tutorial.html"
+                format="html" scope="external">DITA Reuse Strategies</xref> blog post.</p>
+        <p>According to <xref href="https://en.wikipedia.org/wiki/Hyperlink" format="html"
+                scope="external">Wikipedia</xref>: <lq>"A link, is a reference to data that the
+                reader can directly follow either by clicking, tapping, or hovering."</lq></p>
+        <p>Basically we should regard linking as yet another form of content reuse, only that
+            instead of presenting the content in place, it re-directs the end user to some other
+            resource. And we'll start with describing linking at DITA Map level.</p>
+        <section id="section_bt2_hpz_j1b">
+            <title>Map-Level Linking</title>
+            <p>A DITA Map uses topic references to assemble the content of the
+                publication.<codeblock outputclass="language-xml"> &lt;topicref href="installation.dita">
+  &lt;topicref href="server_installation.dita"/>
+  &lt;topicref href="client_side_installation.dita"/>
+ &lt;/topicref></codeblock></p>
+            <p>Depending on the output format, the topic reference may be a link in the table of
+                contents for the XHTML based outputs or it may be interpreted as a content reference
+                for the PDF based output which generates a single monolith document. So the role of
+                the <codeph>topicref</codeph> is dual, it may sometimes be regarded as a link to a
+                topic and sometimes as a content reference.</p>
+        </section>
+        <section id="section_d5k_rpz_j1b">
+            <title>Chunking</title>
+            <p>DITA topic modules should be kept as small as possible but sometimes the end user may
+                need to read more than one topic in order to achieve a single task. So when
+                publishing to HTML-based outputs you will end up asking yourself this
+                    question:<lq>Should I prefer larger HTML files or more links in the
+                TOC?</lq></p>
+            <p>And you should always consider these two ideas:<ul id="ul_ffy_brz_j1b">
+                    <li>
+                        <p>Links are disruptive. Ideally users would not need to jump around in
+                            content to read the entire story they are searching for. </p>
+                    </li>
+                    <li>Small topics which are usually consecutively read by the end user can
+                        probably get merged together.</li>
+                </ul></p>
+            <p>For example if the installation of your product requires installing both a server
+                side and a client side components, using DITA chunking you can choose to have
+                separate DITA topic modules for each of the installation procedures but to merge the
+                topics together in the web-based
+                outputs:<codeblock outputclass="language-xml">&lt;map>
+ &lt;title>User Guide&lt;/title>
+ &lt;topicref href="installation.dita" chunk="to-content">
+  &lt;topicref href="server_installation.dita" toc="no"/>
+  &lt;topicref href="client_side_installation.dita" toc="no"/>
+ &lt;/topicref>
+&lt;/map></codeblock></p>
+            <p>You can read more about chunking in the <xref
+                    href="http://docs.oasis-open.org/dita/dita/v1.3/os/part3-all-inclusive/archSpec/base/chunking.html"
+                    format="html" scope="external">DITA 1.3 specification</xref>. The <xref
+                    href="https://www.oxygenxml.com/dita/styleguide/webhelp-feedback/#Artefact/Topics_and_Information_Types/c_Avoiding_Hierarchy_in_Topics.html"
+                    format="html" scope="external">DITA Style Guide</xref> also has a good overview
+                about why you should prefer writing small topics and them merging them together
+                using the chunking mechanism.</p>
+        </section>
+        <section id="section_bhr_grz_j1b">
+            <title>Topic-level linking</title>
+            <p>Links which appear inside topics can be roughly divided in various categories and
+                we'll try to discuss each of these categories separately.</p>
+        </section>
+        <section id="section_adf_ysz_j1b">
+            <title>In-Content Links</title>
+            <p>In-content links are links added manually in the topic
+                content:<codeblock outputclass="language-xml">&lt;li>See: &lt;xref href="http://www.../" format="html" scope="external"/>&lt;/li></codeblock></p>
+            <p>You should keep in mind that this kind of links are disruptive to the reading
+                experience because when end users encounter them they need to decide weather to read
+                further on or to follow the link. But this may be a good thing sometimes. For
+                example one of the installation steps may require the end user to download a certain
+                library from an external website before continuing.</p>
+            <p>You can read more about links in general in the <xref
+                    href="http://docs.oasis-open.org/dita/dita/v1.3/os/part3-all-inclusive/langRef/base/xref.html"
+                    format="html" scope="external">DITA 1.3 specification</xref>. The <xref
+                    href="https://www.oxygenxml.com/dita/styleguide/webhelp-feedback/Artefact/Cross_Referencing/c_Avoiding_Cross_References.html"
+                    format="html" scope="external">DITA Style Guide</xref> written by Tony Self also
+                discourages the use of in-content links.</p>
+        </section>
+        <section id="section_tfx_ttz_j1b">
+            <title>Related Links</title>
+            <p>Related links are placed at the end of the DITA topic and they allow the end user to
+                explore additional resources after the current topic has been
+                read.<codeblock outputclass="language-xml">&lt;related-links>
+    &lt;link href="http://tomcat.apache.org/" format="html" scope="external"/>
+&lt;/related-links></codeblock></p>
+            <p>In order to minimize disruption when reading the content in general the preferred
+                place where to place links is at the end of the generated HTML page.</p>
+            <p>You can read more about related links in the <xref
+                    href="http://docs.oasis-open.org/dita/dita/v1.3/os/part3-all-inclusive/langRef/base/related-links.html"
+                    format="html" scope="external">DITA 1.3 specification</xref>.</p>
+        </section>
+        <section id="section_gtq_k5z_j1b">
+            <title>Defining related links using Relationship Tables</title>
+            <p>Related links do not need to be manually added at the end of each topic. You can
+                define relationship tables in the DITA
+                Map:<codeblock outputclass="language-xml">&lt;reltable>
+  &lt;relrow>
+   &lt;relcell>
+    &lt;topicref href="client_side_installation.dita"/>
+   &lt;/relcell>
+   &lt;relcell>
+    &lt;topicref href="server_installation.dita"/>
+   &lt;/relcell>
+  &lt;/relrow>
+  ……..
+ &lt;/reltable></codeblock></p>
+            <p>These tables can define associations between two or more topics, associations which
+                automatically contribute to the related links creation in the generated HTML
+                output.</p>
+            <p>Here are a couple of benefits of relationship tables:<ul id="ul_sgb_hvz_j1b">
+                    <li>
+                        <p>A topic should have as few links as possible defined directly in it. This
+                            makes it easier to reuse the topic in various contexts and keeps it as
+                            separate as possible for other parts of the DITA project, decreasing the
+                            possibility of broken links.</p>
+                    </li>
+                    <li>
+                        <p> By default links defined in relationship tables are bi-directional
+                            allowing users to land on any of the topics when searching for solutions
+                            and find their way to the related ones.</p>
+                    </li>
+                    <li>
+                        <p> Relationship table separates the task of writing topics from the task of
+                            finding relations between topics.</p>
+                    </li>
+                </ul></p>
+            <p>You can read more about relationship tables in the <xref
+                    href="http://docs.oasis-open.org/dita/dita/v1.3/os/part3-all-inclusive/langRef/base/reltable.html"
+                    format="html" scope="external">DITA 1.3 specification</xref>. The <xref
+                    href="https://www.oxygenxml.com/dita/styleguide/webhelp-feedback/index.html#Artefact/Cross_Referencing/c_Related_Links_Section.html"
+                    format="html" scope="external">DITA Style Guide</xref> recommends using
+                relationship tables.</p>
+        </section>
+        <section id="section_aw2_pzz_j1b">
+            <title>Indirect Links (Key References)</title>
+            <p>All the link samples we've look at so far have been direct links, links which point
+                to the target using the <xmlatt>href</xmlatt> attribute. Indirect links require two
+                    steps:<ol id="ol_l4g_b11_k1b">
+                    <li>Define a key in the DITA Map for the
+                        target.<codeblock outputclass="language-xml">&lt;keydef keys="client_installation" href="client_side_installation.dita"/></codeblock></li>
+                    <li>Use the defined key to refer to the target
+                        resources.<codeblock outputclass="language-xml">&lt;xref keyref="client_installation"/></codeblock></li>
+                </ol></p>
+            <p>Here are some of the benefits of indirect linking:<ul id="ul_ubv_m11_k1b">
+                    <li>
+                        <p>Reuse link target text and meta data. If you want to have custom text for
+                            a certain link, you can define it directly in the DITA
+                            Map:<codeblock outputclass="language-xml">&lt;keydef keys="dita_ot_website" href="http://www.dita-ot.org/" format="html"
+  scope="external">
+  &lt;topicmeta>
+   &lt;linktext>DITA Open Toolkit Web Site&lt;/linktext>
+  &lt;/topicmeta>
+ &lt;/keydef></codeblock>and
+                            then add key references in all other
+                            places:<codeblock outputclass="language-xml">&lt;xref keyref="dita_ot_website"/></codeblock></p>
+                    </li>
+                    <li>
+                        <p>Easier Conditional linking (including links to topics which sometimes may
+                            be missing). If you want your topic to link either to one target or to
+                            another depending on the filtering/profiling conditions, instead of
+                            adding profiling directly on the link you can add the profiling
+                            conditions directly in the DITA
+                            Map:<codeblock outputclass="language-xml"> &lt;topicref keys="slicing" href="slicing_vegetables_for_experts.dita" audience="expert"/>
+ &lt;topicref keys="slicing" href="slicing_vegetables_for_novices.dita" audience="novice"/>
+ &lt;keydef keys="slicing" audience="noLink">&lt;topicmeta>&lt;keywords>
+    &lt;keyword>Slicing&lt;/keyword>&lt;/keywords>&lt;/topicmeta>
+ &lt;/keydef></codeblock>and
+                            then link to the key from each topic:
+                            <codeblock>&lt;xref keyref="slicing"/></codeblock></p>
+                    </li>
+                    <li>
+                        <p>Easier Link Management. A good overview about all the outbound links in
+                            your project helps you maintain and control lists of allowed external
+                            web sites. With indirect references, you can define all references to
+                            external resources in a separate DITA Map. An example of a DITA project
+                            using indirect links to achieve separation of links by purpose can be
+                            found here: <xref
+                                href="https://github.com/oxygenxml/dita-project-best-practices"
+                                format="html" scope="external"/>.</p>
+                    </li>
+                    <li>Easier move/rename topics. When you move or rename a topic referenced via
+                        indirect links, only the link defined in the DITA Map will break, making it
+                        easier to fix broken links.</li>
+                </ul></p>
+            <p>There is an overview about indirect addressing on the <xref
+                    href="http://dita.xml.org/resource/keyref-overview-dita-12" format="html"
+                    scope="external">DITA XML Org</xref> website. The <xref
+                    href="https://www.oxygenxml.com/dita/1.3/specs/archSpec/base/key-based-addressing.html"
+                    format="html" scope="external">DITA 1.3 specification</xref> also has a chapter
+                about indirect links.</p>
+        </section>
+        <section id="section_bnr_nf1_k1b">
+            <title>Auto-generated Links</title>
+            <p>Until now we've talked about manually added links, either in the topic or in
+                relationship tables. Using the DITA <xmlatt>collection-type</xmlatt> attribute you
+                can define in the DITA Map relationships between parent and child topic references,
+                relationships which result in automatic links added between
+                them:<codeblock outputclass="language-xml"> &lt;topicref href="installation.dita" collection-type="sequence">
+  &lt;topicref href="server_installation.dita"/>
+  &lt;topicref href="client_side_installation.dita"/>
+ &lt;/topicref></codeblock>
+                There are about 3 useful types of <xmlatt>collection-type</xmlatt> values:<ul
+                    id="ul_jlv_cg1_k1b">
+                    <li>
+                        <p><b>Unordered</b> - Links are generated from parent to children, and from
+                            children to parent. </p>
+                    </li>
+                    <li>
+                        <p><b>Family</b> - Links are generated from parent to children, from
+                            children to parent, and from sibling to sibling. </p>
+                    </li>
+                    <li>
+                        <p><b>Sequence</b> - Links are generated from parent to children, from
+                            children to parent, and from child to previous sibling (if applicable)
+                            and next sibling (if applicable). </p>
+                    </li>
+                </ul></p>
+            <p>You can read more about auto-generated links in the <xref
+                    href="https://www.oxygenxml.com/dita/styleguide/webhelp-feedback/#Artefact/Maps/c_Collection_Types.html"
+                    format="html" scope="external">DITA Style Guide</xref>.</p>
+        </section>
+        <section id="section_syb_kh1_k1b">
+            <title>Conditional Links in Distinct Publications</title>
+            <p>You may publish from the same <b>DITA</b> content documentation for multiple
+                products. And you may want to have links point to various targets depending on each
+                product for which you want to publish the documentation. Or you may want to suppress
+                links completely in certain publications.</p>
+            <p>When using direct linking you will need to profile each link depending on the
+                publication:<codeblock outputclass="language-xml">Find our more about slicing vegetables: &lt;xref href="slicing_vegetables_for_experts.dita" audience="expert"/>
+&lt;xref href="slicing_vegetables_for_novices.dita" audience="novice"/>.</codeblock>With
+                indirect links you can define the profiling attributes as DITA Map
+                level:<codeblock outputclass="language-xml"> &lt;topicref keys="slicing" href="slicing_vegetables_for_experts.dita" audience="expert"/>
+ &lt;topicref keys="slicing" href="slicing_vegetables_for_novices.dita" audience="novice"/></codeblock>and
+                thus simplify the reference made in the topic
+                content:<codeblock outputclass="language-xml">Find our more about slicing vegetables: &lt;xref keyref="slicing/>.</codeblock></p>
+        </section>
+        <section id="section_f34_431_k1b"><title>Conditional Links in the same
+                publication</title><p>Using DITA 1.3 key scopes you can reuse a topic multiple times
+                in a DITA Map and have each referenced topic contain links to various target topics.
+                For example if my <filepath>preparing_vegetables.dita</filepath> topic has a
+                link:<codeblock outputclass="language-xml">&lt;link keyref="slicing"/></codeblock></p>you
+            can define in the DITA Map various key scopes which bind the "slicing" key to various
+                targets:<codeblock outputclass="language-xml"> &lt;topichead navtitle="Cooking for Experts" keyscope="expert">
+  &lt;topicref href="preparing_vegetables.dita" keys="preparing"/>
+  &lt;topicref href="slicing_vegetables_for_experts.dita" keys="slicing"/>
+ &lt;/topichead>
+ &lt;topichead navtitle="Cooking for Novices" keyscope="novice">
+  &lt;topicref href="preparing_vegetables.dita" keys="preparing"/>
+  &lt;topicref href="slicing_vegetables_for_novices.dita" keys="slicing"/>
+ &lt;/topichead></codeblock><p>This
+                previous <xref
+                    href="http://blog.oxygenxml.com/2015/08/dita-13-key-scopes-next-generation-of.html"
+                    format="html" scope="external">blog post</xref> should contain more details
+                about key scopes.</p></section>
+        <section id="section_ct2_qg1_k1b">
+            <title>Link Text</title>
+            <p>When linking to an external resource or to a DITA topic or element, the publishing
+                engine will attempt to deduce the link text from the target context. For example the
+                link to a DITA topic or element which contains a <xmlelement>title</xmlelement> will
+                use that title as the link text. The link to an external resource (for example to
+                    <b>http://www.oxygenxml.com</b>) will use by default the <b>HTTP</b> location as
+                the link text. You can also customize each link text individually. So if you ask
+                yourself this question:</p>
+            <p>
+                <lq>Should I leave the link text to be automatically computed or should I set a more
+                    friendly text?</lq>
+            </p>
+            <p>For internal links to elements having a title in general it is more flexible not to
+                set a custom text and let the publishing engine decide one for you. For external
+                links you should usually specify your custom link text. </p>
+        </section>
+        <section id="section_wtf_vj1_k1b">
+            <title>Should I link or should I reuse?</title>
+            <p>Let's say you want to bring to the end user's attention a certain paragraph, note or
+                section. If that particular target element is not very large you should always
+                prefer reusing it (using a content reference) instead of linking to it.</p>
+        </section>
+        <section id="section_rzj_gj1_k1b">
+            <title>Conclusions</title>
+            <p>The problem with managing links in a growing <b>DITA</b> project is the same problem
+                with all larger projects, you need to get yourselves organized. As an overview of
+                what we've discussed so far I would suggest the following best practices:<ul
+                    id="ul_hqm_nj1_k1b">
+                    <li>
+                        <p>Linking is a form of reuse so:</p>
+                        <ul id="ul_cdc_pj1_k1b">
+                            <li>Reuse small pieces of content instead of linking to them</li>
+                            <li>Avoid too much linking (Linking is disruptive)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>Prefer using indirect links. It will allow you to reuse link text and
+                            make profiling/filtering easier while giving you a better overview on
+                            the outbound links for your project.</p>
+                    </li>
+                </ul></p>
+        </section>
+        <p>If you want to experiment with the various linking strategies we discussed above you can
+            find here some samples: <xref
+                href="https://www.oxygenxml.com/forum/files/linking-strategies-samples.zip"
+                format="zip" scope="external"/>.</p>
+    </body>
+</topic>
