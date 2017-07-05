@@ -95,6 +95,23 @@ authorAccess.getDocumentController().setAttribute(
               <b><filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
             />/samples/form-controls</filepath></b> directory and go to section <b>11.1 -
           Interacting with the Oxygen Workspace</b>.</p>
+      <p>
+        <note type="warning">On Mac OS X, you need to use asynchronous calls to our API, due to the
+          following JDK bug: <xref href="https://bugs.openjdk.java.net/browse/JDK-8087465"
+            format="html" scope="external"/>. By default, the API is called synchronously, but you
+          can change this behavior for each API object by calling two methods:
+              <b><codeph>sync()</codeph></b> and
+          <b><codeph>async()</codeph></b>.<codeblock>// By default, the methods are invoke synchronously. 
+ var ctrl = authorAccess.getDocumentController();
+     try {
+        // On Mac, methods that change the document must be executed asynchronously.
+        ctrl.async();
+        	
+        ctrl.setAttribute("counter", newAttrValue, contextElement);        	
+        } finally {
+        	ctrl.sync();
+        }</codeblock></note>
+      </p>
     </section>
     <section id="listening_for_changes_in_the_document">
       <title>Listening for Changes in the Document</title>
