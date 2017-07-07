@@ -11,34 +11,37 @@
     </metadata>
   </prolog>
   <body>
-    <p>
-      <note>This topic assumes that you are using a <xref
-          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLStreamHandlerPluginExtension.html"
-          format="html" scope="external"><i>URLStreamHandler</i></xref>
-        <term>plugin</term> to open the files in your repository.</note>
-    </p>
-    <p>When a file is opened, your <term>plugin</term> is asked to provide a
-        <i>URLConnection</i> object that <ph keyref="product"/> uses to read the
-      contents of the file. </p>
-    <p>By opening the file as read-only, the <ph keyref="webappProduct"/> is instructed to visually warn
-      users that the content of the document cannot edited. This is an alternative to having them
-      edit the content and then receive an error when trying to check it in.</p>
+    <p>By opening the file as read-only, the <ph keyref="webappProduct"/> is instructed to visually
+      warn users that the content of the document cannot be edited. This is an alternative to having
+      them edit the content and then receive an error when trying to check it in.</p>
     <p>You can instruct the <ph keyref="webappProduct"/> to open a file as read-only by using one
       of the following methods:<ul>
-        <li>Implement the <i>java.net.URLConnection.getHeaderField(String)</i> method to return a
-          value of <codeph>true</codeph> for the <codeph>oxygen_read_only</codeph> header name.
-          Also, the <codeph>oxygen_read_only_reason</codeph> header can be used to provide a reason
-          why a document is opened as read-only and the reason will be presented when the user tries
-          to edit a read-only document.</li>
-        <li>Use a JavaScript extension that invokes an <uicontrol>Author</uicontrol> mode operation
-          that changes the document status to
-          read-only:<codeblock outputclass="language-javascript">editor.getActionsManager().invokeOperation(
-    'SetReadOnlyStatusOperation',
-    {
-        'read-only': true,
-        'reason': 'Reason for why the document is read-only' // Optional
-    }
-);</codeblock></li>
+        <li>If you are implementing a <xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLStreamHandlerPluginExtension.html"
+            format="html" scope="external"><i>URLStreamHandler</i></xref>
+          <term>plugin</term>, you can implement the
+            <i>java.net.URLConnection.getHeaderField(String)</i> method to return the value of
+            <codeph>true</codeph> for the <codeph>oxygen_read_only</codeph> header name. Also, the
+          following headers can be used to give <ph keyref="webappProduct"/> more details about the
+          reason for which the document is opened as read-only:<dl>
+            <dlentry>
+              <dt><codeph>oxygen_read_only_reason</codeph></dt>
+              <dd>Provides a reason why a document is opened as read-only and the reason will be
+                presented when the user tries to edit a read-only document.</dd>
+            </dlentry>
+            <dlentry>
+              <dt><codeph>oxygen_read_only_reason_code</codeph></dt>
+              <dd>Provides a code that identifies the reason why the document is opened as
+                read-only. This code should be unique across user interface languages. It will not
+                be presented to the user but can be received using the API.</dd>
+            </dlentry>
+          </dl></li>
+        <li>Use the JavaScript API <codeph>editor.setReadOnlyState()</codeph>.</li>
+        <li>Use the Java API
+            <codeph>ro.sync.ecss.extensions.api.access.AuthorEditorAccess#setReadOnly()</codeph>.</li>
       </ul></p>
+    <p>Once in read-only mode, Web Author will present a warning editor stripe that presents the
+      reason for the document being read-only. You can customize the content of this stripe using
+      the <codeph>editor.setReadOnlyStripeRenderer()</codeph> JavaScript API.</p>
   </body>
 </topic>
