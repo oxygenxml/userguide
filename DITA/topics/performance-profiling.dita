@@ -3,8 +3,113 @@
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="performance-profiling">
   <title>Performance Profiling of XSLT Stylesheets and XQuery Documents</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Debugging XSLT<indexterm>Performance profiling</indexterm></indexterm>
+        <indexterm>XSLT Debugger perspective<indexterm>Performance profiling</indexterm></indexterm>
+        <indexterm>Debugging XQuery<indexterm>Performance profiling</indexterm></indexterm>
+        <indexterm>XQuery Debugger perspective<indexterm>Performance
+          profiling</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
-    <p>This chapter explains the user interface and how to use the profiler for finding performance
-      problems in XSLT transformations and XQuery ones.</p>
+    <p>Whether you are trying to identify a performance issue that is causing your production
+      XSLT/XQuery transformation to not meet customer expectations or you are trying to proactively
+      identify issues prior to deploying your XSLT/XQuery transformation, using the XSLT/XQuery
+      profiler feature is essential to helping you save time and ultimately ensure a better
+      performing, more scalable XSLT/XQuery transformation.</p>
+    <p>The XSLT/XQuery profiling feature can use any available XSLT/XQuery processor that can be
+      used for debugging and it is available from the debugging <xref
+        keyref="glossentry_perspective"><term>perspective</term></xref>.</p>
+    <section id="enabling_the_profiler">
+      <title>Enabling the Profiler</title>
+      <p>Enabling and disabling the profiler is controlled by the <xref
+          href="debug-control-toolbar.dita#debug-control-toolbar/profiling"><uicontrol><image
+              href="../img/Profiling16.png" id="image_orn_y2n_wr"/>/<image
+              href="../img/ProfilingSelected16.png"/> Profiler</uicontrol> button from the debugger
+          Control toolbar</xref>. The XSLT/XQuery profiler is off by default. This option is not
+        available during a debugger session so you need to set it before starting the
+        transformation. For information about a common debugging procedure, see <xref
+          href="steps-in-typical-debug-process.dita"/>.</p>
+    </section>
+    <section id="profiling_information_views">
+      <title>Profiling Information Views</title>
+      <p>Immediately after enabling the profiler, two new information views are added to the current
+        debugger <xref href="debug-info-view.dita">information views</xref>:</p>
+      <ul>
+        <li><xref href="invocation-tree-view.dita"><uicontrol>Invocation tree</uicontrol>
+            view</xref> on left side</li>
+        <li><xref href="hotspots-view.dita"><uicontrol>Hotspots</uicontrol> view</xref> on right
+          side</li>
+      </ul>
+      <p>Profiling data is available only after the transformation ends successfully.</p>
+      <p>On the left side (<xref href="invocation-tree-view.dita"><uicontrol>Invocation
+            tree</uicontrol> view</xref>), you can examine how style instructions are processed.
+        This result view is also named call-tree, as it represents the order of style processing.
+        The profiling result shows the duration time for each of the style-instruction including the
+        time needed for its called children.</p>
+      <p>On the right side (<xref href="hotspots-view.dita"><uicontrol>Hotspots</uicontrol>
+          view</xref>), you can immediately spot the time the processor spent in each instruction.
+        As an instruction usually calls other instructions, the used time of the called instruction
+        is extracted from the duration time of the caller (the hotspot only presents the inherent
+        time of the instruction).</p>
+    </section>
+    <section id="source_backmapping">
+      <title>Source Backmapping</title>
+      <p>In either the <xref href="invocation-tree-view.dita"><uicontrol>Invocation
+          tree</uicontrol></xref> or <xref href="hotspots-view.dita"><uicontrol>Hotspots</uicontrol>
+          view</xref>, you can use the backmapping feature to find the XSLT stylesheet or XQuery
+        expression definition. Clicking the selected item causes <ph keyref="product"/> to highlight
+        the XSLT stylesheet or XQuery expression source line where the instruction is defined.</p>
+      <p>
+        <fig id="figure-profiler-backmapping-oxygen" product="editor developer">
+          <title>Source Backmapping</title>
+          <image href="../img/sa_profiler_backmapping.png"/>
+        </fig>
+      </p>
+      <p>
+        <fig id="figure-profiler-backmapping-oxygenEclipse" product="editorEclipse developerEclipse">
+          <title>Source Backmapping</title>
+          <image href="../img/ec_profiler_backmapping.png"/>
+        </fig>
+      </p>
+    </section>
+    <section id="saving_and_customizing_profiling_data">
+      <title>Saving and Customizing Profiling Data</title>
+      <p>The profiling data can be saved (exported) into XML and HTML format. In either the <xref
+          href="invocation-tree-view.dita"><uicontrol>Invocation tree</uicontrol></xref> or <xref
+          href="hotspots-view.dita"><uicontrol>Hotspots</uicontrol> view</xref>, right-click
+        anywhere in the view and select <uicontrol>Export to XML</uicontrol> or <uicontrol>Export to
+          HTML</uicontrol>. The HTML report can be customized based upon the profiling raw data.
+        When you select <uicontrol>Export to HTML</uicontrol>, <ph keyref="product"/> will save it
+        as XML and apply an XSLT stylesheet to render the report as XML. You can customize these
+        stylesheets to suit your needs. They are located in: <filepath><term
+            conkeyref="reusables-user-guide/oxy-install-dir"/>/frameworks/profiler/</filepath>.</p>
+    </section>
+    <section id="other_profiling_notes">
+      <title>Other Profiling Notes</title>
+      <p>
+        <ul>
+          <li>If you want to change the <xref href="preferences-profiler.dita">XSLT/XQuery profiler
+              settings</xref>, use the contextual menu and choose the corresponding <uicontrol>View
+              settings</uicontrol> entry.</li>
+          <li>Profiling exhaustive transformations may run into an <b>OutOfMemory</b> error due to
+            the large amount of information being collected. If this is the case, you can close
+            unused projects when running the profiling or use high values for Java VM options
+              <codeph>-Xms</codeph> and <codeph>-Xmx</codeph>. If this does not help you can shorten
+            your source XML file and try again.</li>
+          <li>
+            <p>For more information about the XSLT/XQuery Profiler, watch our video
+              demonstration:</p>
+            <p><object width="450" height="250" data="https://www.youtube.com/embed/4ftHschjLqA"
+                outputclass="iframe">
+                <param name="allowfullscreen" value="true"/>
+              </object></p>
+          </li>
+        </ul>
+      </p>
+    </section>
   </body>
 </topic>
