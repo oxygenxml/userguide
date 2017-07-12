@@ -21,17 +21,32 @@
         <li><i>READ</i> and <i>WRITE</i> access to JVM's temporary directory.</li>
       </ul></p>
     <p>It is a good security practice to allow a component to access only the information and
-      resources that are necessary for its purpose. In an environment that uses Apache Tomcat, you
-      can enforce these rules following these steps:<ul id="ul_ojh_g3d_cr">
-        <li>
-          <p>Start the Apache Tomcat server using the <codeph>-security</codeph> flag.</p>
-        </li>
-        <li>
-          <p>Edit the <filepath>catalina.policy</filepath> file and add the following snippet:</p>
-        </li>
-      </ul></p>
-    <p>
-      <codeblock>grant codeBase "file:${catalina.base}/webapps/oxygenxml-web-author/-" {
+      resources that are necessary for its purpose.</p>
+    <section id="enabling_security_mode">
+      <title>Enabling Security Mode</title>
+      <p>To enable security mode, use the following procedure, depending on your installation
+        method:</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Installation Kit Method</dt>
+            <dd>If you installed <ph keyref="webappProduct"/> using one of the installation kits
+                (<b>All Platforms</b>, <b>Linux</b>, or <b>Windows</b>), you can enable security
+              mode by <xref href="webauthor-set-system-property.dita#webauthor-set-system-property"
+                >setting the following system property:
+                <codeph>-Djava.security.manager</codeph></xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Apache Tomcat Method</dt>
+            <dd>
+              <p>In an environment that uses Apache Tomcat, you can enforce these rules by following
+                these steps:<ol id="ul_ojh_g3d_cr">
+                  <li>Start the Apache Tomcat server using the <codeph>-security</codeph> flag.</li>
+                  <li>Edit the <filepath>catalina.policy</filepath> file and add the following
+                    snippet:</li>
+                </ol></p>
+              <p>
+                <codeblock>grant codeBase "file:${catalina.base}/webapps/oxygenxml-web-author/-" {
   // Oxygen uses System properties for various configuration purposes.
   permission java.util.PropertyPermission "*", "read,write";
   // Oxygen custom protocols need access to network.
@@ -73,16 +88,21 @@ grant codeBase "file:${oxygen.data.dir}/plugins/-" {
 grant codeBase "file:${oxygen.data.dir}/frameworks/-" {
     permission java.security.AllPermission;
 };</codeblock>
-      <note>In the previous example, replace <codeph>oxygenxml-web-author</codeph> with the name of
-        your deployment of the <ph keyref="webappProduct"/>.</note>
-    </p>
+                <note>In the previous example, replace <codeph>oxygenxml-web-author</codeph> with
+                  the name of your deployment of <ph keyref="webappProduct"/>.</note>
+              </p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
     <section id="configuring_file_permissions_to_custom_locations">
       <title>Configuring File Permissions to Custom Locations</title>
       <p>There are cases when the <ph keyref="webappProduct"/> needs to access files system
         resources, but due to security reasons, you want to prevent your users from opening them
         directly in the <ph keyref="webappProduct"/> editing page using the
           <filepath>file://</filepath> protocol.</p>
-      <p>You can do this by following these steps:<ul id="ul_rfq_nvr_qr">
+      <p>You can do this by following these steps:<ol id="ul_rfq_nvr_qr">
           <li>Edit the <filepath>catalina.policy</filepath> file and add a line such
             as:<screen>permission java.io.FilePermission "path/to/yourSecretDir/-", "read,write,delete";
 permission java.io.FilePermission "path/to/yourSecretDir", "read,write,delete";</screen></li>
@@ -91,7 +111,7 @@ permission java.io.FilePermission "path/to/yourSecretDir", "read,write,delete";<
               value of <codeph>path.separator</codeph> system property to separate more directories.
               For example, under Linux, the value of <codeph>path.separator</codeph> property is a
               colon punctuation character <codeph>:</codeph>.</note></li>
-        </ul></p>
+        </ol></p>
     </section>
   </body>
 </topic>
