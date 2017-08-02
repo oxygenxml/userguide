@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-enterprise-server">
+  <title>Enterprise Server Solution</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Using your own Content Fusion Enterprise server</indexterm>
+        <indexterm>Installing an Enterprise server</indexterm>
+        <indexterm>Content Fusion Enterprise virtual machine</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>It is possible to use your own <ph keyref="cfEnterprise"/> server to store uploaded content
+      rather than the server hosted by the <ph keyref="cfPublic"/>. The information in this topic is
+      meant to help system administrators install and configure your own Enterprise server.</p>
+    <section id="the_two_types_of_server_hosting_solutions">
+      <title>The Two Types of Server Hosting Solutions</title>
+      <p>There are two types of server hosting solutions that you can choose from and each one has
+        certain advantages:<dl>
+          <dlentry>
+            <dt><ph keyref="cfEnterprise"/></dt>
+            <dd>This solution allows you to host your own server to store content that is uploaded
+              through the <ph keyref="product"/> connector add-on. With this model, you will be able
+              to setup and configure your own server.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><ph keyref="cfPublic"/></dt>
+            <dd>This solution is a service where content that is uploaded through the <ph
+                keyref="product"/> connector add-on is stored on a server hosted by Oxygen. The
+              biggest advantage of using this model is that there is no server setup or
+              configuration required.</dd>
+          </dlentry>
+        </dl></p>
+    </section>
+    <section id="requirements">
+      <title>Prerequisites</title>
+      <p>An on-premise server solution requires the following prerequisites:<ul>
+          <li><xref
+              href="http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html"
+              format="html" scope="external">Oracle VM VirtualBox Manager</xref></li>
+          <li>4 GB of memory on the server</li>
+          <li><?oxy_comment_start author="Steven" timestamp="20170802T115305+0300" comment="This will change to Oxygen Content Fusion Enterprise licence once this is released."?><xref
+              href="https://www.oxygenxml.com/xml_web_author/register.html" format="html"
+              scope="external">Oxygen XML Web Author License</xref><?oxy_comment_end?></li>
+        </ul></p>
+    </section>
+    <section id="downloading_the_content_fusion_enterprise_virtual">
+      <title>Downloading the Oxygen Content Fusion Enterprise Virtual Machine Software</title>
+      <p>To use your own server, you need to
+        <?oxy_comment_start author="Steven" timestamp="20170801T102337+0300" comment="Link"?>download
+        the <b>Oxygen Content Fusion Enterprise</b> virtual machine software<?oxy_comment_end?>. The
+        download package includes the following:<ul>
+          <li>A manifest (<filepath>.MF</filepath> file) that contains the signatures of the
+            files.</li>
+          <li>An OVF file that defines the virtual machine.</li>
+          <li>Several VMDK (virtual machine disk) files.</li>
+        </ul></p>
+    </section>
+    <section id="importing_the_content_fusion_virtual_machine_soft">
+      <title>Importing the Oxygen Content Fusion Virtual Machine Software in VirtualBox</title>
+      <p>To import the <b>Oxygen Content Fusion Enterprise</b> virtual machine software in VirtualBox:<ol>
+          <li>Start <i>Oracle VM VirtualBox Manager</i>.</li>
+          <li>Select <menucascade>
+              <uicontrol>File</uicontrol>
+              <uicontrol>Import Appliance</uicontrol>
+            </menucascade> and choose the OVF file.</li>
+          <li>Click <uicontrol>Import</uicontrol>.</li>
+        </ol></p>
+    </section>
+    <section id="configuring_the_content_fusion_virtual_machine">
+      <title>Changing Network Settings from NAT to Bridged</title>
+      <p>You need to change the network adapter settings from NAT to bridged so that the VM will be
+        visible in your local network:<ol>
+          <li>Make sure the VM is not running.</li>
+          <li>In <i>Oracle VM VirtualBox Manager</i>, select the VM and click
+              <uicontrol>Settings</uicontrol>.</li>
+          <li>Select <menucascade>
+              <uicontrol>Network</uicontrol>
+              <uicontrol>Adapter1</uicontrol>
+            </menucascade>.</li>
+          <li>Change it from <b>NAT</b> to <b>Bridged Adapter</b>.</li>
+        </ol></p>
+    </section>
+    <section id="configuring_content_fusion_using_web_interface">
+      <title>Initial Oxygen Content Fusion Configuration</title>
+      <p>To configure <ph keyref="product"/>, use the following procedure:<ol id="ol_f5c_dwg_t1b">
+          <li>Start ("normal" start) the imported virtual machine. On the first start, the VM
+            console will display the IP address (you will need this), and the SSH access
+            administrator username and password (these will be changed). The fingerprint of the
+            HTTPS self-signed certificate is also displayed. </li>
+          <li>Login to the machine using the credentials displayed in step 1. You can do this either
+            directly in the VirtualBox console or by using SSH.</li>
+          <li>After you login, you will be prompted to change the default password for the
+            administration account. This password can be used to login to the following:<ul
+              id="ul_uhf_yvg_t1b">
+              <li>The VM using SSH or the VM console</li>
+              <li>The <ph keyref="product"/> configuration page</li>
+              <li>The Web Author Administration page</li>
+              <li>The license server management page</li>
+            </ul></li>
+          <li>Use the IP address shown in the VM console to access the web interface of <ph
+              keyref="product"/>.<note>By default, <ph keyref="product"/> uses a self-signed
+              certificate, so the browser will display a security warning. Continue (for example, if
+              you are using Edge or Internet Explorer, click <b>Details</b> and then <b>Go on to the
+                webpage</b>).</note></li>
+          <li>On the next page, use the <b>trial</b> license.</li>
+        </ol></p>
+    </section>
+    <section id="section_hqq_dwg_t1b">
+      <title>Configuring Oxygen Content Fusion using the Web Interface</title>
+      <p>
+        <ol id="ol_g5c_dwg_t1b">
+          <li>Use the IP address shown in the VM console to access the web interface of <ph
+              keyref="product"/>. The address should be
+              <codeph>https://&lt;server-address>:9080</codeph>.<note>By default, <ph
+                keyref="product"/> uses a self-signed certificate. If you did not change it, the
+              browser will display a security warning. Continue (for example, if you are using Edge
+              or Internet Explorer, click <b>Details</b> and then <b>Go on to the
+              webpage</b>).</note></li>
+          <li>Login with the previously configured password, the username is
+            <codeph>fusion</codeph>.</li>
+          <li>Use the Web Interface to change any configuration options.</li>
+        </ol>
+      </p>
+    </section>
+    <section id="configuring_a_properties_file_to_instruct_oxygen_">
+      <title>Configuring a Properties File to Instruct Oxygen XML Editor/Author to Connect to Your
+        Enterprise Server</title>
+      <p>You can create a properties file to specify the address of your Enterprise server. This
+        server address will then be imposed when Oxygen XML Editor/Author connects to the server and
+        the <b>Content Authors</b> that will be uploading tasks will not need to do any manual
+        configuration. When they click <uicontrol>Connect</uicontrol>, your server address will be
+        imposed and they will not have the ability to change it. To create the properties file, use
+        this procedure:<ol>
+          <li>Create a properties file named <filepath>oxygenContentFusion.properties</filepath>
+            with the following content:<p>
+              <codeblock>server=[on-premise_server_address]</codeblock>
+            </p><p>where <b>[on-premise_server_address]</b> is the URL of your on-premise server
+              (for example, <filepath>http://myserver.com:8080</filepath>).</p></li>
+          <li>Save this file in Oxygen's default preferences directory. Depending on the platform
+            and product you are using, this file is located in the following directories:<p>For
+              Oxygen XML Editor:<ul>
+                <li><b>Windows</b> -
+                    <filepath>[user-home-folder]\AppData\Roaming\com.oxygenxml</filepath></li>
+                <li><b>OS X</b> -
+                    <filepath>[user-home-folder]/Library/Preferences/com.oxygenxml</filepath></li>
+                <li><b>Linux</b> - <filepath>[user-home-folder]/.com.oxygenxml</filepath></li>
+              </ul></p><p>For Oxygen XML Author:<ul>
+                <li><b>Windows</b> -
+                    <filepath>[user-home-folder]\AppData\Roaming\com.oxygenxml.author</filepath></li>
+                <li><b>OS X</b> -
+                    <filepath>[user-home-folder]/Library/Preferences/com.oxygenxml.author</filepath></li>
+                <li><b>Linux</b> -
+                  <filepath>[user-home-folder]/.com.oxygenxml.author</filepath></li>
+              </ul></p></li>
+          <li>Each <b>Content Author</b> needs to <xref
+              href="installing_the_content_fusion_plugin.dita#installing_the_content_fusion_plugin"
+              >install the <uicontrol>Oxygen Content Fusion Connector</uicontrol> add-on</xref> in
+            Oxygen XML Editor/Author, then open the <xref
+              href="cf_task_manager_view.dita#cf_task_manager_view">task management view</xref> and
+            click <uicontrol>Connect</uicontrol>.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
