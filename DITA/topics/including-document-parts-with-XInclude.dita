@@ -3,6 +3,15 @@
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="including-document-parts-with-XInclude">
   <title>Including Document Parts with XInclude</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>XML documents<indexterm>XInclude</indexterm></indexterm>
+        <indexterm>XInclude</indexterm>
+        <indexterm>XInclude 1.1 features</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
     <p>XInclude is a standard for assembling XML instances into another XML document through
       inclusion. It enables larger documents to be dynamically created from smaller XML documents
@@ -105,5 +114,42 @@
 &lt;test&gt;
     &lt;a xml:id="a1" xml:base="a.xml"&gt;test&lt;/a&gt;
 &lt;/test&gt;</codeblock>
+    <section id="xinclude_11_features">
+      <title>XInclude 1.1 Features</title>
+      <p><ph keyref="product"/> offers partial support for XInclude 1.1 features. This includes
+        support for fragment identifiers, attribute copying, additional processing to allow for
+        annotating the post-included infoset with further information, and the flexibility to
+        support additional parse values.</p>
+      <p>
+        <ul>
+          <li><u><b>Fragment Identifiers</b></u><p>You can <codeph>xi:include</codeph> a text file
+              and specify the <codeph>@fragid</codeph> value so that you only get part of that text
+              file in the main document. For some examples and to see how
+                <codeph>xi:include</codeph> gets expanded when the <codeph>@fragid</codeph>
+              specifies a line range or character range, see <xref
+                href="https://www.w3.org/TR/xinclude-11/#text-example-2" format="html"
+                scope="external"><b>Textual Inclusion Examples with RFC5147 Fragment
+                Identifiers</b></xref>.</p></li>
+          <li><u><b>Attribute Copying</b></u><p>Any <term>namespaced</term> attribute defined on the
+                <codeph>xi:include</codeph> element wll be passed to the root element of the
+              included content.</p><p>For example, if you have
+              this:<codeblock outputclass="language-xml">&lt;xi:include href="section2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" 
+  xml:id="sectInner1"/></codeblock></p><p>and
+                <filepath>section2.xml</filepath> looks like
+              this:<codeblock outputclass="language-xml">&lt;sect2 xmlns="http://docbook.org/ns/docbook" version="5.0"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="section2">
+    &lt;title>FS2&lt;/title>
+    &lt;para>P2&lt;/para>
+&lt;/sect2></codeblock></p><p>then
+              the final processed result will have the original <codeph>xml:id="section2"</codeph>
+              replaced with the value specified in the <i>xi:included</i> section.</p><p>For more
+              information, see <xref href="https://www.w3.org/TR/xinclude-11/#attribute-copying"
+                format="html" scope="external"><b>Attribute Copying when Processing XML</b></xref>.
+              Also, to see more examples, see <xref
+                href="https://www.w3.org/TR/xinclude-11/#att-copy-example" format="html"
+                scope="external"><b>Attribute Copying Examples</b></xref>.</p></li>
+        </ul>
+      </p>
+    </section>
   </body>
 </topic>
