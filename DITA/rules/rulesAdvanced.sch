@@ -231,7 +231,7 @@
   <sch:pattern>
     <!-- Report possible case in which a codeblock containg XML was not marked appropriately. -->
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
-      <sch:report test="starts-with(text()[1], '&lt;') and not(@outputclass)" sqf:fix="add_outputclass"> Possible XML Codeblock
+      <sch:report test="not(@outputclass)" sqf:fix="add_outputclass"> Possible XML Codeblock
         without @outputclass set to it. </sch:report>
       
       <sqf:fix id="add_outputclass">
