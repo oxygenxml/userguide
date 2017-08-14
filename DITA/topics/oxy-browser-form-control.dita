@@ -31,11 +31,11 @@
     </ul>
     <p><b><u>Example: <i>oxy_browser</i> Form
       Control</u></b><codeblock outputclass="language-css">object {
-    content:
-        oxy_browser(
-            href, 'http://example.page',
-            width, 600px,
-            height, 400px),
+  content:
+    oxy_browser(
+      href, 'http://example.page',
+      width, 600px,
+      height, 400px),
 }</codeblock></p>
     <note type="tip">To insert a sample of the <codeph>oxy_browser</codeph> form control in a CSS
       file <ph product="author developer editor">(or LESS file)</ph>, invoke the <xref
@@ -81,13 +81,12 @@
            ["normalizedValue", "rawValue", true]);
 authorAccess.getDocumentController().setAttribute(
         "counter", newAttrValue, contextElement);
-...</codeblock><p>You
-              can also specify the constructor
-              signature:<codeblock outputclass="language-javascript">  var newAttrValue = apiHelper.newInstance(
-           "ro.sync.ecss.extensions.api.node.AttrValue
-(java.lang.String, java.lang.String, boolean)",
-           ["normalizedValue", "rawValue", true]);
-  authorAccess.getDocumentController().setAttribute(
+...</codeblock><p>You can also specify the constructor
+              signature:<codeblock outputclass="language-javascript">var newAttrValue = apiHelper.newInstance(
+        "ro.sync.ecss.extensions.api.node.AttrValue
+        (java.lang.String, java.lang.String, boolean)",
+        ["normalizedValue", "rawValue", true]);
+authorAccess.getDocumentController().setAttribute(
         "counter", newAttrValue, contextElement);
 ...</codeblock></p></li>
         </ul></p>
@@ -102,15 +101,14 @@ authorAccess.getDocumentController().setAttribute(
           can change this behavior for each API object by calling two methods:
               <b><codeph>sync()</codeph></b> and
           <b><codeph>async()</codeph></b>.<codeblock>// By default, the methods are invoke synchronously. 
- var ctrl = authorAccess.getDocumentController();
-     try {
-        // On Mac, methods that change the document must be executed asynchronously.
-        ctrl.async();
-        	
-        ctrl.setAttribute("counter", newAttrValue, contextElement);        	
-        } finally {
-        	ctrl.sync();
-        }</codeblock></note>
+var ctrl = authorAccess.getDocumentController();
+try {
+  // On Mac, methods that change the document must be executed asynchronously.
+  ctrl.async();
+  ctrl.setAttribute("counter", newAttrValue, contextElement);        	
+} finally {
+  ctrl.sync();
+}</codeblock></note>
       </p>
     </section>
     <section id="listening_for_changes_in_the_document">
@@ -122,32 +120,32 @@ authorAccess.getDocumentController().setAttribute(
             as the form control is loaded and our API bridge is installed. This is where you can add
             a
             listener:<codeblock outputclass="language-javascript">function bridgeReady () {
-      // We declare a member function for each method of the 
-          ro.sync.ecss.extensions.api.AuthorListener interface (same function signature)
-      var handler = {
-        attributeChanged : function(event) {
-            var node = event.getOwnerAuthorNode();
-            var attrName = event.getAttributeName();
+  // We declare a member function for each method of the 
+  // ro.sync.ecss.extensions.api.AuthorListener interface (same function signature)
+  var handler = {
+    attributeChanged : function(event) {
+      var node = event.getOwnerAuthorNode();
+      var attrName = event.getAttributeName();
             
-            if (node.equals(contextElement) &amp;&amp; attrName === "counter") {
-              init();
-            }
-        },
-        contentDeleted : function(event) {},
-        contentInserted : function(event) {}
-    };
+      if (node.equals(contextElement) &amp;&amp; attrName === "counter") {
+        init();
+      }
+    },
+    contentDeleted : function(event) {},
+    contentInserted : function(event) {}
+  };
      
-     // We create a proxy over an ro.sync.ecss.extensions.api.AuthorListener that will 
-         delegate its methods to the JS object's functions.
-     // We assign the listener to a global variable so that we can remove it later on, 
-         on the dispose() method.
-     authorDocumentListener = apiHelper.createProxyListener(
-     	"ro.sync.ecss.extensions.api.AuthorListener", handler);
+  // We create a proxy over an ro.sync.ecss.extensions.api.AuthorListener that will 
+  // delegate its methods to the JS object's functions.
+  // We assign the listener to a global variable so that we can remove it later on, 
+  // on the dispose() method.
+  authorDocumentListener = apiHelper.createProxyListener(
+      "ro.sync.ecss.extensions.api.AuthorListener", handler);
      
-      var ctrl = authorAccess.getDocumentController();
+  var ctrl = authorAccess.getDocumentController();
 
-      // Add the proxy listener.
-      ctrl.addAuthorListener(authorDocumentListener);
+  // Add the proxy listener.
+  ctrl.addAuthorListener(authorDocumentListener);
 }</codeblock></li>
           <li>Since a listener was added on the document, it is important to remove it once the form
             control is not used anymore. When a form control is discarded, you can call the
@@ -157,9 +155,9 @@ authorAccess.getDocumentController().setAttribute(
  * The form control will not be used anymore. Clean up.
  */
 function dispose() {
-    // Dispose all added listeners.
-     var ctrl = authorAccess.getDocumentController();
-     ctrl.removeAuthorListener(authorDocumentListener);
+  // Dispose all added listeners.
+  var ctrl = authorAccess.getDocumentController();
+  ctrl.removeAuthorListener(authorDocumentListener);
 }</codeblock></li>
         </ol></p>
     </section>
@@ -173,7 +171,7 @@ function dispose() {
               href="results-view.dita#results-view">Results panel</xref>.</li>
           <li>You can install the <xref href="http://getfirebug.com/" format="html" scope="external"
                 ><b>Firebug</b> extension</xref> by executing the following
-            script:<codeblock>{code:javascript}
+            script:<codeblock outputclass="language-javascript">{code:javascript}
 function installFB() {
   if (!document.getElementById('FirebugLite')) {
     E = document['createElement' + 'NS'] &amp;&amp; document.documentElement.namespaceURI;
