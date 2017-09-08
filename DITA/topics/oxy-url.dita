@@ -111,19 +111,18 @@
         referenced file. <note>This resolver will need to make sure that the any
             <term>userinfo</term> from the <term>OXY-URL</term> of the currently open file is
           transferred to the result.</note></p>
+      <p>For example, if the <term>OXY-URL</term> of the currently opened file is:</p>
+      <codeblock outputclass="language-ini">github://ff33bba498@getFileContent/oxygenxml/ug/master/DITA/topics/introduction.dita</codeblock>
+      <p>and the <term>CMS-URL</term> of the image is:</p>
+      <codeblock outputclass="language-ini">https://github.com/oxygenxml/ug/blob/master/DITA/img/WA_git_login.png</codeblock>
+      <p>then the resolved <term>OXY-URL</term> of the image should be:</p>
+      <codeblock outputclass="language-ini">github://ff33bba498@getFileContent/oxygenxml/ug/master/DITA/img/WA_git_login.png</codeblock>
     </section>
     <section id="section_jjk_p3p_1bb">
-      <p>For example, if the <term>OXY-URL</term> of the currently opened file
-        is:<codeblock outputclass="language-ini">github://ff33bba498@getFileContent/oxygenxml/ug/master/DITA/topics/introduction.dita</codeblock>
-        and the <term>CMS-URL</term> of the image
-        is:<codeblock outputclass="language-ini">https://github.com/oxygenxml/ug/blob/master/DITA/img/WA_git_login.png</codeblock>then
-        the resolved <term>OXY-URL</term> of the image should
-        be:<codeblock outputclass="language-ini">github://ff33bba498@getFileContent/oxygenxml/ug/master/DITA/img/WA_git_login.png</codeblock></p>
-    </section>
-    <example>
-      <title>If the main document is loaded over WebDAV, the <codeph>URIResolver</codeph> below
-        rewrites references to HTTP URLs to use WebDAV and inherit the credentials</title>
-      <codeblock>URIResolver uriResolver = new URIResolver() {
+      <title>Example</title>
+      <p>If the main document is loaded over WebDAV, the following <codeph>URIResolver</codeph>
+        rewrites references to HTTP URLs to use WebDAV and inherit the
+        credentials:<codeblock outputclass="language-javascript">URIResolver uriResolver = new URIResolver() {
     @Override
     public Source resolve(String href, String base) throws TransformerException {
       if (base != null &amp;&amp; base.indexOf("webdav-") == 0) {
@@ -131,7 +130,8 @@
           try {
             URL hrefUrl = new URL(href);
             URL baseUrl = new URL(base);
-            final URL hrefWithUserInfo = URLUtil.attachUserInfo(hrefUrl, baseUrl.getUserInfo(), null);
+            final URL hrefWithUserInfo = 
+                URLUtil.attachUserInfo(hrefUrl, baseUrl.getUserInfo(), null);
             return new Source() {
               
               @Override
@@ -149,9 +149,7 @@
       }
       return null;
     }
-  };</codeblock>
-    </example>
-    <section id="section_ij3_1jp_1bb">
+  };</codeblock></p>
       <p>To make <ph keyref="webappProduct"/> insert an absolute <term>CMS-URL</term> in content,
         you should also provide a <apiname>RelativeReferencesResolver</apiname> to be used in the
         Java server-side code and a <apiname>ReferencesResolver</apiname> to be used by the
