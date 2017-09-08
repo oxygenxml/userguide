@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="bookmarks">
+    <title>Bookmarks</title>
+    <shortdesc>PDF bookmarks provide an additional way of navigating, similar to a table of contents. The tree bookmark structure is intended to be used by the PDF readers, usually displayed in a side view. More often the bookmarks are showing the logical hierarchy of the book, with pointers to the chapters and section, similar to a TOC. Creating bookmarks has no effect on the printed material.</shortdesc>
+    <body>
+        <p><ph keyref="product"/> can create PDF bookmarks by using the standard CSS properties: <codeph>bookmark-level</codeph>, <codeph>bookmark-label</codeph> and <codeph>bookmark-state</codeph>. </p>
+        <p>For a HTML document, you can collect the titles from the heading elements text.</p>
+        <codeblock outputclass="language-css">h1, h2, h3, h4, h5, h6 {
+   bookmark-label: content(text);
+}</codeblock>
+        <p>In the following example we are concatenating the <codeph>:before</codeph> pseudo-element, that prefixes each of the H1 with the value of the chapter number, with the text from the element:</p>
+        <codeblock outputclass="language-css">h1 { 
+    bookmark-label: content(before) " / " content(text);
+}
+
+h1:before{
+    content: counter(chapter);
+    counter-increment:chapter;
+}</codeblock>
+        <p>You can define the level (depth in the hierarchy) of the bookmarks. The deeper the section, the higher the level:</p>
+        <codeblock outputclass="language-css">h1 { bookmark-level: 1; }
+h2 { bookmark-level: 2; }
+h3 { bookmark-level: 3; }
+h4 { bookmark-level: 4; }
+h5 { bookmark-level: 5; }
+h6 { bookmark-level: 6; }</codeblock>
+        <p>And you can control if the bookmarks are shown expanded or collapsed in the bookmark view. By default, all bookmarks are open. To close all the nodes from the level 2, you can use:</p>
+        <codeblock outputclass="language-css">h2 {
+    bookmark-state:closed;
+}</codeblock>
+        <note>In the built-in CSS <ph keyref="product"/> uses for processing HTML the bookmarks are already configured - using <codeph>bookmark-level</codeph> and <codeph>bookmark-label</codeph>. If you need to set the closed/open state, you should use in your custom CSS file the <codeph>bookmark-state</codeph> property.</note>
+    </body>
+    <related-links>
+        <link href="https://www.w3.org/TR/css-gcpm-3/#bookmarks" format="html" scope="external"/>
+    </related-links>
+</topic>

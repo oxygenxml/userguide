@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_tables">
+  <title>Tables</title>
+  <body>
+    <p>This topic is of special interest in case you are creating a CSS stylesheet for a custom XML
+      document. For HTML <ph keyref="product"/> already defines the needed selectors for the
+        <codeph>table</codeph> element.</p>
+    <p>Let's consider a table in an XML document:</p>
+    <codeblock outputclass="language-xml">&lt;tbl>
+    &lt;caption>A table.&lt;/caption>
+    &lt;rw>
+        &lt;c rspan="2"> Spans vertically &lt;/c>
+        &lt;c> Other cell &lt;/c>
+        &lt;c> Other cell &lt;/c>
+    &lt;/rw>
+    &lt;rw>
+        &lt;c cspan="2"> Other cell, spanning to the right &lt;/c>
+    &lt;/rw>
+&lt;/tbl> </codeblock>
+    <section id="section_lqt_v51_yz">
+      <title>Defining Rows and Cells</title>
+      <p>First, mark the <codeph>tbl</codeph> element as being a table:</p>
+      <codeblock outputclass="language-css">tbl {
+    display: table;
+}</codeblock>
+      <p>Next, the rows and cells:</p>
+      <codeblock outputclass="language-css">rw {
+    display: table-row;
+}
+c {
+    display: table-cell;
+}</codeblock>
+    </section>
+    <section id="section_hfr_pw1_yz">
+      <title>Defining the Column and Row Span</title>
+      <p>The processor needs to know how the cells are spanning multiple rows or columns. For these,
+        there are available two properties: <codeph>table-column-span</codeph> and
+          <codeph>table-row-span</codeph>.</p>
+      <codeblock outputclass="language-css">c[cspan] {
+    table-column-span: attr(cspan, integer);
+}
+c[rspan] {
+    table-row-span: attr(rspan, integer);
+}</codeblock>
+    </section>
+    <section id="section_vjt_b3t_cbb">
+      <title>Defining the Table Caption</title>
+      <p>You can do this by using the <codeph>display:table-caption</codeph>. To change the position
+        of the caption relative to the table grid, you need to use the <codeph>caption-side</codeph>
+        property:</p>
+      <codeblock outputclass="language-css">caption {
+    display:table-caption;
+    caption-side:bottom;
+}</codeblock>
+    </section>
+    <section id="section_fpf_jx1_yz">
+      <title>Repeating Headers and Footers</title>
+      <p>The elements marked with one of the properties: <codeph>table-header-group</codeph> or
+          <codeph>table-footer-group</codeph> are automatically repeated when a table is split over
+        a sequence of pages. It is required that they contain only elements with the display
+          <codeph>table-row</codeph>. </p>
+      <codeblock outputclass="language-xml">&lt;tbl>
+    &lt;head>
+        &lt;rw>
+            &lt;c> Name&lt;/c>
+            &lt;c> Value &lt;/c>
+        &lt;/rw>
+    &lt;/head>
+    &lt;body>
+        &lt;rw> ... &lt;/rw>
+        &lt;rw> ... &lt;/rw>
+    &lt;/body>
+&lt;/tbl> </codeblock>
+      <p>The CSS:</p>
+      <codeblock outputclass="language-css">head {
+    display: table-header-group;
+}
+</codeblock>
+    </section>
+    <section id="section_sk5_1dl_zz">
+      <title>Column Widths and Styles</title>
+      <p><ph keyref="product"/> supports automatic layout of the tables. This means allocation of
+        column widths is done automatic based on the content size. In the next example, the HTML
+        table has automatic layout (this is also the default):</p>
+      <codeblock outputclass="language-css">table {
+    table-layout:auto;
+}</codeblock>
+      <p>To switch to a fixed layout:</p>
+      <codeblock outputclass="language-css">table {
+    table-layout:fixed;
+}</codeblock>
+      <p>In case you use the fixed layout, and you are not satisfied with equal column widths, for
+        HTML you should use the <codeph>style</codeph> attribute on the <codeph>col</codeph>
+        element:</p>
+      <codeblock outputclass="language-xml"> &lt;table style="width:2in;">
+        &lt;colgroup>
+              &lt;col style="width: 40%; background-color:cyan"/>
+              &lt;col style="width: 60%"/>
+        &lt;/colgroup>
+...</codeblock>
+      <p>For arbitrary XML, you should set a display <codeph>table-column</codeph> to the element
+        representing the column. Considering the following XML:</p>
+      <codeblock outputclass="language-xml"> &lt;tbl>
+        &lt;colgr>
+              &lt;column wd="30%"/>
+              &lt;column wd="70%"/>
+        &lt;/colgr>
+...</codeblock>
+      <p>The following CSS links the <codeph>wd</codeph> attribute to the width property and defines
+        a different background for the first column.</p>
+      <codeblock outputclass="language-css">tbl { 
+    disply:table; 
+}
+colgr { 
+    display: table-column-group; 
+}
+column { 
+    display: table-column; 
+    width: attr(wd); 
+}
+column:first-of-type {
+    background-color: yellow;
+}
+</codeblock>
+      <p>Proportional column widths like the ones used in the CALS tables from DITA or Docbook are
+        supported, but only when set in a <codeph>width</codeph> attribute on the column element
+        (the one with display <keyword>table-column</keyword>):</p>
+      <codeblock outputclass="language-css">...
+&lt;column width="3*"/>
+&lt;column width="7*"/>
+...</codeblock>
+    </section>
+    <section id="section_vlp_jjt_cbb">
+      <title>Rotating tables</title>
+      <p>There are cases in which you have large tables, and you need to rotate them to make them
+        fit on your page. For instance the default page is portrait, but because you have a table
+        with many columns, and thus very wide, it would bleed to the right of the page.</p>
+      <p>There are two ways of doing this:<ol id="ol_gqs_tjt_cbb">
+          <li>Associate a wider page - i.e. landscape - to the table that needs more space. The
+            disadvantage is that the table will force a page break before and after
+            it.<codeblock outputclass="language-css">@page landscape-page-for-large-tables {
+    size: A4 landscape;
+}
+
+tbl {
+  display: table;
+  page: landscape-page-for-large-tables;
+}</codeblock></li>
+          <li>Rotate the table using the <codeph>transform</codeph> CSS property. The table will not
+            create page breaks, but is susceptible of bleeding if its height exceeds the page
+              width.<codeblock outputclass="language-css">tbl {
+  display: table;
+  width: 200pt;
+  transform: rotate(90deg);
+}</codeblock><note>The
+              table needs to have <codeph>table-layout: fixed</codeph>, and a
+              <codeph>width</codeph>.</note></li>
+        </ol></p>
+    </section>
+  </body>
+</topic>

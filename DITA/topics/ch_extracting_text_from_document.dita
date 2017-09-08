@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_iph_3cb_by">
+  <title>Extracting Text from Document</title>
+  <body>
+    <p>To display the title of the publication or the title of the current chapter, you will need to extract some content from the document and use it in one or more page margin boxes. This is possible by using a <codeph>string-set</codeph>. It is similar to a variable that is initialized to a content each time a specific element is matched.</p>
+    <p>In the following example, we will extract the text content of the <codeph>H1</codeph> element and use it as a publication title. The <codeph>H2</codeph> elements define the chapter titles:</p>
+    <codeblock outputclass="language-css">h1 {
+  string-set: publication_title content();
+}
+
+h2 {
+  string-set: chapter_title content();
+}</codeblock>
+    <p>Now let's use the collected strings in the top margins of the pages. We will join the publication title and the chapter title by a "/" character, then place them in the outer side of the pages. (to the left for the left side page, to the right for the right side pages).</p>
+    <codeblock outputclass="language-css">@page :left {
+  @top-left: string(publication_title) " / " string(chapter_title);
+}
+
+@page :right {
+  @top-right: string(publication_title) " / " string(chapter_title);
+}</codeblock>
+    <p>A string set may contain static text, content from the document, attributes from the element, or counters. This is a more complex example, in which we add a chapter number to the <codeph>chapter_title</codeph> string set:</p>
+    <codeblock outputclass="language-css">h1 {
+  counter-reset: chapter;
+}
+
+h2 {
+  string-set: chapter_title "Chapter (" counter(chapter) ")" content();
+  counter-increment: chapter;
+}</codeblock>
+  </body>
+</topic>
