@@ -11,31 +11,33 @@
   </prolog>
   <body>
     <p>PDF files may contain metadata. Metadata provide additional information about a certain
-      document, such as its title, author, organization, creation date, format, copyright.</p>
+      document, such as its title, author, organization, creation date, format, or copyright.</p>
     <p>HTML defines the <codeph>meta</codeph> element for keeping track of information that
-      describes your content. More or less of this information should migrate to the PDF document
-      properties. The property values may be either static, specified directly from the CSS, or
-      dynamic, collected from the document using the functions:<ul id="ul_cy3_b2j_wz">
-        <li>content(text)</li>
-        <li>attr()</li>
-        <li>oxy_xpath()</li>
+      describes your content. Most of this information should migrate to the PDF document
+      properties. The property values may be either <i>static</i> (specified directly from the CSS)
+      or <i>dynamic</i> (collected from the document) using the following functions:<ul
+        id="ul_cy3_b2j_wz">
+        <li><b>content(text)</b></li>
+        <li><b>attr()</b></li>
+        <li><b>oxy_xpath()</b></li>
       </ul></p>
     <section id="section_aqz_j2j_wz">
       <title>Predefined Meta Fields</title>
-      <p>An example of common metadata:<ul id="ul_plc_sz3_wz">
+      <p>Examples of common metadata:<ul id="ul_plc_sz3_wz">
           <li>Publication title</li>
           <li>Author</li>
           <li>Keywords</li>
           <li>Short description</li>
-        </ul><ph keyref="product"/> extracts automatically these informations from HTML documents.
-        Now let see how we can extract them from an arbitrary XML document, having this
-        structure:</p>
+        </ul><ph keyref="product"/> automatically extracts this informations from HTML
+        documents.</p>
+      <p>Suppose that you have the following arbitrary XML document:</p>
       <codeblock outputclass="language-xml">&lt;doc>
      &lt;title>Publication title&lt;/title>
      &lt;meta name='keywords' content='software, network'>
      &lt;meta name='description' content='This is a publication about software products...'>
      &lt;meta name='author' content='John, jo@mysite.example.com'>
 ...</codeblock>
+      <p>You could use any of the following CSS selectors to extract the metadata:</p>
       <p>
         <dl>
           <dlentry>
@@ -65,8 +67,8 @@
           <dlentry>
             <dt>-oxy-pdf-meta-description</dt>
             <dd>It is used to extract the publication description. You can use it by matching the
-                <codeph>meta</codeph> element with the attribute
-              <codeph>name='description'</codeph>, or
+                <codeph>meta</codeph> element with the attribute <codeph>name='description'</codeph>
+              or
               <codeph>name='description'</codeph>:<codeblock outputclass="language-css" xml:space="preserve">meta[name='description'], 
 meta[name='subject'] {
     -oxy-pdf-meta-description: attr(content);
@@ -78,9 +80,10 @@ meta[name='subject'] {
           </dlentry>
           <dlentry>
             <dt>-oxy-pdf-meta-keywords</dt>
-            <dd>It is used to extract the publication author. You can use it by matching the
+            <dd><?oxy_comment_start author="Steven" timestamp="20170912T111435+0300" comment="I think this is copied from the -oxy-pdf-meta-author selector. What should this sentence really be?"?>It
+              is used to extract the publication author. You can use it by matching the
                 <codeph>meta</codeph> element with the attribute
-              <codeph>name='author'</codeph>:<codeblock outputclass="language-css" xml:space="preserve">meta[name='keywords'] {
+              <codeph>name='author'</codeph>:<?oxy_comment_end?><codeblock outputclass="language-css" xml:space="preserve">meta[name='keywords'] {
     -oxy-pdf-meta-keywords: attr(content);
 }</codeblock></dd>
             <dd>
@@ -90,10 +93,13 @@ meta[name='subject'] {
           </dlentry>
           <dlentry>
             <dt>-oxy-pdf-meta-keyword</dt>
-            <dd>It is used to extract <b>a single keyword</b>, that is accumulated to the ones
-              before it. If you mark in your HTML document the keywors let say with a span with a
-              class "kw", for example, you may collect them all by
-              using:<codeblock outputclass="language-css" xml:space="preserve">span.kw {
+            <dd>It is used to extract a single
+              keyword<?oxy_comment_start author="Steven" timestamp="20170912T111625+0300" comment="I don&apos;t understand what this means. It doesn&apos;t make sense."?>
+              that is accumulated to the ones before it<?oxy_comment_end?>. For example, if you mark
+              the keyword in your HTML document with a span with a "kw" class,
+              <?oxy_comment_start author="Steven" timestamp="20170912T111710+0300" comment="Bogdan and I also can&apos;t figure out what it is meant by &quot;all&quot;. Collecting all the single keywords?"?>you
+              can collect them all by
+              using<?oxy_comment_end?>:<codeblock outputclass="language-css" xml:space="preserve">span.kw {
     -oxy-pdf-meta-keyword: content(text);
 }</codeblock></dd>
           </dlentry>
@@ -102,20 +108,20 @@ meta[name='subject'] {
     </section>
     <section id="section_lxd_42j_wz">
       <title>Custom Meta Fields</title>
-      <p>Metadata is not restricted to the above ones, you may have custom metadata fields. It is
-        usually displayed in a tabular format in Acrobat Reader ™ <uicontrol>Properties</uicontrol>
-        dialog, the <uicontrol>Custom</uicontrol> tab. </p>
+      <p>Metadata is not restricted to the above cases. You may have custom metadata fields. It is
+        usually displayed in a tabular format (for example, in Acrobat Reader ™ it is in the
+          <uicontrol>Custom</uicontrol> tab in the <uicontrol>Properties</uicontrol> dialog box). </p>
       <p>
         <dl>
           <dlentry>
             <dt>-oxy-pdf-meta-custom</dt>
             <dd>This property has two parts, one defining the name, and one the value for the field. </dd>
-            <dd>In the following example, we dump all the meta tags as custom meta fields in
+            <dd>In the following example, all the meta tags are dumped as custom meta fields in
               PDF:<codeblock outputclass="language-css">meta {
     -oxy-pdf-meta-custom: attr(name) attr(content);
 }</codeblock></dd>
-            <dd>Or, in case you have somewhere in the document content a span that defines the
-              document creation date, you may use:</dd>
+            <dd>Or if somewhere in the document content, you have a span that defines the document
+              creation date, you can use:</dd>
             <dd>
               <codeblock outputclass="language-css">span.created {
     -oxy-pdf-meta-custom: "CreationDate" content(text);
