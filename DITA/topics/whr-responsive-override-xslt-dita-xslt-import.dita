@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="whr-override-xslt-dita-xslt-import">
+  <title>WebHelp Responsive XSLT-Import and XSLT-Parameter Extension Points</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>WebHelp Responsive system<indexterm>XSLT-Import extension
+          point</indexterm></indexterm>
+        <indexterm>WebHelp Responsive system<indexterm>Customizing<indexterm>XSLT-Import extension
+              point</indexterm></indexterm></indexterm>
+        <indexterm>WebHelp Responsive system<indexterm>XSLT-Parameter extension
+          point</indexterm></indexterm>
+        <indexterm>WebHelp Responsive system<indexterm>Customizing<indexterm>XSLT-Parameter
+              extension point</indexterm></indexterm></indexterm>
+        <indexterm>XSLT Import extension points for WebHelp Responsive</indexterm>
+        <indexterm>XSLT Parameter extension points for WebHelp Responsive</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The WebHelp Responsive XSLT-Import extension points allows you to extend the XSLT stylesheets
+      associated with some of the WebHelp Responsive transformation steps. The DITA-OT plug-in
+      installer adds an XSLT import statement in the default WebHelp  XSLT so that the XSLT
+      stylesheet referenced by the extension point becomes part of the normal build.</p>
+    <p><b>Example:</b><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.extension">
+  &lt;feature extension="com.oxygenxml.webhelp.xsl.dita2webhelp" file="xsl/fixup.xsl"/>
+&lt;/plugin></codeblock></p>
+    <note type="attention">The customizations you make by using this extension point will affect all
+      WebHelp Responsive transformations. If you want to have a customization that is only available
+      for a certain transformation, please use the <xref
+        href="whr-xslt-customization.dita#whr-xslt-customization">Overriding a WebHelp Responsive
+        XSLT Stylesheet from an Ant Build File</xref> method.</note>
+    <section id="section_uyr_b1y_bx">
+      <title>XSLT-Import Extension Points</title>
+      <p>The following extension points are available:</p>
+      <p>
+        <dl>
+          <dlentry id="xsl-dita2webhelp">
+            <dt><b>com.oxygenxml.webhelp.xsl.dita2webhelp</b></dt>
+            <dd>Extension point to override the XSLT stylesheet
+                (<filepath>dita2webhelpImpl.xsl</filepath>) that produces an HTML file for each DITA
+              topic. The location of this topic is <filepath><term keyref="glossentry_dita_ot_dir"
+                />\plugins\com.oxygenxml.webhelp.responsive\xsl\dita2webhelp\dita2webhelpImpl.xsl</filepath></dd>
+          </dlentry>
+          <dlentry id="xsl-creatMainFiles">
+            <dt><b>com.oxygenxml.webhelp.xsl.createMainPage</b></dt>
+            <dd>Extension point to override the XSLT stylesheet
+                (<filepath>createMainPage.xsl</filepath>) that produces the WebHelp Responsive main
+              HTML page (<filepath>index.html</filepath>). The location of this file is
+                  <filepath><term keyref="glossentry_dita_ot_dir"
+                />\plugins\com.oxygenxml.webhelp.responsive\xsl\mainFiles\createMainPageImpl.xsl</filepath></dd>
+          </dlentry>
+          <dlentry id="xsl-createSearchPage">
+            <dt><b>com.oxygenxml.webhelp.xsl.createSearchPage</b></dt>
+            <dd>Extension point to override the XSLT stylesheet
+                (<filepath>createSearchPage.xsl</filepath>) that produces the WebHelp Responsive
+              search HTML page (<filepath>search.html</filepath>). The location of this file is
+                  <filepath><term keyref="glossentry_dita_ot_dir"
+                />\plugins\com.oxygenxml.webhelp.responsive\xsl\mainFiles\createSearchPage.xsl</filepath></dd>
+          </dlentry>
+          <dlentry id="xsl-createIndextermsPage">
+            <dt><b>com.oxygenxml.webhelp.xsl.createIndexTermsPage</b></dt>
+            <dd>Extension point to override the XSLT stylesheet
+                (<filepath>createIndextermsPage.xsl</filepath>) that produces the WebHelp Responsive
+              index terms HTML page (<filepath>indexterms.html</filepath>). The location of this
+              file is <filepath><term keyref="glossentry_dita_ot_dir"
+                />\plugins\com.oxygenxml.webhelp.responsive\xsl\mainFiles\createIndextermsPage.xsl</filepath></dd>
+          </dlentry>
+          <dlentry id="xsl-createTocXML">
+            <dt><b>com.oxygenxml.webhelp.xsl.createTocXML</b></dt>
+            <dd>Extension point to override the XSLT stylesheet (<filepath>tocDita.xsl</filepath>)
+              that produces the <filepath>toc.xml</filepath> file. This file contains information
+              extracted from the <xref keyref="glossentry_ditamap"><term>DITA map</term></xref> and
+              it is mainly used to construct the WebHelp Table of Contents and navigational links.
+              The path to this stylesheet is: <filepath><term keyref="glossentry_dita_ot_dir"
+                />\plugins\com.oxygenxml.webhelp\xsl\toc\tocDita.xsl</filepath>.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    <section id="section_qvc_d1y_bx">
+      <title>XSLT-Parameter Extension Points</title>
+      <p>If your customization stylesheet declares one or more XSLT parameters and you want to
+        control their values from the transformation scenario, you can use one of the following XSLT
+        parameter extension points:</p>
+      <p>
+        <dl>
+          <dlentry id="param-ext-point">
+            <dt><b>com.oxygenxml.webhelp.xsl.dita2webhelp.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+              <xref href="#whr-override-xslt-dita-xslt-import/xsl-dita2webhelp" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.dita2webhelp</b> extension point</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><b>com.oxygenxml.webhelp.xsl.createMainPage.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+                <xref href="#whr-override-xslt-dita-xslt-import/xsl-creatMainFiles" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.createMainPage</b> extension point</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><b>com.oxygenxml.webhelp.xsl.createSearchPage.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+                <xref href="#whr-override-xslt-dita-xslt-import/xsl-createSearchPage" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.createSearchPage</b> extension point</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><b>com.oxygenxml.webhelp.xsl.createIndextermsPage.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+                <xref href="#whr-override-xslt-dita-xslt-import/xsl-createIndextermsPage"
+                format="dita"><b>com.oxygenxml.webhelp.xsl.createIndexTermsPage</b> extension
+                point</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><b>com.oxygenxml.webhelp.xsl.createTocXML.param</b></dt>
+            <dd>Use this extension point to pass parameters to the stylesheet specified using the
+              <xref href="#whr-override-xslt-dita-xslt-import/xsl-createTocXML" format="dita"
+                  ><b>com.oxygenxml.webhelp.xsl.createTocXML</b> extension point</xref>.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html"
+        href="http://www.dita-ot.org/dev/extension-points/plugin-extension-points-xslt-import.html"
+        scope="external">
+        <linktext>[DITA-OT] XSLT-Import Extension Points</linktext>
+      </link>
+      <link format="html"
+        href="http://www.dita-ot.org/dev/extension-points/plugin-extension-points-xslt-parameters.html"
+        scope="external">
+        <linktext>[DITA-OT] XSLT-Parameter Extension Points</linktext>
+      </link>
+    </linklist>
+  </related-links>
+</topic>
