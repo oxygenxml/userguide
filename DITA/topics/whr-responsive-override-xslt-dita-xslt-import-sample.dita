@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="whr-responsive-override-xslt-dita-xslt-import-sample">
-  <title>Example: Customizing main page Using XSLT-Import/Parameter Extension Points</title>
+  <title>Example: Customizing Main Page Using XSLT-Import/Parameter Extension Points</title>
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>WebHelp Responsive system<indexterm>Customizing main page</indexterm></indexterm>
+        <indexterm>WebHelp Responsive system<indexterm>Customizing main page
+          example</indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
     <p>This topic provides some common use-cases to demonstrate how to use the WebHelp Responsive
-      XSLT-Import extension points to customize the main page. In this sample we'll modifythe main
-      page footer by adding copyright information extracted from the DITA bookmap or by adding the
+      XSLT-Import extension points to customize the main page. In this sample, the main page footer
+      is modified by adding copyright information extracted from the DITA bookmap or by adding the
       output generation time. The first use-case uses an XSLT-Import extension point while the
       second uses an XSLT-Parameter extension point.</p>
     <section id="section_edl_ycb_3z"><title>Use Case 1: WebHelp XSLT-Import extension point to add
-        copyright information extracted from DITA bookmap</title><p>Suppose you want to customize the WebHelp Responsive main page by adding in the footer the
-        information about the legal rights associated with the book, including copyright dates and
-        owner. This information is specified in the bookmap.</p><codeblock outputclass="language-xml">&lt;bookrights>            
+        copyright information extracted from DITA bookmap</title><p>Suppose you want to customize the WebHelp Responsive main page by adding information about the
+        legal rights associated with the book in the footer (for example, copyright dates and
+        owner). This information is specified in the bookmap:</p><codeblock outputclass="language-xml">&lt;bookrights>            
   &lt;copyrfirst>
     &lt;year>2002&lt;/year>
   &lt;/copyrfirst>
@@ -36,44 +37,47 @@
       </p><p>The XSLT stylesheet that generates the main page is located in: <filepath><term
             keyref="glossentry_dita_ot_dir"
           />\plugins\com.oxygenxml.webhelp.responsive\xsl\mainFiles\createMainPage.xsl</filepath>.
-        This XSLT stylesheet declares the <codeph>copy_template</codeph> mode which processes the
+        This XSLT stylesheet declares the <codeph>copy_template</codeph> mode that processes the
           <xref href="whr-main-page-template.dita#whr-main-page-template">main page template</xref>
-        to expand it's components. The main page template declares a component for the footer
-        section that looks
-      like:</p><codeblock outputclass="language-xml">&lt;div class=" footer-container text-center ">
+        to expand its components. The main page template declares a component for the footer section
+        that looks like this:</p><codeblock outputclass="language-xml">&lt;div class=" footer-container text-center ">
   &lt;whc:include_html href="${webhelp.fragment.footer}"/>
-&lt;/div></codeblock><p>Our extension stylesheet will add an template that matches this component. It applies the default
-        processing and adds the copyright information at the end.</p>
+&lt;/div></codeblock><p>In the following example, the extension stylesheet will add a template that matches this
+        component. It applies the default processing and adds the copyright information at the
+        end.</p>
         <codeblock outputclass="language-xml">&lt;xsl:template match="*:div[contains(@class, 'footer-container')]" mode="copy_template">
-    &lt;!-- Apply the default processing -->
-    &lt;xsl:next-match/>
+  &lt;!-- Apply the default processing -->
+  &lt;xsl:next-match/>
     
-    &lt;!-- Add a div containing the copyright information -->
-    &lt;div class="copyright_info">        
-        &lt;xsl:choose>
-            &lt;!-- Adds the start-end years if they are defined -->
-            &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst) and exists($toc/*:topicmeta/*:bookrights/*:copyrlast)">
-                &lt;span class="copyright_years">
-                    &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>-&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrlast"/>
-                &lt;/span>
-            &lt;/xsl:when>
+  &lt;!-- Add a div containing the copyright information -->
+  &lt;div class="copyright_info">        
+      &lt;xsl:choose>
+          &lt;!-- Adds the start-end years if they are defined -->
+          &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst) and 
+                              exists($toc/*:topicmeta/*:bookrights/*:copyrlast)">
+              &lt;span class="copyright_years">
+                 &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>
+                       -&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrlast"/>
+              &lt;/span>
+          &lt;/xsl:when>
             
-            &lt;!-- Adds only the first year if last is not defined. -->
-            &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst)">
-                &lt;span class="copyright_years">
-                    &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>
-                &lt;/span>
-            &lt;/xsl:when>
-        &lt;/xsl:choose>
+          &lt;!-- Adds only the first year if last is not defined. -->
+          &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst)">
+              &lt;span class="copyright_years">
+                 &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>
+              &lt;/span>
+          &lt;/xsl:when>
+      &lt;/xsl:choose>
                     
         
-        &lt;xsl:if test="exists($toc/*:topicmeta/*:bookrights/*:bookowner/*:organization)">
-            &lt;span class="organization">
-                &lt;xsl:text> &lt;/xsl:text>&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:bookowner/*:organization"/>
-                &lt;xsl:text>. All rights reserved.&lt;/xsl:text>
-            &lt;/span>
-        &lt;/xsl:if>
-    &lt;/div>
+      &lt;xsl:if test="exists($toc/*:topicmeta/*:bookrights/*:bookowner/*:organization)">
+          &lt;span class="organization">
+              &lt;xsl:text> &lt;/xsl:text>&lt;xsl:value-of 
+                   select="$toc/*:topicmeta/*:bookrights/*:bookowner/*:organization"/>
+              &lt;xsl:text>. All rights reserved.&lt;/xsl:text>
+          &lt;/span>
+      &lt;/xsl:if>
+  &lt;/div>
 &lt;/xsl:template></codeblock><p>You can implement this functionality with a WebHelp extension plugin that uses the <xref
           href="whr-responsive-override-xslt-dita-xslt-import.dita#whr-override-xslt-dita-xslt-import/xsl-creatMainPage"
             ><b>com.oxygenxml.webhelp.xsl.createMainPage</b> extension point</xref>. This extension
@@ -92,35 +96,38 @@
           <li>Create your customization stylesheet (for example, <b>custom_mainpage.xsl</b>), and
             edit it to override the template that produces the footer
             section:<codeblock outputclass="language-xml">&lt;xsl:template match="*:div[contains(@class, 'footer-container')]" mode="copy_template">
-    &lt;!-- Apply the default processing -->
-    &lt;xsl:next-match/>
-    
-    &lt;!-- Add a div containing the copyright information -->
-    &lt;div class="copyright_info">        
-        &lt;xsl:choose>
-            &lt;!-- Adds the start-end years if they are defined -->
-            &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst) and exists($toc/*:topicmeta/*:bookrights/*:copyrlast)">
-                &lt;span class="copyright_years">
-                    &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>-&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrlast"/>
-                &lt;/span>
-            &lt;/xsl:when>
+  &lt;!-- Apply the default processing -->
+  &lt;xsl:next-match/>
+
+  &lt;!-- Add a div containing the copyright information -->
+  &lt;div class="copyright_info">        
+      &lt;xsl:choose>
+          &lt;!-- Adds the start-end years if they are defined -->
+          &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst) and 
+                        exists($toc/*:topicmeta/*:bookrights/*:copyrlast)">
+              &lt;span class="copyright_years">
+                 &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>
+                       -&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrlast"/>
+              &lt;/span>
+          &lt;/xsl:when>
             
-            &lt;!-- Adds only the first year if last is not defined. -->
-            &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst)">
-                &lt;span class="copyright_years">
-                    &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>
-                &lt;/span>
-            &lt;/xsl:when>
-        &lt;/xsl:choose>
+          &lt;!-- Adds only the first year if last is not defined. -->
+          &lt;xsl:when test="exists($toc/*:topicmeta/*:bookrights/*:copyrfirst)">
+              &lt;span class="copyright_years">
+                 &amp;#xa9;&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:copyrfirst"/>
+              &lt;/span>
+          &lt;/xsl:when>
+      &lt;/xsl:choose>
                     
         
-        &lt;xsl:if test="exists($toc/*:topicmeta/*:bookrights/*:bookowner/*:organization)">
-            &lt;span class="organization">
-                &lt;xsl:text> &lt;/xsl:text>&lt;xsl:value-of select="$toc/*:topicmeta/*:bookrights/*:bookowner/*:organization"/>
-                &lt;xsl:text>. All rights reserved.&lt;/xsl:text>
-            &lt;/span>
-        &lt;/xsl:if>
-    &lt;/div>
+      &lt;xsl:if test="exists($toc/*:topicmeta/*:bookrights/*:bookowner/*:organization)">
+          &lt;span class="organization">
+              &lt;xsl:text> &lt;/xsl:text>&lt;xsl:value-of 
+                   select="$toc/*:topicmeta/*:bookrights/*:bookowner/*:organization"/>
+              &lt;xsl:text>. All rights reserved.&lt;/xsl:text>
+          &lt;/span>
+      &lt;/xsl:if>
+  &lt;/div>
 &lt;/xsl:template></codeblock></li>
           <li>Use the <uicontrol>Run DITA OT Integrator</uicontrol> transformation scenario found in
             the <uicontrol>DITA Map</uicontrol> section in the <xref
@@ -133,8 +140,8 @@
       <title>Use-Case 2: WebHelp XSLT-Parameter extension point to control if generation time is
         displayed in the output</title>
       <p>Another possible customization for the main page is to add the generation time in its
-        footer. We'll use an XSLT-Parameter extension point to control if this customization is
-        active or not. In this case, we'll use the <xref
+        footer. You can use an XSLT-Parameter extension point to control if this customization is
+        active or not. In this case, you can use the <xref
           href="whr-responsive-override-xslt-dita-xslt-import.dita#whr-responsive-override-xslt-dita-xslt-import/param-ext-point-xsl-creatMainPage"
             ><b>com.oxygenxml.webhelp.xsl.createMainPage.param</b> extension point</xref>. </p>
       <p>
@@ -153,7 +160,8 @@
             by adding the next XSLT code at the
             end.<codeblock outputclass="language-xml">&lt;xsl:if test="$webhelp.footer.add.generation.time = 'yes'">
     &lt;div class="generation_time">
-        Generation date: &lt;xsl:value-of select="format-dateTime(current-dateTime(), '[h1]:[m01] [P] on [M01]/[D01]/[Y0001].')"/>
+        Generation date: &lt;xsl:value-of select="format-dateTime(
+              current-dateTime(), '[h1]:[m01] [P] on [M01]/[D01]/[Y0001].')"/>
     &lt;/div>    
 &lt;/xsl:if></codeblock></li>
           <li>Edit the <b>plugin.xml</b> file to specify the
