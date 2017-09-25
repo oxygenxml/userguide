@@ -17,7 +17,7 @@
     <p>An <term>OXY-URL</term> is a URL from a technical point of view, but it is not the a normal
       HTTP URL like the ones that browsers use. It should have several characteristics:<ol
         id="ol_fdt_krl_3z">
-        <li>It must have a unique <term>schema</term> (something like <codeph>mycms</codeph> should
+        <li>It must have a unique <term>scheme</term> (something like <codeph>mycms</codeph> should
           work).</li>
         <li>It should behave like an identifier for the file that it references.</li>
         <li>It is usually different from other URLs identifying the file, such as one that would
@@ -26,20 +26,19 @@
       </ol></p>
     <example>
       <title><term>OXY-URL</term> for a File in Oxygen's User Manual</title>
-      <p>Suppose that the <term>OXY-URL</term> for the
-          <filepath>DITA/topics/introduction.dita</filepath> topic from the Oxygen User Manual is
-        the
-        following:<codeblock outputclass="language-ini">github://getFileContent/oxygenxml/userguide/master/DITA/topics/introduction.dita</codeblock></p>
+      <p>Suppose that the <term>OXY-URL</term> for the <filepath>DITA/topics/intro.dita</filepath>
+        topic from the Oxygen User Manual (hosted on GitHub) is the
+        following:<codeblock outputclass="language-ini">gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/topics/introduction.dita</codeblock></p>
       <p>Notice that:<ol id="ol_xc5_xsl_3z">
-          <li>The URL <term>schema</term> is <apiname>github</apiname>.</li>
+          <li>The URL <term>scheme</term> is <apiname>gitgh</apiname>.</li>
           <li>It uniquely identifies the file <filepath>DITA/topics/introduction.dita</filepath> on
-            branch <codeph>master</codeph> in the repository <codeph>oxygenxml/userguide</codeph> on
+            branch <codeph>master</codeph> in the repository <codeph>oxygenxml/ug</codeph> on
             GitHub.</li>
           <li>It is different from the URL used to access the file in the GitHub web interface
               (<term>CMS-URL</term>)
-              <codeph>https://github.com/oxygenxml/userguide/blob/master/DITA/topics/introduction.dita</codeph>
+              <codeph>https://github.com/oxygenxml/ug/blob/master/DITA/topics/introduction.dita</codeph>
             and from the URL used to access the file's raw content (<term>RAW-URL</term>)
-              <codeph>https://raw.githubusercontent.com/oxygenxml/userguide/master/DITA/topics/introduction.dita</codeph>.</li>
+              <codeph>https://raw.githubusercontent.com/oxygenxml/ug/master/DITA/topics/introduction.dita</codeph>.</li>
         </ol></p>
     </example>
     <section id="section_enx_ybm_3z">
@@ -109,15 +108,16 @@
         referenced file. <note>This resolver will need to make sure that the any
             <term>userinfo</term> from the <term>OXY-URL</term> of the currently open file is
           transferred to the result.</note></p>
-      <p>For example, if the <term>OXY-URL</term> of the currently opened file is:</p>
-      <codeblock outputclass="language-ini">github://ff33bba498@getFileContent/oxygenxml/ug/master/DITA/topics/introduction.dita</codeblock>
-      <p>and the <term>CMS-URL</term> of the image is:</p>
-      <codeblock outputclass="language-ini">https://github.com/oxygenxml/ug/blob/master/DITA/img/WA_git_login.png</codeblock>
+      <p>For example, suppose an image is referenced in a DITA topic and the <term>OXY-URL</term> of
+        the topic (from a GitHub repository) is:</p>
+      <codeblock outputclass="language-ini">gitgh://ff33bba498@https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/topics/intro.dita</codeblock>
+      <p>and the <term>CMS-URL</term> of the referenced image is:</p>
+      <codeblock outputclass="language-ini">https://github.com/oxygenxml/ug/blob/master/DITA/img/login.png</codeblock>
       <p>then the resolved <term>OXY-URL</term> of the image should be:</p>
-      <codeblock outputclass="language-ini">github://ff33bba498@getFileContent/oxygenxml/ug/master/DITA/img/WA_git_login.png</codeblock>
+      <codeblock outputclass="language-ini">gitgh://ff33bba498@https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/img/login.png</codeblock>
     </section>
     <section id="section_jjk_p3p_1bb">
-      <title>Example</title>
+      <title>WebDAV Example</title>
       <p>If the main document is loaded over WebDAV, the following <codeph>URIResolver</codeph>
         rewrites references to HTTP URLs to use WebDAV and inherit the
         credentials:<codeblock outputclass="language-javascript">URIResolver uriResolver = new URIResolver() {
