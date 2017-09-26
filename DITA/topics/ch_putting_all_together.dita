@@ -12,133 +12,146 @@
     </metadata>
   </prolog>
   <body>
-    <p>We will try now to format a book. For simplicity, we'll work with a novel, without many
-      structures: an HTML version of the <i>The Adventures of Tom Sawyer</i> by <i>Mark Twain</i>.
-      It mainly consists of titles, paragraphs, some meta-information: <xref
-        href="https://www.gutenberg.org/files/74/74-h/74-h.htm#c4" format="htm" scope="external"
-      />.</p>
-    <p>Save this file, under the name "book.html" then create a CSS file next to it. Name it
-      "book.css". In the following I will consider you are using oXygen as your XML IDE.</p>
+    <p>This tutorial will show you how to format a book. For simplicity, the tutorial will use an
+      HTML version of the <i>The Adventures of Tom Sawyer</i> by <i>Mark Twain</i>, without many
+      structures. It mainly consists of titles, paragraphs, and some meta-information: <xref
+        href="https://www.gutenberg.org/files/74/74-h/74-h.htm" format="htm" scope="external"/>.</p>
+    <p>Before getting started, save this file with the name "book.html" then create a CSS file named
+      "book.css" in the same directory. Note that for the purposes of this tutorial, it is assumed
+      that you are using Oxygen XML Editor/Author for your XML IDE.</p>
     <section id="section_nhv_ywz_gbb">
-      <title>Cleanup the existing styles</title>
+      <title>1. Cleanup the existing styles</title>
       <p>To make things easier, remove the <xmlelement>style</xmlelement> element from the header of
-        the book. This way we won't mix CSS rules coming from our CSS with the ones that were
-        created for browser display.</p>
+        the book. This will prevent mixing CSS rules coming from your CSS with the ones that were
+        created for the browser display.</p>
     </section>
     <section id="section_l44_2wz_gbb">
-      <title>Setting-up Chemistry in oXygen</title>
-      <p>To transform this book to PDF, configure the <ph keyref="product"/> as an external tool in
-        oXygen. Use the <menucascade>
+      <title>2. Setup Chemistry in Oxygen</title>
+      <p>To transform this book to PDF, configure <ph keyref="product"/> as an external tool in
+        oXygen. Go to <menucascade>
           <uicontrol>Tools</uicontrol>
           <uicontrol>External Tools</uicontrol>
-          <uicontrol>Configure..</uicontrol>
-        </menucascade>menu, and add a new external took. The command line
-        is:<codeblock>cmd /c "${oxygenInstallDir}\oxygenChemistry.bat" -catalogs ${xmlCatalogFilesList} -in "${cf}" -css "${cfd}/${cfn}.css" -out "${cfd}/${cfn}.pdf" -show-pdf </codeblock></p>
-      <p>Every time you select the HTML book file in oXygen, you can use this external tool from the
-        toolbar.</p>
+          <uicontrol>Configure</uicontrol>
+        </menucascade> menu, click the <uicontrol>New</uicontrol> button, and configure it as a new
+        external tool. Set the <uicontrol>Command line</uicontrol>
+        to:<codeblock outputclass="language-ini">cmd /c "${oxygenInstallDir}\oxygenChemistry.bat" -catalogs ${xmlCatalogFilesList}
+   -in "${cf}" -css "${cfd}/${cfn}.css" -out "${cfd}/${cfn}.pdf" -show-pdf </codeblock></p>
+      <p><b>Result:</b> Every time you select the HTML book file in Oxygen, you can use this
+        external tool from the toolbar.</p>
     </section>
     <section id="section_px3_dtz_gbb">
-      <title>Define the page size</title>
-      <p>We plan to print this book in format similar to the original edition of the book. Add to
-        your CSS:<codeblock>@page {
+      <title>3. Define the page size</title>
+      <p>To accommodate printing this book in a format similar to the original edition of the book,
+        add the following to your
+        CSS:<codeblock outputclass="language-css">@page {
   size: 6in 7.5in;
   margin: 0.5in;
 }</codeblock></p>
     </section>
-    <section id="section_hq5_3xz_gbb"><title>Selecting fonts</title><p>A good novel book has clean
-        serif fonts. Let's choose one from Google Fonts. The following import must be added at the
-        beginning of the CSS
-      file:</p><codeblock>@import url('https://fonts.googleapis.com/css?family=Crimson+Text');</codeblock>Then,
-      set it on the root of the
-      document:<codeblock>:root {
+    <section id="section_hq5_3xz_gbb">
+      <title>4. Select fonts</title>
+      <p>Good novel books usually have clean serif fonts. You can choose one from Google Fonts by
+        adding the following import at the beginning of the CSS file:</p>
+      <codeblock outputclass="language-css">@import url('https://fonts.googleapis.com/css?family=Crimson+Text');</codeblock>
+      <p>Then, set it on the root of the document:</p>
+      <codeblock outputclass="language-css">:root {
   font-family: 'Crimson Text', serif;
   font-size:11pt;
-}</codeblock>Besides
-      the main content, our HTML book contains some description and licensing terms, located in
-        <xmlelement>pre</xmlelement> elements, right under the <xmlelement>body</xmlelement>. For
-      these, we will make the content wrap (the default is not to wrap), and use a smaller
-      font:<codeblock>body > pre {
+}</codeblock>
+      <p>Besides the main content, the HTML book contains some descriptions and licensing terms,
+        located in <xmlelement>pre</xmlelement> elements, directly under the
+          <xmlelement>body</xmlelement> element. For these, to wrap the content (the default is not
+        to wrap), use a smaller font:</p>
+      <codeblock outputclass="language-css">body > pre {
   font-family: sans-serif;
   font-size:7pt;
   white-space: pre-wrap;
-}</codeblock></section>
-    <section id="section_mmg_yff_hbb"><title>What we have so far</title><p>Try to transform the HTML
-        book with Chemistry. You will get something similar to:</p><image
-        href="../img/ch_putting_all_together_pdf1.png" id="image_ig5_bgf_hbb" width="6in"/><p>The
-        nice thing is that Chemistry already helped us besides the formatting:<ol
+}</codeblock>
+    </section>
+    <section id="section_mmg_yff_hbb"><title>5. Transform the book with Chemistry</title><p>Try to
+          <xref href="ch_command_line_interface.dita#ch_command_line_interface">transform the HTML
+          book with Chemistry</xref>. You will get something similar to this:</p><image
+        href="../img/ch_putting_all_together_pdf1.png" id="image_ig5_bgf_hbb" width="6in"/><p>Notice
+        that besides the formatting, Chemistry already helped with the following:<ul
           id="ol_vt5_2gf_hbb">
-          <li>Detected the publication title and set it as PDF document title. See the window
-            title-bar.</li>
-          <li>Created a tree of bookmarks by taking into account the <xmlelement>H2</xmlelement>
-            elements.</li>
-        </ol>Taking a short look at the document, we can see the work is not finished yet:<ol
+          <li>Detected the publication title and set it as PDF. See the window title-bar.</li>
+          <li>Created a tree of bookmarks by taking the <xmlelement>H2</xmlelement> elements into
+            account.</li>
+        </ul>For the purposes of this tutorial, the following still needs to be addressed:<ul
           id="ol_nzw_tgf_hbb">
           <li>The preface, and each of the chapters should start on a new page.</li>
-          <li>The chapter titles are not formatted</li>
-          <li>There are no page numbers, no page headers, etc.</li>
-        </ol></p></section>
+          <li>The chapter titles need to be formatted.</li>
+          <li>The publication needs page numbers, page headers, and other styling.</li>
+        </ul></p></section>
     <section id="section_hvm_lrg_hbb">
-      <title>Text justification</title>
-      <p>The text is not justified, the right side of the book is not nicely aligned.
-        <codeblock>p {
+      <title>6. Justify text</title>
+      <p>To improve the alignment of the right side of the book, justify the text by adding the
+        following in the CSS:
+        <codeblock outputclass="language-css">p {
   text-align: justify;
 }</codeblock></p>
     </section>
-    <section id="section_rlv_ygf_hbb"><title>Chapters should start on a new page.</title><p>Let's
-        make each of the chapters start on a new page. Our document is very flat, and the chapters
-        are just marked by the <xmlelement>H2</xmlelement> title elements between
-          <xmlelement>p</xmlelement> elements. There are also <xmlelement>pre</xmlelement> elements
-        used for the copyright and
-      licensing:</p><codeblock>&lt;h2>
+    <section id="section_rlv_ygf_hbb">
+      <title>7. Make chapters start on a new page</title>
+      <p>Currently, the document is very flat, and the chapters are just marked by the
+          <xmlelement>H2</xmlelement> title elements between <xmlelement>p</xmlelement> elements.
+        There are also <xmlelement>pre</xmlelement> elements used for the copyright and
+        licensing:</p>
+      <codeblock outputclass="language-xml">&lt;h2>
       CHAPTER III
 &lt;/h2>
 ...
 &lt;p>
       TOM presented himself before Aunt Polly, who was sitting by an open window
-      in a pleasant rearward apartment, which was bedroom, breakfast-room,</codeblock>The
-      CSS paged media module defines a way to forcibly break the page before an
-      element:<codeblock>h2 {
+      in a pleasant rearward apartment, which was bedroom, breakfast-room,</codeblock>
+      <p>To make each of the chapters start on a new page, the CSS paged media module defines a way
+        to forcibly break the page before an element:</p>
+      <codeblock outputclass="language-css">h2 {
   page-break-before:always;
 }
 
 body > pre {
   page-break-before:always;
-}</codeblock>Now
-      all the chapters are starting at the beginning of a new page, and our book is start looking
-      like a real publication. If you want the chapters to always start on a page from the right
-      side, use the value <codeph>right</codeph> for the property.</section>
+}</codeblock>
+      <p><b>Result:</b> Now all the chapters start at the beginning of a new page, and the book is
+        starting to look like a real publication. If you want the chapters to always start on a page
+        from the right side, use the <codeph>right</codeph> value for the property.</p>
+    </section>
     <section id="section_d4w_whf_hbb">
-      <title>Format the chapter titles</title>
-      <p>The titles are looking rather dull, aligned to the left. Let's center them and give them
-        styling:<codeblock>h2 {
+      <title>8. Format the chapter titles</title>
+      <p>Currently, the titles look rather dull, aligned to the left. Center them and give them
+        styling:<codeblock outputclass="language-css">h2 {
   text-align: center;
   font-size:larger;
 }</codeblock></p>
     </section>
     <section id="section_rhp_gjf_hbb">
-      <title>Add page numbers</title>
-      <p>The novels have the page numbers shown in the bottom center of the page. We will use the
-          <codeph>page</codeph> CSS counter set in a page margin box:</p>
-      <codeblock>@page {
+      <title>9. Add page numbers</title>
+      <p>Most novels have the page numbers shown in the bottom center of the page. To achieve this,
+        you can use the <codeph>page</codeph> CSS counter set in a page margin box:</p>
+      <codeblock outputclass="language-css">@page {
   @bottom-center {
     content: "-" counter(page) "-";
     font-size: 8pt;
   }
 }</codeblock>
     </section>
-    <section id="section_hmn_btg_hbb"><title>What we have so far</title><p>So we solved the text
-        justification, page breaks and page numbers. This is how the document looks like
-        now:</p><image href="../img/ch_putting_all_together_pdf2.png" id="image_f5p_f5g_hbb"
-        width="6in"/><p>Remaining problems: <ol id="ol_obn_35g_hbb">
-          <li>We have no cover page.</li>
+    <section id="section_hmn_btg_hbb"><title>What the document looks like so far</title><p>So, you
+        have solved the text justification, page breaks, and page numbers. This is what the document
+        looks like now:</p><image href="../img/ch_putting_all_together_pdf2.png"
+        id="image_f5p_f5g_hbb" width="6in"/><p>Remaining things to be addressed:<ul
+          id="ol_obn_35g_hbb">
+          <li>It needs a cover page.</li>
           <li>The page numbering should restart on the first chapter, after the preface, and should
             end before the licensing terms.</li>
-        </ol></p></section>
-    <section id="section_xsj_p5g_hbb"><title>Adding a cover page</title><p>I found the original
-        cover of the book on the same website of the Gutenberg project. I will use this as artwork
-        for our first page.</p><p>Let's start by defining a named page in our CSS file, with no page
-        counter in the <codeph>bottom-center</codeph>
-      region:</p><codeblock>@page cover-page{
+        </ul></p></section>
+    <section id="section_xsj_p5g_hbb">
+      <title>10. Add a cover page</title>
+      <p>You can find the original cover of the book on the same website of the Gutenberg project.
+        For this tutorial, use this as artwork for the first page.</p>
+      <p>Start by defining a named page in your CSS file, with no page counter in the
+          <codeph>bottom-center</codeph> region:</p>
+      <codeblock outputclass="language-css">@page cover-page{
    background-image:url('https://www.gutenberg.org/files/74/74-h/images/bookcover.jpg');  
    background-size: 6in 7.5in;
    background-repeat:no-repeat;
@@ -146,38 +159,45 @@ body > pre {
    @bottom-center {
       content:none;
    }   
-}</codeblock>When
-      using images for your cover pages, make sure they respect the same aspect ratio as your page
-      (width/height ratio), then use the <codeph>background-size</codeph> property to stretch it
-      exactly to the page size.<p>Next, we will link this page to a synthetic element we place
-        before the root. I will use a :before pseudo element of the <xmlelement>html</xmlelement>
-        root element:</p><codeblock>html:before{
+}</codeblock>
+      <p>When using images for your cover pages, make sure they respect the same aspect ratio as
+        your page (width/height ratio), then use the <codeph>background-size</codeph> property to
+        stretch it exactly to the page size.</p>
+      <p>Next, link this page to a synthetic element placed before the root. You can use a
+          <codeph>:before</codeph> pseudo element in the <xmlelement>html</xmlelement> root
+        element:</p>
+      <codeblock outputclass="language-css">html:before{
   content:" ";
   page:cover-page;
-}</codeblock>I
-      could place a text over the cover image, but for the moment we will leave the content with an
-      blank text. It is necessary to have a content property that is not empty, because <ph
-        keyref="product"/> discards all the pseudo elements without one.</section>
-    <section id="section_skk_jbh_hbb"><title>Reset and style page numbers</title>We want that the
-      page numbers of the book content pages be restarted at the beginning of the first chapter. We
-      can use the first title that follows the metadata at the beginning of the
-      document:<codeblock>pre + h2{
+}</codeblock>
+      <p>You could place text over the cover image, but for the moment just leave the content with
+        blank text (a whitespace). It is necessary to have a <codeph>content</codeph> property that
+        is not empty because <ph keyref="product"/> discards all the pseudo elements without
+        one.</p>
+    </section>
+    <section id="section_skk_jbh_hbb">
+      <title>11. Reset and style page numbers</title>
+      <p>To make the page numbers be restarted at the beginning of the first chapter, you can use
+        the first title that follows the metadata at the beginning of the document:</p>
+      <codeblock outputclass="language-css">pre + h2{
   counter-reset: page 1;
-} </codeblock>The licensing terms at
-      the end of the book can be numbered independently, and styled differently.
-      <codeblock>body > pre {
+} </codeblock>
+      <p>The licensing terms at the end of the book can be numbered independently, and styled
+        differently:</p>
+      <codeblock outputclass="language-css">body > pre {
   counter-reset:page;
   page:copyright-license-page;
-}</codeblock>The
-      copyright page uses a lower-roman numbering
-      style:<codeblock>@page copyright-license-page{
+}</codeblock>
+      <p>For the copyright page, use a lower-roman numbering style:</p>
+      <codeblock outputclass="language-css">@page copyright-license-page{
   background-color:yellow;
   @bottom-center {
     content:counter(page, lower-roman);
   }
-}</codeblock></section>
-    <section id="section_a4k_2nm_hbb"><title>What we obtained</title><p>Now we have a nice looking
-        book, that can be distributed electronically, or printed:</p><image
+}</codeblock>
+    </section>
+    <section id="section_a4k_2nm_hbb"><title>Final Result: What we obtained</title><p>Now you have a
+        nice looking book that can be distributed electronically, or printed:</p><image
         href="../img/ch_putting_all_together_pdf3.png" id="image_yx1_knm_hbb" width="6in"
       /></section>
   </body>
