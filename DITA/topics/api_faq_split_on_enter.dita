@@ -5,26 +5,44 @@
   <body>
     <section id="question">
       <title>Question</title>
-      <p>How to split the paragraph on Enter instead of showing the content completion list?</p>
+      <p>Is it possible to split the paragraph on <uicontrol><shortcut>Enter</shortcut></uicontrol>
+        instead of showing the content completion list?</p>
     </section>
     <section id="answer">
       <title>Answer</title>
-      <p>To obtain this behavior, edit your document type and in the <xref
-          href="the-document-type-dialog.dita#the-document-type-dialog"><uicontrol>Document
-            Type</uicontrol> configuration dialog box</xref> go to the <uicontrol>Author</uicontrol>
-        tab, then <uicontrol>Actions</uicontrol> subtab, and add your own split action. This action
-        must have the <uicontrol><shortcut>Enter</shortcut></uicontrol> shortcut key associated and
-        must trigger your own custom operation that handles the split.</p>
-      <p>So, when you press <uicontrol><shortcut>Enter</shortcut></uicontrol>, your Java operation
-        is invoked and it will be your responsibility to split the paragraph using the current API
-        (probably creating a <xref keyref="glossentry_document-fragment"><term>document
-            fragment</term></xref> from the cursor offset to the end of the paragraph, removing the
-        content and then inserting the created fragment after the paragraph).</p>
-      <p>This solution has as a drawback. <ph keyref="product"/> hides the <term>Content Completion
-          Assistant</term> when you press <uicontrol><shortcut>Enter</shortcut></uicontrol>. If you
-        want to show allowed child elements at that certain offset, implement your own content
-        proposals window using the <codeph>ro.sync.ecss.extensions.api.AuthorSchemaManager</codeph>
-        API to use information from the associated schema.</p>
+      <p>Yes, it is possible by creating your own custom operation.</p>
+      <p>To obtain this behavior, follow this procedure:<ol>
+          <li>Create a <xref href="addCustomActionHowTo.dita#addCustomActionHowTo">custom
+                <uicontrol>Author</uicontrol> mode operation</xref> that handles the split. You can
+            use the <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentController.html#split-ro.sync.ecss.extensions.api.node.AuthorNode-int-"
+              format="html" scope="external"><codeph>AuthorDocumentController.split</codeph>
+              API</xref> to achieve this.</li>
+          <li>Create a JAR library that contains its compiled version.</li>
+          <li><ph conkeyref="reusables-preferences-pages/Open-the-preferences-page"/>, go to
+              <uicontrol>Document Types Association</uicontrol>, and select your
+              <term>framework</term>.</li>
+          <li>Click <uicontrol>Edit</uicontrol> and in the <xref
+              href="the-document-type-dialog.dita#the-document-type-dialog"><uicontrol>Document
+                Type</uicontrol> configuration dialog box</xref>, go to the <xref
+              href="document-type-classpath-tab.dita#document-type-classpath-tab"
+                ><uicontrol>Classpath</uicontrol> tab</xref> and add a reference to the JAR library
+            for your custom operation.</li>
+          <li>Go to the <uicontrol>Author</uicontrol> tab, then go to the
+              <uicontrol>Actions</uicontrol> subtab.</li>
+          <li>Click the <uicontrol><image href="../img/Add16.png" id="image_p55_2t4_5r"/>
+              New</uicontrol> button and use the <xref
+              href="the-action-dialog.dita#the-action-dialog"><uicontrol>Action</uicontrol> dialog
+              box</xref> to create your own paragraph split action.</li>
+          <li>Make sure you assign <uicontrol><shortcut>Enter</shortcut></uicontrol> as the
+              <uicontrol>Shortcut Key</uicontrol> and specify your custom operation in the
+              <uicontrol>Operations</uicontrol> section.</li>
+        </ol></p>
+      <p><b>Result:</b> Now, when you press <uicontrol><shortcut>Enter</shortcut></uicontrol>, your
+        Java operation will be invoked to split the paragraph instead of opening the <term>Content
+          Completion Assistant</term>.</p>
+      <note type="tip">The <term>Content Completion Assistant</term> can still be invoked by using
+        the <uicontrol><shortcut>Ctrl+Space</shortcut></uicontrol> keyboard shortcut.</note>
     </section>
   </body>
 </topic>

@@ -222,7 +222,7 @@
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
       <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 90)"/>
       <sch:report test="string-length($offendingLines) > 0">
-        Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 80 characters. </sch:report>
+        Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 90 characters. </sch:report>
     </sch:rule>
   </sch:pattern>
   
@@ -231,7 +231,7 @@
   <sch:pattern>
     <!-- Report possible case in which a codeblock containg XML was not marked appropriately. -->
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
-      <sch:report test="starts-with(text()[1], '&lt;') and not(@outputclass)" sqf:fix="add_outputclass"> Possible XML Codeblock
+      <sch:report test="not(@outputclass)" sqf:fix="add_outputclass"> Possible XML Codeblock
         without @outputclass set to it. </sch:report>
       
       <sqf:fix id="add_outputclass">
@@ -277,12 +277,13 @@
       [not(contains(@class, ' topic/entry '))]
       [not(contains(@class, ' topic/stentry '))]
       [not(contains(@class, ' topic/object '))]
+      [not(contains(@class, ' topic/param '))]
       [not(@conref)]
       [not(@conkeyref)]
       [not(@keyref)]
       [not(@href)]
       [not(ancestor::*[@conref or @conkeyref])]">
-      <sch:report test="not(node())"> Empty element. </sch:report>
+      <sch:report test="not(node())"> Empty element. Most DITA elements should not be empty.</sch:report>
     </sch:rule>
   </sch:pattern>
   <sch:pattern>

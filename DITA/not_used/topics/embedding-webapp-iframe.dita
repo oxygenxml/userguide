@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="embedding-webapp-iframe">
+  <title><?oxy_comment_start author="Steven" timestamp="20170714T124314+0300" comment="Merged into &quot;webauthor-integrate-with-another-app.dita&quot;.  Moved to not_used folder."?>Embedding
+      <ph keyref="webappProduct"/> in a CMS Page<?oxy_comment_end?></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Oxygen XML Web Author Component<indexterm>Embed in a CMS
+          page</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="webappProduct"/> can be embedded in a CMS to offer editing functionality for
+      documents stored in the CMS.</p>
+    <p>To embed <ph keyref="webappProduct"/>, load the main page
+        (<filepath>app/oxygen.html</filepath>) in an <codeph>iframe</codeph>.</p>
+    <section id="section_dvp_vgb_n5">
+      <title>Security Restrictions</title>
+      <p><ph keyref="webappProduct"/> uses cookies to enforce its licensing and to maintain the
+        editing state of the opened documents. Some browsers block third-party cookies for security
+        reasons. To avoid having the cookies blocked, <ph keyref="webappProduct"/> should be served
+        from the same origin as the CMS host page.</p>
+    </section>
+    <section id="passing_parameters_to_the_editor">
+      <title>Passing Parameters to the Editor</title>
+      <p>To control the editor, you can use URL parameters described in the <xref
+          href="customizing_js.dita#customizing_js">options section</xref>. To pass custom
+        parameters, you can implement a <xref href="customizing_plugins.dita#customizing_plugins"
+            ><term>plugin</term> for <ph keyref="webappProduct"/></xref> that contains JavaScript
+        code to interpret those parameters.</p>
+    </section>
+    <section id="section_mbf_chb_n5">
+      <title>Communicating with the Editor</title>
+      <p>To communicate with the editor, you can send messages between the host CMS page and the <ph
+          keyref="webappProduct"/> page. </p>
+      <p>Browsers offer the <codeph>window.postMessage</codeph> JavaScript API that allows messages
+        to be sent between pages. To receive the message, create a <xref
+          href="customizing_plugins.dita#customizing_plugins"><term>plugin</term> for <ph
+            keyref="webappProduct"/></xref> that contains JavaScript code that listens for the
+        messages sent by the CMS host page and uses the <xref
+          href="customizing_js.dita#customizing_js"><ph keyref="webappProduct"/> JavaScript
+          API</xref> to implement the required functionality.</p>
+    </section>
+    <section id="section_wnm_xhb_n5">
+      <title>Other problems</title>
+      <ul id="ul_uxv_yhb_n5">
+        <li>We experienced problems if the <i>iframe</i> is hidden while loading using
+            <codeph>display: none</codeph>. You can use <codeph>visibility: hidden</codeph> for the
+          same purpose.</li>
+        <li>Some XML vocabularies (for example, DITA) support cross-document links. By default,
+          clicking on a cross-document link will open that document in the <ph
+            keyref="webappProduct"/> in another browser tab. If the editor is embedded, you may want
+          to change this behavior using the <codeph>sync.api.Editor.EventTypes.LINK_OPENED</codeph>
+          event that is triggered on the <xref keyref="jscript_api_Editor"
+              ><i>sync.api.Editor</i></xref> instance.</li>
+      </ul>
+    </section>
+  </body>
+</topic>

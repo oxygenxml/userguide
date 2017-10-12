@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="configure-elements-attr-cc-individually">
-  <title>Configuring the Proposals for Elements</title>
+  <title>Configuring the Proposals for Elements and Attributes</title>
   <prolog>
     <metadata>
       <keywords>
@@ -18,9 +18,9 @@
       accepts more than 60 child elements. <ph keyref="product"/> includes support to allow the
       content architect to put some constraints on the possible elements or attributes, or to impose
       some best practices in the way content is edited.</p>
-    <p>For an example of a specific use-case, suppose that you want restrict DITA list item elements
-        (<codeph>li</codeph>) to only accept paragraph elements (<codeph>p</codeph>). In this case,
-      the <xref keyref="glossentry_content-completion-assistant"><term>Content Completion
+    <p>For an example of a specific use-case, suppose that you want to restrict DITA list item
+      elements (<codeph>li</codeph>) to only accept paragraph elements (<codeph>p</codeph>). In this
+      case, the <xref keyref="glossentry_content-completion-assistant"><term>Content Completion
           Assistant</term></xref> should not offer any element other than a paragraph
         (<codeph>p</codeph>) when a list item (<codeph>li</codeph>) is inserted into a document. It
       would also be helpful if the required child element (<codeph>p</codeph>) was automatically
@@ -36,7 +36,10 @@
       <p>For the purposes of customizing the elements or attributes that are proposed for each
         individual element, the configuration file (<filepath>cc_config.xml</filepath>) uses
           <codeph>elementProposals</codeph> elements. This element allows you to customize or filter
-        the child elements and attributes for an element.</p>
+        the child elements and attributes for an element.<note type="warning"> Note that you can
+          only choose elements or attributes that are already allowed by the schema in a particular
+          context. For example, you cannot specify an element that is not allowed by the schema as a
+          child of a particular node.</note></p>
       <p><b>Elements:</b></p>
       <p>To control the <b>elements</b> that are proposed for an element, you can use the following
         attributes for the <codeph>elementProposals</codeph> element:<ul id="ul_ghd_c55_kr">
@@ -60,28 +63,28 @@
                   one given.</li>
               </ul></p><p><b>Example:</b> The following are examples of how you could use multiple
               boolean operators and parentheses inside an attribute
-              condition:</p><codeblock>*[@a and @b or @c and @d]
+              condition:</p><codeblock outputclass="language-ini">*[@a and @b or @c and @d]
 *[@a and (@b or @c) and @d]</codeblock><p>The
               following are just examples of how simplified XPath expressions might look like:<ul>
                 <li><codeph>elementName</codeph></li>
                 <li><codeph>//elementName</codeph></li>
                 <li><codeph>/elementName1/elementName2/elementName3</codeph></li>
-                <li><codeph>//xs:localName</codeph> Note: Using a namespace prefix requires that you
-                  declare it in the configuration file. For example: <codeph>&lt;elementProposals
-                    xmlns:db5="http://docbook.org/ns/docbook" path="db5:listitem"
-                    insertElements="db5:para" /></codeph></li>
+                <li><codeph>//xs:localName</codeph><note>Using a namespace prefix requires that you
+                    declare it in the configuration file. For example: <codeph>&lt;elementProposals
+                      xmlns:db5="http://docbook.org/ns/docbook" path="db5:listitem"
+                      insertElements="db5:para" /></codeph></note></li>
                 <li><codeph>//xs:documentation[@lang="en"]</codeph></li>
               </ul></p><note>If the <codeph>path</codeph> attribute is missing, the customization
               will apply to the proposals for all elements. You can intentionally omit this
               attribute and use <xref
                 href="#configure-elements-attr-cc-individually/possible-elements" format="dita"
-                  ><codeph>possibleElements</codeph></xref> or <xref
+                  ><i>possibleElements</i></xref> or <xref
                 href="#configure-elements-attr-cc-individually/reject-elements" format="dita"
-                  ><codeph>rejectElements</codeph></xref> to specify or restrict particular elements
-              for a <xref keyref="glossentry_framework"><term>framework</term></xref>.<p>For
-                example, suppose that in your DITA documents, you want to restrict your users from
-                using <codeph>image</codeph> and <codeph>fig</codeph> elements because you do not
-                want images to be included in your output. The configuration file should look like
+                  ><i>rejectElements</i></xref> to specify or restrict particular elements for a
+                <xref keyref="glossentry_framework"><term>framework</term></xref>.<p>For example,
+                suppose that in your DITA documents, you want to restrict your users from using
+                  <codeph>image</codeph> and <codeph>fig</codeph> elements because you do not want
+                images to be included in your output. The configuration file should look like
                 this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image fig" /></codeblock></p><p>Since
                 the <codeph>path</codeph> attribute is missing, the specified element will be
                 filtered out from the proposals for the entire
@@ -97,7 +100,7 @@
           <li id="possible-elements"><codeph>possibleElements</codeph> - A space-separated list of
             element names that will be shown in the content completion list when invoked inside an
             element that is specified in the <codeph>path</codeph> attribute. For example,
-              <codeph>"bold italic codeph ph"</codeph> means that the <term>Content Completion
+              <codeph>"b i codeph ph"</codeph> means that the <term>Content Completion
               Assistant</term> will contain these four elements when invoked on the element
             specified in the <codeph>path</codeph> attribute. The following other possible values
             are also supported:<ul>
@@ -110,7 +113,7 @@
                 defined in the <codeph>insertElements</codeph> attribute.</li>
             </ul><p>When using this attribute to specify multiple elements, only use one entry with
               the element names separated by a
-              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleElements="bold italic codeph ph" /></codeblock></p></li>
+              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleElements="b i codeph ph" /></codeblock></p></li>
           <li id="reject-elements"><codeph>rejectElements</codeph> - A space-separated list of
             element names that will be filtered out from the list of proposals that are presented in
             the content completion list. Each time the element specified in the
@@ -136,9 +139,9 @@
               will apply to the proposals for all elements. You can intentionally omit this
               attribute and use <xref
                 href="#configure-elements-attr-cc-individually/possible-attributes" format="dita"
-                  ><codeph>possibleAttributes</codeph></xref> or <xref
+                  ><i>possibleAttributes</i></xref> or <xref
                 href="#configure-elements-attr-cc-individually/reject-attributes" format="dita"
-                  ><codeph>rejectAttributes</codeph></xref> to specify or restrict attributes for an
+                  ><i>rejectAttributes</i></xref> to specify or restrict attributes for an
               entire <term>framework</term>.<p>For example, suppose that you only want to allow a
                 limited set of attributes in a customized <term>framework</term>. The configuration
                 file should look like
@@ -149,7 +152,14 @@
                   <term>framework</term> and only the specified attributes will be
               proposed.</p></note></li>
           <li><codeph>insertAttributes</codeph> - A space-separated sequence of attribute names that
-            will be inserted along with the element.</li>
+            will be inserted along with the
+            element.<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertAttributes="product platform"/></codeblock></li>
+          <li><codeph>insertAttribute</codeph> - This is similar to the preceding attribute, but
+            this one also allows you to specify a value for the attribute that will be inserted.
+            This attribute should be used like
+            this:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li">
+    &lt;insertAttribute name="platform" value="test"/>
+&lt;/elementProposals></codeblock></li>
           <li id="possible-attributes"><codeph>possibleAttributes</codeph> - A space-separated list
             of attribute names that will be shown in the content completion list when invoked inside
             an element that is specified in the <codeph>path</codeph> attribute.<p>When using this
@@ -179,7 +189,7 @@
             validation.</li>
           <li>To test the effects of your changes, you should restart the application, although in
             some cases, you can simply use the <uicontrol><image href="../img/Refresh16.png"
-              />Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
+              /> Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
             customizations.</li>
           <li>When an XML element from the document is matched against a list of configured
               <codeph>elementProposals</codeph>, the first one in sequence takes precedence.

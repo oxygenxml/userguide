@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_creating_a_toc">
+  <title>Creating a Table of Contents (TOC)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Table of contents creation</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>A TOC (table of contents) is a special page that contains links to the chapters and sections
+      of your book. Each line contains: <ul id="ol_hpt_pdn_vz">
+        <li>The title of the chapter or section.</li>
+        <li>A line of dots or other decoration, called leader.</li>
+        <li>The page number of the target chapter/section.</li>
+      </ul></p>
+    <p>It may look like this:</p>
+    <codeblock outputclass="language-css">Installing the Software ..........................10
+   On Windows ....................................12
+   On Mac.........................................17</codeblock>
+    <p>Obviously there should be some structure in your document that reflects the tree of the TOC,
+      with ID links.</p>
+    <codeblock outputclass="language-xml"> &lt;ul class="toc">
+    &lt;li>&lt;a href="#introduction">Introduction&lt;/a>&lt;/li>
+    &lt;li>&lt;a href="#installing">Installing the Software&lt;/a>&lt;/li>
+    &lt;li>&lt;ul>
+          &lt;li>&lt;a href="#installing_win">On Windows&lt;/a>&lt;/li>
+    &lt;/ul>&lt;/li>
+    &lt;li>&lt;ul>
+          &lt;li>&lt;a href="#installing_mac">On Mac&lt;/a>&lt;/li>
+    &lt;/ul>&lt;/li>
+ &lt;/ul></codeblock>
+    <p>You can use the same <codeph>target-counter</codeph> function as for <xref
+        href="ch_cross-references.dita"/>, but first suppose that you want to create a special page
+      for the TOC:</p>
+    <codeblock outputclass="language-css">@page toc {
+  @top-center {
+    contents: "Table of Contents";
+  }
+  @bottom-center {
+    contents: counter(page, lower-roman);
+  }
+}</codeblock>
+    <p>This page places the "Table of Contents" text in the header of the page hosting the TOC and
+      puts the number of the TOC page in the footer, with lower roman digits. </p>
+    <p>The next example associates the defined page to the <codeph>ul</codeph> element that gives
+      the structure:</p>
+    <codeblock outputclass="language-css">ul.toc {
+  page: toc;
+}</codeblock>
+    <p>To create the TOC entries, the next example removes the bullet decoration from the
+        <codeph>li</codeph> elements, then marks the <codeph>a</codeph> element as being a link. </p>
+    <codeblock outputclass="language-css">ul.toc li {
+    list-style-type:none;    
+}
+ul.toc a {
+    link: attr(href, url);
+    text-decoration:none;
+}</codeblock>
+    <p>In the next example, after the <codeph>a</codeph> element, a <codeph>leader</codeph> is used
+      to expand to the available width. You can specify a character pattern for the leader:<ul
+        id="ul_uwc_sgn_vz">
+        <li><b>dotted</b> - Creates an area filled with dots.</li>
+        <li><b>solid</b> - Creates an area filled with a dash.</li>
+        <li><b>space</b> - Creates an area filled with spaces.</li>
+      </ul></p>
+    <p>Also, after the leader, it uses the page number of the target element:</p>
+    <codeblock outputclass="language-css">ul.toc a:after{
+    color:blue;
+    content: leader(".") target-counter(attr(href, url), page);
+    link: attr(href, url);
+}</codeblock>
+  </body>
+</topic>

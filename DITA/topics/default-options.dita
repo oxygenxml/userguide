@@ -12,7 +12,7 @@
   <body>
     <p><ph keyref="product"/> has an extensive set of options that you can configure. When <ph
         keyref="product"/> in installed, these options are set to default values. You can provide a
-      different set of default values for an installation using an XML <i>options file</i>. </p>
+      different set of default values for an installation using an XML <i>options file</i>.</p>
     <section id="creating_an_xml_options_file">
       <title>Creating an XML <i>Options File</i></title>
       <p>To create an <i>options file</i>, follow these steps:<ol id="ol_uvs_f52_1p">
@@ -36,10 +36,42 @@
               XML options file.</ph></li>
         </ol></p>
     </section>
+    <section id="project-file-section" product="author developer editor">
+      <title>Controlling Which Options are Stored in the Default Options File</title>
+      <p>If you want to control exactly which option pages will be stored in the default options
+        file, you can choose to attach them to a project file (<filepath>.xpr</filepath> file
+        extension) by following this procedure:<ol id="ul_bdf_d5t_zd">
+          <li>You many want to use a fresh install for this procedure, to make sure that you do not
+            copy personal or local preferences.</li>
+          <li>In the <xref href="using-the-project-view.dita#using-the-project-view" format="dita"
+                ><uicontrol>Project</uicontrol> view</xref>, create a project or open an existing
+            one.</li>
+          <li><ph conkeyref="reusables-preferences-pages/Open-the-preferences-page"/>.</li>
+          <li>Configure the options in each preferences page that you want to be included in the
+            project file and switch the storage preference to <xref
+              keyref="glossentry_project-options"><uicontrol>Project Options</uicontrol></xref> in
+            each page.<note>Some pages do not have the <uicontrol>Project Options</uicontrol>
+              button, since the options they host might contain sensitive data (such as passwords,
+              for example) that is unsuitable for sharing with other users.</note></li>
+          <li>Click <uicontrol>OK</uicontrol> and close the <uicontrol>Preferences</uicontrol>
+            dialog box.<p>All explicitly set values are now saved in the project file. You can then
+              share the project file so that your team will have the same option configuration that
+              you stored in the project file.<note
+                conkeyref="reusables-editing-documents/xpr-extension-note"/><note
+                conkeyref="reusables-editing-documents/security-note"/></p></li>
+        </ol></p>
+    </section>
     <section id="using_customized_default_options">
-      <title>Using Customized Default Options</title>
-      <p>There are two methods that you can use to configure an <ph keyref="product"/> installation
-        to use the customized default options from the created XML options file:</p>
+      <title>Configuring an Installation to Use Customized Default Options</title>
+      <p>There are several methods that you can use to configure an <ph keyref="product"/>
+        installation to use the customized default options from the created XML options file.<note
+          type="warning" product="author developer editor">The disadvantage of customizing the
+          default options is that if the end user manually changes an option, the default value will
+          no longer be used. An alternative would be to <xref
+            href="#default-options/impose_a_set_of_options_using_a_sample_plugin" format="dita">use
+            a plugin to impose a set of options</xref>.</note></p>
+      <p>The possible methods for using customized default options during an installation
+        include:</p>
       <ul id="ul_n5f_btb_md">
         <li><b>Copy the XML Options File to the Installation Directory</b><p>In the <filepath><term
                 conkeyref="reusables-user-guide/oxy-install-dir"/></filepath>, create a folder
@@ -77,11 +109,11 @@
             </ul></p><note product="author developer editor">If you are using the <xref href="jwsInstaller.dita"
               >Java Webstart distribution</xref>, use the <xref
               href="jwsInstaller.dita#jwsInstaller/optionsDir-choice"
-                ><codeph>optionsDir</codeph> property</xref> to specify the path of the options file
+                ><i>optionsDir</i> property</xref> to specify the path of the options file
             (in this case, the file must be named <filepath>default.xml</filepath>), or you can edit
             the <xref
               href="http://download.oracle.com/javase/1,5.0/docs/guide/javaws/developersguide/syntax.html"
-              format="html" scope="external"><filepath>.jnlp</filepath> file</xref> that launches
+              format="html" scope="external"><i>.jnlp</i> file</xref> that launches
             the application and set the <codeph>com.oxygenxml.default.options</codeph> parameter
             using a <codeph>property</codeph> element, as in the following
             example:<codeblock outputclass="language-ini"> &lt;property name="oxy:com.oxygenxml.default.options" 
@@ -122,5 +154,24 @@
               the file path.</note></p></li>
       </ul>
     </section>
+    <section id="impose_a_set_of_options_using_a_sample_plugin" product="author developer editor">
+      <title>Impose a Set of Options Using a Plugin</title>
+      <p>The <xref href="https://www.oxygenxml.com/oxygen_sdk.html" format="html" scope="external"
+          >Oxygen XML SDK</xref> includes a sample Java-based
+          <b>oxygen-sample-plugin-impose-options</b> plugin that shows how to impose a set of
+        options for the end users every time the API is called. It is possible to use this plugin to
+        impose options but still allow the end user to change options by calling the API only once,
+        the first time the plugin starts alongside <ph keyref="product"/>.</p>
+      <p>A similar JavaScript-based sample <b>impose-options</b> plugin is also available here:
+          <xref href="https://github.com/oxygenxml/wsaccess-javascript-sample-plugins" format="html"
+          scope="external"/>. This plugin imports a fixed set of options (saved in XML format) when
+          <ph keyref="product"/> starts.</p>
+    </section>
   </body>
+  <related-links product="author developer editor">
+    <linklist>
+      <title>Related Information:</title>
+      <link href="sharing-possibilities.dita#sharing-possibilities"/>
+    </linklist>
+  </related-links>
 </topic>

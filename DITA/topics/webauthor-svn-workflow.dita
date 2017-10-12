@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webauthor-svn-workflow">
+    <title>File Storage Integration: SVN Workflow Example</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Integration with a file storage service<indexterm>SVN
+          example</indexterm></indexterm>
+        <indexterm>SVN example for file storage service integration</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p>This topic presents an example for a workflow that can be implemented when the content is
+      stored on an SVN server. </p>
+    <section id="section_syz_hlq_1z">
+      <title>One-time Setup</title>
+    </section>
+    <p>
+      <ol id="ol_nfw_3lq_1z">
+        <li>You need an SVN server, whose URL is something like this:
+            <codeph>http://example.com/svn/</codeph>.<note type="tip">If you do not have an SVN
+            server, VisualSVN is an option with a simple setup process.</note></li>
+        <li>Enable WebDAV support in the SVN server. <p>This can be done by enabling <xref
+              href="http://svnbook.red-bean.com/en/1.7/svn.webdav.autoversioning.html" format="html"
+              scope="external"><codeph>SVNAutoversioning</codeph></xref> in your server
+            configuration.
+            <codeblock outputclass="language-ini">&lt;Location /svn>
+  DAV svn
+  SVNPath /usr/local/repo/
+  ...
+  SVNAutoversioning on
+  ...
+&lt;/Location></codeblock></p><p>Web
+            Author will then be able to save files in your SVN repository by creating a commit with
+            a default message. Note that Web Author will only commit on review branches so there's
+            no reason to be concerned when doing this.</p></li>
+        <li>Restrict Web Author to connect only to the folder with review branches. Do this by
+          configuring the WebDAV connector with an <xref
+            href="https://github.com/oxygenxml/webapp-webdav-integration#imposed-urls" format="html"
+            scope="external">Imposed URL</xref> pointing to the desired folder, for example
+            <codeph>http://example.com/svn/branches/review/</codeph> . </li>
+      </ol>
+    </p>
+    <section id="section_uxk_zlq_1z">
+      <title>Review Workflow</title>
+      <p>Suppose you have a project that contains documents you want to be reviewed by others and
+        suppose its URL is: <codeph>http://example.com/svn/trunk/ug/</codeph>. Also suppose that
+        your organization uses a WebDAV server for file storage and the Oxygen SVN Client for
+        versioning. The following procedure is an example of what your workflow procedure might
+          be:<ol id="ol_upz_gmq_1z">
+          <li>Create a branch of the project in the review branches folder. You can do this either
+            by using the Oxygen SVN Client or the following command
+            line:<codeblock outputclass="language-ini">svn cp http://example.com/svn/trunk/ug/ http://example.com/svn/branches/review/ug-1/</codeblock></li>
+          <li>Identify the URL for the file that needs to be reviewed by opening the file from the
+              <xref
+              href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webapp-create-open-docs.html"
+              format="html" scope="external"><uicontrol>WebDAV</uicontrol> tab in the
+                <uicontrol>Dashboard</uicontrol></xref> and copy the URL from the browser's address
+              bar.<note type="tip">You can also configure the URL to control or streamline the
+              review process by specifying certain parameters. For more information, see <xref
+                href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch"
+              />.</note></li>
+          <li>Send the URL to the reviewers who will simply clicks the link to open the file in Web
+            Author where they can make changes or add comments.<note>Web Author leverages SVN
+              locking to avoid conflicts between multiple reviewers.</note></li>
+          <li>Once the reviewers are done editing the files, you can merge the branch back into the
+            trunk and commit. The command line would
+            be:<codeblock outputclass="language-ini">svn merge --reintegrate http://example.com/svn/branches/review/ug-1/</codeblock></li>
+        </ol></p>
+    </section>
+    </body>
+</topic>

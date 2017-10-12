@@ -47,6 +47,12 @@ p:showBorder {
           combo box is not editable, then a new <codeph>&lt;Empty></codeph> value is added in that
           combo box. This clears or removes the value being edited, depending on if it edits an
           element or attribute.</li>
+        <li><codeph>onChange</codeph> - Can be used to invoke an action when the value of the combo
+          box changes. The action can be created in the CSS using the <xref
+            href="dg-action-function.dita#dg-action-function"><codeph>oxy_action()</codeph>
+            function</xref> or referenced from the <xref keyref="glossentry_framework"
+              ><term>framework</term></xref> by its ID. After the action is executed, the cursor
+          remains in the combo box.</li>
       </ul></p>
     <p><b><u>Example: <i>oxy_combobox</i> Form
       Control</u></b><codeblock outputclass="language-css">comboBox:before {
@@ -56,7 +62,12 @@ p:showBorder {
             edit, "@attribute",
             editable, false,
             values, "value1, value2, value3",
-            labels, "Value no1, Value no2, Value no3");
+            labels, "Value no1, Value no2, Value no3",
+            onChange, oxy_action(
+                name, 'Insert',
+                operation, 'XQueryUpdateOperation',
+                arg-script, 'insert node &lt;product>{xs:string(@attribute)}&lt;/product>
+                          as last into .'));
 }</codeblock></p>
     <note type="tip">To insert a sample of the <codeph>oxy_combobox</codeph> form control in a CSS
       file <ph product="author developer editor">(or LESS file)</ph>, invoke the <xref
@@ -66,5 +77,10 @@ p:showBorder {
         href="../img/CodeTemplates12.gif" id="image_hhy_32h_5r"/>
       <codeph>oxy_combobox</codeph> code template.<p><ph
           conkeyref="reusables-author-mode-customization/samples-ph"/></p></note>
+    <p>For more information about form controls, watch our video demonstration:</p>
+    <p><object width="450" height="250" data="https://www.youtube.com/embed/-WY3wzkMSLM"
+        outputclass="iframe">
+        <param name="allowfullscreen" value="true"/>
+      </object></p>
   </body>
 </topic>

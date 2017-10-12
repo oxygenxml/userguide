@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="subject-scheme-map">
-  <title>Profiling with a Subject Scheme Map</title>
+  <title>Customizing Profiling Values with a Subject Scheme Map</title>
   <prolog>
     <metadata>
       <keywords>
@@ -12,26 +12,144 @@
   </prolog>
   <body>
     <p>A <xref keyref="glossentry_subject-scheme-map"><term>subject scheme map</term></xref> allows
-      you to create custom profiling values and to manage the profiling attribute values used in the
-      DITA topics without having to write a DITA specialization.</p>
-    <p><term>Subject scheme maps</term> use key definitions to define a collection of profiling
-      values. A map that uses the set of profiling values must reference the <term>subject scheme
-        map</term> in which the profiling values are defined at its highest level. To do this, you
-      must add the <codeph>type="subjectScheme"</codeph> attribute on the <codeph>topicref</codeph>
-      that references the <term>subject scheme map</term>, as in the following
-      example:<codeblock outputclass="language-xml">&lt;topicref href="test.ditamap" format="ditamap" type="subjectScheme"/></codeblock></p>
-    <p>A profiled value should be a short and readable keyword that identifies a metadata attribute.
-      For example, the <codeph>audience</codeph> metadata attribute may take a value that identifies
-      the user group associated with a particular content unit. Typical user values for a
-      medical-equipment product line might include <codeph>therapist</codeph>,
-        <codeph>oncologist</codeph>, <codeph>physicist</codeph>, <codeph>radiologist</codeph>,
-        <codeph>surgeon</codeph>, and so on. A <term>subject scheme map</term> can define a list of
-      these audience values.</p>
-    <p><b>EXAMPLE:</b></p>
-    <p>The following is an example of content from a <term>subject scheme</term>:</p>
-    <codeblock outputclass="language-xml">&lt;subjectScheme>
-  &lt;!-- Pull in a scheme that defines audience user values -->
-  &lt;subjectdef keys="users">
+      you to create and manage custom profiling values in DITA documents without having to write a
+      DITA specialization. Ultimately, this allows you to filter and flag content in
+        <uicontrol>Author</uicontrol> mode or in transformed output.</p>
+    <section id="advantages_of_using_a_subject_scheme_map">
+      <title>Advantages of Using a Subject Scheme Map</title>
+      <p>The advantages of using a subject scheme to control profiling attribute values include:<ul>
+          <li>You can create a hierarchy of profiling attribute values and use a DITAVAL file to
+            filter or flag the tree of values.</li>
+          <li>You can share the subject scheme files with others without having to share preferences
+            or the entire project.</li>
+          <li>The subject scheme offers validation support so you are notified if an undefined value
+            is used.</li>
+        </ul></p>
+    </section>
+    <section id="overview">
+      <title>Overview</title>
+      <p><term>Subject scheme maps</term> use key definitions to define a collection of profiling
+        values. You can also use <term>subject scheme maps</term> to filter out (reject) the values
+        for certain attributes so that you only see the attributes or values that you want to use in
+          <uicontrol>Author</uicontrol> mode or the transformed output.</p>
+      <p>The highest level of map (<xref keyref="glossentry_root-map"><term>main DITA
+          map</term></xref>) that uses the set of profiling values must reference the <term>subject
+          scheme map</term> where the profiling values are defined and the <codeph>type</codeph>
+        attribute needs to be set to <codeph>subjectScheme</codeph> for the reference, as in the
+        following
+        example:<codeblock outputclass="language-xml">&lt;topicref href="test.ditamap" format="ditamap" type="subjectScheme"/></codeblock></p>
+    </section>
+    <section id="creating_a_subject_scheme_map">
+      <title>Creating a Subject Scheme Map</title>
+      <p>To create and configure a <term>subject scheme map</term>, follow this procedure:<ol>
+          <li>Use the <xref href="new-dialog-sa.dita#new-dialog-sa" product="author editor"
+                ><uicontrol>New Document</uicontrol> wizard</xref><xref
+              href="new-dialog-eclipse.dita#new-dialog-eclipse"
+              product="authorEclipse editorEclipse"><uicontrol>New Document</uicontrol>
+              wizard</xref> to create a new <b>Subject Scheme</b> document (<menucascade
+              product="author editor">
+              <uicontrol>Framework templates</uicontrol>
+              <uicontrol>DITA Map</uicontrol>
+              <uicontrol>map</uicontrol>
+              <uicontrol><image href="../img/DitamapIcon16.png"/> Subject Scheme</uicontrol>
+            </menucascade><menucascade product="authorEclipse editorEclipse">
+              <uicontrol>New from Templates</uicontrol>
+              <uicontrol>Framework templates</uicontrol>
+              <uicontrol>DITA Map</uicontrol>
+              <uicontrol>map</uicontrol>
+              <uicontrol><image href="../img/DitamapIcon16.png"/> Subject Scheme</uicontrol>
+            </menucascade>).</li>
+          <li>Use the controls in <uicontrol>Author</uicontrol> mode to define the hierarchical tree
+            of values for your <term>subject scheme</term> (<xref
+              href="#subject-scheme-map/author-mode-example" format="dita">see the Author mode
+              example below</xref>) or switch to <uicontrol>Text</uicontrol> mode and define it
+            there if you prefer (<xref href="#subject-scheme-map/text-mode-example" format="dita"
+              >see the Text mode example below</xref>).<note>The pre-defined subject scheme template
+              includes Navigation Titles (<codeph>navtitle</codeph> element). This element is not
+              required, but if you use it, the text that you enter for the <codeph>navtitle</codeph>
+              will be used (instead of the name of the value) in the various places where <xref
+                href="#subject-scheme-map/where_the_profiling_attributes_are_available_in"
+                format="dita">profiling attributes are presented in <ph keyref="product"/></xref>.
+              An example of when this might be helpful is if you want to use abbreviations for the
+              name of a value, but you want to see its full name in <ph keyref="product"
+            />.</note></li>
+          <li>Bind the particular attribute to the key you define for the tree of values. Notice
+            that in the <xref
+              href="#subject-scheme-map/example_subject_scheme_map_that_defines_custom_va"
+              format="dita">examples below</xref>, the <codeph>audience</codeph> attribute is bound
+            to the <codeph>audienceKey</codeph> value.</li>
+          <li>If you want to filter out (reject) values for certain attributes, bind the attributes
+            to a blank value (as you see for the <codeph>props</codeph> and
+              <codeph>otherprops</codeph> attributes in the <xref
+              href="#subject-scheme-map/example_subject_scheme_map_that_defines_custom_va"
+              format="dita">examples below</xref>). This means that those attributes will not appear
+            in the various places where <xref
+              href="#subject-scheme-map/where_the_profiling_attributes_are_available_in"
+              format="dita">profiling attributes are presented in <ph keyref="product"
+            /></xref>.</li>
+          <li>Save your <term>subject scheme</term> file.</li>
+          <li>Reference your <term>subject scheme</term> in the highest level of map (<xref
+              keyref="glossentry_root-map"><term>main DITA map</term></xref>) that will use the set
+            of profiling values and set its type to <codeph>subjectScheme</codeph>. The easiest way
+            to do this is:<ol>
+              <li>With your <term>subject scheme</term> file opened in the editor, go to the
+                  <uicontrol>DITA Maps Manager</uicontrol> view, right-click the <term>main DITA
+                  map</term>, and select <menucascade>
+                  <uicontrol>Append Child</uicontrol>
+                  <uicontrol>Reference to the currently edited file</uicontrol>
+                </menucascade>.</li>
+              <li>In the <uicontrol>Insert Topic Reference</uicontrol> dialog box, go to the
+                  <uicontrol>Attributes</uicontrol> tab and in the <uicontrol>Type</uicontrol>
+                field, enter or select <b>subjectScheme</b>.</li>
+              <li>Click the <uicontrol>Insert and Close</uicontrol> button and save your main DITA
+                map.</li>
+            </ol></li>
+        </ol></p>
+    </section>
+    <section id="using_a_subject_scheme_in_conjuction_with_a_ditav">
+      <title>Using a Subject Scheme in Conjunction with a DITAVAL File</title>
+      <p>You can use a subject scheme to customize a hierarchy of profiling attribute values and
+        then use it in conjunction with a <xref href="dita-ditaval-file.dita#dita-ditaval-file"
+          >DITAVAL file to filter or flag</xref> the entire tree of values. For example, suppose one
+        of the values for the <codeph>audience</codeph> attribute in a hierarchical subject scheme
+        is <codeph>surgeon</codeph> and it has two subordinate values of
+          <codeph>neuro-surgeon</codeph> and <codeph>plastic-surgeon</codeph> (see the <xref
+          href="#subject-scheme-map/example_subject_scheme_map_that_defines_custom_va" format="dita"
+          >examples below</xref>). You could create a DITAVAL file with the following
+        content:<codeblock outputclass="language-xml">&lt;val>
+     &lt;prop action="exclude" att="audience" val="surgeon"/>
+&lt;/val></codeblock></p>
+      <p>That DITAVAL file could then be used for a <xref
+          href="dita-condition-sets-management.dita#dita-condition-sets-management">condition
+          set</xref> to filter content in <uicontrol>Author</uicontrol> mode or during the
+        transformation stage to <xref href="publish-profiled-text.dita#publish-profiled-text">filter
+          content in the output</xref> and the <codeph>neuro-surgeon</codeph> and
+          <codeph>plastic-surgeon</codeph> values would be excluded by the filter since the subject
+        scheme defines them as subordinate values of the <codeph>surgeon</codeph> value.</p>
+    </section>
+    <section id="example_subject_scheme_map_that_defines_custom_va">
+      <title>Example: Subject Scheme Map that Defines Custom Values for the Audience
+        Attribute</title>
+      <p>This example uses typical audience values for medical personnel
+        (<codeph>therapist</codeph>, <codeph>oncologist</codeph>, <codeph>physicist</codeph>,
+          <codeph>radiologist</codeph>, <codeph>surgeon</codeph>, and so on). The
+          <codeph>audience</codeph> attribute is bound to the <codeph>audienceKey</codeph> value
+        (which defines the tree of values). You can also see that it filters out all possible values
+        for other attributes (<codeph>props</codeph> and <codeph>otherprops</codeph>) so that they
+        won't be available in the various places where <xref
+          href="#subject-scheme-map/where_the_profiling_attributes_are_available_in" format="dita"
+          >profiling attributes are presented in <ph keyref="product"/></xref>.</p>
+      <p id="author-mode-example"><u><b>Example using Author mode controls:</b></u></p>
+      <p>
+        <fig>
+          <title>Subject Scheme Author Mode Controls</title>
+          <image href="../img/Subject-Scheme-Author-mode.png"/>
+        </fig>
+      </p>
+      <p id="text-mode-example"><u><b>Example code in Text
+        mode:</b></u><codeblock outputclass="language-xml">&lt;subjectScheme>
+  &lt;!-- A scheme that defines audience user values -->
+  &lt;subjectdef keys="audienceKey">
     &lt;subjectdef keys="therapist"/>
     &lt;subjectdef keys="oncologist"/>
     &lt;subjectdef keys="physicist"/>
@@ -41,15 +159,23 @@
       &lt;subjectdef keys="plastic-surgeon"/>
     &lt;/subjectdef>
   &lt;/subjectdef>
-  &lt;!-- Define an enumeration of the audience attribute, equal to
-       each value in the users subject. This makes the following values
-       valid for the audience attribute: therapist, oncologist, physicist,
-       radiologist, surgeon, neuro-surgeon and plastic-surgeon. -->
+  &lt;!-- Binding the audience attribute to the values defined in the key -->
   &lt;enumerationdef>
     &lt;attributedef name="audience"/>
-    &lt;subjectdef keyref="users"/>
+    &lt;subjectdef keyref="audienceKey"/>
   &lt;/enumerationdef>
-&lt;/subjectScheme></codeblock>
+
+  &lt;!--Reject all possible values for other profiling attributes-->
+  &lt;enumerationdef>
+    &lt;attributedef name="props"/>
+    &lt;subjectdef/>
+  &lt;/enumerationdef>
+  &lt;enumerationdef>
+    &lt;attributedef name="otherprops"/>
+    &lt;subjectdef/>
+  &lt;/enumerationdef>
+&lt;/subjectScheme></codeblock></p>
+    </section>
     <section id="where_the_profiling_attributes_are_available_in">
       <title>Where the Profiling Attributes are Available in <ph keyref="product"/></title>
       <p>When you edit a DITA topic in the <uicontrol>Text</uicontrol> or
@@ -58,35 +184,34 @@
           map</term></xref> that is referenced in the map that is currently opened in the <xref
           href="dita-maps-manager.dita"><uicontrol>DITA Maps Manager</uicontrol></xref> (or set as
         the <xref href="root-map.dita#root-map"><term>root map</term></xref>). The values of
-        profiling attribute defined in a <term>Subject Scheme Map</term> are available in the <xref
-          href="dita-apply-profiling-attributes.dita#dita-apply-profiling-attributes/edit-profiling-image"
-            ><uicontrol>Edit Profiling Attribute</uicontrol> dialog box</xref>, regardless of their
-        mapping in the <xref
+        profiling attributes defined in a <term>Subject Scheme Map</term> are available in the
+        following places in <ph keyref="product"/> (regardless of their mapping in the <xref
           href="preferences-profiling-conditions.dita#preferences-profiling-conditions"
-            ><uicontrol>Profiling/Conditional Text</uicontrol> preferences page</xref>. They are
-        also available as proposals for values in the <xref
-          keyref="glossentry_content-completion-assistant"><term>Content Completion
-          Assistant</term></xref>.<note>In the example above, the values <codeph>therapist</codeph>,
-            <codeph>oncologist</codeph>, <codeph>physicist</codeph>, and so on, are displayed in the
-            <term>Content Completion Assistant</term> as values for the <codeph>audience</codeph>
-          attribute.</note></p>
+            ><uicontrol>Profiling/Conditional Text</uicontrol> preferences page</xref>):<ul>
+          <li>The <xref href="dita-edit-properties.dita#dita-edit-properties/profiling_tab"
+                ><uicontrol>Profiling</uicontrol> tab of the <uicontrol>Edit Properties</uicontrol>
+              dialog box</xref>.</li>
+          <li>The <xref
+              href="dita-apply-profiling-attributes.dita#dita-apply-profiling-attributes/edit-profiling-image"
+                ><uicontrol>Edit Profiling Attribute</uicontrol> dialog box</xref>.</li>
+          <li>The <xref
+              href="profiling-conditional-text-markers.dita#profiling-conditional-text-markers/inline-profiling-controls"
+              >inline profiling controls in <uicontrol>Author</uicontrol> mode</xref>.</li>
+          <li>The proposals for the attribute values in the <xref
+              keyref="glossentry_content-completion-assistant"><term>Content Completion
+                Assistant</term></xref>.</li>
+        </ul></p>
     </section>
-    <section id="filtering_attribute_values">
-      <title>Filtering Attribute Values</title>
-      <p>By defining controlled values and using hierarchical levels in the <xref
-          keyref="glossentry_subject-scheme-map"><term>subject scheme map</term></xref>, you can
-        classify content for filtering and flagging when the map is transformed. You can also filter
-        attribute values by using a <xref href="dita-ditaval-file.dita#dita-ditaval-file">DITAVAL
-          filter file</xref>.</p>
-      <p>For more details about how hierarchical filtering, defining controlled values, and using
+    <section id="more_details">
+      <title>More Details</title>
+      <p>For more details about hierarchical filtering, defining controlled values, and using
           <term>subject scheme maps</term>, refer to the following resources:<ul>
           <li><xref
               href="https://www.oxygenxml.com/dita/1.3/specs/archSpec/base/subject-scheme-maps-and-usage.html"
               format="html" scope="external">DITA 1.3 Specifications: Subject Scheme
             Maps</xref></li>
-          <li><xref
-            href="https://www.oxygenxml.com/demo/DITA_Subject_Scheme.html"
-              format="html" scope="external">Oxygen Video Tutorial: DITA Subject Scheme</xref></li>
+          <li><xref href="https://www.oxygenxml.com/demo/DITA_Subject_Scheme.html" format="html"
+              scope="external">Oxygen Video Tutorial: DITA Subject Scheme</xref></li>
         </ul></p>
     </section>
   </body>

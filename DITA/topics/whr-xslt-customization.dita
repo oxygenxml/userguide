@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="whr-xslt-customization">
-  <title>Overriding a WebHelp XSLT Stylesheet from an Ant Build File</title>
+  <title>Overriding a WebHelp Classic XSLT Stylesheet from an Ant Build File</title>
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>WebHelp Responsive system<indexterm>Overriding XSLT stylesheet from Ant build
-            file</indexterm></indexterm>
         <indexterm>WebHelp Classic system<indexterm>Overriding XSLT stylesheet from Ant build
             file</indexterm></indexterm>
-        <indexterm>WebHelp Responsive system<indexterm>Customizing<indexterm>Overriding XSLT
-              stylesheet from Ant build file</indexterm></indexterm></indexterm>
         <indexterm>WebHelp Classic system<indexterm>Customizing<indexterm>Overriding XSLT stylesheet
               from Ant build file</indexterm></indexterm></indexterm>
       </keywords>
@@ -29,16 +25,16 @@
     <ol id="ol_mz4_n2w_3x">
       <li>In the <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\</filepath> folder,
         create a folder for this plugin (for example,
-        <filepath>com.oxygenxml.webhelp.responsive.custom</filepath>).</li>
-      <li>Create a <b>plugin.xml</b> file (in the folder you created in step 1) that specifies a
-        new DITA-OT <codeph>transtype</codeph> and the build file associated with the plugin. For
-        example:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.responsive.customization">
+          <filepath>com.oxygenxml.webhelp.classic.custom</filepath>).</li>
+      <li>Create a <b>plugin.xml</b> file (in the folder you created in step 1) that specifies a new
+        DITA-OT <codeph>transtype</codeph> and the build file associated with the plugin. For
+        example:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.classic.custom">
     &lt;feature extension="dita.conductor.target.relative" file="integrator.xml"/>
-    &lt;transtype name="webhelp-responsive-custom" extends="webhelp-responsive" 
-      desc="WebHelp Responsive Customization"/>
+    &lt;transtype name="webhelp-classic-custom" extends="webhelp" 
+      desc="WebHelp Classic Customization"/>
 &lt;/plugin></codeblock></li>
       <li>Create the <b>integrator.xml</b> file that will import the actual plugin Ant build
-        file.<codeblock outputclass="language-xml">&lt;project basedir="." name="Webhelp Responsive Customization">    
+        file.<codeblock outputclass="language-xml">&lt;project basedir="." name="Webhelp Classic Customization">    
     &lt;import file="build.xml"/>
 &lt;/project></codeblock></li>
       <li>Create the <b>build.xml</b> file that overrides the value of properties associated with
@@ -47,72 +43,66 @@
         specify your customization stylesheets:<p>
           <dl>
             <dlentry>
-              <dt><codeph>args.wh.xsl</codeph></dt>
+              <dt><codeph>args.wh.classic.topic.xsl</codeph></dt>
               <dd>Specify this property if you want to customize the <xref
                   href="#whr-xslt-customization/dita2webhelp-stylesheet" format="dita">XSLT
                   stylesheet used to produce an HTML file for each topic</xref>.</dd>
             </dlentry>
             <dlentry>
-              <dt><codeph>args.create.main.files.xsl</codeph></dt>
+              <dt><codeph>args.wh.classic.create.main.files.xsl</codeph></dt>
               <dd>Specify this property if you want to customize the <xref
                   href="#whr-xslt-customization/main-files-stylesheet" format="dita">XSLT stylesheet
-                  used to produce the main HTML file</xref>.</dd>
+                  used to produce the main HTML files</xref>.</dd>
             </dlentry>
           </dl>
           <dl>
             <dlentry>
-              <dt><codeph>args.createTocXML.xsl</codeph></dt>
+              <dt><codeph>args.wh.classic.createTocXML.xsl</codeph></dt>
               <dd>Specify this property if you want to customize the <xref
                   href="#whr-xslt-customization/toc-stylesheet" format="dita">XSLT stylesheet used
-                  to produce the <filepath>toc.xml</filepath> file</xref>. The toc.xml file contains
-                information extracted from DITA map and it is mainly used to create the WebHelp
-                TOC.</dd>
+                  to produce the <i>toc.xml</i> file</xref>. The toc.xml file contains information
+                extracted from DITA map and it is mainly used to create the WebHelp TOC.</dd>
             </dlentry>
           </dl>
-        </p><p>For example, to customize a WebHelp Responsive transformation type, the build file
+        </p><p>For example, to customize a WebHelp Classic transformation type, the build file
           should look
-          like:</p><codeblock outputclass="language-xml">&lt;project basedir="." name="Webhelp Responsive Customization">  
- &lt;target name="dita2webhelp-responsive-custom">    
+          like:</p><codeblock outputclass="language-xml">&lt;project basedir="." name="Webhelp Classic Customization">  
+ &lt;target name="dita2webhelp-classic-custom">    
    &lt;!-- 
      Override this property if you want to customize the XSLT stylesheet 
      used to produce an HTML file for each topic 
    -->    
    &lt;property 
-     name="args.wh.xsl" 
-     value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}
+     name="args.wh.classic.topic.xsl" 
+     value="${dita.plugin.com.oxygenxml.webhelp.classic.custom.dir}
                                                  /xsl/dita2webhelpCustom.xsl"/>
    &lt;!-- 
      Override this property if you want to customize the XSLT stylesheet 
      used to produce the main HTML file.
    -->    
    &lt;property 
-     name="args.create.main.files.xsl" 
-     value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}
+     name="args.wh.classic.create.main.files.xsl" 
+     value="${dita.plugin.com.oxygenxml.webhelp.classic.custom.dir}
                                               /xsl/createMainFilesCustom.xsl"/>
    &lt;!-- 
      Override this property if you want to customize the XSLT stylesheet 
      used to produce the toc.xml file.
    -->    
    &lt;property 
-     name="args.createTocXML.xsl" 
-     value="${dita.plugin.com.oxygenxml.webhelp.responsive.custom.dir}
+     name="args.wh.classic.createTocXML.xsl" 
+     value="${dita.plugin.com.oxygenxml.webhelp.classic.custom.dir}
                                               /xsl/createTocXMLCustom.xsl"/>
    &lt;!--
      Depending on which version of WebHelp you want to customize, 
      you need to delegate to different build targets:
-     * dita2webhelp-responsive - when you are customizing the Webhelp Responsive
      * dita2webhelp-mobile - when you are customizing the Webhelp Mobile
      * dita2webhelp - when you are customizing the Webhelp Classic
    -->
-   &lt;antcall target="dita2webhelp-responsive"/>
+   &lt;antcall target="dita2webhelp"/>
  &lt;/target>  
 &lt;/project></codeblock><note>Depending
           on which version of WebHelp you want to customize, you need to call one of the following
           build targets:<ul id="ul_iq2_knw_3x">
-            <li>
-              <p><b>dita2webhelp-responsive</b> - For WebHelp Responsive (with or without feedback)
-                output.</p>
-            </li>
             <li>
               <p><b>dita2webhelp</b> - For WebHelp Classic (with or without feedback) output.</p>
             </li>
@@ -122,6 +112,11 @@
           </ul></note></li>
       <li>Create an <b>xsl</b> directory in the plugin customization directory (that you created
         in step 1) to store the customized XSLT stylesheets.</li>
+      <li product="author editor authorEclipse editorEclipse">Now that the extension plugin is
+        created, <xref href="dita-ot-install-plugin.dita#dita-ot-install-plugin">install it in the
+          DITA Open Toolkit</xref>.</li>
+      <li product="developer developerEclipse">Install the extension plugin in the DITA Open
+        Toolkit.</li>
     </ol>
     <section id="section_r3r_tp1_3z">
       <title>Referencing the WebHelp XSLT Stylesheets from Your Customizations</title>
@@ -141,8 +136,8 @@
    &lt;!--
      Import the original stylesheet used to produce an HTML file for each topic.
    -->
-   &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/
-                                             dita/responsive/dita2webhelp.xsl"/>
+   &lt;xsl:import href="plugin:com.oxygenxml.webhelp.classic:xsl/
+                                             dita/classic/dita2webhelp.xsl"/>
    &lt;!--
      Please add your customization templates here.
    -->
@@ -150,19 +145,14 @@
       <p>Depending on which version of WebHelp you want to customize, you need to import one of the
         following XSLT stylesheets:<ul id="ul_xfs_vnw_3x">
           <li>
-            <p><b>dita2webhelp-responsive</b> (WebHelp Responsive) - </p>
-            <p><codeph>&lt;xsl:import
-                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/dita2webhelp.xsl"/></codeph></p>
-          </li>
-          <li>
             <p><b>dita2webhelp</b> (WebHelp Classic) -</p>
             <p><codeph>&lt;xsl:import
-                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/desktop/dita2webhelp.xsl"/></codeph></p>
+                href="plugin:com.oxygenxml.webhelp.classic:xsl/dita/desktop/dita2webhelp.xsl"/></codeph></p>
           </li>
           <li>
             <p><b>dita2webhelp-mobile</b> (WebHelp Classic Mobile) - </p>
             <p><codeph>&lt;xsl:import
-                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/mobile/dita2webhelp.xsl"/></codeph></p>
+                href="plugin:com.oxygenxml.webhelp.classic:xsl/dita/mobile/dita2webhelp.xsl"/></codeph></p>
           </li>
         </ul></p>
       <sectiondiv id="main-files-stylesheet"><u><b>Customizing the
@@ -178,8 +168,8 @@
     &lt;!--
         Import the original stylesheet used to produce the main HTML file.
     -->
-    &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/
-                                               responsive/createMainFiles.xsl"/>
+    &lt;xsl:import href="plugin:com.oxygenxml.webhelp.classic:xsl/dita/
+                                               desktop/createMainFiles.xsl"/>
     &lt;!--
         Please add your customization templates here.
     -->
@@ -188,19 +178,14 @@
       <p>Depending on which version of WebHelp you want to customize, you need to import one of the
         following XSLT stylesheets:<ul id="ul_mhw_xp1_3z">
           <li>
-            <p><b>dita2webhelp-responsive</b> (WebHelp Responsive) - </p>
-            <p><codeph>&lt;xsl:import
-                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/responsive/createMainFiles.xsl"/></codeph></p>
-          </li>
-          <li>
             <p><b>dita2webhelp</b> (WebHelp Classic) -</p>
             <p><codeph>&lt;xsl:import
-                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/desktop/createMainFiles.xsl"/></codeph></p>
+                href="plugin:com.oxygenxml.webhelp.classic:xsl/dita/desktop/createMainFiles.xsl"/></codeph></p>
           </li>
           <li>
             <p><b>dita2webhelp-mobile</b> (WebHelp Classic Mobile) - </p>
             <p><codeph>&lt;xsl:import
-                href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/mobile/createMainFiles.xsl"/></codeph></p>
+                href="plugin:com.oxygenxml.webhelp.classic:xsl/dita/mobile/createMainFiles.xsl"/></codeph></p>
           </li>
         </ul></p>
       <sectiondiv id="toc-stylesheet"><u><b>Customizing the <filepath>tocDita.xsl</filepath>
@@ -215,11 +200,10 @@
     &lt;!--
         Import the original stylesheet used to produce the toc.xml file.
     -->
-    &lt;xsl:import href="plugin:com.oxygenxml.dita-ot.plugin.webhelp:xsl/dita/tocDita.xsl"/>
+    &lt;xsl:import href="plugin:com.oxygenxml.webhelp.classic:xsl/dita/tocDita.xsl"/>
     &lt;!--
         Please add your customization templates here.
-    -->
-        
+    -->        
 &lt;/xsl:stylesheet></codeblock></p>
     </section>
   </body>

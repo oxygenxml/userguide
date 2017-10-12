@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="oxy-url">
+    <title>OXY-URL: File URLs in <ph keyref="webappProduct"/></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>OXY-URL</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="webappProduct"/> works with files such as DITA documents, images referenced from
+      documents, and DITA maps used as a context for editing. <ph keyref="webappProduct"/> can be
+      instructed to load or save a particular file using an <term>OXY-URL</term> that identifies
+      that file.</p>
+    <p>An <term>OXY-URL</term> is a URL from a technical point of view, but it is not a normal HTTP
+      URL like the ones that browsers use. It should have several characteristics:<ol
+        id="ol_fdt_krl_3z">
+        <li>It must have a unique <term>scheme</term> (something like <codeph>mycms</codeph> should
+          work).</li>
+        <li>It should behave like an identifier for the file that it references.</li>
+        <li>It is usually different from other URLs identifying the file, such as one that would
+          open it in a CMS web interface (herein called <term>CMS-URL</term>) or the one that is
+          used to access the raw content of the file (herein called <term>RAW-URL</term>).</li>
+      </ol></p>
+    <example>
+      <title><term>OXY-URL</term> for a File in Oxygen's User Manual</title>
+      <p>Suppose that the <term>OXY-URL</term> for the <filepath>DITA/topics/intro.dita</filepath>
+        topic from the Oxygen User Manual (hosted on GitHub) is the
+        following:<codeblock outputclass="language-ini">gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/topics/introduction.dita</codeblock></p>
+      <p>Notice that:<ol id="ol_xc5_xsl_3z">
+          <li>The URL <term>scheme</term> is <apiname>gitgh</apiname>.</li>
+          <li>It uniquely identifies the file <filepath>DITA/topics/introduction.dita</filepath> on
+            branch <codeph>master</codeph> in the repository <codeph>oxygenxml/ug</codeph> on
+            GitHub.</li>
+          <li>It is different from the URL used to access the file in the GitHub web interface
+              (<term>CMS-URL</term>)
+              <codeph>https://github.com/oxygenxml/ug/blob/master/DITA/topics/introduction.dita</codeph>
+            and from the URL used to access the file's raw content (<term>RAW-URL</term>)
+              <codeph>https://raw.githubusercontent.com/oxygenxml/ug/master/DITA/topics/introduction.dita</codeph>.</li>
+        </ol></p>
+    </example>
+    <section id="section_enx_ybm_3z">
+      <title>Opening and Saving Files</title>
+      <p>For <ph keyref="webappProduct"/> to be able to open and save files identified by an
+          <term>OXY-URL</term>, you need to provide a <xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
+          format="html" scope="external"
+            ><apiname>ro.sync.ecss.extensions.api.webapp.plugin.URLStreamHandlerWithContext</apiname>
+          class</xref> and associate it with the scheme of your <term>OXY-URL</term>.</p>
+    </section>
+    <section id="section_jjz_hcm_3z">
+      <title>User Authentication</title>
+      <p>The <xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
+          format="html" scope="external"><apiname>URLStreamHandlerWithContext</apiname></xref>
+        receives a <apiname>contextId</apiname> for each open and save. This
+          <apiname>contextId</apiname> is the session ID of the user for which the file will be
+        opened or saved. <ul id="ul_amj_vcm_3z">
+          <li>If the user is not authenticated to the CMS or if the credentials are rejected by the
+            CMS, you should throw a <xref
+              href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/UserActionRequiredException.html"
+              format="html" scope="external"
+                ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.UserActionRequiredException</codeph></xref>
+            exception. This exception is automatically relayed to the client-side as a <xref
+              keyref="jscript_api_WebappMessage"><codeph>sync.api.WebappMessage</codeph></xref>
+            JavaScript object.</li>
+          <li>On the client side, follow these steps:<ol id="ol_bmj_vcm_3z">
+              <li>Use the <xref keyref="jscript_api_Editor"
+                    ><codeph>sync.api.Editor.EventTypes.CUSTOM_MESSAGE_RECEIVED</codeph></xref>
+                event to intercept the messages sent from the server-side.</li>
+              <li><xref keyref="jscript_api_dialog">Display a dialog box</xref> to collect the user
+                credentials.</li>
+              <li>Send the new credentials to a <xref
+                  href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/WebappServletPluginExtension.html"
+                  format="html" scope="external"
+                    ><apiname>ro.sync.ecss.extensions.api.webapp.plugin.WebappServletPluginExtension</apiname></xref>
+                that you registered. This servlet will make the credentials available to the <xref
+                  href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
+                  format="html" scope="external"
+                    ><codeph>ro.sync.ecss.extensions.api.webapp.plugin.URLStreamHandlerWithContext</codeph></xref>
+                instance presented above.</li>
+              <li>Retry the operation that triggered the authentication procedure.</li>
+            </ol></li>
+        </ul></p>
+    </section>
+    <section id="section_g3r_htl_3z">
+      <title>Resolving References to Other Files</title>
+      <p>The XML content edited in <ph keyref="webappProduct"/> may contain references to other
+        files. To access a referenced file, <ph keyref="webappProduct"/> needs to compute its
+          <term>OXY-URL</term> based on the <term>OXY-URL</term> of the edited file and the value of
+        the reference to it.</p>
+      <p>For example, the value of the reference of the following
+        image:<codeblock outputclass="language-xml">&lt;img src="../image/iris.jpg" /></codeblock>
+        is<codeblock outputclass="language-ini">../image/iris.jpg</codeblock></p>
+    </section>
+    <section id="section_kq1_b1m_3z">
+      <title>Relative References</title>
+      <p><ph keyref="webappProduct"/> tries to resolve relative references against the
+          <term>OXY-URL</term> of the currently open file. Also, when inserting references to other
+        files (for example, images), <ph keyref="webappProduct"/> tries to insert relative URLs.</p>
+    </section>
+    <section id="section_s4w_kzl_3z">
+      <title>Absolute References (Usually <term>CMS-URL</term>)</title>
+      <p>For this case, you need to provide a <apiname>URIResolver</apiname> that will receive the
+          <term>OXY-URL</term> of the currently opened file and the <term>CMS-URL</term> of the
+        referenced file. <note>This resolver will need to make sure that the any
+            <term>userinfo</term> from the <term>OXY-URL</term> of the currently open file is
+          transferred to the result.</note></p>
+      <p>For example, suppose an image is referenced in a DITA topic and the <term>OXY-URL</term> of
+        the topic (from a GitHub repository) is:</p>
+      <codeblock outputclass="language-ini">gitgh://ff33bba498@https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/topics/intro.dita</codeblock>
+      <p>and the <term>CMS-URL</term> of the referenced image is:</p>
+      <codeblock outputclass="language-ini">https://github.com/oxygenxml/ug/blob/master/DITA/img/login.png</codeblock>
+      <p>then the resolved <term>OXY-URL</term> of the image should be:</p>
+      <codeblock outputclass="language-ini">gitgh://ff33bba498@https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/img/login.png</codeblock>
+    </section>
+    <section id="section_jjk_p3p_1bb">
+      <title>WebDAV Example</title>
+      <p>If the main document is loaded over WebDAV, the following <codeph>URIResolver</codeph>
+        rewrites references to HTTP URLs to use WebDAV and inherit the
+        credentials:<codeblock outputclass="language-javascript">URIResolver uriResolver = new URIResolver() {
+    @Override
+    public Source resolve(String href, String base) throws TransformerException {
+      if (base != null &amp;&amp; base.indexOf("webdav-") == 0) {
+        if (href.indexOf("http://") == 0 || href.indexOf("https://") == 0) {
+          try {
+            URL hrefUrl = new URL(href);
+            URL baseUrl = new URL(base);
+            final URL hrefWithUserInfo = 
+                URLUtil.attachUserInfo(hrefUrl, baseUrl.getUserInfo(), null);
+            return new Source() {
+              
+              @Override
+              public void setSystemId(String systemId) {
+              }
+              
+              @Override
+              public String getSystemId() {
+                return "webdav-" + hrefWithUserInfo.toExternalForm();
+              }
+            };
+          } catch (MalformedURLException e) {
+          }
+        }
+      }
+      return null;
+    }
+  };</codeblock></p>
+      <p>To make <ph keyref="webappProduct"/> insert an absolute <term>CMS-URL</term> in content,
+        you should also provide a <apiname>RelativeReferencesResolver</apiname> to be used in the
+        Java server-side code and a <apiname>ReferencesResolver</apiname> to be used by the
+        JavaScript client-side code.</p>
+    </section>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html"
+        href="https://github.com/oxygenxml/wsaccess-javascript-sample-plugins/tree/master/preserveAllReferencesAsAbsolute"
+        scope="external">
+        <linktext>Sample Plugin: preserveAllReferencesAsAbsolute</linktext>
+      </link>
+    </linklist>
+  </related-links>
+</topic>

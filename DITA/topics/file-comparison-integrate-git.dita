@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="file-comparison-integrate-git">
+  <title>How to Integrate the File Comparison Tool with Git</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Compare Files tool<indexterm>Integrate with Git</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The file comparison tool can be integrated with Git clients. It requires that you configure
+      your <filepath>.gitconfig</filepath> file and then you can simply start the tool from the
+      command line.</p>
+    <p>To integrate the <uicontrol>Compare Files</uicontrol> tool with your Git client, follow this procedure:<ol>
+        <li>Use one of the following methods to instruct your Git client to use the Oxygen
+            <uicontrol>Compare Files</uicontrol> tool:<ul>
+            <li><b>Manual Configuration</b> - Locate your Git user-specific configuration file
+                (<filepath>.gitconfig</filepath>) and edit it with a text editor (for example, in
+              Windows, the <filepath>.gitconfig</filepath> file is most likely located in your user
+              home directory). Add (or replace) the following
+                lines:<codeblock outputclass="language-ini">[diff]
+    tool = oxygendiff
+[merge]
+    tool = oxygendiff
+[difftool "oxygendiff"]
+    cmd = '[pathToOxygenInstallDir]/diffFiles.exe' -ext $REMOTE $LOCAL $LOCAL
+[mergetool "oxygendiff"]
+    cmd = '[pathToOxygenInstallDir]/diffFiles.exe' -ext $LOCAL $REMOTE $BASE $MERGED
+    trustExitCode = true
+[difftool]
+    prompt = false</codeblock><note>For
+                Mac OS X, the <b>cmd</b> lines would start with something like: <b>sh
+                  "/Applications/Oxygen XML Editor/diffFiles.sh"</b>. For Linux, the <b>cmd</b>
+                lines would start with something like: <b>sh "/Oxygen XML
+                Editor/diffFiles.sh"</b>.</note></li>
+            <li><b>Command Line Configuration</b> - To automatically configure the
+                <filepath>.gitconfig</filepath> file, you can run the following commands from a
+              command
+                line:<codeblock outputclass="language-ini">git config --global diff.tool oxygendiff
+git config --global difftool.oxygendiff.cmd '[Oxygen install dir]/diffFiles.exe -ext
+$REMOTE $LOCAL $LOCAL'
+git config --global merge.tool oxygendiff
+git config --global mergetool.oxygendiff.cmd '[Oxygen install dir]/diffFiles.exe
+-ext $LOCAL $REMOTE $BASE $MERGED'
+git config --global mergetool.oxygendiff.trustExitCode true</codeblock><note>For
+                Mac OS X, the Oxygen file comparison tool would be specified in the second and
+                fourth commands with something like: <b>sh "/Applications/Oxygen XML
+                  Editor/diffFiles.sh"</b>. For Linux, it would be something like: <b>sh "/Oxygen
+                  XML Editor/diffFiles.sh"</b>.</note></li>
+          </ul></li>
+        <li>To start the <uicontrol>Compare Files</uicontrol> tool and see a comparison of changes
+          for a particular file, run the following command from a command
+            line:<codeblock outputclass="language-ini">git difftool [PathToFile]</codeblock><note
+            type="tip">If the file you want to compare has conflicts, you can start the
+              <uicontrol>Compare Files</uicontrol> tool as a <i>merge conflict resolution</i> tool
+            by running the following
+            command:<codeblock outputclass="language-ini">git mergetool [PathToFile]</codeblock></note></li>
+      </ol></p>
+    <p>For more information about the Git <i>difftool</i> syntax, see <xref
+        href="https://git-scm.com/docs/git-difftool" format="html" scope="external"/>.</p>
+    <p>For more information about the Git <i>mergetool</i> syntax, see <xref
+        href="https://git-scm.com/docs/git-mergetool" format="html" scope="external"/>.</p>
+  </body>
+</topic>

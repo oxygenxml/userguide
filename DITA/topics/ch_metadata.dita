@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_metadata">
+  <title>Metadata</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Metadata</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>PDF files may contain metadata. Metadata provide additional information about a certain
+      document, such as its title, author, organization, creation date, format, or copyright.</p>
+    <p>HTML defines the <codeph>meta</codeph> element for keeping track of information that
+      describes your content. Most of this information should migrate to the PDF document
+      properties. The property values may be either <i>static</i> (specified directly from the CSS)
+      or <i>dynamic</i> (collected from the document) using the following functions:<ul
+        id="ul_cy3_b2j_wz">
+        <li><b>content(text)</b></li>
+        <li><b>attr()</b></li>
+        <li><b>oxy_xpath()</b></li>
+      </ul></p>
+    <section id="section_aqz_j2j_wz">
+      <title>Predefined Meta Fields</title>
+      <p>Examples of common metadata:<ul id="ul_plc_sz3_wz">
+          <li>Publication title</li>
+          <li>Author</li>
+          <li>Keywords</li>
+          <li>Short description</li>
+        </ul><ph keyref="product"/> automatically extracts this informations from HTML
+        documents.</p>
+      <p>Suppose that you have the following arbitrary XML document:</p>
+      <codeblock outputclass="language-xml">&lt;doc>
+     &lt;title>Publication title&lt;/title>
+     &lt;meta name='keywords' content='software, network'>
+     &lt;meta name='description' content='This is a publication about software products...'>
+     &lt;meta name='author' content='John, jo@mysite.example.com'>
+...</codeblock>
+      <p>You could use any of the following CSS selectors to extract the metadata:</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>-oxy-pdf-meta-title</dt>
+            <dd>It is used to extract the publication title. You can use it by matching the
+                <codeph>title</codeph>
+              element:<codeblock outputclass="language-css" xml:space="preserve">title {
+    -oxy-pdf-meta-title: content(text);
+}</codeblock></dd>
+            <dd>
+              <p>If this CSS selector matches multiple elements, only the first element in the
+                document order will be used to extract the title.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>-oxy-pdf-meta-author</dt>
+            <dd>It is used to extract the publication author. You can use it by matching the
+                <codeph>meta</codeph> element with the attribute
+              <codeph>name='author'</codeph>:<codeblock outputclass="language-css" xml:space="preserve">meta[name='author'] {
+    -oxy-pdf-meta-author: attr(content);
+}</codeblock></dd>
+            <dd>
+              <p>If this CSS selector matches multiple elements, only the first element in the
+                document order will be used to extract the author.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>-oxy-pdf-meta-description</dt>
+            <dd>It is used to extract the publication description. You can use it by matching the
+                <codeph>meta</codeph> element with the attribute <codeph>name='description'</codeph>
+              or
+              <codeph>name='description'</codeph>:<codeblock outputclass="language-css" xml:space="preserve">meta[name='description'], 
+meta[name='subject'] {
+    -oxy-pdf-meta-description: attr(content);
+}</codeblock></dd>
+            <dd>
+              <p>If this CSS selector matches multiple elements, only the first element in the
+                document order will be used to extract the description.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>-oxy-pdf-meta-keywords</dt>
+            <dd>It is used to extract the publication keywords. For example you can use it by
+              matching the <codeph>meta</codeph> element with the attribute
+                <codeph>name='keywords'</codeph>:<codeblock outputclass="language-css" xml:space="preserve">meta[name='keywords'] {
+    -oxy-pdf-meta-keywords: attr(content);
+}</codeblock></dd>
+            <dd>
+              <p>If this CSS selector matches multiple elements, only the first element in the
+                document order will be used to extract the keywords.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>-oxy-pdf-meta-keyword</dt>
+            <dd>It is used to extract a single keyword. Individual keywords are accumulated from
+              elements that match the CSS rule that uses this property and then concatenated into a
+              single string. This single string is then set in the PDF 'keywords' section. For
+              example, if you mark keywords in your HTML document with a span with a "kw" class, you
+              can collect them all by
+              using:<codeblock outputclass="language-css" xml:space="preserve">span.kw {
+    -oxy-pdf-meta-keyword: content(text);
+}</codeblock></dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    <section id="section_lxd_42j_wz">
+      <title>Custom Meta Fields</title>
+      <p>Metadata is not restricted to the above cases. You may have custom metadata fields. It is
+        usually displayed in a tabular format (for example, in Acrobat Reader ™ it is in the
+          <uicontrol>Custom</uicontrol> tab in the <uicontrol>Properties</uicontrol> dialog box). </p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>-oxy-pdf-meta-custom</dt>
+            <dd>This property has two parts, one defining the name, and one the value for the field. </dd>
+            <dd>In the following example, all the meta tags are dumped as custom meta fields in
+              PDF:<codeblock outputclass="language-css">meta {
+    -oxy-pdf-meta-custom: attr(name) attr(content);
+}</codeblock></dd>
+            <dd>Or if somewhere in the document content, you have a span that defines the document
+              creation date, you can use:</dd>
+            <dd>
+              <codeblock outputclass="language-css">span.created {
+    -oxy-pdf-meta-custom: "CreationDate" content(text);
+} </codeblock>
+            </dd>
+            <dd>
+              <p>In case of conflicts, when two or more elements trigger setting of a meta field
+                with the same name, only the first definition of a meta field will be used in the
+                PDF output.</p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+  </body>
+</topic>

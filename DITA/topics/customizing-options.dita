@@ -5,51 +5,282 @@
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>Oxygen XML Web Author Component<indexterm>Customize
-          options</indexterm></indexterm>
-        <indexterm>Customizing options for Web Author</indexterm>
+        <indexterm>Customizing options</indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
     <p>The <ph keyref="webappProduct"/> functionality that is common with the standalone
-      distribution of <ph keyref="product"/> share the same options. This allows you to configure a
-      consistent editing experience for all users.</p>
-    <section product="author editor" id="author_mode_options">
+      distribution of Oxygen XML Editor/Author share the same options. This allows you to configure
+      a consistent editing experience for all users.</p>
+    <section id="author_mode_options">
       <title>Author Mode Options</title>
       <p><ph keyref="webappProduct"/> stores its options in an <filepath>options.xml</filepath>
-        file. </p>
-      <p>If you are using the <xref href="https://www.oxygenxml.com/oxygen_sdk_maven.html"
-          format="html" scope="external">Oxygen XML SDK project</xref>, the file is located in the
-          <filepath>bundle-options/oxygen-options/</filepath> folder and will be bundled with the
-        web application. If you are using one of the installation kits, it is located in the
-          <filepath>options</filepath> folder of the <xref
+        file. The file is located in the <filepath>options</filepath> folder of the <xref
           href="webapp_deployment.dita#webapp_deployment/other_notes"><term>Oxygen Data
             Directory</term></xref>.</p>
+      <p>If you are using the <xref href="https://www.oxygenxml.com/oxygen_sdk.html" format="html"
+          scope="external">Oxygen XML SDK project</xref>, the
+          <filepath>bundle-options/oxygen-options/options.xml</filepath> file is bundled with your
+        resulting application and used to provide default options. This file is copied in the <xref
+          href="webapp_deployment.dita#webapp_deployment/other_notes"><term>Oxygen Data
+            Directory</term></xref> when the application starts if an
+          <filepath>options.xml</filepath> file is not already present there.</p>
       <p>There are multiple ways to configure these options:</p>
       <ul>
         <li>Some of the options can be changed using the <xref
             href="webapp-admin-page.dita#webapp-admin-page">Administration Page</xref> in your web
           browser.</li>
-        <li>Use an options file exported from <ph keyref="product"/> standalone application. To
-          export the file, use the <xref
-            href="import-export-preferences.dita#import-export-preferences/export-global-options"><menucascade>
+        <li>Use an options file exported from an Oxygen standalone application. To export the file,
+          use the <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/import-export-preferences.html"
+            format="html" scope="external"><menucascade>
               <uicontrol>Options</uicontrol>
               <uicontrol>Export Global Options</uicontrol>
             </menucascade> menu action</xref>.<note>Archived options are unpackaged to the
               <filepath>options</filepath> folder only if an <filepath>options.xml</filepath> file
             is not already present.</note></li>
         <li>Manually edit the options file. To learn more about the supported options and the file
-          format, see <xref href="webapp-supported-options.dita#webapp-supported-options"/>.</li>
+          format, continue reading the section below.</li>
       </ul>
     </section>
+    <section id="oxygen_standalone_options_supported_by_web_author">
+      <title>Oxygen Standalone Options Supported by Web Author</title>
+      <p><ph keyref="webappProduct"/> supports some of the options used by Oxygen XML Editor/Author.
+        The supported options are applied for all Web Author users. The options file has the
+        following
+        format:<codeblock outputclass="xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;serialized version="18.1" xml:space="preserve">
+  &lt;map>   
+    &lt;entry>
+      &lt;String>author.show.comments&lt;/String>
+      &lt;Boolean>true&lt;/Boolean>       
+    &lt;/entry>
+  &lt;/map>
+&lt;/serialized></codeblock>For
+        each option, an additional entry should be added in this file.</p>
+      <table id="table_rcr_qpy_2x" colsep="1" rowsep="1" frame="all">
+        <title><b>Oxygen XML Author Options Supported in <ph keyref="webappProduct"/></b></title>
+        <tgroup cols="3">
+          <colspec colname="c1" colnum="1" colwidth="3.25*"/>
+          <colspec colname="c2" colnum="2" colwidth="1*"/>
+          <colspec colname="newCol3" colnum="3" colwidth="2.75*"/>
+          <thead>
+            <row>
+              <entry>Key</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>dita.ot.directory</entry>
+              <entry>String</entry>
+              <entry>The directory path to the default DITA OT installation.</entry>
+            </row>
+            <row>
+              <entry>track.changes.initial.state</entry>
+              <entry>Integer</entry>
+              <entry>Option for <term>track changes</term> initial state.<ul>
+                  <li><b>0</b> - Initial state stored in document.</li>
+                  <li><b>1</b> - <term>Track changes</term> always on.</li>
+                  <li><b>2</b> - <term>Track changes</term> always off.</li>
+                </ul></entry>
+            </row>
+            <row>
+              <entry>automatically.accept.certificates</entry>
+              <entry>boolean</entry>
+              <entry>Option that controls if Oxygen will accept all HTTPS certificates.</entry>
+            </row>
+            <row>
+              <entry>additional.frameworks.directories</entry>
+              <entry><xref href="#customizing-options/example-entry" format="dita">See example
+                  entry below</xref></entry>
+              <entry>
+                <p>An array of java.lang.String objects representing paths to the additional
+                    <term>frameworks</term> folders (may also contain editor variables). </p>
+              </entry>
+            </row>
+            <row>
+              <entry>WEBAPP_SHOW_ADMIN_PAGE_LINK</entry>
+              <entry>boolean</entry>
+              <entry><codeph>true</codeph> to display the admin page link on the dashboard.</entry>
+            </row>
+            <row>
+              <entry>ADMIN_PAGE_IS_DISABLED</entry>
+              <entry>boolean</entry>
+              <entry><codeph>true</codeph> to disable the Administration Page completely.</entry>
+            </row>
+            <row>
+              <entry>author.convert.external.content.on.paste</entry>
+              <entry>boolean</entry>
+              <entry>
+                <p>Option that controls whether or not the content pasted in Author mode should be
+                  converted to match the destination styles.</p>
+              </entry>
+            </row>
+            <row>
+              <entry>author.convert.external.content.space.preserve</entry>
+              <entry>boolean</entry>
+              <entry>
+                <p>Option that controls whether or not the content pasted in
+                    <uicontrol>Author</uicontrol> mode should be converted to match the destination
+                  styles in <xref keyref="glossentry_space-preserved-element"><term>space-preserved
+                      elements</term></xref>.</p>
+              </entry>
+            </row>
+            <row>
+              <entry>http.read.timeout.seconds</entry>
+              <entry>Integer</entry>
+              <entry>An integer number that configures the timeout used when waiting for an HTTP
+                request.</entry>
+            </row>
+            <row>
+              <entry>http.proxy.system</entry>
+              <entry>boolean</entry>
+              <entry>"True" to detect HTTP proxy from system.</entry>
+            </row>
+            <row>
+              <entry>http.proxy.set</entry>
+              <entry>boolean</entry>
+              <entry>HTTP proxy uses manual configuration.</entry>
+            </row>
+            <row>
+              <entry>http.proxy.port</entry>
+              <entry>Integer</entry>
+              <entry>Proxy port.</entry>
+            </row>
+            <row>
+              <entry>http.proxy.host</entry>
+              <entry>String</entry>
+              <entry>Proxy hostname or IP address.</entry>
+            </row>
+            <row>
+              <entry>http.proxy.user</entry>
+              <entry>String</entry>
+              <entry>Proxy user.</entry>
+            </row>
+            <row>
+              <entry>http.proxy.password</entry>
+              <entry>String</entry>
+              <entry>Proxy password.</entry>
+            </row>
+            <row>
+              <entry>http.proxy.direct</entry>
+              <entry>String</entry>
+              <entry>Comma separated list of hosts for which the proxy is bypassed.</entry>
+            </row>
+            <row>
+              <entry>http.max.simultaneous.connections.per.host</entry>
+              <entry>Integer</entry>
+              <entry>Limits the number of connections the HTTP client can open to the same server
+                host.</entry>
+            </row>
+            <row>
+              <entry>author.show.comments</entry>
+              <entry>boolean</entry>
+              <entry>Show the comment nodes in the author page.</entry>
+            </row>
+            <row>
+              <entry>author.show.processing.instructions</entry>
+              <entry>boolean</entry>
+              <entry>Show the pi nodes in the author page.</entry>
+            </row>
+            <row>
+              <entry>autocorrect.feature.state</entry>
+              <entry>boolean</entry>
+              <entry>Used to enable/disable the auto-correct feature.</entry>
+            </row>
+            <row>
+              <entry>autocorrect.use.suggeestions.from.spell.check.dicts</entry>
+              <entry>boolean</entry>
+              <entry>Used to enrich the auto-correct suggestions with entries from spell checking
+                dictionaries.</entry>
+            </row>
+            <row>
+              <entry>author.format.compatibility</entry>
+              <entry>Integer</entry>
+              <entry>Possible values include: 0, 1, 2<p><b>0</b>: Nothing special is done for
+                  compatibility purpose. </p><p><b>1</b>: Do not break lines, do not
+                    indent.</p><p><b>2</b>: Break lines only after elements displayed as blocks, do
+                  not indent.</p></entry>
+            </row>
+            <row>
+              <entry>dita.fill.link.format.attribute</entry>
+              <entry>boolean</entry>
+              <entry>Use <b>true</b> to force the insertion of the <codeph>format</codeph> attribute
+                when inserting a link in DITA even when the attribute has a default value.</entry>
+            </row>
+            <row>
+              <entry>dita.fill.link.scope.attribute</entry>
+              <entry>boolean</entry>
+              <entry>Use <b>true</b> to force the insertion of the <codeph>scope</codeph> attribute
+                when inserting a link in DITA even when the attribute has a default value.</entry>
+            </row>
+            <row>
+              <entry>dita.fill.link.type.attribute</entry>
+              <entry>boolean</entry>
+              <entry>Use <b>true</b> to force the insertion of the <codeph>type</codeph> attribute
+                when inserting a link in DITA even when the attribute has a default value.</entry>
+            </row>
+            <row>
+              <entry>auto.correct.single.quotes</entry>
+              <entry><xref href="#customizing-options/example-single-quote" format="dita">See
+                  example entry below</xref></entry>
+              <entry>If set, Web Author automatically replaces single quotes with the specified
+                quotation symbols. </entry>
+            </row>
+            <row>
+              <entry>auto.correct.double.quotes</entry>
+              <entry><xref href="#customizing-options/example-single-quote" format="dita">See
+                  example entry below</xref></entry>
+              <entry>If set, Web Author automatically replaces double quotes with the specified
+                quotation symbols. </entry>
+            </row>
+            <row>
+              <entry>author.image.width.autoscale.limit</entry>
+              <entry>1024</entry>
+              <entry>If set to a value greater than 0, images wider than this number of pixels will
+                be resized.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p id="example-entry">Example entry for <codeph>additional.frameworks.directories</codeph>
+        option:<codeblock outputclass="language-ini">&lt;entry>
+  &lt;String>
+   additional.frameworks.directories
+  &lt;/String>
+  &lt;String-array>
+    &lt;String>
+     /path/to/frameworks
+    &lt;/String>
+  &lt;/String-array>
+&lt;/entry></codeblock></p>
+      <p id="example-single-quote">Example entry for <codeph>auto.correct.single.quotes</codeph> and
+          <codeph>auto.correct.double.quotes</codeph>
+        option:<codeblock outputclass="language-ini">&lt;entry> 
+  &lt;String>auto.correct.single.quotes&lt;/String> &lt;!–- or auto.correct.double.quotes  -->
+  &lt;autoCorrectQuotes>
+    &lt;field name="enabled">
+      &lt;Boolean>true&lt;/Boolean>
+    &lt;/field>
+    &lt;field name="startQuote">
+      &lt;Character>‘&lt;/Character>
+    &lt;/field>
+    &lt;field name="endQuote">
+      &lt;Character>’&lt;/Character>
+    &lt;/field>
+  &lt;/autoCorrectQuotes>
+&lt;/entry></codeblock></p>
+    </section>
     <section id="webapp_config_file">
-      <title><ph keyref="webappProduct"/> specific options</title>
-      <p>A small number of options are specific only to the <ph keyref="webappProduct"/> and they
-        can be configured in the <filepath>WEB-INF/web.xml</filepath> file. Each option is specified
-        as a <i>context-param</i> element.</p>
-      <p>The following is a list of options and their accepted values:<table frame="all" rowsep="1"
-          colsep="1" id="table_qhw_t1t_1r">
+      <title>Web Author-Specific Options</title>
+      <p>A small number of options are specific only to <ph keyref="webappProduct"/> and they can be
+        configured in the <filepath>WEB-INF/web.xml</filepath> file. Each option is specified as a
+          <codeph>context-param</codeph> element.</p>
+      <p>The following is a list of these options and their accepted values:<table frame="all"
+          rowsep="1" colsep="1" id="table_qhw_t1t_1r">
           <tgroup cols="4">
             <colspec colname="c1" colnum="1" colwidth="3.37*"/>
             <colspec colname="c2" colnum="2" colwidth="1*" align="center"/>
@@ -66,7 +297,7 @@
             <tbody>
               <row>
                 <entry><i>com.oxygenxml.loadBuiltinProtocolHandlers</i></entry>
-                <entry><i>true/false</i></entry>
+                <entry>true/false</entry>
                 <entry>True</entry>
                 <entry>Controls whether or not the built-in handlers for HTTP/HTTPS and FTP/SFTP
                   protocols are installed. Default value is <i>true</i>.</entry>
@@ -105,17 +336,14 @@
             </tbody>
           </tgroup>
         </table></p>
-      <p>(*) - Duration is represented by an integer, followed by one of "d", "h", "m", or "s",
+      <p>(*) - Duration is represented by an integer, followed by "d", "h", "m", or "s",
         representing days, hours, minutes, or seconds, respectively.</p>
-    </section>
-    <p><b><u>Example:</u></b></p>
-    <p>Here is an example of how to configure a context
-      parameter:<codeblock outputclass="language-xml">&lt;context-param>
+      <p><b><u>Example:</u></b></p>
+      <p>Here is an example of how to configure a context
+        parameter:<codeblock outputclass="language-xml">&lt;context-param>
   &lt;param-name>com.oxygenxml.loadBuiltinProtocolHandlers&lt;/param-name>
   &lt;param-value>false&lt;/param-value>
 &lt;/context-param> </codeblock></p>
+    </section>
   </body>
-  <related-links>
-    <linklist><title>Related Information:</title><link href="webauthor-set-system-property.dita#webauthor-set-system-property"/></linklist>
-  </related-links>
 </topic>

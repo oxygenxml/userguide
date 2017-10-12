@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webauthor-integrate-with-another-app">
+  <title>Integrating Web Author in a CMS or Another Application</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Integrating Web Author in a CMS</indexterm>
+        <indexterm>Integrating Web Author in a web application</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="webappProduct"/> can be embedded in a CMS to offer editing functionality for
+      documents stored in the CMS. It can also be embedded in other web applications.</p>
+    <p>Web Author has two parts that need to be considered when integrating:<ol>
+        <li>A front-end HTML page that should be embedded using an <codeph>iframe</codeph> (load the
+          main page (<filepath>app/oxygen.html</filepath>) in an <codeph>iframe</codeph>). Some of
+          its options can be controlled using URL parameters and other by using the JS API from an
+          editor plugin.</li>
+        <li>The Java-based back-end that can also be <xref
+            href="customizing_plugins.dita#customizing_plugins">customized using plugins</xref>.
+            <note>It is recommended to deploy the back-end separately from your application. More
+            details here: <xref href="how_to_share_tomcat.dita#how_to_share_tomcat"/>.</note></li>
+      </ol></p>
+    <section id="section_dvp_vgb_n5">
+      <title>Security Restrictions</title>
+      <p><ph keyref="webappProduct"/> uses cookies to enforce its licensing and to maintain the
+        editing state of the opened documents. Some browsers block third-party cookies for security
+        reasons. To avoid having the cookies blocked, <ph keyref="webappProduct"/> should be served
+        from the same origin as the CMS host page.</p>
+    </section>
+    <section id="passing_parameters_to_the_editor">
+      <title>Passing Parameters to the Editor</title>
+      <p>To control the editor, you can use <xref
+          href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
+          >URL parameters</xref>. To pass custom parameters, you can implement a <xref
+          href="customizing_plugins.dita#customizing_plugins"><term>plugin</term> for <ph
+            keyref="webappProduct"/></xref> that contains JavaScript code to interpret those
+        parameters.</p>
+    </section>
+    <section id="section_mbf_chb_n5">
+      <title>Communicating with the Editor</title>
+      <p>To communicate with the editor, you can send messages between the host CMS page and the <ph
+          keyref="webappProduct"/> page. </p>
+      <p>Browsers offer the <codeph>window.postMessage</codeph> JavaScript API that allows messages
+        to be sent between pages. To receive the message, create a <xref
+          href="customizing_plugins.dita#customizing_plugins"><term>plugin</term> for <ph
+            keyref="webappProduct"/></xref> that contains JavaScript code that listens for the
+        messages sent by the CMS host page and uses the <xref
+          href="customizing_js.dita#customizing_js"><ph keyref="webappProduct"/> JavaScript
+          API</xref> to implement the required functionality.</p>
+    </section>
+    <section id="section_wnm_xhb_n5">
+      <title>Other Notes</title>
+      <ul id="ul_uxv_yhb_n5">
+        <li>We experienced problems if the <i>iframe</i> is hidden while loading using
+            <codeph>display: none</codeph>. You can use <codeph>visibility: hidden</codeph> for the
+          same purpose.</li>
+        <li>Some XML vocabularies (for example, DITA) support cross-document links. By default,
+          clicking on a cross-document link will open that document in the <ph
+            keyref="webappProduct"/> in another browser tab. If the editor is embedded, you may want
+          to change this behavior using the <codeph>sync.api.Editor.EventTypes.LINK_OPENED</codeph>
+          event that is triggered on the <xref keyref="jscript_api_Editor"
+            ><i>sync.api.Editor</i></xref> instance.</li>
+        <li>When embedded in a larger page, sometimes it makes sense to remove the gray app-bar that
+          contains the application logo, file name, and user name. To do this, you can use the <xref
+            keyref="jscript_api_workspace"><codeph>workspace.getViewManager().hideAppBar();</codeph>
+            API</xref>.</li>
+        <li>It is possible to customize the <ph keyref="webappProduct"/> user interface through the
+          use of JavaScript APIs. For more information, see <xref
+            href="customizing_ui.dita#customizing_ui"/>.</li>
+      </ul>
+    </section>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="customizing_ui.dita#customizing_ui"/>
+    </linklist>
+  </related-links>
+</topic>

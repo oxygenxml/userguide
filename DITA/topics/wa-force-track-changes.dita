@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-force-track-changes">
+  <title>Control Change Tracking State</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Control change tracking state</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>You can control whether or not the <term>Change Tracking</term> feature is enabled when a
+      documented is opened in <ph keyref="webappProduct"/> with a <b>trackChanges</b> flag.</p>
+    <p>Possible values for the <b>trackChanges</b> flag:<ul>
+        <li><b>default</b> - The status of the <term>Change Tracking</term> feature is determined by
+          server's global options.</li>
+        <li><b>enabled</b> - The <term>Change Tracking</term> feature is enabled but the user can
+          disable it using the <uicontrol>Toggle Change Tracking</uicontrol> toolbar button.</li>
+        <li><b>forced</b> - The <term>Change Tracking</term> feature is enabled and the user cannot
+          disable it. The user can reject their own changes, but cannot accept or reject changes
+          made by others.</li>
+      </ul></p>
+    <p>You can set this flag in your plugin's JavaScript code like
+      this:<codeblock outputclass="language-javascript">goog.events.listen(workspace, 
+sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED, function(e) {
+    if(forced_track_changes_condition) {
+      e.options.trackChanges = 'forced';
+    } else if(track_changes_enabled_condition) {
+      e.options.trackChanges = 'enabled';
+    } else if(track_changes_default_condition) {
+      e.options.trackChanges = 'enabled';
+    }
+  }); </codeblock></p>
+    <note type="tip">You can also use this flag in an <xref
+        href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch">embedded
+        link that launches Web Author</xref> so that when a user clicks the constructed link, the
+      documented will be opened in Web Author with the <term>Change Tracking</term> feature
+      enabled.</note>
+  </body>
+</topic>

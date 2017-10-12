@@ -1,57 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="customizing_plugins">
-  <title>Customizing <ph keyref="webappProduct"/> Plugins</title>
+  <title>Customizing Web Author with Plugins</title>
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>Oxygen XML Web Author Component<indexterm>Customize
-          plugins</indexterm></indexterm>
+        <indexterm>Customizing plugins</indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
-    <p>The <ph keyref="webappProduct"/> server side can be customized with a variety of <xref
-        keyref="glossentry_plugin"><term>plugin</term></xref> types. We currently provide support
-      for the following extension types: </p>
-    <ul id="ol_dn1_c23_br">
-      <li><b>URLStreamHandler</b> - This extensions can be used to integrate the <ph
-          keyref="webappProduct"/> with XML databases or CMS. There is an example URLStreamHandler
-        provided in <xref href="https://www.oxygenxml.com/oxygen_sdk_maven.html" format="html"
-          scope="external">Oxygen XML SDK project</xref> in the
-          <filepath>oxygen-sample-plugins/oxygen-sample-plugin-custom-protocol</filepath> folder.
-        The extension uses the <b>cproto</b> protocol to access the file system of the server and
-        can be used as a starting point.<note>For more details about implementing an authentication
-          mechanism, see <xref href="how_to_cms_auth.dita"/>.</note></li>
-      <li><b>WorkspaceAccess</b> - Most of the methods used to configure the <ph keyref="product"/>
-        GUI are unavailable in theses extensions, but they can still be used, for example, to
-        configure a <codeph>javax.xml.transform.URIResolver</codeph>. <note>The <xref
-            keyref="url_PluginWorkspace"
-              ><apiname>ro.sync.exml.workspace.api.PluginWorkspace</apiname></xref> instance passed
-          to the extension also implements the <xref keyref="url_WebappPLuginWorkspace"
-              ><apiname>ro.sync.ecss.extensions.api.webapp.access.WebappPluginWorkspace</apiname></xref>
-          interface and provides access to some <ph keyref="webappProduct"/>-specific
-          functionality.</note></li>
-      <li><b>WebappServlet</b> - This extension allows you to provide an implementation of a
-        servlet-like interface (<xref keyref="url_WebappServletPluginExtension"
-            ><apiname>ro.sync.ecss.extensions.api.webapp.plugin.WebappServletPluginExtension</apiname></xref>)
-        that will be dynamically loaded by the <ph keyref="webappProduct"/>. Your implementation
-        will also provide the path to the location where the servlet will be exposed.</li>
-      <li><xref href="author-stylesheet-extension.dita#author-stylesheet-extension"
-            ><b>AuthorStylesheet</b></xref> - Allows you to add a stylesheet (CSS or LESS) used for
-        rendering all XML documents.</li>
-      <li>
-        <b>WebappStaticResourcesFolder</b> - This extension allows you to access a static resource
-        folder. It should provide a <codeph>path</codeph> attribute (the static resources folder
-        path relative to the <filepath>plugins</filepath> directory) and an <codeph>href</codeph>
-        attribute that declares the <term>plugin</term>. An example of a use-case is you can use it
-        to have the <ph keyref="webappProduct"/> provide icons for <term>plugin</term>-specific
-          actions.<p>In the following example, the static resources will be available at
-              <filepath><term conkeyref="reusables-user-guide/oxy-webapp-install-dir"
-            />/plugin-resources/relative-href/path-to-file</filepath>, with the
-            <filepath>path-to-file</filepath> being relative to the static resources folder:
-          <screen outputclass="language-javascript">&lt;extension type="WebappStaticResourcesFolder" path="path-to-resorce-folder" href="relative-href"/></screen></p></li>
-    </ul>
+    <section id="what_is_a_plugin">
+      <title>What is a Plugin</title>
+      <p>A <b><term>plugin</term></b> (also referred to as <term>add-on</term> or
+          <term>extension</term>) is a component that adds specific features to an existing
+        application. <ph keyref="webappProduct"/> supports <term>plugins</term> to enable numerous
+        customizations.</p>
+    </section>
+    <section id="general_configuration_of_a_plugin">
+      <title>General Configuration of a Plugin</title>
+      <p>The <xref href="https://www.oxygenxml.com/oxygen_sdk.html" format="html" scope="external"
+          >Oxygen XML SDK</xref> is a Java library that allows you to extend the functionality of
+          <ph keyref="webappProduct"/> through API calls. It includes sample <term>plugins</term>
+        (source and compiled Java code) and the Javadoc API necessary for developing custom
+          <term>plugins</term>.</p>
+      <p>For information about what the general configuration requirements for a
+        <term>plugin</term>, see <xref
+          href="https://www.oxygenxml.com/doc/ug-editor/topics/oxygen-plugin.html" format="html"
+          scope="external">General Configuration of an Oxygen Plugin</xref>.</p>
+    </section>
+    <section id="supported_extension_types">
+      <title>Supported Extension Types</title>
+      <p><ph keyref="webappProduct"/> provides support for the following extension types: </p>
+      <ul id="ol_dn1_c23_br">
+        <li><b>URLStreamHandler</b> - This extensions can be used to integrate the <ph
+            keyref="webappProduct"/> with XML databases or CMS. There is an example URLStreamHandler
+          provided in <xref href="https://www.oxygenxml.com/oxygen_sdk.html" format="html"
+            scope="external">Oxygen XML SDK project</xref> in the
+            <filepath>oxygen-sample-plugins/oxygen-sample-plugin-custom-protocol</filepath> folder.
+          The extension uses the <b>cproto</b> protocol to access the file system of the server and
+          can be used as a starting point.<note>For more details about implementing an
+            authentication mechanism, see <xref href="how_to_cms_auth.dita"/>.</note></li>
+        <li><b>WorkspaceAccess</b> - Most of the methods used to configure the Oxygen XML
+          Editor/Author GUI are unavailable in theses extensions, but they can still be used, for
+          example, to configure a <codeph>javax.xml.transform.URIResolver</codeph>. <note>The <xref
+              keyref="url_PluginWorkspace"><i>ro.sync.exml.workspace.api.PluginWorkspace</i></xref>
+            instance passed to the extension also implements the <xref
+              keyref="url_WebappPLuginWorkspace"
+                ><i>ro.sync.ecss.extensions.api.webapp.access.WebappPluginWorkspace</i></xref>
+            interface and provides access to some <ph keyref="webappProduct"/>-specific
+            functionality.</note></li>
+        <li><b>WebappServlet</b> - This extension allows you to provide an implementation of a
+          servlet-like interface (<xref keyref="url_WebappServletPluginExtension"
+              ><i>ro.sync.ecss.extensions.api.webapp.plugin.WebappServletPluginExtension</i></xref>)
+          that will be dynamically loaded by the <ph keyref="webappProduct"/>. Your implementation
+          will also provide the path to the location where the servlet will be exposed.<p>This
+            extension can also be used to <xref href="webapp_plugin_configuration.dita">create a
+              configuration page</xref> for a plugin.</p></li>
+        <li><xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/author-stylesheet-extension.html"
+            format="html" scope="external"><b>AuthorStylesheet</b></xref> - Allows you to add a
+          stylesheet (CSS or LESS) used for rendering all XML documents.</li>
+        <li>
+          <b>WebappStaticResourcesFolder</b> - This extension allows you to access a static resource
+          folder. It should provide a <codeph>path</codeph> attribute (the static resources folder
+          path relative to the <filepath>plugins</filepath> directory) and an <codeph>href</codeph>
+          attribute that declares the <term>plugin</term>. An example of a use-case is you can use
+          it to have the <ph keyref="webappProduct"/> provide icons for <term>plugin</term>-specific
+            actions.<p>In the following example, the static resources will be available at
+              <filepath>http://example.com/oxygen-xml-web-author/plugin-resources/&lt;relative-href>/path-to-file</filepath>,
+            with the <filepath>path-to-file</filepath> being relative to the static resources
+            folder:
+            <codeblock outputclass="language-javascript">&lt;extension type="WebappStaticResourcesFolder" path="path-to-resorce-folder" 
+           href="relative-href"/></codeblock></p></li>
+      </ul>
+    </section>
     <section id="webapp_bundle_js_files_in_plugin">
       <title>Loading plugin-related custom JavaScript code</title>
       <p>If your <term>plugin</term> needs accompanying JavaScript code to be loaded and executed on
@@ -64,35 +87,37 @@
     </section>
     <section id="add-plugin-section">
       <title>Adding the Plugins in the <ph keyref="webappProduct"/></title>
-      <p>If you have already developed such <ph keyref="product"/>
-        <term>plugins</term>, they can be added in the <filepath>bundle-plugin/dropins</filepath>
-        folder in the Maven project.</p>
-      <p>If you are developing a new <ph keyref="product"/>
-        <term>plugin</term> you are encouraged to use as a starting point any of the existing
-          <term>plugins</term>. Then you should add the resulting Maven project as a dependency (or
-        even a sub-module) in the <filepath>oxygen-sample-plugins</filepath> module.</p>
+      <p>If you have already developed Oxygen XML Editor/Author <term>plugins</term>, they can be
+        added in the <filepath>bundle-plugin/dropins</filepath> folder in the Maven project.</p>
+      <p>If you are developing a new <term>plugin</term>, you are encouraged to use as a starting
+        point any of the existing <term>plugins</term>. Then you should add the resulting Maven
+        project as a dependency (or even a sub-module) in the
+          <filepath>oxygen-sample-plugins</filepath> module.</p>
     </section>
     <section id="public_plugin_integration_projects">
       <title>Public Plugin Integration Projects</title>
       <p>Some public projects are available on <b>github.com</b> that can be used to help you
         integrate <ph keyref="webappProduct"/>. <ul>
-          <li><b><b>WebDAV Support for oXygen XML Web Author</b></b> (<xref
+          <li><b>WebDAV Support for Oxygen XML Web Author</b> (<xref
               href="https://github.com/oxygenxml/webapp-webdav-integration" format="html"
               scope="external"/>) - This project is a very simple integration of <ph
               keyref="webappProduct"/> with a WebDAV-enabled server, which can be extended with more
             features or can be adapted to work with any CMS.</li>
-          <li>Here is a list with <xref
+          <li><b>Other Open-Source Plugins</b> - Here is a list with <xref
               href="https://github.com/oxygenxml/?q=topic%3Aoxygen-plugin%20topic%3Aweb-author"
               format="html" scope="external">all open-source <ph keyref="webappProduct"/> plugins
               provided by Oxygen</xref>. For example, there are plugins for integrating with Google
             Drive, editing files in a GitHub repository, adding support for special UTF-8
-            characters, implementing REST-endpoints for content handling, and more.</li>
+            characters, adding support for SVG graphics, adding support for MathML, implementing
+            REST-endpoints for content handling, and more.</li>
         </ul></p>
     </section>
-    
   </body>
   <related-links>
-    <linklist><title>Related Information:</title><link href="webapp-plugin-prototyping.dita#webapp-plugin-prototyping"/>
-    <link href="webapp-configure-plugins.dita#webapp-configure-plugins"/></linklist>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="webapp-plugin-prototyping.dita#webapp-plugin-prototyping"/>
+      <link href="webapp-configure-plugins.dita#webapp-configure-plugins"/>
+    </linklist>
   </related-links>
 </topic>
