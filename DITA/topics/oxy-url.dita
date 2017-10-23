@@ -17,30 +17,147 @@
     <p>An <term>OXY-URL</term> is a URL from a technical point of view, but it is not a normal HTTP
       URL like the ones that browsers use. It should have several characteristics:<ol
         id="ol_fdt_krl_3z">
-        <li>It must have a unique <term>scheme</term> (something like <codeph>mycms</codeph> should
-          work).</li>
+        <li>It must have a <xref href="#oxy-url/oxyurl_unique_scheme" format="dita">unique
+              <term>scheme</term></xref> according to the file storage system the file comes
+          from.</li>
         <li>It should behave like an identifier for the file that it references.</li>
         <li>It is usually different from other URLs identifying the file, such as one that would
           open it in a CMS web interface (herein called <term>CMS-URL</term>) or the one that is
-          used to access the raw content of the file (herein called <term>RAW-URL</term>).</li>
+          used to access the raw content of the file (herein called
+                <term>RAW-URL</term>).<p><b><u>Example: OXY-URL for a File in Oxygen's User
+                Manual</u></b></p><p>Suppose that the <term>OXY-URL</term> for the
+              <filepath>DITA/topics/intro.dita</filepath> topic from the Oxygen User Manual (hosted
+            on GitHub) is the
+            following:<codeblock outputclass="language-ini">gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/topics/introduction.dita</codeblock></p><p>Notice
+              that:<ol id="ol_xc5_xsl_3z">
+              <li>The URL <term>scheme</term> is <apiname>gitgh</apiname>.</li>
+              <li>It uniquely identifies the file <filepath>DITA/topics/introduction.dita</filepath>
+                on branch <codeph>master</codeph> in the repository <codeph>oxygenxml/ug</codeph> on
+                GitHub.</li>
+              <li>It is different from the URL used to access the file in the GitHub web interface
+                  (<term>CMS-URL</term>)
+                  <codeph>https://github.com/oxygenxml/ug/blob/master/DITA/topics/introduction.dita</codeph>
+                and from the URL used to access the file's raw content (<term>RAW-URL</term>)
+                  <codeph>https://raw.githubusercontent.com/oxygenxml/ug/master/DITA/topics/introduction.dita</codeph>.</li>
+            </ol></p></li>
       </ol></p>
-    <example>
-      <title><term>OXY-URL</term> for a File in Oxygen's User Manual</title>
-      <p>Suppose that the <term>OXY-URL</term> for the <filepath>DITA/topics/intro.dita</filepath>
-        topic from the Oxygen User Manual (hosted on GitHub) is the
-        following:<codeblock outputclass="language-ini">gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fug/master/DITA/topics/introduction.dita</codeblock></p>
-      <p>Notice that:<ol id="ol_xc5_xsl_3z">
-          <li>The URL <term>scheme</term> is <apiname>gitgh</apiname>.</li>
-          <li>It uniquely identifies the file <filepath>DITA/topics/introduction.dita</filepath> on
-            branch <codeph>master</codeph> in the repository <codeph>oxygenxml/ug</codeph> on
-            GitHub.</li>
-          <li>It is different from the URL used to access the file in the GitHub web interface
-              (<term>CMS-URL</term>)
-              <codeph>https://github.com/oxygenxml/ug/blob/master/DITA/topics/introduction.dita</codeph>
-            and from the URL used to access the file's raw content (<term>RAW-URL</term>)
-              <codeph>https://raw.githubusercontent.com/oxygenxml/ug/master/DITA/topics/introduction.dita</codeph>.</li>
-        </ol></p>
-    </example>
+    <section id="oxyurl_unique_scheme">
+      <title>Unique URL Scheme</title>
+      <p id="oxy-url-p">
+        <dl>
+          <dlentry>
+            <dt>GitHub</dt>
+            <dd>The URLs have the following
+              format:<codeblock outputclass="language-ini">gitgh://REPOSITORY_URI/BRANCH/PATH_TO_FILE</codeblock></dd>
+            <dd>
+              <p>where:<ul>
+                  <li><b>gitgh</b> = The URL scheme. Note that the <xref
+                      href="webapp-integrate-github-plugin.dita#webapp-integrate-github-plugin/github_integration"
+                      >GitHub plugin must be configured</xref> for this URL scheme to work.</li>
+                  <li><b>REPOSITORY_URI</b> = The URI of the GitHub repository (URI-encoded).</li>
+                  <li><b>BRANCH</b> = The name of the branch where the file is located
+                    (URI-encoded).</li>
+                  <li><b>PATH_TO_FILE</b> = The path to the file. Each entry in the path should be
+                    URI-encoded.</li>
+                </ul> Example:
+                  <filepath>gitgh://https%3A%2F%2Fgithub.com%2Fuser%2Frepo/master/DITA/topics/intro%20topic.dita</filepath></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>GitLab</dt>
+            <dd>The URLs have the following
+              format:<codeblock outputclass="language-ini">gitgl://REPOSITORY_URI/BRANCH/PATH_TO_FILE</codeblock></dd>
+            <dd>
+              <p>where:<ul>
+                  <li><b>gitgl</b> = The URL scheme. Note that the <xref
+                      href="webapp-integrate-github-plugin.dita#webapp-integrate-github-plugin/gitlab_integration"
+                      >GitLab plugin must be configured</xref> for this URL scheme to work.</li>
+                  <li><b>REPOSITORY_URI</b> = The URI of the GitLab repository (URI-encoded).</li>
+                  <li><b>BRANCH</b> = The name of the branch where the file is located
+                    (URI-encoded).</li>
+                  <li><b>PATH_TO_FILE</b> = The path to the file. Each entry in the path should be
+                    URI-encoded.</li>
+                </ul> Example:
+                  <filepath>gitgl://https%3A%2F%2Fgithub.com%2Fuser%2Frepo/master/DITA/topics/intro%20topic.dita</filepath></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>GitLab On-Premise</dt>
+            <dd>The URLs have the following
+              format:<codeblock outputclass="language-ini">gitgle://REPOSITORY_URI/BRANCH/PATH_TO_FILE</codeblock></dd>
+            <dd>
+              <p>where:<ul>
+                  <li><b>gitgle</b> = The URL scheme. Note that the <xref
+                      href="webapp-integrate-github-plugin.dita#webapp-integrate-github-plugin/gitlab_integration"
+                      >GitLab On-Premise plugin must be configured</xref> for this URL scheme to
+                    work.</li>
+                  <li><b>REPOSITORY_URI</b> = The URI of the GitLab On-Premise repository
+                    (URI-encoded).</li>
+                  <li><b>BRANCH</b> = The name of the branch where the file is located
+                    (URI-encoded).</li>
+                  <li><b>PATH_TO_FILE</b> = The path to the file. Each entry in the path should be
+                    URI-encoded.</li>
+                </ul> Example:
+                  <filepath>gitgle://https%3A%2F%2Fgitlab-example.com%2Fuser%2Frepo/master/DITA/topics/intro%20topic.dita</filepath></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Bitbucket</dt>
+            <dd>The URLs have the following
+              format:<codeblock outputclass="language-ini">gitbb://REPOSITORY_URI/BRANCH/PATH_TO_FILE</codeblock></dd>
+            <dd>
+              <p>where:<ul>
+                  <li><b>gitbb</b> = The URL scheme. Note that the <xref
+                      href="webapp-integrate-github-plugin.dita#webapp-integrate-github-plugin/bitucket_integration"
+                      >Bitbucket plugin must be configured</xref> for this URL scheme to work.</li>
+                  <li><b>REPOSITORY_URI</b> = The URI of the Bitbucket repository
+                    (URI-encoded).</li>
+                  <li><b>BRANCH</b> = The name of the branch where the file is located
+                    (URI-encoded).</li>
+                  <li><b>PATH_TO_FILE</b> = The path to the file. Each entry in the path should be
+                    URI-encoded.</li>
+                </ul> Example:
+                  <filepath>gitbb://https%3A%2F%2Fbitbucket.com%2Fuser%2Frepo/master/DITA/topics/intro%20topic.dita</filepath></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Git</dt>
+            <dd>The URLs have the following
+              format:<codeblock outputclass="language-ini">git://REPOSITORY_URI/BRANCH/PATH_TO_FILE</codeblock></dd>
+            <dd>
+              <p>where:<ul>
+                  <li><b>git</b> = The URL scheme.</li>
+                  <li><b>REPOSITORY_URI</b> = The URI of the Git repository (URI-encoded).</li>
+                  <li><b>BRANCH</b> = The name of the branch where the file is located
+                    (URI-encoded).</li>
+                  <li><b>PATH_TO_FILE</b> = The path to the file. Each entry in the path should be
+                    URI-encoded.</li>
+                </ul> Example:
+                  <filepath>git://https%3A%2F%2Fgithub.com%2Fuser%2Frepo/master/DITA/topics/intro%20topic.dita</filepath></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>WebDAV</dt>
+            <dd>The URLs have the following
+                format:<codeblock outputclass="language-ini">webdav-https://dav.box.com/dav/path/to/file.dita</codeblock><p>where
+                the WebDAV URL of the file is:
+                  <codeph>https://dav.box.com/dav/path/to/file.dita</codeph>.</p></dd>
+          </dlentry>
+          <dlentry>
+            <dt>SharePoint</dt>
+            <dd>The URL of the file is the SharePoint file URL, prefixed with <codeph>spo-</codeph>,
+              as in the following
+              example:<codeblock outputclass="language-ini">spo-https://mycompany.sharepoint.com/myfolder/Shared%20Documents/myfile.dita</codeblock></dd>
+          </dlentry>
+          <dlentry>
+            <dt>REST</dt>
+            <dd>The URLs have the following
+              format:<codeblock outputclass="language-ini">rest://&lt;server-id>/path/to/file.dita</codeblock>
+              The format can be further specified by the implementer of the REST API.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
     <section id="section_enx_ybm_3z">
       <title>Opening and Saving Files</title>
       <p>For <ph keyref="webappProduct"/> to be able to open and save files identified by an
