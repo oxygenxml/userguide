@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="customize-expand-collapse-components">
+    <title><?oxy_comment_start author="bogdan" timestamp="20171023T163318+0300" comment="Steven, please do your magic and make it look good in English."?>Customize
+    Which Components are Expanded and Collapsed<?oxy_comment_end?></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>WebHelp Responsive system<indexterm>Customize expand/collapse
+            components</indexterm></indexterm>
+        <indexterm>Customize expand/collapse components</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p>We have our own implementation for the expand/collapse feature. We do not use the Bootstrap
+      implementation. Below I will try to explain how the feature works in WebHelp Responsive.</p>
+    <p>Our implementation is targeted on components that have a title. The title will act as a
+      toggle button and it will always remain visible while the rest of the component will be
+      collapsed/expanded. The expand-collapse widget (">" / "v") is rendered before the title. The
+      expand-collapsed state will actually be toggled by clicking only on this widget (not on the
+      title's text).</p>
+    <p>A component that can be expanded/collapsed should have the following abstract
+      form:<codeblock outputclass="language-ini">[component]
+   [title/]
+   [subcomponent_1/]
+   [subcomponent_2/]
+   .................................
+   [subcomponent_N/]
+[/component]</codeblock></p>
+    <p>The "title" element and the "subcomponent" elements are siblings and they are the first level
+      children of the "component" element. </p>
+    <p>The next table describes the two states of such a component:<table>
+        <tgroup cols="2">
+          <colspec colnum="1" colname="col1"/>
+          <colspec colnum="2" colname="col2"/>
+          <tbody>
+            <row>
+              <entry><b>Expanded</b></entry>
+              <entry><b>Collapsed</b></entry>
+            </row>
+            <row>
+              <entry>
+                <codeblock outputclass="language-ini">[component]
+ v [title/]
+   [subcomponent_1/]
+   [subcomponent_2/]
+   .................
+   [subcomponent_N/]
+[/component]</codeblock>
+              </entry>
+              <entry>
+                <codeblock outputclass="language-ini">[component]
+ > [title/]
+[/component]</codeblock>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table></p>
+    <p>An example of such a component is a <b>table with
+      title</b>:<codeblock outputclass="language-xml">&lt;table class="table">
+    &lt;!-- Title -->
+    &lt;caption>&lt;span class="tablecap">Table 1. Flowers&lt;/span>&lt;/caption>              
+   
+    &lt;!-- Subcomponent 1 -->
+    &lt;thead class="thead" align="left">
+        &lt;tr>
+            &lt;th class="entry">Flower&lt;/th>
+            &lt;th class="entry">Type&lt;/th>
+            &lt;th class="entry">Soil&lt;/th>
+        &lt;/tr>
+    &lt;/thead>
+   
+    &lt;!-- Subcomponent 2 -->
+    &lt;tbody class="tbody">
+        &lt;tr>
+            &lt;td class="entry">Chrysanthemum&lt;/td>
+            &lt;td class="entry">perennial&lt;/td>
+            &lt;td class="entry">well drained&lt;/td>
+        &lt;/tr>
+        &lt;tr>
+            &lt;td class="entry">Gardenia&lt;/td>
+            &lt;td class="entry">perennial&lt;/td>
+            &lt;td class="entry">acidic&lt;/td>
+        &lt;/tr>
+    &lt;/tbody>
+&lt;/table></codeblock></p>
+    <p>We have identified 4 categories of components that match this pattern:<ul>
+        <li>nested
+          topics<codeblock outputclass="language-xml">&lt;div class="topic task nested1" id="prunning">
+    &lt;h2 class="title topictitle2">Pruning&lt;/h2>
+    &lt;div class="body taskbody"> ... &lt;/div>
+&lt;/div></codeblock></li>
+        <li>sections that have a
+          title<codeblock outputclass="language-xml">&lt;div class="section" id="iris__section_p3n_ln2_4y">
+    &lt;h2 class="title sectiontitle">Iris&lt;/h2>
+    &lt;p class="p">....&lt;/p>
+&lt;/div></codeblock></li>
+        <li>tables that have a title (see the example above).</li>
+        <li>index terms
+          groups<codeblock outputclass="language-xml">&lt;li class="wh_term_group">
+    &lt;span class="wh_first_letter">T&lt;/span>
+    &lt;ul>
+        &lt;li class="wh_term">&lt;span>tasks&lt;/span>&lt;/li>
+    &lt;/ul>
+&lt;/li></codeblock></li>
+      </ul></p>
+    <p>These components are identified when the HTML page is loaded using the JavaScript code from
+      the "expand.js" file located in:</p>
+    <p><codeph><b>[DITA_OT_DIR]/plugins/com.oxygenxml.webhelp/templates/dita/bootstrap/resources/js/wt_expand.js</b></codeph></p>
+    <p>This code identifies the expandable components based on their title nodes. The title nodes
+      are matched using CSS selectors &amp; JQuery. The JSON object below contains the list of nodes
+      that should be
+      processed:<codeblock outputclass="language-javascript">var selectors = {
+    /* Selectors for the nodes that will contain an expand/collapse button. */
+    "expand_buttons" : [
+        /* Table caption */
+        "table > caption",
+        /* Article title */
+        ".topic > .title",
+        /* Section title */
+        ".sectiontitle",
+        /* Index terms groups */
+        ".wh_term_group > .wh_first_letter"
+    ]
+};</codeblock></p>
+    <p>If you want to extend this list you can provide an additional JS script using the
+        <b>webhelp.fragment.after.body </b>parameter<b>. </b>In this file you can override the
+        <b>"selectors"</b> variable in order to add the CSS selectors for the "title" nodes of the
+      components that you want to become expandable.</p>
+    <p>For example, let's say you to extend this feature for a figure with
+      title.<codeblock outputclass="language-xml">&lt;div class="fig fignone">
+    &lt;span class="figcap">Figure 1. Iris image&lt;/span>
+    &lt;img class="image" src="../../images/Iris_sanguinea.jpg" height="166" width="125">
+&lt;/div></codeblock></p>
+    <p>The value for the "selectors" variable should contain also the ".figcap" CSS
+      selector:<codeblock outputclass="language-javascript">var selectors = {
+    /* Selectors for the nodes that will contain an expand/collapse button. */
+    "expand_buttons" : [
+        /* Table caption */
+        "table > caption",
+        /* Article title */
+        ".topic > .title",
+        /* Section title */
+        ".sectiontitle",
+        /* Index terms groups */
+        ".wh_term_group > .wh_first_letter",
+        
+        /* Figure with title*/
+        ".figcap" 
+    ]
+};</codeblock></p>
+    </body>
+</topic>
