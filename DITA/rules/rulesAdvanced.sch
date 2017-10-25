@@ -490,6 +490,38 @@
     
   </sch:pattern>
   
+  <!-- msgblock, screen, pre -> codeblock -->
+  <sch:pattern>
+    <sch:rule context="msgblock | screen | pre"> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use a "codeblock" element instead.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- msgph -> codeph -->
+  <sch:pattern>
+    <sch:rule context="msgph"> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use a "codeph" element instead.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- wintitle,apiname,keyword,parmname,varname   -> b, i, uicontrol, filepath, codeph -->
+  <sch:pattern>
+    <sch:rule context="wintitle | apiname | keyword | parmname | varname"> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- example -> create a manual rendering inside a new paragraph -->
+  <sch:pattern>
+    <sch:rule context="example"> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Create a manual rendering inside a new paragraph.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'
     - the 'linklist' must have a title
