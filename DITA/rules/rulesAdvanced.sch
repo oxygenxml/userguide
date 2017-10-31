@@ -509,7 +509,7 @@
   <!-- wintitle,apiname,parmname,varname   -> b, i, uicontrol, filepath, codeph -->
   <sch:pattern>
     <sch:rule context="wintitle | apiname | parmname | varname"> 
-      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph.        
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph, term.        
       </sch:report>
     </sch:rule>
   </sch:pattern>
@@ -518,7 +518,7 @@
   <sch:pattern>
     <sch:rule context="keyword"> 
       <sch:report test="not(@keyref) and not(ancestor::node()/local-name() = 'keydef')">
-        You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph.
+        You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph, term.
       </sch:report>        
     </sch:rule>
   </sch:pattern>
