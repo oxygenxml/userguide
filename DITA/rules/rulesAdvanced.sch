@@ -278,6 +278,7 @@
       [not(contains(@class, ' topic/stentry '))]
       [not(contains(@class, ' topic/object '))]
       [not(contains(@class, ' topic/param '))]
+      [not(contains(@class, ' topic/resourceid '))]
       [not(@conref)]
       [not(@conkeyref)]
       [not(@keyref)]
