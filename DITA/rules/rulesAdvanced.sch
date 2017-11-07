@@ -427,6 +427,7 @@
     <!-- Check that the section should have a title. -->
     <sch:rule context="*[contains(@class, ' topic/section ') 
       and not(contains(@class, ' task/result ')) 
+      and not(contains(@class, ' task/steps-informal ')) 
       and not(contains(@class, ' task/prereq ')) 
       and not(contains(@class, ' task/postreq ')) 
       and not(contains(@class, ' task/context '))]">
