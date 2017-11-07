@@ -541,6 +541,24 @@
     </sch:rule>
   </sch:pattern> 
   
+  <sch:pattern>
+    <sch:rule context="text()">
+      <sch:report test="matches(.,'[oO][xX]ygen')" sqf:fix="replaceWithProKey">
+        Should use product key instead!
+      </sch:report>
+      
+      <sqf:fix id="replaceWithProKey">
+        <sqf:description>
+          <sqf:title>Replace with product key</sqf:title>
+        </sqf:description>
+        <sqf:stringReplace regex="[oO][xX]ygen">
+          <ph keyref="product"/>
+        </sqf:stringReplace>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
+  
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'
     - the 'linklist' must have a title
