@@ -543,7 +543,18 @@
   
   <sch:pattern>
     <sch:rule context="text()">
-      <sch:report test="matches(.,'[oO][xX]ygen')" sqf:fix="replaceWithProKey">
+      <sch:report test="matches(.,'[oO][xX]ygen') 
+        and parent::node()/local-name() != 'ph'
+        and parent::node()/local-name() != 'keyword'
+        and parent::node()/local-name() != 'filepath'
+        and parent::node()/local-name() != 'uicontrol'
+        and parent::node()/local-name() != 'term'
+        and parent::node()/local-name() != 'b'
+        and parent::node()/local-name() != 'xref'
+        and parent::node()/local-name() != 'i'
+        and parent::node()/local-name() != 'codeph'
+        and parent::node()/local-name() != 'codeblock'
+        and parent::node()/local-name() != 'title'" sqf:fix="replaceWithProKey">
         Should use product key instead!
       </sch:report>
       
