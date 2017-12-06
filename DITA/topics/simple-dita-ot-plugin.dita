@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="simple-dita-ot-plugin">
-  <title>Creating a DITA OT Customization Plugin</title>
+  <title>Creating a DITA OT Plugin</title>
   <prolog>
     <metadata>
       <keywords>
@@ -11,25 +11,23 @@
     </metadata>
   </prolog>
   <body>
-    <p>To describe the steps involved in creating a <b>DITA Open Toolkit</b>
-      <xref keyref="glossentry_plugin"><term>plugin</term></xref>, this section uses an example of
-      creating an <b>XSLT</b> customization <term>plugin</term> that provides syntax highlighting
-      when publishing DITA <codeph>codeblock</codeph> elements to <b>HTML</b> and <b>PDF</b> output
-      formats. This <term>plugin</term> (<b>com.oxygenxml.highlight</b>) that provides syntax
-      highlighting is available in the <b>DITA Open Toolkit</b> distribution that comes bundled with
-      the latest version of <ph keyref="product"/>, but these instructions show you how to create it
-      as if it were not included.</p>
-    <p>The steps to help you to create the <term>plugin</term> are as follows:</p>
+    <p><ph keyref="product"/> provides the ability to <xref
+        href="dita-ot-install-plugin.dita#dita-ot-install-plugin">install additional <b>DITA Open
+          Toolkit</b>
+        <term>plugins</term></xref> that can be found from various sources (for example, <xref
+        href="https://github.com/oxygenxml/" format="html" scope="external"><i>Oxygen's</i> public
+        GitHub repository includes some DITA-OT plugins</xref>). It is also possible to create your
+      own <term>plugin</term>.</p>
+    <p>To create a DITA-OT <term>plugin</term>, follow these steps:</p>
     <p>
       <ol id="ol_icd_rdt_pm">
-        <li>Create a folder for your <term>plugin</term> in the DITA OT <b>plugins</b> folder
-              (<filepath><term keyref="glossentry_dita_ot_dir"/>/plugins/</filepath>).<p><b>For
-              example, if you are using DITA <ph keyref="webhelpPluginDITAOT18Ver"/>, the path would
-              look like this:</b></p><p><filepath><term
-                conkeyref="reusables-user-guide/oxy-install-dir"
-              />/frameworks/dita/DITA-OT/plugins/com.oxygenxml.highlight</filepath></p></li>
-        <li>Create a <b>plugin.xml</b> file (in the same <term>plugin</term> folder) that contains
-          the extension points of the <term>plugin</term>.<note>You can easily create this file by
+        <li>Create a new folder in the <b>plugins</b> folder located in your DITA OT directory (for
+          example, if you are using DITA <ph keyref="webhelpPluginDITAOT2xVer"/>, the path would
+          look like this: <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
+            />/frameworks/dita/DITA-OT2.x/plugins/MyNewPlugin</filepath>).</li>
+        <li>Create a <b>plugin.xml</b> file in that same folder. This file will contain the
+          extension points for the <term>plugin</term>. For example, references to the XSLT
+          stylesheets that will be used to style the output.<note>You can easily create this file by
             using the <uicontrol>DITA OT Plugin</uicontrol> new file template that is included in
               <ph keyref="product"/>. From the <uicontrol>New</uicontrol> file wizard you can find
             this template in <menucascade>
@@ -37,110 +35,36 @@
               <uicontrol>DITA</uicontrol>
               <uicontrol>plugin</uicontrol>
             </menucascade>.</note>
-          <b>For example, our syntax highlighting plugin example contains the
-            following:</b><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.highlight"&gt;
+          <b>Example: A <i>plugin.xml</i> file for a syntax highlighting
+            plugin.</b><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.highlight"&gt;
   &lt;feature extension="package.support.name" value="Oxygen XML Editor Support"/&gt;
   &lt;feature extension="package.support.email" value="support@oxygenxml.com"/&gt;
-  &lt;feature extension="package.version" value="1.0.0"/&gt;
+  &lt;feature extension="package.version" value="20.0"/&gt;
   &lt;feature extension="dita.xsl.xhtml" value="xhtmlHighlight.xsl" type="file"/&gt;
   &lt;feature extension="dita.xsl.xslfo" value="pdfHighlight.xsl" type="file"/&gt;
-&lt;/plugin&gt;</codeblock><p>The
-            most important extensions in it are the references to the XSLT stylesheets that will be
-            used to style the HTML and PDF outputs. </p><p>You can find other <b>DITA OT</b>
-            <term>plugin</term> extension points here: <xref
+  &lt;feature extension="dita.conductor.lib.import" file="lib/xslthl-2.1.1.jar"/>
+&lt;/plugin&gt;</codeblock><note
+            type="tip">For more information about extension points that are available to use in the
+              <i>plugin.xml</i> file, see: <xref
               href="http://dita-ot.sourceforge.net/1.5.3/dev_ref/extension-points.html"
-              format="html" scope="external"/></p></li>
-        <li>Create an XSLT stylesheet to customize the output types. In our example, to customize
-          the HTML output we need to create an XSLT stylesheet called <b>xhtmlHighlight.xsl</b> (in
-          the same <term>plugin</term> folder).<note type="tip">You can <ph product="author editor"
-              >use the <xref
-                href="find-and-replace-text-in-files.dita#find-and-replace-text-in-files"
-                  ><uicontrol>Find/Replace in Files</uicontrol> action</xref> to </ph>find an XSLT
-            stylesheet with content that is similar to the desired output and use it as a template
-            to overwrite parts of your stylesheet. In our example we want to overwrite the creation
-            of the HTML content from a DITA <b>codeblock</b> element. Since a DITA
-              <codeph>codeblock</codeph> element has the <codeph>class</codeph> attribute value
-              <codeph>+ topic/pre pr-d/codeblock</codeph> we can take part of the class attribute
-            value (<b>topic/pre</b>) and search the <b>DITA OT</b> resources for a similar
-            stylesheet. <p>Our search found the XSLT stylesheet <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />/org.dita.xhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath> that
-              contains:<codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
-  &lt;xsl:apply-templates select="."  mode="pre-fmt" /&gt;
-&lt;/xsl:template&gt;</codeblock></p>We
-            use it to overwrite our <b>xhtmlHighlight.xsl</b> stylesheet, which results in the
-              following:<codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]" name="topic.pre"&gt;
-    &lt;!-- This template is deprecated in DITA-OT 1.7. 
-         Processing will moved into the main element rule. --&gt;
-    &lt;xsl:if test="contains(@frame,'top')"&gt;&lt;hr /&gt;&lt;/xsl:if&gt;
-    &lt;xsl:apply-templates select="*[contains(@class,' ditaot-d/ditaval-startprop ')]" 
-          mode="out-of-line"/&gt;
-    &lt;xsl:call-template name="spec-title-nospace"/&gt;
-    &lt;pre&gt;
-      &lt;xsl:attribute name="class"&gt;&lt;xsl:value-of select="name()"/&gt;&lt;/xsl:attribute&gt;
-      &lt;xsl:call-template name="commonattributes"/&gt;
-      &lt;xsl:call-template name="setscale"/&gt;
-      &lt;xsl:call-template name="setidaname"/&gt;
-     &lt;!--Here I'm calling the styler of the content inside the codeblock.--&gt;
-     &lt;xsl:call-template name="outputStyling"/&gt;
-    &lt;/pre&gt;
-    &lt;xsl:apply-templates select="*[contains(@class,' ditaot-d/ditaval-endprop ')]" 
-          mode="out-of-line"/&gt;
-    &lt;xsl:if test="contains(@frame,'bot')"&gt;&lt;hr /&gt;&lt;/xsl:if&gt;&lt;xsl:value-of select="$newline"/&gt;
-  &lt;/xsl:template&gt;</codeblock><p>You
-              could also use another XSLT template that applies the XSLTHL library as a Java
-              extension to style the content. </p></note></li>
-        <li>Create additional XSLT stylesheets to customize all other desired output types. In our
-          example, to customize the PDF output we need to create an XSLT stylesheet called
-            <b>pdfHighlight.xsl</b> (in the same <term>plugin</term> folder). <p>In this case we
-            found an appropriate XSLT stylesheet <filepath><term keyref="glossentry_dita_ot_dir"
-              />/plugins/legacypdf/xslfo/dita2fo-elems.xsl</filepath> to use as a template that we
-            use to overwrite our <b>pdfHighlight.xsl</b> stylesheet, which results in the
-            following:</p><codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class,' topic/pre ')]"&gt;
-  &lt;xsl:call-template name="gen-att-label"/&gt;
-  &lt;fo:block xsl:use-attribute-sets="pre"&gt;
-    &lt;!-- setclass --&gt;
-    &lt;!-- set id --&gt;
-    &lt;xsl:call-template name="setscale"/&gt;
-    &lt;xsl:call-template name="setframe"/&gt;
-    &lt;xsl:apply-templates/&gt;
-  &lt;/fo:block&gt;
-&lt;/xsl:template&gt;</codeblock><note>You
-            can edit the newly created stylesheets to customize multiple outputs in a variety of
-            ways. For example, in our case you could edit the <b>xhtmlHighlight.xsl</b> or
-              <b>pdfHighlight.xsl</b> stylesheets that we created to customize various colors for
-            syntax highlighting.</note></li>
-        <li>To install the created <term>plugin</term> in the <b>DITA OT</b>, run the predefined
-          transformation scenario called <uicontrol>Run DITA OT Integrator</uicontrol> by executing
-          it from the <xref
-            href="builtin-transformation-scenarios.dita#builtin-transformation-scenarios"
+              format="html" scope="external"/>.</note></li>
+        <li>Install the newly created DITA-OT <term>plugin</term> by running the predefined
+          transformation scenario called <uicontrol>Run DITA OT Integrator</uicontrol> from the
+            <xref href="builtin-transformation-scenarios.dita#builtin-transformation-scenarios"
                 ><uicontrol><image href="../img/ApplyStyleSheet16.png" id="image_qwt_3ts_yq"/>Apply
-              Transformation Scenario(s)</uicontrol> dialog box</xref>. If the integrator is not
-          visible, select the <b>Show all scenarios</b> option that is available in the
-              <uicontrol><image href="../img/Settings16.png" id="image_km5_xrs_yq"
-            />Settings</uicontrol> drop-down menu. For more information, see <xref
-            href="dita-ot-install-plugin.dita"/>.<p><b>Results of running the integrator using our
-              example:</b></p><p>XSLT content is applied with priority when publishing to both HTML
-            and PDF outputs.</p><ol id="ol_vnx_h2t_pm">
-            <li>For the HTML output, in the XSLT stylesheet <filepath><term
-                  keyref="glossentry_dita_ot_dir"/>/xsl/dita2html-base.xsl</filepath> a new import
-              automatically
-                appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../plugins/com.oxygenxml.highlight/xhtmlHighlight.xsl"/&gt;</codeblock><p>This
-                import is placed after all base imports and thus has a higher priority. For more
-                information about imported template precedence, see: <xref
-                  href="http://www.w3.org/TR/xslt#import" format="html" scope="external"/>.</p></li>
-            <li>Likewise, for the PDF output, in the top-level stylesheet <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />/plugins/org.dita.pdf2/xsl/fo/topic2fo_shell_fop.xsl</filepath> a new import
-              statement
-              appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../../../com.oxygenxml.highlight/pdfHighlight.xsl"/&gt;</codeblock></li>
-          </ol></li>
+              Transformation Scenario(s)</uicontrol></xref> or <xref
+            href="configure-transformation-dialog.dita#configure-transformation-dialog"
+                ><uicontrol><image href="../img/TransformConfig16.png"/>Configure Transformation
+              Scenario(s)</uicontrol> dialog box</xref>.<note>If the integrator is not visible,
+            select the <b>Show all scenarios</b> option in the <uicontrol><image
+                href="../img/Settings16.png" id="image_km5_xrs_yq"/>Settings</uicontrol> drop-down
+            menu. For more information, see <xref href="dita-ot-install-plugin.dita"/>.</note></li>
       </ol>
     </p>
-    <p>Now, you can distribute your <term>plugin</term> folder to anyone that has a DITA OT
-      installation along with some simple installation notes. Your customization will work provided
-      that the templates you are overwriting have not changed from one DITA OT distribution to the
-      other. </p>
+    <p>You can share your new plugin with other users who have the same DITA-OT distribution by
+      sending them your newly created folder along with the <xref
+        href="dita-ot-install-plugin.dita#dita-ot-install-plugin">installation
+      instructions</xref>.</p>
   </body>
   <related-links>
     <linklist><title>Related Information:</title><link format="html" href="http://www.dita-ot.org/" scope="external">
