@@ -31,8 +31,7 @@
   
   <xsl:template match="@product">
     <xsl:variable name="values" as="xs:string*" select="tokenize(., ' ')"/>
-    <xsl:variable name="r1" as="xs:string*" select="f:replace($values, ('webauthor', 'waCustom'), 'webapp')"/>
-    <xsl:variable name="r2" as="xs:string*" select="f:replace($r1, ('authorEclipse','developerEclipse','editorEclipse'), 'eclipse')"/>
+    <xsl:variable name="r2" as="xs:string*" select="f:replace($values, ('authorEclipse','developerEclipse','editorEclipse'), 'eclipse')"/>
     <xsl:variable name="r3" as="xs:string*" select="f:replace($r2, ('author', 'editor', 'developer'), 'standalone')"/>
     
     <xsl:attribute name="product">
