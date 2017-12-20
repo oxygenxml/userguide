@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task id="flagging-dita-content">
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="flagging-dita-content">
     <title>Flag DITA Content in WebHelp Output</title>
   <prolog>
     <metadata>
@@ -10,44 +10,67 @@
       </keywords>
     </metadata>
   </prolog>
-    <taskbody>
-        <context>
-      <p>Flagging content in WebHelp output involves defining a set of images that will be used for
-        marking content across your information set.</p>
-      <p>To flag DITA content, you need to create a filter file that defines properties that will be
-        applied on elements to be flagged. Generally, flagging is supported for <xref
-          keyref="glossentry_block-element"><term>block elements</term></xref> (such as paragraphs),
-        but not for phrase-level elements within a paragraph. This ensures that the images that will
-        flag the content are easily scanned by the reader, instead of being buried in text.</p>
-      <p>Follow this procedure:</p>
-    </context>
-        <steps>
-            <step>
-        <cmd>Create a DITA filter file in the directory where you want to add the file. Give the
-          file a descriptive name, such as <filepath>audience-flag-build.ditaval</filepath>.</cmd>
-      </step>
-      <step>
-        <cmd>Define the property of the element you want to be flagged. For example, if you want to
-          flag elements that have the <codeph>audience</codeph> attribute set to
-            <codeph>programmer</codeph>, the content of the DITAVAL file should look like the
-          following example:</cmd>
-        <info>
-          <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?> 
+    <body>
+    <p>Flagging content in WebHelp output involves defining a set of images that will be used for
+      marking content across your information set.</p>
+    <p>To flag DITA content, you need to create a filter file that defines properties that will be
+      applied on elements to be flagged. Generally, flagging is supported for <xref
+        keyref="glossentry_block-element"><term>block elements</term></xref> (such as paragraphs),
+      but not for phrase-level elements within a paragraph. This ensures that the images that will
+      flag the content are easily scanned by the reader, instead of being buried in text.</p>
+    <section id="using_oxygen_xml_editorauthor">
+      <title>Using Oxygen XML Editor/Author</title>
+      <p>To flag content in the DITA Map to WebHelp output using a transformation scenario from
+        within <b>Oxygen XML Editor/Author</b>, follow this procedure:<ol>
+          <li>Create a DITA filter file in the directory where you want to add the file. Give the
+            file a descriptive name, such as <filepath>audience-flag-build.ditaval</filepath>.</li>
+          <li>Define the property of the element you want to be flagged. For example, if you want to
+            flag elements that have the <codeph>audience</codeph> attribute set to
+              <codeph>programmer</codeph>, the content of the DITAVAL file should look like the
+            following
+              example:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?> 
 &lt;val>
   &lt;prop att="audience" val="programmer" action="flag"
  img="D:\resource\delta.gif" alt="sample alt text"/>
-&lt;/val></codeblock>
-        </info>
-        <info>Note that for an element to be flagged, at least one attribute-value pair needs to
-          have a property declared in the DITAVAL file.</info>
-      </step>
-      <step>
-        <cmd>Specify the DITAVAL file in the <uicontrol>Filters</uicontrol> tab of the
-          transformation scenario.</cmd>
-      </step>
-      <step>
-        <cmd>Run the transformation scenario.</cmd>
-      </step>
-        </steps>
-    </taskbody>
-</task>
+&lt;/val></codeblock><p>Note
+              that for an element to be flagged, at least one attribute-value pair needs to have a
+              property declared in the DITAVAL file.</p></li>
+          <li>Edit a <uicontrol>DITA Map to WebHelp</uicontrol> transformation scenario.</li>
+          <li>Specify the DITAVAL file in the <uicontrol>Filters</uicontrol> tab of the
+            transformation scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol></p>
+    </section>
+    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
+      <title>Using a Script Outside of Oxygen XML Editor/Author</title>
+      <note conkeyref="reusables-transforming-documents/note-command-line"
+        product="author developer editor authorEclipse developerEclipse editorEclipse"></note>
+      <p>To flag content in the DITA Map to WebHelp output using a <xref
+          href="using-the-webhelp-plugin.dita#using-the-webhelp-plugin">script outside of <b>Oxygen
+            XML Editor/Author</b></xref>, follow this procedure:<ol>
+          <li>Create a DITA filter file in the directory where you want to add the file. Give the
+            file a descriptive name, such as <filepath>audience-flag-build.ditaval</filepath>.</li>
+          <li>Define the property of the element you want to be flagged. For example, if you want to
+            flag elements that have the <codeph>audience</codeph> attribute set to
+              <codeph>programmer</codeph>, the content of the DITAVAL file should look like the
+            following
+              example:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?> 
+&lt;val>
+  &lt;prop att="audience" val="programmer" action="flag"
+ img="D:\resource\delta.gif" alt="sample alt text"/>
+&lt;/val></codeblock><p>Note
+              that for an element to be flagged, at least one attribute-value pair needs to have a
+              property declared in the DITAVAL file.</p></li>
+          <li>Use the <codeph>args.filter</codeph> parameter in your transformation script and set
+            its value to the path of the DITAVAL file.</li>
+          <li>Execute the transformation script.</li>
+        </ol></p>
+      <p>For example:<ul>
+          <li><b>Windows:</b><p><codeph>dita.bat -i c:\mySample.ditamap -f webhelp-responsive
+                -Dargs.filter=c:\myFile.ditaval</codeph></p></li>
+          <li><b>Mac OS X/ Linux:</b><p><codeph>dita -i C:/mySample.ditamap -f webhelp-responsive
+                -Dargs.filter=C:/myFile.ditaval</codeph></p></li>
+        </ul></p>
+    </section>
+    </body>
+</topic>
