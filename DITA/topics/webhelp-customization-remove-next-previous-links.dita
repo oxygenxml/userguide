@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webhelp-customization-remove-next-previous-links">
-  <title><?oxy_comment_start author="Steven" timestamp="20171213T102705+0200" comment="???"?>Removing
-    the <i>Previous</i>/<i>Next</i> Links from WebHelp Classic Output<?oxy_comment_end?></title>
+  <title>Removing the <i>Previous</i>/<i>Next</i> Links from WebHelp Classic Output</title>
   <prolog>
     <metadata>
       <keywords>
@@ -14,17 +13,50 @@
   <body>
     <p>The <b>Previous</b> and <b>Next</b> links that are created at the top area of each WebHelp
       Classic page can be hidden with a CSS code. </p>
-    <p>To remove these links from WebHelp Classic output, follow these steps:<ol id="ol_ohx_xky_ls">
-        <li>Add the following CSS code in a custom CSS
-          stylesheet:<codeblock outputclass="language-css">.navparent, .navprev, .navnext {
+    <section id="using_oxygen_xml_editorauthor">
+      <title>Using Oxygen XML Editor/Author</title>
+      <p>To remove these links from WebHelp Classic output and use a transformation scenario from
+        within <b>Oxygen XML Editor/Author</b>, follow this procedure:<ol>
+          <li>Create a custom CSS file and add the following CSS
+            code:<codeblock outputclass="language-css">.navparent, .navprev, .navnext {
     visibility:hidden;
 }</codeblock></li>
-        <li><ph conkeyref="reusable-webhelp-customizing/transform-parameters-tab-ph"/><ol
-            id="ol_gwv_v12_vs">
-            <li><ph conkeyref="reusable-webhelp-customizing/DITA-parameters-ph"/></li>
-            <li><ph conkeyref="reusable-webhelp-customizing/DocBook-parameters-ph"/></li>
-          </ol></li>
-        <li>Run the transformation scenario.</li>
-      </ol></p>
+          <li><ph conkeyref="reusable-webhelp-customizing/transform-parameters-tab-ph"></ph><ul>
+              <li><ph conkeyref="reusable-webhelp-customizing/DITA-parameters-ph"></ph></li>
+              <li><ph conkeyref="reusable-webhelp-customizing/DocBook-parameters-ph"></ph></li>
+            </ul></li>
+          <li>Run the WebHelp transformation scenario to generate the output.</li>
+        </ol></p>
+    </section>
+    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
+      <title>Using a Script Outside of Oxygen XML Editor/Author</title>
+      <note conkeyref="reusables-transforming-documents/note-command-line"
+        product="author developer editor authorEclipse developerEclipse editorEclipse"></note>
+      <p>To remove these links from WebHelp Classic output and use a <xref
+          href="using-the-webhelp-plugin.dita#using-the-webhelp-plugin">script outside of <b>Oxygen
+            XML Editor/Author</b></xref>, follow this procedure:<ol>
+          <li>Create a custom CSS file and add the following CSS
+            code:<codeblock outputclass="language-css">.navparent, .navprev, .navnext {
+    visibility:hidden;
+}</codeblock></li>
+          <li>Reference your custom CSS file:<ul>
+              <li>For DITA transformations, use the <codeph>args.css</codeph> parameter in your
+                transformation script and set its value to the path of your custom CSS file. Also,
+                set the <codeph>args.copycss</codeph> parameter to <codeph>yes</codeph> to
+                automatically copy your custom CSS in the output folder when the transformation
+                scenario is processed.</li>
+              <li>For DocBook transformations, use the <codeph>html.stylesheet</codeph> parameter in
+                your transformation script and set its value to the path of your custom CSS
+                file.</li>
+            </ul></li>
+          <li>Execute the transformation script.</li>
+        </ol></p>
+      <p>For example, a DITA script might look like this::<ul>
+          <li><b>Windows:</b><p><codeph>dita.bat -i c:\mySample.ditamap -f webhelp
+                -Dargs.css=c:\myFile.css -Dargs.copycss=yes</codeph></p></li>
+          <li><b>Mac OS X/ Linux:</b><p><codeph>dita -i C:/mySample.ditamap -f webhelp
+                -Dargs.css=C:/myFile.css -Dargs.copycss=yes</codeph></p></li>
+        </ul></p>
+    </section>
   </body>
 </topic>
