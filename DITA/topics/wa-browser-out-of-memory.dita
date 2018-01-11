@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA 1.3 Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="wa-browser-out-of-memory">
+    <title>Browser Runs Out of Memory when Editing Large Files</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Out of memory</indexterm>
+        <indexterm>Common problems<indexterm>Out of memory</indexterm></indexterm>
+        <indexterm>Known issues<indexterm>Out of memory</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <troublebody>
+    <condition id="problem">
+      <title>Problem</title>
+      <p>My browser runs out of memory when working with large documents in <ph
+          keyref="webappProduct"/>.</p>
+    </condition>
+    <troubleSolution>
+      <cause id="cause">
+        <title>Cause</title>
+        <p>When <ph keyref="webappProduct"/> renders documents, it causes the browser to consume
+          more memory than the original document size.</p>
+      </cause>
+      <remedy id="solution">
+        <title>Solution</title>
+        <steps-informal>
+          <p>To work with large documents, you can configure <ph keyref="webappProduct"/> to fold
+            some of the elements, by default. To do this, you need to create a custom CSS file that
+            specifies the folding (for example, specifying that all the sections are folded by
+            default):<codeblock outputclass="language-css">section{
+    -oxy-foldable:true;
+    -oxy-folded: true;
+    -oxy-not-foldable-child: title;
+}</codeblock></p>
+          <note>The <codeph>-oxy-foldable</codeph> property does not work with elements that
+            contain: <codeph>display: inline</codeph>.</note>
+          <p>To test it, you can reference the CSS file in a processing instruction at the top of
+            the
+            document:<codeblock outputclass="language-xml">&lt;?xml-stylesheet type="text/css" href="MyCustom.css"?></codeblock></p>
+          <p>For production purposes, you may want to <xref
+              href="https://www.oxygenxml.com/doc/ug-waCustom/topics/customizing_frameworks.html"
+              format="html" scope="external">configure a custom framework</xref> that associates the
+            CSS file to large XML documents.</p>
+        </steps-informal>
+      </remedy>
+    </troubleSolution>
+  </troublebody>
+</troubleshooting>
