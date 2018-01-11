@@ -10,37 +10,63 @@
     </metadata>
   </prolog>
   <body>
-    <p>The <ph keyref="webappProduct"/> requires access to the following file resources:<ul
-        id="ul_rjs_5hd_cr">
+    <p>By default, <ph keyref="webappProduct"/> comes with a file security mode enabled. This means
+      that it only allows the minimal file access permissions that are required for the application
+      to function properly:<ul id="ul_rjs_5hd_cr">
         <li><i>READ</i> access to the directory where the <ph keyref="webappProduct"/> is
           deployed.</li>
-        <li><i>READ</i> and <i>WRITE</i> access to the application's working
-          directory.</li>
+        <li><i>READ</i> and <i>WRITE</i> access to the application's working directory.</li>
         <li><i>READ</i> and <i>WRITE</i> access to JVM's temporary directory.</li>
       </ul></p>
-    <p>It is a good security practice to allow a component to access only the information and
-      resources that are necessary for its purpose.</p>
+    <section id="disabling_security_mode">
+      <title>Disabling Security Mode</title>
+      <p>To disable the default security mode that only allows minimal file permissions, follow this
+        procedure (depending on your installation method):</p>
+      <p><u><i><b>Windows Installer</b></i></u><ol>
+          <li>Go to the installation directory of <ph keyref="webappProduct"/>.</li>
+          <li>Launch <uicontrol>Manage Web Author Service</uicontrol>.</li>
+          <li>Go to the <uicontrol>Java</uicontrol> tab.</li>
+          <li>In the <uicontrol>Java Options</uicontrol> section, remove the
+              <codeph>-Djava.security.manager</codeph> system property.</li>
+          <li>Click <uicontrol>Apply</uicontrol>.</li>
+          <li><xref href="webauthor-restart.dita#webauthor-restart">Restart the
+            application</xref>.</li>
+        </ol></p>
+      <p><u><i><b>Linux Installer or All Platforms Kit</b></i></u><ol>
+          <li>Go to the installation directory of <ph keyref="webappProduct"/>.</li>
+          <li>Edit the <filepath>oXygenXmlWebAuthor.vmoptions</filepath> file.</li>
+          <li>Remove the <codeph>-Djava.security.manager</codeph> system property.</li>
+          <li>Save the file.</li>
+          <li><xref href="webauthor-restart.dita#webauthor-restart">Restart the
+            application</xref>.</li>
+        </ol></p>
+    </section>
     <section id="enabling_security_mode">
       <title>Enabling Security Mode</title>
-      <p>To enable security mode, use the following procedure, depending on your installation
-        method:</p>
-      <p>
-        <dl>
-          <dlentry>
-            <dt>Installation Kit Method</dt>
-            <dd>If you installed <ph keyref="webappProduct"/> using one of the installation kits
-                (<b>All Platforms</b>, <b>Linux</b>, or <b>Windows</b>), you can enable security
-              mode by <xref href="webauthor-set-system-property.dita#webauthor-set-system-property"
-                >setting the following system property:
-                <codeph>-Djava.security.manager</codeph></xref>.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>Apache Tomcat Method</dt>
-            <dd>
-              <p>In an environment that uses Apache Tomcat, you can enforce these rules by following
-                these steps:<ol id="ul_ojh_g3d_cr">
-                  <li>Edit the <filepath>catalina.policy</filepath> file and add the following snippet:<p>
-                      <codeblock outputclass="language-ini">grant codeBase "file:${catalina.base}/webapps/oxygenxml-web-author/-" {
+      <p>To re-enable security mode, use the following procedure (depending on your installation
+        method):</p>
+      <p><u><i><b>Windows Installer</b></i></u><ol>
+          <li>Go to the installation directory of <ph keyref="webappProduct"/>.</li>
+          <li>Launch <uicontrol>Manage Web Author Service</uicontrol>.</li>
+          <li>Go to the <uicontrol>Java</uicontrol> tab.</li>
+          <li>In the <uicontrol>Java Options</uicontrol> section, add the
+              <codeph>-Djava.security.manager</codeph> system property.</li>
+          <li>Click <uicontrol>Apply</uicontrol>.</li>
+          <li><xref href="webauthor-restart.dita#webauthor-restart">Restart the
+            application</xref>.</li>
+        </ol></p>
+      <p><u><i><b>Linux Installer or All Platforms Kit</b></i></u><ol>
+          <li>Go to the installation directory of <ph keyref="webappProduct"/>.</li>
+          <li>Edit the <filepath>oXygenXmlWebAuthor.vmoptions</filepath> file.</li>
+          <li>Add the <codeph>-Djava.security.manager</codeph> property.</li>
+          <li>Save the file.</li>
+          <li><xref href="webauthor-restart.dita#webauthor-restart">Restart the
+            application</xref>.</li>
+        </ol></p>
+      <p><u><i><b>Apache Tomcat Method</b></i></u> (In an environment that uses Apache Tomcat)<ol
+          id="ul_ojh_g3d_cr">
+          <li>Edit the <filepath>catalina.policy</filepath> file and add the following snippet:<p>
+              <codeblock outputclass="language-ini">grant codeBase "file:${catalina.base}/webapps/oxygenxml-web-author/-" {
   // Oxygen uses System properties for various configuration purposes.
   permission java.util.PropertyPermission "*", "read,write";
   // Oxygen custom protocols need access to network.
@@ -83,17 +109,10 @@ grant codeBase "file:${oxygen.data.dir}/frameworks/-" {
     permission java.security.AllPermission;
 };
 ...</codeblock>
-                    </p></li>
-                  <li>Start the Apache Tomcat server using the <codeph>-security</codeph> flag.</li>
-                </ol></p>
-              <p>
-                <note>In the previous example, replace <codeph>oxygenxml-web-author</codeph> with
-                  the name of your deployment of <ph keyref="webappProduct"/>.</note>
-              </p>
-            </dd>
-          </dlentry>
-        </dl>
-      </p>
+            </p><note>Replace <codeph>oxygenxml-web-author</codeph> with the name of your deployment
+              of <ph keyref="webappProduct"/>.</note></li>
+          <li>Start the Apache Tomcat server using the <codeph>-security</codeph> flag.</li>
+        </ol></p>
     </section>
     <section id="configuring_file_permissions_to_custom_locations">
       <title>Configuring File Permissions to Custom Locations</title>
