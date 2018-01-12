@@ -87,7 +87,7 @@ actionsManager.setActionShortcut('Author/Enter', 'ctrl enter');
    
 // Create "Split Element" action
 var splitElementAction = new sync.actions.SplitElementAtCaretAction
-                         ('enter', e.editor.readOnlyStatus, e.editor.controller);
+           ('enter', e.editor.e.editor.getReadOnlyState(), e.editor.getController()));
 
 // Create compound action that splits the element at cursor when
 //    there is no selection, and surrounds the selection.
@@ -103,7 +103,7 @@ var newEnterAction = new sync.actions.CompoundAction('enter',
 /**
  * Action that splits the element at caret.
  *
- * @param {sync.model.ReadOnlyStatus} readOnlyStatus The read-only status of the file.
+ * @param {sync.api.ReadOnlyState} readOnlyStatus The read-only status of the file.
  * @param {string} keystrokeStr The string representation of the shortcut of the action.
  * @param {sync.ctrl.Controller} controller The document controller.
  * @constructor
@@ -139,7 +139,7 @@ sync.actions.SplitElementAtCaretAction.prototype.actionPerformed = function(opt_
 
 /** @override */
  sync.actions.SplitElementAtCaretAction.prototype.isEnabled = function() {
-   return !this.readOnlyStatus.isReadOnly();
+   return !this.readOnlyStatus.readOnly;
  };
 }
 })();</codeblock></p>
