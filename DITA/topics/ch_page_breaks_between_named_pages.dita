@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_page_breaks_between_named_pages">
+  <title>Page Breaks Between Named Pages</title>
+  <body>
+    <p>A page break will be created each time there is a change in the <codeph>page</codeph>
+      property associated to the elements in a sequence. Suppose that you have a sequence of
+        <codeph>div</codeph> elements, one of them associated with a "cover" page, and others with a
+      "chapter" page:</p>
+    <codeblock outputclass="language-css">div.cover {
+    page: cover;
+}
+
+div.chapter {
+    page: chapter;
+}</codeblock>
+    <p>The XML document:</p>
+    <codeblock outputclass="language-xml">...
+&lt;div class="cover"> Welcome to the User Guide... &lt;/div>
+&lt;div class="chapter"> Here are the details... &lt;/div>
+&lt;div class="chapter"> Here are some more details... &lt;/div></codeblock>
+    <p>In this example, there will be a forced page break between the first <codeph>div</codeph>
+      (associated to the "cover" page) and the second because of the <codeph>page</codeph>
+      change.</p>
+    <p>The next two <codeph>div</codeph> elements are not separated by page breaks because they have
+      the same <codeph>page</codeph> name ("chapter") and they are grouped in the same page
+      sequence. If you want to style the first page from that sequence in a different way, the
+      selector:<codeblock outputclass="language-css">@page content:first{
+  background-color: yellow;
+}</codeblock>will
+      apply to the first page from the first "chapter" <codeph>div</codeph>.</p>
+    <p>Suppose you want each of the chapters to start a new page sequence, with each of their first
+      pages colored in yellow. To do so, you must declare a new sequence start on the
+        <codeph>div</codeph> element. This can be done using the extension property
+        <codeph>-oxy-page-group</codeph>:<codeblock outputclass="language-css">div.chapter {
+  page: chapter;
+  -oxy-page-group:start;
+}</codeblock></p>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html" href="https://www.w3.org/TR/css3-page/#using-named-pages" scope="external"
+      />
+    </linklist>
+  </related-links>
+</topic>
+
