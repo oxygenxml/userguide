@@ -42,5 +42,25 @@ h2 {
   string-set: chapter_title "Chapter (" counter(chapter) ")" content();
   counter-increment: chapter;
 }</codeblock>
+    <p>You could also use the <codeph>oxy_xpath</codeph> function to extract or compute some text
+      from a document. You can use a combination of <codeph>string-set</codeph> and
+        <codeph>oxy_xpath</codeph> to define a kind of variable that is used across publication
+      headers.</p>
+    <p>Suppose your document defines a creation date in a metadata section. This section may be
+      anywhere in your document.</p>
+    <p>To use it in the header of your first page, you can extract the value, assign it to a
+      string-set, then reference it from the page margin box from the header:<ol>
+        <li>Extract the value and set it to a string-set that is associated to the root element so
+          that it will be available on all
+          pages:<codeblock outputclass="language-css">:root {
+   string-set: creationdate oxy_xpath("//bookmeta//created/@date[1]"); 
+}</codeblock></li>
+        <li>Use it in the
+          header:<codeblock outputclass="language-css">@page {
+   @top-center {
+        content: "Created: " string(creationdate);
+   }
+}</codeblock></li>
+      </ol></p>
   </body>
 </topic>
