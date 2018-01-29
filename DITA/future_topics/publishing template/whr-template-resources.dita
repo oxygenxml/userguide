@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="section_pkx_gjm_qcb">
-   <title>Template Resources</title>
-   <body>
-      
-      <p>A WebHelp publishing template consist of a set of resources(CSS, JS, fonts) used to define
-        the ouput. These resources and other information are specified in a descriptor file.</p>
-      <p>A sample structure of a WebHelp Publishing Template is:</p>
-      <p>
-        <fig id="fig_cxv_yvf_qcb">
-            <title>WebHelp Publishing Template</title>
-            <image href="images/Publishing%20Template%20Documentation.png"
-                   id="image_ar2_yvf_qcb"
-                   placement="inline"/>
-        </fig>
-      </p>
-    <p>A template specifies a set of resources (CSS, JS, fonts) that will be copied to the output
+<topic id="whr-template-resources">
+  <title>Template Resources</title>
+  <body>
+    <p>A template may specify a set of resources (CSS, JS, fonts) that will be copied to the output
       folder at the end of the transformation. This resources allows you to customize the generated
       output.</p>
-    <note>The path in the descriptor are relative to the template root folder.</note>
-    <p>Th resources that you can specify are:</p>
+    <p>The type of resources that you can specify are:</p>
     <p>
       <dl>
         <dlentry>
@@ -56,9 +43,10 @@
         <dlentry>
           <dt>Logo</dt>
           <dd>
-            <p>Specifies a path to an image displayed as a logo in the left side of the output
-              header. Optionally, you can associate a target URL to the logo image. When you click
-              the logo image, you will be redirected to this address.</p>
+            <p><?oxy_comment_start author="radu_pisoi" timestamp="20180129T161053+0200" comment="Maybe we should specify a recommended resolution."?>Specifies
+              a path to an image displayed as a logo in the left side of the output header.
+              Optionally, you can associate a target URL to the logo image. When you click the logo
+              image, you will be redirected to this address.<?oxy_comment_end?></p>
             <codeblock outputclass="language-xml">&lt;publishing-template>
     ...
     &lt;webhelp>
@@ -73,11 +61,46 @@
         </dlentry>
         <dlentry>
           <dt>Additional resources (JS, fonts)</dt>
-          <dd><?oxy_comment_start author="radu_pisoi" timestamp="20180129T091234+0200" comment="How to add these resources to the generated HTML files? HTML fragments or custom templates"?>Additional
-            to CSS, logo or favicon you can specify one or more set of resources that will be copied
-            to the output folder. <?oxy_comment_end?></dd>
+          <dd>
+            <p><?oxy_comment_start author="radu_pisoi" timestamp="20180129T091234+0200" comment="How to add these resources to the generated HTML files? HTML fragments or custom templates"?>Additional
+              to CSS, logo or favicon you can specify one or more set of resources that will be
+              copied to the output folder at the end of the WebHelp
+              transformation.<?oxy_comment_end?></p>
+            <p>To define the resources that will be included in the
+              <xmlelement>fileset</xmlelement>, you can use one or more
+                <xmlelement>include</xmlelement> elements. To exclude resources, use
+                <xmlelement>exclude</xmlelement> element. The semantic of
+                <xmlelement>fileset</xmlelement>, <xmlelement>include</xmlelement> and
+                <xmlelement>exclude</xmlelement> is very similar with <xref
+                href="https://ant.apache.org/manual/Types/fileset.html" format="html"
+                scope="external">ANT Fileset</xref>.</p>
+            <note>All paths specified in the <xmlelement>include</xmlelement> or
+                <xmlelement>exclude</xmlelement> elements are relative to the template root
+              folder.</note>
+            <codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...                
+        &lt;resources>            
+            &lt;fileset>
+                &lt;include name="common/**/*"/>
+                &lt;include name="JS/**/*"/>              
+                &lt;exclude name="**/.svn"/>
+                &lt;exclude name="**/.git"/>
+            &lt;/fileset></codeblock>
+          </dd>
         </dlentry>
       </dl>
-    </p>      
-    </body>
+    </p>
+    <note>The relative paths specified in a template descriptor are relative to the template root
+      folder.</note>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html" href="https://ant.apache.org/manual/Types/fileset.html" scope="external">
+        <linktext>ANT Fileset</linktext>
+      </link>
+    </linklist>
+  </related-links>
 </topic>
