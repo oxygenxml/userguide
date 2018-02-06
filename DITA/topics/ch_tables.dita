@@ -147,7 +147,7 @@ column:first-of-type {
 ...</codeblock>
     </section>
     <section id="section_vlp_jjt_cbb">
-      <title>Rotating tables</title>
+      <title>Rotating Tables</title>
       <p>There are cases where you have large tables and you need to rotate them to make them fit on
         your page. For instance, the default page is portrait, but because you have a table with
         many columns (and thus very wide), it would bleed to the right of the page.</p>
@@ -172,6 +172,85 @@ tbl {
               table needs to have <codeph>table-layout: fixed</codeph>, and a
               <codeph>width</codeph>.</note></li>
         </ul></p>
+      <p>The page is now landscape and you probably need to also change the headers and footers to
+        match this new orientation. One way of doing this is to move the header content from the
+          <codeph>@top-left</codeph>, <codeph>@top-center</codeph>, and <codeph>@top-right</codeph>
+        rules into page margin boxes from the right, and apply a <codeph>transform</codeph> property
+        on them.</p>
+      <p>In the following example, for the normal pages there is static text in the top (header)
+        that is either placed in the left or right side of the page, depending on the page
+        position:<codeblock outputclass="language-css">@page :left {
+  @top-left {
+     content: string(maptitle) string(parttitle) string(chaptertitle) " | " counter(page);
+     font-size:8pt;
+  }
+  @bottom-left {
+      /**/
+  }
+  @bottom-right {
+      /**/
+  }
+}
+
+@page :right{
+  @top-right {
+     content: string(maptitle) string(parttitle) string(chaptertitle) " | " counter(page);
+     font-size:8pt;
+  }
+  @bottom-right {
+      /**/
+  }
+  @bottom-left {
+      /**/
+  }
+}</codeblock></p>
+      <p>For the landscape page, we can move content to either the right-bottom or right-top,
+        depending on the page
+        position:<codeblock outputclass="language-css"> /*
+  * Table orientation.
+  */
+ @page table-landscape:right {
+	size:landscape;
+
+	@top-left{
+		content:none;
+	}
+	@top-center{
+		content:none;
+	}
+	@top-right{
+		content:none;
+	}
+		
+       @right-bottom{
+    content: string(chaptertitle) " | " counter(page);
+    font-size:8pt;
+		transform:rotate(90);
+		vertical-align: middle;
+		text-align: right;
+	}
+ }
+ @page table-landscape:left {
+	size:landscape;
+		
+	@top-left{
+		content:none;
+	}
+	@top-center{
+		content:none;
+	}
+	@top-right{
+		content:none;
+	}
+		
+	@right-top{
+    content: string(maptitle) string(parttitle) string(chaptertitle) " | " counter(page);
+    font-size:8pt;
+  	transform:rotate(90);
+  	vertical-align: middle;
+  	text-align: left;
+       }
+ }</codeblock></p>
     </section>
   </body>
 </topic>
