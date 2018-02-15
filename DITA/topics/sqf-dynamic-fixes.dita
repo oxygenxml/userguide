@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="sqf-dynamic-fixes">
+  <title>Generic Schematron Quick Fix</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Schematron Quick Fixes<indexterm>Generic quick fixes</indexterm></indexterm>
+        <indexterm>SQF<indexterm>Generic quick fixes</indexterm></indexterm>
+        <indexterm>SQF attribute: use-for-each</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>You can generate the same Schematron <xref keyref="glossentry_quick-fix"><term>Quick
+          Fix</term></xref> for multiple matches. To do this, you can add the
+        <codeph>use-for-each</codeph> attribute inside the <codeph>sqf:fix</codeph> element and for
+      each match of the XPath expression in the value of the <codeph>use-for-each</codeph>
+      attribute, a Quick Fix will be presented to the user. The XPath expression does not change the
+      context of the Quick Fix. If you want to access the current match from the XPath expression,
+      you can use the <codeph>$sqf:current</codeph> variable.</p>
+    <p><b><u>Example:</u></b></p>
+    <p>Suppose you want to restrict the user from entering more than 4 list items in a list. The
+      following example presents an error on any list that has more than 4 list items and offers a
+      Quick Fix with multiple proposals where the user would specify which list item to remove.</p>
+    <p>
+      <codeblock outputclass="language-xml">&lt;sch:rule context="ul">
+    &lt;sch:report test="count(li) gt 4" sqf:fix="removeAnyItem">
+        The list cannot contain more than 4 entries.
+    &lt;/sch:report>
+    &lt;sqf:fix id="removeAnyItem" use-for-each="1 to count(li)">
+        &lt;sqf:description>
+            &lt;sqf:title>Remove item #&lt;sch:value-of select="$sqf:current"/>&lt;/sqf:title>
+        &lt;/sqf:description>
+        &lt;sqf:delete match="li[$sqf:current]"/>
+    &lt;/sqf:fix>
+&lt;/sch:rule></codeblock>
+    </p>
+  </body>
+</topic>
