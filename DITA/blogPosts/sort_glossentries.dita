@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="topic_eph_k3j_kcb">
-    <title>Sorting glossary lists in a DITA Bookmap</title>
+    <title>Sorting Glossary Lists in a DITA Bookmap</title>
     <body>
         <p>The idea behind this DITA refactoring action started from this forum post: <xref
                 href="https://www.oxygenxml.com/forum/viewtopic.php?f=2&amp;t=15284&amp;p=45137#p45137"
                 format="php" scope="external"/>.</p>
-        <p>Let's say you have a DITA Bookmap which at some point refers to all its glossary
-            entries:<codeblock outputclass="language-xml">            &lt;glossarylist>
+        <p>Suppose you have a DITA Bookmap that at some point references all of its glossary
+      entries:<codeblock outputclass="language-xml">            &lt;glossarylist>
                 &lt;topicref href="glossary/glossItem1.dita"/>
                 &lt;topicref href="glossary/glossItem2.dita"/>
                 &lt;topicref href="glossary/glossItem3.dita"/>
                 &lt;topicref href="glossary/glossItem4.dita"/>
             &lt;/glossarylist></codeblock>and
-            you want to have all these glossary topics sorted alphabetically by title as they appear
-            in the PDF output. </p>
-        <p>One option for this is to create a PDF customization which automatically sorts the
-            glossary entries no matter in what order they were originally specified in the DITA
-            Map.</p>
+      you want to have all of these glossary topics sorted alphabetically by title as they appear in
+      the PDF output. </p>
+        <p>One option for this is to create a PDF customization that automatically sorts the
+      glossary entries no matter what order they were originally specified in the DITA Map.</p>
         <p>The other option is to create a <xref
-                href="https://www.oxygenxml.com/doc/versions/19.1/ug-editor/topics/custom-refactoring-operations.html"
-                format="html" scope="external">custom Oxygen XML Refactor</xref> operation which
-            when applied on the DITA Bookmap containing the "glossarylist" will sort out the
-            glossentries in aphabetical order looking at the title of each glossentry. Below you can
-            find some steps for this:<ol id="ol_zt4_kjj_kcb">
-                <li>Create somewhere on disk a folder called for example <b>customRefactor</b> and
-                    add a reference to it in the Oxygen <b>Preferences->"XML / XML Refactoring"</b>
-                    page.</li>
-                <li>Create in that custom folder an XML file called for example
-                        <b>sortGlossentries.xml</b> having as
-                    content:<codeblock outputclass="language-xml">&lt;refactoringOperationDescriptor 
+        href="https://www.oxygenxml.com/doc/versions/19.1/ug-editor/topics/custom-refactoring-operations.html"
+        format="html" scope="external">custom Oxygen XML Refactoring</xref> operation that, when
+      applied on the DITA Bookmap containing the "glossarylist", will sort the glossentries in
+      alphabetical order according to the title of each glossentry.</p>
+    <p>The following steps will help you achieve this:<ol id="ol_zt4_kjj_kcb">
+        <li>
+          <p>Somewhere on disk, create a folder (for example, <b>customRefactor</b>) and add a
+            reference to it in the Oxygen <b>Preferences->"XML / XML Refactoring"</b> page.</p>
+        </li>
+        <li>
+          <p>In that custom folder, create an XML file (for example, <b>sortGlossentries.xml</b>)
+            that has the following content:</p>
+          <codeblock outputclass="language-xml">&lt;refactoringOperationDescriptor 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://www.oxygenxml.com/ns/xmlRefactoring" id="op_tck_rp1_hcb" name="Sort glossentries">
     &lt;description>Sort glossentries.&lt;/description>    
     &lt;script type="XSLT" href="sortGlossentries.xsl"/>
-&lt;/refactoringOperationDescriptor></codeblock>This
-                    particular descriptor file contains the name of the operation, its description
-                    and points to an XSLT stylesheet which will be applied to sort the entries in
-                    the DITA Bookmap.</li>
-                <li>Create in the same folder a file called <b>sortGlossentries.xsl</b> having as
-                    content:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+&lt;/refactoringOperationDescriptor></codeblock>
+          <p>This particular descriptor file contains the name of the operation, its description,
+            and points to an XSLT stylesheet that will be applied to sort the entries in the DITA
+            Bookmap.</p>
+        </li>
+        <li>
+          <p>In the same folder, create a file called <b>sortGlossentries.xsl</b> with the following
+            content:</p>
+          <codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     exclude-result-prefixes="xs"
     version="2.0">
@@ -57,16 +61,20 @@
             &lt;/xsl:for-each>
         &lt;/xsl:copy>
     &lt;/xsl:template>
-&lt;/xsl:stylesheet></codeblock>This
-                    particular XSLT processing copies almost all the Bookmap content unchanged. But
-                    the topicrefs in the <b>glossarylist</b> are sorted according to the
-                        <b>glossterm</b> titles specified inside in each of them.</li>
-                <li>Restart Oxygen.</li>
-                <li>Open the bookmap containing the <b>glossarylist</b> in the Oxygen main editing
-                    area, right click, choose <b>Refactoring</b> and in the <b>Other operations</b>
-                    submenu you will find the new <b>Sort glossentries</b> refactoring action.
-                    Invoke the action and use the <b>Preview</b> button to check if the sorting is
-                    properly done.</li>
-            </ol></p>
+&lt;/xsl:stylesheet></codeblock>
+          <p>This particular XSLT processing copies almost all the Bookmap content unchanged.
+            However, the topicrefs in the <b>glossarylist</b> are sorted according to the
+              <b>glossterm</b> titles specified inside each of them.</p>
+        </li>
+        <li>
+          <p>Restart Oxygen.</p>
+        </li>
+        <li>
+          <p>Open the bookmap that contains the <b>glossarylist</b> in the Oxygen main editing area,
+            right-click, choose <b>Refactoring</b> and in the <b>Other operations</b> submenu you
+            will find the new <b>Sort glossentries</b> refactoring action. Invoke the action and use
+            the <b>Preview</b> button to check if the sorting is properly done.</p>
+        </li>
+      </ol></p>
     </body>
 </topic>

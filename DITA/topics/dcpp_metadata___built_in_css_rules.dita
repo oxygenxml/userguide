@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_metadata___built_in_css_rules">
+    <title>Metadata - Built-in CSS rules</title>
+    <body>
+        <p>The file <filepath>[PLUGIN_DIR]/css/p-meta.css</filepath> contains the rules that extract metadata. The
+                <xmlelement>topicmeta</xmlelement>  can be used as child of map, or a topicref. The map
+                <xmlelement>topicmeta</xmlelement>  is moved into the <xmlelement>oxy:front-page</xmlelement> element,
+            so its local name is used to disambiguate between the two cases - the CSS selectors will start with it. </p>
+        <codeblock outputclass="language-css">/*
+ * ================================================
+ * 
+ * PDF metadata
+ * 
+ * ================================================
+ */    
+@media oxygen-chemistry {
+
+
+/* 
+ * Titles (maps).
+ */
+*[class ~= "map/map"] > *[class ~= "topic/title"] {
+    -oxy-pdf-meta-title: content();
+}
+*[class ~= "map/map"][title] {
+    -oxy-pdf-meta-title: attr(title);
+}
+
+/* 
+ * Titles (bookmaps).
+ */
+front-page *[class ~= "bookmap/booktitle"] > *[class ~= "bookmap/mainbooktitle"] {
+    -oxy-pdf-meta-title: content();
+}
+
+/* 
+ * Subject (bookmaps), using the alternate title.
+ */
+front-page *[class ~= "bookmap/booktitle"] > *[class ~= "bookmap/booktitlealt"] {
+    -oxy-pdf-meta-description: content();
+}
+
+
+/* 
+ * Author (maps and bookmaps)
+ *  
+ * Bookmeta is a specialization of topicmeta.
+ */
+front-page *[class ~= "map/topicmeta"] > *[class ~= "topic/author"] {
+    -oxy-pdf-meta-author: content();
+}
+
+/* 
+ * Created (maps and bookmaps)
+ */
+front-page  *[class ~= "map/topicmeta"] > *[class ~= "topic/critdates"] > *[class ~= "topic/created"] {
+    -oxy-pdf-meta-custom: "Created" attr(date);
+}
+
+/* 
+ * Revised (maps and bookmaps) - can have multiple occurences, so we aggregate them.
+ */
+front-page *[class ~= "map/topicmeta"] > *[class ~= "topic/critdates"]:has(*[class ~= "topic/revised"]) {
+    -oxy-pdf-meta-custom: "Revised" oxy_xpath('string-join(*[contains(@class, " topic/revised ")]/@modified, ", " )');
+}
+
+/* 
+ * Keywords (maps and bookmaps).
+ */
+front-page *[class ~= "map/topicmeta"] > *[class ~= "topic/keywords"] > *[class ~= "topic/keyword"] {
+    -oxy-pdf-meta-keyword: content(); 
+}
+
+/* 
+ * Organizaton holding the  book rights. (bookmaps)
+ */
+front-page *[class ~= "bookmap/bookmeta"] > *[class ~= "bookmap/bookrights"] > *[class ~= "bookmap/bookowner"] {
+    -oxy-pdf-meta-custom: "Book rights owner" content();
+}
+
+/* 
+ * ISBN (bookmaps)
+ */
+front-page *[class ~= "bookmap/bookmeta"] > *[class ~= "bookmap/bookid"] > *[class ~= "bookmap/isbn"] {
+    -oxy-pdf-meta-custom: "ISBN" content();
+}
+
+/* 
+ * Maintainer (bookmaps)
+ */
+front-page *[class ~= "bookmap/bookmeta"] > *[class ~= "bookmap/bookid"] > *[class ~= "bookmap/maintainer"] {
+    -oxy-pdf-meta-custom: "Maintainer" content();
+}
+
+}
+
+
+/*
+ * Reset the topicmeta styles, in editor are used uses colors.
+ * The topicmeta is used in the metadata section of the map, but 
+ * also in each topicref from the TOC.
+ * The metadata section from the map is hidden.
+ */
+*[class~="map/topicmeta"] {
+	border-color: transparent;
+	color:inherit;
+	background-color: inherit;
+   	border:none;
+   	margin:0;
+   	padding:0;
+}
+*[class~="map/topicmeta"]:before {
+	content: none;
+}</codeblock>        <note conref="dcpp_reusable_components.dita#reusable_components/rc-css-fragment-disclaimer-note"/>
+    </body>
+</topic>

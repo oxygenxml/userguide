@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_show_metadata_in_the_content">
+    <title>How to Show Metadata in the Cover Page</title>
+    <body>
+        <p>Let say you need to present the <b>author</b> and the <b>ISBN</b> just under the publication title. Your
+            bookmap
+            contains:<codeblock>&lt;bookmap id="taskbook">
+    &lt;booktitle>
+        &lt;booklibrary>Retro Tools&lt;/booklibrary>
+        &lt;mainbooktitle>Product tasks&lt;/mainbooktitle>
+        &lt;booktitlealt>Tasks and what they can do&lt;/booktitlealt>
+    &lt;/booktitle>
+    &lt;bookmeta>        
+        <b>&lt;author>Howe Tuduit&lt;/author></b>
+        &lt;critdates>
+            &lt;created date="1/1/2015"/>
+            &lt;revised modified="3/4/2016"/>
+            &lt;revised modified="3/5/2016"/>
+        &lt;/critdates>
+        &lt;bookid>
+            <b>&lt;isbn>071271271X&lt;/isbn></b>
+            &lt;booknumber>SG99-9999-00&lt;/booknumber>
+...        </codeblock></p>
+        <p>The entire <xmlelement>booktitle</xmlelement> element content is displayed on the first page of the PDF, so
+            we need to add our information after it. </p>
+        <p>In your <xref href="dcpp_the_customization_css.dita">customization css</xref> add the following CSS
+            rules:<codeblock outputclass="language-css">*[class ~= "bookmap/booktitle"]:after {
+    display:block;
+    content: "by " oxy_xpath('//*[contains(@class, " bookmap/bookmeta ")]/*[contains(@class, " topic/author ")]/text()');
+    margin-top: 4em;
+    text-align: center;
+    color: gray;
+}
+*[class ~= "bookmap/booktitle"]:after(2) {
+    display:block;
+    content: "ISBN "oxy_xpath('//*[contains(@class, " bookmap/isbn ")]/text()');
+    text-align: center;
+    color: gray;
+}</codeblock></p>
+        <p>We used the following CSS extensions: <ul id="ul_c3t_xcf_scb">
+                <li><xref href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-xpath-function.html" format="html"
+                        scope="external">oxy_xpath</xref>, that permits executing an xpath expression and returns a
+                    string content</li>
+                <li><codeph>:after(N)</codeph>, that creates more than one after pseudo element. The argument value
+                    represents how far the generated content is from the real content. So in the above example, the
+                    content of the <codeph>:after</codeph> is closer to the title (upper) than the content of the
+                        <codeph>:after(2)</codeph>.</li>
+            </ul></p>
+        <section id="section_d5l_mdf_scb">
+            <title>Generating synthetic pages for metadata.</title>
+            <p>But what if you need to show this information not on the title page, but on a page that follows the title
+                page? In this case we need to prepare a named page, and place the content on it. In your <xref
+                    href="dcpp_the_customization_css.dita">customization css</xref> add the following CSS rules:</p>
+            <codeblock outputclass="language-css">@page <b>page-for-meta</b> {
+    background-color: yellow; /* Just to see it better*/
+    @top-left-corner {
+        content:""; /* Remove the default header */
+    }
+    @top-right-corner {
+        content:""; /* Remove the default header */
+    }
+}
+
+*[class ~= "bookmap/booktitle"]:after {
+    <b>page: page-for-meta;</b>
+}
+*[class ~= "bookmap/booktitle"]:after(2) {
+    <b>page: page-for-meta;</b>
+}</codeblock>
+        </section>
+    </body>
+</topic>
