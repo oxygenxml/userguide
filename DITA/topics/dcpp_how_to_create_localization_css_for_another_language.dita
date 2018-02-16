@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_create_localization_css_for_another_language">
+    <title>How to Create Localization CSS for Another Language</title>
+    <prolog>
+        <metadata>
+            <keywords>
+                <indexterm>localization <indexterm>custom language</indexterm></indexterm>
+            </keywords>
+        </metadata>
+    </prolog>
+    <body>
+        <p>To localize for your language (let say Dutch, language code <keyword>nl</keyword>), use the following
+            procedure:</p>
+        <ol id="ol_cqh_1bk_wcb">
+            <li>Copy and paste in your <xref href="dcpp_the_customization_css.dita">customization css</xref> the
+                contents of the following files: <ul id="ul_ssq_3bk_wcb">
+                    <li><filepath>[PLUGIN_DIR]/css/core/-i18n-de.css</filepath> and </li>
+                    <li>
+                        <filepath>[PLUGIN_DIR]/css/print/p-i18n-de.css</filepath></li>
+                </ul></li>
+            <li>Search and replace the ":lang(de)" with ":lang(nl)". </li>
+            <li>Open in an editor the English localization files, side by side with your customization CSS:<ul
+                    id="ul_t5l_s1k_wcb">
+                    <li><filepath>[PLUGIN_DIR]/css/core/-i18n-en.css</filepath></li>
+                    <li>
+                        <filepath>[PLUGIN_DIR]css/print/p-i18n-en.css</filepath></li>
+                </ul></li>
+            <li>Translate each of the strings from your customization, using the English localization as reference.
+            </li>
+        </ol>
+        <p>This is a very simple example of localizing just the table of contents, index page title and the figures and
+            tables captions:</p>
+        <codeblock outputclass="language-css">   
+/* Title in the TOC page */
+toc-title[empty]:lang(nl):before { 
+	content: "Inhoud"; 
+}
+
+/* This string is used in the TOC page header. */
+:root:lang(nl) {
+    string-set: toc-header "Inhoud";
+}
+
+/* Title in the Index page */
+index\.groups:lang(nl):before {
+	content: "Index";
+}
+
+@media print {
+    *[class ~= "topic/table"] > *[class ~= "topic/title"]:lang(de):before {
+        content: "Tafel " counter(tablecount) ": ";
+    }
+}
+@media print {
+    *[class ~= "topic/fig"] > *[class ~= "topic/title"]:lang(de):before {
+        content: "Figuur " counter(figcount) ": ";
+    }
+}
+...
+</codeblock>
+    </body>
+</topic>
