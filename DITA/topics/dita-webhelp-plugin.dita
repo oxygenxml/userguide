@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dita-webhelp-plugin">
-  <title><?oxy_comment_start author="Steven" timestamp="20180219T131554+0200" comment="Ask Radu about 1.8"?>DITA
-    to WebHelp Scripts<?oxy_comment_end?></title>
+  <title>DITA to WebHelp Script</title>
   <prolog>
     <metadata>
       <keywords>
@@ -11,134 +10,65 @@
     </metadata>
   </prolog>
   <body>
-    <p>There are two types of scripts that can be used to transform DITA documents to <b>WebHelp
-        Responsive</b> or <b>WebHelp Classic</b> output outside of <b>Oxygen XML
-        Editor/Author</b>.<note type="important"
+    <p>The <b>Oxygen XML WebHelp Plugin</b> comes bundled with a script file that can be used to
+      transform DITA documents to <b>WebHelp Responsive</b> or <b>WebHelp Classic</b> output outside
+      of <b>Oxygen XML Editor/Author</b>.<note type="important"
         product="author developer editor authorEclipse developerEclipse editorEclipse"
         id="note-command-line">Running DITA to WebHelp transformations from a script outside of
           <b>Oxygen XML Editor/Author</b> requires an additional license and some additional setup:<ul>
           <li>You must have a valid license for the <b>Oxygen XML WebHelp Plugin</b> (<xref
               href="https://www.oxygenxml.com/buy_webhelp.html" format="html" scope="external"
-            ></xref>).</li>
+            />).</li>
           <li>The <b>Oxygen XML WebHelp Plugin</b> must be installed and integrated for <xref
               href="https://www.oxygenxml.com/doc/ug-webhelp/topics/wh-dita-getting-started.html"
               format="html" scope="external">the DITA Open Toolkit</xref>.</li>
         </ul></note></p>
-    <section id="startup_script_from_dita_ot_distribution_method"><title>Using the DITA OT Command
-        Startup Script</title><p>The first method involves using the <i><b>dita</b></i> startup
-        script that comes bundled with each DITA OT distribution.</p><p>
-        <dl>
-          <dlentry>
-            <dt>DITA OT <ph keyref="webhelpPluginDITAOT2xVer"></ph></dt>
-            <dd>For DITA Open Toolkit <ph keyref="webhelpPluginDITAOT2xVer"></ph>, the general
-              instructions for running the startup script can be found here: <xref
-                href="http://www.dita-ot.org/2.3/parameters/dita-command-arguments.html"
-                format="html" scope="external"></xref>.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>DITA OT <ph keyref="webhelpPluginDITAOT18Ver"></ph></dt>
-            <dd>For DITA Open Toolkit <ph keyref="webhelpPluginDITAOT18Ver"></ph>, the general
-              instructions for running the startup script can be found here: <xref
-                href="http://www.dita-ot.org/1.8/readme/building-output-using-cl-tool.html"
-                format="html" scope="external"></xref>.</dd>
-          </dlentry>
-        </dl>
-      </p><p><u><b>Required Arguments for the <i>dita</i> Command Startup
-            Script:</b></u></p><p><codeph><xref keyref="glossentry_dita_ot_dir"
-          ></xref>\bin\[executable] -i [path_to_input.ditamap] -f [transformation_type]</codeph></p><p>
-        <dl>
-          <dlentry>
-            <dt>executable</dt>
-            <dd><b>Windows</b> - The <filepath>dita.bat</filepath> script located in: <codeph><xref
-                  keyref="glossentry_dita_ot_dir"></xref>\bin\</codeph>.</dd>
-            <dd><b>Linux/Mac OS X</b> - The <filepath>dita</filepath> script file located in:
-                  <codeph><xref keyref="glossentry_dita_ot_dir"></xref>/bin/</codeph>.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-i / -input</dt>
-            <dd>Specifies the master file for your DITA documentation project. Typically this is a
-              DITA map.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-f / -format</dt>
-            <dd>Specifies the transformation type. The <b>Oxygen XML WebHelp Plugin</b> contributes
-              the following transformation types for DITA:<ul>
-                <li conkeyref="reusables-transforming-documents/webhelp-responsive"/>
-                <li conkeyref="reusables-transforming-documents/webhelp-classic"/>
-                <li conkeyref="reusables-transforming-documents/webhelp-classic-feedback"/>
-              </ul></dd>
-          </dlentry>
-        </dl>
-      </p><b><u>Additional Options or Parameters:</u></b><p>You can also use <xref
-          href="http://www.dita-ot.org/2.3/parameters/dita-command-arguments.html#dita-command-properties__dita_build_options"
-          format="html" scope="external">DITA-OT options</xref> to modify the command behavior or
-          <xref
-          href="webhelp-plugin-additional-parameters.dita#webhelp-plugin-additional-parameters"
-          >additional configuration parameters that are contributed by the <b>Oxygen XML WebHelp
-            Plugin</b></xref>.</p><p><codeph><xref keyref="glossentry_dita_ot_dir"
-          ></xref>\bin\[executable] -i [path_to_input.ditamap] -f [transformation_type] [option]
-          -D[parameter=value]</codeph></p><p><b><u>Command Line Examples:</u></b><ul
-          id="ul_a1c_lzq_zv">
-          <li><b>Windows:</b>
-            <codeph>dita.bat -i c:\mySample.ditamap -f webhelp-responsive -o c:\output
-              -Dwebhelp.logo.image=C:\images\myLogo.jpg</codeph></li>
-          <li><b>Linux/Mac OS X:</b>
-            <codeph>dita -i C:/mySample.ditamap -f webhelp-responsive -o C:/output
-              -Dwebhelp.logo.image=C:/images/myLogo.jpg</codeph></li>
-        </ul></p><note><?oxy_comment_start author="Steven" timestamp="20171214T111005+0200" comment="1.8 maybe. Radu will confirm"?>The
-        downside of this approach is the fact that you will lose certain small fixes and patches
-        that the <b>Oxygen XML WebHelp Plugin</b> adds to the automated DITA OT processing. For
-        example, you may lose the ability to process DITA topics that contain entity references
-        inside them.<?oxy_comment_end?></note></section>
-    <section id="startup_script_from_webhelp_plugin_method">
-      <title>Using
-        <?oxy_comment_start author="Steven" timestamp="20171214T111106+0200" comment="Maybe make it clear that this method is only recommended for 1.8"?>Startup
-        Script Bundled in the <?oxy_comment_end?><b>Oxygen XML WebHelp Plugin</b></title>
-      <p>The other method involves running the <i><b>ditaWebhelp</b></i> startup script that comes
-        bundled in the <b>Oxygen XML WebHelp Plugin</b> folder:<ul id="ul_mpz_hzq_zv">
-          <li><b>Windows</b> - <codeph><xref keyref="glossentry_dita_ot_dir"
-              ></xref>\plugins\[WEBHELP_DIR]\ditaWebhelp.bat</codeph> (where
-              <filepath>[WEBHELP_DIR]</filepath> is
-              <filepath>com.oxygenxml.webhelp.classic</filepath> or
-              <filepath>com.oxygenxml.webhelp.responsive</filepath>)</li>
-          <li><b>Linux/Mac OS X</b> - <codeph><xref keyref="glossentry_dita_ot_dir"
-              ></xref>/plugins/[WEBHELP_DIR]/ditaWebhelp.sh</codeph> (where
-              <filepath>[WEBHELP_DIR]</filepath> is
-              <filepath>com.oxygenxml.webhelp.classic</filepath> or
-              <filepath>com.oxygenxml.webhelp.responsive</filepath>)</li>
-        </ul></p>
-      <p>Before running the script to generate output, you must customize it to specify various
-        paths and the transformation type. To do this, open the script file and edit the following
-        variables and parameters:<ul id="ul_ay4_wzq_zv">
-          <li><b>JVM_INSTALL_DIR</b> - Specifies the path to the Java Virtual Machine installation
-            directory on your disk.</li>
-          <li><b>DITA_OT_INSTALL_DIR</b> - Specifies the path to DITA Open Toolkit installation
-            directory on your disk.<note>The scripts reference the
-                <filepath>dost-patches-DITA-1.8.jar</filepath>
-              <term>JAR</term> file containing DITA OT <ph keyref="webhelpPluginDITAOT18Ver"
-              ></ph>-specific patches. If you use DITA OT 1.7, please update that reference to
-                <filepath>dost-patches-DITA-1.7.jar</filepath>. If you use DITA OT <ph
-                keyref="webhelpPluginDITAOT2xVer"></ph>, no patches are needed, so just remove the
-              reference.</note></li>
-          <li><b>TRANSTYPE</b> - Specifies the type of the transformation you want to apply. The
-              <b>Oxygen XML WebHelp Plugin</b> contributes the following transformation types for DITA:<ul>
+    <p>To run a DITA to WebHelp transformation outside of <b>Oxygen XML Editor/Author</b>, use the
+          <i><b>dita</b></i> startup script that comes bundled with each DITA OT distribution.</p>
+    <p><u><b>Required Arguments for the <i>dita</i> Command Startup Script:</b></u></p>
+    <p><codeph><xref keyref="glossentry_dita_ot_dir"/>\bin\[executable] -i [path_to_input.ditamap]
+        -f [transformation_type]</codeph></p>
+    <p>
+      <dl>
+        <dlentry>
+          <dt>executable</dt>
+          <dd><b>Windows</b> - The <filepath>dita.bat</filepath> script located in: <codeph><xref
+                keyref="glossentry_dita_ot_dir"/>\bin\</codeph>.</dd>
+          <dd><b>Linux/Mac OS X</b> - The <filepath>dita</filepath> script file located in:
+                <codeph><xref keyref="glossentry_dita_ot_dir"/>/bin/</codeph>.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>-i / -input</dt>
+          <dd>Specifies the master file for your DITA documentation project. Typically this is a
+            DITA map.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>-f / -format</dt>
+          <dd>Specifies the transformation type. The <b>Oxygen XML WebHelp Plugin</b> contributes
+            the following transformation types for DITA:<ul>
               <li conkeyref="reusables-transforming-documents/webhelp-responsive"/>
               <li conkeyref="reusables-transforming-documents/webhelp-classic"/>
               <li conkeyref="reusables-transforming-documents/webhelp-classic-feedback"/>
-            </ul></li>
-          <li><b>DITA_MAP_BASE_DIR</b> - Specifies the path to the directory where the input
-              <term>DITA map</term> file is located.</li>
-          <li><b>DITAMAP_FILE</b> - Specifies the input <term>DITA map</term> file.</li>
-          <li><b>DITAVAL_FILE</b> - Specifies the <filepath>.ditaval</filepath> input filter that
-            the transformation process applies to the input <term>DITA map</term> file.</li>
-          <li><b>DITAVAL_DIR</b> - Specifies the path to the directory where the
-              <filepath>.ditaval</filepath> file is located.</li>
-          <li><b>-Doutput.dir</b> - Specifies the output directory of the transformation.</li>
-        </ul></p>
-      <p>You can also add <xref
-          href="webhelp-plugin-additional-parameters.dita#webhelp-plugin-additional-parameters"
-          >additional configuration parameters that are contributed by the <b>Oxygen XML WebHelp
-            Plugin</b></xref>.</p>
-    </section>
+            </ul></dd>
+        </dlentry>
+      </dl>
+    </p>
+    <p><b><u>Additional Options or Parameters:</u></b></p>
+    <p>You can also use <xref
+        href="http://www.dita-ot.org/2.3/parameters/dita-command-arguments.html#dita-command-properties__dita_build_options"
+        format="html" scope="external">DITA-OT options</xref> to modify the command behavior or
+        <xref href="webhelp-plugin-additional-parameters.dita#webhelp-plugin-additional-parameters"
+        >additional configuration parameters that are contributed by the <b>Oxygen XML WebHelp
+          Plugin</b></xref>.</p>
+    <p><codeph><xref keyref="glossentry_dita_ot_dir"/>\bin\[executable] -i [path_to_input.ditamap]
+        -f [transformation_type] [option] -D[parameter=value]</codeph></p>
+    <p><b><u>Command Line Examples:</u></b><ul id="ul_a1c_lzq_zv">
+        <li><b>Windows:</b>
+          <codeph>dita.bat -i c:\mySample.ditamap -f webhelp-responsive -o c:\output
+            -Dwebhelp.logo.image=C:\images\myLogo.jpg</codeph></li>
+        <li><b>Linux/Mac OS X:</b>
+          <codeph>dita -i C:/mySample.ditamap -f webhelp-responsive -o C:/output
+            -Dwebhelp.logo.image=C:/images/myLogo.jpg</codeph></li>
+      </ul></p>
   </body>
 </topic>
