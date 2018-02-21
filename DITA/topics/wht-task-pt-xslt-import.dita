@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task id="wht-task-pt-xslt-import">
-  <title>How to Use a XSLT Extension Point from a Publishing Template</title>  
+  <title>How to Use XSLT Extension Points from a Publishing Template</title>
+  <shortdesc>This example demonstrates how to use WebHelp XSLT-import Extension Points from a
+      <abbreviated-form keyref="glossentry-wh-publishing-template"/>.</shortdesc>  
   <task id="dd">
     <title>Use Case 1: Add Copyright Information Extracted from a DITA Bookmap</title>
     <taskbody>
@@ -70,13 +72,12 @@
           &lt;/span>
       &lt;/xsl:if>
   &lt;/div>
-&lt;/xsl:template></codeblock><p>You
-  can implement this functionality from a <abbreviated-form
-    keyref="glossentry-wh-publishing-template"/> that uses the <xref
-      href="whr-responsive-override-xslt-dita-xslt-import.dita#whr-responsive-override-xslt-dita-xslt-import/xsl-creatMainPage"
-      ><b>com.oxygenxml.webhelp.xsl.createMainPage</b> extension point</xref>. This extension
-  point allows you to specify a customization stylesheet that will override the template
-  described above.</p><p>To add this functionality using a <abbreviated-form
+&lt;/xsl:template></codeblock><p>You can implement this functionality from a <abbreviated-form
+            keyref="glossentry-wh-publishing-template"/> that uses the <xref
+            href="whr-responsive-override-xslt-dita-xslt-import.dita#whr-responsive-override-xslt-dita-xslt-import/xsl-creatMainPage"
+              ><b>com.oxygenxml.webhelp.xsl.createMainPage</b></xref> extension point. This
+          extension point allows you to specify a customization stylesheet that will override the
+          template described above.</p><p>To add this functionality using a <abbreviated-form
     keyref="glossentry-wh-publishing-template"/> , follow these steps:</p></context>
     
       
@@ -90,12 +91,12 @@
               <abbreviated-form keyref="glossentry-wh-publishing-template"/> concept, you can follow
             the <xref keyref="whr_edit-publishing-template">edit a publishing template</xref>
             procedure.</cmd>
-          <stepresult>You will have the <filepath>custom_footer_template</filepath> folder linked in
-            your project.</stepresult>
+          <stepresult>You should have the <filepath>custom_footer_template</filepath> folder linked
+            in your project.</stepresult>
         </step>
         <step>
-          <cmd>Using the project view, create an <filepath>xslt</filepath> folder, in the project
-            root folder. </cmd>
+          <cmd>Using the <uicontrol>Project</uicontrol> view, create an <filepath>xslt</filepath>
+            folder, in the project root folder. </cmd>
           <stepresult>You should have the <filepath>custom_footer_template/xsl</filepath> folder in
             your project.</stepresult>
         </step>
@@ -177,11 +178,8 @@
   <task id="dd-uu">
     <title>Use Case 2: Add generation time in the output footer</title>
     <taskbody>
-      <context id="context_j3p_tmc_ycb"><p>Another possible customization for the main page is to
-          add the generation time in its footer. You can use an XSLT-Parameter extension point to
-          control if this customization is active or not. In this case, you can use the <xref
-            href="whr-responsive-override-xslt-dita-xslt-import.dita#whr-responsive-override-xslt-dita-xslt-import/param-ext-point-xsl-creatMainPage"
-              ><b>com.oxygenxml.webhelp.xsl.createMainPage.param</b> extension point</xref>. </p><p>
+      <context id="context_j3p_tmc_ycb"><p>Another possible customization for the main page is to add the generation time in its footer. We
+          will use a transformation  parameter to control if this customization is active or not. </p><p>
           <fig id="fig_wjy_ldz_2bb">
             <title>Generation time added in the WebHelp footer</title>
             <image href="../img/WH-XSLT-customization-gen-date.png" id="image_jlh_hdz_2bb"
@@ -191,9 +189,8 @@
       <steps id="steps_rxg_ymc_ycb">
         <step>
           <cmd>In the customization stylesheet that you just created (for example,
-              <b>custom_mainpage.xsl</b>), declare
-              <codeph>webhelp.footer.add.generation.time</codeph> as a global parameter and modify
-            the template by adding the following XSLT code at the end.</cmd>
+              <b>custom_mainpage.xsl</b>), modify the template by adding the following XSLT code at
+            the end.</cmd>
           <info>
             <codeblock outputclass="language-xml">&lt;xsl:if test="oxyf:getParameter('webhelp.footer.add.generation.time') = 'yes'">
   &lt;div class="generation_time">
@@ -212,8 +209,8 @@
         </step>
         <step>
           <cmd>Open the <xref keyref="whr-template-descriptor">template descriptor</xref> associated
-            with your publishing template and set the XSLT stylesheet created in previous step with
-              <term>com.oxygenxml.webhelp.xsl.createMainPage</term> XSLT extension point.</cmd>
+            with your publishing template and set the
+              <codeph>webhelp.footer.add.generation.time</codeph> parameter to defaut value.</cmd>
           <info>
             <codeblock outputclass="language-xml">&lt;publishing-template>
     ...    
@@ -229,10 +226,8 @@
           <cmd>Open the <term>DITA Map WebHelp Responsive</term> transformation scenario.</cmd>
         </step>
         <step>
-          <cmd>Use the
-              <uicontrol><?oxy_comment_start author="radu_pisoi" timestamp="20180214T215723+0200" comment="Link to action"?>Choose
-              Custom Publishing Template<?oxy_comment_end?></uicontrol> and select your newly
-            created template.</cmd>
+          <cmd>From the <uicontrol>Parameters</uicontrol> table, you can change the value of the
+              <codeph>webhelp.footer.add.generation.time</codeph> parameter.</cmd>
         </step>
         <step>
           <cmd>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
