@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_chapters">
+  <title>Chapter Page Placement and Styling</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Starting chapters on odd/even page</indexterm>
+        <indexterm>Ending chapters on odd/even page</indexterm>
+        <indexterm>Styling the first page of a chapter</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="product"/> provides specialized support to help you customize how chapters are
+      handled in the output.</p>
+    <section id="how_to_start_chapters_on_an_odd_or_even_page">
+      <title>How to Start Chapters on an Odd or Even Page</title>
+      <p>A common use case is to arrange the chapters of the publication to start on an odd page
+        number so that in the printed output, the chapter starts on the right side of the book.</p>
+      <p>By default, pages that have the same name are merged together in a single page sequence. If
+        you want each of the chapters to have its own sequence, you can use the
+          <codeph>-oxy-page-group:start</codeph> CSS property  to create separate page sequences.
+        This allows you to control the start page of each of the chapters.</p>
+      <codeblock outputclass="language-css">.chapter {
+	page: chapter-page;
+	-oxy-page-group: start;
+}</codeblock>
+      <p>To specify which page the chapter should start on, you can use another Chemistry extension,
+        the <xref href="ch_css_extensions.dita#ch_css_extensions/oxy-initial-page-number"
+            ><codeph>-oxy-initial-page-number</codeph> property</xref>:</p>
+      <codeblock outputclass="language-css">@page chapter-page {
+	-oxy-initial-page-number: auto-odd;
+}
+</codeblock>
+      <p>Supported values for <codeph>-oxy-initial-page-number</codeph> are: <b>auto</b>,
+          <b>auto-even</b>, <b>auto-odd</b>, <b>&lt;number></b>.</p>
+      <p>Moving the chapter on a specific page number may create blank padding pages at the end of
+        the previous page sequence. If you want to style those blank pages, use the
+          <codeph>:blank</codeph> page selector:</p>
+      <codeblock outputclass="language-css">@page :blank{
+	@top-center{content:"Intentionally left blank"};
+}
+</codeblock>
+    </section>
+    <section id="how_to_end_chapters_on_an_odd_or_even_page">
+      <title>How to End Chapters on an Odd or Even Page</title>
+      <p>Another use case is to specify how a page sequence should end. If the sequence should have
+        a total number of odd or even pages (or if it should end on an even or odd page).</p>
+      <p>Suppose you have a table of contents that follows the cover page and you need to want to
+        end up with an even number of pages.</p>
+      <codeblock outputclass="language-css">&lt;div class='toc'>Table of Contents..
+</codeblock>
+      <codeblock outputclass="language-css">.toc {
+	page: toc-page;
+}
+</codeblock>
+      <p>Now you can use the <xref
+          href="ch_css_extensions.dita#ch_css_extensions/oxy-force-page-count"
+            ><codeph>-oxy-force-page-count</codeph> property</xref> with an <b>even</b> value:</p>
+      <codeblock outputclass="language-css">@page toc-page {
+	-oxy-force-page-count: even;
+}
+</codeblock>
+      <p>Supported values for <codeph>-oxy-force-page-count</codeph> are: <b>even</b>, <b>odd</b>,
+          <b>end-on-even</b>, <b>end-on-odd</b>, <b>auto</b>, <b>no-force</b>.</p>
+    </section>
+    <section id="how_to_style_the_first_page_of_a_chapter">
+      <title>How to Style the First Page of a Chapter</title>
+      <p>You can use the <codeph>:first</codeph> page rule selector to control how the first page of
+        a chapter will look. For example, suppose you do not want the header to appear on the
+        chapter first page. Your CSS might look like this:</p>
+      <codeblock outputclass="language-css">@page {
+	@top-right-corner{content: counter(page);}
+	@top-left{content: 'My Publication';}
+}
+
+.chapter {
+	page: chapter-page;
+	-oxy-page-group: start;
+}
+
+@page chapter-page:first {
+	@top-right-corner{content: none;}
+	@top-left{content: none;}
+}</codeblock>
+    </section>
+  </body>
+</topic>
