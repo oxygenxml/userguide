@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto%7CRoboto+Condensed%7CRoboto+Mono');
+
+/* All pages. */
+@page {
+  margin-top: 1.5in;
+  margin-bottom: 1in;
+  margin-left: 0.5in;
+  margin-right: 0.5in;
+}
+
+
+/* Pages from the left side. */
+@page :left {
+  background-image: url("Chemistry_Page_Template_Left.svg");
+  background-repeat: no-repeat;
+  @top-left {
+    padding-left: 0.8in;
+    content: string(maptitle);
+/*    font-family: "Roboto Condensed";*/
+    font-size: 1.2em;
+    font-weight:bold;
+  }
+  @bottom-left-corner {
+    content: counter(page);
+/*    font-family: "Roboto Condensed";*/
+    font-size: 1em;
+    font-weight: bold;
+    padding-top: 2em;
+    text-align: center;
+  }
+}
+
+
+/* Pages from the right side. */
+@page :right {
+  background-image: url("Chemistry_Page_Template_Right.svg");
+  background-repeat: no-repeat;
+  @top-right {
+    content: string(chaptertitle) "\A" string(sectiontitle);
+/*    font-family: "Roboto Condensed";*/
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  @bottom-right-corner {
+    content: counter(page);
+/*    font-family: "Roboto Condensed";*/
+    font-size: 1em;
+    font-weight: bold;
+    padding-top: 2em;
+    text-align: center;
+  }
+}
+
+@page table-of-contents:right {
+  @top-right {
+    /* Remove the page number, use just the "Contents" text.  */
+    content: string(toc-header);
+    font-size: 1.5em;
+  }
+}
+
+/* 
+ * Alter the string sets that are shown in the header of the page.
+ */
+*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
+    string-set: parttitle counter(part, upper-roman) " - " content(), chaptertitle  ""; /* Avoid propagating a past chapter title on a new part */
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"] {
+    string-set: chaptertitle counter(chapter) " - " content(), sectiontitle "";
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/topic"] > *[class ~= "topic/title"] {
+    string-set: sectiontitle  counter(chapter) "." counter(section1) " - " content();
+}
+
+/* The front page (cover) */
+@page front-page {
+  background-image: url("Chemistry_bubble.svg");
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-color: #f9f7f3;
+}
+
+front-page-title {
+  margin-top: 1in;
+  font-size: 3em;
+}
+
+/* TOC  numbers */
+*[class ~= "map/topicref"] > *[class ~= "map/topicmeta"]:before,
+*[class ~= "map/topicref"] > *[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"]:before {
+  font-weight: bold !important;
+}
+
+
+/* Customize fonts  */
+:root {
+  font-family: "Roboto";
+  line-height: 1.5em;
+}
+
+*[class ~= 'pr-d/codeblock'] {
+  font-family: "Roboto Mono";
+}
+
+*[class ~= 'pr-d/codeph'] {
+  font-family: "Roboto Mono";
+  background-color: #EEEEEE;
+}
+
+/* Remove title borders. */
+*[class ~= 'topic/title'] {
+  border-bottom: none !important;
+  color: #333333;
+
+}
+
+*[class ~= 'topic/topic'][is-chapter] > *[class ~= 'topic/title']{
+  font-size:2.5em;
+  margin-bottom:2em;
+} 
+*[class ~= 'topic/topic'][is-chapter] > *[class ~= 'topic/title']:before {
+  font-size:1.7em;
+  display:block;
+  margin-bottom:0.25in;
+}
+
+
+*[class~="topic/tgroup"] {
+    table-layout:auto !important;
+}
+
+
