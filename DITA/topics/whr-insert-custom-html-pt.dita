@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task id="whr-custom-css-pt-oxy">
-  <title>Referring the CSS from a Publishing Template</title>
+<task id="whr-insert-custom-html-pt">
+  <title>Referring the HTML fragment from a Publishing Template</title>
   <taskbody>
-    <context>
-      <note type="fastpath">
-        <p>You can specify an additional CSS in a <term keyref="glossentry-wh-publishing-template"/>
-          in the associated <xref
-            href="whr_publishing_template_contents.dita#whr_publishing_template_contents/template_descriptor_file"
-            >publishing template descriptor file</xref>. </p>
-        <codeblock outputclass="language-xml">&lt;publishing-template>
-    ...
-    &lt;webhelp>
-        ...                
-        &lt;resources>            
-            ...          
-            &lt;css file="resources/wh_footer.css"/></codeblock>
-      </note></context>
     <steps id="steps_zgt_vhz_wcb">
       <step>
         <cmd importance="optional">Create a new <xref keyref="whr-create-publishing-template"
@@ -31,29 +17,35 @@
             template</xref> procedure.</cmd>
       </step>
       <step>
-        <cmd>Using the project view, copy your custom CSS in a inner folder within publishing
-          template root folder, in the <filepath>custom_footer_template/resources</filepath> folder
-          for instance. </cmd>
+        <cmd>Insert the HTML content in a well-formed XML file,
+            <filepath>custom-html.html</filepath> for instance.</cmd>
+      </step>
+      <step>
+        <cmd>Using the project view, copy your custom HTML fragment in an inner folder within
+          publishing template root folder, in the
+            <filepath>custom_footer_template/html-fragments</filepath> folder for instance. </cmd>
         <stepresult>You should have the
-            <filepath>custom_footer_template/resources/wh_footer.css</filepath> file in your
+            <filepath>custom_footer_template/html-fragments/custom-html.html</filepath> file in your
           publishing package root folder.</stepresult>
       </step>
       <step>
-        <cmd>Open the publishing template descriptor in editor to edit. You will benefit by the
-          content completion and validation support.</cmd>
-      </step>
-      <step>
-        <cmd>Add the new CSS in the descriptor <term>resources</term> section. This will instruct
-          the transformation to link the <filepath>wh_footer.css</filepath> in all generated HTML
-          files.</cmd>
+        <cmd>Add a reference to the custom HTML fragment in the <term>html-fragments</term> section
+          of the publishing template descriptor.</cmd>
         <info>
           <codeblock outputclass="language-xml">&lt;publishing-template>
-    ...
+    ...    
     &lt;webhelp>
-        ...                
-        &lt;resources>            
-            ...          
-            &lt;css file="resources/wh_footer.css"/></codeblock>
+      ...
+      &lt;html-fragments>
+        &lt;fragment 
+          file="html-fragments/custom-html.html" 
+          placeholder="webhelp.fragment.head"/></codeblock>
+        </info>
+        <info>
+          <note>If you want to insert the content in another location within the output document,
+            you can reference the XML file from any other <xref
+              href="whr_publishing_template_contents.dita#whr_publishing_template_contents/html_fragment_extension_points"
+              >HTML Fragment extension points</xref>.</note>
         </info>
       </step>
       <step>
@@ -75,8 +67,16 @@
       </step>
     </steps>
     <result id="result_bjx_ndm_wcb">
-      <p>Your custom CSS snippet will be applied as a final layer on top of any existing CSS rules
-        and the output will reflect the changes you made.</p>
-    </result>    
+      <p>Your additional content will be included at the end of the <codeph>head</codeph> element of
+        your output document.</p>
+    </result>
   </taskbody>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link
+        href="whr_publishing_template_contents.dita#whr_publishing_template_contents/html_fragment_extension_points"/>
+      <link href="whr_publishing_template_contents.dita"/>
+    </linklist>
+  </related-links>
 </task>

@@ -510,7 +510,7 @@
   
   <!-- wintitle,apiname,parmname,varname   -> b, i, uicontrol, filepath, codeph -->
   <sch:pattern>
-    <sch:rule context="wintitle | apiname | parmname | varname"> 
+    <sch:rule context="wintitle | apiname | parmname | varname "> 
       <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph, term.        
       </sch:report>
     </sch:rule>
@@ -546,6 +546,7 @@
       <sch:report test="matches(.,'[oO][xX]ygen') 
         and parent::node()/local-name() != 'ph'
         and parent::node()/local-name() != 'keyword'
+        and parent::node()/local-name() != 'xmlelement'
         and parent::node()/local-name() != 'filepath'
         and parent::node()/local-name() != 'indexterm'
         and parent::node()/local-name() != 'shortdesc'
