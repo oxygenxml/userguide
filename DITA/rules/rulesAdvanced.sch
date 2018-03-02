@@ -510,7 +510,7 @@
   
   <!-- wintitle,apiname,parmname,varname   -> b, i, uicontrol, filepath, codeph -->
   <sch:pattern>
-    <sch:rule context="wintitle | apiname | parmname | varname | xmlelement"> 
+    <sch:rule context="wintitle | apiname | parmname | varname "> 
       <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph, term.        
       </sch:report>
     </sch:rule>
