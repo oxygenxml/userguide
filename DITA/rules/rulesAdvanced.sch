@@ -546,6 +546,7 @@
       <sch:report test="matches(.,'[oO][xX]ygen') 
         and parent::node()/local-name() != 'ph'
         and parent::node()/local-name() != 'keyword'
+        and parent::node()/local-name() != 'xmlelement'
         and parent::node()/local-name() != 'filepath'
         and parent::node()/local-name() != 'indexterm'
         and parent::node()/local-name() != 'shortdesc'
