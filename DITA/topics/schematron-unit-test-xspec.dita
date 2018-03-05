@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="schematron-unit-test-xspec">
+  <title>Schematron Unit Test (XSpec)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Schematron<indexterm>Unit test (XSpec)</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>XSpec is a behavior driven development (BDD) <term>framework</term> for XSLT, XQuery, and
+      Schematron. XSpec consists of a syntax for describing the behavior of your XSLT, XQuery, or
+      Schematron code, and some code that enables you to test your code against those
+      descriptions.</p>
+    <section id="creating_an_xslt_unit_test">
+      <title>Creating a Schematron Unit Test</title>
+      <p>To create a Schematron Unit Test, go to <menucascade>
+          <uicontrol>File</uicontrol>
+          <uicontrol>New</uicontrol>
+          <uicontrol>Schematron Unit Test</uicontrol>
+        </menucascade>. This is simple document template to help you get started.</p>
+    </section>
+    <section id="running_an_xslt_unit_test">
+      <title>Running a Schematron Unit Test</title>
+      <p>To run a Schematron Unit Test, open the XSpec file in an editor and click <uicontrol><image
+            href="../img/ApplyStyleSheet16.png"/>Apply Transformation Scenario(s)</uicontrol> on the
+        main toolbar. This will run the built-in <uicontrol>XSpec for XSLT</uicontrol>
+        transformation scenario that is defined in the XSpec <xref keyref="glossentry_framework"
+            ><term>framework</term></xref>.</p>
+    </section>
+    <section id="testing_a_stylesheet">
+      <title>Testing a Stylesheet</title>
+      <p>An XSpec file contains one or more test scenarios. </p>
+      <p><u><b>Example</b></u></p>
+      <p>Suppose you have this Schematron rule that says sections should have a
+        title:<codeblock outputclass="language-xml">  &lt;sch:pattern>
+    &lt;sch:rule context="section">
+      &lt;sch:assert test="title" id="a002">
+        section should have a title
+      &lt;/sch:assert>
+    &lt;/sch:rule>
+  &lt;/sch:pattern></codeblock></p>
+      <p>The XSpec test could look like
+        this:<codeblock outputclass="language-xml">&lt;x:description xmlns:x="http://www.jenitennison.com/xslt/xspec" schematron="demo-01.sch">
+    &lt;x:scenario label="section should have a title">
+      &lt;x:context>
+        &lt;article>
+          &lt;section>
+            &lt;title>Introduction&lt;/title>
+            &lt;p>This is an example.&lt;/p>
+          &lt;/section>
+          &lt;section>
+            &lt;p>This is an example.&lt;/p>
+          &lt;/section>
+        &lt;/article>
+      &lt;/x:context>
+      
+      &lt;x:expect-not-assert id="a002" location="/article[1]/section[1]"/>
+      &lt;x:expect-assert id="a002" location="/article[1]/section[2]"/>
+    &lt;/x:scenario>
+&lt;/x:description></codeblock></p>
+      <p>The <codeph>sch:assert</codeph> with the <codeph>id="a002"</codeph> is not expected to be
+        triggered on the first section since it includes a title. This requirement is expressed with
+        the <codeph>x:expect-not-assert</codeph> element.</p>
+      <p>Since the second section does not have a title, you would expect the Schematron rule to be
+        triggered and this requirement is expressed with the <codeph>x:expect-assert</codeph>
+        element.</p>
+      <p>For more details about how to write Schematron tests and various samples, see <xref
+          href="https://github.com/xspec/xspec/wiki/Writing-Scenarios-for-Schematron#writing-tests"
+          format="html" scope="external"/>.</p>
+    </section>
+    <section id="adding_a_catalog_to_an_xspec_transformation">
+      <title>Adding a Catalog to an XSpec Transformation</title>
+      <p>If your Schematron needs a catalog, you can add one to the XSpec transformation by doing
+        one of the following:<ul>
+          <li>If you are using a <xref
+              href="grouping-documents-xml-projects.dita#grouping-documents-xml-projects"
+              >project</xref> in <ph keyref="product"/>, create a <filepath>catalog.xml</filepath>
+            file in the project directory. This catalog will then be loaded automatically.</li>
+          <li><xref href="edit-scenario-dialog.dita#edit-scenario-dialog">Edit</xref> the
+              <uicontrol>XSpec for XSLT</uicontrol> transformation scenario, go to the <xref
+              href="ant-transformation-parameters-tab.dita#ant-transformation-parameters-tab"
+                ><uicontrol>Parameters</uicontrol> tab</xref>, and set the value of the
+              <codeph>catalog</codeph> parameter to the location of your catalog file.</li>
+        </ul></p>
+    </section>
+  </body>
+</topic>
