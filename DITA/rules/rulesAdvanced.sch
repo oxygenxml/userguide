@@ -366,7 +366,7 @@
   
   <!-- Rules that checks the fig element has a title and is not empty -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' pr-d/syntaxdiagram '))]">
+    <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' pr-d/syntaxdiagram ')) and not(contains(@class, ' topic/fig ut-d/imagemap '))]">
       <sch:assert test="child::*[contains(@class, ' topic/title ')]" role="warn" sqf:fix="addTitle">
         The figure should have a title.
       </sch:assert>
@@ -404,7 +404,7 @@
 
   <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/fig ')]" role="warn">
+    <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' topic/fig ut-d/imagemap '))]" role="warn">
       <sch:let name="precedingText" value="preceding-sibling::text()"/>
       <sch:let name="followingText" value="following-sibling::text()"/>
       <sch:assert test=".[parent::p][count(parent::node()/child::*) = 1]
