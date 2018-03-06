@@ -20,7 +20,7 @@
     <body>
       <p>Each publishing template includes a descriptor file that defines the meta-data associated
         with template. It is an XML file that defines all the resources included in a template (such
-        as HTML page templates, CSS, JS, fonts, and transformation parameters).</p>
+        as HTML page layout files, CSS, JS, fonts, and transformation parameters).</p>
       <p>The template descriptor file must have the <filepath>.opt</filepath> file extension and
         must be located in the templates' root folder.</p>
       <p>A template descriptor might look like this:</p>
@@ -100,6 +100,33 @@
       &lt;tag>tree&lt;/tag>
       &lt;tag>dark&lt;/tag>
     &lt;/tags></codeblock>
+      </section>
+      <section id="webhelp_element">
+        <title>Webhelp Element</title>
+        <p>The <b>webhelp</b> element contains various details that define the WebHelp Responsive
+          output. The elements that are allowed in this <b>webhelp</b> section specify the <xref
+            href="#template_descritpor_file/template_preview_image" format="dita">template preview
+            image</xref>, <xref href="#template_resources" format="dita">resources</xref> (such as
+          CSS, JS, fonts, logos), <xref href="#html_page_templates" format="dita">HTML page layout
+            files</xref>, <xref href="#transformation_parameters" format="dita">transformation
+            parameters</xref>, <xref href="#html_fragment_extension_points" format="dita">HTML
+            fragment extensions</xref> (used to add fragments to placeholders), or <xref
+            href="#xslt_extension_points" format="dita">XSLT extensions</xref>.</p>
+        <codeblock outputclass="language-xml">    &lt;webhelp>
+        &lt;preview-image file="MyPreview.png"/>
+
+        &lt;resources>
+          ...
+        &lt;/resources>
+
+        &lt;html-page-layouts>
+          ...
+        &lt;/html-page-layouts>
+
+        &lt;parameters>
+          ...
+        &lt;/parameters>
+    &lt;/webhelp></codeblock>
       </section>
       <section id="template_preview_image">
         <title>Template Preview Image</title>
@@ -186,49 +213,49 @@
     </body>
   </topic>
   <topic id="html_page_templates">
-    <title>HTML Page Templates</title>
+    <title>HTML Page Layout Files</title>
     <prolog>
       <metadata>
         <keywords>
-          <indexterm>Template HTML page templates</indexterm>
+          <indexterm>HTML page layout files</indexterm>
         </keywords>
       </metadata>
     </prolog>
     <body>
-      <p>The HTML page templates define the layout of the generated pages in the output. There are
-        four types of pages (<i>main</i>, <i>search</i>, <i>topic</i>, <i>index</i>) and each type
-        of page is a simple HTML file. Each type of <b>page-template</b> is defined inside an
-          <b>html-page-templates</b> element in the descriptor
+      <p>The HTML page layout files define the layout of the generated pages in the output. There
+        are four types of pages (<i>main</i>, <i>search</i>, <i>topic</i>, <i>index</i>) and each
+        type of page is a simple HTML file. Each type of page is defined inside an
+          <b>html-page-layouts</b> element in the descriptor
         file.<codeblock outputclass="language-xml">&lt;publishing-template>
       ...
       &lt;webhelp>
       ...
-      &lt;!-- HTML page templates -->
-      &lt;html-page-templates>
-        &lt;page-template page="main" file="page-templates/wt_index.html"/>
-        &lt;page-template page="search" file="page-templates/wt_search.html"/>
-        &lt;page-template page="topic" file="page-templates/wt_topic.html"/>
-        &lt;page-template page="index-terms" file="page-templates/wt_terms.html"/>
-      &lt;/html-page-templates></codeblock></p>
-      <p>These HTML page templates are not required in the descriptor file, but if you do use the
-          <b>html-page-templates</b> element, you must specify all four types of page templates
-          (<i>main</i>, <i>search</i>, <i>topic</i>, <i>index</i>). If you do not specify these HTML
-        page templates, the files from the <filepath><term keyref="glossentry-wh-out-dir"
-            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-templates</filepath> folder will be
-        used to define the layout of each type of page.</p>
-      <p><b><u>HTML Page Template Components</u></b></p>
-      <p>Each type of page template contains various components that control the layout of that
-        page. The rendering of each component depends on the context where it is placed and its
-        content depends on the transformed <xref keyref="glossentry_ditamap"><term>DITA
-          map</term></xref>.</p>
-      <p>Some of the components can be used in all four types of page templates, while some are only
+      &lt;!-- HTML page layout files -->
+      &lt;html-page-layouts>
+        &lt;page-layout page="main" file="page-layouts/wt_index.html"/>
+        &lt;page-layout page="search" file="page-layouts/wt_search.html"/>
+        &lt;page-layout page="topic" file="page-layouts/wt_topic.html"/>
+        &lt;page-layout page="index-terms" file="page-layouts/wt_terms.html"/>
+      &lt;/html-page-layouts></codeblock></p>
+      <p>These HTML files are not required in the descriptor file, but if you do use the
+          <b>html-page-layouts</b> element, you must specify all four types of pages (<i>main</i>,
+          <i>search</i>, <i>topic</i>, <i>index</i>). If you do not specify these HTML page layout
+        files, the files from the <filepath><term keyref="glossentry-wh-out-dir"
+            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-layouts</filepath> folder will be used
+        to define the layout of each type of page.</p>
+      <p><b><u>HTML Page Components</u></b></p>
+      <p>Each type of page contains various components that control the layout of that page. The
+        rendering of each component depends on the context where it is placed and its content
+        depends on the transformed <xref keyref="glossentry_ditamap"><term>DITA
+        map</term></xref>.</p>
+      <p>Some of the components can be used in all four types of pages, while some are only
         available for certain pages. For instance, the <i>Publication Title</i> component can be
         used in all pages, but the <i>Navigation Breadcrumb</i> component can only be used in the
           <b>Topic Page</b>.</p>
       <p>To include a component in the output of a particular type of page, you have to reference a
-        specific element in that particular template's HTML file. All the elements associated with a
-        template component should belong to the
-          <codeph>http://www.oxygenxml.com/webhelp/components</codeph> namespace.</p>
+        specific element in that particular HTML file. All the elements associated with a component
+        should belong to the <codeph>http://www.oxygenxml.com/webhelp/components</codeph>
+        namespace.</p>
       <p>Every component can contain custom content or reference another component. To specify where
         the component content will be located in the output, you can use the
           <codeph>whc:component_content</codeph> element as a descendant of the component element.
@@ -247,7 +274,7 @@
         <p>The <term>Main Page</term> is the home page generated in the WebHelp Responsive output.
           The name of the HTML file that defines this page is <filepath>wt_index.html</filepath> and
           it is located in the following directory: <filepath><term keyref="glossentry-wh-out-dir"
-              >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-templates</filepath>.</p>
+              >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-layouts</filepath>.</p>
         <p>The main function of the home page is to display top level information and provide links
           that help you easily navigate to any of the top level topics of the publication. These
           links can be rendered in either a <i>Tiles</i> or <i>Tree</i> style of layout. The HTML
@@ -262,7 +289,7 @@
                 <title>Examples of Main Page Components for a Tree Style of Layout</title>
                 <image href="../img/webhelp_main_page_tree.PNG"/>
                 <p>The following components can be referenced in the <term>Main Page</term>
-                    (<filepath>wt_index.html</filepath>) template file:</p>
+                    (<filepath>wt_index.html</filepath>) file:</p>
                 <p>
                   <dl>
                     <dlentry conkeyref="reusable-webhelp-customizing/publication-title">
@@ -314,7 +341,7 @@
           Responsive output. The name of the HTML file that defines this page is
             <filepath>wt_topic.html</filepath> and it is located in the following directory:
               <filepath><term keyref="glossentry-wh-out-dir"
-            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-templates</filepath>.</p>
+            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-layouts</filepath>.</p>
         <p>The HTML pages produced for each topic consist of the topic content along with various
           other additional components, such as a title, menu, navigation breadcrumb, print icon, or
           side table of contents.</p>
@@ -323,7 +350,7 @@
             <title>Examples of Topic Page Components</title>
             <image href="../img/webhelp_topic_page.PNG" id="image_ubg_yjp_kv" placement="inline"/>
             <p>The following components can be referenced in the <term>Topic Page</term>
-                (<filepath>wt_topic.html</filepath>) template file:</p>
+                (<filepath>wt_topic.html</filepath>) file:</p>
             <p>
               <dl>
                 <dlentry conkeyref="reusable-webhelp-customizing/publication-title">
@@ -397,7 +424,7 @@
           the WebHelp Responsive output. The name of the HTML file that defines this page is
             <filepath>wt_search.html</filepath> and it is located in the following directory:
               <filepath><term keyref="glossentry-wh-out-dir"
-            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-templates</filepath>.</p>
+            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-layouts</filepath>.</p>
         <p>The HTML page that is produced consists of a search results component along with various
           other additional components, such as a title, menu, or index link.</p>
         <p>
@@ -405,7 +432,7 @@
             <title>Examples of Search Results Page Components</title>
             <image href="../img/webhelp_search_page.PNG" id="image_ic2_2mp_kv" placement="inline"/>
             <p>The following components can be referenced in the <term>Search Results Page</term>
-                (<filepath>wt_search.html</filepath>) template file:</p>
+                (<filepath>wt_search.html</filepath>) file:</p>
             <p>
               <dl>
                 <dlentry conkeyref="reusable-webhelp-customizing/publication-title">
@@ -447,7 +474,7 @@
           WebHelp Responsive output. The name of the HTML file that defines this page is
             <filepath>wt_terms.html</filepath> and it is located in the following directory:
               <filepath><term keyref="glossentry-wh-out-dir"
-            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-templates</filepath>.</p>
+            >[WebHelp_OUTPUT_DIR]</term>/oxygen-webhelp/page-layouts</filepath>.</p>
         <p>The HTML page that is produced consists of an index terms section along with various
           other additional components, such as a title, menu, or search field.</p>
         <p>An alphabet that contains the first letter of the documentation index terms is generated
@@ -458,7 +485,7 @@
             <title>Examples of Index Terms Page Components</title>
             <image href="../img/webhelp_terms_page.PNG" id="image_mvc_jsp_kv" placement="inline"/>
             <p>The following components can be referenced in the <term>Index Terms Page</term>
-                (<filepath>wt_terms.html</filepath>) template file:</p>
+                (<filepath>wt_terms.html</filepath>) file:</p>
             <p>
               <dl>
                 <dlentry conkeyref="reusable-webhelp-customizing/publication-title">
@@ -506,8 +533,8 @@
       </metadata>
     </prolog>
     <body>
-      <p>The HTML page templates contain component placeholders that can be used to insert custom
-        HTML fragments.</p>
+      <p>The HTML pages contain component placeholders that can be used to insert custom HTML
+        fragments.</p>
       <p>You can specify one or more HTML fragment extension points in the descriptor file using the
         following
         structure:<codeblock outputclass="language-xml">&lt;publishing-template>
