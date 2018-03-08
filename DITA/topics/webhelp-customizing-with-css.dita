@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webhelp-customizing-with-css">
-  <title><?oxy_comment_start author="Steven" timestamp="20180307T162145+0200" comment="WH-1740"?>How<?oxy_comment_end?>
-    to Customize the Output Using a CSS</title>
+  <title>How to Customize the Output Using a CSS</title>
   <prolog>
     <metadata>
       <keywords>
@@ -15,7 +14,108 @@
     <p>The most common way to customize WebHelp Responsive output is to use custom CSS styling. This
       method can be used to make small, simple styling changes or more advanced, precise changes. To
       implement the styling in your WebHelp output, you simply need to create the custom CSS file
-      and reference it in your transformation scenario. This custom file will be the final CSS to be
-      applied so its content will override the styles in the other pre-existing CSS files.</p>
+      and reference it in your transformation scenario (using a <xref
+        keyref="glossentry-wh-publishing-template"><term>Oxygen Publising Templater</term></xref> or
+      a transformation parameter). This custom file will be the final CSS to be applied so its
+      content will override the styles in the other pre-existing CSS files.</p>
   </body>
+  <topic id="whr-browser-inspect">
+    <title>Using CSS Inspector to Identify Content for Custom CSS File</title>
+    <body>
+      <p>You can use your browser's CSS inspector to identify the pertinent code in the current CSS
+        files and you can even make changes directly in the CSS inspector to test the results so
+        that you know exactly what content to use in your custom CSS file.</p>
+      <p>In most popular browsers (such as Chrome, Firefox, and Edge), you can access the CSS
+        inspector by using <uicontrol><shortcut>F12</shortcut></uicontrol> or by selecting
+          <uicontrol>Inspect Element</uicontrol> (or simply <uicontrol>Inspect</uicontrol>) from the
+        contextual menu.<note type="tip">When using Safari on Mac OS X, you must first enable the
+          Develop menu by going to the Advanced settings and selecting <uicontrol>Show Develop menu
+            in menu bar</uicontrol>. Then you can select <uicontrol>Show Web Inspector</uicontrol>
+          from the Develop menu or click <uicontrol><shortcut>Command + Option +
+            I</shortcut></uicontrol>.</note></p>
+    </body>
+  </topic>
+  <topic id="whr-create-custom-css">
+    <title>Create the Custom CSS</title>
+    <body>
+      <p>As a practical example, the following procedure would change the background color of the
+        footer bar in the WebHelp output:<ol>
+          <li>Use the browser's CSS inspector to identify the current CSS code that styles the
+            footer bar. In this particular case, the pertinent code that would be identified is:<itemgroup>
+              <codeblock outputclass="language-css">.wh_footer {
+  font-size: 15px;
+  line-height: 1.7em;
+  background-color: #000;
+}</codeblock>
+            </itemgroup></li>
+          <li>If you want to test the color you want to apply as the background of this particular
+            element, use the browser's CSS inspector to change the value of the
+              <codeph>background-color</codeph> attribute. After you find a suitable color, copy
+            that new code. </li>
+          <li>Create a custom CSS file and paste or enter the copied code. For example:<itemgroup>
+              <codeblock outputclass="language-css">.wh_footer {
+  background-color: #255890;
+}</codeblock>
+            </itemgroup></li>
+          <li>Save the custom CSS file at a location of your convenience.</li>
+        </ol></p>
+      <p>The customization CSS file can be referenced from the <term>WebHelp Responsive</term>
+        transformation either from a <xref keyref="glossentry-wh-publishing-template"><term>Oxygen
+            Publising Templater</term></xref> or using the <codeph>args.css</codeph> parameter.</p>
+    </body>
+  </topic>
+  <topic id="whr-custom-css-pt-oxy">
+    <title>Referencing the CSS from a Publishing Template</title>
+    <body>
+      <p>
+        <ol>
+          <li>If you haven't already created a Publishing Template, see <xref
+              href="whr_publishing_templates.dita"/>.</li>
+          <li>Using the <uicontrol product="author developer editor webhelp-responsive"
+              >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+              >Navigator</uicontrol> view, copy your custom CSS in a folder inside the publishing
+            template root folder (for example, in the
+              <filepath>custom_footer_template/resources</filepath> folder).</li>
+          <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
+              >template descriptor file</xref> associated with your publishing template and add your
+            custom CSS in the <term>resources</term>
+            section.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...                
+        &lt;resources>            
+            ...          
+            &lt;css file="resources/MyCustom.css"/></codeblock></li>
+          <li>Open the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+          <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select
+            your template.</li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol>
+      </p>
+      <p><b>Result:</b> Your custom CSS will be applied as a final layer on top of any existing CSS
+        rules and the output will reflect the changes you made.</p>
+    </body>
+  </topic>
+  <topic id="whr-custom-css-param-oxy">
+    <title>Referring the CSS from args.css Parameter</title>
+    <body>
+      <p>
+        <ol>
+          <li>Edit the <term>DITA Map WebHelp Responsive</term> transformation scenario and open the
+              <uicontrol>Parameters</uicontrol> tab.</li>
+          <li>Set the <codeph>args.css</codeph> parameter to the path of your custom CSS file.</li>
+          <li>Set the <codeph>args.copycss</codeph> parameter to <codeph>yes</codeph> to
+            automatically copy your custom CSS in the output folder when the transformation scenario
+            is processed.</li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol>
+      </p>
+      <p><b>Result:</b> Your custom CSS will be applied as a final layer on top of any existing CSS
+        rules and the output will reflect the changes you made.</p>
+    </body>
+  </topic>
 </topic>
