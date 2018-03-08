@@ -10,4 +10,442 @@
       </keywords>
     </metadata>
   </prolog>
+  <topic id="ch_tables">
+    <title>Tables</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Tables</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>This section is of special interest if you are creating a CSS stylesheet for a custom XML
+        document. For HTML, <ph keyref="product"/> already defines the needed selectors for the
+          <codeph>table</codeph> element.</p>
+      <p>Suppose you have a very simple table in an XML document:</p>
+      <codeblock outputclass="language-xml">&lt;tbl>
+    &lt;caption>A table.&lt;/caption>
+    &lt;rw>
+        &lt;c rspan="2"> Spans vertically &lt;/c>
+        &lt;c> Other cell &lt;/c>
+        &lt;c> Other cell &lt;/c>
+    &lt;/rw>
+    &lt;rw>
+        &lt;c cspan="2"> Other cell, spanning to the right &lt;/c>
+    &lt;/rw>
+&lt;/tbl> </codeblock>
+      <section id="section_lqt_v51_yz">
+        <title>Defining Rows and Cells</title>
+        <p>First, mark the <codeph>tbl</codeph> element as being a table:</p>
+        <codeblock outputclass="language-css">tbl {
+    display: table;
+}</codeblock>
+        <p>Next, the rows and cells:</p>
+        <codeblock outputclass="language-css">rw {
+    display: table-row;
+}
+c {
+    display: table-cell;
+}</codeblock>
+      </section>
+      <section id="section_hfr_pw1_yz">
+        <title>Defining the Column and Row Span</title>
+        <p>The processor needs to know how the cells are spanning multiple rows or columns. For
+          these, there are two properties available: <codeph>table-column-span</codeph> and
+            <codeph>table-row-span</codeph>.</p>
+        <codeblock outputclass="language-css">c[cspan] {
+    table-column-span: attr(cspan, integer);
+}
+c[rspan] {
+    table-row-span: attr(rspan, integer);
+}</codeblock>
+      </section>
+      <section id="section_vjt_b3t_cbb">
+        <title>Defining the Table Caption</title>
+        <p>You can do this by using the <codeph>display:table-caption</codeph>. To change the
+          position of the caption relative to the table grid, you need to use the
+            <codeph>caption-side</codeph> property:</p>
+        <codeblock outputclass="language-css">caption {
+    display:table-caption;
+    caption-side:bottom;
+}</codeblock>
+      </section>
+      <section id="section_fpf_jx1_yz">
+        <title>Repeating Headers and Footers</title>
+        <p>The elements marked with one of the properties <codeph>table-header-group</codeph> or
+            <codeph>table-footer-group</codeph> are automatically repeated when a table is split
+          over a sequence of pages. It is required that they contain only elements with the display
+            <codeph>table-row</codeph>. </p>
+        <codeblock outputclass="language-xml">&lt;tbl>
+    &lt;head>
+        &lt;rw>
+            &lt;c> Name&lt;/c>
+            &lt;c> Value &lt;/c>
+        &lt;/rw>
+    &lt;/head>
+    &lt;body>
+        &lt;rw> ... &lt;/rw>
+        &lt;rw> ... &lt;/rw>
+    &lt;/body>
+&lt;/tbl> </codeblock>
+        <p>The CSS:</p>
+        <codeblock outputclass="language-css">head {
+    display: table-header-group;
+}
+</codeblock>
+      </section>
+      <section id="section_sk5_1dl_zz">
+        <title>Column Widths and Styles</title>
+        <p><ph keyref="product"/> supports automatic layout of the tables. This means allocation of
+          column widths is done automatically based on the content size. In the following example,
+          the HTML table has an automatic layout (this is also the default):</p>
+        <codeblock outputclass="language-css">table {
+    table-layout:auto;
+}</codeblock>
+        <note type="tip">For large tables with long words that bleed out of the page, you can choose
+          to hyphenate the words from the cells. If the table is using an automatic layout, you
+          should specify a width (like 100%), otherwise the table columns will just be wide enough
+          to accommodate the smaller hyphenated
+          words:<codeblock outputclass="language-css">table {
+  table-layout:auto;
+  width: 100%;
+  hyphens:auto;
+}</codeblock></note>
+        <p>To switch to a fixed layout:</p>
+        <codeblock outputclass="language-css">table {
+    table-layout:fixed;
+}</codeblock>
+        <p>If you use the fixed layout and you are not satisfied with equal column widths, for HTML
+          you should use the <codeph>style</codeph> attribute on the <codeph>col</codeph>
+          element:</p>
+        <codeblock outputclass="language-xml"> &lt;table style="width:2in;">
+        &lt;colgroup>
+              &lt;col style="width: 40%; background-color:cyan"/>
+              &lt;col style="width: 60%"/>
+        &lt;/colgroup>
+...</codeblock>
+        <p>For arbitrary XML, you should set a display <codeph>table-column</codeph> to the element
+          representing the column. Consider the following XML:</p>
+        <codeblock outputclass="language-xml"> &lt;tbl>
+        &lt;colgr>
+              &lt;column wd="30%"/>
+              &lt;column wd="70%"/>
+        &lt;/colgr>
+...</codeblock>
+        <p>The following CSS links the <codeph>wd</codeph> attribute to the width property and
+          defines a different background for the first column.</p>
+        <codeblock outputclass="language-css">tbl { 
+    disply:table; 
+}
+colgr { 
+    display: table-column-group; 
+}
+column { 
+    display: table-column; 
+    width: attr(wd); 
+}
+column:first-of-type {
+    background-color: yellow;
+}
+</codeblock>
+        <p>Proportional column widths like the ones used in the CALS tables from DITA or DocBook are
+          supported, but only when set in a <codeph>width</codeph> attribute on the column element
+          (the one with display <codeph>table-column</codeph>):</p>
+        <codeblock outputclass="language-css">...
+&lt;column width="3*"/>
+&lt;column width="7*"/>
+...</codeblock>
+      </section>
+      <section id="section_vlp_jjt_cbb">
+        <title>Rotating Tables</title>
+        <p>There are cases where you have large tables and you need to rotate them to make them fit
+          on your page. For instance, the default page is portrait, but because you have a table
+          with many columns (and thus very wide), it would bleed to the right of the page.</p>
+        <p>There are two ways of doing this:<ul id="ol_gqs_tjt_cbb">
+            <li>Associate a wider page (i.e. landscape) to the table that needs more space. The
+              disadvantage is that the table will force a page break before and after
+              it.<codeblock outputclass="language-css">@page landscape-page-for-large-tables {
+    size: A4 landscape;
+}
+
+tbl {
+  display: table;
+  page: landscape-page-for-large-tables;
+}</codeblock></li>
+            <li>Rotate the table using the <codeph>transform</codeph> CSS property. The table will
+              not create page breaks, but is susceptible to bleeding if its height exceeds the page
+                width.<codeblock outputclass="language-css">tbl {
+  display: table;
+  width: 200pt;
+  transform: rotate(90deg);
+}</codeblock><note>The
+                table needs to have <codeph>table-layout: fixed</codeph>, and a
+                  <codeph>width</codeph>.</note></li>
+          </ul></p>
+        <p>The page is now landscape and you probably need to also change the headers and footers to
+          match this new orientation. One way of doing this is to move the header content from the
+            <codeph>@top-left</codeph>, <codeph>@top-center</codeph>, and
+            <codeph>@top-right</codeph> rules into page margin boxes from the right, and apply a
+            <codeph>transform</codeph> property on them.</p>
+        <p>In the following example, for the normal pages there is static text in the top (header)
+          that is either placed in the left or right side of the page, depending on the page
+          position:<codeblock outputclass="language-css">@page :left {
+  @top-left {
+     content: string(maptitle) string(parttitle) string(chaptertitle) " | " counter(page);
+     font-size:8pt;
+  }
+  @bottom-left {
+      /**/
+  }
+  @bottom-right {
+      /**/
+  }
+}
+
+@page :right{
+  @top-right {
+     content: string(maptitle) string(parttitle) string(chaptertitle) " | " counter(page);
+     font-size:8pt;
+  }
+  @bottom-right {
+      /**/
+  }
+  @bottom-left {
+      /**/
+  }
+}</codeblock></p>
+        <p>For the landscape page, we can move content to either the right-bottom or right-top,
+          depending on the page
+          position:<codeblock outputclass="language-css"> /*
+  * Table orientation.
+  */
+ @page table-landscape:right {
+	size:landscape;
+
+	@top-left{
+		content:none;
+	}
+	@top-center{
+		content:none;
+	}
+	@top-right{
+		content:none;
+	}
+		
+       @right-bottom{
+    content: string(chaptertitle) " | " counter(page);
+    font-size:8pt;
+		transform:rotate(90);
+		vertical-align: middle;
+		text-align: right;
+	}
+ }
+ @page table-landscape:left {
+	size:landscape;
+		
+	@top-left{
+		content:none;
+	}
+	@top-center{
+		content:none;
+	}
+	@top-right{
+		content:none;
+	}
+		
+	@right-top{
+    content: string(maptitle) string(parttitle) string(chaptertitle) " | " counter(page);
+    font-size:8pt;
+  	transform:rotate(90);
+  	vertical-align: middle;
+  	text-align: left;
+       }
+ }</codeblock></p>
+      </section>
+    </body>
+  </topic>
+  <topic id="ch_lists">
+    <title>Lists</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Lists</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>For the HTML lists (<codeph>ol</codeph>, <codeph>ul</codeph>), <ph keyref="product"/>
+        already defines the needed selectors, but sometimes you need greater control over the
+        spacing or style of the marker.</p>
+      <p>You need the list element to have the display <codeph>block</codeph>, and the children, the
+        display <codeph>list-item</codeph>. </p>
+      <codeblock outputclass="language-css">ul {
+    display:block;
+}
+
+li {
+    display:list-item;
+    list-style-type: disc;
+    margin-left: 0.5in;
+}</codeblock>
+      <p>Make sure you have a margin left so the bullet will have enough space to be painted inside
+        the list item box.</p>
+      <section id="list_marker_position">
+        <title>List Marker Position</title>
+        <p>You can select that the marker should be considered a decorator outside the box of the
+          list item element (this is the default), or if it should be inline and enter the first
+          line of the content of the element. </p>
+        <codeblock outputclass="language-css">li.inside {
+    list-style-position: inside;
+}
+li.outside {
+    list-style-position: outside;
+}</codeblock>
+      </section>
+      <section id="section_pmy_kp5_cbb">
+        <title>The <i>list-style-type</i> and <i>list-style-image</i> CSS Properties</title>
+        <p><ph keyref="product"/> supports the following values for the
+            <codeph>list-style-type</codeph> property: <ul id="ul_jbx_lp5_cbb">
+            <li><b>box</b></li>
+            <li><b>check</b></li>
+            <li><b>circle</b></li>
+            <li><b>diamond</b></li>
+            <li><b>disc</b></li>
+            <li><b>hyphen</b></li>
+            <li><b>square</b></li>
+            <li><b>none</b></li>
+            <li><b>decimal</b></li>
+            <li><b>lower-roman</b>/<b>lower-latin</b></li>
+            <li><b>upper-roman</b>/<b>upper-latin</b></li>
+            <li><b>decimal-leading-zero</b></li>
+          </ul>To use an image as a marker instead of a standard bullet or number, you can use the
+            <codeph>list-style-image</codeph> property. You have to use the <codeph>url</codeph>
+          function to point to an image
+          resource:<codeblock outputclass="language-css">li {
+	list-style-image:  url("images/my_list_bullet.svg");
+}</codeblock></p>
+      </section>
+      <section id="section_gf4_np5_cbb">
+        <title>Using a <i>:marker</i> Pseudo Selector</title>
+        <p>There is a CSS pseudo element that allows you to associate styles with the list marker.
+          The following example changes the background color, font, width, and even the content of a
+          list marker:</p>
+        <p>
+          <codeblock outputclass="language-css">ol {
+  ...
+  counter-reset:cnt;
+}
+
+li:marker {
+  width:3em;
+  background-color: silver;
+  color:red;
+  font-weight: bold;
+  text-align:left;
+  counter-increment: cnt;  
+  content:counter(cnt)" - \0430";
+}</codeblock>
+        </p>
+        <p>To use an image instead of a number as marker:</p>
+        <p>
+          <codeblock outputclass="language-css">li:marker{
+	content: url("images/my_list_bullet.svg");
+}</codeblock>
+        </p>
+        <p>You can even implement a custom list numbering using this selector. Such a technique may
+          be useful for other list numbering schemes that are currently not supported, or are more
+          exotic, for lists with up to tens of elements. You can use the
+            <codeph>nth-of-type()</codeph> selector to choose the labels of each item,
+          individually:</p>
+        <codeblock outputclass="language-css">li:nth-of-type(1):marker{
+	content:"alpha";
+}
+li:nth-of-type(2):marker{
+	content:"beta";
+}
+li:nth-of-type(3):marker{
+	content:"gamma";
+}
+...</codeblock>
+      </section>
+    </body>
+  </topic>
+  <topic id="ch_floats">
+    <title>Floats</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Floats</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>Floats are not supported by <ph keyref="product"/>.</p>
+    </body>
+  </topic>
+  <topic id="ch_horizontally_aligning_blocks">
+    <title>Aligning Blocks Horizontally</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Aligning blocks</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>If you want to align just the text paragraphs from the block, you might find the
+          <codeph>text-align</codeph> property useful.</p>
+      <p>To align a block, it must have a specified <codeph>width</codeph> (absolute or as
+        percentage). </p>
+      <section id="section_o3m_zr5_cbb">
+        <title>Align Center</title>
+        <p>This can be done by setting both the <codeph>margin-left</codeph> and
+            <codeph>margin-right</codeph> to <codeph>auto</codeph>:</p>
+        <codeblock outputclass="language-css">div {
+  width: 200pt;
+  margin-left: auto;
+  margin-right: auto;
+}</codeblock>
+      </section>
+      <section id="section_uym_zr5_cbb">
+        <title>Align Left</title>
+        <p>This can be done by setting the <codeph>margin-left</codeph> to <codeph>0</codeph> and
+            <codeph>margin-right</codeph> to <codeph>auto</codeph>:</p>
+        <codeblock outputclass="language-css">div {
+  width: 200pt;
+  margin-left: 0;
+  margin-right: auto;
+}</codeblock>
+      </section>
+      <section id="section_nxn_zr5_cbb">
+        <title>Align Right</title>
+        <p>This can be done by setting the <codeph>margin-left</codeph> to <codeph>auto</codeph> and
+          the <codeph>margin-right</codeph> to <codeph>0</codeph>:</p>
+        <codeblock outputclass="language-css">div {
+  width: 200pt;
+  margin-left: auto;
+  margin-right: 0;
+}</codeblock>
+      </section>
+    </body>
+  </topic>
+  <topic id="ch_block_element_rotation">
+    <title>Rotating Blocks</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Rotating blocks</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>There are cases where you need to rotate some block elements for visual effects. For this,
+        you should use the <codeph>transform</codeph> CSS property.
+          <codeblock outputclass="language-css">code {
+  transform: rotate(90deg);
+}</codeblock><note>The
+          block needs to have a specified <codeph>width</codeph>.</note></p>
+    </body>
+  </topic>
 </topic>

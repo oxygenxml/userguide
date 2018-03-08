@@ -9,4 +9,144 @@
       </keywords>
     </metadata>
   </prolog>
+  <topic id="ch_choosing_the_fonts">
+    <title>Choosing the Fonts</title>
+    <body>
+      <p>An important step in making sure your document is published properly in different scripts
+        (languages) is choosing a font that covers the entire set of characters from that script
+        (language).</p>
+      <p>However, you can specify a series of font families (using the CSS
+          <codeph>font-family</codeph> property) that are used as fall-backs. Once a word cannot be
+        rendered using the first specified font, the next font family is tried. The following
+        example uses some common fonts available on Windows to make a CSS stylesheet capable of
+        properly displaying a large number of languages, from all European to Asian languages:</p>
+      <codeblock outputclass="language-css">* {
+	font-family: Calibri, SimSun, "Malgun Gothic";	
+}</codeblock>
+      <p>Assigning a font for all the elements, and not relying on <xref
+          href="ch_fonts.dita#ch_fonts">basic fonts</xref>, makes the document <xref
+          href="ch_accessibility.dita">accessible</xref>.<note>If your CSS does not assign a font to
+          a part of your document, then the following sequence of fonts are used: Serif, Times,
+          Times New Roman, Symbol, MingLiU, MS Mincho, Arial Unicode MS. This combination covers a
+          wide character range, but might be different from what you need.</note></p>
+    </body>
+  </topic>
+  <topic id="ch_suport_for_right_to_left_languages">
+    <title>Support for Right to Left Languages</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Right to left languages</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>The Unicode BIDI algorithm is applied automatically. For best result in HTML, make sure you
+        mark the right-to-left content, or the left-to-right content embedded in right-to-left, with
+        proper direction attributes:</p>
+      <codeblock outputclass="language-xml">&lt;p dir='rtl'>SOME ARABIC TEXT &lt;p dir='ltr'>Some latin words.&lt;/p>.&lt;/p></codeblock>
+      <p>For arbitrary XML, use the <codeph>unicode-bidi</codeph> and <codeph>direction</codeph> CSS
+        properties:</p>
+      <codeblock outputclass="language-xml">&lt;para dir='right-to-left'>SOME ARABIC TEXT.&lt;/p></codeblock>
+      <p>CSS:</p>
+      <codeblock outputclass="language-css">para[dir='right-to-left'] { 
+    direction: rtl; 
+    unicode-bidi: embed; 
+} </codeblock>
+      <note>There are built-in rules in <ph keyref="product"/> that automatically match the
+          <codeph>dir</codeph> attribute in any XML vocabulary, with the same semantic as for HTML.
+        The accepted values are: <b>ltr</b>, <b>rtl</b>, <b>auto</b>. If you use other attribute
+        names or other values for this attribute, you should add CSS rules similar to the one
+        above.</note>
+      <p>For elements in a right to left context, <ph keyref="product"/> automatically switches the
+        left borders, paddings, and margins with the ones from the right. This keeps your CSS as
+        simple as possible. </p>
+      <p>In the following example, the <codeph>p</codeph> element has a left border.</p>
+      <codeblock outputclass="language-css">p {
+    border-left: 1pt solid orange;
+}</codeblock>
+      <p>Suppose it is placed in a <codeph>div</codeph> with the default <codeph>ltr</codeph>
+        direction. The orange line is painted in its left border. But if it is placed in a
+          <codeph>div</codeph> with the <codeph>rtl</codeph> direction, the orange line will be
+        painted in its right border because that is where the text begins. In a sense, "left"
+        becomes "start".</p>
+      <note>To disable this behavior, you may use the <xref
+          href="ch_command_line_interface.dita#ch_command_line_interface/no-rtl-mirroring"/> command
+        line parameter.</note>
+    </body>
+  </topic>
+  <topic id="ch_ligatures">
+    <title>Ligatures</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Ligatures</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>Ligatures for the Latin scripts are disabled by default. To enable them, see the <xref
+          href="ch_command_line_interface.dita#ch_command_line_interface/enable-latin-ligatures"/>
+        command line parameter.</p>
+      <p>Other non-Latin scripts have the ligatures enabled.</p>
+    </body>
+  </topic>
+  <topic id="ch_changing_labels_depending_on_language">
+    <title>Changing Labels Depending on Language</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Localization</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>When developing a CSS that will apply to output localized to a number of countries, you
+        must consider changing the static text (CSS generated) depending on the language. </p>
+      <note>Your document must use the <codeph>xml:lang</codeph> or <codeph>lang</codeph> attributes
+        to specify the content language, ideally on the root element. The value must be specified
+        using a language identifier (such as "en", "en-US", "en-CA", "fr", "fr-CA").</note>
+      <p>Consider a case where all the chapter titles are prefixes with the word "Chapter", followed
+        by the figure counter. Depending on the language of the XML/HTML document, you need this
+        word to change to: "Kapitel" for German, or to "Chapitre" for French. </p>
+      <codeblock outputclass="language-xml">&lt;div class='chp'>
+    &lt;h2>Introduction&lt;/h2>
+... 
+&lt;/dif></codeblock>
+      <p>The CSS may be written starting with a default rule that will be used when the content has
+        other language than the ones that are expected. This rules will also be used for English
+        content:</p>
+      <codeblock outputclass="language-css">div.chp > h2:before{
+    content: "Chapter " counter(chp);
+}</codeblock>
+      <p>Next, write rules for each of the languages:</p>
+      <codeblock outputclass="language-css">div.chp > h2:lang(de):before{
+    content: "Kapitel " counter(chp);
+}
+div.chp > h2:lang(fr):before{
+    content: "Chapitre " counter(chp);
+}</codeblock>
+      <p>A good practice is to keep all the static text for a specific language in a separate CSS. </p>
+      <p>To make the maintenance easier, you can separate the strings from the counter value by
+        using one of the advanced features of <ph keyref="product"/> (the <codeph>:before</codeph>
+        and <codeph>:after</codeph> pseudo elements) with <xref
+          href="ch_advanced_styling.dita#ch_multiple_before_after_pseudo_elements">multiple
+          levels</xref>. So you could write the default rule as:</p>
+      <codeblock outputclass="language-css">div.chp > h2:before(2){
+    content: "Chapter ";
+}
+div.chp > h2:before(1){
+    content: counter(chp);
+}</codeblock>
+      <p>Now, the more specific rules are more simple:</p>
+      <codeblock outputclass="language-css">div.chp > h2:lang(de):before(2){
+    content: "Kapitel ";
+}
+div.chp > h2:lang(fr):before(2){
+    content: "Chapitre ";
+}</codeblock>
+      <note>The multiple-level pseudo elements is a non standard feature, and might not work if you
+        switch to another processor.</note>
+    </body>
+  </topic>
 </topic>

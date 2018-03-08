@@ -9,4 +9,329 @@
       </keywords>
     </metadata>
   </prolog>
+  <topic id="ch_images">
+    <title>Images</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Images</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>Images are very important in any printed material. This section contains information about
+        how you can reference them from your HTML or XML documents.</p>
+      <p>For HTML, the <codeph>img</codeph> tag is recognized as an image without any other styling
+        in your CSS files:</p>
+      <codeblock outputclass="language-xml">...
+&lt;p> And this is the picture of a happy face: &lt;img src="happy.png" />. &lt;/p>
+...</codeblock>
+      <p>For XML, you must add CSS rules that pick up the content of an attribute and uses it as a
+        source for an image.</p>
+      <codeblock outputclass="language-xml">...
+&lt;para> And this is the picture of a happy face: &lt;imagedata fileref="happy.png"/>.&lt;/para>
+...</codeblock>
+      <p>The following example uses static content on the <codeph>imagedata</codeph> before pseudo
+        element:</p>
+      <codeblock outputclass="language-css">imagedata[fileref]:before {
+    content: attr(fileref, url);
+}</codeblock>
+      <p>It is important to use the <codeph>url</codeph> keyword when retrieving the attribute
+        value. It signals that the value is a pointer to an external image.</p>
+    </body>
+    <topic id="ch_setting_image_width_and_height">
+      <title>Setting Image Width and Height</title>
+      <body>
+        <p>The image size can be determined from the number of pixels of the image, taking the <xref
+            href="#ch_image_resolution" format="dita">image resolution</xref> into account (if
+          available). There are cases where this computed size is not what you need, and you want to
+          specify the size explicitly. </p>
+        <p>For HTML, it is enough to use the image attributes directly in your document.</p>
+        <codeblock outputclass="language-xml">&lt;img src="my_image.png" width="300" height="250" /></codeblock>
+        <p>For an arbitrary XML, you can indicate the image width and height through a rule that
+          matches the element (or its pseudo elements <codeph>:before</codeph> or
+            <codeph>:after</codeph>) and sets the <codeph>width</codeph> and <codeph>height</codeph>
+          CSS properties.</p>
+        <codeblock outputclass="language-css">imagedata {
+    display: inline;
+    content: attr(src, url);
+    width: attr(width, length);
+    height: attr(height, length);
+}</codeblock>
+        <p>Or, if you use an image as a decorator, you can specify fixed dimensions in the CSS:</p>
+        <codeblock outputclass="language-css">chapter title:before {
+    content: url("my_artwork.png");
+    width: 300px;
+}</codeblock>
+        <p>
+          <note>For static content as in the example above, <ph keyref="product"/> tries to use the
+            width and height set on the pseudo element, then the ones that are set on the parent
+            element, but only if the static content is composed of a single image. Mixing text and
+            images in the <codeph>content</codeph> property disables the width and height
+            specification.</note>
+        </p>
+        <p>If you want to limit the width of the images to a maximum size, you can use the
+            <codeph>max-width</codeph> property. The image will be scaled down to fit the maximum
+          size, if it is larger.</p>
+        <codeblock outputclass="language-css">imagedata {
+    ...
+    content: attr(src, url);
+    max-width: attr(width, length); 
+    ...
+}</codeblock>
+      </body>
+    </topic>
+    <topic id="ch_background_images">
+      <title>Background Images</title>
+      <body>
+        <p>You can use background images to impose a texture. You can use them to decorate an entire
+          page, or a specific element from your document. </p>
+        <p>Supported properties:</p>
+        <ul id="ul_vxc_wkc_zz">
+          <li><b>background-image</b></li>
+          <li><b>background-repeat</b></li>
+          <li><b>background-position</b></li>
+        </ul>
+        <section id="page_background_images">
+          <title>Page Background Images</title>
+          <p>You can set a background for a page. Usually you do this for the cover page to impose a
+            full page artwork, or to add graphics to the header and footer of the page. Here is an
+            example of how can you do it for the page:</p>
+          <codeblock outputclass="language-css">@page cover {
+    size:A4;
+    margin:1in;    
+    background-image:url("images/my_book_cover_artwork.png");
+    background-repeat:no-repeat;
+}
+
+div.cover {
+    page: cover;
+}</codeblock>
+          <p>
+            <note>It is better to use SVG for the page artworks. It does not suffer from pixelation.
+              If you are limited to using raster images, you can fine tune their resolution by using
+              the <xref href="#ch_image_resolution" format="dita">image-resolution</xref>
+              property.</note>
+            <note>To separate the header and footer from the main content using visual effects
+              (lines, shadows, etc.), you can use a full page size artwork in SVG and set it to the
+              default
+              page:<codeblock outputclass="language-css">@page {
+    background-image:url("images/my_header_footer_artwork.svg");
+    background-repeat:no-repeat;
+}</codeblock></note>
+          </p>
+          <p>If your artwork is smaller, consider a "DRAFT" watermark (for instance). You should use
+            the <codeph>background-position</codeph> to place it where you need:</p>
+          <codeblock outputclass="language-css">@page {
+    ...
+    background-image:url("images/draft.svg");
+    background-position: bottom center;
+    ...
+}</codeblock>
+        </section>
+        <section id="element_background_images">
+          <title>Element Background Images</title>
+          <p>You can style the background of your elements as you do for web pages:</p>
+          <codeblock outputclass="language-css">section {
+    background-image: url("my_repeating_pattern.svg");
+    background-repeat: repeat-y;
+}</codeblock>
+        </section>
+      </body>
+    </topic>
+    <topic id="ch_image_resolution">
+      <title>Image Resolution</title>
+      <body>
+        <p>Some raster images (pixels, not vector) may have a default resolution, set by the
+          designer, using an image editing software. Usually the image size and resolution are set
+          to look best on the screen. The advantage of a resolution set in the image itself it is
+          that it will have the same effective size on the screen and on paper. For example, if the
+          image has 144 dots in width, and an embedded resolution of 72dpi, it will be two inches on
+          screen and on paper.</p>
+        <p>The problems start to arise when the resolution is not set in the image, and the PDF
+          processor has to decide what resolution to use in order to determine the size of the
+          graphic. To solve this, the processor extracts the DPI from:</p>
+        <ul id="ol_tyf_cnz_xz">
+          <li>The <codeph>image-resolution</codeph> CSS property associated to the element that
+            contains the image.</li>
+          <li>The command line parameter <codeph>-image-resolution</codeph> .</li>
+          <li>The built-in fallback resolution of 96 DPI.</li>
+        </ul>
+        <p>The recommended way to change this is by using the CSS Level 4
+            <codeph>image-resolution</codeph> property:</p>
+        <codeblock outputclass="language-css">img {
+    image-resolution: 300dpi;
+}</codeblock>
+        <note>The <codeph>image-resolution</codeph> is inheritable, so you can associate it on the
+          root element. It does not apply on the page generated content (margin
+          boxes).<codeblock outputclass="language-css">:root {
+    image-resolution: 300dpi;
+}</codeblock>To
+          reset the image resolution to the one set in the image itself, you can use the constant
+            <codeph>from-image</codeph> instead of a DPI value:
+          <codeblock outputclass="language-css">title:before {
+    content: url("chapter-decorator.png");
+    image-resolution: from-image;
+}</codeblock></note>
+        <note>To change the resolution for images that appear in a page margin box, set this
+          property on that margin box, or directly on the @page rule, to apply to all page margin
+          boxes:<codeblock outputclass="language-css">@page front-page {
+    image-resolution: 600dpi;
+}
+
+@page {
+    @top-center {
+        image-resolution: 600dpi;
+        content: url("company-logo.png");
+    }
+}</codeblock></note>
+      </body>
+      <related-links>
+        <linklist>
+          <title>Related Information:</title>
+          <link href="ch_command_line_interface.dita"/>
+          <link format="html" href="https://drafts.csswg.org/css-images-4/#the-image-resolution"
+            scope="external"/>
+        </linklist>
+      </related-links>
+    </topic>
+    <topic id="ch_supported_image_types">
+      <title>Supported Image Types</title>
+      <body>
+        <p><ph keyref="product"/> supports the following raster image types:</p>
+        <ul id="ul_qyb_mkz_xz">
+          <li>BMP (Microsoft Windows Bitmap)</li>
+          <li>GIF (Graphics Interchange Format)</li>
+          <li>JPEG (Joint Photographic Experts Group)</li>
+          <li>PNG (Portable Network Graphic)</li>
+          <li>TIFF (Tag Image Format File)</li>
+        </ul>
+        <p>And the following vector images:</p>
+        <ul id="ul_mpy_x33_b1b">
+          <li>SVG (Scalable Vector Graphics)</li>
+          <li>WMF (Windows Metafile)</li>
+          <li>PDF (PDF Documents)</li>
+        </ul>
+        <section id="pdf_images">
+          <title>PDF Images</title>
+          <p>You can reference PDF images the same way other image files are referenced:</p>
+          <codeblock outputclass="language-xml">&lt;img src="my_doc.pdf"/></codeblock>
+          <p>To point to a single page from your PDF document, use the following syntax (this
+            example points to page 5):</p>
+          <codeblock outputclass="language-xml">&lt;img src="my_doc.pdf#page=5"/></codeblock>
+        </section>
+      </body>
+    </topic>
+    <topic id="ch_svg">
+      <title>SVG</title>
+      <prolog>
+        <metadata>
+          <keywords>
+            <indexterm>SVG</indexterm>
+          </keywords>
+        </metadata>
+      </prolog>
+      <body>
+        <p><ph keyref="product"/> supports SVG images. The advantage of using SVG is that the image
+          looks good on paper.</p>
+        <section id="section_b1s_vk1_yz">
+          <title>SVG Referenced or Embedded into the Document</title>
+          <p>These can be either referenced as external resources:</p>
+          <codeblock outputclass="language-xml">&lt;p> This is an SVG showing a happy face: &lt;img src="happy.svg"/>&lt;/p></codeblock>
+          <p>Or embedded into the document, as SVG fragments:</p>
+          <codeblock outputclass="language-xml">&lt;p> This is a red circle: 
+   &lt;svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 50 50" width="50" height="50">
+       &lt;circle cx="25" cy="25" r="10" fill="#F00" />
+   &lt;/svg>
+&lt;/p></codeblock>
+          <note>No styling is required to show the embedded SVG in the output. It works
+            automatically for HTML or other XML.</note>
+          <note>For HTML5, the namespace declaration is not required.</note>
+        </section>
+        <section id="section_m2s_yk1_yz">
+          <title>Using SVG for Styling</title>
+          <p>To use it to decorate an element:</p>
+          <codeblock outputclass="language-css">div.note:before {
+    content:url("images/note.svg");
+}</codeblock>
+          <p>To set an SVG image as background of a page, or a page margin box:</p>
+          <codeblock outputclass="language-css">@page coverpage{
+    background-image: url("images/clipart.svg");
+    background-repeat:no-repeat;
+    background-position:center center;
+    
+    @top-left {
+        background-image: url("images/company.svg");
+        background-repeat:no-repeat;
+    }
+}</codeblock>
+          <note>The <codeph>image-resolution</codeph> CSS property does not apply for SVG
+            vectors.</note>
+        </section>
+      </body>
+    </topic>
+    <topic id="ch_mathml">
+      <title>MathML</title>
+      <prolog>
+        <metadata>
+          <keywords>
+            <indexterm>MathML</indexterm>
+          </keywords>
+        </metadata>
+      </prolog>
+      <body>
+        <p>MathML equations can be either referenced from the document as external resources (the
+          file should be ending with the "mml" extension):</p>
+        <codeblock outputclass="language-xml">&lt;p> The quadratic formula: &lt;img src="quadratic.mml"/>&lt;/p></codeblock>
+        <p>Or embedded directly in the document:</p>
+        <codeblock outputclass="language-xml">  &lt;p> The quadratic formula:
+   &lt;math>
+    &lt;mi>x&lt;/mi>
+    &lt;mo>=&lt;/mo>
+    &lt;mfrac>
+     &lt;mrow>
+      &lt;mo form="prefix">−&lt;/mo> &lt;mi>b&lt;/mi>
+      &lt;mo>±&lt;/mo>
+      &lt;msqrt>
+       &lt;msup> &lt;mi>b&lt;/mi> &lt;mn>2&lt;/mn> &lt;/msup>
+       &lt;mo>−&lt;/mo>
+       &lt;mn>4&lt;/mn> &lt;mo>⁢&lt;/mo> &lt;mi>a&lt;/mi> &lt;mo>⁢&lt;/mo> &lt;mi>c&lt;/mi>
+      &lt;/msqrt>
+     &lt;/mrow>
+     &lt;mrow>
+      &lt;mn>2&lt;/mn> &lt;mo>⁢&lt;/mo> &lt;mi>a&lt;/mi>
+     &lt;/mrow>
+    &lt;/mfrac>
+   &lt;/math>
+  &lt;/p></codeblock>
+        <note>No styling is required to show the embedded MathML in the output. It works
+          automatically for HTML or other XML.</note>
+        <note>For HTML5 the namespace declaration is not required.</note>
+      </body>
+    </topic>
+    <topic id="ch_supported_colors">
+      <title>Supported Colors</title>
+      <body>
+        <p>Along with the usual color values, <ph keyref="product"/> supports the following special
+          values for all the color properties:</p>
+        <ul id="ul_qyb_mkz_xz">
+          <li><b>rgb</b> - Used to specify red, green, and blue components (for example,
+              <codeph>color="rgb(255 , 0 , 153)"</codeph>).</li>
+          <li><b>rbga</b> - Used for transparent colors by specifying each color channel and the
+            transparency. For example, the following would result in the background color being
+            magenta since the red color from the parent <codeph>div</codeph> element will be visible
+            through the blue color of the <codeph>p</codeph>
+            element:<codeblock outputclass="language-css">div{
+  background-color:rgba(255,0,0,0.3)
+}
+p{
+  background-color:rgba(0,0,255,0.3)
+}</codeblock></li>
+        </ul>
+        <p>For more information about color properties, see <xref
+            href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value" format="html"
+            scope="external">MDN Web Docs: Color</xref>.</p>
+      </body>
+    </topic>
+  </topic>
 </topic>
