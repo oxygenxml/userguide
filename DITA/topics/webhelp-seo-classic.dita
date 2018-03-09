@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webhelp-seo-classic">
+  <title>Optimizing Search Results in WebHelp Classic</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Classic<indexterm>Search engine optimization</indexterm></indexterm>
+        <indexterm product="webhelp">Search engine optimization</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>A <uicontrol>DITA Map WebHelp</uicontrol> transformation scenario can be configured to
+      produce a <filepath>sitemap.xml</filepath> file that is used by search engines to aid crawling
+      and indexing mechanisms. A <i>sitemap</i> lists all pages of a WebHelp system and allows
+      webmasters to provide additional information about each page, such as the date it was last
+      updated, change frequency, and importance of each page in relation to other pages in your
+      WebHelp deployment.</p>
+    <p>The structure of the <filepath>sitemap.xml</filepath> file looks like
+      this:<codeblock outputclass="language-xml">&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;http://www.example.com/topics/introduction.html&lt;/loc&gt;
+    &lt;lastmod&gt;2014-10-24&lt;/lastmod&gt;
+    &lt;changefreq&gt;weekly&lt;/changefreq&gt;
+    &lt;priority&gt;0.5&lt;/priority&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;http://www.example.com/topics/care.html#care&lt;/loc&gt;
+    &lt;lastmod&gt;2014-10-24&lt;/lastmod&gt;
+    &lt;changefreq&gt;weekly&lt;/changefreq&gt;
+    &lt;priority&gt;0.5&lt;/priority&gt;
+  &lt;/url&gt;
+   .  .  .
+&lt;/urlset&gt;</codeblock></p>
+    <p>Each page has a <codeph>&lt;url></codeph> element structure containing additional
+      information, such as:<ul id="ul_iq3_nmt_kq">
+        <li><b>loc</b> - the URL of the page. This URL must begin with the protocol (such as
+            <codeph>http</codeph>), if required by your web server. It is constructed from the value
+          of the <codeph>webhelp.sitemap.base.url</codeph> parameter from the transformation
+          scenario and the relative path to the page (collected from the <codeph>href</codeph>
+          attribute of a <codeph>topicref</codeph> element in the <term>DITA map</term>).<note>The
+            value must have fewer than 2,048 characters.</note></li>
+        <li><b>lastmod</b> (optional) - the date when the page was last modified. The date format is
+            <codeph>YYYY-MM-DD</codeph>.</li>
+        <li><b>changefreq</b> (optional) - indicates how frequently the page is likely to change.
+          This value provides general information to assist search engines, but may not correlate
+          exactly to how often they crawl the page. Valid values are: <codeph>always</codeph>,
+            <codeph>hourly</codeph>, <codeph>daily</codeph>, <codeph>weekly</codeph>,
+            <codeph>monthly</codeph>, <codeph>yearly</codeph>, and <codeph>never</codeph>. The first
+          time the <filepath>sitemap.xml</filepath> file is generated, the value is set based upon
+          the value of the <codeph>webhelp.sitemap.change.frequency</codeph> parameter in the DITA
+          WebHelp transformation scenario. You can change the value in each <codeph>url</codeph>
+          element by editing the <filepath>sitemap.xml</filepath> file.<note>The value
+              <codeph>always</codeph> should be used to describe documents that change each time
+            they are accessed. The value <codeph>never</codeph> should be used to describe archived
+            URLs.</note></li>
+        <li><b>priority</b> (optional) - the priority of this page relative to other pages on your
+          site. Valid values range from 0.0 to 1.0. This value does not affect how your pages are
+          compared to pages on other sites. It only lets the search engines know which pages you
+          deem most important for the crawlers. The first time the <filepath>sitemap.xml</filepath>
+          file is generated, the value is set based upon the value of the
+            <codeph>webhelp.sitemap.priority</codeph> parameter in the DITA WebHelp transformation
+          scenario. You can change the value in each <codeph>url</codeph> element by editing the
+            <filepath>sitemap.xml</filepath> file.</li>
+      </ul></p>
+    <section id="creating_and_editing_the_sitemapxml_file"
+      product="author developer editor authorEclipse developerEclipse editorEclipse">
+      <title>Creating and Editing the <filepath>sitemap.xml</filepath> File</title>
+      <p>Follow these steps to produce a <filepath>sitemap.xml</filepath> file for your WebHelp
+        system, which can then be edited to fine-tune search engine optimization:<ol
+          id="ol_z2w_ytt_kq">
+          <li><uicontrol>Edit</uicontrol> the transformation scenario you currently use for
+            obtaining your WebHelp output. This opens the <uicontrol>Edit DITA Scenario</uicontrol>
+            dialog box.</li>
+          <li>Open the <uicontrol>Parameters</uicontrol> tab and set a value for the following
+              parameters:<ul id="ul_fzz_l5t_kq">
+              <li><b>webhelp.sitemap.base.url</b> - the URL of the location where your WebHelp
+                system is deployed <note>This parameter is required for <ph keyref="product"/> to
+                  generate the <filepath>sitemap.xml</filepath> file.</note></li>
+              <li><b>webhelp.sitemap.change.frequency</b> - how frequently the WebHelp pages are
+                likely to change (accepted values are: <codeph>always</codeph>,
+                  <codeph>hourly</codeph>, <codeph>daily</codeph>, <codeph>weekly</codeph>,
+                  <codeph>monthly</codeph>, <codeph>yearly</codeph>, and
+                <codeph>never</codeph>)</li>
+              <li><b>webhelp.sitemap.priority</b> - the priority of each page (value ranging from
+                0.0 to 1.0)</li>
+            </ul></li>
+          <li>Run the transformation scenario.</li>
+          <li>Look for the <filepath>sitemap.xml</filepath> file in the transformation's output
+            folder. Edit the file to fine-tune the parameters of each page, according to your
+            needs.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
