@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webhelp-customization-ol-numbering">
-  <title><?oxy_comment_start author="Steven" timestamp="20180307T155557+0200" comment="WH-1766"?>Change<?oxy_comment_end?>
-    Numbering Styles for Ordered Lists</title>
-  <prolog>
-    <metadata>
-      <keywords>
-        <indexterm>WebHelp Responsive system<indexterm>Customize ordered
-          lists</indexterm></indexterm>
-        <indexterm>WebHelp Classic system<indexterm>Customize ordered lists</indexterm></indexterm>
-      </keywords>
-    </metadata>
-  </prolog>
+  <title>How to Change Numbering Styles for Ordered Lists</title>
   <body>
     <p>Ordered lists (<codeph>ol</codeph>) are usually numbered in XHTML output using numerals. If
       you want to change the numbering to alphabetical, follow these steps:<ol id="ul_g3s_23t_p4">
@@ -28,18 +18,61 @@
     list-style-type:lower-alpha;
 }</codeblock>
           </p></li>
-        <li><ph conkeyref="reusable-webhelp-customizing/transform-parameters-tab-ph"
-            product="author developer editor authorEclipse developerEclipse editorEclipse"></ph><ph
-              product="webhelp webhelp-responsive">Use the following parameters in your transformation script:</ph><ol
-            id="ul_kgf_n3t_p4">
-            <li><ph conkeyref="reusable-webhelp-customizing/DITA-parameters-ph"></ph></li>
-            <li><?oxy_comment_start author="radu_pisoi" timestamp="20180216T195142+0200" comment="The docbook section is not available in responsive version."?><ph
-                conkeyref="reusable-webhelp-customizing/DocBook-parameters-ph"
-              /><?oxy_comment_end?></li>
-          </ol></li>
-        <li>Run the transformation <ph
-            product="author developer editor authorEclipse developerEclipse editorEclipse"
-          >scenario</ph><ph product="webhelp webhelp-responsive">script</ph>.</li>
+        <li>Reference the CSS file in a <term>WebHelp Responsive</term> transformation using <xref
+            href="#webhelp-customization-ol-numbering/referencing_the_custom_css_from_a_publishing_temp"
+            format="dita">an <term>Oxygen Publishing Template</term></xref> or <xref
+            href="#webhelp-customization-ol-numbering/referencing_the_css_using_the_argscss_parameter"
+            format="dita">the <codeph>args.css</codeph> parameter</xref>.</li>
       </ol></p>
+    <section id="referencing_the_custom_css_from_a_publishing_temp">
+      <title>Referencing the Custom CSS from a Publishing Template</title>
+      <p>
+        <ol>
+          <li>If you haven't already created a Publishing Template, see <xref
+              href="whr_publishing_templates.dita"/>.</li>
+          <li>Using the <uicontrol product="author developer editor webhelp-responsive"
+              >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+              >Navigator</uicontrol> view, copy your custom CSS in a folder inside the publishing
+            template root folder (for example, in the
+              <filepath>custom_footer_template/resources</filepath> folder).</li>
+          <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
+              >template descriptor file</xref> associated with your publishing template and add your
+            custom CSS in the <term>resources</term>
+            section.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...                
+        &lt;resources>            
+            ...          
+            &lt;css file="resources/MyCustom.css"/></codeblock></li>
+          <li>Open the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+          <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select
+            your template.</li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol>
+      </p>
+      <p><b>Result:</b> Your custom CSS will be applied as a final layer on top of any existing CSS
+        rules and the output will reflect the changes you made.</p>
+    </section>
+    <section id="referencing_the_css_using_the_argscss_parameter">
+      <title>Referencing the CSS Using the <i>args.css</i> Parameter</title>
+      <p>
+        <ol>
+          <li>Edit the <term>DITA Map WebHelp Responsive</term> transformation scenario and open the
+              <uicontrol>Parameters</uicontrol> tab.</li>
+          <li>Set the <codeph>args.css</codeph> parameter to the path of your custom CSS file.</li>
+          <li>Set the <codeph>args.copycss</codeph> parameter to <codeph>yes</codeph> to
+            automatically copy your custom CSS in the output folder when the transformation scenario
+            is processed.</li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol>
+      </p>
+      <p><b>Result:</b> Your custom CSS will be applied as a final layer on top of any existing CSS
+        rules and the output will reflect the changes you made.</p>
+    </section>
   </body>
 </topic>
