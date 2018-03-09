@@ -1,20 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="whr-add-tweet-button">
-  <title><?oxy_comment_start author="Steven" timestamp="20180307T162240+0200" comment="WH-1737"?>How<?oxy_comment_end?>
-    to Add Tweet Button in WebHelp Responsive Output</title>
-  <prolog>
-    <metadata>
-      <keywords>
-        <indexterm>WebHelp Responsive system<indexterm>Add Tweet widget</indexterm></indexterm>
-      </keywords>
-    </metadata>
-  </prolog>
+  <title>How to Add Tweet Button in WebHelp Responsive Output</title>
   <body>
     <p>It is possible to integrate <term>Twitter</term> into your <b>WebHelp Responsive</b> output
       and you can specify where you want the widget to appear in your WebHelp page.</p>
+    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
+      <title>Using a Publishing Template</title>
+      <p>To add a <tm tmtype="tm" trademark="tm">Twitter</tm>
+        <i>Tweet</i> widget to your WebHelp Responsive output using an <xref
+          keyref="wh-publishing-template"><term>Oxygen Publishing Template</term></xref>, follow
+        this procedure:<ol>
+          <li>Go to the <xref href="https://publish.twitter.com" format="html" scope="external"
+              >Tweet button generator</xref> page.</li>
+          <li>Fill-in the displayed form. The <uicontrol>Preview and code</uicontrol> area displays
+            the code that you will need.</li>
+          <li>Copy the code snippet displayed in the <uicontrol>Preview and code</uicontrol> area
+            and paste it into a <codeph>div</codeph> element inside an XML file called
+              <filepath>tweet-button.xml</filepath>. Make sure you follow these rules:<ul>
+              <li>The file must be well-formed.</li>
+              <li>The code for each <codeph>script</codeph> element must be included in an XML
+                comment.</li>
+              <li>The start and end tags for the XML comment must be on a separate line.</li>
+            </ul>The content of the XML file should look like
+            this:<codeblock outputclass="language-javascript">&lt;div id="twitter">
+  &lt;a href="https://twitter.com/share" class="twitter-share-button">Tweet&lt;/a>
+  &lt;script>
+    &lt;!-- 
+      !function (d, s, id) {
+      var
+      js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location)
+ ? 'http': 'https';
+      if (! d.getElementById(id)) {
+      js = d.createElement(s);
+      js.id = id;
+      js.src = p + '://platform.twitter.com/widgets.js';
+      fjs.parentNode.insertBefore(js, fjs);
+      }
+      }
+      (document,
+      'script', 'twitter-wjs');
+     -->
+  &lt;/script>
+&lt;/div></codeblock></li>
+          <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
+              >template descriptor file</xref> associated with your publishing template.</li>
+          <li>Use <xref href="whr_publishing_template_contents.dita#html_fragment_extension_points"
+              >one of the parameters that begin with <i>webhelp.fragment</i></xref> in the
+              <i>html-fragments</i> section of the descriptor file. Set the value of that parameter
+            to reference the <filepath>tweet-button.xml</filepath> file that you created
+            earlier.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...                
+      &lt;html-fragments>
+        &lt;fragment 
+          file="HTML-fragments/tweet-button.xml" 
+          placeholder="webhelp.fragment.after.toc_or_tiles"/>
+      &lt;/html-fragments>
+    &lt;/webhelp></codeblock></li>
+          <li>Open the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+          <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select
+            your template.</li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol></p>
+    </section>
     <section id="using_oxygen_xml_editorauthor">
-      <title>Using Oxygen XML Editor/Author</title>
+      <title>Using a Transformation Scenario in Oxygen XML Editor/Author</title>
       <p>To add a <tm tmtype="tm" trademark="tm">Twitter</tm>
         <i>Tweet</i> widget to your WebHelp Responsive output using a transformation scenario from
         within <b>Oxygen XML Editor/Author</b>, follow this procedure:<ol>
@@ -50,75 +104,14 @@
      -->
   &lt;/script>
 &lt;/div></codeblock></li>
-          <li>In <b>Oxygen XML Editor/Author</b>, click the <uicontrol><image
-                href="../img/TransformConfig16.png"></image>Configure Transformation
-              Scenario(s)</uicontrol> action from the toolbar<ph product="author developer editor">
-              (or the <menucascade>
-                <uicontrol>Document</uicontrol>
-                <uicontrol>Transformation</uicontrol>
-              </menucascade> menu</ph>.</li>
-          <li>Select an existing WebHelp Responsive transformation scenario (depending on your
-            needs, it may be with or without feedback) and click the
-              <uicontrol>Duplicate</uicontrol> button to open the <uicontrol>Edit
-              Scenario</uicontrol> dialog box.</li>
+          <li>Edit the <term>DITA Map WebHelp Responsive</term> transformation scenario and choose a
+              <i>template</i>.</li>
           <li>Switch to the <uicontrol>Parameters</uicontrol> tab. Depending on where you want to
             display the button, edit <xref
               href="whr_publishing_template_contents.dita#html_fragment_extension_points">one of the
               parameters that begin with <i>webhelp.fragment</i></xref>. Set that parameter to
             reference the <filepath>tweet-button.xml</filepath> file that you created earlier.</li>
           <li>Click <uicontrol>Ok</uicontrol> and run the transformation scenario.</li>
-        </ol></p>
-    </section>
-    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
-      <title>Using a Script Outside of Oxygen XML Editor/Author</title>
-      <note conkeyref="reusables-transforming-documents/note-command-line"
-        product="author developer editor authorEclipse developerEclipse editorEclipse"/>
-      <p>To add a <tm tmtype="tm" trademark="tm">Twitter</tm>
-        <i>Tweet</i> widget to your WebHelp Responsive output using a <xref keyref="whr-build-output">script outside of <b>Oxygen
-            XML Editor/Author</b></xref>, follow this procedure:<ol>
-          <li>Go to the <xref href="https://publish.twitter.com" format="html" scope="external"
-              >Tweet button generator</xref> page.</li>
-          <li>Fill-in the displayed form. The <uicontrol>Preview and code</uicontrol> area displays
-            the code that you will need.</li>
-          <li>Copy the code snippet displayed in the <uicontrol>Preview and code</uicontrol> area
-            and paste it into a <codeph>div</codeph> element inside an XML file called
-              <filepath>tweet-button.xml</filepath>. Make sure you follow these rules:<ul>
-              <li>The file must be well-formed.</li>
-              <li>The code for each <codeph>script</codeph> element must be included in an XML
-                comment.</li>
-              <li>The start and end tags for the XML comment must be on a separate line.</li>
-            </ul>The content of the XML file should look like
-            this:<codeblock outputclass="language-javascript">&lt;div id="twitter">
-  &lt;a href="https://twitter.com/share" class="twitter-share-button">Tweet&lt;/a>
-  &lt;script>
-    &lt;!-- 
-      !function (d, s, id) {
-      var
-      js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location)
- ? 'http': 'https';
-      if (! d.getElementById(id)) {
-      js = d.createElement(s);
-      js.id = id;
-      js.src = p + '://platform.twitter.com/widgets.js';
-      fjs.parentNode.insertBefore(js, fjs);
-      }
-      }
-      (document,
-      'script', 'twitter-wjs');
-     -->
-  &lt;/script>
-&lt;/div></codeblock></li>
-          <li>Use <xref href="whr_publishing_template_contents.dita#html_fragment_extension_points"
-              >one of the parameters that begin with <i>webhelp.fragment</i></xref> in your
-            transformation script. Set the value of that parameter to reference the
-              <filepath>tweet-button.xml</filepath> file that you created earlier.</li>
-          <li>Execute the transformation script.<p>For example:<ul>
-                <li><b>Windows:</b><p><codeph>dita.bat -i c:\mySample.ditamap -f webhelp-responsive
-                      -Dwebhelp.fragment.after.toc_or_tiles=c:\tweet-button.xml</codeph></p></li>
-                <li><b>Mac OS X/ Linux:</b><p><codeph>dita -i C:/mySample.ditamap -f
-                      webhelp-responsive
-                      -Dwebhelp.fragment.after.toc_or_tiles=C:/tweet-button.xml</codeph></p></li>
-              </ul></p></li>
         </ol></p>
     </section>
   </body>
