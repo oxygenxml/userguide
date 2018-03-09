@@ -2,14 +2,6 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="localize-webhelp-responsive">
   <title>How to Localize the Interface of WebHelp Responsive Output</title>
-  <prolog>
-    <metadata>
-      <keywords>
-        <indexterm>WebHelp Responsive system<indexterm>Localizing the interface for DITA
-            transformations</indexterm></indexterm>
-      </keywords>
-    </metadata>
-  </prolog>
   <body>
     <p>Static labels used in the WebHelp output are stored in translation files that have the
         <i>strings-lang1-lang2.xml</i> name format, where <i>lang1</i> and <i>lang2</i> are ISO
@@ -28,8 +20,61 @@
               ></term>/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization</filepath>
             folder.</note></li>
       </ul></p>
+    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
+      <title>Using a Publishing Template</title>
+      <p>To localize the interface of the DITA Map to WebHelp output using an <term>Oxygen
+          Publishing Template</term>, follow this procedure:<ol>
+          <li>Look for the <i>strings-[lang1]-[lang2].xml</i> file in <filepath><term
+                keyref="glossentry_dita_ot_dir"
+              />/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization</filepath>
+            directory (for example, the Canadian French file would be: <i>strings-fr-ca.xml</i>). If
+            it does not exist, use the following procedure to create one:<ol>
+              <li>Create a new <filepath>strings-fr-ca.xml</filepath> file in the <filepath><term
+                    keyref="glossentry_dita_ot_dir"
+                  />/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization</filepath>
+                directory.</li>
+              <li>Copy all the labels found in the <filepath><term keyref="glossentry_dita_ot_dir"
+                  />/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization/strings-en-us.xml</filepath>
+                and paste them into the newly created file.</li>
+              <li>Copy all the labels found in the
+                  <filepath>DITA-OT_DIR/xsl/common/strings-en-us.xml</filepath> and paste them into
+                the newly created file.</li>
+            </ol></li>
+          <li>Translate all the labels from the above language file. Labels are stored in XML
+            elements that have the following format: <codeph>&lt;str name="Label
+              name">Caption&lt;/str></codeph>.</li>
+          <li>In the home directory of the DITA Open Toolkit, run the <codeph>startcmd.bat</codeph>
+            script on Windows or <codeph>startcmd.sh</codeph> script on Linux/Mac OS X. In the
+            displayed command line interface console, run <codeph>ant -f
+            integrator.xml</codeph>.</li>
+          <li>Make sure that the new XML file that you created is listed in the file <filepath>
+              <term keyref="glossentry_dita_ot_dir"
+              />/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization/strings.xml</filepath>.
+            For example, the Canadian French file would be listed as: <codeph>&lt;lang
+              xml:lang="fr-ca" filename="strings-fr-ca.xml"/></codeph>.</li>
+          <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
+              >template descriptor file</xref> associated with your publishing template and add the
+              <codeph>args.default.language</codeph> parameter in the <term>parameters</term>
+            section with its value set to the appropriate language code (for example, <i>fr-ca</i>
+            for Canadian
+            French).<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...                
+        &lt;parameters>
+            &lt;parameter name="args.default.language" value="fr-ca"/>
+        &lt;/parameters>
+    &lt;/webhelp></codeblock></li>
+          <li>Open the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+          <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select
+            your template.</li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol></p>
+    </section>
     <section id="using_oxygen_xml_editorauthor">
-      <title>Using Oxygen XML Editor/Author</title>
+      <title>Using a Transformation Scenario in Oxygen XML Editor/Author</title>
       <p>To localize the interface of the DITA Map to WebHelp Responsive output using a
         transformation scenario from within <b>Oxygen XML Editor/Author</b>, follow this procedure:<ol>
           <li>Look for the <i>strings-[lang1]-[lang2].xml</i> file in <filepath><term
@@ -73,53 +118,6 @@
             French).</li>
           <li>Run the transformation scenario to produce the WebHelp output.</li>
         </ol></p>
-    </section>
-    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
-      <title>Using a Script Outside of Oxygen XML Editor/Author</title>
-      <note conkeyref="reusables-transforming-documents/note-command-line"
-        product="author developer editor authorEclipse developerEclipse editorEclipse"/>
-      <p>To localize the interface of the DITA Map to WebHelp output using a <xref
-        keyref="whr-build-output">script outside of <b>Oxygen
-            XML Editor/Author</b></xref>, follow this procedure:<ol>
-          <li>Look for the <i>strings-[lang1]-[lang2].xml</i> file in <filepath><term
-                keyref="glossentry_dita_ot_dir"
-              ></term>/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization</filepath>
-            directory (for example, the Canadian French file would be: <i>strings-fr-ca.xml</i>). If
-            it does not exist, use the following procedure to create one:<ol>
-              <li>Create a new <filepath>strings-fr-ca.xml</filepath> file in the <filepath><term
-                    keyref="glossentry_dita_ot_dir"
-                  ></term>/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization</filepath>
-                directory.</li>
-              <li>Copy all the labels found in the <filepath><term keyref="glossentry_dita_ot_dir"
-                  ></term>/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization/strings-en-us.xml</filepath>
-                and paste them into the newly created file.</li>
-              <li>Copy all the labels found in the
-                  <filepath>DITA-OT_DIR/xsl/common/strings-en-us.xml</filepath> and paste them into
-                the newly created file.</li>
-            </ol></li>
-          <li>Translate all the labels from the above language file. Labels are stored in XML
-            elements that have the following format: <codeph>&lt;str name="Label
-              name">Caption&lt;/str></codeph>.</li>
-          <li>In the home directory of the DITA Open Toolkit, run the <codeph>startcmd.bat</codeph>
-            script on Windows or <codeph>startcmd.sh</codeph> script on Linux/Mac OS X. In the
-            displayed command line interface console, run <codeph>ant -f
-            integrator.xml</codeph>.</li>
-          <li>Make sure that the new XML file that you created is listed in the file <filepath>
-              <term keyref="glossentry_dita_ot_dir"
-              ></term>/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization/strings.xml</filepath>.
-            For example, the Canadian French file would be listed as: <codeph>&lt;lang
-              xml:lang="fr-ca" filename="strings-fr-ca.xml"/></codeph>.</li>
-          <li>Use the <codeph>args.default.language</codeph> parameter in your transformation script
-            and set its value to the appropriate language code (for example, <i>fr-ca</i> for
-            Canadian French).</li>
-          <li>Execute the transformation script.</li>
-        </ol></p>
-      <p>For example:<ul>
-          <li><b>Windows:</b><p><codeph>dita.bat -i c:\mySample.ditamap -f webhelp-responsive
-                -Dargs.default.language=fr-ca</codeph></p></li>
-          <li><b>Mac OS X/ Linux:</b><p><codeph>dita -i C:/mySample.ditamap -f webhelp-responsive
-                -Dargs.default.language=fr-ca</codeph></p></li>
-        </ul></p>
     </section>
   </body>
   <related-links>
