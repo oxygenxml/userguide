@@ -10,15 +10,16 @@
     </metadata>
   </prolog>
     <body>
-        <p>There is a file located in
-        <filepath>[PLUGIN_DIR]/css/print/p-optional-numbering-deep</filepath>. The following
-      examples are from this file.</p>
-        <note>This file is not used by default. To use it, you should copy it and import it from
+        <p>The CSS file responsible for deep numbering is
+        <filepath>[PLUGIN_DIR]/css/print/p-optional-numbering-deep.css</filepath>. The following
+      examples are taken from this file.</p>
+        <note>This CSS file is not used by default. To use it, you should copy and import it from
       your <xref href="dcpp_the_customization_css.dita">customization css</xref>.</note>
       <note conkeyref="reusables-dcpp.dita/rc-css-fragment-disclaimer-note"/>
-        <p>The counters should be reset on the root element. This is the element that has the class
-        <codeph>map/map</codeph>. Note that bookmaps derive from maps and the following selector
-      will also match them:</p>
+        <p>For implementing the deep numbering, first the counters for the root element should be
+      reset. In our example, the root is the element that has the class attribute set to
+        <codeph>map/map</codeph>. Note that the following selector will also match bookmaps, as they
+      are derived from maps:</p>
         <p>
             <codeblock outputclass="language-css">*[class ~= "map/map"] {
     counter-reset: page 1
@@ -38,9 +39,9 @@
         </p>
         <section id="section_ahn_wkl_5cb">
       <title>Table of Contents</title>
-      <p>There are counters for the <codeph>toc-part</codeph>, chapters,
-          <codeph>toc-chapter</codeph>, and sections: <codeph>toc-section1</codeph>,
-          <codeph>toc-section2</codeph>, <codeph>toc-section3</codeph>. <note>The parts are also
+      <p>There are counters for parts (<codeph>toc-part</codeph>), chapters
+          (<codeph>toc-chapter</codeph>) and sections (<codeph>toc-section1</codeph>,
+          <codeph>toc-section2</codeph>, <codeph>toc-section3</codeph>). <note>The parts are also
           marked as
         chapters.</note><codeblock outputclass="language-css">*[class ~= "map/topicref"][is-chapter]:not([is-part]) {
 	counter-increment:toc-chapter;
@@ -74,11 +75,11 @@
 *[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"]:before {
 	display:none !important; /* In case this CSS is used in cascade with the shallow numbering. */
 }</codeblock></p>
-      <p>To display the numbers in the TOC, a pseudo <codeph>:before</codeph> element is used on the
-          <xmlelement>topicmeta</xmlelement> (this contains the TOC label and the header and page
-        number). </p>
+      <p>To display the numbers in the table of contents, a pseudo <codeph>:before</codeph> element
+        is used on <xmlelement>topicmeta</xmlelement> (this contains the TOC label and the header
+        and page number). </p>
       <p>To avoid wrapping the text under the chapter/section number, these pseudo elements are
-        moved to the left of the <xmlelement>topicmeta</xmlelement>, using position <b>absolute</b>: </p>
+        moved to the left of the <xmlelement>topicmeta</xmlelement> using position <b>absolute</b>: </p>
       <codeblock outputclass="language-css">*[class ~= "map/topicref"] {
     position:relative;
 }
@@ -106,7 +107,7 @@
     width:2.5em; 
 }
 </codeblock>
-      <p>And now the content for each pseudo element (depending on its depth):</p>
+      <p>And now the content for each pseudo element (depending on its depth) is set:</p>
       <codeblock outputclass="language-css">
 *[class ~= "map/topicref"][is-part] > *[class ~= "map/topicmeta"]:before {
     content: counter(toc-part, upper-roman) ".";
@@ -126,9 +127,10 @@
     </section>
         <section id="section_st1_jll_5cb">
       <title>The Titles of Chapters in the Main Content</title>
-      <p>The <codeph>part</codeph>, <codeph>chapter</codeph>, <codeph>section1</codeph> counters are
-        incremented on the elements that have the class
-        <codeph>topic/topic</codeph>:<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part]{
+      <p>The <codeph>part</codeph>, <codeph>chapter</codeph> and
+          <codeph>section1</codeph>/<codeph>section2</codeph>/<codeph>section3</codeph> counters are
+        incremented on the elements that have the class <codeph>topic/topic</codeph>:
+<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part]{
     counter-increment:part;
     counter-reset:chapter;
 }  
@@ -148,8 +150,8 @@
     counter-increment:section3;
     counter-reset:section4;
 }</codeblock></p>
-      <p>Except for <xmlelement>frontmatter</xmlelement>, <xmlelement>backmatter</xmlelement>, and
-        other topics following the last book part (for
+      <p>Now avoid incrementing the counters for <xmlelement>frontmatter</xmlelement>,
+          <xmlelement>backmatter</xmlelement>, and other topics following the last book part (for
         bookmaps).<codeblock outputclass="language-css">*[class ~= "bookmap/frontmatter"],
 *[class ~= "bookmap/frontmatter"] *[class ~= "topic/topic"],
 *[class ~= "bookmap/backmatter"],
@@ -158,7 +160,7 @@
    counter-increment:none !important;
    counter-reset: part chapter section1 section2 section3 section4 !important;
 }</codeblock></p>
-      <p>These counters are used in the content, before the titles:
+      <p>The following counters are used in the content, before the titles:
         <codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"]:before{
         content: counter(part, upper-roman) ". ";
 }
@@ -174,8 +176,9 @@
 *[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/topic"] > *[class ~= "topic/topic"] > *[class ~= "topic/topic"] > *[class ~= "topic/title"]:before{
         content: counter(chapter) "." counter(section1) "." counter(section2) "." counter(section3) ". ";
 }</codeblock></p>
-      <p>Except for <xmlelement>frontamatter</xmlelement>, <xmlelement>backmatter</xmlelement>, and
-        other topics following the last book part (for bookmaps).</p>
+      <p>Avoid however setting content for <xmlelement>frontamatter</xmlelement>,
+          <xmlelement>backmatter</xmlelement>, and other topics following the last book part (for
+        bookmaps).</p>
       <codeblock outputclass="language-css">*[class ~= "bookmap/frontmatter"] > *[class ~= "topic/title"]:before,
 *[class ~= "bookmap/frontmatter"] *[class ~= "topic/topic"] > *[class ~= "topic/title"]:before,
 *[class ~= "bookmap/backmatter"] > *[class ~= "topic/title"]:before,
@@ -188,7 +191,7 @@
     </section>
         <section id="section_sdt_dml_5cb">
             <title>Headers</title>
-            <p>Define the string-sets used in the header, make use of
+            <p>Define the string-sets used in the header and make use of
         counters:<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
     string-set: parttitle " | " counter(part, upper-roman) " - " content(), chaptertitle  ""; /* Avoid propagating a past chapter title on a new part */
 }
@@ -198,8 +201,8 @@
 *[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/topic"] > *[class ~= "topic/title"] {
     string-set: sectiontitle " | " counter(chapter) "." counter(section1) " - " content();
 }</codeblock></p>
-            <p>Except for <xmlelement>frontamatter</xmlelement>,
-        <xmlelement>backmatter</xmlelement>, and other topics following the last book part (for
+            <p>Avoid using counters for <xmlelement>frontamatter</xmlelement>,
+          <xmlelement>backmatter</xmlelement>, and other topics following the last book part (for
         bookmaps).<codeblock outputclass="language-css">*[class ~= "bookmap/frontmatter"] > *[class ~= "topic/title"],
 *[class ~= "bookmap/frontmatter"] *[class ~= "topic/topic"] > *[class ~= "topic/title"],
 *[class ~= "bookmap/backmatter"] > *[class ~= "topic/title"],
