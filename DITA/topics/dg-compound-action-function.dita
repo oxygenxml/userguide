@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="dg-compound-action-function">
+  <title><codeph>oxy_compound_action()</codeph> Function</title>
+  <shortdesc>This function allows you to define multiple actions that will be executed
+    sequentially.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>CSS extensions<indexterm>Custom
+              functions<indexterm>oxy_compound_action</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>The <codeph>oxy_compound_action()</codeph> function is used from the <xref
+        href="button-editor.dita"><i>oxy_button()</i> form control function</xref>.</p>
+    <p>The arguments received by the <codeph>oxy_compound_action()</codeph> function are a list of
+      actions (executed sequentially) that are defined with the <xref href="dg-action-function.dita"
+          ><i>oxy_action()</i> function</xref>.</p>
+    <p>You can use three optional properties (<codeph>name</codeph>, <codeph>description</codeph>,
+        <codeph>icon</codeph>) in the <codeph>oxy_compound_action()</codeph> function to provide
+      labels for the compound action. If you do not specify these three properties, those same
+      properties defined in the first <i>oxy_action</i> function will be used for the labels.</p>
+    <p id="oxy-action-properties1"><ul>
+        <li><codeph>name</codeph> - The name of the action. It will be displayed as the label for
+          the action. If you want to reuse the name of an action already defined in your framework,
+          you can use the <i>getActionName</i> function.</li>
+        <li><codeph>description</codeph> - A short description with details about the result of the
+          action. It will be displayed in a tooltip when hovering over the button linked to this
+          action.  If you want to reuse the description of an action already defined in your
+          framework, you can use the <i>getActionDescription</i> function.</li>
+        <li id="icon-li"><codeph>icon</codeph> - A path relative to the CSS pointing to an image
+          (the icon for the action). The path can point to resources that are packed in <ph
+            keyref="product"/> (<filepath>oxygen.jar</filepath>) by starting its value with
+            <codeph>/</codeph> (for example, <filepath>/images/Remove16.png</filepath>). It can also
+          be expressed as an <xref href="../topics/editor-variables.dita"><term>editor
+              variable</term></xref>.  If you want to reuse the icon of an action already defined in
+          your framework, you can use the <i>getActionIcon</i> function.</li>
+      </ul>The <i>getActionName</i>, <i>getActionDescription</i>, and <i>getActionIcon</i> functions
+      accept the following 2 parameters:<ul>
+        <li><codeph>framework.defined.action.id</codeph> (required) - The ID of an action defined in
+          the current framework that gets the name, description, or icon for that action.</li>
+        <li><codeph>fallback</codeph> (optional) - A fallback value in case the ID value provided in
+          the <codeph>framework.defined.action.id</codeph> parameter is not found.</li>
+      </ul></p>
+    <p><u><b>Example: <i>oxy_compound_action</i>
+      Function</b></u><codeblock outputclass="language-css">oxy_button(
+  actions, oxy_compound_action(
+              name, getActionName('framework.id', 'Fallback'),
+              description, 'Insert an "element" and then rename it to "rename"',
+              icon, url('http://www.oxygenxml.com/img/icn_oxy20.png'),
+             oxy_action(
+               name, 'Insert', 
+               description, 'Insert an element after the current one', 
+               operation, 'ro.sync.ecss.extensions.commons.operations.InsertFragmentOperation', 
+               icon, url('insert.png'), 
+               arg-fragment, '&lt;p audience=''>&lt;/p>',
+               arg-insertLocation, '.',
+               arg-insertPosition, 'After'
+             ),
+             oxy_action(
+               name, 'Activate edit mode', 
+               description, 'Sets a pseudo class that will activate a CSS rule that will present a text field form control for the @audience attribute', 
+               operation, 'SetPseudoClassOperation',
+               arg-name, 'edit-mode-on',
+               arg-elementLocation , '.',
+             )
+   ),
+  showIcon, true)</codeblock></p>
+    <note type="tip">A code template is available to make it easy to add the
+        <codeph>oxy_compound_action</codeph> function with the <xref
+        keyref="glossentry_content-completion-assistant"><term>Content Completion
+        Assistant</term></xref> by pressing <uicontrol
+        conkeyref="reusable-oxygen-shortcuts-list/ctrl_space"/> and select the <image
+        href="../img/CodeTemplates12.gif" id="image_x12_g2h_5r"/>
+      <codeph>oxy_action_list</codeph> code template.</note>
+  </conbody>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="dg-action-function.dita#dg-action-function"/>
+      <link href="button-editor.dita#button-editor"/>
+    </linklist>
+  </related-links>
+</concept>
