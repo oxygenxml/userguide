@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_place_a_text_and_image_side_by_side">
+    <title>How to Place a Text and Image Side by Side</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation
+          <indexterm>Images<indexterm>Side by side with text</indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation
+          <indexterm>Images<indexterm>Side by side with text</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Images<indexterm>Side by side with text</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  
+    <body>
+        <p>In case you need to align a text and image side by side, you may use the following
+      technique:</p>
+    <ol id="ol_uc2_xfx_ddb">
+      <li>Organize your text and image under a <xmlelement>div</xmlelement> element. Like
+          this:<codeblock outputclass="language-xml">...
+ &lt;div <b>outputclass="side-by-side"</b>>
+      &lt;p> This will be in the left side, the next figure in the right. &lt;/p>
+      &lt;fig>
+        &lt;image href="cactus.jpeg"/>
+      &lt;/fig>
+ &lt;/div>
+...</codeblock><note>You
+          can use the <xmlatt>outputclass</xmlatt> attribute the mark the
+            <xmlelement>divs</xmlelement> that have this special layout.</note></li>
+      <li>In your <xref href="dcpp_the_customization_css.dita">customization css</xref>,
+        add:<codeblock outputclass="language-css">*[outputclass ~= "side-by-side"] > *[class ~= "topic/p"] {
+  display:inline-block;
+  width: 45%;
+}  
+
+*[outputclass ~= "side-by-side"] > *[class ~= "topic/fig"] {
+  display:inline-block;
+  width: 45%;
+}  
+</codeblock>The
+        image should fill the entire width of the parent <xmlelement>fig</xmlelement>
+        element:<codeblock outputclass="language-css">*[outputclass ~= "side-by-side"] > *[class ~= "topic/fig"]  > *[class ~= "topic/image"] {
+  width:100%;
+}</codeblock>By
+        default the bottom of the image is on the same line as the text baseline. If you want the
+        text and the image to be aligned top, add these lines:
+          <codeblock outputclass="language-css">*[outputclass ~= "side-by-side"] > *[class ~= "topic/p"] {
+  vertical-align:top;
+}  
+
+*[outputclass ~= "side-by-side"] > *[class ~= "topic/fig"] {  
+  vertical-align:top;
+  font-size:0pt;  
+}  </codeblock><note>The
+            <codeph>font-size:0pt</codeph> is needed to remove the font ascent and descent around
+          the image rectangle.</note></li>
+    </ol>
+    </body>
+</topic>
