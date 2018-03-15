@@ -74,6 +74,25 @@
         &lt;xsl:text>Boss&lt;/xsl:text>
     &lt;/xsl:attribute>
 &lt;/person></codeblock></li>
+      <li id="xsl-attributes-to-attributes"><uicontrol>Convert xsl:attributes to
+          attributes</uicontrol> - Converts <codeph>&lt;xsl:attribute&gt;</codeph> elements to
+        inline attributes for elements outside the XSL namespace. For example, the following
+        element: It is the reverse of the <uicontrol>Convert attributes to
+          xsl:attributes</uicontrol> action with the following limitations:<ul>
+          <li>The <codeph>&lt;xsl:attribute&gt;</codeph> element is "text only".</li>
+          <li>The <codeph>&lt;xsl:attribute&gt;</codeph> element has a single
+              <codeph>xsl:text</codeph> child element.</li>
+          <li>The <codeph>&lt;xsl:attribute&gt;</codeph> element has a single
+              <codeph>xsl:value-of</codeph> child element. In this case, the value of the attribute
+            will be the XPath expression from the <codeph>select</codeph> attribute surrounded by
+            curly brackets (<i>text value template</i>).</li>
+        </ul><codeblock outputclass="language-xml">&lt;person>
+  &lt;xsl:attribute name="id">john.doe&lt;/xsl:attribute>
+  &lt;xsl:attribute name="email">&lt;xsl:text>john.doe@example.com&lt;/xsl:text>&lt;/xsl:attribute>
+  &lt;xsl:attribute name="manager">&lt;xsl:value-of select="person[@id='boss']/name"/>&lt;/xsl:attribute>
+&lt;/person></codeblock><p>is
+          converted
+        to:</p><codeblock outputclass="language-xml">&lt;person id="john.doe" email="john.doe@example.com" manager="{person[@id='boss']/name}"/></codeblock></li>
       <li id="convert-xsl-if-to-xsl-choose"><uicontrol>Convert xsl:if into
           xsl:choose/xsl:when</uicontrol> - Converts one or more <codeph>xsl:if</codeph> element
         blocks into one or more <codeph>xsl:when</codeph> blocks surrounded by an
