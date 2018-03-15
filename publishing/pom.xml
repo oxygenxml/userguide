@@ -39,7 +39,7 @@
 	  -->
 	
 	<properties>
-		<dita-ot-dir>${main.dir}/oxygen-dita-ot-2.5.2</dita-ot-dir>
+		
 		<product-version>19.1</product-version>
 		<userguide.server>userguide.sync.ro</userguide.server>
 		<userguide.server.dir>/var/www/userguide</userguide.server.dir>
@@ -47,8 +47,9 @@
 		<dependency-check.skip>true</dependency-check.skip>
 		<ANT_OPTS>-Dhttp.proxyHost=proxy.sync.ro -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.sync.ro -Dhttps.proxyPort=3128</ANT_OPTS>
 		<!-- Root directory of the "oxygen-userguide" project -->
-		<root_dir>./..</root_dir>
-		
+		<root.dir>./..</root.dir>
+		<dita-ot-dir>${root.dir}/oxygen-dita-ot-2.5.2</dita-ot-dir>
+    
 		<!-- 
 			Timestamp used to organize user guides on software-archive server 
 		-->
@@ -121,7 +122,7 @@
 				</file>
 			</activation>
 			<properties>
-				<dita-ot-dir>${main.dir}/oxygen-dita-ot-2.5.2</dita-ot-dir>
+				<dita-ot-dir>${root.dir}/oxygen-dita-ot-2.5.2</dita-ot-dir>
 			</properties>
 		</profile>
 		
@@ -133,13 +134,14 @@
 				</file>
 			</activation>
 			<properties>
-				<dita-ot-dir>${main.dir}/oxygen-dita-ot-2.5.2</dita-ot-dir>
+				<dita-ot-dir>${root.dir}/oxygen-dita-ot-2.5.2</dita-ot-dir>
 			</properties>
 			<build>
 				<plugins>
 					<plugin>
 					    <groupId>org.apache.maven.plugins</groupId>
 					    <artifactId>maven-antrun-plugin</artifactId>
+              
 					    <executions>
 					        <execution>
 								<id>deploy-to-server</id>
@@ -161,6 +163,7 @@
 											password="gh678j"
 											failonerror="false"
 											command="mkdir -p ${userguide.server.dir}/new/${output-dir}"/>
+                                        <!-- Avem parole! Pot sa scape catre useri, prin faptul ca o sa ajunga in repository-ul vizibil!!!! Mai rau, ele raman in istoria proiectului. -->
 										<scp
 											remoteTodir="test:gh678j@${userguide.server}:${userguide.server.dir}/new/${output-dir}"
 											trust="yes">
@@ -186,66 +189,79 @@
 				</plugins>
 			</build>
 		</profile>
+    
+        <profile>         
+          <id>unpack-dita-ot-profile</id>
+          <activation>          
+        <file>
+            <missing>./../../../oxygen-dita-ot-2.5.2/bin/dita.bat</missing>
+        </file>
+          </activation>          
+          <build>          
+            <plugins>
+              <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+                <execution>
+                      <id>getMainBaseDir22</id>
+                      <phase>generate-resources</phase>
+                      <goals>
+                          <goal>run</goal>
+                      </goals>
+                      <configuration>
+                          <exportAntProperties>true</exportAntProperties>
+                          <target>
+                           
+                              <echo message="HELLO ${root.dir}"/>
+                          </target>
+                      </configuration>
+                  </execution>
+                  </executions>
+                  </plugin>
+                
+                <!-- Unpack DITA-OT artifact 
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <executions>
+                    <execution>
+                      <id>unpack-dita-ot</id>
+                      <goals>
+                        <goal>unpack</goal>
+                      </goals>
+                      <phase>process-sources</phase>
+          
+                      <configuration>
+                        <artifactItems>
+                          <artifactItem>
+                            <groupId>com.oxygenxml</groupId>
+                            <artifactId>oxygen-dita-ot-2.x</artifactId>
+                            <classifier>package-full</classifier>
+                            <type>zip</type>
+                            <overWrite>true</overWrite>
+                            <outputDirectory>${root.dir}</outputDirectory>
+                          </artifactItem>
+                        </artifactItems>
+                      </configuration>
+                    </execution>
+                  </executions>
+                </plugin>
+                -->
+            </plugins>
+          </build>
+        </profile>
+    
 	</profiles>
 	
 	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<executions>
-						<execution>
-							<goals>
-								<goal>exec</goal>
-							</goals>
-							<phase>generate-resources</phase>
-							
-							<configuration>
-								<environmentVariables>
-									<http_proxy>10.0.0.18:3128</http_proxy>
-									<https_proxy>10.0.0.18:3128</https_proxy>
-									<HTTP_PROXY>10.0.0.18:3128</HTTP_PROXY>
-									<HTTPS_PROXY>10.0.0.18:3128</HTTPS_PROXY>
-									<ANT_OPTS>${ANT_OPTS}</ANT_OPTS>
-								</environmentVariables>
-								<executable>${dita-ot-dir}/bin/${dita.executable}</executable>
-								<arguments>
-									<argument>--format=webhelp-responsive</argument>
-									<argument>--output=${project.build.directory}/output/${output-dir}</argument>
-									<argument>--temp=${project.build.directory}/temp/${output-dir}</argument>
-									<argument>--verbose</argument>
-									<argument>--input=${main.dir}/DITA/UserManual.ditamap</argument>
-									<argument>-filter=${main.dir}/DITA/ditaval/${ditaval}</argument>
-									<argument>-Dwebhelp.publishing.template=${main.dir}/publishing/webhelp/${template}</argument>
-									<argument>-Deditlink.remote.ditamap.url=${remote.ditamap.url}</argument>
-									<argument>-Deditlink.web.author.url=https://www.oxygenxml.com/oxygen-xml-web-author/</argument>
-									<argument>-DbaseJVMArgLine=-Xmx1384m</argument>
-								</arguments>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				
-				<plugin>
-					<!-- Get base directory of the userguide project -->
+					<!-- Expand the base directory of the userguide project, is needed by the DITA transformation. -->
 				    <groupId>org.apache.maven.plugins</groupId>
 				    <artifactId>maven-antrun-plugin</artifactId>
 				    <executions>
-				        <execution>
-				            <id>getMainBaseDir</id>
-				            <phase>pre-clean</phase>
-				            <goals>
-				                <goal>run</goal>
-				            </goals>
-				            <configuration>
-				                <exportAntProperties>true</exportAntProperties>
-				                <target>
-				                    <property name="main.dir" location="${root_dir}" />
-				                    <echo message="main.dir=${main.dir}"/>
-				                </target>
-				            </configuration>
-				        </execution>
+				        
 			        </executions>
 				</plugin>
 			</plugins>
@@ -267,52 +283,42 @@
 			  </executions>
 			</plugin>
 			
-			<!-- Unpack DITA-OT artifact -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack-dita-ot</id>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<phase>process-sources</phase>
+			
+            
 
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.oxygenxml</groupId>
-									<artifactId>oxygen-dita-ot-2.x</artifactId>
-									<classifier>package-full</classifier>
-									<type>zip</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${main.dir}</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Copy Oxygen WebHelp license key -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>copy-webhelp-license</id>
-						<phase>process-sources</phase>
-						<configuration>
-							<target>
-								<echo>Copy license.</echo>
-								<copy file="${main.dir}/publishing/licensekey.txt"
-									tofile="${dita-ot-dir}/plugins/com.oxygenxml.webhelp.responsive/licensekey.txt" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
+            		<execution>
+                      <id>getMainBaseDir</id>
+                      <phase>generate-resources</phase>
+                      <goals>
+                          <goal>run</goal>
+                      </goals>
+                      <configuration>
+                          <exportAntProperties>true</exportAntProperties>
+                          <target>
+                              <property name="main.dir" location="${root.dir}" />
+                              <echo message="main.dir=${main.dir}"/>
+                          </target>
+                      </configuration>
+                  </execution>
+                  
+                    <!-- Copy Oxygen WebHelp license key -->
+                    <execution>
+                      <id>copy-webhelp-license</id>
+                      <phase>process-sources</phase>
+                      <configuration>
+                        <target>
+                          <echo>Copy license.</echo>
+                          <copy file="${root.dir}/publishing/licensekey.txt"
+                            tofile="${dita-ot-dir}/plugins/com.oxygenxml.webhelp.responsive/licensekey.txt" />
+                        </target>
+                      </configuration>
+                      <goals>
+                        <goal>run</goal>
+                      </goals>
+                    </execution>
 				</executions>
 			</plugin>
 			
@@ -321,10 +327,10 @@
 				<configuration>
 					<filesets>
 						<fileset>
-							<directory>${main.dir}</directory>
+							<directory>${root.dir}</directory>
 							<includes>
-								<include>${dita-ot-dir}/**/*</include>
-								<include>${dita-ot-dir}</include>
+								<include>oxygen-dita-ot*/**/*</include>
+                                <include>oxygen-dita-ot*</include>
 							</includes>
 						</fileset>
 					</filesets>
