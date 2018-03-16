@@ -1,0 +1,135 @@
+<project name="userguide" default="build-all">
+
+	<!-- Constants -->
+	<property name="c-xmx">-Xmx1384m</property>
+
+	<condition property="dita.executable" value="dita.bat">
+		<os family="windows" />
+	</condition>
+	<property name="dita.executable" value="dita" />
+
+
+	<target name="build-webhelp-public">
+		<antcall target="build-single">
+			<param name="p-product" value="chemistry" />
+			<param name="p-format" value="webhelp-responsive" />
+			<param name="p-internal" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="pdf-css" />
+			<param name="p-format" value="webhelp-responsive" />
+			<param name="p-internal" value="" />
+		</antcall>
+	</target>
+
+	<target name="build-webhelp-private">
+		<antcall target="build-single">
+			<param name="p-product" value="chemistry" />
+			<param name="p-format" value="webhelp-responsive" />
+			<param name="p-internal" value="-private" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="pdf-css" />
+			<param name="p-format" value="webhelp-responsive" />
+			<param name="p-internal" value="-private" />
+		</antcall>
+	</target>
+
+	<target name="build-pdf">
+		<antcall target="build-single">
+			<param name="p-product" value="chemistry" />
+			<param name="p-format" value="pdf-css" />
+			<param name="p-internal" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="pdf-css" />
+			<param name="p-format" value="pdf-css" />
+			<param name="p-internal" value="" />
+		</antcall>
+	</target>
+
+	<target name="build-eclipsehelp">
+		<antcall target="build-single">
+			<param name="p-product" value="chemistry" />
+			<param name="p-format" value="eclipsehelp" />
+			<param name="p-internal" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="pdf-css" />
+			<param name="p-format" value="eclipsehelp" />
+			<param name="p-internal" value="" />
+		</antcall>
+	</target>
+
+	<target name="build-javahelp">
+		<antcall target="build-single">
+			<param name="p-product" value="chemistry" />
+			<param name="p-format" value="javahelp" />
+			<param name="p-internal" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="pdf-css" />
+			<param name="p-format" value="javahelp" />
+			<param name="p-internal" value="" />
+		</antcall>
+	</target>
+
+
+	<target name="build-all" depends="build-webhelp-public, build-pdf, build-eclipsehelp, build-javahelp"/>
+
+	
+	
+	<target name="build-single">
+
+		<echo>--------------------------------</echo>
+		<echo>Build single target: ${p-product} / ${p-format} ${p-internal}</echo>
+
+		<property name="p-output">${project.build.directory}/output/ug-${p-product}-${p-format}${p-internal}</property>
+		<property name="p-temp">${project.build.directory}/temp/ug-${p-product}-${p-format}${p-internal}</property>
+		<property name="p-ditaval">${basedir}/DITA/ditaval/${p-product}.ditaval</property>
+		<property name="p-template">${basedir}/publishing/publishing-template/${p-product}${p-internal}.opt</property>
+
+		<delete dir="${p-output}" />
+		<mkdir dir="${p-output}" />
+
+		<echo>Template: ${p-template} </echo>
+		<echo>Format  : ${p-format} </echo>
+		<echo>DITA OT : ${dita-ot-dir} </echo>
+		<echo>DITA val: ${p-ditaval} </echo>
+		<echo>Temp    : ${p-temp} </echo>
+		<echo>Output  : ${p-output} </echo>
+		<exec failifexecutionfails="true" failonerror="true" executable="${dita-ot-dir}/bin/${dita.executable}">
+
+			<!-- General parameters -->
+			<arg value="--format=${p-format}" />
+			<arg value="--output=${p-output}" />
+			<arg value="--temp=${p-temp}" />
+			<arg value="--verbose" />
+			<arg value="--input=${basedir}/DITA/UserManual.ditamap" />
+			<arg value="-filter=${p-ditaval}" />
+
+			<arg value="-Dhttp.proxySet=true" />
+			<arg value="-Dhttp.proxyHost=proxy.sync.ro" />
+			<arg value="-Dhttp.proxyPort=3128" />
+
+			<arg value="-Dhttps.proxySet=true" />
+			<arg value="-Dhttps.proxyHost=proxy.sync.ro" />
+			<arg value="-Dhttps.proxyPort=3128" />
+
+			<arg value="-DbaseJVMArgLine=${c-xmx}" />
+
+			<!-- Relevant only for pdf -->
+			<arg value="-Dpdf.publishing.template=${p-template}" />
+			<arg value="-DoutputFile=${p-output}/${p-product}.pdf" />
+
+			<!-- Relevant only for webhelp -->
+			<arg value="-Dwebhelp.publishing.template=${p-template}" />
+			<arg value="-Deditlink.remote.ditamap.url=github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap" />
+			<arg value="-Deditlink.web.author.url=https://www.oxygenxml.com/webapp-demo-aws/" />
+
+		</exec>
+
+	</target>
+
+
+</project>
