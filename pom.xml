@@ -1,0 +1,262 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.oxygenxml</groupId>
+    <artifactId>oxygen-superpom-versions</artifactId>
+    <version>20.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>com.oxygenxml.userguide</groupId>
+  <artifactId>publishing</artifactId>
+  <packaging>pom</packaging>
+
+
+  <name>oXygen User Guide - Artifacts</name>
+
+  <description>
+		Publishing project to generate all user manuals (oXygen, WebHelp, Chemistry) 
+		using the oXygen DITA-OT 2.x artifact.
+	</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.oxygenxml</groupId>
+      <artifactId>oxygen-dita-ot-2.x</artifactId>
+      <type>zip</type>
+      <classifier>package-full</classifier>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <product-version>19.1</product-version>
+    <userguide.server>userguide.sync.ro</userguide.server>
+    <userguide.server.dir>/var/www/userguide</userguide.server.dir>
+    <sonar.skip>true</sonar.skip>
+    <dependency-check.skip>true</dependency-check.skip>
+    <ANT_OPTS>-Dhttp.proxyHost=proxy.sync.ro -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.sync.ro -Dhttps.proxyPort=3128</ANT_OPTS>
+
+    <dita-ot-dir>${project.build.directory}/oxygen-dita-ot-2.5.2</dita-ot-dir>
+    <!-- Avem parole! Pot sa scape catre useri, prin faptul ca o sa ajunga in repository-ul vizibil!!!! Mai rau, ele raman in istoria proiectului. -->
+
+    <userguide.server.credentials></userguide.server.credentials>
+    <!-- Timestamp used to organize user guides on software-archive server -->
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyyMMddHH</maven.build.timestamp.format>
+  </properties>
+
+
+  <profiles>
+    <profile>
+      <id>webhelp-private</id>
+      <activation>
+        <property>
+          <name>build-webhelp-private</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-webhelp-private</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-private" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>webhelp-public</id>
+      <activation>
+        <property>
+          <name>build-webhelp-public</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-webhelp-public</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-public" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>all</id>
+      <activation>
+        <property>
+          <name>build-all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-all</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-all" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+
+  <build>
+    <plugins>
+
+      <!-- Parses the project version number. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>parse-version</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+
+      <!-- Unpack DITA-OT artifact, but only if missing. To refresh the DITA-OT, a clean is needed. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-dita-ot</id>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <phase>process-sources</phase>
+
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.oxygenxml</groupId>
+                  <artifactId>oxygen-dita-ot-2.x</artifactId>
+                  <classifier>package-full</classifier>
+                  <type>zip</type>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+
+        <executions>
+
+          <!-- Copy the Oxygen WebHelp license key. -->
+          <execution>
+            <id>copy-webhelp-license</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo>Copy license.</echo>
+                <copy file="${project.basedir}/publishing/licensekey.txt" tofile="${dita-ot-dir}/plugins/com.oxygenxml.webhelp.responsive/licensekey.txt" />
+                <copy file="${project.basedir}/publishing/licensekey.txt" tofile="${dita-ot-dir}/plugins/com.oxygenxml.webhelp.classsic/licensekey.txt" />
+              </target>
+            </configuration>
+          </execution>
+
+
+          <execution>
+            <id>deploy-to-server</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <sshexec host="${userguide.server}" username="test" trust="yes" password="gh678j" failonerror="false" command="rm -rf ${userguide.server.dir}/new/${output-dir}" />
+                <sshexec host="${userguide.server}" username="test" trust="yes" password="gh678j" failonerror="false" command="mkdir -p ${userguide.server.dir}/new/${output-dir}" />
+                <scp remoteTodir="{userguide.server.credentials}@${userguide.server}:${userguide.server.dir}/new/${output-dir}" trust="yes">
+                  <fileset dir="${project.build.directory}/output/${output-dir}" />
+                </scp>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-jsch</artifactId>
+            <version>1.10.1</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+
+
+    </plugins>
+
+  </build>
+
+
+</project>
