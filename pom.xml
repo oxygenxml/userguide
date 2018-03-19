@@ -32,18 +32,10 @@
 
   <properties>
     <product-version>19.1</product-version>
-    <userguide.server>userguide.sync.ro</userguide.server>
-    <userguide.server.dir>/var/www/userguide</userguide.server.dir>
-    
-    <userguide.server.user>user</userguide.server.user>
-    <userguide.server.password>invalid</userguide.server.password>
-    
     <sonar.skip>true</sonar.skip>
     <dependency-check.skip>true</dependency-check.skip>
     <ANT_OPTS>-Dhttp.proxyHost=proxy.sync.ro -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.sync.ro -Dhttps.proxyPort=3128</ANT_OPTS>
-
     <dita-ot-dir>${project.build.directory}/oxygen-dita-ot-2.5.2</dita-ot-dir>
-    
     <!-- Timestamp used to organize user guides on software-archive server -->
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyyMMddHH</maven.build.timestamp.format>
@@ -59,13 +51,17 @@
           <value>true</value>
         </property>
       </activation>
+      <properties>
+        <userguide.server>userguide.sync.ro</userguide.server>
+        <userguide.server.dir>/var/www/userguide</userguide.server.dir>
+        <userguide.server.user>user</userguide.server.user>
+        <userguide.server.password>invalid</userguide.server.password>
+      </properties>
       <build>
         <plugins>
-
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-
             <executions>
               <!-- Executes the transformation. -->
               <execution>
@@ -82,6 +78,36 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-webhelp-private</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="private"/>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+            </dependencies>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -94,6 +120,13 @@
           <value>true</value>
         </property>
       </activation>
+      <properties>
+        <userguide.server>software-archive.sync.ro</userguide.server>
+        <userguide.server.dir>/repository/userguides</userguide.server.dir>
+        <userguide.server.user>user</userguide.server.user>
+        <userguide.server.password>invalid</userguide.server.password>
+      </properties>
+
       <build>
         <plugins>
           <plugin>
@@ -115,6 +148,37 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-webhelp-public</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
         </plugins>
       </build>
     </profile>
@@ -147,6 +211,37 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-webhelp-public</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
 
           <!-- Deploy the artifacts that enter the installation kits -->
           <plugin>
@@ -154,7 +249,6 @@
             <artifactId>maven-deploy-plugin</artifactId>
             <version>2.7</version>
             <executions>
-
               <execution>
                 <id>deploy-editor-eclipse-help</id>
                 <phase>deploy</phase>
@@ -163,7 +257,7 @@
                 </goals>
                 <configuration>
                   <artifactId>editorEclipseHelp</artifactId>
-                  <file>${project.build.directory}/output/eclipsehelp/editorEclipse/editor-eclipse-help.jar</file>
+                  <file>${project.build.directory}/output/eclipsehelp/editor-eclipse/editor-eclipse-help.jar</file>
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
@@ -171,7 +265,6 @@
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
-              
               <execution>
                 <id>deploy-editor-sa-help</id>
                 <phase>deploy</phase>
@@ -180,7 +273,7 @@
                 </goals>
                 <configuration>
                   <artifactId>editorHelp</artifactId>
-                  <file>${project.build.directory}/output/javahelp/editor/editor-sa-help.jar</file>
+                  <file>${project.build.directory}/output/javahelp/editor-sa/editor-sa-help.jar</file>
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
@@ -188,7 +281,6 @@
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
-
               <execution>
                 <id>deploy-author-eclipse-help</id>
                 <phase>deploy</phase>
@@ -197,7 +289,7 @@
                 </goals>
                 <configuration>
                   <artifactId>authorEclipseHelp</artifactId>
-                  <file>${project.build.directory}/output/eclipsehelp/authorEclipse/author-eclipse-help.jar</file>
+                  <file>${project.build.directory}/output/eclipsehelp/author-eclipse/author-eclipse-help.jar</file>
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
@@ -213,7 +305,7 @@
                 </goals>
                 <configuration>
                   <artifactId>authorHelp</artifactId>
-                  <file>${project.build.directory}/output/javahelp/author/author-sa-help.jar</file>
+                  <file>${project.build.directory}/output/javahelp/author-sa/author-sa-help.jar</file>
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
@@ -221,7 +313,6 @@
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
-
               <execution>
                 <id>deploy-developer-eclipse-help</id>
                 <phase>deploy</phase>
@@ -230,7 +321,7 @@
                 </goals>
                 <configuration>
                   <artifactId>developerEclipseHelp</artifactId>
-                  <file>${project.build.directory}/output/eclipsehelp/developerEclipse/developer-eclipse-help.jar</file>
+                  <file>${project.build.directory}/output/eclipsehelp/developer-eclipse/developer-eclipse-help.jar</file>
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
@@ -246,7 +337,7 @@
                 </goals>
                 <configuration>
                   <artifactId>developerHelp</artifactId>
-                  <file>${project.build.directory}/output/javahelp/developer/developer-sa-help.jar</file>
+                  <file>${project.build.directory}/output/javahelp/developer-sa/developer-sa-help.jar</file>
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
@@ -254,7 +345,6 @@
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
-
             </executions>
           </plugin>
         </plugins>
@@ -332,39 +422,8 @@
               </target>
             </configuration>
           </execution>
-
-          <execution>
-            <id>deploy-to-server</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" failonerror="false" command="rm -rf ${userguide.server.dir}/new/${output-dir}" />
-                <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" failonerror="false" command="mkdir -p 
-            ${userguide.server.dir}/new/${output-dir}" />
-                <scp remoteTodir="${userguide.server.user}:${userguide.server.password}@${userguide.server}:${userguide.server.dir}/new/${output-dir}" trust="yes">
-                  <fileset dir="${project.build.directory}/output/${output-dir}" />
-                </scp>
-              </tasks>
-            </configuration>
-          </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.54</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-jsch</artifactId>
-            <version>1.10.1</version>
-          </dependency>
-        </dependencies>
       </plugin>
-
 
 
     </plugins>
