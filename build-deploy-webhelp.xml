@@ -1,0 +1,24 @@
+<project name="deploy-private" default="private">
+
+
+  <target name="private">
+    <property name="userguide.server">userguide.sync.ro</property>
+    <property name="userguide.server.dir">/var/www/userguide</property>
+    <property name="output.dir">webhelp-responsive-public</property>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" failonerror="false"
+      command="find ${userguide.server.dir} -maxdepth 1 -mindepth 1 -type d -exec rm -rf '{}' \;" />
+
+
+    <scp remoteTodir="${userguide.server.user}:${userguide.server.password}@${userguide.server}:${userguide.server.dir}/" trust="yes">
+      <fileset dir="${project.build.directory}/output/${output.dir}" />
+    </scp>
+
+  </target>
+
+  <target name="public">
+    <!-- Check for similarities with the private one. -->
+  </target>
+
+
+</project>
