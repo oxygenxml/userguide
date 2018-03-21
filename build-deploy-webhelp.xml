@@ -4,8 +4,10 @@
   <target name="private">
     <property name="userguide.server">userguide.sync.ro</property>
     <property name="userguide.server.dir">/var/www/userguide</property>
-    <property name="output.dir">webhelp-responsive-public</property>
+    <property name="output.dir">webhelp-responsive-private</property>
 
+  	<echo>Username: ${userguide.server.user}</echo>
+  	<echo>Password: ${userguide.server.password}</echo>
     <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" failonerror="false"
       command="find ${userguide.server.dir} -maxdepth 1 -mindepth 1 -type d -exec rm -rf '{}' \;" />
 
@@ -18,6 +20,63 @@
 
   <target name="public">
     <!-- Check for similarities with the private one. -->
+  	<property name="userguide.server">software-archive.sync.ro</property>
+  	<property name="userguide.server.user" value="" />
+  	<property name="userguide.server.password" value="" />
+    <property name="userguide.server.dir">/repository/userguides</property>
+    <property name="output.dir">webhelp-responsive-public</property>
+    <property name="major.version" value=""/>
+    <property name="minor.version" value=""/>
+    <property name="micro.version" value=""/>
+  	
+  	<condition property="userguide.server.credentials" 
+  	  value="${userguide.server.user}:${userguide.server.password}" 
+  	  else="${userguide.server.user}">
+  	  <isset property="${userguide.server.password}"/>
+  	</condition>
+
+  	<echo>Username: ${userguide.server.user}</echo>
+  	<echo>Password: ${userguide.server.password}</echo>
+  	
+  	<!-- Remove old version of userguides -->
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="rm -rf ${userguide.server.dir}/InstData${major.version}.${minor.version}.old" />
+  	<!-- Web Author, We bAuthor Customization -->
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="rm -rf ${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version}.old" />
+  	
+  	<!-- Make a backup copy of latest userguides --> 
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mv ${userguide.server.dir}/InstData${major.version}.${minor.version} ${userguide.server.dir}/InstData${major.version}.${minor.version}.old" />
+  	<!-- Web Author, We bAuthor Customization -->
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mv ${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version} ${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version}.old" />
+
+  	<!-- Create directories -->
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mkdir -p ${userguide.server.dir}/InstData${major.version}.${minor.version}" />
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mkdir -p ${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version}" />
+  	
+	<!-- Copy all userguides to InstData${major.version}.${minor.version} directory -->
+    <scp remoteTodir="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+      <fileset dir="${project.build.directory}/output/${output.dir}" />
+    </scp>
+  	
+  	<!-- Move Web Author, Web Author Customization userguides to ${major.version}.${minor.version}.${micro.version} directory -->
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mv ${userguide.server.dir}/InstData${major.version}.${minor.version}/webauthor ${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version}/" />
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mv ${userguide.server.dir}/InstData${major.version}.${minor.version}/webauthor-customization ${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version}/" />
   </target>
 
 

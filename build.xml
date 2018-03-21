@@ -16,85 +16,92 @@
 	<target name="build-webhelp-public">
 		<antcall target="build-webhelp-common">
 			<param name="p-type">-public</param>
+			<param name="editlink.remote.ditamap.url">github://getFileContent/oxygenxml/userguide/master/DITA/UserManual.ditamap</param>
 		</antcall>
 	</target>
 
 	<target name="build-webhelp-private">
 		<antcall target="build-webhelp-common">
 			<param name="p-type">-private</param>
+			<param name="editlink.remote.ditamap.url">github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap</param>
 		</antcall>
 	</target>
 
 	<target name="build-webhelp-common">
+		<property name="p-type" value="-public"/>
+		<property name="editlink.remote.ditamap.url" value=""/>
+		
 		<antcall target="build-single">
 			<param name="p-product" value="author-sa" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
 			<param name="p-product" value="author-eclipse" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
 			<param name="p-product" value="developer-sa" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
 			<param name="p-product" value="developer-eclipse" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
+		
 		<antcall target="build-single">
 			<param name="p-product" value="editor-sa" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
+			<param name="editlink.remote.ditamap.url" value="${editlink.remote.ditamap.url}" />
 		</antcall>
+		
 		<antcall target="build-single">
 			<param name="p-product" value="editor-eclipse" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
+			<param name="editlink.remote.ditamap.url" value="${editlink.remote.ditamap.url}" />
 		</antcall>
 
-		
 		<antcall target="build-single">
 			<param name="p-product" value="content-fusion" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
 			<param name="p-product" value="webauthor" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
-		<!-- TODO - Uncomment after we commit the opt. 
 		<antcall target="build-single">
 			<param name="p-product" value="webauthor-customization" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
-		-->
+		
 
 		<antcall target="build-single">
 			<param name="p-product" value="chemistry" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
 			<param name="p-product" value="dcpp" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
 			<param name="p-product" value="webhelp-classic" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
 			<param name="p-product" value="webhelp-responsive" />
 			<param name="p-format" value="webhelp-responsive" />
-			<param name="p-type" value="-public" />
+			<param name="p-type" value="${p-type}" />
 		</antcall>
 	</target>
 
@@ -211,7 +218,7 @@
 		==================================	
 		-->
 	<target name="build-single">
-
+		<property name="p-type" value=""/>
 		<echo>--------------------------------</echo>
 		<echo>Build single target: ${p-product} / ${p-format} ${p-type}</echo>
 
@@ -221,15 +228,38 @@
 		<property name="p-ditaval">${basedir}/DITA/ditaval/${p-product}.ditaval</property>
 		<property name="p-template">${basedir}/publishing/publishing-template/${p-product}${p-type}.opt</property>
 
+		<property name="editlink.remote.ditamap.url" value="" />
+		
+		<!-- For website, generate "Edit Link" only for editor SA userguide --> 
+		<condition property="editlink.ditamap" value="${editlink.remote.ditamap.url}" else="">
+			<or>
+				<equals arg1="${p-type}" arg2="-private" />
+				<and>
+					<equals arg1="${p-type}" arg2="-public" />
+					<equals arg1="${p-product}" arg2="editor-sa" />
+				</and>
+			</or>
+		</condition>
+		
+		<!-- Used only if we have a remote DITA Map -->
+		<condition property="editlink.web.author.url" value="https://www.oxygenxml.com/oxygen-xml-web-author/" else="">
+			<not>
+				<equals arg1="${editlink.ditamap}" arg2="" />
+			</not>
+		</condition>
+		
 		<delete dir="${p-output}" />
 		<mkdir dir="${p-output}" />
 
-		<echo>Template: ${p-template} </echo>
-		<echo>Format  : ${p-format} </echo>
-		<echo>DITA OT : ${dita-ot-dir} </echo>
-		<echo>DITA val: ${p-ditaval} </echo>
-		<echo>Temp    : ${p-temp} </echo>
-		<echo>Output  : ${p-output} </echo>
+		<echo>Template         : ${p-template} </echo>
+		<echo>Format           : ${p-format} </echo>
+		<echo>DITA OT          : ${dita-ot-dir} </echo>
+		<echo>DITA val         : ${p-ditaval} </echo>
+		<echo>Temp             : ${p-temp} </echo>
+		<echo>Output           : ${p-output} </echo>
+		<echo>Edit Link Map    : ${editlink.ditamap} </echo>
+		<echo>Remote Web Author: ${editlink.web.author.url} </echo>
+		
 		<exec failifexecutionfails="true" failonerror="true" executable="${dita-ot-dir}/bin/${dita.executable}">
 
 			<!-- General parameters -->
@@ -256,8 +286,8 @@
 
 			<!-- Relevant only for webhelp -->
 			<arg value="-Dwebhelp.publishing.template=${p-template}" />
-			<arg value="-Deditlink.remote.ditamap.url=github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap" />
-			<arg value="-Deditlink.web.author.url=https://www.oxygenxml.com/webapp-demo-aws/" />
+			<arg value="-Deditlink.remote.ditamap.url=${editlink.ditamap}" />
+			<arg value="-Deditlink.web.author.url=${editlink.web.author.url}" />
 
 			<!-- Relevant only for eclipsehelp -->
 			<arg value="-Dargs.eclipsehelp.jar.name=${p-product}-help.jar" />

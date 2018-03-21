@@ -15,10 +15,16 @@
 
   <name>oXygen User Guide - Artifacts</name>
 
+  <!-- 
+  	Use -Duserguide.server.user=user to deploy WebHelp output using a SSH key.
+  		NOTE: SSH key must be installed in ${user.home}/.ssh/id_rsa
+  	Use -Duserguide.server.user=user -Duserguide.server.password=password to deploy WebHelp output using user/password (without a SSH key)
+   -->
+
   <description>
 		Publishing project to generate all user manuals (oXygen, WebHelp, Chemistry) 
 		using the oXygen DITA-OT 2.x artifact.
-	</description>
+  </description>
 
   <dependencies>
     <dependency>
@@ -54,8 +60,6 @@
       <properties>
         <userguide.server>userguide.sync.ro</userguide.server>
         <userguide.server.dir>/var/www/userguide</userguide.server.dir>
-        <userguide.server.user>user</userguide.server.user>
-        <userguide.server.password>invalid</userguide.server.password>
       </properties>
       <build>
         <plugins>
@@ -71,9 +75,9 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target>
+                  <tasks>
                     <ant antfile="${project.basedir}/build.xml" target="build-webhelp-private" />
-                  </target>
+                  </tasks>
                 </configuration>
               </execution>
             </executions>
@@ -90,7 +94,10 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="private"/>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="private">
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                   	</ant>
                   </tasks>
                 </configuration>
               </execution>
@@ -123,8 +130,6 @@
       <properties>
         <userguide.server>software-archive.sync.ro</userguide.server>
         <userguide.server.dir>/repository/userguides</userguide.server.dir>
-        <userguide.server.user>user</userguide.server.user>
-        <userguide.server.password>invalid</userguide.server.password>
       </properties>
 
       <build>
@@ -159,9 +164,16 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <tasks>
-                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" />
-                  </tasks>
+                  <target>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" >
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                    	<property name="major.version" value="${parsedVersion.majorVersion}"/>
+					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+					    <!-- Used only for Web Author and Web Author Customization -->
+					    <property name="micro.version" value="0"/>
+                   	</ant>
+                  </target>
                 </configuration>
               </execution>
             </executions>
@@ -223,7 +235,10 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" />
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" >
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                   	</ant>
                   </tasks>
                 </configuration>
               </execution>
