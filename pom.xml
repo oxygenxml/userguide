@@ -12,7 +12,7 @@
   <artifactId>publishing</artifactId>
   <packaging>pom</packaging>
 
-
+	<!-- TODO: Deploy PDFs on software-archive.sync.ro -->
   <name>oXygen User Guide - Artifacts</name>
 
   <!-- 
@@ -217,7 +217,8 @@
                 </goals>
                 <configuration>
                   <target>
-                    <ant antfile="${project.basedir}/build.xml" target="build-all" />
+                  	<echo>BUILD ALL</echo>
+                    <!-- <ant antfile="${project.basedir}/build.xml" target="build-all" /> -->
                   </target>
                 </configuration>
               </execution>
@@ -238,6 +239,29 @@
                     <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" >
                     	<property name="userguide.server.user" value="${userguide.server.user}"/>
                     	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                    	<property name="major.version" value="${parsedVersion.majorVersion}"/>
+					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+					    <!-- Used only for Web Author and Web Author Customization -->
+					    <property name="micro.version" value="0"/>
+                   	</ant>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-pdf-public</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-pdf.xml" target="public" >
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                    	<property name="major.version" value="${parsedVersion.majorVersion}"/>
+					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+					    <!-- Used only for Web Author and Web Author Customization -->
+					    <property name="micro.version" value="0"/>
                    	</ant>
                   </tasks>
                 </configuration>
