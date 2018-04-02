@@ -1,0 +1,75 @@
+<project name="deploy-pdf" default="public">
+
+  <target name="public">
+  	<property name="userguide.server">software-archive.sync.ro</property>
+  	<property name="userguide.server.user" value="" />
+  	<property name="userguide.server.password" value="" />
+    <property name="userguide.server.dir">/repository/userguides</property>
+    <property name="output.dir">pdf-css</property>
+    <property name="major.version" value=""/>
+    <property name="minor.version" value=""/>
+    <property name="micro.version" value=""/>
+  	
+  	<condition property="userguide.server.credentials" 
+  	  value="${userguide.server.user}:${userguide.server.password}" 
+  	  else="${userguide.server.user}">
+  	  <isset property="${userguide.server.password}"/>
+  	</condition>
+
+  	<echo>Username: ${userguide.server.user}</echo>
+  	<echo>Password: ${userguide.server.password}</echo>
+  	
+  	<!-- Create directories -->
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mkdir -p ${userguide.server.dir}/InstData${major.version}.${minor.version}" />
+  	<sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes" password="${userguide.server.password}" 
+      failonerror="false" keyfile="${user.home}/.ssh/id_rsa"
+      command="mkdir -p ${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version}" />
+  	
+	<!-- Copy all PDF userguides to InstData${major.version}.${minor.version} directory 
+		 Author SA -->
+    <scp file="${project.build.directory}/output/${output.dir}/author-sa/author-sa.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/Author-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	<!-- Author Eclipse -->
+  	<scp file="${project.build.directory}/output/${output.dir}/author-eclipse/author-eclipse.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/AuthorEclipse-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	<!-- Developer SA -->
+  	<scp file="${project.build.directory}/output/${output.dir}/developer-sa/developer-sa.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/Developer-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	<!-- Developer Eclipse -->
+  	<scp file="${project.build.directory}/output/${output.dir}/developer-eclipse/developer-eclipse.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/DeveloperEclipse-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	<!-- Editor SA -->
+  	<scp file="${project.build.directory}/output/${output.dir}/editor-sa/editor-sa.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/Editor-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	<!-- Editor Eclipse -->
+  	<scp file="${project.build.directory}/output/${output.dir}/editor-eclipse/editor-eclipse.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/EditorEclipse-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	<!-- Chemistry -->
+  	<scp file="${project.build.directory}/output/${output.dir}/chemistry/chemistry.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/Chemistry-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	<!-- DCPP -->
+  	<scp file="${project.build.directory}/output/${output.dir}/dcpp/dcpp.pdf" 
+    	remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/InstData${major.version}.${minor.version}/DCPP-UserManual.pdf" 
+    	trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+    </scp>
+  	
+  </target>
+
+
+</project>
