@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_add_a_synthetic_copyright_page_after_the_cover__for_maps__not_bookmaps_">
+    <title>How to Add a Copyright Page after the Map Cover (not for Bookmaps)</title>
+    <body>
+    <p>The plain DITA maps do not have the concept of a copyright notice. This is available only in
+      the DITA bookmaps structure. </p>
+    <p>If you are constrained in using a plain map and you need to add a copyright page between the
+      front cover and the TOC  use the following technique:</p>
+    <p>In your <xref href="dcpp_the_customization_css.dita">customization css</xref> declare a new
+      page layout:</p>
+    <codeblock outputclass="language-css">
+
+@page copyright-notice-page {
+  @top-left {
+    content:none; /* Clear the headers for the copyright page */
+  }
+  @top-right {
+    content:none;
+  }
+}
+</codeblock>
+    <p>The <codeph>oxy:front-page</codeph> contains the title of the publication and generates the
+      cover page. We are creating a synthetic element that follows this element and place it on a
+      different page. </p>
+    <codeblock outputclass="language-css">front-page:after{
+  display:block;
+ 
+  page: copyright-notice-page; /* Moves the synthetic element on a new page. */ 
+ 
+  margin-top:90%; /* use margins to position the text in the page */
+  margin-left: 5em;
+  margin-right: 5em;
+
+  content: "Copyright 2018-2019 MyCorp Inc. \A All rights reserved";
+
+  text-align:center; /* More styling */
+  color:blue;
+}</codeblock>
+    <p>If you need to add more content as blocks, use the :after(2), :after(3) pseudo elements:</p>
+    <codeblock outputclass="language-css">front-page:after(2){
+  display:block;
+  page: copyright-notice-page;  /* Continue on the same page as the first ':after'. */
+  content: "Some more styled text";
+  color:red;
+}</codeblock>
+    <p>If you want to extract information from the document, use the <codeph>oxy_xpath()</codeph>
+      function.  For example if the copyright info is stored in the map, like this:</p>
+    <codeblock outputclass="language-css"> &lt;map ...>
+  &lt;topicmeta>
+    &lt;copyright>
+      &lt;copyryear year="2018"/>
+      &lt;copyrholder>MyCorp Inc.&lt;/copyrholder>     
+    &lt;/copyright>
+  &lt;/topicmeta>
+ ...</codeblock>
+    <p>Use:</p>
+    <codeblock outputclass="language-css">front-page:after(3){
+  display:block;
+  page: copyright-notice-page; 
+  content: "Year: " oxy_xpath('//*:front-page/topicmeta/copyright/copyryear/@year')
+           "\A Holder: " oxy_xpath('//*:front-page/topicmeta/copyright/copyrholder/text()') ;
+  color:green;
+}</codeblock>
+  </body>
+</topic>
