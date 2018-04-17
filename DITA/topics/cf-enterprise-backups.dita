@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-enterprise-backups">
+  <title>Backing Up Content Fusion Task Information</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Content Fusion Enterprise - Backups</indexterm>
+        <indexterm>Backing up task information</indexterm>
+        <indexterm>Backups</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>It is recommended for the server administrator to set up periodic backups for <ph
+        keyref="cfEnterprise"/>.</p>
+    <section id="section_dy1_p3k_ndb">
+      <title>Creating a Backup</title>
+      <p>A Content Fusion backup contains a <xref href="https://www.postgresql.org/" format="html"
+          scope="external">PostgreSQL</xref> database dump along with configuration and task
+        files.</p>
+      <note type="important">A review task is divided into two parts (task metadata that is stored
+        in a database &amp; task files that are stored on the file-system). Therefore, backups might
+        contain tasks with small de-synchronizations. For this reason, the server administrator
+        should choose a time with the least amount of usage to create the backup.</note>
+      <p>To create a backup, execute the following command on the <b>Content Fusion</b> machine:
+        <codeblock outputclass="language-javascript">sudo bash /fusion/admin/create-fusion-backup.sh</codeblock>This
+        will create a database archive (<filepath>fusion-backup.tar.gz</filepath>) in the current
+        directory. If the backup file already exists, it will be overwritten.</p>
+    </section>
+    <section id="section_im4_p3k_ndb">
+      <title>Storing a Backup</title>
+      <p>The server administrator should create backups and download them to a safe backup storage
+        location periodically. One method of doing this is to create a <cmdname>cron</cmdname> job
+        that periodically connects to the <b>Content Fusion</b> machine to create a backup and
+        download it using <cmdname>rsync</cmdname>.</p>
+    </section>
+    <section id="section_dzj_q3k_ndb">
+      <title>Restoring a Backup</title>
+      <p>Before restoring a backup, <b>Content Fusion</b> needs to be shutdown  by executing the
+        following
+        command:<codeblock outputclass="language-javascript">sudo bash /fusion/admin/stop-content-fusion.sh</codeblock></p>
+      <p>To restore <b>Content Fusion</b> from a backup, execute the following command on the
+        Content Fusion
+        machine:<codeblock outputclass="language-javascript">sudo bash /fusion/admin/restore-fusion-backup.sh /path/to/fusion-backup.tar.gz</codeblock></p>
+      <p>The script takes one argument, the path to the backup file to restore from.</p>
+    </section>
+  </body>
+</topic>
