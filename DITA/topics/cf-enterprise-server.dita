@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="cf-enterprise-server">
-  <title>Enterprise Server Solution</title>
+  <title>Server Administrator Guide</title>
   <prolog>
     <metadata>
       <keywords>
@@ -12,214 +12,66 @@
     </metadata>
   </prolog>
   <body>
-    <p>It is possible to use your own <ph keyref="cfEnterprise"/> server to store uploaded content
-      rather than the server hosted by the <ph keyref="cfPublic"/>. The information in this topic is
-      meant to help system administrators install and configure your own Enterprise server.</p>
+    <p>The information in this topic is meant to help system administrators install and configure
+      your own Enterprise server solution.</p>
     <section id="the_two_types_of_server_hosting_solutions">
-      <title>The Two Types of Server Hosting Solutions</title>
-      <p>There are two types of server hosting solutions that you can choose from and each one has
-        certain advantages:<dl>
+      <title>Types of Server Connections</title>
+      <p>The <uicontrol>Oxygen Content Fusion Connector</uicontrol> add-on supports two types of
+        server connections:<dl>
           <dlentry>
-            <dt><ph keyref="cfEnterprise"/></dt>
-            <dd>This solution allows you to host your own server to store content that is uploaded
-              through the <ph keyref="product"/> connector add-on. With this model, you will be able
-              to setup and configure your own server. This solution also allows you to <xref
-                href="#cf-enterprise-server/using_custom_frameworks_with_oxygen_content_fusio"
-                format="dita">upload custom frameworks</xref> so that all contributors will have
-              access to them when reviewing content in <ph keyref="product"/>.</dd>
+            <dt><ph keyref="cfPublic"/> (https://fusion.oxygenxml.com)</dt>
+            <dd>This solution is a service where content that is uploaded through the <ph
+                keyref="product"/> connector add-on is stored on a public server hosted by
+                <term>Oxygen</term>. This solution allows you to try <ph keyref="product"/> for free
+              but you cannot control the server configuration and your documents will be uploaded to
+              a shared server (it is recommended that you use sample documents that do not contain
+              sensitive information or ownership rights).</dd>
           </dlentry>
           <dlentry>
-            <dt><ph keyref="cfPublic"/></dt>
-            <dd>This solution is a service where content that is uploaded through the <ph
-                keyref="product"/> connector add-on is stored on a server hosted by Oxygen. The
-              biggest advantage of using this model is that there is no server setup or
-              configuration required.</dd>
+            <dt><ph keyref="cfEnterprise"/></dt>
+            <dd>
+              <p>It is also possible (and usually preferable) to use your own <ph
+                  keyref="cfEnterprise"/> server to store uploaded content. This solution allows you
+                to host your own server to store content that is uploaded through the <ph
+                  keyref="product"/> connector add-on. With this model, you will be able to setup
+                and configure your own server. This solution also allows you to <xref
+                  href="#cf-enterprise-server/using_custom_frameworks_with_oxygen_content_fusio"
+                  format="dita">upload custom frameworks</xref> so that all contributors will have
+                access to them when reviewing content in <ph keyref="product"/>.</p>
+            </dd>
           </dlentry>
         </dl></p>
     </section>
-    <section id="requirements">
-      <title>Prerequisites</title>
-      <p>An Enterprise server solution requires the following prerequisites:<ul>
-          <li><xref
-              href="http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html"
-              format="html" scope="external">Oracle VM VirtualBox Manager</xref></li>
-          <li>4 GB of memory on the server</li>
-          <li><?oxy_comment_start author="Steven" timestamp="20170802T115305+0300" comment="This will change to Oxygen Content Fusion Enterprise licence once this is released."?><xref
-              href="https://www.oxygenxml.com/xml_web_author/register.html" format="html"
-              scope="external">Oxygen XML Web Author License</xref><?oxy_comment_end?></li>
-        </ul></p>
-    </section>
-    <section id="downloading_the_content_fusion_enterprise_virtual">
-      <title>Downloading the Oxygen Content Fusion Enterprise Virtual Machine Software</title>
-      <p>To use your own server, you need to <xref
-          href="https://www.oxygenxml.com/content_fusion/download_content_fusion.html" format="html"
-          scope="external">download the <b>Oxygen Content Fusion Enterprise</b> virtual machine
-          software</xref>. The download package includes the following:<ul>
-          <li>An OVF file that defines the virtual machine.</li>
-          <li>Several VMDK (virtual machine disk) files.</li>
-          <li>A manifest (<filepath>.MF</filepath> file) that contains the signatures of the
-            files.</li>
-        </ul></p>
-    </section>
-    <section id="importing_the_content_fusion_virtual_machine_soft">
-      <title>Importing the Oxygen Content Fusion Virtual Machine Software in VirtualBox</title>
-      <p>To import the <b>Oxygen Content Fusion Enterprise</b> virtual machine software in VirtualBox:<ol>
-          <li>Start <i>Oracle VM VirtualBox Manager</i>.</li>
-          <li>Select <uicontrol>File</uicontrol> / <uicontrol>Import Appliance</uicontrol> and
-            choose the OVF file.</li>
-          <li>Click <uicontrol>Import</uicontrol>.</li>
-          <li>Do not start the VM yet. You need to configure the network settings first.</li>
-        </ol></p>
-    </section>
-    <section id="configuring_the_content_fusion_virtual_machine">
-      <title>Changing Network Settings from NAT to Bridged</title>
-      <p>You need to change the network adapter settings from NAT to bridged so that the VM will be
-        visible in your local network:<ol>
-          <li>Make sure the VM is not running.</li>
-          <li>In <i>Oracle VM VirtualBox Manager</i>, select the VM and click
-              <uicontrol>Settings</uicontrol>.</li>
-          <li>Select <uicontrol>Network</uicontrol> / <uicontrol>Adapter1</uicontrol>.</li>
-          <li>Change it from <b>NAT</b> to <b>Bridged Adapter</b>.</li>
-        </ol></p>
-    </section>
-    <section id="configuring_content_fusion_using_web_interface">
-      <title>Initial Oxygen Content Fusion Configuration</title>
-      <p>To configure <ph keyref="product"/>, use the following procedure:<ol id="ol_f5c_dwg_t1b">
-          <li>In the <i>Oracle VM VirtualBox Manager</i>, press <uicontrol>Start</uicontrol>
-              (<uicontrol>normal</uicontrol> ) to start the imported virtual machine. If the
-              <i>bootloader</i> menu is displayed, press
-              <uicontrol><shortcut>Enter</shortcut></uicontrol> to choose the first option. On this
-            first start, the VM console will display the IP address (you will need this), and the
-            SSH access administrator user name and password (these will be changed). The fingerprint
-            of the HTTPS self-signed certificate is also displayed. </li>
-          <li>Login to the machine using the credentials displayed in step 1. You can do this either
-            directly in the VirtualBox console or by using SSH.</li>
-          <li>After you login, you will be prompted to change the default password for the
-            administration account. This password can be used to login to the following:<ul
-              id="ul_uhf_yvg_t1b">
-              <li>The VM using SSH or the VM console</li>
-              <li>The <ph keyref="product"/> configuration page</li>
-              <li>The Web Author Administration page</li>
-              <li>The license server management page</li>
-            </ul></li>
-          <li>Exit the console by typing <b>exit</b>.</li>
-          <li>Use the IP address shown in the VM console to access the web interface of <ph
-              keyref="product"/>. The address should be
-              <codeph>http://&lt;server-address></codeph>.<note>By default, <ph keyref="product"/>
-              uses a self-signed certificate, so the browser will display a security warning.
-              Continue (for example, if you are using Edge or Internet Explorer, click
-                <b>Details</b> and then <b>Go on to the webpage</b>).</note></li>
-          <li>Configure the <uicontrol>Domain Name</uicontrol> of the server. To properly configure
-            the server, you should associate a domain name for this server in your <term>DNS</term>.
-            You can also use the server IP address instead of the domain name. In this case, the
-            server will run with several limitations:<ul id="ul_rdc_qct_v1b">
-              <li>The e-mail messages generated by the server are more likely to be considered as
-                SPAM.</li>
-              <li>HTTPS support cannot be enabled.</li>
-            </ul></li>
-          <li>On the next page, use the <b>trial</b> license.</li>
-          <li>Restart the VM using the <uicontrol>Restart Machine</uicontrol> button from the
-              <uicontrol>General</uicontrol> tab.</li>
-        </ol></p>
-    </section>
-    <section id="section_hqq_dwg_t1b">
-      <title>Configuring Oxygen Content Fusion using the Web Interface</title>
-      <p>
-        <ol id="ol_g5c_dwg_t1b">
-          <li>Use the IP address shown in the VM console to access the web interface of <ph
-              keyref="product"/>. The address should be
-              <codeph>https://&lt;server-address>:9080</codeph>.<note>By default, <ph
-                keyref="product"/> uses a self-signed certificate. If you did not change it, the
-              browser will display a security warning. Continue (for example, if you are using Edge
-              or Internet Explorer, click <b>Details</b> and then <b>Go on to the
-              webpage</b>).</note></li>
-          <li>Login with the previously configured password, the username is
-            <codeph>fusion</codeph>.</li>
-          <li>Use the Web Interface to change any configuration options.<note>When generating a DKIM
-              private key for the mail, the selector must be set to <b>mail</b></note></li>
-          <li>Restart the VM using the <uicontrol>Restart Machine</uicontrol> button from the
-              <uicontrol>General</uicontrol> tab.</li>
-        </ol>
-      </p>
-    </section>
-    <section id="configuring_oxygen_xml_editorauthor_to_connect_to">
-      <title>Configuring Oxygen XML Editor/Author to Connect to Your Enterprise Server</title>
-      <p>All <b>Content Authors</b> in your organization that will be uploading tasks will need to
-        configure Oxygen XML Editor/Author to connect to your Enterprise server. You need to provide
-        them with your Enterprise server URL and then each of them will need to follow the procedure
-        found in: <xref href="connect-to-enterprise-server.dita#connect-to-enterprise-server"/>.
-        Alternatively, if you want to impose the server URL for all <b>Content Authors</b> so that
-        they do not need to do any manual configuration, continue reading to learn how to use a
-        properties file to impose the Enterprise server address.</p>
-    </section>
-    <section id="configuring_a_properties_file_to_instruct_oxygen_">
-      <title>Configuring a Properties File to Instruct Oxygen XML Editor/Author to Connect to Your
-        Enterprise Server</title>
-      <p>You can create a properties file to specify the address of your Enterprise server. This
-        server address will then be imposed when Oxygen XML Editor/Author connects to the server and
-        the <b>Content Authors</b> that will be uploading tasks will not need to do any manual
-        configuration. When they click <uicontrol>Connect</uicontrol>, your server address will be
-        imposed and they will not have the ability to change it. To create the properties file, use
-        this procedure:<ol>
-          <li>Create a properties file named <filepath>oxygenContentFusion.properties</filepath>
-            with the following content:<p>
-              <codeblock outputclass="language-ini">server=[on-premise_server_address]</codeblock>
-            </p><p>where <b>[on-premise_server_address]</b> is the URL of your on-premise server
-              (for example, <filepath>http://myserver.com:8080</filepath>).</p></li>
-          <li>Save this file in Oxygen's default preferences directory. Depending on the platform
-            and product you are using, this file is located in the following directories:<p>For
-              Oxygen XML Editor:<ul>
-                <li><b>Windows</b> -
-                    <filepath>[user-home-folder]\AppData\Roaming\com.oxygenxml</filepath></li>
-                <li><b>OS X</b> -
-                    <filepath>[user-home-folder]\Library\Preferences\com.oxygenxml</filepath></li>
-                <li><b>Linux</b> - <filepath>[user-home-folder]\.com.oxygenxml</filepath></li>
-              </ul></p><p>For Oxygen XML Author:<ul>
-                <li><b>Windows</b> -
-                    <filepath>[user-home-folder]\AppData\Roaming\com.oxygenxml.author</filepath></li>
-                <li><b>OS X</b> -
-                    <filepath>[user-home-folder]\Library\Preferences\com.oxygenxml.author</filepath></li>
-                <li><b>Linux</b> -
-                  <filepath>[user-home-folder]\.com.oxygenxml.author</filepath></li>
-              </ul></p></li>
-          <li>Each <b>Content Author</b> needs to <xref
-              href="installing_the_content_fusion_plugin.dita#installing_the_content_fusion_plugin"
-              >install the <uicontrol>Oxygen Content Fusion Connector</uicontrol> add-on</xref> in
-            Oxygen XML Editor/Author, then open the <xref
-              href="cf_task_manager_view.dita#cf_task_manager_view">task management view</xref> and
-            click <uicontrol>Connect</uicontrol>.</li>
-        </ol></p>
-    </section>
-    <section id="using_custom_frameworks_with_oxygen_content_fusio">
-      <title>Using Custom Frameworks with Oxygen Content Fusion</title>
-      <p id="cf-configuration-page">One of the advantages of using the <ph keyref="cfEnterprise"/>
-        server solution is that it can be configured to support any DITA specialization or XML
-        language. This must be done by someone who has access to customize Oxygen XML Web Author
-        (for example, a server administrator).</p>
-      <p>For information about how to create, configure, reuse, test, and upload custom frameworks,
-        see Integrating Web Author with Your Content by Creating Custom Frameworks.</p>
-      <p>To upload a custom <term>framework</term> to your Oxygen XML Web Author deployment, follow
-        this procedure:<ol id="upload-framework-ol">
-          <li>Go to your <xref href="#cf-enterprise-server/section_hqq_dwg_t1b" format="dita"
-              >Content Fusion configuration page</xref>.</li>
-          <li>In the <uicontrol>Web Author</uicontrol> tab, click <uicontrol>Manage Web
-              Author</uicontrol>. This will open the Oxygen XML Web Author
-              <uicontrol>Administration</uicontrol> page.</li>
-          <li>Select <uicontrol>Frameworks</uicontrol>.</li>
-          <li>Click <uicontrol>Upload Framework</uicontrol> and choose a <term>framework</term>
-            archive to upload.<note type="important">Oxygen XML Web Author does a validation check
-              to make sure the uploaded framework archive contains the proper extension descriptor
-              file (<filepath>*.framework</filepath>). The archive should contain exactly one
-              folder. Otherwise you will receive an error that the upload was rejected.</note></li>
-          <li>Click <uicontrol>OK</uicontrol> to upload the file.<p><b>Result:</b> The
-                <term>framework</term> should appear in the list on this
-                <uicontrol>Frameworks</uicontrol> page. Uploaded frameworks appear with a light
-              green highlight so that you can identify them easily.</p></li>
-          <li>Once you are finished with all of your changes, restart the server.</li>
-        </ol></p>
-      <p>Once a custom framework has been uploaded to your Oxygen XML Web Author deployment,
-        whenever a file from that custom framework is opened in <ph keyref="product"/>, the
-        reviewers will have access to the customizations made in that framework.</p>
+    <section id="supported_enterprise_server_solutions">
+      <title>Supported Enterprise Server Deployment Solutions</title>
+      <p>The <ph keyref="cfEnterprise"/> solution supports the following types of server deployments:<dl>
+          <dlentry>
+            <dt><xref href="cf-vmsphere.dita#cf-vmsphere">Your Own Server using VMware
+                vSphere</xref></dt>
+            <dd>This type of deployment is preferable for organizations that have their own server
+              hardware and server administrators who are familiar with the <xref
+                href="https://my.vmware.com/en/web/vmware/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/6_5"
+                format="html" scope="external">VMware vSphere</xref> Virtual Manager.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><xref href="cf-aws.dita#cf-aws">A Server Hosted on Amazon Web Services</xref>
+            </dt>
+            <dd>This is preferable for organizations that prefer a cloud-based setup and already
+              have their infrastructure running on Amazon's Web Service. This solution requires an
+                <xref href="https://aws.amazon.com/" format="html" scope="external">AWS
+                account</xref> and the setup requires resources that are not covered in Amazon's
+              free tier.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>
+              <xref href="cf-ubuntu.dita#cf-ubuntu">Other Virtualization Platforms using an
+                Installation Kit</xref></dt>
+            <dd>This type of deployment is preferable for organizations that are using other
+              virtualization platforms other than <i>VMware vSphere</i> or another cloud provider
+              other than Amazon. The installation kit for this solution has been built to run on
+              Ubuntu 16.04.</dd>
+          </dlentry>
+        </dl></p>
     </section>
   </body>
 </topic>

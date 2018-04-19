@@ -2,7 +2,7 @@
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="large-documents-DTD-entities">
-  <title>Including Document Parts with DTD Entities</title>
+  <title>Combining XML Document Content Using DTD Entities</title>
   <prolog>
     <metadata>
       <keywords>
@@ -12,38 +12,34 @@
     </metadata>
   </prolog>
   <body>
-    <p>There are two conditions for including a part using DTD entities:</p>
+    <p>There are two conditions for including a document fragment using DTD entities:</p>
     <ul>
-      <li>
-        <p>The master document should declare the DTD to be used, while the external entities should
-          declare the XML sections to be referenced.</p>
-      </li>
-      <li>
-        <p>The document containing the section must not define again the DTD.</p>
-      </li>
+      <li>The master document should declare the DTD to be used, while the external entities should
+        declare the XML fragments to be referenced.</li>
+      <li>The referenced documents that contain the fragments cannot also define the DTD because the
+        main document will not be valid. If you want to validate the parts separately you have to
+          <xref href="including-document-parts-with-XInclude.dita">use XInclude</xref> for
+        assembling the parts together with the <term>master file</term>.</li>
     </ul>
-    <p>A master document looks like
+    <p>The master document looks like
       this:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
 &lt;!DOCTYPE book SYSTEM "../xml/docbookx.dtd" [ 
 &lt;!ENTITY testing SYSTEM "testing.xml" &gt; ]
 &gt; 
 &lt;book&gt; 
 &lt;chapter&gt; ...</codeblock></p>
-    <p>The referenced document looks like this:</p>
-    <codeblock outputclass="language-xml">&lt;section&gt; ... here comes the section content ... &lt;/section&gt;</codeblock>
+    <p>The referenced document (<i>testing.xml</i>) looks like this:</p>
+    <codeblock outputclass="language-xml">&lt;section&gt; ... here is the section content ... &lt;/section&gt;</codeblock>
     <note>
       <p>The indicated DTD and the element names (<i>section</i>, <i>chapter</i>) are used here only
         for illustrating the inclusion mechanism. You can use any DTD and element names you
         need.</p>
     </note>
-    <p>At a certain point in the master document there can be inserted the section
-        <i>testing.xml</i>
-      entity:<codeblock outputclass="language-ini">... &amp;testing; ...</codeblock></p>
-    <p>When splitting a large document and including the separate parts in the <xref
-        keyref="glossentry_master-file"><term>master file</term></xref> using external entities,
-      only the <term>master file</term> will contain the Document Type Definition (DTD) or other
-      type of schema. The included sections can not define the schema again because the main
-      document will not be valid. If you want to validate the parts separately you have to <xref
-        href="including-document-parts-with-XInclude.dita">use XInclude</xref> for assembling the
-      parts together with the <term>master file</term>.</p>  </body>
+    <p>The content from the referenced file (in the example above, it's a <codeph>section</codeph>
+      in the <i>test.xml</i> file) can be inserted somewhere in the master
+      document:<codeblock outputclass="language-ini">... &amp;testing; ...</codeblock></p>
+    <p>To obtain output in various formats (for example, PDF or HTML), you simply need to apply an
+      XSLT stylesheet over the master document using a transformation scenario.</p>
+    <section conkeyref="reusables-editing-documents/Entities_XInclude_viewing_expanded_content"
+      id="d1187e84"></section>  </body>
 </topic>

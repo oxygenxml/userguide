@@ -21,26 +21,22 @@
       </ul>The usual set of requirements for an integration between <ph keyref="product"/> and the
       CMS are as follows:</p>
     <ul id="procedure-custom-protocol">
-      <li>
-        <p>Contribute to the <ph
-            keyref="product"/> toolbars and
-          main menu with your custom <b>Check Out</b> and <b>Check In</b> actions:<ul>
-            <li><b>Check Out</b> triggers your custom dialog boxes that allow you to browse the
-              remote CMS and choose the resources you want to open.</li>
-            <li><b>Check In</b> allows you to send the modified content back to the server. <p>You
-                can use the <b>Workspace Access</b>
-                <term>plugin extension</term> (and provided sample Java code) for all these
-                operations.</p></li>
-          </ul></p>
-      </li>
-      <li><p>When <b>Check Out</b> is called, use the <ph keyref="product"/> API to open your custom URLs
-          (URLs created using your custom protocol). It is important to implement and use a
-            <b>Custom Protocol</b> extension to be notified when the files are opened and saved and
-          to be able to provide the content for the relative references the files may contain to <ph
-            keyref="product"/> . Your custom <i>java.net.URLStreamHandler</i>
-          implementation checks out the resource content from the server, stores it locally and
-          provides its content. Sample <b>Check Out</b>
-          implementation:<codeblock outputclass="language-java">  /**
+      <li>Contribute to the <ph keyref="product"/> toolbars and main menu with your custom <b>Check
+          Out</b> and <b>Check In</b> actions:<ul>
+          <li><b>Check Out</b> triggers your custom dialog boxes that allow you to browse the remote
+            CMS and choose the resources you want to open.</li>
+          <li><b>Check In</b> allows you to send the modified content back to the server. <p>You can
+              use the <b>Workspace Access</b>
+              <term>plugin extension</term> (and provided sample Java code) for all these
+              operations.</p></li>
+        </ul></li>
+      <li>When <b>Check Out</b> is called, use the <ph keyref="product"/> API to open your custom
+        URLs (URLs created using your custom protocol). It is important to implement and use a
+          <b>Custom Protocol</b> extension to be notified when the files are opened and saved and to
+        be able to provide the content for the relative references the files may contain to <ph
+          keyref="product"/> . Your custom <i>java.net.URLStreamHandler</i> implementation checks
+        out the resource content from the server, stores it locally and provides its content. Sample
+          <b>Check Out</b> implementation:<codeblock outputclass="language-java">  /**
    * Sample implementation for the "Check Out" method.
    *
    * @param pluginWorkspaceAccess (Workspace Access plugin).
@@ -61,24 +57,21 @@ throws MalformedURLException {
     //directory, for example, and provide the content from it.
     //Oxygen will also pass through your URLHandler if you have any relative 
     //references which need to be opened/obtained.
-  } </codeblock></p>
-        <p>
+  } </codeblock><p>
           <fig>
             <title>Check Out Process Diagram</title>
             <image href="../img/cmscheckout.png" id="image_yvg_bmg_ab"/>
           </fig>
-        </p>
-        <p>Each phase is described below:<ol id="ol_svs_qxm_hb">
-          <li>Browse CMS repository</li>
-          <li>User chooses a resource</li>
-          <li>Use API to open custom URL: <filepath>mycms://path/to/file.xml</filepath></li>
-          <li>Get content of URL: <filepath>mycms://path/to/file.xml</filepath></li>
-          <li>Get content of resource</li>
-          <li>Store on disk for faster access</li>
-          <li>Retrieve content from disk if already checked out</li>
-          <li>Retrieved content</li>
-        </ol></p>
-      </li>
+        </p><p>Each phase is described below:<ol id="ol_svs_qxm_hb">
+            <li>Browse CMS repository</li>
+            <li>User chooses a resource</li>
+            <li>Use API to open custom URL: <filepath>mycms://path/to/file.xml</filepath></li>
+            <li>Get content of URL: <filepath>mycms://path/to/file.xml</filepath></li>
+            <li>Get content of resource</li>
+            <li>Store on disk for faster access</li>
+            <li>Retrieve content from disk if already checked out</li>
+            <li>Retrieved content</li>
+          </ol></p></li>
       <li>Contribute a special <b>Browse CMS</b> action to every dialog box in <ph keyref="product"
         /> where a URL can be chosen to perform a special action (such as the <b>Reuse Content</b>
         or <b>Insert Image</b> action). Sample
@@ -129,11 +122,8 @@ throws MalformedURLException {
           return null;
         }
       });</codeblock></li>
-      <li>
-        <p>Write the <filepath>plugin.xml</filepath> descriptor file. Your <term>plugin</term>
-          combines the two extensions using a single set of libraries. The descriptor would look
-          like this:</p>
-        <p>
+      <li>Write the <filepath>plugin.xml</filepath> descriptor file. Your <term>plugin</term>
+        combines the two extensions using a single set of libraries. The descriptor would look like this:<p>
           <codeblock outputclass="language-xml">&lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
 &lt;plugin
  name="CustomCMSAccess"
@@ -153,19 +143,14 @@ throws MalformedURLException {
  &lt;extension type="URLHandler" 
   class="custom.cms.CustomProtocolURLHandlerExtension"/>
 &lt;/plugin></codeblock>
-        </p>
-      </li>
-      <li>
-        <p>Create a <filepath>cmsaccess.jar</filepath>
-          <xref keyref="glossentry_jar"><term>JAR</term></xref> archive containing your
-          implementation classes.</p>
-      </li>
-      <li>
-        <p>Copy your new <term>plugin</term> directory in the <filepath>plugins</filepath> subfolder
-          of the <ph keyref="product"/> install folder (for example, <filepath><term
-              conkeyref="reusables-user-guide/oxy-install-dir"
-            />/plugins/myPlugin</filepath>) and start <ph keyref="product"/>.</p>
-      </li>
+        </p></li>
+      <li>Create a <filepath>cmsaccess.jar</filepath>
+        <xref keyref="glossentry_jar"><term>JAR</term></xref> archive containing your implementation
+        classes.</li>
+      <li>Copy your new <term>plugin</term> directory in the <filepath>plugins</filepath> subfolder
+        of the <ph keyref="product"/> install folder (for example, <filepath><term
+            conkeyref="reusables-user-guide/oxy-install-dir"/>/plugins/myPlugin</filepath>) and
+        start <ph keyref="product"/>.</li>
     </ul>
   </body>
 </topic>

@@ -119,9 +119,12 @@
             the content completion list. Each time the element specified in the
               <codeph>path</codeph> attribute is inserted into the document, the list of proposals
             in the <term>Content Completion Assistant</term> will include the entries that are
-            defined in the associated schema, minus the elements specified in this attribute.<p>When
-              using this attribute to specify multiple elements, only use one entry with the element
-              names separated by a
+            defined in the associated schema, minus the elements specified in this attribute.<p>This
+              setting also influences copy/paste and insertion behaviors. For example, if you reject
+              the insertions of images in paragraphs and you try to paste an image inside a
+              paragraph, by default the application will take your choice into account and try to
+              insert the image in a place where it is allowed.</p><p>When using this attribute to
+              specify multiple elements, only use one entry with the element names separated by a
               space:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image fig imagemap foreign" /></codeblock></p></li>
         </ul></p>
       <p><b>Attributes:</b></p>
@@ -189,7 +192,7 @@
             validation.</li>
           <li>To test the effects of your changes, you should restart the application, although in
             some cases, you can simply use the <uicontrol><image href="../img/Refresh16.png"
-              /> Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
+              />Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
             customizations.</li>
           <li>When an XML element from the document is matched against a list of configured
               <codeph>elementProposals</codeph>, the first one in sequence takes precedence.
@@ -210,22 +213,17 @@
       <title>Examples: Configuring the Element Proposals </title>
       <p>
         <ul>
-          <li>
-            <p><b>Example 1: Automatically Insert Elements</b></p>
-            <p>Suppose that you want to automatically insert a paragraph element
-              (<codeph>p</codeph>) whenever a DITA ordered list item element
-              (<codeph>ol/li</codeph>) is inserted, and also to not allow any other element besides
-              a paragraph inside the ordered list items.</p>
-            <p>To achieve this, the configuration file should include the
+          <li><b>Example 1: Automatically Insert Elements</b><p>Suppose that you want to
+              automatically insert a paragraph element (<codeph>p</codeph>) whenever a DITA ordered
+              list item element (<codeph>ol/li</codeph>) is inserted, and also to not allow any
+              other element besides a paragraph inside the ordered list items.</p><p>To achieve
+              this, the configuration file should include the
               following:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertElements="p"  
-       possibleElements="_INSERTED_"/></codeblock></p>
-          </li>
-          <li>
-            <p><b>Example 2: Insert Complex Element Structure</b></p>
-            <p>For a more complex example, suppose that you want to insert a complex structure
-              whenever a DITA <codeph>prolog</codeph> element is inserted. </p>
-            <p>For instance, if you need to insert the following structure inside
-                <codeph>prolog</codeph>
+       possibleElements="_INSERTED_"/></codeblock></p></li>
+          <li><b>Example 2: Insert Complex Element Structure</b><p>For a more complex example,
+              suppose that you want to insert a complex structure whenever a DITA
+                <codeph>prolog</codeph> element is inserted. </p><p>For instance, if you need to
+              insert the following structure inside <codeph>prolog</codeph>
               elements:<codeblock outputclass="language-xml">    &lt;prolog>
       &lt;author>&lt;/author>
       &lt;metadata>
@@ -234,26 +232,23 @@
               &lt;keyword>&lt;/keyword>
           &lt;/keywords>
       &lt;/metadata>
-    &lt;/prolog></codeblock></p>
-            <p>The configuration file should include the
+    &lt;/prolog></codeblock></p><p>The
+              configuration file should include the
               following:<codeblock outputclass="language-xml">    &lt;elementProposals path="prolog" insertElements="author metadata"/>
     &lt;elementProposals path="prolog/metadata" insertElements="keywords"/>
     &lt;elementProposals path="prolog/metadata/keywords" 
-           insertElements="keyword, keyword"/></codeblock></p>
-          </li>
-          <li>
-            <p><b>Example 3: Limit Possible Elements</b></p>
-            <p>Suppose that you also want to limit the proposals for the <codeph>keywords</codeph>
-              element to only allow the user to insert <codeph>audience</codeph> or
-                <codeph>keyword</codeph> elements. The configuration file should include the
+           insertElements="keyword, keyword"/></codeblock></p></li>
+          <li><b>Example 3: Limit Possible Elements</b><p>Suppose that you also want to limit the
+              proposals for the <codeph>keywords</codeph> element to only allow the user to insert
+                <codeph>audience</codeph> or <codeph>keyword</codeph> elements. The configuration
+              file should include the
               following:<codeblock outputclass="language-xml">&lt;elementProposals path="prolog/metadata" insertElements="keywords" 
-           possibleElements="audience keywords"/></codeblock></p>
-            <p>Suppose that you want to simply restrict your users from inserting
-                <codeph>image</codeph> elements inside DITA list item elements
-              (<codeph>li</codeph>), but still propose all the other elements that are defined in
-              the associated schema. The configuration file should look like
-              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" rejectElements="image" /></codeblock></p>
-          </li>
+           possibleElements="audience keywords"/></codeblock></p><p>Suppose
+              that you want to simply restrict your users from inserting <codeph>image</codeph>
+              elements inside DITA list item elements (<codeph>li</codeph>), but still propose all
+              the other elements that are defined in the associated schema. The configuration file
+              should look like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" rejectElements="image" /></codeblock></p></li>
         </ul>
       </p>
     </section>

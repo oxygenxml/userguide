@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="fop-processing-breaks-dita-pdf">
-  <title>PDF Processing Fails When Publishing DITA Content</title>
+  <title>DITA PDF Processing Common Errors</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Error: Anttask - Error rendering fo file</indexterm>
+        <indexterm>Error: java.io.FileNotFoundException</indexterm>
+        <indexterm>Error: 1248 WARN org.apache.fop.apps.FOUserAgent</indexterm>
+        <indexterm>FOP Error</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
-    <p>There are cases when publishing DITA content fails when creating a PDF file. This topic lists
-      some common problems and solutions.</p>
+    <p>There are cases when the PDF processing fails when trying to publish DITA content to a PDF
+      file. This topic lists some of the common problems and possible solutions.</p>
     <section id="problem_cannot_save_pdf">
       <title>Problem: Cannot Save PDF</title>
       <p>The FO processor cannot save the PDF at the specified target. The console output contains
@@ -15,7 +25,7 @@ C:\samples\dita\temp\pdf\oxygen_dita_temp\topic.fo
 Failed to open samples\dita\out\pdf\test.pdf
 .............
 [fop] Caused by: java.io.FileNotFoundException: 
-C:\Users\radu_coravu\Desktop\bev\out\pdf\test.pdf 
+C:\Users\default\Desktop\bev\out\pdf\test.pdf 
 (The process cannot access the file because it is being used by another process)</codeblock></p>
     </section>
     <section id="solution_cannot_save_pdf">
@@ -53,42 +63,49 @@ D:\projects\samples\dita\flowers\out\pdf\flowers.pdf</codeblock></p>
           <li>Run the transformation, open the <filepath>topic.fo</filepath> file in <ph
               keyref="product"/>, and look in it at the line specified in the error message
               <codeph>(See position 179:-1)</codeph>.</li>
-          <li>Look around that line in the <filepath>XSL-FO</filepath> file to find relevant text
-            content that you can use (for example, with the <b>Find/Replace in Files</b> action in
-            the <xref href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
+          <li product="author editor authorEclipse editorEclipse">Look around that line in the
+              <filepath>XSL-FO</filepath> file to find relevant text content that you can use (for
+            example, with the <b>Find/Replace in Files</b> action in the <xref
+              href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
                 Manager</uicontrol> view</xref>) to find the original DITA topic for which the table
             was generated.</li>
         </ol></p>
     </section>
-    <section id="problem_broken_link">
+    <section id="problem_broken_link" product="author editor authorEclipse editorEclipse">
       <title>Problem: Broken Link</title>
       <p>There is a broken link in the generated <filepath>XSL-FO</filepath> file. The PDF is
         generated but contains a link that is not working. The console output contains messages like
         this:<codeblock outputclass="language-ini">[fop] 1248 WARN [ main ] org.apache.fop.apps.FOUserAgent - 
 Page 6: Unresolved ID reference "unique_4_Connect_42_wrongID" found.</codeblock></p>
     </section>
-    <section id="solution_broken_link">
+    <section id="solution_broken_link" product="author editor authorEclipse editorEclipse">
       <title>Solution: Broken Link</title>
       <p>To resolve this issue:<ol id="ul_pny_gm5_rp">
-          <li>Use the <uicontrol><image href="../img/ValidateAndCheck16.png" id="image_a2l_fvv_sr"/>
-              Validate and Check for Completeness</uicontrol> action available in the <xref
+          <li>Use the <uicontrol><image href="../img/ValidateAndCheck16.png" id="image_a2l_fvv_sr"
+              />Validate and Check for Completeness</uicontrol> action available in the <xref
               href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
                 Manager</uicontrol> view</xref> to find such problems.</li>
           <li>If you publish to PDF using a <i>DITAVAL</i> filter, select the same DITAVAL file in
             the <uicontrol>DITA Map Completeness Check</uicontrol> dialog box.</li>
-          <li>If the <uicontrol><image href="../img/ValidateAndCheck16.png" id="image_kgp_fvv_sr"/>
-              Validate and Check for Completeness</uicontrol> action does not discover any issues,
+          <li>If the <uicontrol><image href="../img/ValidateAndCheck16.png" id="image_kgp_fvv_sr"
+              />Validate and Check for Completeness</uicontrol> action does not discover any issues,
             edit the transformation scenario and set the <codeph>clean.temp</codeph> parameter to
               <codeph>no</codeph>.</li>
           <li>Run the transformation, open the <filepath>topic.fo</filepath> file in <ph
               keyref="product"/>, and search for the <i>unresolved ID references</i> (for example:
               <codeph>unique_4_Connect_42_wrongID</codeph>).</li>
-          <li>Look in the <filepath>XSL-FO</filepath> file to find relevant text content that you can
-            use (for example, with the <b>Find/Replace in Files</b> action in the <xref
+          <li>Look in the <filepath>XSL-FO</filepath> file to find relevant text content that you
+            can use (for example, with the <b>Find/Replace in Files</b> action in the <xref
               href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
                 Manager</uicontrol> view</xref>) to find the original DITA topic for which the table
             was generated.</li>
         </ol></p>
     </section>
   </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="enable-debugging-fop.dita#enable-debugging-fop"></link>
+    </linklist>
+  </related-links>
 </topic>

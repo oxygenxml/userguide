@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_how_to_apply_to_directory">
+  <title>How To Apply Chemistry on Multiple Files</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Transform multiple files</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>It is possible to use <ph keyref="product"/> to transform multiple files in a directory at
+      once. This can be done by using a particular script, depending on your operating system.</p>
+    <p>The following examples assume that you <xref href="ch_installing.dita#ch_installing"
+        >installed <ph keyref="product"/> and modified the <codeph>PATH</codeph> environment
+        variable to include the installation directory</xref>. Also, you can change the
+        <b>INPUT_DIR</b>, <b>CSS</b>, and <b>*xml</b> file pattern according to your needs.</p>
+    <p>
+      <ul>
+        <li><u><b>Windows</b></u><ol>
+            <li>Create a <filepath>.bat</filepath> file with the following
+              content:<codeblock outputclass="language-ini">@echo off
+
+rem This is the input directory
+set "INPUT_DIR=C:\some\input\directory"
+rem This is the CSS used to style the xml documents.
+set "CSS=C:\some\css\file"
+
+rem Iterate all the files (%%f) that match the "*.xml" pattern in the input directory.   
+for /f "usebackq delims=|" %%f in (`dir /b "%INPUT_DIR%\*.xml"`) 
+do chemistry.bat -in %INPUT_DIR%%%f -css %CSS% -out %INPUT_DIR%%%f.pdf</codeblock></li>
+            <li>Run the <filepath>.bat</filepath> file from a command prompt.</li>
+          </ol></li>
+        <li><u><b>Linux/Mac OS X</b></u><ol>
+            <li>Create a script with the following
+              content:<codeblock outputclass="language-ini">#!/bin/sh
+# This is the input directory
+INPUT_DIR=/some/input/directory"
+# This is the CSS used to style the xml documents.
+CSS=/some/css/file"
+# Iterate all the files ($f) that match the "*.xml" pattern in the input directory.   
+for f in $INPUT_DIR/*.xml; do chemistry.sh -in $f -out $f.pdf -css $CSS ; done</codeblock></li>
+            <li>Run the script from the Terminal application.</li>
+          </ol></li>
+      </ul>
+    </p>
+  </body>
+</topic>

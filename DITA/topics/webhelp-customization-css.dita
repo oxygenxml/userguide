@@ -1,29 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webhelp-customization-css">
-  <title>Customizing WebHelp Output with a Custom CSS</title>
+  <title>Customizing WebHelp Output Through CSS Styling</title>
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>WebHelp Classic system<indexterm>Use custom CSS</indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Classic<indexterm>Use custom CSS</indexterm></indexterm>
+        <indexterm product="webhelp">Custom CSS</indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
-    <p>By creating your own custom CSS stylesheet, you can customize the look and style of WebHelp
-      output to fit your specific needs.</p>
-    <p>To use a custom CSS in WebHelp output, follow these steps:<ol id="ol_emc_xgy_ls">
-        <li><ph
-            conkeyref="reusable-webhelp-customizing/transform-parameters-tab-ph"
-            /><ol id="ol_fld_sd2_vs">
-            <li><ph
-                conkeyref="reusable-webhelp-customizing/DITA-parameters-ph"
-              /></li>
-            <li><ph
-                conkeyref="reusable-webhelp-customizing/DocBook-parameters-ph"
-              /></li>
-          </ol></li>
-        <li>Run the transformation scenario.</li>
-      </ol></p>
+    <p>The most common way to customize the look and style of your WebHelp output is to use custom
+      CSS styling. This method can be used to make small, simple styling changes or more advanced,
+      precise changes. To implement the styling in your WebHelp output, you simply need to create
+      the custom CSS file and reference it in your transformation scenario or script. This custom
+      file will be the final CSS to be applied so its content will override the styles in the other
+      pre-existing CSS files.</p>
+    <section id="using_css_inspector_to_identify_content_for_custo">
+      <title>Using the CSS Inspector to Identify Content for Custom CSS File</title>
+      <p>You can use your browser's CSS inspector to identify the pertinent code in the current CSS
+        files and you can even make changes directly in the CSS inspector to test the results so
+        that you know exactly what content to use in your custom CSS file.</p>
+      <p>In most popular browsers (such as Chrome, Firefox, and Edge), you can access the CSS
+        inspector by using <uicontrol><shortcut>F12</shortcut></uicontrol> or by selecting
+          <uicontrol>Inspect Element</uicontrol> (or simply <uicontrol>Inspect</uicontrol>) from the
+        contextual menu.<note type="tip">When using Safari on Mac OS X, you must first enable the
+          Develop menu by going to the Advanced settings and selecting <uicontrol>Show Develop menu
+            in menu bar</uicontrol>. Then you can select <uicontrol>Show Web Inspector</uicontrol>
+          from the Develop menu or click <uicontrol><shortcut>Command + Option +
+            I</shortcut></uicontrol>.</note></p>
+    </section>
+    <section id="using_oxygen_xml_editorauthor">
+      <title>Referencing the Custom CSS Using Oxygen XML Editor/Author</title>
+      <p>To use a custom CSS to style WebHelp output and use a transformation scenario from within
+          <b>Oxygen XML Editor/Author</b>, follow this procedure:<ol>
+          <li>Create your custom CSS file.</li>
+          <li><ph conkeyref="reusable-webhelp-customizing/transform-parameters-tab-ph"/><ul>
+              <li><ph conkeyref="reusable-webhelp-customizing/DITA-parameters-ph"/></li>
+              <li><ph conkeyref="reusable-webhelp-customizing/DocBook-parameters-ph"/></li>
+            </ul></li>
+          <li>Run the WebHelp transformation scenario to generate the output.</li>
+        </ol></p>
+    </section>
+    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
+      <title>Referencing the Custom CSS Using a Script Outside of Oxygen XML Editor/Author</title>
+      <note conkeyref="reusables-transforming-documents/note-command-line"
+        product="author developer editor authorEclipse developerEclipse editorEclipse"/>
+      <p>To use a custom CSS to style WebHelp output and use a <xref
+          href="using-the-webhelp-plugin.dita#using-the-webhelp-plugin">script outside of <b>Oxygen
+            XML Editor/Author</b></xref>, follow this procedure:<ol>
+          <li>Create your custom CSS file.</li>
+          <li>Reference your custom CSS file:<ul>
+              <li>For DITA transformations, use the <codeph>args.css</codeph> parameter in your
+                transformation script and set its value to the path of your custom CSS file. Also,
+                set the <codeph>args.copycss</codeph> parameter to <codeph>yes</codeph> to
+                automatically copy your custom CSS in the output folder when the transformation
+                scenario is processed.</li>
+              <li>For DocBook transformations, use the <codeph>html.stylesheet</codeph> parameter in
+                your transformation script and set its value to the path of your custom CSS
+                file.</li>
+            </ul></li>
+          <li>Execute the transformation script.</li>
+        </ol></p>
+      <p>For example, a DITA script might look like this::<ul>
+          <li><b>Windows:</b><p><codeph>dita.bat -i c:\mySample.ditamap -f webhelp
+                -Dargs.css=c:\myFile.css -Dargs.copycss=yes</codeph></p></li>
+          <li><b>Mac OS X/ Linux:</b><p><codeph>dita -i C:/mySample.ditamap -f webhelp
+                -Dargs.css=C:/myFile.css -Dargs.copycss=yes</codeph></p></li>
+        </ul></p>
+    </section>
   </body>
 </topic>

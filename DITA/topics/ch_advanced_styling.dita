@@ -2,7 +2,6 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="ch_advanced_styling">
   <title>Advanced Styling</title>
-  <shortdesc>Advanced CSS styling concepts such as using XPath and pseudo elements.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -10,4 +9,259 @@
       </keywords>
     </metadata>
   </prolog>
+  <topic id="ch_hyphenation">
+    <title>Hyphenation</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>Hyphenation</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>The CSS <codeph>hyphens</codeph> property specifies how the words should be hyphenated when
+        the paragraph text wraps on multiple lines. </p>
+      <p>The accepted values are:<dl>
+          <dlentry>
+            <dt>manual</dt>
+            <dd>Words are only hyphenated when there are characters inside the word that explicitly
+              suggest hyphenation opportunities. Those characters are:<p>
+                <dl>
+                  <dlentry>
+                    <dt>U+2010 (HYPHEN) -</dt>
+                    <dd>The "hard" hyphen character indicates a visible line break opportunity. The
+                      hyphen is always shown in the output.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>U+00AD (SHY)</dt>
+                    <dd>An invisible, "soft" hyphen. This character is not rendered visibly. It
+                      marks a breaking place for the word if hyphenation is necessary. You can use
+                        <codeph>&amp;#xAD;</codeph> in XML or <codeph>&amp;shy;</codeph> in
+                      HTML.</dd>
+                  </dlentry>
+                </dl>
+              </p></dd>
+          </dlentry>
+          <dlentry>
+            <dt>auto</dt>
+            <dd>Words are hyphenated automatically according to an algorithm driven by a hyphenation
+              dictionary. Also, <ph keyref="product"/> uses an aggressive technique to create
+              hyphenation points at underscores, dots, and case changes. This is useful when your
+              publication contains snippets of code (Java, etc). To disable this functionality, you
+              can use the <xref
+                href="ch_command_line_interface.dita#ch_command_line_interface/no-aggressive-hyphenation"
+                  ><codeph>-no-aggressive-hyphenation</codeph> parameter</xref>.<note>The element,
+                or one of its parents, must have a <codeph>lang</codeph> or
+                  <codeph>xml:lang</codeph> attribute present for the processor to identify the
+                hyphenation dictionary. If this is missing, the <codeph>manual</codeph> hyphenation
+                is
+                performed.<codeblock outputclass="language-xml">&lt;table <b>lang="en"</b>>
+...
+&lt;/table></codeblock></note></dd>
+          </dlentry>
+          <dlentry>
+            <dt>none</dt>
+            <dd>Currently not supported by <ph keyref="product"/> and it falls back to
+                <codeph>manual</codeph>. If your document does not use the <codeph>HYPHEN</codeph>
+              or <codeph>SHY</codeph> characters, no hyphenation is done.</dd>
+          </dlentry>
+        </dl></p>
+      <p><b><u>Example: Hyphenation</u></b></p>
+      <p>To perform hyphenation on all paragraphs from an HTML document, you can
+        use:<codeblock outputclass="language-css">p {
+  hyphens: auto;
+}</codeblock></p>
+      <p>Usually, it is best to activate hyphenation for elements that are known to have a limited
+        width (for example, on tables) where long words could bleed out of the
+        bounds:<codeblock outputclass="language-css">table {
+  hyphens: auto;
+}</codeblock></p>
+      <section id="section_lmc_135_qbb">
+        <title>Hyphenation Dictionaries</title>
+        <p><ph keyref="product"/> provides built-in hyphenation patterns for the following
+            languages:<table frame="all" rowsep="1" colsep="1">
+            <tgroup cols="2">
+              <colspec colname="c1" colnum="1" colwidth="75pt" align="center"/>
+              <colspec colname="c2" colnum="2" colwidth="200pt"/>
+              <thead>
+                <row>
+                  <entry>Code</entry>
+                  <entry>Language</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>da</entry>
+                  <entry>Danish</entry>
+                </row>
+                <row>
+                  <entry>de</entry>
+                  <entry>German</entry>
+                </row>
+                <row>
+                  <entry>de_CH</entry>
+                  <entry>German (Switzerland) </entry>
+                </row>
+                <row>
+                  <entry>en</entry>
+                  <entry>English</entry>
+                </row>
+                <row>
+                  <entry>en-GB</entry>
+                  <entry>English (Great Britain)</entry>
+                </row>
+                <row>
+                  <entry>es</entry>
+                  <entry>Spanish</entry>
+                </row>
+                <row>
+                  <entry>fr</entry>
+                  <entry>French</entry>
+                </row>
+                <row>
+                  <entry>it</entry>
+                  <entry>Italian</entry>
+                </row>
+                <row>
+                  <entry>nb</entry>
+                  <entry>Norwegian Bokmål</entry>
+                </row>
+                <row>
+                  <entry>nl</entry>
+                  <entry>
+                    <p>Dutch</p>
+                  </entry>
+                </row>
+                <row>
+                  <entry>ro</entry>
+                  <entry>Romanian</entry>
+                </row>
+                <row>
+                  <entry>ru</entry>
+                  <entry>Russian</entry>
+                </row>
+                <row>
+                  <entry>sv</entry>
+                  <entry>Swedish</entry>
+                </row>
+                <row>
+                  <entry>th</entry>
+                  <entry>Thai</entry>
+                </row>
+                <row>
+                  <entry>pt</entry>
+                  <entry>Portuguese</entry>
+                </row>
+                <row>
+                  <entry>da</entry>
+                  <entry>Danish</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table></p>
+        <p>The built-in hyphenation pattern license terms are listed in the XML files in the
+            <filepath>[CHEMISTRY_INSTALL_DIR]/config/hyph</filepath> folder. Most of them comply
+          with the LaTex distribution policy.</p>
+      </section>
+      <section id="section_qq2_tnz_qbb">
+        <title>Installing New Hyphenation Dictionaries</title>
+        <p>The hyphenation dictionaries are located in:
+            <filepath>[CHEMISTRY_INSTALL_DIR]/config/hyph</filepath>. The <filepath>.xml</filepath>
+          files allow you to read the licensing terms. The <filepath>.hyp</filepath> files are the
+          compiled dictionaries that <ph keyref="product"/> actually uses. </p>
+        <p><ph keyref="product"/> uses the TeX hyphenation dictionaries converted to XML by the
+            <codeph>OFFO</codeph> project: <xref href="https://sourceforge.net/projects/offo/"
+            format="html" scope="external"/>.</p>
+        <p>One simple way to add more dictionaries:<ol>
+            <li><xref href="https://sourceforge.net/projects/offo/files/" format="html"
+                scope="external">Download and extract the
+                  <filepath>offo-hyphenation-compiled.zip</filepath></xref> file.</li>
+            <li>Copy the <codeph>fop-hyph.jar</codeph> file to the
+                <filepath>[CHEMISTRY_INSTALL_DIR]/lib</filepath> directory.</li>
+            <li>If you just need a single dictionary, extract the corresponding
+                <codeph>.hyp</codeph> file from that jar file and place it in the
+                <filepath>[CHEMISTRY_INSTALL_DIR]config/hyph</filepath> directory.</li>
+          </ol></p>
+      </section>
+      <section id="how_to_hide_hyphens">
+        <title>How to Hide Hyphens</title>
+        <p>It is possible to hide hyphens for cases where they are not needed (for example, when
+          hyphenation occurs in a section of code). To hide the hyphens, use the space character in
+          the <codeph>-oxy-hyphenation-character</codeph>
+          property:<codeblock outputclass="language-css">pre {
+ -oxy-hyphenation-character:" ";
+}</codeblock></p>
+      </section>
+    </body>
+  </topic>
+  <topic id="ch_using_xpath_in_css">
+    <title>Using XPath in CSS</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>XPath in CSS</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>You can collect and process the document contents using XPath, directly from CSS. The
+        following example counts the words from a section and shows it in a static text after the
+        section:</p>
+      <codeblock outputclass="language-css">section:after {
+  contents: "Number of words: " 
+            oxy_xpath("count(tokenize(normalize-space(string-join(text(), '')), ' '))";
+}</codeblock>
+      <p>All the standard XPath 2.0 functions are supported.</p>
+    </body>
+    <related-links>
+      <linklist>
+        <title>Related Information:</title>
+        <link format="html"
+          href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-xpath-function.html"
+          scope="external">
+          <linktext>Oxygen XML Editor User Guide: oxy_xpath() Function</linktext>
+        </link>
+      </linklist>
+    </related-links>
+  </topic>
+  <topic id="ch_multiple_before_after_pseudo_elements">
+    <title>Multiple :before and :after Pseudo Elements</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm>before pseudo element</indexterm>
+          <indexterm>after pseudo element</indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>Although not standard, this extension may come in very handy if you want to style sections
+        from static content. To add static content to an element, you would normally use a
+          <codeph>:before</codeph> or <codeph>:after</codeph> pseudo element. </p>
+      <p>This example adds static text before the title ("Chapter 1", "Chapter 2", etc.):</p>
+      <codeblock outputclass="language-css">h1:before {
+  content: "Chapter " counter(chapter) ".";
+  color: blue;
+}</codeblock>
+      <p>All of this is styled with the same color, blue in this example. Using standard CSS, it is
+        impossible to style just the chapter number with a larger font and with red, for example.
+        However, you can do it using multiple <codeph>before</codeph> pseudo elements: </p>
+      <codeblock outputclass="language-css">h1:before(3) {
+  content: "Chapter ";
+  color: blue;
+}
+h1:before(2) {
+  content: counter(chapter);
+  color: red;
+  font-size: large;
+}
+h1:before(1) {
+  content: ".";
+  color: blue;
+}</codeblock>
+      <note>The bigger the level, the more distant the pseudo element is.</note>
+      <note>Level 1 corresponds to normal <codeph>:before</codeph> or
+        <codeph>:after</codeph>.</note>
+    </body>
+  </topic>
 </topic>

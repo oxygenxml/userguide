@@ -2,7 +2,7 @@
 <!DOCTYPE task
   PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
 <task id="xproc-API-external-engine">
-  <title>Integration of an External XProc Engine</title>
+  <title>Integrating an External XProc Engine</title>
   <prolog>
     <metadata>
       <keywords>
@@ -13,8 +13,14 @@
   </prolog>
   <taskbody>
     <context>
-      <p>The Javadoc documentation of the XProc API is available for download from the application
-        website as a zip file: <xref
+      <p>If you edit an XProc transformation scenario, there is a <uicontrol>Processor</uicontrol>
+        drop-down menu where you can select the XProc engine to be used for the transformation. You
+        can select the built-in <i>Calabash</i> engine or a custom engine based on another XProc
+        implementation. For example, there is a public project on GitHub that is an implementation
+        for integrating Morgana XProc with <ph keyref="product"/>: <xref
+          href="https://github.com/xml-project/support-for-xmleditor" format="html" scope="external"
+        />. Also, the Javadoc documentation of the XProc API is available for download from the
+        application website as a zip file: <xref
           href="https://www.oxygenxml.com/InstData/Editor/SDK/xprocAPI.zip" scope="external"
           format="zip"><i>xprocAPI.zip</i></xref>.</p>
       <p>To create an XProc integration project, follow these steps:</p>
@@ -34,7 +40,7 @@
           classes you created.</cmd>
       </step>
       <step>
-        <cmd>Create a <filepath>engine.xml</filepath> file according with the
+        <cmd>Create an <filepath>engine.xml</filepath> file according to the
             <filepath>engine.dtd</filepath> file. The attributes of the <codeph>engine</codeph>
           element are as follows: </cmd>
         <info>
@@ -56,13 +62,39 @@
         </info>
       </step>
       <step>
-        <cmd>Create a folder with the name of the integration in the <filepath><term
-              conkeyref="reusables-user-guide/oxy-install-dir"/>/lib/xproc</filepath>.</cmd>
+        <cmd>Create a new folder (for example, named <filepath>MyXprocEngine</filepath>) and place
+          the <filepath>engine.xml</filepath> and all the libraries necessary to run the new
+          integration in that folder.</cmd>
       </step>
       <step>
-        <cmd>Place the <filepath>engine.xml</filepath> and all the libraries necessary to run the
-          new integration in that folder.</cmd>
+        <cmd>Place that new folder (i.e. <filepath>MyXprocEngine</filepath>) inside a new plugin
+          folder. This new plugin folder should also contain a <filepath>plugin.xml</filepath> file
+          that points to the new engine folder (i.e. <filepath>MyXprocEngine</filepath>).</cmd>
+        <info>The <filepath>plugin.xml</filepath> file would look like this<ph
+            product="author developer editor"> (it is based on the <xref
+              href="additional-xproc-engine.dita#additional-xproc-engine"
+                ><b>AditionalXProcEngine</b>
+          extension</xref>)</ph>:<codeblock outputclass="language-xml">&lt;plugin
+ id="morgana.xproc.addon"
+ name="Contribute Morgana XProc"
+ description="Contribute Morgana XProc"
+ version="1.0"
+ vendor="SyncroSoft"
+ class="ro.sync.exml.plugin.Plugin"
+ classLoaderType="preferReferencedResources">
+ &lt;extension type="AdditionalXProcEngine" path="MyXprocEngine/">&lt;/extension>
+&lt;/plugin></codeblock></info>
       </step>
     </steps>
   </taskbody>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="editing-xproc-scripts.dita#editing-xproc-scripts"
+        product="developer editor developerEclipse editorEclipse"/>
+      <link href="xproc-transformation-scenario.dita#xproc-transformation-scenario">
+        <linktext>Creating an XProc Transformation Scenario</linktext>
+      </link>
+    </linklist>
+  </related-links>
 </task>

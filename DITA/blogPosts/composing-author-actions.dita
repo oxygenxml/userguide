@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_h1m_54n_qcb">
+    <title>Composing Author Actions</title>
+    <body>
+        <p>Suppose that each time you insert a <b>DITA</b> table in the <b>Author</b> visual editing
+      mode, you want to always have the attributes <b><codeph>colsep="1" rowsep="1"
+          frame="all"</codeph></b> set on it. The purpose of this post is to create a new
+        <b>DITA</b>-specific action for inserting a table that invokes the current table insertion
+      action and then forces those three attributes to be set on the <b>table</b> element. Here are
+      some steps to accomplish this:<ol id="ol_p5g_jpn_qcb">
+        <li>
+          <p>Follow the steps listed in this older blog post to create an extension of the
+              <b>DITA</b> framework: <xref
+              href="http://blog.oxygenxml.com/2016/10/customizing-dita-visual-editing.html"
+              format="html" scope="external"/>.</p>
+        </li>
+        <li>
+          <p>In the <b>Document Type Association</b> preferences page, edit the <b>DITA</b>
+            framework extension you just created. Go to the <b>Author->Actions</b> tab and create a
+            new action with the ID <b>change.table.colsep</b>.  Use the predefined <xref
+              href="https://www.oxygenxml.com/doc/versions/19.1/ug-editor/topics/dg-default-author-operations.html"
+              format="html" scope="external"><b>ChangeAttributeOperation</b></xref> to set the
+            (colsep="1" attribute) on the closest table element. The custom action would look like
+            this:</p>
+          <p><image href="https://www.oxygenxml.com/forum/files/tbl-change-colsep.png"
+              id="image_xvz_mrn_qcb" width="600"/></p>
+        </li>
+        <li>
+          <p>Based on the same idea, create two more new actions called "<b>change.table.rowsep</b>"
+            and "<b>change.table.frame</b>" that will set the <b>rowsep="1"</b> and
+              <b>frame="all"</b> attributes on the closest table, respectively.</p>
+        </li>
+        <li>
+          <p>Create a new action with the ID <b>insert.table.fixed.attributes</b> and use the
+            predefined <xref
+              href="https://www.oxygenxml.com/doc/versions/19.1/ug-editor/topics/dg-default-author-operations.html"
+              format="html" scope="external"><b>ExecuteMultipleActionsOperation</b></xref> to call 4
+            actions in a row, the original <b>insert.table</b> action ID that inserts the table,
+            followed by the three action IDs that set various attribute values to the inserted
+            table.</p>
+          <p><image href="https://www.oxygenxml.com/forum/files/tbl-new-table-action.png"
+              id="image_rht_5rn_qcb" width="600"/></p>
+        </li>
+        <li>
+          <p>Go to the <b>Author->Toolbar</b> tab and in the "<b>Current actions</b>" panel, remove
+            the current "<b>insert.table</b>" action and replace it with the
+              <b>insert.table.fixed.attributes</b> action ID.</p>
+        </li>
+        <li>
+          <p>When editing a DITA topic, pressing the toolbar action for inserting a table should now
+            call your custom action that sets those three attributes on the inserted table.</p>
+        </li>
+      </ol></p>
+    </body>
+</topic>

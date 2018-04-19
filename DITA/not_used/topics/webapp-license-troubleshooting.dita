@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_t1d_nyd_2db">
+    <title>Troubleshooting licensing problems</title>
+    <body>
+        <p>It may happen that users are not able to open XML files because Web Author cannot obtain
+            a valid license to use. To troubleshoot this issue there are several things to check</p>
+        <section id="section_ctg_512_2db">
+            <title>Web Author connection details for License Server are configured correctly</title>
+            <p>You can go to the Admin Page and check the <xref
+                    href="../../topics/webapp-configure-license-server.dita#webapp-configure-license-server"
+                    >License Server connection</xref>. </p>
+        </section>
+        <section id="section_nwy_fb2_2db">
+            <title>Web Author cannot connect to License Server over HTTP</title>
+            <p>This problem is linked to the deployment setup that you chose. There are several
+                possible causes:<ul id="ul_pb1_gc2_2db">
+                    <li>On Windows there is an anti-virus software or firewall that blocks the
+                        connection between Web Author and License Server. You may need to add
+                        exceptions for this connection.</li>
+                    <li>Due to the server configuration, Web Author uses IPv6 to connect to License
+                        Server. You can force IPv4 by <xref
+                            href="../../topics/webauthor-set-system-property.dita#webauthor-set-system-property"
+                            >setting the following System
+                            Properties</xref>:<codeblock>-Djava.net.preferIPv4Stack=true
+-Djava.net.preferIPv4Addresses=true</codeblock><p>You
+                            can also set the address on which the server listens by editing the
+                                <filepath>[WEB_AUTHOR_INSTALL_DIR]/tomcat/conf/server.xml</filepath>
+                            file and add the <codeph>address="0.0.0.0"</codeph> attribute to the
+                                <codeph>&lt;Connector></codeph> element.</p></li>
+                    <li>The connection passes through an HTTP proxy server that blocks this
+                        connection - you can add an exception in Web Author for the License Server
+                        using the <xref href="../../topics/webapp-proxy-settings.dita">Proxy
+                            Configuration Page</xref>.</li>
+                    <li>The License Server uses a self-signed HTTPS certificate (or another
+                        certificate that is not trusted by default in Java). In this case you can
+                        use the <uicontrol>Connection</uicontrol> section of the Administration Page
+                        to configure Web Author to accept any HTTP certificate.</li>
+                </ul></p>
+            <p>To gather more information about the problem <ul id="ul_tqm_mf2_2db">
+                    <li><xref href="../../topics/web-author-logs.dita">Enable verbose HTTP
+                            logging</xref> in Web Author. </li>
+                </ul><ul id="ul_tmg_nf2_2db">
+                    <li>Check the application server access logs to check whether requests made by
+                        Web Author are received by the License Server. </li>
+                    <li>Check the License Server logs and statistics pages.</li>
+                </ul></p>
+        </section>
+        <section id="section_rnz_qf2_2db">
+            <title>License Server setup is incorrect</title>
+            <p>This might include<ul id="ul_zyz_sf2_2db">
+                    <li>The License Server is not started.</li>
+                    <li>The License Server is not configured with a license.</li>
+                    <li>The License Server is configured with a license for a different
+                        product.</li>
+                    <li>The version of the License Server is not compatible with Web Author</li>
+                </ul></p>
+            <p>Most of these problems can be checked by going to the License Server's administration
+                page.</p>
+        </section>
+    </body>
+</topic>

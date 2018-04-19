@@ -11,9 +11,10 @@
   </prolog>
   <body>
     <p>The <xref keyref="glossentry_content-completion-assistant"><term>Content Completion
-          Assistant</term></xref> can be customized for Oxygen XML Web Author using similar methods
-      that you would use to customize this feature in standalone distributions of Oxygen XML
-      Editor/Author. There are several methods that you can use, including the following:</p>
+          Assistant</term></xref> can be customized for <term>Oxygen XML Web Author</term> using
+      similar methods that you would use to customize this feature in standalone distributions of
+        <term>Oxygen XML Editor/Author</term>. There are several methods that you can use, including
+      the following:</p>
     <section id="section_zzf_pns_vz">
       <title>Customizing Content Completion in the Document Type Configuration Dialog Box</title>
       <p>You can use the <xref
@@ -67,81 +68,8 @@
         press <uicontrol><shortcut>Enter</shortcut></uicontrol>. For non-technical users, it may be
         helpful to disable this feature and use the default behavior of typical word processors
         where pressing <uicontrol><shortcut>Enter</shortcut></uicontrol> will insert a new
-        paragraph. This can be achieved by using the following code in a <xref
-          href="customizing_plugins.dita#customizing_plugins"><term>plugin</term></xref> or a <xref
-          href="customizing_frameworks.dita#customizing_frameworks"
-        ><term>framework</term></xref>:<codeblock outputclass="language-javascript">// If 'splitOnEnter' url parameter is set to 'true',
-//    the split is executed automatically when pressing 'Enter'. 
-// In this case the content completion window can be accessed
-//    when pressing 'CTRL + Enter'.
-   
-(function() {
- var splitOnEnter =  decodeURIComponent(sync.util.getURLParameter("splitOnEnter"));
- if (splitOnEnter === 'true') {
-   goog.events.listen(workspace, sync.api.Workspace.EventType.EDITOR_LOADED, function(e) {
-    var actionsManager = e.editor.getActionsManager();
-    
-// Change the shortcut of "Enter" action to ctrl enter
-actionsManager.setActionShortcut('Author/Enter', 'ctrl enter');
-   
-// Create "Split Element" action
-var splitElementAction = new sync.actions.SplitElementAtCaretAction
-                         ('enter', e.editor.readOnlyStatus, e.editor.controller);
-
-// Create compound action that splits the element at cursor when
-//    there is no selection, and surrounds the selection.
-
-// with the element chosen by the user otherwise
-var newEnterAction = new sync.actions.CompoundAction('enter',
-      splitElementAction, actionsManager.getActionById('Author/SurroundWithElement'));
-
-// Register the new action to be executed on enter
-      actionsManager.registerAction('Author/SplitOnEnter', newEnterAction);
-    });
-
-/**
- * Action that splits the element at caret.
- *
- * @param {sync.model.ReadOnlyStatus} readOnlyStatus The read-only status of the file.
- * @param {string} keystrokeStr The string representation of the shortcut of the action.
- * @param {sync.ctrl.Controller} controller The document controller.
- * @constructor
- */
-sync.actions.SplitElementAtCaretAction = function(keystroke, readOnlyStatus, controller) {
-sync.actions.AbstractAction.call(this, keystroke);
-   this.readOnlyStatus = readOnlyStatus;
-   this.controller = controller;
-  };
-goog.inherits(sync.actions.SplitElementAtCaretAction, sync.actions.AbstractAction);
-
-/**
- * The actual action execution.
- *
- * @param {function} callback The method to call after the action has completed.
- */
-sync.actions.SplitElementAtCaretAction.prototype.actionPerformed = function(opt_callback){
-  var params = { docId: this.controller.docId };
-  sync.select.getSelection().extend(params);
-  var controller = this.controller;
-  RESTContentCompletionManager.splitElement(sync.util.extend(params, {
-    $callback: function (httpCode, xmlHttpRequest, newDocumentUpdate) {
-      try {
-        controller.applyUpdate_(newDocumentUpdate);
-      } finally {
-        if (typeof opt_callback === 'function') {
-         opt_callback();
-       }
-     }
-   }
- }));
-};
-
-/** @override */
- sync.actions.SplitElementAtCaretAction.prototype.isEnabled = function() {
-   return !this.readOnlyStatus.isReadOnly();
- };
-}
-})();</codeblock></p>
+        paragraph. For information about how to achieve this, see <xref
+          href="wa-disable-content-completion.dita#wa-disable-content-completion"/>.</p>
     </section>
   </body>
 </topic>

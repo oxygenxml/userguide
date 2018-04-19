@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="localizing-sqf-messages">
+  <title>Localizing SQF Messages</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Schematron Quick Fixes<indexterm>Localization</indexterm></indexterm>
+        <indexterm>SQF<indexterm>Localization</indexterm></indexterm>
+        <indexterm>Localizing SQF messages</indexterm>
+        <indexterm>SQF multi-lingual support</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="product"/> provides support for presenting Schematron Quick Fix messages in
+      multiple languages. The language used for the SQF messages is the language specified in <xref
+        href="schematron-preferences-page.dita#schematron-preferences-page/message-language">the
+          '<uicontrol>Message Language</uicontrol> option in the <uicontrol>Schematron</uicontrol>
+        preferences page</xref>. If you want to provide an alternative message for a specific
+      language, you can reference IDs or key values for the specific alternate text phrase. In <ph
+        keyref="product"/>, the alternate text phrase is defined in a
+        <codeph>sch:diagnostic</codeph> element.</p>
+    <p><b><u>Example:</u></b></p>
+    <p>The following example presents a quick fix with a different message depending on whether the
+      user's language is English or German.</p>
+    <p>
+      <codeblock outputclass="language-xml">&lt;sch:rule context="dog">
+  &lt;sch:assert test="bone" diagnostics="d_en d_de" sqf:fix="addBone" >
+    A dog should have a bone.&lt;/sch:assert>
+  
+  &lt;sqf:fix id="addBone">
+    &lt;sqf:description>
+      &lt;sqf:title ref="fix_en fix_de" xml:lang="en">Add a bone&lt;/sqf:title>
+      &lt;sqf:p ref="fix_desc_en fix_desc_de" xml:lang="en">Add bone element as child&lt;/sqf:p>
+    &lt;/sqf:description>
+    &lt;sqf:add node-type="element" target="bone"/>
+  &lt;/sqf:fix>
+&lt;/sch:rule>
+....
+&lt;sch:diagnostics xml:lang="en">
+  &lt;sch:diagnostic id="d_en"> A dog should have a bone. &lt;/sch:diagnostic>
+  &lt;sch:diagnostic id="fix_en"> Add a bone &lt;/sch:diagnostic>
+  &lt;sch:diagnostic id="fix_desc_en">Add a bone element as child&lt;/sch:diagnostic>
+&lt;/sch:diagnostics>
+&lt;sch:diagnostics xml:lang="de">
+  &lt;sch:diagnostic id="d_de"> Ein Hund sollte ein Bein haben. &lt;/sch:diagnostic>
+  &lt;sch:diagnostic id="fix_de"> FÃ¼gen Sie einen Knochen hinzu &lt;/sch:diagnostic>
+  &lt;sch:diagnostic id="fix_desc_de"> FÃ¼gen Sie ein Knochenelement als 
+    untergeordnetes Element hinzu &lt;/sch:diagnostic>
+&lt;/sch:diagnostics></codeblock>
+    </p>
+  </body>
+</topic>

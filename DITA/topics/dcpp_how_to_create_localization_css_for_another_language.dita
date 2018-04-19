@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_create_localization_css_for_another_language">
+    <title>How to Create a Localization CSS for Another Language</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation <indexterm>Localization<indexterm>Custom
+              language</indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation <indexterm>i18n<indexterm>Custom
+              language</indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation <indexterm>Translation<indexterm>Custom
+              language</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Localization<indexterm>Custom language</indexterm></indexterm>
+        <indexterm product="pdf-css">i18n<indexterm>Custom language</indexterm></indexterm>
+        <indexterm product="pdf-css">Translation<indexterm>Custom language</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+        <p>Suppose you want to localize your publishing for the Dutch language (language code
+        <codeph>nl</codeph>). To do this, use the following procedure:</p>
+        <ol id="ol_cqh_1bk_wcb">
+            <li>Copy and paste the contents of the following files in your <xref
+          href="dcpp_the_customization_css.dita">customization css</xref>: <ul id="ul_ssq_3bk_wcb">
+          <li><filepath>[PLUGIN_DIR]/css/core/-i18n-de.css</filepath>
+          </li>
+          <li><filepath>[PLUGIN_DIR]/css/print/p-i18n-de.css</filepath></li>
+        </ul></li>
+            <li>Search for and replace <codeph>:lang(de)</codeph> with <codeph>:lang(nl)</codeph>. </li>
+            <li>In an editor, open the English localization files, side by side with your
+        customization CSS:<ul id="ul_t5l_s1k_wcb">
+          <li><filepath>[PLUGIN_DIR]/css/core/-i18n-en.css</filepath></li>
+          <li>
+            <filepath>[PLUGIN_DIR]css/print/p-i18n-en.css</filepath></li>
+        </ul></li>
+            <li>Translate each of the strings from your customization, using the English localization as reference.
+            </li>
+        </ol>
+        <p>This is a very simple example of localizing just the table of contents, index page title,
+      and the figure and table captions:</p>
+        <codeblock outputclass="language-css">   
+/* Title in the TOC page */
+toc-title[empty]:lang(nl):before { 
+    content: "Inhoud"; 
+}
+
+/* This string is used in the TOC page header. */
+:root:lang(nl) {
+    string-set: toc-header "Inhoud";
+}
+
+/* Title in the Index page */
+index\.groups:lang(nl):before {
+    content: "Index";
+}
+
+@media print {
+    *[class ~= "topic/table"] > *[class ~= "topic/title"]:lang(de):before {
+        content: "Tafel " counter(tablecount) ": ";
+    }
+}
+@media print {
+    *[class ~= "topic/fig"] > *[class ~= "topic/title"]:lang(de):before {
+        content: "Figuur " counter(figcount) ": ";
+    }
+}
+...
+</codeblock>
+    </body>
+</topic>

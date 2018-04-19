@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_numbering___input_xml_fragment">
+    <title>Numbering - Input XML Fragments</title>
+    <body>
+        <p>The numbering affects three parts of your publication, the table of contents,
+      headers/footers, and chapter titles:</p>
+        <section id="section_wlj_qfl_5cb">
+            <title>The Table of Contents</title>
+            <p>The table of contents is a tree of <xmlelement>topicref</xmlelement> elements. </p>
+            <codeblock outputclass="language-xml">&lt;map xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ...>
+    &lt;oxy:front-page xmlns:oxy="http://www.oxygenxml.com/extensions/author">
+        ...
+    &lt;/oxy:front-page>
+    &lt;opentopic:map xmlns:opentopic="http://www.idiominc.com/opentopic">
+        &lt;title class="- topic/title ">Publication Title&lt;/title>
+
+        &lt;topicref is-chapter="true" class="- map/topicref " ... >
+            &lt;topicmeta class="- map/topicmeta " ... >
+                &lt;navtitle href="#unique_1" class="- topic/navtitle ">Overview&lt;/navtitle>
+                ...
+            &lt;/topicmeta>
+            &lt;topicref class="- map/topicref " ...>
+                &lt;topicmeta class="- map/topicmeta " data-topic-id="dcpp_resources">
+                    &lt;navtitle href="#unique_2" class="- topic/navtitle ">Resources&lt;/navtitle>
+                    ...
+                &lt;/topicmeta>
+            &lt;/topicref>
+        ...
+    &lt;/opentopic:map>
+...
+&lt;/map></codeblock>
+            <note>The <xmlelement>opentopic:map</xmlelement> element contains the effective table of
+        contents structure.</note>
+            <note>The TOC items are the elements with the class: <codeph>- map /
+        topicref</codeph>.</note>
+            <note>The ones identified as chapters have the <xmlatt>is-chapter</xmlatt> attribute
+        set.</note>
+        </section>
+        <section id="section_ctr_rfl_5cb">
+      <title>The Header and Footers</title>
+      <p>These are based on string sets generated for the titles. The complete set of strings is
+        defined in: <filepath>[INSTALLATION_DIR]/css/print/p-pages-and-headers.css</filepath>.</p>
+      <p>The CSS rules that build the string sets are matching the map title from the front page and
+        the titles from the
+        content.<codeblock outputclass="language-xml">&lt;oxy:front-page xmlns:oxy="http://www.oxygenxml.com/extensions/author">
+        &lt;oxy:front-page-title>
+            &lt;title class="- topic/title ">Publication Title&lt;/title>
+        &lt;/oxy:front-page-title>
+&lt;/oxy:front-page></codeblock></p>
+      <p>The main content is organized as
+        follows:<codeblock outputclass="language-xml">&lt;map xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ...>
+    ...
+    &lt;opentopic:map xmlns:opentopic="http://www.idiominc.com/opentopic">
+      ...
+    &lt;/opentopic:map>
+
+    &lt;topic is-chapter="true" oid="dcpp_overview">
+        &lt;title class="- topic/title ">Overview&lt;/title>
+        &lt;body class="- topic/body ">
+            ...
+        &lt;/body>
+        &lt;topic class="- topic/topic " id="unique_2" oid="dcpp_resources">
+            &lt;title class="- topic/title ">Resources&lt;/title>
+            ...
+        &lt;/topic>
+        &lt;topic class="- topic/topic " id="unique_2" oid="dcpp_parameters">
+            &lt;title class="- topic/title ">Parameters&lt;/title>
+            ...
+        &lt;/topic>
+    &lt;/topic></codeblock></p>
+      <note>The topic content comes after the <xmlelement>opentopic:map</xmlelement> element.</note>
+      <note>The child topics are the elements that have the class <codeph>- topic/topic</codeph>
+        included in the parents.</note>
+      <note>The ones identified as chapters have the <xmlatt>is-chapter</xmlatt> attribute
+        set.</note>
+    </section>
+        <section id="section_v3z_sfl_5cb">
+      <title>The Titles of Chapters</title>
+      <p>The titles from the content are children of the
+        topics:<codeblock outputclass="language-xml">&lt;topic class="- topic/topic " id="unique_2" oid="dcpp_parameters">
+        &lt;title class="- topic/title ">Parameters&lt;/title>
+            ...
+&lt;/topic></codeblock></p>
+      <note>The title elements have the class: <codeph>- topic/title</codeph>. The actual element
+        name can be different.</note>
+    </section>
+    </body>
+</topic>
