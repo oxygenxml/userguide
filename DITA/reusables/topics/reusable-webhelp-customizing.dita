@@ -8,30 +8,278 @@
         WebHelp systems:</ph></p>
     <p><!--ph for DITA--><ph id="DITA-edit-xsl-ph">For DITA WebHelp systems, edit the following
         file: <filepath><term keyref="glossentry_dita_ot_dir"
-          />\plugins\com.oxygenxml.webhelp\xsl\createMainFiles.xsl</filepath>.</ph></p>
+          ></term>\plugins\com.oxygenxml.webhelp.classic\xsl\createMainFiles.xsl</filepath>.</ph></p>
     <p><!--ph for DocBook--><ph id="DocBook-edit-xsl-ph">For DocBook WebHelp system, edit the
         following file: <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
-          />\frameworks\docbook\xsl\com.oxygenxml.webhelp\xsl\createMainFiles.xsl</filepath>.</ph></p>
+          />\frameworks\docbook\xsl\com.oxygenxml.webhelp.classic\xsl\createMainFiles.xsl</filepath>.</ph></p>
     <p><!--These reusables for for the default image folders for DITA and DocBook--></p>
     <p><!--ph for Step--><ph id="image-files-folder-ph">It is recommended that you store the image
         files in the same directory as the default icons.</ph></p>
     <p><!--ph for DITA--><ph id="DITA-image-path-ph">For DITA transformations: <filepath><term
             keyref="glossentry_dita_ot_dir"
-          />\plugins\com.oxygenxml.webhelp\oxygen-webhelp\resources\img\</filepath>.</ph></p>
+          ></term>\plugins\com.oxygenxml.webhelp.classic\oxygen-webhelp\resources\img\</filepath>.</ph></p>
     <p><!--ph for DocBook--><ph id="DocBook-image-path-ph">For DocBook transformations:
             <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
-          />\frameworks\docbook\xsl\com.oxygenxml.webhelp\oxygen-webhelp\resources\img\</filepath>.</ph></p>
+          />\frameworks\docbook\xsl\com.oxygenxml.webhelp.classic\oxygen-webhelp\resources\img\</filepath>.</ph></p>
     <p><!--These reusables are for parameters in WebHelp transformations that specify a custom CSS (DITA and DocBook)--></p>
-    <p><!--ph for Step--><ph id="transform-parameters-tab-ph"><xref
-          href="../../topics/edit-scenario-dialog.dita">Edit the WebHelp transformation
-          scenario</xref> and open the <uicontrol>Parameters</uicontrol> tab.</ph></p>
+    <p><!--ph for Step--><ph id="transform-parameters-tab-ph">Edit the WebHelp transformation
+        scenario and open the <uicontrol>Parameters</uicontrol> tab.</ph></p>
     <p><!--ph for DITA--><ph id="DITA-parameters-ph">For a DITA transformation, set the
           <codeph>args.css</codeph> parameter to the path of your custom CSS file. Also, set the
           <codeph>args.copycss</codeph> parameter to <codeph>yes</codeph> to automatically copy your
         custom CSS in the output folder when the transformation scenario is processed.</ph></p>
     <p><!--ph for DocBook--><ph id="DocBook-parameters-ph">For a DocBook transformation, set the
           <codeph>html.stylesheet</codeph> parameter to the path of your custom CSS file.</ph></p>
-    <!--WebHelp Responsive-->
+    <!--WebHelp Responsive HTML Page Template Components-->
+    <p
+      product="author developer editor authorEclipse developerEclipse editorEclipse webhelp-responsive">
+      <dl>
+        <dlentry id="child-links">
+          <dt>Child Links (<codeph>webhelp_child_links</codeph>)</dt>
+          <dd>For all topics with subtopics (child topics), this component generates a list of links
+            to each child topic. To generate this component, the
+              <codeph>webhelp_child_links</codeph> element must be specified in the HTML file as in
+            the following
+            example:<codeblock outputclass="language-xml">&lt;whc:webhelp_child_links 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock></dd>
+        </dlentry>
+        <dlentry id="expand-collapse-sections">
+          <dt>Expand/Collapse Sections (<codeph>webhelp_expand_collapse_sections</codeph>)</dt>
+          <dd>This component is used to generate an icon that expands or collapses sections listed
+            in the side table of contents within a topic. To generate this component, the
+              <codeph>webhelp_expand_collapse_sections</codeph> element must be specified in the
+            HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_expand_collapse_sections 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+                <codeph>webhelp_expand_collapse_sections</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="include-html-files">
+          <dt>Include HTML Files (<codeph>include_html</codeph>)</dt>
+          <dd>This component can be used to include custom HTML files. To generate this component,
+            the <codeph>include_html</codeph> element must be specified in the HTML file as in the
+            following
+              example:<codeblock outputclass="language-xml">&lt;whc:include_html href="${wh.param}"/></codeblock><p>Where
+              the <codeph>href</codeph> can have the following values:</p><ul id="ul_tdb_t1s_lv">
+              <li><b>any URL</b> - In this case, the file to be included is specified as an
+                URL.</li>
+              <li><b>{$oxygen-webhelp-template-dir}/file_to_include.html</b> - To include resources
+                that are part of the template.</li>
+              <li><b>${webhelp.param}</b> - To include a resource whose path is specified through a
+                WebHelp transformation scenario parameter. The value of this parameter can be a
+                simple HTML fragment, in which case it will be copied to the output.</li>
+            </ul></dd>
+        </dlentry>
+        <dlentry id="index-terms-link">
+          <dt>Index Terms Link (<codeph>webhelp_indexterms_link</codeph>)</dt>
+          <dd>This component can be used to generate a link to the index terms page
+              (<codeph>indexterms.html</codeph>). If the published documentation does not contains
+            any index terms, then the link will not be generated. To generate this component, the
+              <codeph>webhelp_indexterms_link</codeph> element must be specified in the HTML file as
+            in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_indexterms_link 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+                <codeph>wh_indexterms_link</codeph>. This element will contain a link to the
+                <codeph>indexterms.html</codeph> page.</p></dd>
+        </dlentry>
+        <dlentry id="link-to-skins">
+          <dt>Link to Skins Resources (<codeph>webhelp_skin_resources</codeph>)</dt>
+          <dd>This component can be used to add a link to resources for the current WebHelp skin
+            (such as the CSS file). To generate this component, the
+              <codeph>webhelp_skin_resources</codeph> element must be specified in the HTML file as
+            in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_skin_resources/></codeblock><p>In
+              the output, you will find a link to the skin resources.</p></dd>
+        </dlentry>
+        <dlentry id="main-page-menu">
+          <dt>Main Page Menu (<codeph>webhelp_topics_menu</codeph>)</dt>
+          <dd>This component generates a menu with all the documentation topics. To generate this
+            component, the <codeph>webhelp_topics_menu</codeph> element must be specified in the
+            HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_topics_menu 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+              <codeph>wh_topics_menu</codeph>.</p><p>You can control the maximum level of topics
+              that will be included in the menu using the <codeph>webhelp.top.menu.depth</codeph>
+              transformation parameter (in the <uicontrol>Parameters</uicontrol> tab of the
+              transformation scenario).</p><p>For information about customizing the menu, see <xref
+                href="../../topics/whr-customize-menu.dita#whr-customize-menu"/>.</p></dd>
+        </dlentry>
+        <dlentry id="main-page-toc">
+          <dt>Main Page Table of Contents (<codeph>webhelp_main_page_toc</codeph>)</dt>
+          <dd>This component generates a simplified Table of Contents. It is simplified because it
+            contains only two levels from the documentation hierarchy. To generate this component,
+            the <codeph>webhelp_main_page_toc</codeph> element must be specified in the HTML file as
+            in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_main_page_toc 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+              <codeph>wh_main_page_toc</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="main-page-topic-tiles">
+          <dt>Main Page Topic Tiles (<codeph>webhelp_tiles</codeph>)</dt>
+          <dd>This component generates the tiles section in the main page. This section will contain
+            a tile for each root topic of the published documentation. Each topic tile has three
+            sections that corresponds to the topic title, short description, and image. To generate
+            this component, the <codeph>webhelp_tiles</codeph> element must be specified in the HTML
+            file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_tiles 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+              <codeph>wh_tiles</codeph>.</p><p>If you want to control the HTML structure that is
+              generated for a WebHelp tile you can also specify the template for a tile by using the
+                <codeph>whc:webhelp_tile</codeph> component, as in the following
+              example:</p><codeblock outputclass="language-xml">&lt;whc:webhelp_tile class="col-md-4">                    
+  &lt;!-- Place holder for tile's image -->
+  &lt;whc:webhelp_tile_image/>                        
+                    
+  &lt;div class="wh_tile_text">
+    &lt;!-- Place holder for tile's title -->
+     &lt;whc:webhelp_tile_title/>
+                       
+     &lt;!-- Place holder for tile's shordesc -->
+     &lt;whc:webhelp_tile_shortdesc/>
+  &lt;/div>
+&lt;/whc:webhelp_tile></codeblock><p>For
+              information about customizing the tiles, see <xref
+                href="../../topics/whr-configure-tiles.dita#whr-configure-tiles"/>.</p></dd>
+        </dlentry>
+        <dlentry id="navigation-links">
+          <dt>Navigation Links (<codeph>webhelp_navigation_links</codeph>)</dt>
+          <dd>This component generates navigation links to the next and previous topics. To generate
+            this component, the <codeph>webhelp_navigation_links</codeph> element must be specified
+            in the HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_navigation_links 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+                <codeph>wh_navigation_links</codeph>. This element will contain the links to the
+              next and previous topics.</p></dd>
+        </dlentry>
+        <dlentry id="print-link">
+          <dt>Print Link (<codeph>webhelp_print_link</codeph>)</dt>
+          <dd>This component is used to generate a print icon that opens the print dialog box for
+            your particular browser. To generate this component, the
+              <codeph>webhelp_print_link</codeph> element must be specified in the HTML file as in
+            the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_print_link 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+              <codeph>wh_print_link</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="publication-logo">
+          <dt>Publication Logo (<codeph>webhelp_logo</codeph>)</dt>
+          <dd>This component generates a logo image in the output. To generate this component, the
+              <codeph>webhelp_logo</codeph> element must be specified in the HTML file as in the
+            following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_logo 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              addition, you must also specify the path of the logo image in the
+                <codeph>webhelp.logo.image</codeph> transformation parameter (in the
+                <uicontrol>Parameters</uicontrol> tab in the transformation scenario). You can set
+              the <codeph>webhelp.logo.image.target.url</codeph> parameter to generate a link to a
+              URL when you click the logo image.</p><p>In the output, you will find an element with
+              the class: <codeph>wh_logo</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="publication-title">
+          <dt>Publication Title (<codeph>webhelp_publication_title</codeph>)</dt>
+          <dd>This component generates the publication title in the output. To generate this
+            component, the <codeph>webhelp_publication_title</codeph> element must be specified in
+            the HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_publication_title 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+                <codeph>wh_publication_title</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="related-links">
+          <dt>Related Links (<codeph>webhelp_related_links</codeph>)</dt>
+          <dd>For all topics that contain related links, this component generates a list of related
+            links that will appear in the output. To generate this component, the
+              <codeph>webhelp_related_links</codeph> element must be specified in the HTML file as
+            in the following
+            example:<codeblock outputclass="language-xml">&lt;whc:webhelp_related_links 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock></dd>
+        </dlentry>
+        <dlentry id="search-input">
+          <dt>Search Input (<codeph>webhelp_search_input</codeph>)</dt>
+          <dd>This component is used to generate the input widget associated with search function in
+            the output. To generate this component, the <codeph>webhelp_search_input</codeph>
+            element must be specified in the HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_search_input 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+              <codeph>wh_search_input</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="search-results-2">
+          <dt>Search Results (<codeph>webhelp_search_results</codeph>)</dt>
+          <dd>This component is used to generate a placeholder to signal where the search results
+            will be presented in the output. To generate this component, the
+              <codeph>webhelp_search_results</codeph> element must be specified in the HTML file as
+            in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_search_results 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+                <codeph>wh_search_results</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="topic-breadcrumb">
+          <dt>Topic Breadcrumb (<codeph>webhelp_breadcrumb</codeph>)</dt>
+          <dd>This component generates a breadcrumb that displays the path of the current topic. To
+            generate this component, the <codeph>webhelp_breadcrumb</codeph> element must be
+            specified in the HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_breadcrumb 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class: <codeph>wh_breadcrumb</codeph>.
+              This element will contain a list with items that correspond to the topics in the path.
+              The first item in the list has a link to the main page with the <codeph>home</codeph>
+              class. The last item in the list corresponds to the current topic and has the
+                <codeph>active</codeph> class set.</p></dd>
+        </dlentry>
+        <dlentry id="topic-content">
+          <dt>Topic Content (<codeph>webhelp_topic_content</codeph>)</dt>
+          <dd>This component generates the content of a topic and it represent the content of the
+            HTML files as they are produced by the DITA-OT processor. To generate this component,
+            the <codeph>webhelp_topic_content</codeph> element must be specified in the HTML file as
+            in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_topic_content 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+              <codeph>wh_topic_content</codeph>.</p></dd>
+        </dlentry>
+        <dlentry id="topic-feedback">
+          <dt>Topic Feedback (<codeph>webhelp_feedback</codeph>)</dt>
+          <dd>This component generates a placeholder for where the comments section will be
+            presented. To generate this component, the <codeph>webhelp_feedback</codeph> element
+            must be specified in the HTML file as in the following
+            example:<codeblock outputclass="language-xml">&lt;whc:webhelp_feedback 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock></dd>
+        </dlentry>
+        <dlentry id="topic-side-toc">
+          <dt>Publication TOC (<codeph>webhelp_publication_toc</codeph>)</dt>
+          <dd>This component generates a mini table of contents for the current topic (on the left
+            side). It will contain links to the children of current topic, its siblings, and all of
+            its ancestors. To generate this component, the <codeph>webhelp_publication_toc</codeph>
+            element must be specified in the HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_publication_toc 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class:
+                <codeph>wh_publication_toc</codeph>. This element will contain links to the topics
+              that are close to the current topic.</p></dd>
+        </dlentry>
+        <dlentry id="topic-toc">
+          <dt>Topic TOC (<codeph>webhelp_topic_toc</codeph>)</dt>
+          <dd>This component generates a topic table of contents for the current topic (on the right
+            side). This table of contents contains links to each section within the current topic
+            and the section corresponding to the current scroll position is highlighted. To generate
+            this component, the <codeph>webhelp_topic_toc</codeph> element must be specified in the
+            HTML file as in the following
+              example:<codeblock outputclass="language-xml">&lt;whc:webhelp_topic_toc 
+     xmlns:whc="http://www.oxygenxml.com/webhelp/components"/></codeblock><p>In
+              the output, you will find an element with the class: <codeph>wh_topic_toc</codeph>.
+              This element will contain links to the topics that are close to the current
+            topic.</p></dd>
+        </dlentry>
+      </dl>
+    </p>
     <p><ph id="wh_publication_title">Publication Title</ph></p>
     <p><ph id="wh_publication_logo">Publication Logo</ph></p>
     <p><ph id="wh_search_input">Search Input</ph></p>
@@ -50,18 +298,199 @@
     <p><ph id="wh_child_links">Child Links</ph></p>
     <p><ph id="wh_related_links">Related Links</ph></p>
     <p><ph id="wh_skin_resources">Link to Skin Resources</ph></p>
-    <!--Types of template pages-->
-    <ul id="ol_bjw_znf_mv">
-      <li id="main-page"><xref
-          href="../../topics/whr-main-page-template.dita#whr-main-page-template"><b>Main Page
-            Template</b> (<i>wt_index.html</i> file)</xref></li>
-      <li id="topic"><xref href="../../topics/whr-topic-template.dita#whr-topic-template"><b>Topic
-            Template</b> (<i>wt_topic.html</i> file)</xref></li>
-      <li id="search-results"><xref href="../../topics/whr-search-template.dita#whr-search-template"
-            ><b>Search Results Template</b> (<i>wt_search.html</i> file)</xref></li>
-      <li id="index-terms"><xref
-          href="../../topics/whr-index-terms-template.dita#whr-index-terms-template"><b>Index Terms
-            Template</b> (<i>wt_terms.html</i> file)</xref></li>
-    </ul>
+    <!--WH Transformation Scenario sections-->
+    <section id="webhelp_responsive_output"
+      product="author developer editor authorEclipse developerEclipse editorEclipse webhelp-responsive">
+      <title>WebHelp Responsive Output</title>
+      <p>To publish a <xref keyref="glossentry_ditamap"><term>DITA map</term></xref> as <b>WebHelp
+          Responsive</b> output, follow these steps:<ol>
+          <li>Select the <uicontrol><image href="../../img/TransformConfig16.png"
+                id="image_obc_2wv_sr"/>Configure Transformation Scenario(s)</uicontrol> action from
+            the <ph product="author editor authorEclipse editorEclipse webhelp-responsive"
+                ><uicontrol>DITA Maps Manager</uicontrol>
+            </ph>toolbar.</li>
+          <li>Select the <uicontrol>DITA Map WebHelp Responsive</uicontrol> scenario from the
+              <uicontrol>DITA Map</uicontrol> section.</li>
+          <li>If you want to configure the transformation, click the <uicontrol>Edit</uicontrol>
+                button.<p><b>Step Result:</b> This opens an <uicontrol>Edit scenario</uicontrol>
+              configuration dialog box that allows you to configure various options in the following tabs:<ul>
+                <li><uicontrol>Templates Tab</uicontrol> - This tab contains a set of predefined
+                  skins that you can use for the layout of your WebHelp system output.</li>
+                <li><uicontrol>Parameters Tab</uicontrol> - This tab includes numerous
+                  transformation parameters<xref keyref="whr-output-parameters"
+                    product="webhelp-responsive">numerous transformation parameters</xref> that can
+                  be set to customize your WebHelp system output.</li>
+                <li><uicontrol>Filters Tab</uicontrol> - This tab allows you to filter certain
+                  content elements from the generated output.</li>
+                <li><uicontrol>Advanced Tab</uicontrol> - This tab allows you to specify some
+                  advanced options for the transformation scenario.</li>
+                <li><uicontrol>Output Tab</uicontrol> - This tab allows you to configure options
+                  that are related to the location where the output is generated.</li>
+              </ul></p></li>
+          <li>Click <uicontrol>Apply associated</uicontrol> to process the transformation.<p>When
+              the <uicontrol>DITA Map WebHelp Responsive</uicontrol> transformation is complete, the
+              output is automatically opened in your default browser.</p></li>
+        </ol></p>
+    </section>
+    <section id="webhelp_responsive_with_feedback_output"
+      product="author developer editor authorEclipse developerEclipse editorEclipse webhelp-responsive">
+      <title>WebHelp Responsive with Feedback Output</title>
+      <p>To publish a <xref keyref="glossentry_ditamap"><term>DITA map</term></xref> as a <b>WebHelp
+          Responsive with Feedback</b> system, follow these steps:<ol>
+          <li>Select the <uicontrol><image href="../../img/TransformConfig16.png"
+                id="image_obc_2wv_srsfsf"/>Configure Transformation Scenario(s)</uicontrol> action
+            from the <ph product="author editor authorEclipse editorEclipse webhelp-responsive"
+                ><uicontrol>DITA Maps Manager</uicontrol>
+            </ph>toolbar.</li>
+          <li>Select the <uicontrol>DITA Map WebHelp Responsive with Feedback</uicontrol> scenario
+            from the <uicontrol>DITA Map</uicontrol> section.</li>
+          <li>If you want to configure the transformation, click the <uicontrol>Edit</uicontrol>
+                button.<p><b>Step Result:</b> This opens an <uicontrol>Edit scenario</uicontrol>
+              configuration dialog box that allows you to configure various options in the following tabs:<ul>
+                <li><uicontrol>Templates Tab</uicontrol> - This tab contains a set of predefined
+                  skins that you can use for the layout of your WebHelp system output.</li>
+                <li><uicontrol>Parameters Tab</uicontrol> - This tab includes numerous
+                  transformation parameters<xref keyref="whr-output-parameters"
+                    product="webhelp-responsive">numerous transformation parameters</xref> that can
+                  be set to customize your WebHelp system output.</li>
+                <li><uicontrol>Filters Tab</uicontrol> - This tab allows you to filter certain
+                  content elements from the generated output.</li>
+                <li><uicontrol>Advanced Tab</uicontrol> - This tab allows you to specify some
+                  advanced options for the transformation scenario.</li>
+                <li><uicontrol>Output Tab</uicontrol> - This tab allows you to configure options
+                  that are related to the location where the output is generated.</li>
+              </ul></p></li>
+          <li>Click <uicontrol>Apply associated</uicontrol> to begin the transformation.</li>
+          <li>Enter the documentation product ID (value for the <codeph>webhelp.product.id</codeph>
+            parameter) and the documentation version (value for the
+              <codeph>webhelp.product.version</codeph> parameter).<p>When the <uicontrol>DITA Map
+                WebHelp Responsive with Feedback</uicontrol> transformation is complete, your
+              default browser opens the <filepath>installation.html</filepath> file. This file
+              contains information about the output location, system requirements, installation
+              instructions, and deployment of the output. Follow the <xref
+                href="../../topics/deploying-webhelp-responsive-feedback.dita#deploying-webhelp-responsive-feedback"
+                >instructions to complete the system deployment</xref>.</p></li>
+        </ol></p>
+    </section>
+    <section id="webhelp_classic_output"
+      product="author developer editor authorEclipse developerEclipse editorEclipse webhelp">
+      <title>WebHelp Classic Output</title>
+      <p>To publish a <xref keyref="glossentry_ditamap"><term>DITA map</term></xref> as a <b>WebHelp
+          Classic</b> system, follow these steps:<ol id="ol_ist_rny_cr">
+          <li>Select the <uicontrol><image href="../../img/TransformConfig16.png"
+                id="image_obc_2wv_sr2"/>Configure Transformation Scenario(s)</uicontrol> action from
+            the <ph product="author editor authorEclipse editorEclipse webhelp"><uicontrol>DITA Maps
+                Manager</uicontrol>
+            </ph>toolbar.</li>
+          <li>Select the <uicontrol>DITA Map WebHelp Classic</uicontrol> scenario from the
+              <uicontrol>DITA Map</uicontrol> section.</li>
+          <li>If you want to configure the transformation, click the <uicontrol>Edit</uicontrol>
+                button.<p><b>Step Result:</b> This opens an <uicontrol>Edit scenario</uicontrol>
+              configuration dialog box that allows you to configure various options in the following tabs:<ul>
+                <li><uicontrol>Templates Tab</uicontrol> - This tab contains a set of predefined
+                  skins that you can use for the layout of your WebHelp system output.</li>
+                <li><uicontrol>Parameters Tab</uicontrol> - This tab includes numerous
+                  transformation parameters that can be set to customize your WebHelp system
+                  output.</li>
+                <li><uicontrol>Filters Tab</uicontrol> - This tab allows you to filter certain
+                  content elements from the generated output.</li>
+                <li><uicontrol>Advanced Tab</uicontrol> - This tab allows you to specify some
+                  advanced options for the transformation scenario.</li>
+                <li><uicontrol>Output Tab</uicontrol> - This tab allows you to configure options
+                  that are related to the location where the output is generated.</li>
+              </ul></p></li>
+          <li>Click <uicontrol>Apply associated</uicontrol> to process the transformation.<p>When
+              the <uicontrol>DITA Map WebHelp Classic</uicontrol> transformation is complete, the
+              output is automatically opened in your default browser.</p></li>
+        </ol>To further customize this transformation, you can edit various parameters, including
+        the following most commonly used ones:</p>
+    </section>
+    <section id="webhelp_classic_with_feedback_output"
+      product="author developer editor authorEclipse developerEclipse editorEclipse webhelp">
+      <title>WebHelp Classic with Feedback Output</title>
+      <p>To publish a <xref keyref="glossentry_ditamap"><term>DITA map</term></xref> as a <b>WebHelp
+          Classic with Feedback</b> system, follow these steps:<ol id="ol_xby_xny_cr">
+          <li>Select the <uicontrol><image href="../../img/TransformConfig16.png" id="image_obc_sdf"
+              />Configure Transformation Scenario(s)</uicontrol> action from the <ph
+              product="author editor authorEclipse editorEclipse webhelp"><uicontrol>DITA Maps
+                Manager</uicontrol>
+            </ph>toolbar.</li>
+          <li>Select the <uicontrol>DITA Map WebHelp Classic with Feedback</uicontrol> scenario from
+            the <uicontrol>DITA Map</uicontrol> section.</li>
+          <li>If you want to configure the transformation, click the <uicontrol>Edit</uicontrol>
+                button.<p><b>Step Result:</b> This opens an <uicontrol>Edit scenario</uicontrol>
+              configuration dialog box that allows you to configure various options in the following tabs:<ul>
+                <li><uicontrol>Templates Tab</uicontrol> - This tab contains a set of predefined
+                  skins that you can use for the layout of your WebHelp system output.</li>
+                <li><uicontrol>Parameters Tab</uicontrol> - This tab includes numerous
+                  transformation parameters that can be set to customize your WebHelp system
+                  output.</li>
+                <li><uicontrol>Filters Tab</uicontrol> - This tab allows you to filter certain
+                  content elements from the generated output.</li>
+                <li><uicontrol>Advanced Tab</uicontrol> - This tab allows you to specify some
+                  advanced options for the transformation scenario.</li>
+                <li><uicontrol>Output Tab</uicontrol> - This tab allows you to configure options
+                  that are related to the location where the output is generated.</li>
+              </ul></p></li>
+          <li>Click <uicontrol>Apply associated</uicontrol> to begin the transformation.</li>
+          <li>Enter the documentation product ID (value for the <codeph>webhelp.product.id</codeph>
+            parameter) and the documentation version (value for the
+              <codeph>webhelp.product.version</codeph> parameter).<p>When the <uicontrol>DITA Map
+                WebHelp Classic with Feedback</uicontrol> transformation is complete, your default
+              browser opens the <filepath>installation.html</filepath> file. This file contains
+              information about the output location, system requirements, installation instructions,
+              and deployment of the output. Follow the <xref
+                href="../../topics/deploying-webhelp-responsive-feedback.dita">instructions to
+                complete the system deployment</xref>.</p></li>
+        </ol>For more information about the feedback-enabled WebHelp system, watch our video
+        demonstration:</p>
+      <p><object width="450" height="250" data="https://www.youtube.com/embed/eoQ2uxHvppE"
+          outputclass="iframe">
+          <param name="allowfullscreen" value="true"/>
+        </object></p>
+    </section>
+    <section id="webhelp_classic_output2"
+      product="author developer editor authorEclipse developerEclipse editorEclipse webhelp">
+      <title>WebHelp Classic Output</title>
+      <p>To publish a DocBook document as a <b>WebHelp Classic</b> system, follow these steps: <ol
+          id="ol_ist_rny_cr2">
+          <li>Click the <uicontrol><image href="../../img/TransformConfig16.png"
+                id="image_obc_2wv_sr3"/>Configure Transformation Scenario(s)</uicontrol> action from
+            the toolbar<ph product="author developer editor webhelp"> (or the <menucascade>
+                <uicontrol>Document</uicontrol>
+                <uicontrol>Transformation</uicontrol>
+              </menucascade> menu</ph>.</li>
+          <li>Select the <uicontrol>DocBook WebHelp Classic</uicontrol> scenario from the
+              <uicontrol>DocBook 4</uicontrol> or <uicontrol>DocBook 5</uicontrol> section.</li>
+          <li>Click <uicontrol>Apply associated</uicontrol>.<p>When the <uicontrol>DocBook WebHelp
+                Classic</uicontrol> transformation is complete, the output is automatically opened
+              in your default browser.</p></li>
+        </ol></p>
+    </section>
+    <section id="webhelp_classic_with_feedback_output2"
+      product="author developer editor authorEclipse developerEclipse editorEclipse webhelp">
+      <title>WebHelp Classic with Feedback Output</title>
+      <p>To publish a DocBook document as a <b>WebHelp Classic with Feedback</b> system, follow
+        these steps:<ol id="ol_xby_xny_cr3">
+          <li>Click <uicontrol><image href="../../img/TransformConfig16.png" id="image_sdh_2wv_sr"
+              />Configure Transformation Scenarios</uicontrol>.</li>
+          <li>Select the <uicontrol>DocBook WebHelp Classic with Feedback</uicontrol> scenario from
+            the <uicontrol>DocBook 4</uicontrol> or <uicontrol>DocBook 5</uicontrol> section.</li>
+          <li>Click <uicontrol>Apply associated</uicontrol>.</li>
+          <li>Enter the documentation product ID and the documentation version. <p>When the
+                <uicontrol>DocBook WebHelp Classic with Feedback</uicontrol> transformation is
+              complete, your default browser opens the <filepath>installation.html</filepath> file.
+              This file contains information about the output location, system requirements,
+              installation instructions, and deployment of the output. Follow the instructions to
+              complete the system deployment. For more information, see <xref
+                href="../../topics/deploying-webhelp-responsive-feedback.dita"/>.</p></li>
+        </ol></p>
+      <p>For more information about the feedback-enabled WebHelp system, watch our video
+        demonstration:</p>
+      <p><object width="450" height="250" data="https://www.youtube.com/embed/eoQ2uxHvppE"
+          outputclass="iframe">
+          <param name="allowfullscreen" value="true"/>
+        </object></p>
+    </section>
   </body>
 </topic>

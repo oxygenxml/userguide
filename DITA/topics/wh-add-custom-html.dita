@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="wh-add-custom-html">
-  <title>Adding Custom HTML Content in WebHelp Responsive Output</title>
+  <title>How to Insert HTML Content in WebHelp Responsive Output</title>
   <prolog>
     <metadata>
       <keywords>
@@ -12,35 +12,86 @@
   </prolog>
   <body>
     <p>You can add custom HTML content in the WebHelp Responsive output by inserting it in a
-      well-formed XML file that will be referenced in the transformation scenario. This content may
-      include references to additional JavaScript, CSS, and other types of resources, or such
-      resources can be inserted inline within the HTML content that is inserted in the XML file.</p>
-    <p>To include custom HTML content in the WebHelp Responsive output files, follow these steps:<ol>
-        <li><ph conkeyref="reusables-transforming-documents/ph-1"/><ol>
-            <li conkeyref="reusables-transforming-documents/li-1"/>
-            <li conkeyref="reusables-transforming-documents/li-2b"/>
-            <li conkeyref="reusables-transforming-documents/li-3"/>
-          </ol></li>
-        <li>Edit the WebHelp Responsive transformation scenario.</li>
-        <li>Go to the <uicontrol>Parameters</uicontrol> tab.</li>
-        <li>Edit the value of the <xref
-            href="webhelp_responsive_customization.dita#webhelp_responsive_customization/webhelp-fragment-head"
-              ><parmname>webhelp.fragment.head</parmname> parameter</xref> and set it to the
-          absolute path of the XML file created in step 1. Your additional content will be included
-          at the end of the <codeph>head</codeph> element of your output document.<note>If you want
-            to insert the content in another location within the output document, you can reference
-            the XML file in any of the other parameters listed in <xref
-              href="webhelp_responsive_customization.dita#webhelp_responsive_customization/section_placeholders_usage"
-            />.</note></li>
-        <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation scenario.</li>
-      </ol></p>
+      well-formed XML file that will be referenced in the transformation (either from a <xref
+        keyref="glossentry-wh-publishing-template"><term>Oxygen Publishing Template</term></xref> or
+      using one of the <xref
+        href="webhelp-responsive-plugin-additional-parameters.dita#webhelp-responsive-plugin-additional-parameters/html_fragment_extension_parameters"
+        >HTML fragment parameters</xref>). This content may include references to additional
+      JavaScript, CSS, and other types of resources, or such resources can be inserted inline within
+      the HTML content that is inserted in the XML file.</p>
+    <section id="the_xml_file">
+      <title>The XML File</title>
+      <p id="p-comments">There are several things to consider in regards to this XML file:<ul>
+          <li conkeyref="reusables-transforming-documents/li-1"/>
+          <li conkeyref="reusables-transforming-documents/li-2b"/>
+          <li conkeyref="reusables-transforming-documents/li-3"/>
+        </ul></p>
+    </section>
+    <section id="referencing_the_html_fragment_using_a_publishing_">
+      <title>Referencing the HTML fragment using a Publishing Template</title>
+      <p>
+        <ol>
+          <li>If you haven't already created a Publishing Template, see <xref
+              href="whr_publishing_templates.dita"/>.</li>
+          <li>Insert the HTML content in a well-formed XML file (for example,
+              <filepath>custom-html.html</filepath>).</li>
+          <li>Using the <uicontrol product="author developer editor webhelp-responsive"
+              >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+              >Navigator</uicontrol> view, copy your custom HTML fragment in a folder inside
+            publishing the template root folder (for example, in the
+              <filepath>custom_footer_template/html-fragments</filepath> folder).</li>
+          <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
+              >template descriptor file</xref> associated with your publishing template and add a
+            reference to the custom HTML fragment in the <term>html-fragments</term>
+              section.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...    
+    &lt;webhelp>
+      ...
+      &lt;html-fragments>
+        &lt;fragment 
+          file="html-fragments/custom-html.html" 
+          placeholder="webhelp.fragment.head"/></codeblock><note>If
+              you want to insert the content in another location within the output document, you can
+              reference the XML file from any other <xref
+                href="whr_publishing_template_contents.dita#html_fragment_extension_points">HTML
+                Fragment extension points</xref>.</note></li>
+          <li>Open the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+          <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select
+            your template.</li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol>
+      </p>
+      <p><b>Results:</b> Your additional content will be included at the end of the
+          <codeph>head</codeph> element of your output document.</p>
+    </section>
+    <section id="referencing_the_html_fragment_using_a_transformat">
+      <title>Referencing the HTML Fragment using a Transformation Parameter</title>
+      <p>
+        <ol>
+          <li>Insert the HTML content in a well-formed XML file.</li>
+          <li>Edit the <term>DITA Map WebHelp Responsive</term> transformation scenario and open the
+              <uicontrol>Parameters</uicontrol> tab.</li>
+          <li>Edit the value of the <codeph>webhelp.fragment.head</codeph> parameter and set it to
+            the absolute path of your XML file.<note>If you want to insert the content in another
+              location within the output document, you can reference the XML file from any other
+                <xref href="whr_publishing_template_contents.dita#html_fragment_extension_points"
+                >HTML Fragment extension points</xref>.</note></li>
+          <li>Click <uicontrol>OK</uicontrol> to save the changes to the transformation
+            scenario.</li>
+          <li>Run the transformation scenario.</li>
+        </ol>
+      </p>
+      <p><b>Results:</b> Your additional content will be included at the end of the
+          <codeph>head</codeph> element of your output document.</p>
+    </section>
   </body>
   <related-links>
     <linklist>
       <title>Related Information:</title>
-      <link href="copy_resources.dita#copy_resources"/>
-      <link href="webhelp_template_resources.dita#webhelp_template_resources"/>
-      <link href="webhelp_responsive_customization.dita#webhelp_responsive_customization"/>
+      <link href="whr_publishing_template_contents.dita#html_fragment_extension_points"/>
+      <link href="whr_publishing_template_contents.dita"/>
     </linklist>
   </related-links>
 </topic>

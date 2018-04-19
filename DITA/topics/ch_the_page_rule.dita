@@ -67,6 +67,46 @@
 table {
   page: table-landscape-page;
 }</codeblock>
+      <p>Also, <ph keyref="product"/> allows you to break a sequence of elements that have the same
+        page in different page groups. A simple example is a set of chapter elements where you need
+        to apply specific formatting for the first page from each chapter.</p>
+      <codeblock outputclass="language-css">&lt;chapter/>...&lt;/chapter>&lt;chapter/>...&lt;/chapter>&lt;chapter/>...&lt;/chapter></codeblock>
+      <p>The CSS would be:</p>
+      <codeblock outputclass="language-css">    @chapter {
+      ...
+    } 
+    
+    @chapter:first {
+        background-color:yellow;
+    } 
+ 
+    chapter {
+      page: chapter;
+    } </codeblock>
+      <p>But this is not enough. According to the W3C specification, all chapters that have the same
+        page will be merged in a single page group (sequence), and the :first selector will thus
+        apply only on the first page from the first chapter. Therefore, you need to use the
+          <codeph>-oxy-page-group</codeph> property on each of the chapter elements.</p>
+      <codeblock outputclass="language-css">    @chapter {
+      ...
+    } 
+    
+    @chapter:first {
+        background-color:yellow;
+    } 
+ 
+    chapter {
+      -oxy-page-group:start;
+      page: chapter;
+    }</codeblock>
+      <p>The accepted values for the <codeph>-oxy-page-group</codeph> property are:</p>
+      <ul>
+        <li><b>start</b> - Forces the creation of a new page group (sequence) even if the page
+          before the element has the same name. The W3C specification algorithm (<xref
+            href="https://www.w3.org/TR/css3-page/#using-named-pages" format="html" scope="external"
+          />) would merge the current element with the opened page sequence.</li>
+        <li><b>auto</b> - Use the W3C algorithm normally.</li>
+      </ul>
     </section>
   </body>
 </topic>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dita_publishing_customization_overview">
+    <title>DITA Publishing Customization Overview</title>
+    <body>
+        <p><b>Oxygen XML Editor</b> publishes <b>DITA</b> content to various output sources using a
+            bundled version of the <xref href="https://www.dita-ot.org/" format="html"
+                scope="external">DITA Open Toolkit</xref> (short name: <b>DITA OT</b>) publishing
+            engine. Oxygen versions prior to version 20 come with two <b>DITA OT</b> versions:<ul
+                id="ul_yvl_f3n_hdb">
+                <li><b>DITA OT 1.8</b> located in the
+                        <i>OXYGEN_INSTALL_DIR\frameworks\dita\DITA-OT</i> folder.</li>
+                <li><b>DITA OT 2.x</b> located in the
+                        <i>OXYGEN_INSTALL_DIR\frameworks\dita\DITA-OT2.x</i> folder.</li>
+            </ul>while Oxygen version 20 comes bundled only with <b>DITA OT 2.x</b> located in the
+            folder specified above. You can find out the exact version of DITA OT bundled with
+            Oxygen by looking in the main menu <b>Help->About</b> at the <b>Frameworks</b> tab.</p>
+        <section id="section_kss_bjn_hdb">
+            <title>DITA Open Toolkit Overview</title>
+            <p>The <xref href="https://www.dita-ot.org/" format="html" scope="external">DITA Open
+                    Toolkit</xref> is an open source publishing engine which can publish <b>DITA</b>
+                content to various output sources like <b>XHTML</b>, <b>PDF</b> or <b>Windows Help
+                    (CHM)</b>. Because has a plugin-based architecture, it can be extended with
+                extra plugins which either define new formats for conversion or customize an
+                existing conversion format. You can run the <b>DITA OT</b> from Oxygen using its
+                transformation scenarios or you can run it directly from a command line:<xref
+                    href="http://www.dita-ot.org/dev/topics/building-output.html" format="html"
+                    scope="external"/>.</p>
+            <p>The <b>DITA OT</b> bundled with Oxygen contains more plugins than the standard
+                    <b>DITA OT</b> which can be downloaded from the DITA OT official web site. For
+                example it contains pre-installed plugins for converting DITA content to Word, EPUB,
+                Oxygen WebHelp or to publish to PDF using CSS to customize the output:<xref
+                    href="http://blog.oxygenxml.com/2017/03/useful-dita-ot-plugins.html"
+                    format="html" scope="external"/></p>
+        </section>
+        <section id="section_bzh_wjn_hdb">
+            <title>Publishing Customizations (Before you begin)</title>
+            <p>Some customizations, usually for HTML-based output can be made only by creating a
+                custom CSS and they do not involve modifying the <b>DITA OT</b> engine in any way.
+                But most customizations might involve adding a new plugin to the <b>DITA OT</b>. So
+                here are some best practives before you begin your customization:<ol
+                    id="ol_zbw_gkn_hdb">
+                    <li>Copy the bundled <b>DITA OT</b> folder (usually
+                            <i>OXYGEN_INSTALL_DIR\frameworks\dita\DITA-OT2.x</i>) to a location
+                        outside of Oxygen. This will allow you to have full write access to the
+                        folder in order to install new plugins:<xref
+                            href="https://www.oxygenxml.com/doc/versions/20.0/ug-editor/topics/dita-ot-install-plugin.html"
+                            format="html" scope="external"/>. </li>
+                    <li>In the Oxygen <b>Preferences->DITA</b> page set the default used DITA OT
+                        distribution to be the external copied one. This will mean that Oxygen will
+                        use for DITA validation and publishing the external <b>DITA OT</b>. After
+                        doing this you will be able to upgrade the used Oxygen version and benefit
+                        of all editing-related improvements without affecting the publising
+                        system.</li>
+                    <li>Share that external <b>DITA OT</b> copy with the rest of the team. If you
+                        are using for <xref
+                            href="http://blog.oxygenxml.com/2014/11/collaboration-for-documenting-software.html"
+                            format="html" scope="external">collaboration</xref> a repository like
+                        Subversion, Git you can commit the entire modified DITA OT publishing engine
+                        as part of your project. This will allow everybody else in your team to use
+                        for publishing an engine containing the official changes that you made. And
+                        this will allow you to also set up some kind of automatic publishing system
+                        using an open source integration server like <xref
+                            href="https://travis-ci.org/" format="html" scope="external"
+                            >Travis</xref>.</li>
+                </ol></p>
+        </section>
+        <section id="section_dtx_fmn_hdb">
+            <title>Customizing the XHTML-based outputs</title>
+            <p>Usually <b>XHTML</b>-based outputs can be modified by using a custom <b>CSS</b>
+                stylesheet to override various styles. If you edit an <b>XHTML</b>-based
+                transformation scenario in Oxygen, there is a parameter called <b>args.css</b> which
+                can be set to point to your custom CSS and a parameter called <b>args.copy.css</b>
+                which can be set to <b>yes</b> in order to copy the CSS to the output folder. To
+                know what CSS styles to override you can use your web brower’s CSS Inspector tools
+                to look at the produced HTML output. The same parameters can be set when publishing
+                from a command line: <xref
+                    href="http://www.dita-ot.org/dev/topics/html-customization-css.html"
+                    format="html" scope="external"/>.</p>
+            <p>You can also create plugins to customize the XHTML-based outputs by adding for
+                example an extra XSLT stylesheet:<xref
+                    href="http://blog.oxygenxml.com/2013/12/creating-simple-dita-open-toolkit.html"
+                    format="html" scope="external"/>. A list with all DITA OT XSLT extension points
+                can be found here: <xref
+                    href="http://www.dita-ot.org/dev/extension-points/plugin-extension-points-xslt-import.html"
+                    format="html" scope="external"/>.</p>
+        </section>
+        <section id="section_qwg_14n_hdb">
+            <title>Customizing the Oxygen WebHelp-based output</title>
+            <p>Oxygen’s <b>DITA OT</b> comes bundled with specific plugins developed by Oxygen
+                allowing publishing <b>DITA</b> content to <xref
+                    href="https://www.oxygenxml.com/doc/versions/20.0/ug-editor/topics/wh-classic-output-x-2.html"
+                    format="html" scope="external"><b>WebHelp Classic</b></xref> and <xref
+                    href="https://www.oxygenxml.com/doc/versions/20.0/ug-editor/topics/wh-responsive-output-x-2.html"
+                    format="html" scope="external"><b>WebHelp Responsive</b></xref> outputs.
+                Oxygen’s User’s Guide has detailed topics about how to customize these outputs:<xref
+                    href="https://www.oxygenxml.com/doc/versions/20.0/ug-editor/topics/wh-responsive-customization-tips.html#wh-responsive-customization-tips"
+                    format="html" scope="external"/>.</p>
+        </section>
+        <section id="section_jdb_4pn_hdb">
+            <title>Customizing the PDF Classic output</title>
+            <p>The <b>DITA to PDF</b> output can be customized either by creating a PDF
+                customization folder in which case the DITA OT folder will not be modified at all or
+                by creating  a PDF customization plugin: <xref
+                    href="https://www.oxygenxml.com/doc/versions/20.0/ug-editor/topics/dita-pdf-output.html"
+                    format="html" scope="external"/>. There is also a book called <xref
+                    href="https://xmlpress.net/publications/dita/dita-for-print/" format="html"
+                    scope="external">DITA For Print</xref> which contains details about how to
+                customize various aspects.</p>
+        </section>
+        <section id="section_w2v_4pn_hdb">
+            <title>Customizing the DITA + CSS to PDF output</title>
+            <p>In recent versions Oxygen added a new transformation scenario called <b>DITA Map PDF
+                    - WYSIWYG</b> which allows you to use <b>CSS</b> to style the PDF output,
+                lowering the required knowledge for implementing a PDF customization. There is an
+                entire chapter in the Oxygen users manual covering various PDF customization
+                details: <xref
+                    href="https://www.oxygenxml.com/doc/versions/20.0/ug-editor/topics/dcpp_the_customization_css.html#dcpp_the_customization_css"
+                    format="html" scope="external"/>.</p>
+        </section>
+    </body>
+</topic>

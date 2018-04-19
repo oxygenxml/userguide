@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-disable-content-completion">
+  <title>Control the Behavior of the Enter Key</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Control Enter key</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>You can control the behavior of the <uicontrol><shortcut>Enter</shortcut></uicontrol> key.
+      Normally the <uicontrol><shortcut>Enter</shortcut></uicontrol> key opens the content
+      completion list, but you can set an option to make the
+        <uicontrol><shortcut>Enter</shortcut></uicontrol> key work similar to the behavior in a
+      normal word processor. The user still has the ability to open the content completion list by
+      pressing <uicontrol><shortcut>CTRL+Enter</shortcut></uicontrol>.</p>
+    <p>There are several ways to control the behavior of the
+        <uicontrol><shortcut>Enter</shortcut></uicontrol> key:<ul>
+        <li>The <xref href="webapp-admin-page.dita#webapp-admin-page/show-cc-on-enter"
+              ><uicontrol>Show content completion list when pressing Enter</uicontrol> option</xref>
+          in the <uicontrol>General</uicontrol> tab of the <uicontrol>Administration</uicontrol>
+          page.</li>
+        <li>Set the <b>ccOnEnter</b> property in a <xref
+            href="customizing_plugins.dita#customizing_plugins">plugin</xref> (using the <xref
+            keyref="jscript_api_workspace_LoadingOptions"><i>LoadingOptions</i> type definition from
+            the <i>Workspace</i> API</xref>).<p>Possible values for the <b>ccOnEnter</b> property:<ul>
+              <li><b>true</b> - When the user presses the
+                  <uicontrol><shortcut>Enter</shortcut></uicontrol> key, the content completion list
+                will be displayed.</li>
+              <li><b>false</b> - When the user presses the
+                  <uicontrol><shortcut>Enter</shortcut></uicontrol> key, it will work similar to the
+                behavior in a normal word processor. For example, a new paragraph will be inserted,
+                or the element will be spilt, or the same element will be inserted.</li>
+            </ul></p><p>You can set this property in your plugin's JavaScript code like
+          this:</p></li>
+      </ul><codeblock outputclass="language-javascript">goog.events.listen(workspace, 
+sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED, function(e) {
+    if(non-technical-user) {
+      e.options.ccOnEnter = 'false';
+    }
+  }); </codeblock></p>
+    <note type="tip">You can also use this property in an <xref
+        href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch">embedded
+        link that launches Web Author</xref> so that when a user clicks the constructed link, the
+      documented will be opened in Web Author with the
+        <uicontrol><shortcut>Enter</shortcut></uicontrol> key working according to the value you
+      set.</note>
+  </body>
+</topic>

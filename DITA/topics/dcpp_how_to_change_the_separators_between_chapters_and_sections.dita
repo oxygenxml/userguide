@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_change_the_separators_between_chapters_and_sections">
+    <title>How to Change the Header Separators (Between Sections and Chapter Titles)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation <indexterm>Header<indexterm>Change
+              separators</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Header<indexterm>Change separators</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p>There are a number of <codeph>strings</codeph> defined for part, chapter, and sections. Each
+      of these strings start with the " | " character as a separator. For example, in the header of
+      a page, you may find a sequence of
+        strings:<codeblock outputclass="language-ini">My Publication | Introduction | Getting Started </codeblock><ol
+        id="ol_ub3_s54_1db">
+        <li>"My Publication" is the value of the <codeph>maptitle</codeph> string.</li>
+        <li>"Introduction" is the value of the <codeph>chaptertitle</codeph> string.</li>
+        <li>"Getting Started" is the value of the <codeph>sectiontitle</codeph> string.</li>
+      </ol></p>
+    <p>There might be cases where you want to change this separator. You will need to recompose the
+      header content using the above string sets. Suppose you want to use " - " as a separator. In
+      your <xref href="dcpp_the_customization_css.dita">customization css</xref>, add the following
+      CSS rule:</p>
+    <codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
+    string-set: parttitle " - " counter(part, upper-roman) " - " content(), chaptertitle  ""; /* Avoid propagating a past chapter title on a new part */
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"] {
+    string-set: chaptertitle " - " counter(chapter) " - " content();
+}</codeblock>
+    <p>If you enabled the <xref href="dcpp_css_for_deep_numbering.dita"/>, then use:</p>
+    <codeblock outputclass="language-css">/* 
+ * Alter the string sets that are shown in the header of the page.
+ */
+*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
+    string-set: parttitle " - " counter(part, upper-roman) " - " content(), chaptertitle  ""; /* Avoid propagating a past chapter title on a new part */
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"] {
+    string-set: chaptertitle " - " counter(chapter) " - " content(), sectiontitle "";
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/topic"] > *[class ~= "topic/title"] {
+    string-set: sectiontitle " - " counter(chapter) "." counter(section1) " - " content();
+}</codeblock>
+  </body>
+</topic>

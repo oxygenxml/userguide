@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_add_custom_pdf_metadata">
+  <title>How to Add the Publication Audience to the Custom PDF Metadata</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation
+            <indexterm>Metadata<indexterm>Custom</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Metadata<indexterm>Custom</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The audience element indicates the users the publication is addressing. This can be placed
+      inside a <xmlelement>topicmeta</xmlelement> element in a <xmlelement>map</xmlelement> as in
+      the following
+      example:<codeblock outputclass="language-xml">&lt;map>
+    ...
+    &lt;topicmeta>
+        ...
+        &lt;audience type="programmer" job="programming" experiencelevel="expert"/></codeblock></p>
+    <p>To collect the <xmlatt>type</xmlatt> attribute, add the following in your <xref
+        href="dcpp_the_customization_css.dita">customization css</xref>:</p>
+    <codeblock outputclass="language-css">map > *[class ~= "map/topicmeta"] > *[class ~= "topic/audience"] {
+    -oxy-pdf-meta-custom: "Audience" <b>attr(type)</b>;
+}</codeblock>
+    <note>It is best to use the class selector (such as <codeph>*[class ~=
+      "map/topicmeta"]</codeph>) instead of <codeph>topicmeta</codeph> to cover cases where the
+      elements are specialized (for instance, in a bookmap the <codeph>bookmeta</codeph> is a
+        <codeph>topicmeta</codeph>, so your selector will also function for bookmaps, not only
+      simple maps. </note>
+    <note>The selector begins with <codeph>map > </codeph> to choose the
+        <xmlelement>topicmeta</xmlelement> that is a direct child of the map, not other
+        <xmlelement>topicmeta</xmlelement> elements from other <xmlelement>topicref</xmlelement>
+      elements.</note>
+    <p>The metadata is displayed in the <uicontrol>Custom</uicontrol> tab of the <uicontrol>Document
+        Properties</uicontrol> dialog box from Acrobat Reader:</p>
+    <image href="../img/dcpp_acrobat_reader_document_properties_custom.png" id="image_lyx_xw2_scb"/>
+  </body>
+</topic>

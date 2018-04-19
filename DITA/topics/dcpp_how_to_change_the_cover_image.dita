@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_change_the_cover_image">
+    <title>How to Add a Background Image for the Cover </title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation <indexterm>Cover page<indexterm>Background
+              image</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Cover page<indexterm>Background image</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+        <p>The simplest way is to create an SVG image as large as the entire physical page and set
+      it as the background for the <i>front-page</i>. </p>
+        <p>Consider the following SVG document (<filepath>cover.svg</filepath>). </p>
+        <p>
+            <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+&lt;svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in">
+    &lt;desc>A gradient as big as a page.&lt;/desc>
+    &lt;defs>
+        &lt;linearGradient id="lc"
+            x1="0%" y1="0%"
+            x2="0%" y2="100%"
+            spreadMethod="pad">
+            &lt;stop offset="0%"   stop-color="#00DD00" stop-opacity="1"/>
+            &lt;stop offset="100%" stop-color="#00AA00" stop-opacity="1"/>
+        &lt;/linearGradient>
+    &lt;/defs>    
+    &lt;rect x="0" y="0" width="100%" height="100%" rx="10" ry="10"
+        style="fill:url(#lc);
+        stroke: #005000;
+        stroke-width: 3;"/>
+    &lt;text x="45%" y="95%"  color="#FFFFAA" font-size="0.7cm"> Sample &lt;/text>
+&lt;/svg></codeblock>
+        </p>
+        <p>It shows a gradient (but it can be anything, created with any tool) and the "Sample"
+      text. It is as large as a US-LETTER page and can be used in a publication using this page
+      size.</p>
+      <note conkeyref="reusables-dcpp/note_pqy_hdn_vcb"/>
+        <p>In your <xref href="dcpp_the_customization_css.dita">customization css</xref>, add the
+      following:</p>
+        <codeblock outputclass="language-css">@page front-page {
+    background-image: url("us-letter.svg");
+    background-position:center;
+}</codeblock>
+        <note>For smaller artworks, you can use background-position with percentage values.</note>
+        <note>The text from the SVG or PDF background images are searchable in the PDF reader.</note>
+    </body>
+    <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html"
+        href="https://www.oxygenxml.com/doc/ug-chemistry/topics/ch_graphics.html#ch_graphics"
+        scope="external">
+        <linktext>Oxygen PDF Chemistry: Graphics</linktext>
+      </link>
+    </linklist>
+    </related-links>
+</topic>

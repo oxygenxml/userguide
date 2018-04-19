@@ -1,0 +1,472 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.oxygenxml</groupId>
+    <artifactId>oxygen-superpom-versions</artifactId>
+    <version>20.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>com.oxygenxml.userguide</groupId>
+  <artifactId>publishing</artifactId>
+  <packaging>pom</packaging>
+
+	<!-- TODO: Deploy PDFs on software-archive.sync.ro -->
+  <name>oXygen User Guide - Artifacts</name>
+
+  <!-- 
+  	Use -Duserguide.server.user=user to deploy WebHelp output using a SSH key.
+  		NOTE: SSH key must be installed in ${user.home}/.ssh/id_rsa
+  	Use -Duserguide.server.user=user -Duserguide.server.password=password to deploy WebHelp output using user/password (without a SSH key)
+   -->
+
+  <description>
+		Publishing project to generate all user manuals (oXygen, WebHelp, Chemistry) 
+		using the oXygen DITA-OT 2.x artifact.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.oxygenxml</groupId>
+      <artifactId>oxygen-dita-ot-2.x</artifactId>
+      <type>zip</type>
+      <classifier>package-full</classifier>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <product-version>19.1</product-version>
+    <sonar.skip>true</sonar.skip>
+    <dependency-check.skip>true</dependency-check.skip>
+    <ANT_OPTS>-Dhttp.proxyHost=proxy.sync.ro -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.sync.ro -Dhttps.proxyPort=3128</ANT_OPTS>
+    <dita-ot-dir>${project.build.directory}/oxygen-dita-ot-2.5.2</dita-ot-dir>
+    <!-- Timestamp used to organize user guides on software-archive server -->
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyyMMddHH</maven.build.timestamp.format>
+  </properties>
+
+
+  <profiles>
+    <profile>
+      <id>webhelp-private</id>
+      <activation>
+        <property>
+          <name>build-webhelp-private</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <userguide.server>userguide.sync.ro</userguide.server>
+        <userguide.server.dir>/var/www/userguide</userguide.server.dir>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-webhelp-private</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-private" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-webhelp-private</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="private">
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                   	</ant>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>webhelp-public</id>
+      <activation>
+        <property>
+          <name>build-webhelp-public</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <userguide.server>software-archive.sync.ro</userguide.server>
+        <userguide.server.dir>/repository/userguides</userguide.server.dir>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-webhelp-public</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-public" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-webhelp-public</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" >
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                    	<property name="major.version" value="${parsedVersion.majorVersion}"/>
+					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+					    <!-- Used only for Web Author and Web Author Customization -->
+					    <property name="micro.version" value="0"/>
+                   	</ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>all</id>
+      <activation>
+        <property>
+          <name>build-all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-all</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-all" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-webhelp-public</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" >
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                    	<property name="major.version" value="${parsedVersion.majorVersion}"/>
+					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+					    <!-- Used only for Web Author and Web Author Customization -->
+					    <property name="micro.version" value="0"/>
+                   	</ant>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-pdf-public</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-pdf.xml" target="public" >
+                    	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server.password" value="${userguide.server.password}"/>
+                    	<property name="major.version" value="${parsedVersion.majorVersion}"/>
+					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+					    <!-- Used only for Web Author and Web Author Customization -->
+					    <property name="micro.version" value="0"/>
+                   	</ant>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+
+          <!-- Deploy the artifacts that enter the installation kits -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.7</version>
+            <executions>
+              <execution>
+                <id>deploy-editor-eclipse-help</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>editorEclipseHelp</artifactId>
+                  <file>${project.build.directory}/output/eclipsehelp/editor-eclipse/editor-eclipse-help.jar</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>jar</packaging>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-editor-sa-help</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>editorHelp</artifactId>
+                  <file>${project.build.directory}/output/javahelp/editor-sa/editor-sa-help.jar</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>jar</packaging>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-author-eclipse-help</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>authorEclipseHelp</artifactId>
+                  <file>${project.build.directory}/output/eclipsehelp/author-eclipse/author-eclipse-help.jar</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>jar</packaging>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-author-sa-help</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>authorHelp</artifactId>
+                  <file>${project.build.directory}/output/javahelp/author-sa/author-sa-help.jar</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>jar</packaging>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-developer-eclipse-help</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>developerEclipseHelp</artifactId>
+                  <file>${project.build.directory}/output/eclipsehelp/developer-eclipse/developer-eclipse-help.jar</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>jar</packaging>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-developer-sa-help</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>developerHelp</artifactId>
+                  <file>${project.build.directory}/output/javahelp/developer-sa/developer-sa-help.jar</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>jar</packaging>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+
+  <build>
+    <plugins>
+
+      <!-- Parses the project version number. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>parse-version</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+
+      <!-- Unpack DITA-OT artifact, but only if missing. To refresh the DITA-OT, a clean is needed. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-dita-ot</id>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <phase>process-sources</phase>
+
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.oxygenxml</groupId>
+                  <artifactId>oxygen-dita-ot-2.x</artifactId>
+                  <classifier>package-full</classifier>
+                  <type>zip</type>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+
+        <executions>
+
+          <!-- Copy the Oxygen WebHelp license key. -->
+          <execution>
+            <id>copy-webhelp-license</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo>Copy license.</echo>
+                <copy file="${project.basedir}/publishing/licensekey.txt" tofile="${dita-ot-dir}/plugins/com.oxygenxml.webhelp.responsive/licensekey.txt" />
+                <copy file="${project.basedir}/publishing/licensekey.txt" tofile="${dita-ot-dir}/plugins/com.oxygenxml.webhelp.classsic/licensekey.txt" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+    </plugins>
+
+  </build>
+
+
+</project>

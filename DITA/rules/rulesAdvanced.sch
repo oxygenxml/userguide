@@ -217,14 +217,14 @@
     </sqf:fix>
   </sqf:fixes>
   
-  <sch:pattern>
-    <!-- Report cases when the lines in a codeblock exceeds 90 characters -->
+  <!--<sch:pattern>
+    <!-\- Report cases when the lines in a codeblock exceeds 90 characters -\->
     <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
       <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 90)"/>
       <sch:report test="string-length($offendingLines) > 0">
         Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 90 characters. </sch:report>
     </sch:rule>
-  </sch:pattern>
+  </sch:pattern>-->
   
     
   
@@ -278,6 +278,7 @@
       [not(contains(@class, ' topic/stentry '))]
       [not(contains(@class, ' topic/object '))]
       [not(contains(@class, ' topic/param '))]
+      [not(contains(@class, ' topic/resourceid '))]
       [not(@conref)]
       [not(@conkeyref)]
       [not(@keyref)]
@@ -365,7 +366,7 @@
   
   <!-- Rules that checks the fig element has a title and is not empty -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' pr-d/syntaxdiagram '))]">
+    <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' pr-d/syntaxdiagram ')) and not(contains(@class, ' topic/fig ut-d/imagemap '))]">
       <sch:assert test="child::*[contains(@class, ' topic/title ')]" role="warn" sqf:fix="addTitle">
         The figure should have a title.
       </sch:assert>
@@ -403,7 +404,7 @@
 
   <!-- The fig element should always be in a paragraph because otherwise the output doesn't produce enough space before the image. -->
   <sch:pattern>
-    <sch:rule context="*[contains(@class, ' topic/fig ')]" role="warn">
+    <sch:rule context="*[contains(@class, ' topic/fig ') and not(contains(@class, ' topic/fig ut-d/imagemap '))]" role="warn">
       <sch:let name="precedingText" value="preceding-sibling::text()"/>
       <sch:let name="followingText" value="following-sibling::text()"/>
       <sch:assert test=".[parent::p][count(parent::node()/child::*) = 1]
@@ -426,6 +427,7 @@
     <!-- Check that the section should have a title. -->
     <sch:rule context="*[contains(@class, ' topic/section ') 
       and not(contains(@class, ' task/result ')) 
+      and not(contains(@class, ' task/steps-informal ')) 
       and not(contains(@class, ' task/prereq ')) 
       and not(contains(@class, ' task/postreq ')) 
       and not(contains(@class, ' task/context '))]">
@@ -489,6 +491,91 @@
     </sch:rule>
     
   </sch:pattern>
+  
+  <!-- msgblock, screen, pre -> codeblock -->
+  <sch:pattern>
+    <sch:rule context="msgblock | screen | pre"> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use a "codeblock" element instead.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- msgph -> codeph -->
+  <sch:pattern>
+    <sch:rule context="msgph"> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use a "codeph" element instead.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- wintitle,apiname,parmname,varname   -> b, i, uicontrol, filepath, codeph -->
+  <sch:pattern>
+    <sch:rule context="wintitle | apiname | parmname | varname "> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph, term.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- keyword -> b, i, uicontrol, filepath, codeph -->
+  <sch:pattern>
+    <sch:rule context="keyword"> 
+      <sch:report test="not(@keyref) and not(ancestor::node()/local-name() = 'keydef')">
+        You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph, term.
+      </sch:report>        
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- example -> create a manual rendering inside a new paragraph -->
+  <sch:pattern>
+    <sch:rule context="example"> 
+      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Create a manual rendering inside a new paragraph.        
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- List items that have a paragraph as their first child are not rendered ok in WebHelp. -->
+  <sch:pattern>
+    <sch:rule context="li">
+      <sch:report test="child::node()[1][not(self::text()) or normalize-space(self::text())=''] and child::*[1][local-name() = 'p']" subject="p">
+        The list item should not have a paragraph as its first child.</sch:report>
+    </sch:rule>
+  </sch:pattern> 
+  
+  <sch:pattern>
+    <sch:rule context="text()">
+      <sch:report test="matches(.,'[oO][xX]ygen') 
+        and parent::node()/local-name() != 'ph'
+        and parent::node()/local-name() != 'keyword'
+        and parent::node()/local-name() != 'xmlelement'
+        and parent::node()/local-name() != 'filepath'
+        and parent::node()/local-name() != 'indexterm'
+        and parent::node()/local-name() != 'shortdesc'
+        and parent::node()/local-name() != 'entry'
+        and parent::node()/local-name() != 'link'
+        and parent::node()/local-name() != 'dt'
+        and parent::node()/local-name() != 'linktext'
+        and parent::node()/local-name() != 'uicontrol'
+        and parent::node()/local-name() != 'term'
+        and parent::node()/local-name() != 'b'
+        and parent::node()/local-name() != 'xref'
+        and parent::node()/local-name() != 'i'
+        and parent::node()/local-name() != 'codeph'
+        and parent::node()/local-name() != 'codeblock'
+        and parent::node()/local-name() != 'title'" sqf:fix="replaceWithProKey">
+        Should use product key instead!
+      </sch:report>
+      
+      <sqf:fix id="replaceWithProKey">
+        <sqf:description>
+          <sqf:title>Replace with product key</sqf:title>
+        </sqf:description>
+        <sqf:stringReplace regex="[oO][xX]ygen">
+          <ph keyref="product"/>
+        </sqf:stringReplace>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
   
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'

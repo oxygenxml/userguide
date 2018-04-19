@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="customize-expand-collapse-components">
+  <title><?oxy_comment_start author="Steven" timestamp="20180323T144708+0200" comment="moved to not_used folder"?>How
+    to Expanded and Collapse Topic Components<?oxy_comment_end?></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>WebHelp Responsive system<indexterm>Customize expand/collapse
+            components</indexterm></indexterm>
+        <indexterm>Customize expand/collapse components</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="overview">
+      <title>Overview</title>
+      <p>The WebHelp Responsive system does not use the default <i>Bootstrap</i> implementation for
+        the expand/collapse feature. Instead, it uses a custom implementation that targets
+        components that match a certain pattern (in most cases, components that have a title). The
+        title always remains visible regardless of whether the rest of the component is collapsed or
+        expanded. The expand (<image href="../img/WH_Expand15.png"/>) or collapse (<image
+          href="../img/WH_Collapse15.png"/>) widget is displayed to the left of the title and
+        clicking this widget toggles the expand/collapse state for the particular node.</p>
+      <p>The patterns that the WebHelp Responsive system identifies as components that can be
+        expanded/collapsed are:<ul>
+          <li><b>Nested topics that include a title</b></li>
+          <li><b>Sections that include a title</b></li>
+          <li><b>Tables that include a title</b></li>
+          <li><b>Index term groups</b> (in this case, the first letter of the index term becomes the
+            title)</li>
+        </ul></p>
+      <p>A component that can be expanded/collapsed should have the following abstract form (where
+        the <i>title</i> element and the <i>subcomponent</i> elements are siblings and they are the
+        first level children of the <i>component</i>
+        element):<codeblock outputclass="language-ini">[component]
+   [title/]
+   [subcomponent_1/]
+   [subcomponent_2/]
+   .................................
+   [subcomponent_N/]
+[/component]</codeblock></p>
+      <p>The WebHelp Responsive system identifies these components when the HTML page is loaded
+        using the JavaScript code from the <filepath>wt_expand.js</filepath> file that is located
+        in:</p>
+      <p><filepath>[DITA_OT_DIR]/plugins/com.oxygenxml.webhelp.responsive/templates/dita/bootstrap/resources/js/</filepath></p>
+      <p>This code identifies the expandable/collapsible components based on their title nodes. The
+        title nodes are matched using CSS selectors and JQuery. The JSON object that contains these
+        expandable/collapsible node types
+        is:<codeblock outputclass="language-javascript">var selectors = {
+    /* Selectors for the nodes that will contain an expand/collapse button. */
+    "expand_buttons" : [
+        /* Table caption */
+        "table > caption",
+        /* Article title */
+        ".topic > .title",
+        /* Section title */
+        ".sectiontitle",
+        /* Index terms groups */
+        ".wh_term_group > .wh_first_letter"
+    ]
+};</codeblock></p>
+    </section>
+    <section id="adding_a_expandablecollapsible_component">
+      <title>Adding a Expandable/Collapsible Component</title>
+      <p>If you want to extend the list of expandable/collapsible components, you can add an
+        additional code snippet to the JavaScript variable in your own JavaScript file (adding the
+        CSS selectors for the title nodes of the components that you want to become
+        expandable/collapsible in the <codeph>selectors</codeph> variable).</p>
+      <p>For example, suppose you to also want to expand/collapse <i>figure</i> elements that
+        include a title.</p>
+      <p>The HTML output would look something like
+        this:<codeblock outputclass="language-xml">&lt;div class="fig fignone">
+    &lt;span class="figcap">Figure 1. Iris image&lt;/span>
+    &lt;img class="image" src="../../images/Iris_sanguinea.jpg" height="166" width="125">
+&lt;/div></codeblock></p>
+      <p>To make the figure component expandable/collapsible:<ol>
+          <li>Create a JavaScript file with the following
+            content:<codeblock outputclass="language-javascript">var selectors = {
+    /* Selectors for the nodes that will contain an expand/collapse button. */
+    "expand_buttons" : [
+        /* Table caption */
+        "table > caption",
+        /* Article title */
+        ".topic > .title",
+        /* Section title */
+        ".sectiontitle",
+        /* Index terms groups */
+        ".wh_term_group > .wh_first_letter",
+        
+        /* Figure with title*/
+        ".figcap" 
+    ]
+}; </codeblock></li>
+          <li>Save the JavaScript file on your local disk.</li>
+          <li product="author developer editor authorEclipse developerEclipse editorEclipse">Edit a
+              <uicontrol>DITA Map WebHelp Responsive</uicontrol> transformation scenario and in the
+              <uicontrol>Parameters</uicontrol> tab, set the value of the
+              <codeph>webhelp.fragment.after.body</codeph> parameter to reference your JavaScript
+            file.</li>
+          <li product="webhelp-responsive">Use the <codeph>webhelp.fragment.after.body</codeph>
+            parameter in your transformation, or from the Publishing Template, and set its value to
+            reference your JavaScript file.</li>
+          <li>Run the transformation <ph
+              product="author developer editor authorEclipse developerEclipse editorEclipse"
+              >scenario</ph><ph product="webhelp-responsive">script</ph>.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>

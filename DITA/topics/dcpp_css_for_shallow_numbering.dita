@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_css_for_shallow_numbering">
+    <title>CSS for Shallow Numbering</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >DITA Map to PDF WYSIWYG Transformation <indexterm>Numbering<indexterm>Shallow
+              numbering</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Numbering<indexterm>Shallow numbering</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+        <p>There is a file located in
+        <filepath>[PLUGIN_DIR]/css/print/p-numbering-shallow</filepath>. The following examples are
+      from this file.</p>
+      <note conkeyref="reusables-dcpp/rc-css-fragment-disclaimer-note"/>
+        <p>The counters should be reset on the root element. This is the element that has the class
+        <codeph>map/map</codeph>. Note that bookmaps derive from maps and the following selector
+      will also match them:</p>
+        <p>
+            <codeblock outputclass="language-css">*[class ~= "map/map"] {
+    counter-reset: page 1
+                     toc-chapter 0
+                     chapter 0
+                     figcount 0
+                     tablecount 0;
+}
+</codeblock>
+        </p>
+        <section id="section_ahn_wkl_5cb">
+      <title>Table of Contents</title>
+      <p>There is only one counter for the chapters, named <codeph>toc-chapter</codeph>. This is
+        reset on the book parts (for bookmaps) and is incremented on each chapter that is not a
+          part.<note>The parts are also marked as
+          chapters.<codeblock outputclass="language-css">*[class ~= "map/topicref"][is-chapter]:not([is-part]) {
+    counter-increment:toc-chapter;
+}
+*[class ~= "map/topicref"][is-part] {
+   counter-reset:toc-chapter !important;
+   counter-increment:toc-part;
+} 
+ 
+/* All other topicrefs that follow a part should not have a number (i.e appendices)  */
+*[class ~= "map/topicref"][is-part] ~ *[class ~= "map/topicref"]:not([is-part]) > *[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"]:before{
+   content: none !important;
+   counter-increment:none;
+}
+</codeblock></note>To
+        display the numbers in the TOC, a <codeph>:before</codeph> pseudo element is used on the
+        navigation titles from the <xmlelement>topicref</xmlelement>
+        elements:<codeblock outputclass="language-css">*[class ~= "map/topicref"][is-part] > *[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"]:before{
+   content:"Part " counter(toc-part, upper-roman) ". " !important;
+   color:inherit;
+}    
+*[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"]:before{
+    content:"Chapter " counter(toc-chapter) ". " !important;
+    color:inherit;
+}</codeblock></p>
+    </section>
+        <section id="section_st1_jll_5cb">
+      <title>The Titles of Chapters in the Main Content</title>
+      <p>The <codeph>part</codeph> and <codeph>chapter</codeph> counters are incremented on the
+        elements that have the class
+        <codeph>topic/topic</codeph>:<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part]{
+    counter-increment:part;
+    counter-reset:chapter;
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]){
+    counter-increment:chapter;
+}</codeblock>Except
+        for <xmlelement>frontmatter</xmlelement>, <xmlelement>backmatter</xmlelement>, and other
+        topics following the last book part (for
+        bookmaps).<codeblock outputclass="language-css">*[class ~= "bookmap/frontmatter"],
+*[class ~= "bookmap/frontmatter"] *[class ~= "topic/topic"],
+*[class ~= "bookmap/backmatter"],
+*[class ~= "bookmap/backmatter"] *[class ~= "topic/topic"],
+*[class ~= "topic/topic"][is-part] ~ *[class ~= "topic/topic"]:not([is-part]) {
+   counter-increment:none !important;
+   counter-reset: chapter part;
+}</codeblock></p>
+      <p>These counters are used in the content, before the titles:
+        <codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"]:before {
+    content: "Part " counter(part, upper-roman) ". ";
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"]:before {
+    content: "Chapter " counter(chapter) ". ";
+}</codeblock></p>
+      <p>Except for <xmlelement>frontmatter</xmlelement>, <xmlelement>backmatter</xmlelement>, and
+        other topics following the last book part (for
+        bookmaps).<codeblock outputclass="language-css">*[class ~= "bookmap/frontmatter"] > *[class ~= "topic/title"]:before,
+*[class ~= "bookmap/frontmatter"] *[class ~= "topic/topic"] > *[class ~= "topic/title"]:before,
+*[class ~= "bookmap/backmatter"] > *[class ~= "topic/title"]:before,
+*[class ~= "bookmap/backmatter"] *[class ~= "topic/topic"] > *[class ~= "topic/title"]:before,
+*[class ~= "topic/topic"][is-part] ~ *[class ~= "topic/topic"]:not([is-part]) > *[class ~= "topic/title"]:before,
+*[class ~= "topic/topic"][is-part] ~ *[class ~= "topic/topic"]:not([is-part]) *[class ~= "topic/topic"] > *[class ~= "topic/title"]:before{
+    content:none !important;
+}</codeblock></p>
+    </section>
+        <section id="section_sdt_dml_5cb">
+            <title>Headers</title>
+            <p>Define the string-sets used in the header, using the <codeph>part</codeph> and
+          <codeph>chapter</codeph>
+        counters:<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
+    string-set: parttitle " | " counter(part, upper-roman) " - " content(), chaptertitle  ""; /* Avoid propagating a past chapter title on a new part */
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"] {
+    string-set: chaptertitle " | " counter(chapter) " - " content();
+}</codeblock></p>
+            <p>Except for front matter, backmatter and other topics following the last book part (for
+                bookmaps).<codeblock outputclass="language-css">*[class ~= "bookmap/frontmatter"] > *[class ~= "topic/title"],
+*[class ~= "bookmap/frontmatter"] *[class ~= "topic/topic"] > *[class ~= "topic/title"],
+*[class ~= "bookmap/backmatter"] > *[class ~= "topic/title"],
+*[class ~= "bookmap/backmatter"] *[class ~= "topic/topic"] > *[class ~= "topic/title"],
+*[class ~= "topic/topic"][is-part] ~ *[class ~= "topic/topic"]:not([is-part]) > *[class ~= "topic/title"],
+*[class ~= "topic/topic"][is-part] ~ *[class ~= "topic/topic"]:not([is-part]) *[class ~= "topic/topic"] > *[class ~= "topic/title"]{
+   string-set: parttitle "", chaptertitle "";
+}</codeblock></p>
+        </section>
+    </body>
+</topic>

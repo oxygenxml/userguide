@@ -2,7 +2,7 @@
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="including-document-parts-with-XInclude">
-  <title>Including Document Parts with XInclude</title>
+  <title>Combining XML Documents and Fragments Using XInclude</title>
   <prolog>
     <metadata>
       <keywords>
@@ -13,34 +13,31 @@
     </metadata>
   </prolog>
   <body>
-    <p>XInclude is a standard for assembling XML instances into another XML document through
-      inclusion. It enables larger documents to be dynamically created from smaller XML documents
-      without having to physically duplicate the content of the smaller files in the <xref
-        keyref="glossentry_master-file"><term>master file</term></xref>. XInclude is targeted as the
-      replacement for External Entities. The advantage of using XInclude is that, unlike the
-      entities method, each of the assembled documents is permitted to contain a Document Type
-      Declaration (DOCTYPE). This means that each file is a valid XML instance and can be
+    <p><b>XInclude</b> is a standard for assembling XML instances into another XML document through
+      inclusion. A <xref keyref="glossentry_master-file"><term>master file</term></xref> can be
+      dynamically created from smaller XML documents without having to physically duplicate the
+      content of the smaller files. The advantage of using XInclude instead of the <xref
+        href="large-documents-DTD-entities.dita#large-documents-DTD-entities">DTD Entities
+        method</xref> is that each of the assembled documents is permitted to contain a Document
+      Type Declaration (DOCTYPE). This means that each file is a valid XML instance and can be
       independently validated. It also means that the main document, which includes smaller
-      instances, can be validated without having to remove or comment out the DOCTYPE. as is the
-      case with External Entities. This makes XInclude a more convenient and effective method for
-      managing XML instances that need to be stand-alone documents and part of a much larger
-      project.</p>
-    <p>The main application for XInclude is in the document-oriented content such as manuals and Web
-      pages. Employing XInclude enables you to manage content in a modular fashion that is akin to
-      Object Oriented methods used in languages such as Java, C++ or C#.</p>
-    <p>The advantages of modular documentation include: reusable content units, smaller file units
-      that are easier to be edited, better version control and distributed authoring.</p>
-    <p>The XInclude support in <ph keyref="product"/> is enabled by default. It is controlled by the
-        <xref href="preferences-xml-parser.dita#preferences-xml-parser/enable-xinclude"
-          ><uicontrol>Enable XInclude processing</uicontrol> option</xref> in the <xref
-        href="preferences-xml-parser.dita#preferences-xml-parser"><menucascade>
-          <uicontrol>XML</uicontrol>
-          <uicontrol>XML Parser</uicontrol>
-        </menucascade> preferences page</xref>. When enabled, <ph keyref="product"/> will be able to
-      validate and transform documents comprised of parts added using XInclude.</p>
-    <p><b><u>Example: Using XInclude to Include a Chapter in an Article </u></b></p>
-    <p>Chapter file (<filepath>introduction.xml</filepath>) looks like
-      this:<codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt;
+      instances, can be validated without having to remove or comment out the DOCTYPE (as is the
+      case with External Entities).</p>
+    <section id="enabling_xinclude_support_in">
+      <title>Enabling XInclude Support in <ph keyref="product"></ph></title>
+      <p>The XInclude support in <ph keyref="product"></ph> is enabled by default. It is controlled
+        by the <xref href="preferences-xml-parser.dita#preferences-xml-parser/enable-xinclude"
+            ><uicontrol>Enable XInclude processing</uicontrol> option</xref> in the <xref
+          href="preferences-xml-parser.dita#preferences-xml-parser"><menucascade>
+            <uicontrol>XML</uicontrol>
+            <uicontrol>XML Parser</uicontrol>
+          </menucascade> preferences page</xref>. When enabled, <ph keyref="product"></ph> will be
+        able to validate and transform documents comprised of parts added using XInclude.</p>
+    </section>
+    <section id="example_using_xinclude_to_combine_chapters_in_an_">
+      <title>Example: Using XInclude to Combine Files</title>
+      <p>A chapter file (<filepath>introduction.xml</filepath>) looks like
+        this:<codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt;
 &lt;!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"&gt;
 &lt;chapter&gt;
@@ -50,8 +47,8 @@
         &lt;para&gt;Para text&lt;/para&gt;
     &lt;/section&gt;
 &lt;/chapter&gt;</codeblock></p>
-    <p>Main article file looks like
-      this:<codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt;
+      <p>The main article (<term>master file</term>) looks like
+        this:<codeblock outputclass="language-xml">&lt;?xml version="1.0"?&gt;
 &lt;!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.docbook.org/xml/4.3/docbookx.dtd"
 [ &lt;!ENTITY % xinclude SYSTEM "../frameworks/docbook/dtd/xinclude.mod"&gt;
@@ -69,51 +66,53 @@
       &lt;/xi:fallback&gt;
     &lt;/xi:include&gt;
 &lt;/article&gt;</codeblock></p>
-    <p>In this example, note the following:<ul>
-        <li>
-          <p>The DOCTYPE declaration defines an entity that references a file containing the
+      <p>In this example, note the following:<ul>
+          <li>The DOCTYPE declaration defines an entity that references a file containing the
             information to add the <i>xi</i> namespace to certain elements defined by the DocBook
-            DTD.</p>
-        </li>
-        <li>The href attribute of the xi:include element specifies that the
-            <filepath>introduction.xml</filepath> file will replace the <i>xi:include</i> element
-          when the document is parsed.</li>
-        <li>
-          <p>If the <filepath>introduction.xml</filepath> file cannot be found, the parser will use
-            the value of the <i>xi:fallback</i> element - a FIXME message.</p>
-        </li>
-      </ul></p>
-    <p><b><u>Example: Include only a Fragment</u></b></p>
-    <p>If you want to include only a fragment of a file in the <xref keyref="glossentry_master-file"
-          ><term>master file</term></xref>, the fragment must be contained in a tag having an
-        <codeph>xml:id</codeph> attribute and you must use an XPointer expression pointing to the
-        <codeph>xml:id</codeph> value.<note type="notice"><ph keyref="product"/> supports the <xref
-          href="http://www.w3.org/TR/2003/REC-xptr-framework-20030325/" format="html"
-          scope="external">XPointer <term>Framework</term></xref> and the <xref
-          href="http://www.w3.org/TR/2003/REC-xptr-element-20030325/" format="html" scope="external"
-          >XPointer element() Scheme</xref>, but it does NOT support the <xref
-          href="https://www.w3.org/TR/xptr-xpointer/" format="html" scope="external">XPointer
-          xpointer() Scheme</xref>.</note></p>
-    <p>For example, if the <term>master file</term> is:</p>
-    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+            DTD.</li>
+          <li>The href attribute of the xi:include element specifies that the
+              <filepath>introduction.xml</filepath> file will replace the <i>xi:include</i> element
+            when the document is parsed.</li>
+          <li>If the <filepath>introduction.xml</filepath> file cannot be found, the parser will use
+            the value of the <i>xi:fallback</i> element - a <i>FIXME</i> message.</li>
+        </ul></p>
+    </section>
+    <section id="example_using_xinclude_to_combine_fragments_of_fi">
+      <title>Example: Using XInclude to Combine Fragments of Files</title>
+      <p>If you want to include only a fragment of a file in the <xref
+          keyref="glossentry_master-file"><term>master file</term></xref>, the fragment must be
+        contained in a tag having an <codeph>xml:id</codeph> attribute and you must use an XPointer
+        expression pointing to the <codeph>xml:id</codeph> value.<note type="notice"><ph
+            keyref="product"></ph> supports the <xref
+            href="http://www.w3.org/TR/2003/REC-xptr-framework-20030325/" format="html"
+            scope="external">XPointer <term>Framework</term></xref> and the <xref
+            href="http://www.w3.org/TR/2003/REC-xptr-element-20030325/" format="html"
+            scope="external">XPointer element() Scheme</xref>, but it does NOT support the <xref
+            href="https://www.w3.org/TR/xptr-xpointer/" format="html" scope="external">XPointer
+            xpointer() Scheme</xref>.</note></p>
+      <p>For example, if the <term>master file</term>
+        is:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;?xml-model href="test.rng" type="application/xml" 
         schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
 &lt;test&gt;
     &lt;xi:include href="a.xml" xpointer="a1"
         xmlns:xi="http://www.w3.org/2001/XInclude"/&gt;
-&lt;/test&gt;        </codeblock>
-    <p>and the <filepath>a.xml</filepath> file is:</p>
-    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;/test&gt;        </codeblock></p>
+      <p>and the file (<filepath>a.xml</filepath>)
+        is:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;test&gt;
     &lt;a xml:id="a1"&gt;test&lt;/a&gt;
-&lt;/test&gt;        </codeblock>
-    <p>after resolving the XPointer reference the document is:</p>
-    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;/test&gt;        </codeblock></p>
+      <p>after resolving the XPointer reference, the document
+        is:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;?xml-model href="test.rng" type="application/xml" 
           schematypens="http://relaxng.org/ns/structure/1.0"?&gt;
 &lt;test&gt;
     &lt;a xml:id="a1" xml:base="a.xml"&gt;test&lt;/a&gt;
-&lt;/test&gt;</codeblock>
+&lt;/test&gt;</codeblock></p>
+    </section>
+    <section conkeyref="reusables-editing-documents/Entities_XInclude_viewing_expanded_content"
+      id="d1299e178"></section>
     <section id="xinclude_11_features">
       <title>XInclude 1.1 Features</title>
       <p><ph keyref="product"/> offers partial support for XInclude 1.1 features. This includes
@@ -150,4 +149,12 @@
       </p>
     </section>
   </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html" href="https://www.w3.org/TR/xinclude-11/" scope="external">
+        <linktext>W3C Specifications: XML Inclusions (XInclude) Version 1.1</linktext>
+      </link>
+    </linklist>
+  </related-links>
 </topic>

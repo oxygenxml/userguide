@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_comments_and_change_tracking___input_xml_fragment">
+  <title>Comments and Change Tracking - Input XML fragment</title>
+  <body>
+    <p>The following sections contain information about how each of the tracked change types are
+      structured.</p>
+    <section id="section_rh1_bg2_2db">
+      <title>Insertions</title>
+      <p>For an insertion type of tracked change, the structure defining the insertion details is
+        inside the range, the inserted text is highlighted by an
+          <xmlelement>oxy-insert-hl</xmlelement> element, and the details are stored in the
+          <xmlelement>oxy-insert</xmlelement> element.</p>
+      <codeblock outputclass="language-xml">    &lt;oxy:oxy-range-start id="sc_1" hr_id="1"/>
+
+       &lt;oxy:oxy-insert href="#sc_1" hr_id="1">
+           &lt;oxy:oxy-author>dan&lt;/oxy:oxy-author>
+           &lt;oxy:oxy-content>insert&lt;/oxy:oxy-content>
+           &lt;oxy:oxy-date>2018/03/15&lt;/oxy:oxy-date>
+           &lt;oxy:oxy-hour>09:38:29&lt;/oxy:oxy-hour>
+           &lt;oxy:oxy-tz>+02:00&lt;/oxy:oxy-tz>
+       &lt;/oxy:oxy-insert>
+
+       &lt;oxy:oxy-insert-hl>This is an insert!!&lt;/oxy:oxy-insert-hl>
+
+    &lt;oxy:oxy-range-end hr_id="1"/></codeblock>
+    </section>
+    <section id="section_pjn_5g2_2db">
+      <title>Comments</title>
+      <p>Similar to insertions, comments are defined  in a range, the comment details in the
+          <xmlelement>oxy-comment</xmlelement> element, and the highlighted content is wrapped in a
+          <xmlelement>oxy-comment-hl</xmlelement> element.</p>
+      <p>
+        <codeblock outputclass="language-xml">    &lt;oxy:oxy-range-start id="sc_1" hr_id="1"/>
+      
+        &lt;oxy:oxy-comment href="#sc_1" hr_id="1">
+              &lt;oxy:oxy-author>dan&lt;/oxy:oxy-author>
+              &lt;oxy:oxy-comment-text>This is a comment.&lt;/oxy:oxy-comment-text>
+              &lt;oxy:oxy-date>2018/03/15&lt;/oxy:oxy-date>
+              &lt;oxy:oxy-hour>09:56:59&lt;/oxy:oxy-hour>
+              &lt;oxy:oxy-tz>+02:00&lt;/oxy:oxy-tz>
+        &lt;/oxy:oxy-comment>
+          
+        &lt;oxy:oxy-comment-hl>Context&lt;/oxy:oxy-comment-hl>
+          
+    &lt;oxy:oxy-range-end hr_id="1"/>           </codeblock>
+      </p>
+    </section>
+    <section id="section_mr5_qh2_2db">
+      <title>Attribute changes</title>
+      <p>The attribute changes are more complex. The range is empty, and is directly under the
+        affected element (the one that has modified attributes). The
+          <xmlelement>oxy-attributes</xmlelement> element contains details about multiple attribute
+        changes, each stored in a <xmlelement>oxy-attributed-change</xmlelement> element. </p>
+      <p>
+        <codeblock outputclass="language-xml">&lt;element>
+
+  &lt;oxy:oxy-range-start id="sc_3" hr_id="3"/>
+  &lt;oxy:oxy-range-end hr_id="3"/>
+
+  &lt;oxy:oxy-attributes href="#sc_3" hr_id="3">
+
+     &lt;oxy:oxy-attribute-change type="<b>inserted</b>" name="<b>platform</b>">
+          &lt;oxy:oxy-author>dan&lt;/oxy:oxy-author>
+          &lt;oxy:oxy-current-value>windows&lt;/oxy:oxy-current-value>
+          &lt;oxy:oxy-date>2018/03/15&lt;/oxy:oxy-date>
+          &lt;oxy:oxy-hour>10:05:04&lt;/oxy:oxy-hour>
+          &lt;oxy:oxy-tz>+02:00&lt;/oxy:oxy-tz>
+     &lt;/oxy:oxy-attribute-change>
+    ....
+     &lt;oxy:oxy-attribute-change type="<b>removed</b>" name="<b>audience</b>">
+        ....    
+     &lt;/oxy:oxy-attribute-change>
+  &lt;/oxy:oxy-attributes>
+...
+&lt;/element></codeblock>
+      </p>
+    </section>
+    <section id="section_jjz_wf2_2db">
+      <title>Deletions</title>
+      <p>For a deletion, there are some elements that define the start and end of the deletion, and
+        the highlighted text is wrapped in the <xmlelement>oxy-delete-hl</xmlelement> element.</p>
+      <codeblock outputclass="language-xml">   &lt;oxy:oxy-range-start id="sc_2" hr_id="2"/>
+
+        &lt;oxy:oxy-delete-hl> This is a deleted text. &lt;/oxy:oxy-delete-hl>
+
+   &lt;oxy:oxy-range-end hr_id="2"/>
+</codeblock>
+      <p>There is a structure that offers details about the deletion change, using the
+          <xmlelement>oxy-delete</xmlelement> elment. This is linked to the above deletion range by
+        the same ID value:</p>
+      <codeblock outputclass="language-xml">   &lt;oxy:oxy-delete href="#sc_2" hr_id="2">
+       &lt;oxy:oxy-author>dan&lt;/oxy:oxy-author>
+       &lt;oxy:oxy-content>&amp;lt;step&amp;gt;&amp;lt;cmd&amp;gt;This is a deleted &amp;lt;image href="ac%20co.. &lt;/oxy:oxy-content>
+       &lt;oxy:oxy-date>2018/03/14&lt;/oxy:oxy-date>
+       &lt;oxy:oxy-hour>11:38:06&lt;/oxy:oxy-hour>
+       &lt;oxy:oxy-tz>+02:00&lt;/oxy:oxy-tz>
+   &lt;/oxy:oxy-delete></codeblock>
+    </section>
+  </body>
+</topic>
