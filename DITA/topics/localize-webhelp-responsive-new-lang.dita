@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="localize-webhelp-responsive_adding_a_new_language">
+  <title>Adding a new language</title>
+  <taskbody>
+    <context id="context_oyv_pvy_ndb">
+      <p>To add a new language for WebHelp transformation you need to create a DITA-OT extension
+        plugin that uses the <term>dita.xsl.messages</term> extension point. The next sample
+        procedure is for adding translation files for Polish language, but you can adapt it for any
+        language.</p>
+    </context>
+    <steps id="steps_pyv_pvy_ndb">
+      <step>
+        <cmd>Create the <filepath>com.oxygenxml.webhelp.localization</filepath> plugin directory  in
+          the <filepath><abbreviated-form keyref="glossentry_dita_ot_dir"/>/plugins/</filepath>
+          location.</cmd>
+      </step>
+      <step>
+        <cmd>Create a <filepath>plugin.xml</filepath> in the directory created in the previous step
+          with the following content:</cmd>
+        <info>
+          <codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.localization">
+    &lt;require plugin="com.oxygenxml.webhelp.classic"/>
+    &lt;require plugin="com.oxygenxml.webhelp.responsive"/>
+  
+    &lt;feature extension="dita.xsl.strings" file="webhelp-extension-strings.xml"/>
+&lt;/plugin></codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Create the <filepath>webhelp-extension-strings.xml</filepath> file with the following
+          content:</cmd>
+        <info>
+          <codeblock outputclass="language-xml">&lt;langlist>
+    &lt;lang xml:lang="pl"    filename="strings-pl-pl.xml"/>
+    &lt;lang xml:lang="pl-PL"    filename="strings-pl-pl.xml"/>
+&lt;/langlist></codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Copy the WebHelp strings file (<filepath><term keyref="glossentry_dita_ot_dir"
+            />/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization/strings-en-us.xml</filepath>
+          ) in your plugin, and rename it to <filepath>strings-pl-pl.xml</filepath>.</cmd>
+      </step>
+      <step>
+        <cmd>In the <filepath>strings-pl-pl.xml</filepath> file, change the <term>@xml:lang</term>
+          attribute on the root element conforming with the new language.</cmd>
+        <info>
+          <codeblock outputclass="">&lt;strings xml:lang="pl-PL">
+  ...
+&lt;/strings></codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Translate the content of each <xmlelement>str</xmlelement> element (be sure to leave
+          the <term>name</term> attribute unchanged).</cmd>
+        <stepresult>
+          <codeblock outputclass="language-xml">&lt;strings xml:lang="pl-PL">
+  ...
+   &lt;str name="webhelp.content" js="true" php="false">Polish translation for "Content".&lt;/str>
+   &lt;str name="webhelp.search" js="true" php="false">Polish translation for "Search"&lt;/str>
+   ...
+&lt;/strings></codeblock>
+        </stepresult>
+      </step>
+      <step>
+        <cmd>Copy the common DITA-OT strings defined in the <filepath><term
+              keyref="glossentry_dita_ot_dir"/>/xsl/common/strings-en-us.xml</filepath> file. It
+          defines a set generated text available for HTML based transformations like:  note, figure,
+          table. Translate the content of each <xmlelement>str</xmlelement> element </cmd>
+        <stepresult>
+          <codeblock outputclass="language-xml">&lt;strings xml:lang="pl-PL">
+  ...
+   &lt;str name="webhelp.content" js="true" php="false">Polish translation for "Content".&lt;/str>
+   &lt;str name="webhelp.search" js="true" php="false">Polish translation for "Search"&lt;/str>
+   ...
+   &lt;str name="Figure">Polish translation for "Figure"&lt;/str>
+   &lt;str name="Table">Polish translation for "Table"&lt;/str>
+   ...
+&lt;/strings></codeblock>
+        </stepresult>
+      </step>
+      <step>
+        <cmd>Run the
+          <?oxy_comment_start author="radu_pisoi" timestamp="20180419T104021+0300" comment="Maybe a link/conref to a place where this step is explained better."?>DITA-OT
+          integrator.<?oxy_comment_end?></cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>
