@@ -5,9 +5,11 @@
   <title>Customizing DITA Transformations</title>
   <prolog>
     <metadata>
-      <keywords><indexterm>DITA<indexterm>Output<indexterm>Customizing
-          Transformations</indexterm></indexterm></indexterm>
-        <indexterm>Customizing DITA transformations</indexterm></keywords>
+      <keywords>
+        <indexterm>DITA<indexterm>Output<indexterm>Customizing
+            Transformations</indexterm></indexterm></indexterm>
+        <indexterm>Customizing DITA transformations</indexterm>
+      </keywords>
     </metadata>
   </prolog>
   <body>
@@ -48,11 +50,90 @@
         <li><b>PDF</b> - For information about customizing PDF output generated from DITA content,
           see <xref href="dita-pdf-output.dita#dita-pdf-output"/>.</li>
       </ul></p>
+    <section id="section_bzh_wjn_hdb">
+      <title>Publishing Customizations</title>
+      <p>Some customizations (usually for HTML-based output), can be made simply by creating a
+        custom CSS and they do not involve modifying the DITA-OT engine in any way. Instead, most
+        customizations involve adding a new plugin to the DITA-OT. Here are some best practices to
+        follow before beginning your customization:<ol id="ol_zbw_gkn_hdb">
+          <li>Copy the bundled DITA-OT folder (usually
+              <filepath>OXYGEN_INSTALL_DIR\frameworks\dita\DITA-OT2.x</filepath>) to a location
+            where you have full write access so that you have the ability to <xref
+              href="dita-ot-install-plugin.dita">install new DITA-OT plugins</xref>.</li>
+          <li>Go to <menucascade>
+              <uicontrol>Options</uicontrol>
+              <uicontrol>Preferences</uicontrol>
+              <uicontrol>DITA</uicontrol>
+            </menucascade>, select <uicontrol>Custom</uicontrol> for the <uicontrol>DITA Open
+              Toolkit</uicontrol> option and set the <uicontrol>Location</uicontrol> to be the path
+            to the location where you copied the bundled DITA-OT folder. This will allow you to
+            upgrade the version of <ph keyref="product"/> at anytime without affecting the
+            publishing system.</li>
+          <li>Share that external DITA-OT folder with the rest of the team. If you are using a
+            repository (such as Subversion or Git), you can commit the entire modified DITA-OT
+            publishing engine as part of your project. This will allow everyone in your team to use
+            the official changes that you made. This will also allow you to set up some kind of
+            automatic publishing system using an open-source integration server (such as <xref
+              href="https://travis-ci.org/" format="html" scope="external">Travis CI</xref> or <xref
+              href="https://jenkins.io/" format="html" scope="external">Jenkins</xref>).</li>
+        </ol></p>
+    </section>
+    <section id="section_dtx_fmn_hdb">
+      <title>Customizing XHTML-based Output</title>
+      <p><b>XHTML</b>-based output can be modified by using a custom CSS stylesheet to override
+        various styles. If you <xref href="create-dita-ot-transformation.dita">edit an XHTML
+          transformation scenario</xref>, there is a parameter called <b>args.css</b> that can be
+        set to point to your custom CSS and a parameter called <b>args.copy.css</b> that can be set
+        to <b>yes</b> to copy the CSS to the output folder.</p>
+      <p>You can also create plugins to customize the XHTML-based output by adding an extra XSLT
+        stylesheet. For for information, see: <xref
+          href="http://blog.oxygenxml.com/2013/12/creating-simple-dita-open-toolkit.html"
+          format="html" scope="external"/>. A list with all DITA-OT XSLT extension points can be
+        found here: <xref
+          href="http://www.dita-ot.org/dev/extension-points/plugin-extension-points-xslt-import.html"
+          format="html" scope="external"/>.</p>
+    </section>
+    <section id="section_qwg_14n_hdb">
+      <title>Customizing WebHelp-based Output</title>
+      <p>The <b>DITA-OT</b> that comes bundled in <ph keyref="product"/> includes specific plugins
+        that provide the ability to publish DITA content to <xref href="webhelp-classic-output.dita"
+            ><b>WebHelp Classic</b></xref> and <xref href="webhelp-responsive-output.dita"
+            ><b>WebHelp Responsive</b></xref> output.</p>
+      <p>For information about customizing <uicontrol>WebHelp Classic</uicontrol> output, see <xref
+          href="customize_webhelp.dita"/>.</p>
+      <p>For information about customizing <uicontrol>WebHelp Responsive</uicontrol> output, see
+          <xref href="wh-responsive-customization-tips.dita"/>.</p>
+    </section>
+    <section id="section_jdb_4pn_hdb">
+      <title>Customizing PDF-based Output</title>
+      <p><b>DITA to PDF</b> output can be customized either by creating a PDF customization folder
+        (in this case, the DITA OT folder will not be modified at all) or by creating a PDF
+        customization plugin. For information about customizing DITA to PDF output, see <xref
+          href="dita-pdf-output.dita"/>.</p>
+      <p>There is also a book called <xref
+          href="https://xmlpress.net/publications/dita/dita-for-print/" format="html"
+          scope="external">DITA For Print</xref> that contains details about how to customize
+        various aspects.</p>
+    </section>
+    <section id="section_w2v_4pn_hdb">
+      <title>Customizing PDF Output with CSS</title>
+      <p><ph keyref="product"/> also includes a transformation scenario called <xref
+          href="ditamap-pdf-css.dita"><b>DITA Map PDF - WYSIWYG</b></xref> that is based on a
+          <i>DITA-OT CSS-based PDF Publishing plugin</i> that allows you to convert <xref
+          keyref="glossentry_ditamap"><term>DITA maps</term></xref> to PDF using a CSS layout
+        processor. For those who are familiar with CSS, this makes it very easy to style and
+        customize the PDF output of your DITA projects without having to work with <i>xsl:fo</i>
+        customizations. For more information about customizing PDF output using this transformation
+        scenario, see <xref href="dcpp_the_customization_css.dita">DITA Map PDF - WYSIWYG:
+          Customization CSS</xref>.</p>
+    </section>
   </body>
   <related-links>
-    <linklist><title>Related Information:</title><link href="dita-map-transform.dita"/><link format="html" href="http://www.dita-ot.org/" scope="external">
-      <linktext>DITA Open Toolkit Documentation</linktext>
-    </link></linklist>
-    
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html" href="http://www.dita-ot.org/" scope="external">
+        <linktext>DITA Open Toolkit Documentation</linktext>
+      </link>
+    </linklist>
   </related-links>
 </topic>
