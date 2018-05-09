@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-aws">
+  <title>Deploying Content Fusion Enterprise on Amazon Web Services</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Amazon Web Services deployment</indexterm>
+        <indexterm>AWS</indexterm>
+        <indexterm>Installing an Enterprise server with Amazon Web Services</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>There are two ways to launch <ph keyref="cfEnterprise"/> on Amazon Web Services: using the
+      launch button or the EC2 wizard. The first approach is more simple but not as flexible as the
+      second one, although it should be sufficient for evaluation purposes.</p>
+    <section id="cf_aws_cloud_formation">
+      <title>Using the Launch Button (recommended for evaluation purposes only)</title>
+      <p id="launch-prereqs">Prerequisites:<ul id="ul_c11_rxd_ndb">
+          <li>An <xref href="https://aws.amazon.com/" format="html" scope="external">Amazon Web
+              Services account</xref>. <note>This setup will require resources that are not covered
+              by the free tier.</note></li>
+          <li>An SSH key pair in the Canada (Central) region. You can create one following <xref
+              href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair"
+              format="html" scope="external">this tutorial</xref>.</li>
+        </ul></p>
+      <p>Procedure:<ol id="ol_y4v_vkd_ndb">
+          <li>Go to the <xref
+              href="https://www.oxygenxml.com/content_fusion/download_content_fusion.html"
+              format="html" scope="external">Download page</xref>.</li>
+          <li>Go to the <uicontrol>AWS</uicontrol> tab and click <uicontrol>Launch on
+              AWS</uicontrol>.</li>
+          <li>Make sure you have the <uicontrol>Canada (Central)</uicontrol> region selected. You
+            can change it using the drop-down menu in the top-right corner.</li>
+          <li>In the <uicontrol>SSHKeyName</uicontrol>, choose the name of an existing SSH key pair.
+            It will be used for SSH access to the instance.<note>If there are no options provided in
+              the combo-box, see the <xref href="#cf-aws/launch-prereqs" format="dita"
+                >prerequisites</xref>.</note></li>
+          <li>Review and click <uicontrol>Create</uicontrol>.<p><b>Result:</b> The machine will
+              launch. Expand the <uicontrol>Resources</uicontrol> tab to present a link to your
+              launched instance where you can find details about the running instance, including its
+              IP address (you will need this).</p></li>
+          <li>Continue <xref href="#cf-aws/d1427e293" format="dita">configuring <ph
+                keyref="cfEnterprise"/></xref>.</li>
+        </ol></p>
+    </section>
+    <section id="cf_aws_ec2_wizard">
+      <title>Using the EC2 Wizard (recommended for production)</title>
+      <p>Prerequisites:</p>
+      <ul id="ul_tln_v2d_ndb">
+        <li>An <xref href="https://aws.amazon.com/" format="html" scope="external">Amazon Web
+            Services account</xref>. <note>This setup will require resources which are not covered
+            by the free tier.</note></li>
+      </ul>
+      <p>Procedure:</p>
+      <p>
+        <ol id="ul_uln_v2d_ndb">
+          <li>Go to your <xref
+              href="https://ca-central-1.console.aws.amazon.com/ec2/v2/home?region=ca-central-1"
+              format="html" scope="external">EC2 dashboard</xref>.</li>
+          <li>Make sure you have the <uicontrol>Canada (Central)</uicontrol> region selected. You
+            can change it using the drop-down menu in the top-right corner.</li>
+          <li>Click <uicontrol>Launch Instance</uicontrol>.</li>
+          <li>Choose the <uicontrol>Amazon Machine Image</uicontrol>:<ol id="ul_vln_v2d_ndb">
+              <li>Switch to the <uicontrol>Community AMIs</uicontrol> tab.</li>
+              <li>Insert the <xref
+                  href="https://www.oxygenxml.com/content_fusion/download_content_fusion.html"
+                  format="html" scope="external">AMI ID listed on the download page</xref> in the
+                search field.</li>
+              <li>Click the <uicontrol>Select</uicontrol> button.</li>
+            </ol></li>
+          <li>Choose the <uicontrol>Instance Type</uicontrol>:<ul id="ul_wln_v2d_ndb">
+              <li>It is recommended that you use at least a <b>t2.medium</b> instance (2 vCPUs, 4
+                GiB Memory) or higher, depending on the expected activity.</li>
+            </ul></li>
+          <li>Configure <uicontrol>Instance Details</uicontrol>. You can leave all options with
+            their default values, except for:<ul id="ul_xln_v2d_ndb">
+              <li><uicontrol>Enable termination protection</uicontrol>:
+                  <uicontrol>Enabled</uicontrol></li>
+              <li><uicontrol>Auto-assign Public IP</uicontrol>: <uicontrol>Enable</uicontrol></li>
+            </ul></li>
+          <li>Add <uicontrol>Storage</uicontrol>:<ul id="ul_zln_v2d_ndb">
+              <li>The <codeph>/dev/sdb</codeph> volume will be used to store the database and files
+                uploaded by the users as part of the review tasks. It is preconfigured to be 100GiB
+                and can be adjusted here.</li>
+            </ul></li>
+          <li>Add <uicontrol>Tags</uicontrol>:<ul id="ul_amn_v2d_ndb">
+              <li>Adding the name tag might be useful to identify the instance and volumes attached
+                to it more easily.</li>
+            </ul></li>
+          <li>Configure <uicontrol>Security Group</uicontrol>. Select or create a security group
+            with the following inbound rules:<ul id="ul_bmn_v2d_ndb">
+              <li>port 80, source <uicontrol>Anywhere</uicontrol></li>
+              <li>port 443, source <uicontrol>Anywhere</uicontrol></li>
+              <li>port 22, source <uicontrol>My IP</uicontrol> (recommended) or
+                  <uicontrol>Anywhere</uicontrol> (for SSH administrative access)</li>
+              <li>port 9080, source <uicontrol>My IP</uicontrol> (recommended) or
+                  <uicontrol>Anywhere</uicontrol> (for web-based administrative access)</li>
+            </ul></li>
+          <li>Click <uicontrol>Review and Launch</uicontrol><ul id="ol_zld_gxd_ndb">
+              <li>You will be asked to select a key pair or create a new one.</li>
+            </ul><p><b>Result:</b> The machine will launch and you will be presented with a link to
+              your launched instance where you can find details about the running instance,
+              including its IP address (you will need this).</p></li>
+          <li>Continue <xref href="#cf-aws/d1427e293" format="dita">configuring <ph
+                keyref="cfEnterprise"/></xref>.</li>
+        </ol>
+      </p>
+    </section>
+    <section conkeyref="reusables-cf/initial_oxygen_content_fusion_configuration_in_th"
+      id="d1427e293"/>
+    <section conkeyref="reusables-cf/configuring_oxygen_xml_editorauthor_to_connect_to"
+      id="d1427e297"/>
+    <section conkeyref="reusables-cf/configuring_a_properties_file_to_instruct_oxygen_"
+      id="d1427e301"/>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="cf-custom-frameworks.dita#cf-custom-frameworks"/>
+    </linklist>
+  </related-links>
+</topic>
