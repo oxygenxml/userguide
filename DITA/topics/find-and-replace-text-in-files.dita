@@ -37,44 +37,6 @@
           connections.</li>
       </ul></p>
     <p>The operation works on both local and remote files from an (S)FTP, WebDAV or CMS server.</p>
-    <section id="accepted_search_pattern_notes">
-      <title>Accepted Search Pattern Notes</title>
-      <p>
-        <ul>
-          <li>You can use <xref href="regular-expressions.dita#regular-expressions">Perl-like
-              regular expression syntax</xref> to match patterns in text content. The <i>replace</i>
-            operation can bind regular expression capturing groups ($1, $2, etc.) from the find
-            pattern.</li>
-          <li>Exclusion patterns are accepted. For example, <codeph>*.java, !*Test.java</codeph>
-            would search for all files with a <i>.java</i> extension, with the exception of any file
-            whose name ends in <i>Test</i>.</li>
-          <li>To replace the <codeph>tag-name</codeph> start tag and its attributes with the
-              <codeph>new-tag-name</codeph> tag use as <uicontrol>Text to find</uicontrol> the
-            expression <i>&lt;tag-name(\s+)(.*)&gt;</i> and as <uicontrol>Replace with</uicontrol>
-            the expression <i>&lt;new-tag-name$1$2&gt;</i>. </li>
-        </ul>
-      </p>
-    </section>
-    <section id="other_notes">
-      <title>Other Notes</title>
-      <ul>
-        <li>The encoding used to read and write the files is detected from the XML header or from
-          the BOM. If a file does not have an XML header or BOM <ph keyref="product"/> uses by
-          default the UTF-8 encoding for files of type XML, that is for files with one of the
-          extensions: <filepath>.xml</filepath>, <filepath>.xsl</filepath>,
-          <filepath>.fo</filepath>, <filepath>.xsd</filepath>, <filepath>.rng</filepath>,
-            <filepath>.nvdl</filepath>, <filepath>.sch</filepath>, <filepath>.wsdl</filepath> or
-            <xref keyref="file-types-preferences">an extension associated with the XML editor
-            type</xref>. For the other files it uses <xref href="preferences-encoding.dita">the
-            encoding configured for non-XML files.</xref></li>
-        <li>You can cancel a long operation at any time by pressing the
-            <uicontrol>Cancel</uicontrol> button of the progress dialog box displayed when the
-          operation is executed.</li>
-        <li>Since the content of read-only files cannot be modified, the
-            <uicontrol>Replace</uicontrol> operation does not process those files. For every such
-          file, a warning message is displayed in the message panel.</li>
-      </ul>
-    </section>
     <section id="findreplace_in_files_dialog_box">
       <title>Find/Replace in Files Dialog Box</title>
       <p>
@@ -140,7 +102,12 @@
             <dt><uicontrol>Replace with</uicontrol> section</dt>
             <dd>Use the text field in this section to specify a character string to replace the
               target with. It may contain regular expression group markers if the search expression
-              is a regular expression and the <uicontrol>Regular expression</uicontrol> checkbox is selected.<p>
+              is a regular expression and the <uicontrol>Regular expression</uicontrol> checkbox is
+                selected.<note type="tip">If you want to change the XML structure, you could use the
+                  <xref href="predefined-refactoring-operations.dita">built-in XML refactoring
+                  operations</xref>.<ph product="developer editor"> You can even <xref
+                    href="custom-refactoring-operations.dita">customize your own refactoring
+                    operations</xref>.</ph></note><p>
                 <dl>
                   <dlentry>
                     <dt>Make backup files with extension</dt>
@@ -244,24 +211,66 @@
               search expression. When the option is unchecked, the search results are displayed in
               the <i>Find in Files</i> tab, replacing any previous search results.</dd>
           </dlentry>
+          <dlentry>
+            <dt>Find All</dt>
+            <dd>Use the <uicontrol>Find All</uicontrol> button to execute the search operation. The
+              results are <xref href="results-view.dita#results-view" format="dita">displayed in a
+                view</xref> that allows grouping the results as a tree with two levels.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Replace All</dt>
+            <dd>Use the <uicontrol>Replace All</uicontrol> button to execute the search operation
+              and replace all occurrences with the specified string. When you replace a fragment of
+              text, <ph keyref="product"/> offers an option to preview of the changes you make. The
+                <uicontrol>Preview</uicontrol> dialog box is divided in two sections. The first
+              section presents a list of all the documents containing the fragment of text you want
+              to modify. The second section offers a view of the original file and a view of the
+              final result. It also allows you to highlight all changes using the vertical bar from
+              the right side of the view. The <uicontrol>Next change</uicontrol> and
+                <uicontrol>Previous change</uicontrol> buttons allow you to navigate through the
+              changes displayed in the <uicontrol>Preview</uicontrol> dialog box.<note
+                type="caution">Use the <uicontrol>Replace All</uicontrol> option with caution.
+                Global searches may result in matching strings being replaced in instances that were
+                not originally intended.</note></dd>
+          </dlentry>
         </dl>
       </p>
-      <p>Use the <uicontrol>Find All</uicontrol> button to execute the search operation. The results
-        are <xref href="results-view.dita#results-view" format="dita">displayed in a view</xref>
-        that allows grouping the results as a tree with two levels.</p>
-      <p>Use the <uicontrol>Replace All</uicontrol> button to execute the search operation and
-        replace all occurrences with the specified string. When you replace a fragment of text, <ph
-          keyref="product"/> offers an option to preview of the changes you make. The
-          <uicontrol>Preview</uicontrol> dialog box is divided in two sections. The first section
-        presents a list of all the documents containing the fragment of text you want to modify. The
-        second section offers a view of the original file and a view of the final result. It also
-        allows you to highlight all changes using the vertical bar from the right side of the view.
-        The <uicontrol>Next change</uicontrol> and <uicontrol>Previous change</uicontrol> buttons
-        allow you to navigate through the changes displayed in the <uicontrol>Preview</uicontrol>
-        dialog box.</p>
-      <note type="caution">Use the <uicontrol>Replace All</uicontrol> option with caution. Global
-        searches may result in matching strings being replaced in instances that were not originally
-        intended.</note>
     </section>
+    <note>
+      <ul>
+        <li>You can use <xref href="regular-expressions.dita#regular-expressions">Perl-like regular
+            expression syntax</xref> to match patterns in text content. The <i>replace</i> operation
+          can bind regular expression capturing groups ($1, $2, etc.) from the find pattern.</li>
+        <li>Exclusion patterns are accepted. For example, <codeph>*.java, !*Test.java</codeph> would
+          search for all files with a <i>.java</i> extension, with the exception of any file whose
+          name ends in <i>Test</i>.</li>
+        <li>To replace the <codeph>tag-name</codeph> start tag and its attributes with the
+            <codeph>new-tag-name</codeph> tag use as <uicontrol>Text to find</uicontrol> the
+          expression <i>&lt;tag-name(\s+)(.*)&gt;</i> and as <uicontrol>Replace with</uicontrol> the
+          expression <i>&lt;new-tag-name$1$2&gt;</i>. </li>
+        <li>The encoding used to read and write the files is detected from the XML header or from
+          the BOM. If a file does not have an XML header or BOM <ph keyref="product"/> uses by
+          default the UTF-8 encoding for files of type XML, that is for files with one of the
+          extensions: <filepath>.xml</filepath>, <filepath>.xsl</filepath>,
+          <filepath>.fo</filepath>, <filepath>.xsd</filepath>, <filepath>.rng</filepath>,
+            <filepath>.nvdl</filepath>, <filepath>.sch</filepath>, <filepath>.wsdl</filepath> or
+            <xref keyref="file-types-preferences">an extension associated with the XML editor
+            type</xref>. For the other files it uses <xref href="preferences-encoding.dita">the
+            encoding configured for non-XML files.</xref></li>
+        <li>You can cancel a long operation at any time by pressing the
+            <uicontrol>Cancel</uicontrol> button of the progress dialog box, but doing so will not
+          revert any replacements that have been processed up to that point.</li>
+        <li>Since the content of read-only files cannot be modified, the
+            <uicontrol>Replace</uicontrol> operation does not process those files. For every such
+          file, a warning message is displayed in the message panel.</li>
+      </ul>
+    </note>
   </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="predefined-refactoring-operations.dita"/>
+      <link href="custom-refactoring-operations.dita" product="developer editor"/>
+    </linklist>
+  </related-links>
 </topic>
