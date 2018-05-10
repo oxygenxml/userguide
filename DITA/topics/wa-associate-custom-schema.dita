@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="wa-associate-custom-schema">
+  <title>Using a Custom Schema in Your Framework</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Custom schema</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="webappProduct"/> relies on schemas to validate XML documents and to compute valid
+      proposals for the <xref keyref="glossentry_content-completion-assistant"><term>Content
+          Completion Assistant</term></xref>. The built-in <term>frameworks</term> have predefined
+      schemas associated with that particular document type but you can also use your own custom
+      schema. </p>
+    <section id="supported_types_of_schema">
+      <title>Supported Types of Schema</title>
+      <p>The following schema types are supported:<ul>
+          <li>W3C XML Schema 1.0 and 1.1 (with and without embedded Schematron rules)</li>
+          <li>DTD</li>
+          <li>Relax NG - XML syntax (with and without embedded Schematron rules)</li>
+          <li>Relax NG - compact syntax</li>
+          <li>NVDL</li>
+          <li>Schematron (both ISO Schematron and Schematron 1.5)</li>
+        </ul></p>
+    </section>
+    <section id="detecting_a_default_schema">
+      <title>Detecting a Schema</title>
+      <p><ph keyref="webappProduct"/> tries to detect a schema by searching several locations within
+        the <term>framework</term> configuration, in the following order:<ul>
+          <li>The <xref
+              href="#wa-associate-custom-schema/associating_a_schema_in_validation_scenarios_defi"
+              format="dita">schema specified in validation scenarios</xref> defined in the
+            particular <term>framework</term> configuration.</li>
+          <li>The <xref
+              href="#wa-associate-custom-schema/associating_a_schema_in_the_framework_configurati"
+              format="dita">schema specified in the <term>framework</term></xref>
+            configuration.</li>
+        </ul><note>The locations of the schema can also be mapped through the use of an <term>XML
+            Catalog</term>. For more information, see: <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/using-XML-Catalogs.html"
+            format="html" scope="external"/>.</note></p>
+    </section>
+    <section id="associating_a_schema_in_validation_scenarios_defi">
+      <title>Associating a Schema in Validation Scenarios Defined in the Framework
+        Configuration</title>
+      <p>To associate a schema in validation scenarios defined in the <xref
+          keyref="glossentry_framework"><term>framework</term></xref> (document type) configuration,
+        follow these steps:<ol>
+          <li>In <b>Oxygen XML Editor/Author</b>, go to <menucascade>
+              <uicontrol>Options</uicontrol>
+              <uicontrol>Preferences</uicontrol>
+              <uicontrol>Document Type Association</uicontrol>
+            </menucascade>, and edit the document type configuration for your <term>framework</term>
+              (<uicontrol>Edit</uicontrol> or <uicontrol>Duplicate</uicontrol>).</li>
+          <li>Go to the <uicontrol>Validation</uicontrol> tab.</li>
+          <li>Create or edit a validation scenario:<ol>
+              <li>To create a new validation scenario, click the <uicontrol><image
+                    href="../img/Add16.png" placement="inline"/>New</uicontrol> button.</li>
+              <li>To edit the properties of an existing validation scenario, select it and click the
+                    <uicontrol><image href="../img/Wrench16.png" id="image_pkh_qns_tr"
+                  />Edit</uicontrol> button (you can also use the <uicontrol><image
+                    href="../img/Copy16.png"/>Duplicate</uicontrol> button to copy an existing
+                scenario and edit its properties).</li>
+            </ol></li>
+          <li>Add or configure validation units according to your needs and click the
+                <uicontrol><image href="../img/Options16.png"/>Specify Schema</uicontrol>
+                button.<p><b>Step Result:</b> The <uicontrol>Specify Schema</uicontrol> dialog box
+              is displayed:</p><p>
+              <fig>
+                <title>Specify Schema Dialog Box</title>
+                <image href="../img/specify_schema_dialog.png"/>
+              </fig>
+            </p><p>The <uicontrol>Specify Schema</uicontrol> dialog box contains the following
+              options:</p><p>
+              <dl>
+                <dlentry>
+                  <dt><uicontrol>Use detected schema</uicontrol></dt>
+                  <dd>Uses the <xref href="#wa-associate-custom-schema/detecting_a_default_schema"
+                      format="dita">schema detected for the particular document</xref>.</dd>
+                </dlentry>
+                <dlentry>
+                  <dt><uicontrol>Use custom schema</uicontrol></dt>
+                  <dd>Allows you to specify the schema using the following options:<ul
+                      id="specify-schema-ul">
+                      <li>
+                        <uicontrol>URL</uicontrol> - Allows you to specify or select a URL for the
+                        schema. It also keeps a history of the last used schemas. The URL must point
+                        to the schema file that can be loaded from the local disk or from a remote
+                        server through HTTP(S), FTP(S) or a custom protocol. You can specify the URL
+                        by using the text field, the history drop-down, the <uicontrol><image
+                            href="../img/InsertEditorVariables16.png"/>Insert Editor
+                          Variables</uicontrol> button, or the browsing actions in the
+                            <uicontrol><image href="../img/BrowseDrop.png"/>Browse</uicontrol>
+                        drop-down list.</li>
+                      <li>
+                        <uicontrol>Schema type</uicontrol> - Select a possible schema type from this
+                        combo box that is populated based on the extension of the schema file that
+                        was entered in the <uicontrol>URL</uicontrol> field. The possible schema
+                        types are: XML Schema, DTD, Relax NG, Relax NG Compact, Schematron, or
+                        NVDL.</li>
+                      <li><uicontrol>Embedded schematron rules</uicontrol> - If you have selected
+                        XML Schema or Relax NG schemas with embedded Schematron rules and you want
+                        to use those embedded rules, select this option.</li>
+                      <li>
+                        <uicontrol>Public ID</uicontrol> - Allows you to specify a public ID if you
+                        have selected a DTD.</li>
+                      <li><uicontrol>Extensions</uicontrol>- Opens a dialog box that allows you to
+                        specify <term>Java extension JARs</term> to be used during the
+                        validation.</li>
+                      <li><uicontrol>Schematron phase</uicontrol> - If you select a Schematron
+                        schema, this drop-down list allows you to select a Schematron phase that you
+                        want to use for validation. The listed phases are defined in the Schematron
+                        document.</li>
+                    </ul></dd>
+                </dlentry>
+              </dl>
+            </p></li>
+          <li>Select the schema to be associated with the validation unit and configure the rest of
+            the options according to your preferences.</li>
+          <li>Click <uicontrol>OK</uicontrol> on both dialog boxes.</li>
+          <li>Create an archive that only contains your custom framework folder and <xref
+              href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+              the changes to your <term>framework</term> to Web Author</xref>.</li>
+        </ol></p>
+    </section>
+    <section id="associating_a_schema_in_the_framework_configurati">
+      <title>Associating a Schema in the Framework Configuration</title>
+      <p>To associate a schema in a particular <term>framework</term> (document type), follow these steps:<ol>
+          <li>In <b>Oxygen XML Editor/Author</b>, go to <menucascade>
+              <uicontrol>Options</uicontrol>
+              <uicontrol>Preferences</uicontrol>
+              <uicontrol>Document Type Association</uicontrol>
+            </menucascade>, and edit the document type configuration for your <term>framework</term>
+              (<uicontrol>Edit</uicontrol> or <uicontrol>Duplicate</uicontrol>).</li>
+          <li>Go to the <uicontrol>Schema</uicontrol> tab.</li>
+          <li>Select the schema type and its URI.</li>
+          <li>Click <uicontrol>OK</uicontrol> on both dialog boxes.</li>
+          <li> Create an archive that only contains your custom framework folder and <xref
+              href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+              the changes to your <term>framework</term> to Web Author</xref>.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
