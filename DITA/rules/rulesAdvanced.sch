@@ -164,7 +164,10 @@
   <sch:pattern>
     <!-- Report ol after ol -->
     <sch:rule context="*[contains(@class, ' topic/ol ')]">
-      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ol ')]" role="warn" sqf:fix="mergeLists"> Two
+      <sch:report test="following-sibling::node()[1]
+        [contains(@class, ' topic/ol ') or 
+        (self::text() and normalize-space(.)='') and 
+        following-sibling::node()[1][self::*][contains(@class, ' topic/ol ')]]" role="warn" sqf:fix="mergeLists"> Two
         consecutive ordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
