@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-plugin">
+  <title>How to Use XSLT Extension Points for PDF Output from a DITA-OT Plugin</title>
+  <shortdesc>These examples demonstrate how to use XSLT extension points from a <xref
+      href="http://www.dita-ot.org/2.5/dev_ref/plugin-creating.html" format="html" scope="external"
+      >DITA-OT plugin</xref>.</shortdesc>
+  <topic id="dd">
+    <title>Use Case 1: Styling Codeblocks with a Zebra Effect</title>
+    <body>
+      <p>Suppose you want your <i>codeblocks</i> to have a particular background color for one line,
+        and another color for the next line. One advantage of this coloring technique is that you
+        can clearly see when text from the codeblock is wrapped.</p>
+      <p>This effect can be done by altering the HTML5 output, creating a <codeph>div</codeph> for
+        each line from the code block, then styling them.</p>
+      <p>To add this functionality using a DITA-OT plugin, follow these steps:</p>
+      <ol>
+        <li>In the <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\</filepath> folder,
+          create a folder for this plugin (for example,
+            <filepath>com.oxygenxml.pdf.custom.codeblocks</filepath>).</li>
+        <li>Create a <b>plugin.xml</b> file (in the folder you created in step 1) that specifies the
+          extension point and your customization stylesheet. For
+          example:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.pdf.custom.codeblocks">
+  &lt;feature extension="com.oxygenxml.pdf.css.xsl.merged2html5"
+              file="custom_codeblocks.xsl"/>    
+&lt;/plugin></codeblock></li>
+        <li>Create your customization stylesheet (for example, <b>custom_codeblocks.xsl</b>) with
+          the following
+          content:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs"
+    version="2.0">
+   
+    &lt;xsl:template match="*[contains(@class, ' pr-d/codeblock ')]">
+       &lt;div class='zebra'>       
+          &lt;xsl:analyze-string regex="\n" select=".">
+            &lt;xsl:matching-substring/>
+            &lt;xsl:non-matching-substring>
+               &lt;div>&lt;xsl:value-of select="."/>&lt;/div>
+            &lt;/xsl:non-matching-substring>
+          &lt;/xsl:analyze-string>
+       &lt;/div>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+        <li>Use the <xref href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"
+              ><uicontrol>Run DITA-OT Integrator</uicontrol> transformation scenario</xref> found in
+          the <uicontrol>DITA Map</uicontrol> section in the <xref
+            href="configure-transformation-dialog.dita#configure-transformation-dialog"
+              ><uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box</xref>.</li>
+        <li>Create a custom CSS file with rules that style the <i>codeblock</i> structure. For
+          example:<codeblock outputclass="language-css">div.zebra {
+  font-family:courier, fixed, monospace;        
+  white-space:pre-wrap;
+}
+
+div.zebra > *:nth-of-type(odd){        
+  background-color: silver;
+}     </codeblock></li>
+        <li> Edit a <b>DITA Map PDF - CSS HTML5</b> transformation scenario and reference your
+          custom CSS file (using the <codeph>args.css</codeph> parameter).</li>
+        <li>Run the transformation scenario.</li>
+      </ol>
+    </body>
+  </topic>
+  <topic id="dd-uu">
+    <title>Use Case 2: Removing the Related Links Section</title>
+    <body>
+      <p>Suppose you want the <i>related links</i> sections to be removed from the PDF output.</p>
+      <p>To add this functionality using a DITA-OT plugin, follow these steps:<ol>
+          <li>In the <filepath><term keyref="glossentry_dita_ot_dir"/>\plugins\</filepath> folder,
+            create a folder for this plugin (for example,
+              <filepath>com.oxygenxml.pdf.custom.codeblocks</filepath>).</li>
+          <li>Create a <b>plugin.xml</b> file (in the folder you created in step 1) that specifies
+            the extension point and your customization stylesheet. For
+            example:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.pdf.custom.related.links">
+  &lt;feature extension="com.oxygenxml.pdf.css.xsl.merged2merged"
+              file="custom_related_links.xsl"/>    
+&lt;/plugin></codeblock></li>
+          <li>Create your customization stylesheet (for example, <b>custom_related_links.xsl</b>)
+            with the following
+            content:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs"
+    version="2.0">
+	
+   &lt;xsl:template match="*[contains(@class, ' topic/related-links ')]">
+      &lt;!-- Remove. -->
+   &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+          <li>Use the <xref
+              href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"
+                ><uicontrol>Run DITA-OT Integrator</uicontrol> transformation scenario</xref> found
+            in the <uicontrol>DITA Map</uicontrol> section in the <xref
+              href="configure-transformation-dialog.dita#configure-transformation-dialog"
+                ><uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box</xref>.</li>
+          <li> Run the <b>DITA Map PDF - CSS HTML5</b> transformation scenario. </li>
+        </ol></p>
+    </body>
+  </topic>
+</topic>
