@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf_publishing_template_contents">
+  <title>Publishing Template Package Contents for PDF Customizations</title>
+  <body>
+    <p>An <term>Oxygen Publishing Template</term> package must contain a template descriptor file
+      and some other resources (such as CSS files). All the template resources can be stored in
+      either a ZIP archive or in a folder. It is recommended to use a ZIP archive because it is
+      easier to share with others.</p>
+  </body>
+  <topic id="template_descritpor_file">
+    <title>Template Descriptor File</title>
+    <body>
+      <p>Each publishing template includes a descriptor file that defines the meta-data associated
+        with template. It is an XML file that defines all the resources included in a template (such
+        as CSS files and transformation parameters).</p>
+      <p>The template descriptor file must have the <filepath>.opt</filepath> file extension and
+        must be located in the templates' root folder.</p>
+      <p>A PDF template descriptor might look like this:</p>
+      <codeblock outputclass="language-xml">&lt;publishing-template>
+    &lt;name>Flowers&lt;/name>
+
+    &lt;pdf>
+        &lt;tags>
+            &lt;tag>purple&lt;/tag>
+            &lt;tag>light&lt;/tag>
+        &lt;/tags>
+        &lt;preview-image file="flowers-preview.png"/>
+        
+        &lt;resources>
+            &lt;css file="flowers.css"/>
+        &lt;/resources>
+        
+        &lt;parameters>
+            &lt;parameter name="show.changes.and.comments" value="yes"/>
+        &lt;/parameters>
+    &lt;/pdf>
+&lt;/publishing-template></codeblock>
+      <note type="tip">It is recommended to edit the template descriptor in <b>Oxygen XML
+          Editor/Author</b> because it provides content completion and validation support.</note>
+      <section id="template_name_and_description">
+        <title>Template Name and Description</title>
+        <p>Each template descriptor file requires a <b>name</b> element. This information is
+          displayed as the name of the template in the transformation scenario dialog box. </p>
+        <p>Optionally, you can include a <b>description</b> and it displayed when the user hovers
+          over the template in the transformation scenario dialog box.</p>
+        <p>
+          <codeblock outputclass="language-xml">&lt;publishing-template>
+    &lt;name>Flowers&lt;/name>
+    &lt;description>Flowers themed light colored template&lt;/description>
+    ...</codeblock>
+        </p>
+      </section>
+      <section id="template_author">
+        <title>Template Author</title>
+        <p>Optionally, you can include author information in the descriptor file and it displayed
+          when the user hovers over the template in the transformation scenario dialog box. This
+          information might be useful if users run into an issue or have questions about a certain
+          template.</p>
+        <p>If you include the <b>author</b> element, a <b>name</b> is required and optionally you
+          can include <b>email</b>, <b>organization</b>, and <b>organizationUrl</b> information.</p>
+        <p>
+          <codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;author>
+      &lt;name>John Doe&lt;/name>
+      &lt;email>jdoe@example.com&lt;/email>
+      &lt;organization>ACME&lt;/organization>
+      &lt;organizationUrl>http://www.example.com/jdoe&lt;/organizationUrl>
+    &lt;/author>
+    ...</codeblock>
+        </p>
+      </section>
+      <section id="webhelp_element">
+        <title>PDF Element</title>
+        <p>The <b>pdf</b> element contains various details about the template and its resources that
+          define the output. The elements that are allowed in this <b>pdf</b> section specify the
+            <xref href="#template_descritpor_file/template_tags" format="dita">template tags</xref>,
+            <xref href="#template_descritpor_file/template_preview_image" format="dita">template
+            preview image</xref>, <xref href="#template_resources" format="dita">resources</xref>
+          (such as CSS files), <xref href="#transformation_parameters" format="dita">transformation
+            parameters</xref>, or <xref href="#xslt_extension_points" format="dita">XSLT
+            extensions</xref>.</p>
+        <codeblock outputclass="language-xml">    &lt;pdf>
+        &lt;tags>
+          ...
+        &lt;/tags>
+        &lt;preview-image file="MyPreview.png"/>
+
+        &lt;resources>
+          ...
+        &lt;/resources>
+
+        &lt;parameters>
+          ...
+        &lt;/parameters>
+    &lt;/pdf></codeblock>
+      </section>
+      <section id="template_tags">
+        <title>Template Tags</title>
+        <p>The <b>tags</b> section provides meta information about the template (such as color
+          theme). Each <b>tag</b> is displayed at the top of the <uicontrol>Templates</uicontrol>
+          tab window in the transformation scenario dialog box and they help the user filter and
+          find particular templates.</p>
+        <codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;pdf>
+      &lt;tags>
+        &lt;tag>purple&lt;/tag>
+        &lt;tag>light&lt;/tag>
+      &lt;/tags></codeblock>
+      </section>
+      <section id="template_preview_image">
+        <title>Template Preview Image</title>
+        <p>The <b>preview-image</b> element is used to specify an image that will be displayed in
+          the transformation scenario dialog box. It provides a visual representation of the
+          template to help the user select the right template. The image dimensions should be
+            <codeph>200 x 115</codeph> pixels and the supported image formats are:
+            <codeph>JPEG</codeph>, <codeph>PNG</codeph>, or <codeph>GIF</codeph>.</p>
+        <p>You can also include an <b>online-preview-url</b> element to specify the URL of a
+          published sample of your template. This will display an <uicontrol>Online
+            preview</uicontrol> link inside the image in the transformation scenario dialog box and
+          if the user clicks that link, it will open the specified URL in their default
+          browser.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;pdf>
+      ...
+      &lt;preview-image file="ashes/ashes-tree.png"/>
+      &lt;online-preview-url=https://www.example.com/samples/tiles/ashes&lt;/online-preview-url></codeblock></p>
+      </section>
+    </body>
+  </topic>
+  <topic id="template_resources">
+    <title>Template Resources</title>
+    <body>
+      <p>The <b>resources</b> section of the descriptor file specifies a set of resources (CSS
+        files) that are used to customize various components in generated output. These resources
+        will be copied to the output folder during the transformation process. At least one CSS file
+        must be included, while the other types of resources are
+          optional.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;pdf>
+      ...                
+      &lt;resources>            
+          &lt;css file="css/custom_styles.css"/>
+          &lt;css file="css/custom_fonts.css"/>
+      &lt;/resources></codeblock><note>All
+          relative paths specified in the descriptor file are relative to the template root
+          folder.</note></p>
+    </body>
+  </topic>
+  <topic id="xslt_extension_points">
+    <title>XSLT Extension Points</title>
+    <body>
+      <p>The publishing template allows supports one or more XSLT extension points. They can be
+        specified in the descriptor file using the following
+        structure:<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;pdf>
+        ...        
+        &lt;xslt>
+            &lt;extension 
+              id="com.oxygenxml.pdf.css.xsl.merged2html5"
+              file="xslt/merged2html5Extension.xsl"/>
+            &lt;extension
+              id="com.oxygenxml.pdf.css.xsl.merged2merged"
+              file="xslt/merged2mergedExtension.xsl"/>
+        &lt;/xslt></codeblock></p>
+      <p>For more information about the available extension points, see: <xref
+          href="pdf-xslt-extensions.dita"/>.</p>
+    </body>
+  </topic>
+  <topic id="transformation_parameters">
+    <title>Transformation Parameters</title>
+    <body>
+      <p>You can also set one or more transformation parameters in the descriptor
+        file.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...    
+    &lt;pdf>
+      ...
+      &lt;parameters>
+        &lt;parameter name="show.changes.and.comments" value="yes"/>      
+      &lt;/parameters>
+    &lt;/pdf></codeblock></p>
+      <p>The following information can be specified in the <codeph>parameter</codeph> element:</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Parameter name</dt>
+            <dd>
+              <p>The name of the parameter. It may be one of the transformation parameters listed in
+                the <uicontrol>Parameters</uicontrol> tab of the <xref
+                  href="ditamap-pdf-css-html5.dita"><b>DITA Map to PDF - CSS HTML5</b>
+                  transformation scenario</xref> or a <xref
+                  href="http://www.dita-ot.org/2.5/parameters/parameters-pdf.html" format="html"
+                  scope="external">DITA-OT PDF-based output parameter</xref>.</p>
+              <note type="note">It is not recommended to specify an input/output parameter in the
+                descriptor file (such as the input Map, DITAVAL file, or temporary
+                directory).</note>
+              <note type="attention">JVM arguments like <term>-Xmx</term> cannot be specified as a
+                transformation parameter.</note>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Parameter Value</dt>
+            <dd>The value of the parameter. It should be a relative path to the template root folder
+              for file paths parameters.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Parameter Type</dt>
+            <dd>The type of the parameter: <codeph>string</codeph> or <codeph>filepath</codeph>. The
+                <codeph>string</codeph> value is default.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p>After <xref href="whr-create-publishing-template.dita#whr-create-publishing-template"
+          >creating a publishing template</xref> and <xref
+          href="whr-publishing-template-apply-transformation.dita#whr-publishing-template-apply-transformation"
+          >adding it to the templates gallery</xref>, when you select the template in the
+        transformation scenario dialog box, the <uicontrol>Parameters</uicontrol> tab will
+        automatically be updated to include the parameters defined in the descriptor file. These
+        parameters are displayed in italics.</p>
+    </body>
+  </topic>
+  <topic id="combining-pdf-webhelp">
+    <title>Combining PDF and WebHelp Responsive Customizations in a Template Package</title>
+    <body>
+      <p>An <term>Oxygen Publishing Template</term> package can contain both a PDF and WebHelp
+        Responsive customization in the same template package and you can use that same template in
+        both types of transformations. The template descriptor file can define the customization for
+        both types by including both a <codeph>webhelp</codeph> and <codeph>pdf</codeph> element and
+        some of the resources can be
+        reused.<codeblock conkeyref="reusables-transforming-documents/publishing-templates-codeblock" outputclass="language-xml"/></p>
+    </body>
+  </topic>
+</topic>
