@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="how_to_add_a_blank_page_after_a_topic">
+    <title>How to Add a Blank Page After a Topic</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          ><ph keyref="wysywig-or-html5-transformation"/><indexterm>Page breaks<indexterm>Add a blank page
+              after a topic</indexterm></indexterm></indexterm>
+          <indexterm product="pdf-css">Page breaks<indexterm>Add a blank page after a
+            topic</indexterm></indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+        <p>If you want to add a new blank page after a topic, add the following rules to your <xref
+        href="dcpp_the_customization_css.dita">customization CSS</xref>.</p>
+    <p>Style the separating blank page: </p>
+    <codeblock outputclass="language-css">@page topic-separating-page{
+   @top-left {
+     content: "";
+   }
+   @top-right {
+     content: "";
+   }
+   @top-center {
+      content: "This page is blank";
+   }
+}
+</codeblock>
+    <p>Associate this page to the :after pseudo element of the topic:</p>
+    <codeblock outputclass="language-css">
+*[class~="topic/topic"][outputclass~="add-separator-page"]:after {
+ content: " ";
+ display: block;
+ page: topic-separating-page;
+}</codeblock>
+    <p>In the XML content, on the <xmlelement>topic</xmlelement> element set the
+        <xmlatt>outputclass</xmlatt> to the <codeph>add-separator-page</codeph> value. </p>
+    <codeblock outputclass="language-xml">&lt;topic outputclass="add-separator-page"> ... &lt;/topic></codeblock>
+    <p>In this way, the <codeph>:after</codeph> pseudo element will be created next to the topic
+      content and will be placed on the <codeph>topic-separating-page</codeph>.</p>
+    <p> Use the page margin box selectors to override the default content from the
+      headers/footers.</p>
+    <note>You can set the output class on the <xmlelement>topicref</xmlelement> element from the
+      DITA map instead of the <xmlelement>topic</xmlelement> element. In this way you can reuse the
+      topic in another context where the page breaking is not necessary.</note>
+    </body>
+</topic>
