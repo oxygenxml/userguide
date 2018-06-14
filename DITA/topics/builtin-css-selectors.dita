@@ -58,8 +58,8 @@ oxy|processing-instruction[xml-stylesheet]
 
 oxy|comment {
     display:-oxy-morph !important;
-    color: rgb(0, 100, 0) !important;
-    background-color:rgb(255, 255, 210) !important;
+    background-color:#f7f7f7;
+    color: #707070 !important;
     white-space:pre-wrap !important;
     border-width:0px !important;
     margin:0px !important;
@@ -99,7 +99,6 @@ oxy|entity {
 
 oxy|reference {
     display:-oxy-morph !important;
-    /*EXM-28674 No need to present tags for these artificial references.*/
     -oxy-display-tags: none;
 }
 
@@ -112,8 +111,6 @@ oxy|entity[name='lt'],
 oxy|entity[name='gt'],
 oxy|entity[name='quot'],
 oxy|entity[name='apos']{
-    /*EXM-32236, EXM-37026 Do not present tags for 
-simple character entity references.*/
     -oxy-display-tags: none;
 }
 
@@ -200,14 +197,11 @@ oxy|error:after {
     content:"]" !important;
 }
 
-
 *[xlink|href]:before {
     content:url(../images/link.png);
     link: attr(xlink|href) !important;
 }
 
-
-/*No direct display of the MathML and SVG images.*/
 svg|svg{	
 	display:inline !important;
     white-space: -oxy-trim-when-ws-only !important;
@@ -227,7 +221,6 @@ mml|math mml|*{
     white-space: normal !important;
 }
 
-/*Text direction attributes*/
 *[dir='rtl'] { direction:rtl; unicode-bidi:embed; }
 *[dir='rlo'] { direction:rtl; unicode-bidi:bidi-override; }
 
@@ -238,6 +231,34 @@ mml|math mml|*{
     xi|include:before,
     xi|include:after{
         color:#808080 !important;
+    }
+}
+
+oxy|processing-instruction[oxy-placeholder], oxy|processing-instruction[xm-replace_text] {
+    visibility:-oxy-collapse-text;
+    -oxy-display-tags:none;
+}
+
+oxy|processing-instruction[oxy-placeholder]:before, oxy|processing-instruction[xm-replace_text]:before {
+    background-color: rgba(192, 192, 192, 0.2) !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+    font-weight:bold;
+    display:-oxy-morph;
+    content: attr(content) !important;  
+}
+
+@media oxygen-high-contrast-black, oxygen-dark-theme{
+   oxy|processing-instruction[oxy-placeholder]:before, oxy|processing-instruction[xm-replace_text]:before {
+    background-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgb(156, 156, 156) !important;
+    }
+    oxy|comment {
+        color: #a2a2a2 !important;
+        background-color: transparent !important;
+    }
+    oxy|reference,
+    oxy|entity {
+        background-color: rgb(100, 100, 100) !important;
     }
 }
 
