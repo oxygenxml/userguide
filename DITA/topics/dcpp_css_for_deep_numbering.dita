@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dcpp_css_for_deep_numbering">
-    <title>CSS for Deep Numbering</title>
+  <title>CSS for Deep Numbering</title>
   <prolog>
     <metadata>
       <keywords>
         <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
-          ><ph keyref="wysywig-or-html5-transformation"/>
-              <indexterm>Numbering<indexterm>Deep numbering</indexterm></indexterm></indexterm>
+            ><ph keyref="wysywig-or-html5-transformation"/>
+          <indexterm>Numbering<indexterm>Deep numbering</indexterm></indexterm></indexterm>
         <indexterm product="pdf-css">Numbering<indexterm>Deep numbering</indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
-    <body>
-        <p>The CSS file responsible for deep numbering is
+  <body>
+    <p>The CSS file responsible for deep numbering is
         <filepath>[PLUGIN_DIR]/css/print/p-optional-numbering-deep.css</filepath>. The following
       examples are taken from this file.</p>
-        <note>This CSS file is not used by default. To use it, you should copy it and then import it
+    <note>This CSS file is not used by default. To use it, you should copy it and then import it
       from your <xref href="dcpp_the_customization_css.dita">customization css</xref>.</note>
-      <note conkeyref="reusables-dcpp/rc-css-fragment-disclaimer-note"/>
-        <p>For implementing the deep numbering, first the counters for the root element should be
-      reset. In our example, the root is the element that has the class attribute set to
+    <note conkeyref="reusables-dcpp/rc-css-fragment-disclaimer-note"/>
+    <p>For implementing the deep numbering, first the counters for the root element should be reset.
+      In our example, the root is the element that has the class attribute set to
         <codeph>map/map</codeph>. Note that the following selector will also match bookmaps, as they
       are derived from maps:</p>
-        <p>
-            <codeblock outputclass="language-css">*[class ~= "map/map"] {
+    <p>
+      <codeblock outputclass="language-css">*[class ~= "map/map"] {
     counter-reset: page 1
                      toc-chapter 0
                      toc-section1 0
@@ -39,8 +39,8 @@
                      figcount 0
                      tablecount 0;
 }</codeblock>
-        </p>
-        <section id="section_ahn_wkl_5cb">
+    </p>
+    <section id="section_ahn_wkl_5cb">
       <title>Table of Contents</title>
       <p>There are counters for parts (<codeph>toc-part</codeph>), chapters
           (<codeph>toc-chapter</codeph>) and sections (<codeph>toc-section1</codeph>,
@@ -127,13 +127,21 @@
 *[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicref"] > *[class ~= "map/topicref"] > *[class ~= "map/topicref"] > *[class ~= "map/topicmeta"]:before {
     content: counter(toc-chapter) "." counter(toc-section1) "." counter(toc-section2) "." counter(toc-section3);
 }</codeblock>
+      <note type="tip">When using deep numbering rules, to avoid double numbering in the TOC,
+        override the default labeling behavior defined in the
+          <filepath>p-numbering-shallow.css</filepath> file by adding something like the following
+        rule in your <xref href="dcpp_the_customization_css.dita">customization
+        CSS</xref>:<codeblock outputclass="language-css">/* To hide the "Chapter NN." labels */
+*[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"]:before{
+    content:none !important;
+}</codeblock></note>
     </section>
-        <section id="section_st1_jll_5cb">
+    <section id="section_st1_jll_5cb">
       <title>The Titles of Chapters in the Main Content</title>
       <p>The <codeph>part</codeph>, <codeph>chapter</codeph> and
           <codeph>section1</codeph>/<codeph>section2</codeph>/<codeph>section3</codeph> counters are
         incremented on the elements that have the class <codeph>topic/topic</codeph>:
-<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part]{
+        <codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part]{
     counter-increment:part;
     counter-reset:chapter;
 }  
@@ -192,9 +200,9 @@
 }
  </codeblock>
     </section>
-        <section id="section_sdt_dml_5cb">
-            <title>Headers</title>
-            <p>Define the string-sets used in the header and make use of
+    <section id="section_sdt_dml_5cb">
+      <title>Headers</title>
+      <p>Define the string-sets used in the header and make use of
         counters:<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
     string-set: parttitle " | " counter(part, upper-roman) " - " content(), chaptertitle  ""; /* Avoid propagating a past chapter title on a new part */
 }
@@ -204,7 +212,7 @@
 *[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/topic"] > *[class ~= "topic/title"] {
     string-set: sectiontitle " | " counter(chapter) "." counter(section1) " - " content();
 }</codeblock></p>
-            <p>Avoid using counters for <xmlelement>frontamatter</xmlelement>,
+      <p>Avoid using counters for <xmlelement>frontamatter</xmlelement>,
           <xmlelement>backmatter</xmlelement>, and other topics following the last book part (for
         bookmaps).<codeblock outputclass="language-css">*[class ~= "bookmap/frontmatter"] > *[class ~= "topic/title"],
 *[class ~= "bookmap/frontmatter"] *[class ~= "topic/topic"] > *[class ~= "topic/title"],
@@ -214,6 +222,6 @@
 *[class ~= "topic/topic"][is-part] ~ *[class ~= "topic/topic"]:not([is-part]) *[class ~= "topic/topic"] > *[class ~= "topic/title"]{
    string-set: parttitle "", chaptertitle "", sectiontitle "";
 }</codeblock></p>
-        </section>
-    </body>
+    </section>
+  </body>
 </topic>

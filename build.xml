@@ -1,4 +1,6 @@
-<project name="userguide" default="build-all">
+<project name="userguide" default="build-all" 
+	xmlns:if="ant:if"
+	xmlns:unless="ant:unless">
 
 	<!-- Constants -->
 	<property name="c-xmx">-Xmx3000m</property>
@@ -221,6 +223,8 @@
 		==================================	
 		-->
 	<target name="build-single">
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+		
 		<property name="p-type" value=""/>
 		<echo>--------------------------------</echo>
 		<echo>Build single target: ${p-product} / ${p-format} ${p-type}</echo>
@@ -238,13 +242,38 @@
 		
 		<!-- For website, generate "Edit Link" only for editor SA userguide --> 
 		<condition property="editlink.ditamap" value="${editlink.remote.ditamap.url}" else="">
-			<or>
-				<equals arg1="${p-type}" arg2="-private" />
+			<equals arg1="${p-format}" arg2="webhelp-responsive" />
+			<!--<or>
+				<and>
+					<equals arg1="${p-type}" arg2="-private" />
+					<equals arg1="${p-format}" arg2="webhelp-responsive" />
+				</and>
 				<and>
 					<equals arg1="${p-type}" arg2="-public" />
 					<equals arg1="${p-product}" arg2="editor-sa" />
+					<equals arg1="${p-format}" arg2="webhelp-responsive" />
 				</and>
-			</or>
+			</or>-->
+		</condition>
+		
+		<condition property="eclipsehelp" value="eclipsehelp" else="">
+			<equals arg1="${p-format}" arg2="eclipsehelp"/>
+		</condition>
+		
+		<condition property="htmlhelp" value="htmlhelp" else="">
+			<equals arg1="${p-format}" arg2="htmlhelp"/>
+		</condition>
+		
+		<condition property="javahelp" value="javahelp" else="">
+			<equals arg1="${p-format}" arg2="javahelp"/>
+		</condition>
+		
+		<condition property="webhelp" value="webhelp" else="">
+			<equals arg1="${p-format}" arg2="webhelp-responsive"/>
+		</condition>
+		
+		<condition property="pdf" value="pdf-css" else="">
+			<equals arg1="${p-format}" arg2="pdf-css"/>
 		</condition>
 		
 		<!-- Used only if we have a remote DITA Map -->
@@ -287,21 +316,42 @@
 			<arg value="-DbaseJVMArgLine=${c-xmx}" />
 
 			<!-- Relevant only for pdf -->
-			<arg value="-Dpdf.publishing.template=${p-template}" />
-			<arg value="-DoutputFile=${p-output}/${p-product}.pdf" />
+			<arg value="-Dpdf.publishing.template=${p-template}" unless:blank="${pdf}" />
+			<arg value="-DoutputFile=${p-output}/${p-product}.pdf" unless:blank="${pdf}" />
 
 			<!-- Relevant only for webhelp -->
-			<arg value="-Dwebhelp.publishing.template=${p-template}" />
-			<arg value="-Deditlink.remote.ditamap.url=${editlink.ditamap}" />
-			<arg value="-Deditlink.web.author.url=${editlink.web.author.url}" />
+			<arg value="-Dwebhelp.publishing.template=${p-template}" unless:blank="${webhelp}" />
+			<arg value="-Deditlink.remote.ditamap.url=${editlink.ditamap}" unless:blank="${webhelp}" />
+			<arg value="-Deditlink.web.author.url=${editlink.web.author.url}" unless:blank="${webhelp}" />
 
 			<!-- Relevant only for eclipsehelp -->
-			<arg value="-Dargs.eclipsehelp.jar.name=${p-product}-help.jar" />
+			<arg value="-Dargs.eclipsehelp.jar.name=${p-product}-help.jar" unless:blank="${eclipsehelp}" />
 
 			<!-- Relevant only for javahelp -->
-			<arg value="-Dhelpset.name=${helpset.name}" />
+			<arg value="-Dhelpset.name=${helpset.name}" unless:blank="${javahelp}" />
+			
+			<!-- Relevant only for htmlhelp -->
+			<arg value="-DHTMLHelpCompiler=${hhc.exe}" unless:blank="${htmlhelp}" />
 
 		</exec>
+		
+		<if>
+			<equals arg1="${p-format}" arg2="htmlhelp"></equals>
+			<then>
+				<java classname="ro.sync.util.ant.HelpIDFinder" fork="yes" dir="." failonerror="true">
+					  <classpath>
+					  	<pathelement path="lib/oxygen.jar"/>
+					  </classpath>
+			          <arg value="${p-output}"/>
+			          <arg value="helpID.properties"/>
+			      </java>
+
+			      <echo>Create ${p-output}/${product}HelpID.jar file</echo>
+			      <jar basedir="${p-output}" 
+			          includes="helpID.properties" 
+			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
+			</then>
+		</if>
 
 		<!-- Relevant for the javahelp -->
 		<move file="${p-output}/UserManual.jar" tofile="${p-output}/${p-product}-help.jar" failonerror="false" />
