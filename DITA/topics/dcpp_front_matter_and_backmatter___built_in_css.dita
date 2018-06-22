@@ -6,20 +6,21 @@
     <p>The built-in CSS rules are in
         <filepath>[PLUGIN_DIR]/css/p-bookmap-frontmatter-backmatter.css</filepath>. By default, it
       associates the <xmlelement>oxy:front-matter</xmlelement> and
-        <xmlelement>oxy:back-matter</xmlelement> elements with the <i>matter</i> page, that has no
-      headers or other page margin boxes. Each of the child topics start on a new page.</p>
+        <xmlelement>oxy:back-matter</xmlelement> elements (or for the <uicontrol>DITA Map PDF -
+        based on HTML5 &amp; CSS</uicontrol> transformation type, the corresponding HTML div
+      elements with the <i>matter</i> page), that have no headers or other page margin boxes. Each
+      of the child topics start on a new page.</p>
     <p>The content of this file is:</p>
     <codeblock outputclass="language-css">
 @media print {
-
-    front-matter,
-    back-matter {
+    *[class ~= "bookmap/frontmatter"],
+    *[class ~= "bookmap/backmatter"] {
         page: matter-page;
     }
     
     /* Put the sections on a separate page. */
-    front-matter > *[class ~= "topic/topic"], 
-    back-matter > *[class ~= "topic/topic"]{
+    *[class ~= "bookmap/frontmatter"] > *[class ~= "topic/topic"], 
+    *[class ~= "bookmap/backmatter"] > *[class ~= "topic/topic"]{
       page-break-before: always;
     }
 }</codeblock>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-pub-template">
+  <title>How to Use XSLT Extension Points for PDF Output from a Publishing Template</title>
+  <shortdesc>These examples demonstrate how to use XSLT extension points from an <xref
+      href="whr-publishing-template.dita"><term>Oxygen Publishing
+    Template</term></xref>.</shortdesc>
+  <topic id="dd-pdf2">
+    <title>Use Case 1: Styling Codeblocks with a Zebra Effect</title>
+    <body>
+      <p>Suppose you want your <i>codeblocks</i> to have a particular background color for one line,
+        and another color for the next line. One advantage of this coloring technique is that you
+        can clearly see when text from the codeblock is wrapped.</p>
+      <p>This effect can be done by altering the HTML5 output, creating a <codeph>div</codeph> for
+        each line from the code block, then styling them.</p>
+      <p>To add this functionality using an <i>Oxygen Publishing Template</i>, follow these
+        steps:</p>
+      <ol>
+        <li>If you haven't already created a Publishing Template, see <xref
+            href="whr-create-publishing-template.dita"/>.</li>
+        <li>Link the folder associated with the publishing template to your current project in the
+            <uicontrol product="author developer editor webhelp-responsive"
+            >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+            >Navigator</uicontrol> view.</li>
+        <li>Using the <uicontrol product="author developer editor webhelp-responsive"
+            >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+            >Navigator</uicontrol> view, create an <filepath>xslt</filepath> folder inside the
+          project root folder.</li>
+        <li>In this folder, create an XSL file (for example, named
+            <filepath>merged2html5Extension.xsl</filepath>) with the following
+          content:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs"
+    version="2.0">
+   
+    &lt;xsl:template match="*[contains(@class, ' pr-d/codeblock ')]">
+       &lt;div class='zebra'>       
+          &lt;xsl:analyze-string regex="\n" select=".">
+            &lt;xsl:matching-substring/>
+            &lt;xsl:non-matching-substring>
+               &lt;div>&lt;xsl:value-of select="."/>&lt;/div>
+            &lt;/xsl:non-matching-substring>
+          &lt;/xsl:analyze-string>
+       &lt;/div>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+        <li>Open the <xref href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"
+              ><i>template descriptor file</i></xref> associated with your <i>publishing
+            template</i> (the .opt file) and set the XSLT stylesheet created in previous step with
+          the <codeph>com.oxygenxml.pdf.css.xsl.merged2html5</codeph> XSLT extension
+          point:<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;pdf>
+        ...        
+        &lt;xslt>
+            &lt;extension 
+              id="com.oxygenxml.pdf.css.xsl.merged2html5"
+              file="xslt/merged2html5Extension.xsl"/>
+        &lt;/xslt></codeblock></li>
+        <li>Create a <filepath>css</filepath> folder in the publishing template directory. In this
+          directory, save a custom CSS file with rules that style the <i>codeblock</i> structure.
+          For
+          example:<codeblock outputclass="language-css">div.zebra {
+  font-family:courier, fixed, monospace;        
+  white-space:pre-wrap;
+}
+
+div.zebra > *:nth-of-type(odd){        
+  background-color: silver;
+}     </codeblock></li>
+        <li>Open the <xref href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"
+              ><i>template descriptor file</i></xref> associated with your <i>publishing
+            template</i> (the .opt file) and reference your custom CSS file in the
+            <codeph>resources</codeph>
+          element:<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;pdf>
+      ...                
+      &lt;resources>            
+          &lt;css file="css/custom.css"/>
+      &lt;/resources></codeblock></li>
+        <li> Edit the <b>DITA Map PDF - based on  HTML5 &amp; CSS</b> transformation scenario. </li>
+        <li> In the <uicontrol>Templates</uicontrol> tab, click the <uicontrol>Choose Custom
+            Publishing Template</uicontrol> link and select your template. </li>
+        <li> Click <uicontrol>OK</uicontrol> to save the changes to the transformation scenario. </li>
+        <li> Run the transformation scenario. </li>
+      </ol>
+    </body>
+  </topic>
+  <topic id="dd-uu-pdf2">
+    <title>Use Case 2: Removing the Related Links Section</title>
+    <body>
+      <p>Suppose you want the <i>related links</i> sections to be removed from the PDF output.</p>
+      <p>To add this functionality using an <i>Oxygen Publishing Template</i>, follow these steps:<ol>
+          <li>If you haven't already created a Publishing Template, see <xref
+              href="whr-create-publishing-template.dita"/>.</li>
+          <li>Link the folder associated with the publishing template to your current project in the
+              <uicontrol product="author developer editor webhelp-responsive"
+              >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+              >Navigator</uicontrol> view.</li>
+          <li>Using the <uicontrol product="author developer editor webhelp-responsive"
+              >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+              >Navigator</uicontrol> view, create an <filepath>xslt</filepath> folder inside the
+            project root folder.</li>
+          <li>In this folder, create an XSL file (for example, named
+              <filepath>merged2mergedExtension.xsl</filepath>) with the following
+            content:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs"
+    version="2.0">
+	
+   &lt;xsl:template match="*[contains(@class, ' topic/related-links ')]">
+      &lt;!-- Remove. -->
+   &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+          <li>Open the <xref
+              href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+                descriptor file</i></xref> associated with your <i>publishing template</i> (the .opt
+            file) and set the XSLT stylesheet created in previous step with the
+              <codeph>com.oxygenxml.pdf.css.xsl.merged2merged</codeph> XSLT extension
+            point:<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;pdf>
+        ...        
+        &lt;xslt>
+            &lt;extension 
+              id="com.oxygenxml.pdf.css.xsl.merged2merged"
+              file="xslt/merged2mergedExtension.xsl"/>
+        &lt;/xslt></codeblock></li>
+          <li> Edit the <b>DITA Map PDF - based on HTML5 &amp; CSS</b> transformation scenario. </li>
+          <li> In the <uicontrol>Templates</uicontrol> tab, click the <uicontrol>Choose Custom
+              Publishing Template</uicontrol> link and select your template. </li>
+          <li> Click <uicontrol>OK</uicontrol> to save the changes to the transformation scenario. </li>
+          <li> Run the transformation scenario. </li>
+        </ol></p>
+    </body>
+  </topic>
+</topic>

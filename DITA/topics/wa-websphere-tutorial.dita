@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-websphere-tutorial">
+  <title>Deploying Web Author in WebSphere</title>
+  <body>
+    <p>Web Author should be deployed on its own server so that it does not share the same JVM with
+      other web applications.</p>
+    <section id="section_zxp_cwj_b2b">
+      <title>Configuring the JVM</title>
+      <p>
+        <ol>
+          <li>In the <term>WebSphere</term> web console, select <menucascade>
+              <uicontrol>Servers</uicontrol>
+              <uicontrol>Server Types</uicontrol>
+              <uicontrol>WebSphere application servers</uicontrol>
+            </menucascade> and choose the server that will run Web Author.</li>
+          <li>Under <uicontrol>Server Infrastructure</uicontrol>, expand <uicontrol>Java and Process
+              Management</uicontrol> and click <uicontrol>Process definition</uicontrol>.</li>
+          <li>Under the <uicontrol>Additional Properties</uicontrol> section (right), select
+              <uicontrol>Java Virtual Machine</uicontrol>.</li>
+          <li>In the <uicontrol>General Properties</uicontrol> section, enter <b>256</b> for
+              <uicontrol>Initial heap size</uicontrol> and <uicontrol>1536</uicontrol> for
+              <uicontrol>Maximum heap size</uicontrol>.</li>
+          <li>In <uicontrol>Generic JVM arguments</uicontrol>, add the
+              <codeph>-Dcom.ibm.websphere.jaxrs.server.DisableIBMJAXRSEngine=true</codeph> entry.
+            This will disable built-in JAX-RS support ( <xref
+              href="https://www-01.ibm.com/support/knowledgecenter/SSAW57_8.0.0/com.ibm.websphere.nd.doc/info/ae/ae/twbs_jaxrs_disable_runtime.html"
+              format="html" scope="external"/>).</li>
+          <li>Click the <uicontrol>Apply</uicontrol> button an then the <uicontrol>Save</uicontrol>
+            link that appears on the top of the page.</li>
+        </ol>
+      </p>
+    </section>
+    <section id="section_c1s_kyj_b2b">
+      <title>Configuring the Cookie Handling</title>
+      <p>Set an option to allow cookie expiry dates with years stored on 4 digits (by default, they
+        have the millennium problem, i.e. 2084 is represented as '84, which is the same as 1984).
+        The option is named <uicontrol>v0CookieDateRFC1123compat</uicontrol> and more details about
+        the configuration can be found here: <xref
+          href="https://www-01.ibm.com/support/knowledgecenter/SS7K4U_8.5.5/com.ibm.websphere.nd.doc/ae/rrun_chain_httpcustom.html"
+          format="html" scope="external"/></p>
+      <ol id="ol_jkm_nvj_b2b">
+        <li>Select the server as in previous section.</li>
+        <li>Under the <uicontrol>Container Settings</uicontrol> section (right), expand
+            <uicontrol>Web Container Settings</uicontrol> and select <uicontrol>Web container
+            transport chains</uicontrol>.</li>
+        <li>Select the <uicontrol>HttpQueueInboundDefaultSecure</uicontrol> entry and then
+            <uicontrol>HTTP inbound channel (HTTP_4)</uicontrol>.</li>
+        <li>Under the <uicontrol>Additional Properties</uicontrol> section (right), select
+            <uicontrol>Custom properties</uicontrol> and click the <uicontrol>New</uicontrol>
+          button.</li>
+        <li>Add the <uicontrol>v0CookieDateRFC1123compat</uicontrol> property name with the value
+            <codeph>true</codeph>.</li>
+        <li>Click the <uicontrol>Save</uicontrol> link that appears at the top of the page.</li>
+        <li>Restart the server.</li>
+      </ol>
+    </section>
+    <section id="section_hk2_jzj_b2b">
+      <title>Installing Web Author</title>
+      <p>Now the application can be deployed:</p>
+      <ol id="ol_spy_kzj_b2b">
+        <li>In the WebSphere web console, expand the <uicontrol>Applications</uicontrol> section and
+            <uicontrol>Application Types</uicontrol> under it.</li>
+        <li>Select <uicontrol>Websphere enterprise applications</uicontrol> and uninstall any
+          previous Web Author installations.</li>
+        <li>Under the <uicontrol>Applications</uicontrol> section, select <uicontrol>New
+            Application</uicontrol>.</li>
+        <li>Click on <uicontrol>New Enterprise Application</uicontrol>.</li>
+        <li>Choose the <filepath>.war</filepath> file, press <uicontrol>Next</uicontrol>, and wait
+          until the next screen appears.</li>
+        <li>Choose <uicontrol>Fast Path</uicontrol> and click <uicontrol>Next</uicontrol> until the
+          4th step.</li>
+        <li>Set the <uicontrol>Context Root</uicontrol> to
+          <codeph>/oxygenxml-web-author/</codeph>.</li>
+        <li>Click <uicontrol>Next</uicontrol> at every step and then
+          <uicontrol>Finish</uicontrol>.</li>
+        <li>After the processing is done, click the <uicontrol>Save</uicontrol> link that appears at
+          the bottom of the page.</li>
+      </ol>
+    </section>
+    <section id="section_n5b_5zj_b2b">
+      <title>Configuring Web Author</title>
+      <p>Set the application class-loader to be <codeph>parent-last</codeph>:<ol id="ol_xpy_kzj_b2b">
+          <li>Go to <menucascade>
+              <uicontrol>Applications</uicontrol>
+              <uicontrol>Application Types</uicontrol>
+              <uicontrol>WebSphere enterprise applications</uicontrol>
+            </menucascade>.</li>
+          <li>Choose the Web Author application.</li>
+          <li>Under the <uicontrol>Modules</uicontrol> section (right), click <uicontrol>Manage
+              Modules</uicontrol>.</li>
+          <li>Click on the <uicontrol>oxygenxml-web-author</uicontrol> module.</li>
+          <li>Set the <uicontrol>Class loader order</uicontrol> option to classes loaded with the
+            local class-loader first (parent-last).</li>
+          <li>Click <uicontrol>Apply</uicontrol> and then the <uicontrol>Save</uicontrol> link when
+            it appears.</li>
+          <li>Restart the server.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="customizing_ui">
-  <title>Customizing Web Author User Interface</title>
+  <title>Customizing the Web Author User Interface</title>
   <prolog>
     <metadata>
       <keywords>
@@ -11,12 +11,50 @@
   </prolog>
   <body>
     <p>It is possible to customize the <ph keyref="webappProduct"/> user interface (including the
-      side views, toolbars, and theme) through the use of JavaScript APIs.</p>
+      side views, toolbars, contextual menu actions, and theme).</p>
     <section id="section_z4z_zzw_3bb">
-      <title>Customizing the Toolbars</title>
-      <p>To customize the actions that appear on the toolbar, you can use the Web Author JavaScript
-        API to <xref keyref="jscript_api_customaction">add</xref> or <xref
-          keyref="jscript_api_removeaction">remove</xref> buttons.</p>
+      <title>Customizing the Toolbar and Contextual Menu Actions</title>
+      <p>The <ph keyref="webappProduct"/> toolbar and contextual menu structure includes standard
+        actions (such as <uicontrol>Undo</uicontrol>, <uicontrol>Redo</uicontrol>,
+          <uicontrol>Cut</uicontrol>, etc.) as well as actions that are dictated by the framework
+        configuration.</p>
+      <p>There are several methods you can use to customize the actions that appear on the toolbar
+        and contextual menu:<dl>
+          <dlentry>
+            <dt>Document Type Configuration in <b>Oxygen XML Editor/Author</b></dt>
+            <dd>You can use the Document Type configuration dialog box in <b>Oxygen XML
+                Editor/Author</b> (<menucascade>
+                <uicontrol>Options</uicontrol>
+                <uicontrol>Preferences</uicontrol>
+                <uicontrol>Document Type Association</uicontrol>
+                <uicontrol>[select framework]</uicontrol>
+                <uicontrol>Edit</uicontrol>
+              </menucascade>). This approach is entirely GUI-based and controls only the
+              framework-specific configuration. You can add and remove actions, create drop-down
+              sub-menus, or add separators.<note>If the framework contains <b>Author</b> mode
+                operations (Java implementations of the
+                  <codeph>ro.sync.ecss.extensions.api.AuthorOperation</codeph> interface), they can
+                be enabled to be used by <ph keyref="webappProduct"/> using the
+                  <codeph>ro.sync.ecss.extensions.api.WebappCompatible</codeph> annotation.
+                  <b>Author</b> mode operations that use Java Swing components to display a
+                graphical interface are not compatible with the <ph keyref="webappProduct"/> and
+                they should not be annotated.</note></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Web Author JavaScript API</dt>
+            <dd>You can use the Web Author JavaScript API to <xref keyref="jscript_api_customaction"
+                >add custom actions</xref> or <xref keyref="jscript_api_removeaction">remove actions
+                from the toolbar and contextual menu</xref>.<p>The advantages of using this approach include:<ul>
+                  <li>You can remove any action, even standard ones.</li>
+                  <li>You can remove actions from all the places where they appear in the GUI.</li>
+                  <li>You can dynamically remove actions (for example, based on the user role). </li>
+                  <li>You can add actions that have a web-based GUI.</li>
+                </ul></p></dd>
+          </dlentry>
+        </dl></p>
+    </section>
+    <section id="customizing_the_header_bar">
+      <title>Customizing the Header Bar</title>
       <p>If you embed Web Author in a web page, you may want to remove the header bar that displays
         the logo, the name of the file, and the name of the author. You can hide it using the <xref
           keyref="jscript_api_hideAppBar"><codeph>hideAppBar()</codeph> JavaScript API</xref>.</p>

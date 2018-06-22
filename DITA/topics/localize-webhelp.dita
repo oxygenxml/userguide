@@ -17,115 +17,130 @@
         <i>strings-lang1-lang2.xml</i> name format, where <i>lang1</i> and <i>lang2</i> are ISO
       language codes. For example, the US English labels are kept in the <i>strings-en-us.xml</i>
       file. </p>
-    <p>These translation files are collected from two locations:<ul>
-        <li><filepath><term keyref="glossentry_dita_ot_dir"></term>/xsl/common</filepath> folder -
-          DITA-OT's default translations.</li>
-        <li><filepath><term keyref="glossentry_dita_ot_dir"
-            ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization</filepath>
-          folder - These translations are contributed by the WebHelp plugin and extend the default
-          ones provided by DITA-OT. The labels defined in this folder take precedence over the
-          DITA-OT default ones.<note type="important">If you need to customize the translation
-            labels, you should do this by updating the translation files found in the
-                <filepath><term keyref="glossentry_dita_ot_dir"
-              ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization</filepath>
-            folder.</note></li>
+    <p id="translation-files">These translation files are collected from two locations:<ul>
+        <li><b><filepath><term keyref="glossentry_dita_ot_dir"/>/xsl/common</filepath> folder</b> -
+          DITA-OT's default translations (generated text for <codeph>note</codeph>,
+            <codeph>fig</codeph>, and <codeph>table</codeph> elements).</li>
+        <li><b><filepath><term keyref="glossentry_dita_ot_dir"
+              />/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization</filepath>
+            folder</b> - These translations are contributed by the WebHelp plugin and extend the
+          default ones provided by DITA-OT. The labels defined in this folder take precedence over
+          the DITA-OT defaults.</li>
       </ul></p>
-    <section id="using_oxygen_xml_editorauthor">
-      <title>Using Oxygen XML Editor/Author</title>
-      <p>To localize the interface of the DITA Map to WebHelp output using a transformation scenario
-        from within <b>Oxygen XML Editor/Author</b>, follow this procedure:<ol>
-          <li>Look for the <i>strings-[lang1]-[lang2].xml</i> file in <filepath><term
-                keyref="glossentry_dita_ot_dir"
-              ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization</filepath>
-            directory (for example, the Canadian French file would be: <i>strings-fr-ca.xml</i>). If
-            it does not exist, use the following procedure to create one:<ol>
-              <li>Create a new <filepath>strings-fr-ca.xml</filepath> file in the <filepath><term
-                    keyref="glossentry_dita_ot_dir"
-                  ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization</filepath>
-                directory.</li>
-              <li>Copy all the labels found in the <filepath><term keyref="glossentry_dita_ot_dir"
-                  ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization/strings-en-us.xml</filepath>
-                and paste them into the newly created file.</li>
-              <li>Copy all the labels found in the
-                  <filepath>DITA-OT_DIR/xsl/common/strings-en-us.xml</filepath> and paste them into
-                the newly created file.</li>
-            </ol></li>
-          <li>Translate all the labels from the above language file. Labels are stored in XML
-            elements that have the following format: <codeph>&lt;str name="Label
-              name">Caption&lt;/str></codeph>.</li>
-          <li>Run the predefined transformation scenario called <xref
-              href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"
-              product="author developer editor authorEclipse developerEclipse editorEclipse"
-                ><uicontrol>Run DITA-OT Integrator</uicontrol></xref><uicontrol product="webhelp"
-              >Run DITA-OT Integrator</uicontrol> from the <uicontrol><image
-                href="../img/ApplyStyleSheet16.png"/>Apply Transformation Scenario(s)</uicontrol> or
-                <uicontrol><image href="../img/TransformConfig16.png"/>Configure Transformation
-              Scenario(s)</uicontrol> dialog box. If the <i>integrator</i> is not visible, select
-            the <b>Show all scenarios</b> action that is available in the <uicontrol><image
-                href="../img/Settings16.png"/>Settings</uicontrol> drop-down menu.</li>
-          <li>Make sure that the new XML file that you created is listed in the file <filepath>
-              <term keyref="glossentry_dita_ot_dir"
-              ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization/strings.xml</filepath>.
-            For example, the Canadian French file would be listed as: <codeph>&lt;lang
-              xml:lang="fr-ca" filename="strings-fr-ca.xml"/></codeph>.</li>
-          <li>Edit any of the <uicontrol>DITA Map to WebHelp</uicontrol> transformation scenarios
-            (with or without feedback) and set the <codeph>args.default.language</codeph> parameter
-            to the code of the language you want to localize (for example, <i>fr-ca</i> for Canadian
-            French).</li>
-          <li>Run the transformation scenario to produce the WebHelp output.</li>
+    <p>There are two major reasons you may want to use modify the translation files: to modify the
+      existing strings or to translate to a new language.</p>
+    <section id="modifying_the_existing_strings">
+      <title>Modifying the Existing Strings</title>
+      <p>To modify the generated text for WebHelp transformations, you need to create a DITA-OT
+        extension plugin that uses the <term>dita.xsl.messages</term> extension point. The following
+        procedure is for changing English labels, but you can adapt it for any language:<ol>
+          <li>Create a <filepath>com.oxygenxml.webhelp.localization</filepath> plugin directory
+            inside the <filepath><abbreviated-form keyref="glossentry_dita_ot_dir"
+              />/plugins/</filepath> location.</li>
+          <li>Create a <filepath>plugin.xml</filepath> file inside that
+              <filepath>com.oxygenxml.webhelp.localization</filepath> directory with the following
+            content:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.localization">
+    &lt;require plugin="com.oxygenxml.webhelp.classic"/>
+    &lt;require plugin="com.oxygenxml.webhelp.responsive"/>
+  
+    &lt;feature extension="dita.xsl.strings" file="webhelp-extension-strings.xml"/>
+&lt;/plugin></codeblock></li>
+          <li>Create a <filepath>webhelp-extension-strings.xml</filepath> file with the following
+            content:<codeblock outputclass="language-xml">&lt;langlist>
+    &lt;lang xml:lang="en"    filename="strings-en-us.xml"/>
+    &lt;lang xml:lang="en-us"    filename="strings-en-us.xml"/>
+&lt;/langlist></codeblock></li>
+          <li>Copy the strings you want to change from <xref
+              href="#localize-webhelp/translation-files" format="dita">the translation files</xref>
+            to the <filepath>strings-en-us.xml</filepath> file. Make sure you leave the name
+            attribute unchanged because this is the key used to look up the string. A sample content
+            might
+            be:<codeblock outputclass="">&lt;strings xml:lang="en-US">
+  &lt;str name="Figure">Fig&lt;/str>
+  &lt;str name="Draft comment">ADDRESS THIS DRAFT COMMENT&lt;/str>
+&lt;/strings></codeblock></li>
+          <li product="author developer editor authorEclipse developerEclipse editorEclipse">Use the
+              <xref href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"
+                ><uicontrol>Run DITA-OT Integrator</uicontrol> transformation scenario</xref> found
+            in the <uicontrol>DITA Map</uicontrol> section in the <xref
+              href="configure-transformation-dialog.dita#configure-transformation-dialog"
+                ><uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box</xref>.</li>
+          <li product="webhelp"><ph conkeyref="reusables-webhelp-chapter/step_run_integrator"/><ul
+              conkeyref="reusables-webhelp-chapter/script-ul">
+              <li/>
+            </ul></li>
         </ol></p>
     </section>
-    <section id="using_a_script_outside_of_oxygen_xml_editorauthor">
-      <title>Using a Script Outside of Oxygen XML Editor/Author</title>
-      <note conkeyref="reusables-transforming-documents/note-command-line"
-        product="author developer editor authorEclipse developerEclipse editorEclipse"/>
-      <p>To localize the interface of the DITA Map to WebHelp output using a <xref
-          href="using-the-webhelp-plugin.dita#using-the-webhelp-plugin">script outside of <b>Oxygen
-            XML Editor/Author</b></xref>, follow this procedure:<ol>
-          <li>Look for the <i>strings-[lang1]-[lang2].xml</i> file in <filepath><term
-                keyref="glossentry_dita_ot_dir"
-              ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization</filepath>
-            directory (for example, the Canadian French file would be: <i>strings-fr-ca.xml</i>). If
-            it does not exist, use the following procedure to create one:<ol>
-              <li>Create a new <filepath>strings-fr-ca.xml</filepath> file in the <filepath><term
-                    keyref="glossentry_dita_ot_dir"
-                  ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization</filepath>
-                directory.</li>
-              <li>Copy all the labels found in the <filepath><term keyref="glossentry_dita_ot_dir"
-                  ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization/strings-en-us.xml</filepath>
-                and paste them into the newly created file.</li>
-              <li>Copy all the labels found in the
-                  <filepath>DITA-OT_DIR/xsl/common/strings-en-us.xml</filepath> and paste them into
-                the newly created file.</li>
-            </ol></li>
-          <li>Translate all the labels from the above language file. Labels are stored in XML
-            elements that have the following format: <codeph>&lt;str name="Label
-              name">Caption&lt;/str></codeph>.</li>
-          <li>In the home directory of the DITA Open Toolkit, run the <codeph>startcmd.bat</codeph>
-            script on Windows or <codeph>startcmd.sh</codeph> script on Linux/Mac OS X. In the
-            displayed command line interface console, run <codeph>ant -f
-            integrator.xml</codeph>.</li>
-          <li>Make sure that the new XML file that you created is listed in the file <filepath>
-              <term keyref="glossentry_dita_ot_dir"
-              ></term>/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization/strings.xml</filepath>.
-            For example, the Canadian French file would be listed as: <codeph>&lt;lang
-              xml:lang="fr-ca" filename="strings-fr-ca.xml"/></codeph>.</li>
-          <li>Use the <codeph>args.default.language</codeph> parameter in your transformation script
-            and set its value to the appropriate language code (for example, <i>fr-ca</i> for
-            Canadian French).</li>
-          <li>Execute the transformation script.</li>
+    <section id="adding_a_new_language">
+      <title>Adding a New Language</title>
+      <p>To add a new language for WebHelp transformations, you need to create a DITA-OT extension
+        plugin that uses the <term>dita.xsl.messages</term> extension point. The following sample
+        procedure is for adding translation files for the Polish language, but you can adapt it for
+        any language:<ol>
+          <li>Create a <filepath>com.oxygenxml.webhelp.localization</filepath> plugin directory
+            inside the <filepath><abbreviated-form keyref="glossentry_dita_ot_dir"
+              />/plugins/</filepath> location.</li>
+          <li>Create a <filepath>plugin.xml</filepath> file inside that
+              <filepath>com.oxygenxml.webhelp.localization</filepath> directory with the following
+            content:<codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.localization">
+    &lt;require plugin="com.oxygenxml.webhelp.classic"/>
+    &lt;require plugin="com.oxygenxml.webhelp.responsive"/>
+  
+    &lt;feature extension="dita.xsl.strings" file="webhelp-extension-strings.xml"/>
+&lt;/plugin></codeblock></li>
+          <li>Create a <filepath>webhelp-extension-strings.xml</filepath> file with the following
+            content:<codeblock outputclass="language-xml">&lt;langlist>
+    &lt;lang xml:lang="pl"    filename="strings-pl-pl.xml"/>
+    &lt;lang xml:lang="pl-PL"    filename="strings-pl-pl.xml"/>
+&lt;/langlist></codeblock></li>
+          <li>Copy the WebHelp strings file (<filepath><term keyref="glossentry_dita_ot_dir"
+              />/plugins/com.oxygenxml.webhelp.classic/oxygen-webhelp/resources/localization/strings-en-us.xml</filepath>)
+            to your plugin directory, and rename it as <filepath>strings-pl-pl.xml</filepath>.</li>
+          <li>In the <filepath>strings-pl-pl.xml</filepath> file, change the <term>@xml:lang</term>
+            attribute on the root element that conforms with the new
+            language.<codeblock outputclass="">&lt;strings xml:lang="pl-PL">
+  ...
+&lt;/strings></codeblock></li>
+          <li>Translate the content of each <xmlelement>str</xmlelement> element (make sure to leave
+            the <term>name</term> attribute
+              unchanged).<p><b>Result:</b><codeblock outputclass="language-xml">&lt;strings xml:lang="pl-PL">
+...
+ &lt;str name="webhelp.content" js="true" php="false">Polish translation for "Content".&lt;/str>
+ &lt;str name="webhelp.search" js="true" php="false">Polish translation for "Search"&lt;/str>
+...
+&lt;/strings></codeblock></p></li>
+          <li>Copy the common DITA-OT strings defined in the <filepath><term
+                keyref="glossentry_dita_ot_dir"/>/xsl/common/strings-en-us.xml</filepath> file. It
+            defines a set generated text available for HTML based transformations (such as
+              <codeph>note</codeph>, <codeph>fig</codeph>, and <codeph>table</codeph> elements).
+            Translate the content of each <xmlelement>str</xmlelement>
+              element.<p><b>Result:</b><codeblock outputclass="language-xml">&lt;strings xml:lang="pl-PL">
+...
+ &lt;str name="webhelp.content" js="true" php="false">Polish translation for "Content".&lt;/str>
+ &lt;str name="webhelp.search" js="true" php="false">Polish translation for "Search"&lt;/str>
+...
+ &lt;str name="Figure">Polish translation for "Figure"&lt;/str>
+ &lt;str name="Table">Polish translation for "Table"&lt;/str>
+...
+&lt;/strings></codeblock></p></li>
+          <li product="author developer editor authorEclipse developerEclipse editorEclipse">Use the
+              <xref href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"
+                ><uicontrol>Run DITA-OT Integrator</uicontrol> transformation scenario</xref> found
+            in the <uicontrol>DITA Map</uicontrol> section in the <xref
+              href="configure-transformation-dialog.dita#configure-transformation-dialog"
+                ><uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box</xref>.</li>
+          <li product="webhelp"><ph conkeyref="reusables-webhelp-chapter/step_run_integrator"/><ul
+              conkeyref="reusables-webhelp-chapter/script-ul">
+              <li/>
+            </ul></li>
         </ol></p>
-      <p>For example:<ul>
-          <li><b>Windows:</b><p><codeph>dita.bat -i c:\mySample.ditamap -f webhelp-responsive
-                -Dargs.default.language=fr-ca</codeph></p></li>
-          <li><b>Mac OS X/ Linux:</b><p><codeph>dita -i C:/mySample.ditamap -f webhelp-responsive
-                -Dargs.default.language=fr-ca</codeph></p></li>
-        </ul></p>
     </section>
   </body>
   <related-links>
-    <linklist><title>Related Information:</title>
+    <linklist>
+      <title>Related Information:</title>
       <link
-        href="index-japanese-content-webhelp-classic.dita#index-japanese-content-webhelp-classic"/></linklist>
+        href="index-japanese-content-webhelp-classic.dita#index-japanese-content-webhelp-classic"/>
+    </linklist>
   </related-links>
 </topic>

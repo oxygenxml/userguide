@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webauthor-integrate-embedded-launch">
-    <title>Embedding an Edit Link that will Launch Web Author</title>
+  <title>Embedding an Edit Link that will Launch Web Author</title>
   <prolog>
     <metadata>
       <keywords>
@@ -9,7 +9,7 @@
       </keywords>
     </metadata>
   </prolog>
-    <body>
+  <body>
     <p>You can control or streamline your documentation review workflow by configuring <i>Edit</i>
       links that are either sent to reviewers or embedded somewhere and these <i>Edit</i> links will
       automatically launch a particular document in <ph keyref="webappProduct"/>. The <i>Edit</i>
@@ -68,10 +68,49 @@
               <li><codeph>editlink.remote.ditamap.url</codeph> - The custom <xref
                   href="oxy-url.dita#oxy-url"><term>OXY-URL</term></xref> of the DITA Map suitable
                 for opening in <ph keyref="webappProduct"/>.</li>
-              <li><codeph>editlink.web.author.url</codeph> - The URL of the Web Author
-                installation.</li>
+              <li><codeph>editlink.web.author.url</codeph> - The URL of the Web Author installation,
+                for example: <codeph>https://www.oxygenxml.com/oxygen-xml-web-author/</codeph>.</li>
             </ul></li>
           <li>Run the transformation scenario.</li>
+        </ol></p>
+      <p><b>Result:</b> In the PDF output, all topics will have an <uicontrol>Edit</uicontrol> link
+        to the right side of the title and clicking the link will launch that particular document in
+          <ph keyref="webappProduct"/>.</p>
+    </section>
+    <section id="how_to_embed_the_edit_link_in_published_pdf5_outp">
+      <title>How to Embed the Edit Link in Published PDF5 Output</title>
+      <p>To embed an <i>Edit</i> link in DITA PDF5 output (obtained using the <xref
+          href="https://github.com/AntennaHouse/pdf5-ml" format="html" scope="external">PDF5-ML
+          plugin</xref>), follow this procedure:<ol id="ol_jgl_lbq_f2b">
+          <li>Add the following import <codeph>&lt;xsl:include
+              href="../../com.oxygenxml.editlink/pdf5.xsl"/></codeph> in the
+              <filepath>com.antennahouse.pdf5.ml/customization/dita2fo_custom.xsl</filepath> file of
+            the PDF5 plugin.</li>
+          <li>Pass the following system properties to the DITA-OT transformation:<ul
+              id="ul_kgl_lbq_f2b">
+              <li><codeph>editlink.remote.ditamap.url</codeph> - The custom <xref
+                  href="oxy-url.dita#oxy-url"><term>OXY-URL</term></xref> of the DITA Map suitable
+                for opening in <ph keyref="webappProduct"/>.</li>
+              <li><codeph>editlink.web.author.url</codeph> - The URL of the Web Author installation
+                (for example:
+                <codeph>https://www.oxygenxml.com/oxygen-xml-web-author/</codeph>).</li>
+            </ul><p>To set a system property, follow one of the procedures below. </p><p>If you are
+              running the transformation from <b>Oxygen</b>:</p><p>
+              <ol id="ol_a41_dcq_f2b">
+                <li>Edit your PDF5 transformation scenario and open the <uicontrol>Advanced
+                    Tab</uicontrol>.</li>
+                <li>Add the following parameters to the <uicontrol>JVM Arguments</uicontrol> in the
+                  following format: <codeph>-Deditlink.remote.ditamap.url=[DITAMAP-OXY-URL]
+                    -Deditlink.web.author.url=[WEB-AUTHOR-URL]</codeph>. </li>
+              </ol>
+            </p><p>If you are running the transformation from a command line:</p><p>
+              <ol id="ol_c2s_scq_f2b">
+                <li>Append the parameters to the <codeph>ANT_OPTS</codeph> environment variable in
+                  the following format: <codeph>-Deditlink.remote.ditamap.url=[DITAMAP-OXY-URL]
+                    -Deditlink.web.author.url=[WEB-AUTHOR-URL]</codeph>.</li>
+              </ol>
+            </p></li>
+          <li>Run the transformation.</li>
         </ol></p>
       <p><b>Result:</b> In the PDF output, all topics will have an <uicontrol>Edit</uicontrol> link
         to the right side of the title and clicking the link will launch that particular document in

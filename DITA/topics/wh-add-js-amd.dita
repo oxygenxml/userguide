@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wh-add-js-amd">
+  <title>How to Insert JavaScript AMD Modules in WebHelp Responsive Output</title>
+  <body>
+    <p>In the WebHelp Responsive output, you may want to include a JavaScript module that uses the
+      Asynchronous Module Definition (AMD) format. Unlike the traditional JavaScript resources that
+      are loaded using <codeph>&lt;script></codeph> tags, these modules are loaded using the
+        <term>RequireJS</term> library. For the traditional JavaScript libraries, the standard
+      procedure to contribute your script to the output would be to use an HTML fragment file as
+      described <xref href="wh-add-custom-html.dita">here</xref>.</p>
+    <p>Although following the <xref href="wh-add-custom-html.dita">procedure that uses HTML
+        fragments</xref> would result in having your JS file included in the output, loading the JS
+      code in the browser will result in an error. Since your JS module uses the <xref
+        href="https://github.com/amdjs/amdjs-api/blob/master/AMD.md" format="html" scope="external"
+        >AMD API</xref>, it cannot be loaded using a <codeph>&lt;script></codeph> element. For
+      example, because many jQuery plugins use the AMD format, it will be difficult for you to use
+      those libraries in your custom WebHelp output.</p>
+    <p>Normally, a JavaScript AMD module can be loaded in one of the following ways:</p>
+    <ul>
+      <li>
+        <b>As a top-level script</b>, using the <codeph>data-main</codeph> attribute of the
+          <codeph>&lt;script></codeph> element used to load the <term>RequireJS</term> library.
+          <codeblock outputclass="language-xml">&lt;script data-main="js/template-main.js" src="js/require.js">&lt;/script></codeblock><p>However,
+          since WebHelp already loads its internal JS modules using <term>RequireJS</term>, a top
+          level script is already specified and you cannot specify another top level script in the
+          same page. Therefore, this approach can not be used to load your custom JS module in
+            <b>Oxygen XML WebHelp</b>, leaving you with only the following option.</p></li>
+      <li>
+        <b>As a dependency module</b>, using a <codeph>require()</codeph> call from the top level
+        (main) script or from one of its dependency modules. This means that you would have to alter
+        one of the WebHelp core JS libraries and inject a <codeph>require()</codeph> call to load
+        your custom module: <codeblock outputclass="language-javascript">require(['js/template-main.js']);</codeblock><p>
+          <note>Altering the WebHelp core libraries is not recommended because when you will upgrade
+            the WebHelp plugin to a newer version, those modifications will be lost.</note>
+        </p></li>
+    </ul>
+    <section id="contribute_javascript_amd_modules_using_a_publish">
+      <title>Contributing JavaScript AMD Modules Using a Publishing Template</title>
+      <p><b>Oxygen XML WebHelp</b> provides the ability to contribute a custom JavaScript
+        Asynchronous Module Definition (AMD) resource in the output by referencing it in the <xref
+          href="whr_publishing_template_contents.dita#template_descritpor_file">Publishing Template
+          descriptor file</xref>. This module is automatically copied to the output directory and it
+        is automatically loaded in the output HTML pages using a <codeph>require()</codeph> call.
+        Thus, you can include your scripts in the output without altering WebHelp's core JavaScript
+        libraries.</p>
+      <p>This module may contain all of your custom functionality or can be used to load other AMD
+        JavaScript modules. The additional sub-modules can be stored either locally in your custom
+        Publishing Template or on a remote web server.<note type="important">To enable loading of a
+          JS module you should set the <codeph>webhelp.enable.template.js.module.loading</codeph>
+          parameter to <codeph>yes</codeph> (the default value is <codeph>no</codeph>) in the
+          Publishing Template descriptor file or in the transformation scenario.</note></p>
+    </section>
+    <section id="the_javascript_modules">
+      <title>The JavaScript Modules</title>
+      <p><xref
+          href="https://github.com/oxygenxml/oxygen-publishing-template-samples/wiki/JavaScript-AMD-Modules"
+          format="html" scope="external">The <b>JS Modules</b> sample template</xref> contains a
+        main JavaScript module (<filepath>template-main.js</filepath>) that loads other modules
+        stored in the template package or in a remote location on the
+        Internet.<codeblock outputclass="language-javascript">define(['require'], function (require) {
+    require(['./red', './italic', './tables']);
+});</codeblock></p>
+      <p>Besides the main JavaScript example, the template contains 3 other sub-modules:<ul>
+          <li><b><filepath>red.js</filepath></b> - Changes the font color of the publication
+            title.<codeblock outputclass="language-javascript">define(["jquery"], function ($) {
+    $(document).ready(function () {
+        // Make the title red
+        $('.wh_publication_title a').attr('style', 'color:red');
+    });
+});</codeblock></li>
+          <li><b><filepath>italic.js</filepath></b> - Changes the font style of your publication
+            title.<codeblock outputclass="language-javascript">define(["jquery"], function ($) {
+    $(document).ready(function () {
+        // Make the title italic
+        $('.wh_publication_title a').wrapInner('&lt;i>&lt;/i>');
+    });
+});</codeblock></li>
+          <li><b><filepath>tables.js</filepath></b> - Loads the <xref href="https://datatables.net/"
+              format="html" scope="external">DataTables</xref> jQuery plugin from a
+            CDN.<codeblock outputclass="language-javascript">define(["jquery", 
+    "https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"], function ($) {
+
+    $(document).ready(function () {
+        $('.table').DataTable();
+    });
+});</codeblock></li>
+        </ul></p>
+      <p>The JavaScript modules are stored in the Publishing Template package as
+        follows:<codeblock outputclass="language-ini">[template-dir]
+    [js]
+        template-main.js
+        italic.js
+        red.js
+        tables.js</codeblock></p>
+      <p>
+        <note>
+          <ul>
+            <li>The main module should be referenced in the <xref
+                href="whr_publishing_template_contents.dita#template_descritpor_file">Publishing
+                Template descriptor file</xref> by specifying its path relative to the base
+              directory of the template.
+              <codeblock outputclass="language-xml">&lt;js-amd-module file="js/template-main.js"/></codeblock></li>
+            <li>The main JS module is copied automatically to the output directory, but the
+              sub-modules are not. To instruct the Publishing Template engine to copy those modules
+              to the output directory you should include a <codeph>&lt;fileset></codeph> section in
+              the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
+                >Publishing Template descriptor
+              file</xref>.<codeblock outputclass="language-xml">&lt;fileset>
+    &lt;include name="js/*.js"/>
+&lt;/fileset></codeblock></li>
+            <li>The main module can reference other modules bundled in the publishing template
+              package as follows: <ul>
+                <li><b>Relative to template directory</b> - Prefix their paths with the ID of the
+                  template directory: <b><codeph>template-base-dir</codeph></b> (for example:
+                    <filepath>template-base-dir/js/italic</filepath>).</li>
+                <li><b>Relative to the name of the current JS module</b> - Use
+                      <b><codeph>./</codeph></b> to prefix the paths of the referenced modules.</li>
+                <li>The <b><codeph>.js</codeph></b> extension <b>should be omitted</b> for local
+                  modules, because the <term>RequireJS</term> library will add it
+                  automatically.</li>
+              </ul></li>
+          </ul>
+        </note>
+      </p>
+    </section>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="wh-add-custom-html.dita"/>
+    </linklist>
+  </related-links>
+</topic>

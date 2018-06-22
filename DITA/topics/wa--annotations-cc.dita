@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa--annotations-cc">
+  <title>Customizing Annotations in the Content Completion Assistant</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Customizing annotations for the Content Completion Assistant</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>If you have a <xref href="customizing_frameworks.dita"><term>framework</term>
+        configuration</xref> set up for your XML vocabulary, there is a special XML configuration
+      file that can be added to provide additional documentation information or links to additional
+      information for certain elements and attributes.</p>
+    <p>To provide this additional information in the <term>Content Completion Assistant</term>,
+      follow these steps:<ol>
+        <li> Create a new folder in the configuration directory for your <term>framework</term>. <itemgroup>
+            <p><b><u>Example:</u></b>
+              <filepath>path/to/.../custom_framework/styleguide</filepath></p>
+          </itemgroup></li>
+        <li> In <b>Oxygen XML Editor/Author</b>, use the <uicontrol>New</uicontrol> document wizard
+          to create a file using the <uicontrol>Content Completion Styleguide</uicontrol> document
+          template (in the <menucascade>
+            <uicontrol>Framework Templates</uicontrol>
+            <uicontrol>Oxygen Extensions</uicontrol>
+          </menucascade> section). </li>
+        <li> Save the file in the folder created in step 1, using the fixed name:
+            <filepath>contentCompletionElementsMap.xml</filepath>. </li>
+        <li> Go to <menucascade>
+            <uicontrol>Options</uicontrol>
+            <uicontrol>Preferences</uicontrol>
+            <uicontrol>Document Type Association</uicontrol>
+          </menucascade> and edit the document type configuration for your <term>framework</term>.
+          Now you need to indicate where your mapping file is located by doing one of the following:
+            <ul id="choices_ub3_mqw_sr">
+            <li>In the <uicontrol>Classpath</uicontrol> tab add a link to the newly created
+              folder.</li>
+            <li>In the <uicontrol>Catalogs</uicontrol> tab, add a new catalog file. The selected
+              file needs to contain the
+                following:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" 
+    "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd">
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    &lt;uri name="http://www.oxygenxml.com/{processed_dt_name}/styleguide/
+contentCompletionElementsMap.xml" uri="contentCompletionElementsMap.xml"/>
+&lt;/catalog></codeblock><p>where
+                  <i>{processed_dt_name}</i> is the name of the document type in lower case and with
+                spaces replaced by underscores.</p><note>If a mapping file if found in both
+                locations, the one in the <uicontrol>Catalogs</uicontrol> tab takes precedence.
+              </note></li>
+          </ul></li>
+        <li> Make the appropriate changes to your custom mapping file. <itemgroup>
+            <p><b><u>Example:</u></b> You can look at how the DITA mapping file is configured:
+                <filepath>OXYGEN_DATA_DIR/frameworks/dita/styleguide/contentCompletionElementsMap.xml</filepath></p>
+            <p>The associated XML Schema contains additional details about how each element and
+              attribute is used in the mapping file.</p>
+          </itemgroup></li>
+        <li> Create an archive that only contains your custom framework folder and <xref
+            href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+            the changes to your <term>framework</term> to Web Author</xref>.</li>
+      </ol></p>
+    <p><b>Result:</b> If you open a document for your <term>framework</term>, the <xref
+        keyref="glossentry_content-completion-assistant"><term>Content Completion
+        Assistant</term></xref> should now display the additional annotations for each element.</p>
+  </body>
+</topic>
