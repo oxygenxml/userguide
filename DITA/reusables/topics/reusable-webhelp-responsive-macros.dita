@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="reusable-webhelp-responsive-macros">
+  <title>WebHelp Responsive Macros</title>
+  <body>
+    <p>You can use the <codeph>whc:macro</codeph> layout component to specify a macro value (a
+      variable that will be expanded when the output files are generated).</p>
+    <p>A macro has the following
+      syntax:<codeblock outputclass="language-ini">${macro-name}</codeblock>or<codeblock outputclass="language-ini">${macro-name(macro-parameter)}</codeblock></p>
+    <p>A macro name can accept any alphanumeric characters, as well as the following characters:
+        <codeph>-</codeph> (minus), <codeph>_</codeph> (underscore), <codeph>.</codeph> (dot),
+        <codeph>:</codeph> (colon). The value of a parameter may contain any character except the
+        <codeph>}</codeph> (close curly bracket) character.</p>
+    <section id="implementations">
+      <title><b>Implementations</b></title>
+      <p id="list_macro_implementations">The following <i>macros</i> are supported: <dl>
+          <dlentry id="macro_i18n">
+            <dt><codeph>i18n</codeph></dt>
+            <dd>For localizing a string.<p>
+                <codeblock outputclass="language-ini">${i18n(string.id)}</codeblock>
+              </p></dd>
+          </dlentry>
+          <dlentry id="macro_param">
+            <dt><codeph>param</codeph></dt>
+            <dd>Returns the value of a transformation parameter.<p>
+                <codeblock outputclass="language-ini">${param(webhelp.show.main.page.tiles)}</codeblock>
+              </p></dd>
+          </dlentry>
+          <dlentry id="macro_env">
+            <dt><codeph>env</codeph></dt>
+            <dd>Returns the value of an environment variable.<p>
+                <codeblock outputclass="language-ini">${env(JAVA_HOME)}</codeblock>
+              </p></dd>
+          </dlentry>
+          <dlentry id="macro_system-property">
+            <dt><codeph>system-property</codeph></dt>
+            <dd>Returns the value of a system property.<p>
+                <codeblock outputclass="language-ini">${system-property(os.name)}</codeblock>
+              </p></dd>
+          </dlentry>
+          <dlentry id="macro_timestamp">
+            <dt><codeph>timestamp</codeph></dt>
+            <dd>Can be used to format the current date and time. Accepts a string (as a parameter)
+              that determines how the date and time will be formatted (format string or
+                <term>picture string</term> as it is known in the XSLT specification). The format
+              string must comply with the <xref
+                href="https://www.w3.org/TR/xslt20/#date-picture-string" format="html"
+                scope="external">rules of the XSLT <codeph>format-dateTime</codeph> function
+                specification</xref>.<p>
+                <codeblock outputclass="language-ini">${timestamp([h1]:[m01] [P] [M01]/[D01]/[Y0001])}</codeblock>
+              </p></dd>
+          </dlentry>
+          <dlentry id="macro_path">
+            <dt><codeph>path</codeph></dt>
+            <dd>
+              <p>Returns the path associated with the specified path ID. The following paths IDs are
+                supported: <ul>
+                  <li><codeph>oxygen-webhelp-output-dir</codeph> - The path to the output directory.
+                    The path is relative to the current HTML file.</li>
+                  <li><codeph>oxygen-webhelp-assets-dir</codeph> - The path to the
+                      <filepath>oxygen-webhelp</filepath> subdirectory from the output directory.
+                    The path is relative to the current HTML file.</li>
+                  <li><codeph>oxygen-webhelp-template-dir</codeph> - The path to the template
+                    directory. The path is relative to the current HTML
+                    file.<codeblock outputclass="language-ini">${path(oxygen-webhelp-template-dir)} </codeblock></li>
+                </ul></p>
+              <p>
+                <note>New paths IDs can be added by overriding the
+                    <codeph>wh-macro-custom-path</codeph> template from
+                    <filepath>com.oxygenxml.webhelp.responsive\xsl\template\macroExpander.xsl</filepath>:
+                  <codeblock outputclass="language-xml">&lt;!-- Extension template for expanding a custom path macro. -->
+&lt;xsl:template name="wh-macro-custom-path">
+    &lt;xsl:param name="pathId"/>
+    &lt;xsl:value-of select="$pathId"/>
+&lt;/xsl:template>     </codeblock></note>
+              </p>
+            </dd>
+          </dlentry>
+          <dlentry id="macro_map-xpath">
+            <dt><codeph>map-xpath</codeph></dt>
+            <dd>Can be used to execute an XPath expression over the DITA map file from the temporary
+              directory. <note type="tip">Available in all template layout HTML pages. </note><p>
+                <codeblock outputclass="language-ini">${map-xpath(/map/title)}</codeblock>
+              </p></dd>
+          </dlentry>
+          <dlentry id="macro_topic-xpath">
+            <dt><codeph>map-xpath</codeph></dt>
+            <dd>Can be used to execute an XPath expression over the current topic. <note type="tip">
+                Available only in the topic HTML page template (<filepath>wt_topic.html</filepath>). </note><p>
+                <codeblock outputclass="language-ini">${topic-xpath(string-join(//shortdesc//text(), ' '))}</codeblock>
+              </p></dd>
+          </dlentry>
+          <dlentry id="macro_oxygen-webhelp-build-number">
+            <dt><codeph>oxygen-webhelp-build-number</codeph></dt>
+            <dd>Returns the current WebHelp distribution ID (build number).<p>
+                <codeblock outputclass="language-ini">${oxygen-webhelp-build-number}</codeblock>
+              </p></dd>
+          </dlentry>
+        </dl></p>
+    </section>
+    <section id="extensibility">
+      <title>Extensibility</title>
+      <p>To add new <term>macros</term>, you can add an XSLT extension to overwrite the
+          <codeph>wh-macro-extension</codeph> template from the
+          <filepath>com.oxygenxml.webhelp.responsive\xsl\template\macroExpander.xsl</filepath>
+        file.<codeblock outputclass="language-xml">&lt;!-- Extension template for expanding custom macro constructs -->
+&lt;xsl:template name="wh-macro-extension">
+    &lt;xsl:param name="name"/>
+    &lt;xsl:param name="params"/>
+    &lt;xsl:param name="contextNode"/>
+    &lt;xsl:param name="matchedString"/>
+    
+    &lt;xsl:choose>
+        &lt;xsl:when test="$contextNode instance of attribute()">
+            &lt;xsl:value-of select="$matchedString"/>
+        &lt;/xsl:when>
+        &lt;xsl:otherwise>
+            &lt;xsl:message>Cannot expand macro: 
+                [&lt;xsl:value-of select="$matchedString"/>]&lt;/xsl:message>
+            &lt;xsl:copy-of select="$contextNode"/>
+        &lt;/xsl:otherwise>
+    &lt;/xsl:choose>
+&lt;/xsl:template></codeblock></p>
+      <p>The <codeph>wh-macro-extension</codeph> template has the following parameters:<ul>
+          <li><codeph>name</codeph> - The name of the current <term>macro</term>.</li>
+          <li><codeph>params</codeph> - List of parameters of the current <term>macro</term> as
+              <codeph>string</codeph> sequence. The current <term>macros</term> parsing mechanism
+            only allows <term>macros</term> with a maximum of one parameter. Consequently, this list
+            will contain at most one element.</li>
+          <li><codeph>contextNode</codeph> - The current element or attribute where the
+              <term>macro</term> was declared.</li>
+          <li><codeph>matchedString</codeph> - The entire value of the matched <term>macro</term> as
+            specified in the HTML template page.</li>
+        </ul></p>
+    </section>
+  </body>
+</topic>

@@ -164,7 +164,10 @@
   <sch:pattern>
     <!-- Report ol after ol -->
     <sch:rule context="*[contains(@class, ' topic/ol ')]">
-      <sch:report test="following-sibling::node()[1][contains(@class, ' topic/ol ')]" role="warn" sqf:fix="mergeLists"> Two
+      <sch:report test="following-sibling::node()[1]
+        [contains(@class, ' topic/ol ') or 
+        (self::text() and normalize-space(.)='') and 
+        following-sibling::node()[1][self::*][contains(@class, ' topic/ol ')]]" role="warn" sqf:fix="mergeLists"> Two
         consecutive ordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
@@ -217,14 +220,14 @@
     </sqf:fix>
   </sqf:fixes>
   
-  <!--<sch:pattern>
-    <!-\- Report cases when the lines in a codeblock exceeds 90 characters -\->
-    <sch:rule context="*[contains(@class, ' pr-d/codeblock ')]" role="warn">
+  <sch:pattern>
+    <!-- Report cases when the lines in a codeblock exceeds 90 characters -->
+    <sch:rule context="*[contains(@class, ' pr-d/codeblock ') and not(@outputclass='language-css')]" role="warn">
       <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 90)"/>
       <sch:report test="string-length($offendingLines) > 0">
         Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 90 characters. </sch:report>
     </sch:rule>
-  </sch:pattern>-->
+  </sch:pattern>
   
     
   

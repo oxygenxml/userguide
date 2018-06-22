@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="localize-webhelp-responsive-new-lang">
+  <title>Adding a New Language</title>
+  <body>
+    <p>To add a new language for WebHelp transformations, you need to create a DITA-OT extension
+      plugin that uses the <term>dita.xsl.messages</term> extension point. The following sample
+      procedure is for adding translation files for the Polish language, but you can adapt it for
+      any language:</p>
+    <ol id="steps_pyv_pvy_ndb">
+      <li>Create a <filepath>com.oxygenxml.webhelp.localization</filepath> plugin directory inside
+        the <filepath><abbreviated-form keyref="glossentry_dita_ot_dir"/>/plugins/</filepath>
+        location. </li>
+      <li>Create a <filepath>plugin.xml</filepath> file inside that
+          <filepath>com.oxygenxml.webhelp.localization</filepath> directory with the following
+        content: <itemgroup>
+          <codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.webhelp.localization">
+    &lt;require plugin="com.oxygenxml.webhelp.classic"/>
+    &lt;require plugin="com.oxygenxml.webhelp.responsive"/>
+  
+    &lt;feature extension="dita.xsl.strings" file="webhelp-extension-strings.xml"/>
+&lt;/plugin></codeblock>
+        </itemgroup></li>
+      <li>Create a <filepath>webhelp-extension-strings.xml</filepath> file with the following
+        content: <itemgroup>
+          <codeblock outputclass="language-xml">&lt;langlist>
+    &lt;lang xml:lang="pl"    filename="strings-pl-pl.xml"/>
+    &lt;lang xml:lang="pl-PL"    filename="strings-pl-pl.xml"/>
+&lt;/langlist></codeblock>
+        </itemgroup></li>
+      <li>Copy the WebHelp strings file (<filepath><term keyref="glossentry_dita_ot_dir"
+          />/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/resources/localization/strings-en-us.xml</filepath>)
+        to your plugin directory, and rename it as <filepath>strings-pl-pl.xml</filepath>. </li>
+      <li>In the <filepath>strings-pl-pl.xml</filepath> file, change the <term>@xml:lang</term>
+        attribute on the root element that conforms with the new language. <itemgroup>
+          <codeblock outputclass="">&lt;strings xml:lang="pl-PL">
+  ...
+&lt;/strings></codeblock>
+        </itemgroup></li>
+      <li>Translate the content of each <xmlelement>str</xmlelement> element (make sure to leave the
+          <term>name</term> attribute unchanged). <itemgroup>
+          <codeblock outputclass="language-xml">&lt;strings xml:lang="pl-PL">
+...
+ &lt;str name="webhelp.content" js="true" php="false">Polish translation for "Content".&lt;/str>
+ &lt;str name="webhelp.search" js="true" php="false">Polish translation for "Search"&lt;/str>
+...
+&lt;/strings></codeblock>
+        </itemgroup></li>
+      <li>Copy the common DITA-OT strings defined in the <filepath><term
+            keyref="glossentry_dita_ot_dir"/>/xsl/common/strings-en-us.xml</filepath> file. It
+        defines a set generated text available for HTML based transformations (such as
+          <codeph>note</codeph>, <codeph>fig</codeph>, and <codeph>table</codeph> elements).
+        Translate the content of each <xmlelement>str</xmlelement> element. <itemgroup>
+          <codeblock outputclass="language-xml">&lt;strings xml:lang="pl-PL">
+...
+ &lt;str name="webhelp.content" js="true" php="false">Polish translation for "Content".&lt;/str>
+ &lt;str name="webhelp.search" js="true" php="false">Polish translation for "Search"&lt;/str>
+...
+ &lt;str name="Figure">Polish translation for "Figure"&lt;/str>
+ &lt;str name="Table">Polish translation for "Table"&lt;/str>
+...
+&lt;/strings></codeblock>
+        </itemgroup></li>
+      <li product="author developer editor authorEclipse developerEclipse editorEclipse">Use the
+          <xref href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"
+            ><uicontrol>Run DITA-OT Integrator</uicontrol> transformation scenario</xref> found in
+        the <uicontrol>DITA Map</uicontrol> section in the <xref
+          href="configure-transformation-dialog.dita#configure-transformation-dialog"
+            ><uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box</xref>. </li>
+      <li product="webhelp-responsive"><ph conkeyref="reusables-webhelp-chapter/step_run_integrator"/>
+        <itemgroup>
+          <ul conkeyref="reusables-webhelp-chapter/script-ul">
+            <li/>
+          </ul>
+        </itemgroup>
+      </li>
+    </ol>
+  </body>
+</topic>

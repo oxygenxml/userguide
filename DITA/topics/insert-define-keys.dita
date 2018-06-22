@@ -14,13 +14,23 @@
       content that may have different values in various circumstances. Keys provide the means for
       indirect referencing in DITA. This can make it easier to manage and to reuse content. In DITA,
       keys are defined in maps and can then be reused and referenced throughout the whole structure
-      of the map.</p>
-    <p>The following example is a <xref keyref="glossentry_ditamap"><term>DITA map</term></xref>
-      that defines various values for the <codeph>product</codeph>
-      key:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+      of the map. It is considered best practice to create a separate submap that contains all of
+      the key definitions and reference that submap in the <xref keyref="glossentry_root-map"
+          ><term>main (root) map</term></xref>. This makes it easier to manage since they're all in
+      one location.</p>
+    <p>There are two types of key definitions that can be created in a map.<ul>
+        <li>Key with a value inside a <i>keyword</i>.</li>
+        <li>Key with a target (for example, to target a resource such as an image or external
+          link).</li>
+      </ul></p>
+    <p>The following example is a <xref keyref="glossentry_ditamap"><term>DITA map</term></xref> (a
+        <i>key definition submap</i>) that contains some key definitions with various values for the
+        <codeph>product</codeph> key and some targets to external
+      URLs:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
-&lt;map>
+&lt;map id="keydefs">
   &lt;!-- product name -->
+  &lt;title>Key Definitions&lt;/title>
   &lt;keydef keys="product" product="basic">
     &lt;topicmeta>
       &lt;keywords>
@@ -35,71 +45,60 @@
       &lt;/keywords>
     &lt;/topicmeta>
   &lt;/keydef>
-  &lt;keydef keys="product" product="enterprise">
-    &lt;topicmeta>
-      &lt;keywords>
-        &lt;keyword>Enterprise Widget&lt;/keyword>
-      &lt;/keywords>
-    &lt;/topicmeta>
-  &lt;/keydef>
+  &lt;keydef keys="url_eula" href="https://www.example.com/eula.html" format="html"
+     scope="external"/>
+  &lt;keydef keys="url_eula2" href="https://www.example.com/eula2.html" format="html"
+     scope="external"/>
 &lt;/map></codeblock></p>
     <p>
       <note>The profiling of the names is now contained in the map, where it only has to occur once
         to reuse throughout the whole map structure. </note>
     </p>
     <section id="key-def-section">
-      <title>Key Definition with a Keyword</title>
-      <p>To insert a <i>key definition with a keyword</i> in a <term>DITA map</term>, follow these steps:<ol>
-          <li>Open the <term>DITA map</term> in the <xref
-              href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
-                Manager</uicontrol></xref>.</li>
-          <li>Invoke the contextual menu and select <uicontrol>Key Definition</uicontrol> from the
-              <uicontrol>Append Child</uicontrol>, <uicontrol>Insert Before</uicontrol>, or
-              <uicontrol>Insert After</uicontrol> submenu (depending on where you want to insert the
-              <i>key definition</i> in the <term>DITA map</term>). This opens an <uicontrol>Insert
-              Key Definition</uicontrol> dialog box.</li>
-          <li>Go to the <uicontrol>Keys</uicontrol> tab and enter the name of the key in the
-              <uicontrol>Define keys</uicontrol> field.</li>
-          <li>Go to the <uicontrol>Metadata</uicontrol> tab and click <uicontrol>Add
-              keyword</uicontrol>. In the editing window enter the key value inside the
-              <codeph>keyword</codeph> element.<note>You can profile the key by using the
-                <uicontrol>Profiling</uicontrol> tab and other attributes can also be defined in the
-                <uicontrol>Attributes</uicontrol> tab.</note></li>
-          <li>Once you are done configuring the <i>key definition</i>, click <uicontrol>Insert and
-              close</uicontrol>.</li>
-        </ol></p>
-      <p id="simplified-key-def-p">Alternatively, there is a simplified method that can be used if
-        you simply want to define a key with a value inside a <i>keyword</i>, without configuring
-        any profiling or other attributes. To use the simplified method, follow these steps:<ol>
-          <li>Open the <term>DITA map</term> in the <xref
-              href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
-                Manager</uicontrol></xref>.</li>
-          <li>Invoke the contextual menu and select <uicontrol>Key Definition with
-              Keyword</uicontrol> from the <uicontrol>Append Child</uicontrol>, <uicontrol>Insert
-              Before</uicontrol>, or <uicontrol>Insert After</uicontrol> submenu (depending on where
-            you want to insert the <i>key definition</i> in the <term>DITA map</term>). This opens a
-            simplified <uicontrol>Insert Key Definition</uicontrol> dialog box.</li>
-          <li>Enter the name of the key in the <uicontrol>Key</uicontrol> field and its value in the
-              <uicontrol>Keyword</uicontrol> field.</li>
-          <li>Click <uicontrol>Insert and close</uicontrol> to finalize the operation.</li>
+      <title>Key Definition with a Keyword Value</title>
+      <p>To define a key with a value inside a <i>keyword</i>, follow these steps:<ol>
+          <li><b>[Optional but Recommended]</b>
+            <xref href="eppo-submaps.dita">Create a submap</xref> that will contain all of your key
+            definitions and reference the submap in your <term>main (root) map</term> (if you don't
+            already have one created).</li>
+          <li>Open that map in the <xref href="dita-maps-manager.dita#dita-maps-manager"
+                ><uicontrol>DITA Maps Manager</uicontrol></xref>.</li>
+          <li>Right-click the map or an item in the map where you want to add the reference and
+            select <uicontrol>Key Definition with Keyword</uicontrol> from the <uicontrol>Append
+              Child</uicontrol>, <uicontrol>Insert Before</uicontrol>, or <uicontrol>Insert
+              After</uicontrol> submenu (depending on where you want to insert the <i>key
+              definition</i>). This opens an <uicontrol>Insert Key Definition</uicontrol> dialog
+            box.</li>
+          <li>Enter the name of the key in the <uicontrol>Key</uicontrol> field.</li>
+          <li>Enter the key's value in the <uicontrol>Keyword</uicontrol> field.</li>
+          <li>Click <uicontrol>Insert and close</uicontrol>.<note type="tip">If you need to profile
+              the key or add other attributes, you can right-click the key definition in the
+                <uicontrol>DITA Maps Manager</uicontrol>, select <uicontrol><image
+                  href="../img/DockableFrameProperties16.png"/>Edit properties</uicontrol>, and
+              configure them in the <uicontrol>Profiling</uicontrol> tab or
+                <uicontrol>Attributes</uicontrol> tab, respectively.</note></li>
         </ol></p>
     </section>
     <section id="keydef-target-section">
       <title>Key Definition with a Target</title>
       <p>To insert a <i>targeted key definition</i> (for example, to target a resource such as an
-        image or topic) in a <term>DITA map</term>, follow these steps:<ol>
-          <li>Open the <term>DITA map</term> in the <xref
-              href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
-                Manager</uicontrol></xref>.</li>
-          <li>Invoke the contextual menu and select <uicontrol>Key Definition</uicontrol> from the
-              <uicontrol>Append Child</uicontrol>, <uicontrol>Insert Before</uicontrol>, or
-              <uicontrol>Insert After</uicontrol> submenu (depending on where you want to insert the
-              <i>key definition</i> in the <term>DITA map</term>). This opens an <uicontrol>Insert
-              Key Definition</uicontrol> dialog box.</li>
+        image or external link), follow these steps:<ol>
+          <li><b>[Optional but Recommended]</b>
+            <xref href="eppo-submaps.dita">Create a submap</xref> that will contain all of your key
+            definitions and reference the submap in your <term>main (root) map</term> (if you don't
+            already have one created).</li>
+          <li>Open that map in the <xref href="dita-maps-manager.dita#dita-maps-manager"
+                ><uicontrol>DITA Maps Manager</uicontrol></xref>.</li>
+          <li>Right-click the map or an item in the map where you want to add the reference and
+            select <uicontrol>Key Definition</uicontrol> from the <uicontrol>Append
+              Child</uicontrol>, <uicontrol>Insert Before</uicontrol>, or <uicontrol>Insert
+              After</uicontrol> submenu (depending on where you want to insert the <i>key
+              definition</i> in the <term>DITA map</term>). This opens an <uicontrol>Insert Key
+              Definition</uicontrol> dialog box.</li>
           <li>Go to the <uicontrol>Keys</uicontrol> tab and enter the name of the key in the
               <uicontrol>Define keys</uicontrol> field.</li>
           <li>Go to the <uicontrol>Target</uicontrol> tab and select a target resource (such as an
-            image or topic).<note>You can profile the key by using the
+            image or external link).<note type="tip">You can profile the key by using the
                 <uicontrol>Profiling</uicontrol> tab and other attributes can also be defined in the
                 <uicontrol>Attributes</uicontrol> tab.</note></li>
           <li>Once you are done configuring the <i>targeted key definition</i>, click
