@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_debug_xpath_expressions">
+    <title>How to Debug XPath Expressions</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="wysywig-or-html5-transformation"/>
+          <indexterm>Debugging <indexterm>XPath Expressions</indexterm></indexterm></indexterm>
+        <indexterm>Debugging <indexterm>XPath Expressions</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p>You can use the content extracted from the document  using <codeph>oxy_xpath</codeph>
+      function in your pseudo elements (<codeph>:before</codeph>, <codeph>:after</codeph>) or in
+        <codeph>string-set</codeph> variables. </p>
+    <p>For example, the following XPath gets the publication author, set in the DITA map: </p>
+    <codeblock outputclass="language-xml">&lt;map>
+  &lt;title>The Art of Bike Repair&lt;/title>
+  &lt;topicmeta>
+    &lt;author>John Doe&lt;/author>
+  &lt;/topicmeta>
+...</codeblock>
+    <codeblock>:root {
+    string-set: author oxy_xpath('//*[contains(@class, "front-page/front-page")]/*[contains(@class, "map/topicmeta")]/*[contains(@class, "topic/author")]/text()');
+}</codeblock>
+    <p>
+      <note>The XPath expression is evaluated on the DITA merged file, that contains all the
+        expanded topics and meta information.</note>
+      <note>It is a good practice to use the <xmlatt>class</xmlatt> attribute in order to cover
+        eventual DITA specializations. The above expression covers an author set either in a plain
+        DITA Map or in a DITA Bookmap specialization.</note>
+    </p>
+    <p>To debug such an expression:</p>
+    <ol id="ol_jhx_fdz_g2b">
+      <li>Begin by transforming your document and using your customization CSS.</li>
+      <li>In the output folder, next to the PDF file you will find a
+          <filepath>[MAP_NAME].merged.xml</filepath> file (if you are using the
+          <codeph>pdf-css-html5</codeph> transformation, the
+          <filepath>[MAP_NAME].merged.html</filepath> file). </li>
+      <li>Open the merged file in the oXygen XML Editor.</li>
+      <li>Activate the XPath builder: <menucascade>
+          <uicontrol>Window</uicontrol>
+          <uicontrol>Show View</uicontrol>
+          <uicontrol>XPath/XQuery Builder</uicontrol>
+        </menucascade></li>
+      <li>Paste here your XPath expression and press the execute button. Check is it returns the
+        expected results.</li>
+    </ol>
+    <p>The XPath builder has a function that allows it to display the document path of the current
+      element from the editor (<menucascade>
+        <uicontrol>Settings Button</uicontrol>
+        <uicontrol>Update on cursor move</uicontrol>
+      </menucascade>). Alternatively you can right-click the element in the merged document and use
+      the <uicontrol>Copy XPath</uicontrol> action, then paste in the XPath builder.</p>
+  </body>
+  <related-links>
+    <link href="https://www.oxygenxml.com/doc/ug-editor/topics/xpath-builder-view.html"
+      format="html" scope="external">
+      <linktext>XPath Builder Documentation</linktext>
+    </link>
+    <link href="https://www.w3schools.com/xml/xpath_examples.asp" format="html" scope="external">
+      <linktext>XPath Examples (w3schools.com)</linktext>
+    </link>
+  </related-links>
+</topic>
