@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_add_a_draft_watermark">
+    <title>How to Add a Draft Watermark Depending on Metadata</title>
+    <prolog>
+        <metadata>
+            <keywords>
+                <indexterm
+                    product="author developer editor authorEclipse developerEclipse editorEclipse"
+                        ><ph keyref="wysywig-or-html5-transformation"
+                            /><indexterm>Metadata<indexterm>Conditional Draft
+                        Watermark</indexterm></indexterm></indexterm>
+                <indexterm
+                    product="author developer editor authorEclipse developerEclipse editorEclipse"
+                        ><ph keyref="wysywig-or-html5-transformation"/>
+                    <indexterm>Metadata<indexterm>Conditional Draft
+                        Watermark</indexterm></indexterm></indexterm>
+                <indexterm product="pdf-css">Metadata<indexterm>Conditional Draft
+                        Watermark</indexterm></indexterm>
+                <indexterm product="pdf-css">Metadata<indexterm>Conditional Draft
+                        Watermark</indexterm></indexterm>
+            </keywords>
+        </metadata>
+    </prolog>
+    <body>
+            <p>Consider you want to apply a "Draft" watermark until your DITA bookmap is approved. </p>
+        <p>The map is approved when an <xmlelement>approved</xmlelement> element has beend added to
+            the metadata section, i.e. in the <b>bookmeta/bookchangehistory</b> element. </p>
+                
+                
+                <codeblock outputclass="language-xml">&lt;bookmeta>
+   &lt;author>John&lt;/author>
+   &lt;critdates>
+      &lt;created date="1/1/2015"/>
+      &lt;revised modified="3/4/2016"/>
+      &lt;revised modified="3/5/2016"/>
+   &lt;/critdates>          
+   &lt;bookchangehistory>
+       &lt;approved/>       
+   &lt;/bookchangehistory>
+...</codeblock><p>You can use:</p><codeblock>:root, body{
+     background-image: url(oxy_xpath('if  (//bookmeta/bookchangehistory/approved) then ""
+else  "../../images/draft-watermark.png" '));
+     background-position:center;
+     background-repeat:no-repeat;
+     background-color:inherit; 
+}
+</codeblock><p>Use <codeph>oxy_xpath</codeph> every time you need to probe the value form other element than the
+            one matched by the CSS selector, and test the expression on the merged HTML file using
+            the oXygen XPath builder. The <codeph>body</codeph> selector is used here in case you
+            want to apply the <codeph>pdf-css-html5</codeph> transformation type.</p>
+    </body>
+</topic>
