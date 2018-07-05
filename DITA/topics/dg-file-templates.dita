@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE task
-  PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
-<task id="dg-file-templates">
-  <title>Configuring New Document Templates</title>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dg-file-templates">
+  <title>Creating New Document Templates for a Custom Framework</title>
   <prolog>
     <metadata>
       <keywords>
@@ -11,103 +10,50 @@
       </keywords>
     </metadata>
   </prolog>
-  <taskbody>
-    <context>
-      <p>A customized <xref keyref="glossentry_framework"><term>framework</term></xref> (document
-        type) can point to a directory, usually named <filepath>templates</filepath>, that contains
-        the document templates. All files found here are considered templates for the respective
-        document type. The template name is taken from the file name, and the template type is
-        detected from the file extension.</p>
-      <p>To customize new document templates for a <term>framework</term>, follow these steps:</p>
-    </context>
-    <steps>
-      <step>
-        <cmd>Go to your custom <term>framework</term> directory (<filepath><term
-              conkeyref="reusables-user-guide/oxy-install-dir"
-            />\frameworks\[CUSTOM_FRAMEWORK_DIR]</filepath>) and create a directory named
-            <filepath>templates</filepath>.</cmd>
-        <stepresult>The directory tree of the custom documentation <term>framework</term> should be
-          something like
-          this:<codeblock outputclass="language-ini">[OXYGEN_INSTALL_DIR]
-    frameworks
-        [CUSTOM_FRAMEWORK_DIR]
-            schema
-            css
-            templates</codeblock></stepresult>
-      </step>
-      <step>
-        <cmd>In the <filepath>templates</filepath> directory, create two files. A file for the
-            <i>book</i> template and another one for the <i>article</i> template.</cmd>
-        <stepresult>
-          <p>An example for the <filepath>Book.xml</filepath> file:
-            <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;book xmlns="http://www.oxygenxml.com/sample/documentation" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xmlns:abs="http://www.oxygenxml.com/sample/documentation/abstracts"&gt;
-    &lt;title&gt;Book Template Title&lt;/title&gt;
-    &lt;section&gt;
-        &lt;title&gt;Section Title&lt;/title&gt;
-        &lt;abs:def/&gt;
-        &lt;para&gt;This content is copyrighted:&lt;/para&gt;
-        &lt;table&gt;
-            &lt;header&gt;
-                &lt;td&gt;Company&lt;/td&gt;
-                &lt;td&gt;Date&lt;/td&gt;
-            &lt;/header&gt;
-            &lt;tr&gt;
-                &lt;td/&gt;
-                &lt;td/&gt;
-            &lt;/tr&gt;
-        &lt;/table&gt;
-    &lt;/section&gt;
-    &lt;/book&gt;</codeblock></p>
-          <p>An example for the <filepath>Article.xml</filepath> file:</p>
-          <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;article 
-    xmlns="http://www.oxygenxml.com/sample/documentation" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-    &lt;title&gt;&lt;/title&gt;
-    &lt;section&gt;
-        &lt;title&gt;&lt;/title&gt;
-        &lt;para&gt;&lt;/para&gt;
-        &lt;para&gt;&lt;/para&gt;
-    &lt;/section&gt;        
-&lt;/article&gt;</codeblock>
-          <p>You can also use <xref href="editor-variables.dita">editor variables</xref>
-            in the content of the template files and they will be expanded when the files are
-              opened.<note>You should avoid using the
-                <codeph>${cfd}</codeph>,<codeph>${cf}</codeph>,<codeph>${currentFileURL}</codeph>,
-              and <codeph>${cfdu}</codeph>
-              <xref href="editor-variables.dita#editor-variables">editor variables</xref>
-              when you save your documents in a data base.</note></p>
-        </stepresult>
-      </step>
-      <step>
-        <cmd>Open the <xref href="the-document-type-dialog.dita#the-document-type-dialog"
-              ><uicontrol>Document Type</uicontrol> configuration dialog box</xref> for your custom
-            <term>framework</term> and click the <uicontrol>Templates</uicontrol> tab. In the
-            <uicontrol>Templates directory</uicontrol> text field, introduce the
-            <codeph>${frameworkDir}/templates</codeph> path. It is recommended that all the file
-          references made from a <xref keyref="glossentry_document_type_association"><term>Document
-              Type Association</term></xref> to be relative to the
-            <b>${frameworkDir}</b> directory. Binding to an absolute file (e. g.:
-            <filepath>C:\some_dir\templates</filepath>) makes the association difficult to share
-          between users.</cmd>
-      </step>
-      <step>
-        <cmd>To test the templates settings, go to <menucascade>
+  <body>
+    <p>You can create your own custom document templates and attach them to a custom <xref
+        keyref="glossentry_framework"><term>framework</term></xref>. You can then <xref
+        href="author-document-type-extension-sharing.dita">share the custom framework</xref> so that
+      all users will have access to the templates in the <xref
+        href="new-dialog-sa.dita#new-dialog-sa" product="author editor"><uicontrol>New</uicontrol>
+        document wizard</xref><xref href="creating-from-templates.dita#creating-from-templates"
+        product="authorEclipse editorEclipse"><uicontrol>New from templates</uicontrol>
+        wizard</xref>.</p>
+    <p>To create your own custom document template and have it appear in the new document wizard,
+      follow these steps:<ol>
+        <li>Create a new file and customize it to become a starting point for creating new files of
+          this type.<note conkeyref="reusables-editing-documents/doc-template-note1"/></li>
+        <li id="step2">Save the new template in a directory (for example, called
+            <filepath>templates</filepath>) within your custom framework directory.<note
+            conkeyref="reusables-editing-documents/doc-templates-note2"/></li>
+        <li id="step3">Open the <xref href="the-document-type-dialog.dita#the-document-type-dialog"
+              ><uicontrol>Document Type</uicontrol> configuration dialog box</xref> for that
+          specific framework, go to the <xref href="document-type-templates-tab.dita"
+              ><uicontrol>Templates</uicontrol> tab</xref>, and click the <image
+            href="../img/Add16.png" placement="inline"/> button in the bottom-right corner to add
+          your new directory to the list. It is recommended that the reference be made relative to
+          the framework directory (for example, <filepath>${frameworkDir}/templates</filepath>).
+          Binding to an absolute file (e. g.: <filepath>C:\some_dir\templates</filepath>) makes the
+          association difficult to share between users.</li>
+        <li>To test the template, open the new document wizard (<uicontrol><image
+              href="../img/New16.png" id="image_hy1_zdp_sr" product="author editor"/><image
+              href="../img/EclipseNew.png" id="image_nbd_fkf_wr"
+              product="authorEclipse editorEclipse"/>New</uicontrol> toolbar button or <menucascade
+            product="author editor">
             <uicontrol>File</uicontrol>
             <uicontrol>New</uicontrol>
-          </menucascade> to display the <uicontrol>New</uicontrol> document dialog box. You should
-          see the new templates in the folder for your custom <term>framework</term> (in the
-            <uicontrol>Framework templates</uicontrol> section). The names of the two templates are
-          prefixed with the name of the <term>framework</term>. Selecting one of them should create
-          a new XML file with the content specified in the template file.</cmd>
-      </step>
-    </steps>
-  </taskbody>
+          </menucascade><menucascade product="authorEclipse editorEclipse">
+            <uicontrol>File</uicontrol>
+            <uicontrol>New</uicontrol>
+            <uicontrol>New from Templates</uicontrol>
+          </menucascade>) and you should see your custom template in the folder for your custom
+            <term>framework</term> (in the <uicontrol>Framework templates</uicontrol> section).</li>
+      </ol></p>
+  </body>
   <related-links>
-    <linklist><title>Related Information:</title><link href="editor-variables.dita#editor-variables"/>
-    <link href="custom-editor-variables.dita#custom-editor-variables"/></linklist>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="customizing-templates.dita"/>
+    </linklist>
   </related-links>
-</task>
+</topic>
