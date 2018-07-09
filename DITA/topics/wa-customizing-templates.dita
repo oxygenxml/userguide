@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-customizing-templates">
+  <title>Customizing New Document Templates</title>
+  <body>
+    <p>You can customize certain aspects of your <xref href="wa-file-templates.dita">custom document
+        templates</xref>. For example, you can customize the icons or add placeholders or hints to
+      assist authors.</p>
+    <section id="create-properties-file">
+      <title>Customizing the Icons for a Document Template</title>
+      <p>If you want to customize the icons to be used for document templates, use a properties file
+        to specify the icons using the following procedure:<ol>
+          <li>In <b>Oxygen XML Editor/Author</b>, create a new properties file or edit an existing
+            one following these guidelines:<ol>
+              <li>If you want to create a new properties file, you can use the <b>Properties</b>
+                template found in the <uicontrol>New Document</uicontrol> folder in the <xref
+                  href="https://www.oxygenxml.com/doc/ug-editor/topics/new-dialog-sa.html"
+                  format="html" scope="external"><uicontrol>New</uicontrol> document wizard</xref>.
+                If you want to edit an existing template, you can find them within the subfolders in
+                the <filepath>templates</filepath> folder for each framework (for example, the DITA
+                topic properties file is located in:
+                  <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/templates/topic/topic.properties</filepath>).</li>
+              <li>Use the same name as your custom template file except with a
+                  <filepath>.properties</filepath> extension (for example,
+                  <filepath>MyTemplate.properties</filepath>).</li>
+              <li>In this properties file, specify the paths to the icons that will be used in the
+                new file wizard. The properties file should look like
+                  this:<codeblock outputclass="language-ini">type=general
+smallIcon=../icons/Article_16.png
+bigIcon=../icons/Article_48.png</codeblock><note
+                  type="tip">For DITA files, the <codeph>type</codeph> property needs to be set to
+                    <b>dita</b>. Otherwise, the template will not appear in the dialog box for
+                  creating new DITA topics from the <uicontrol>DITA Maps Manager</uicontrol>. For
+                  all other types of files, set it to <b>general</b>. The icons specified in this
+                  properties file will only be used for the new file wizards and not in any other
+                  part of the interface.</note></li>
+            </ol></li>
+          <li>Save the properties file in the same directory as your custom template (this directory
+            should be inside your custom framework folder).</li>
+          <li>Create an archive that only contains your custom framework folder and <xref
+              href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+              the changes to your <term>framework</term> to Web Author</xref>.<p><b>Result:</b> The
+              icon should now be visible for the custom document template when <xref
+                href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webapp-create-open-docs.html"
+                format="html" scope="external">creating new documents</xref>.</p></li>
+        </ol></p>
+    </section>
+    <section id="configure_the_displayed_names_for_document_templa">
+      <title>Configure the Displayed Names for Document Templates</title>
+      <p>To change the name that is displayed for a document template, use the following procedure:<ol>
+          <li>In <b>Oxygen XML Editor/Author</b>, create a new properties file or edit an existing
+            one. If you want to create a new properties file, you can use the <b>Properties</b>
+            template found in the <uicontrol>New Document</uicontrol> folder in the <xref
+              href="https://www.oxygenxml.com/doc/ug-editor/topics/new-dialog-sa.html" format="html"
+              scope="external"><uicontrol>New</uicontrol> document wizard</xref>.  If you want to
+            edit an existing template, you can find them within the subfolders in the
+              <filepath>templates</filepath> folder for each framework (for example, the DITA topic
+            properties file is located in:
+              <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/templates/topic/topic.properties</filepath>).</li>
+          <li>Use the same name as your custom template file except with a
+              <filepath>.properties</filepath> extension (for example,
+              <filepath>MyTemplate.properties</filepath>).</li>
+          <li>Add a <codeph>displayName</codeph> property in the properties
+            file:<codeblock outputclass="language-ini">displayName=My Template Name</codeblock></li>
+          <li>Save the properties file in the same directory as your custom template (this directory
+            should be inside your custom framework folder).</li>
+          <li>Create an archive that only contains your custom framework folder and <xref
+              href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+              the changes to your <term>framework</term> to Web Author</xref>.<p><b>Result:</b> The
+              new name for the custom document template should now be visible when <xref
+                href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webapp-create-open-docs.html"
+                format="html" scope="external">creating new documents</xref>.</p></li>
+        </ol></p>
+    </section>
+    <section id="adding_placeholders_or_hints_in_a_document_templa">
+      <title>Adding Placeholders or Hints in a Document Template</title>
+      <p>Document templates sometimes contain empty elements and it may not be clear to the Author
+        what should be inserted. You can define placeholders in document templates that provide
+        hints for Authors to help them understand what type of content should be added in any
+        particular empty element within the document. The placeholder text is specified using a
+        processing instruction and the placeholders are removed when the Author inserts content in
+        the corresponding element.</p>
+      <p>To define placeholders in a custom document template to provide authors with hints, follow
+        this procedure:<ol>
+          <li>In <b>Oxygen XML Editor/Author</b>, edit the <xref href="wa-file-templates.dita"
+              >custom document template</xref>.</li>
+          <li>Add placeholders in the form of processing instructions within the elements where you
+            want hints to be displayed when an Author creates a document from the template. For
+            example:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+&lt;topic id="pi">
+  &lt;title>&lt;?oxy-placeholder content="Please give a title"?>&lt;/title>
+    &lt;shortdesc>&lt;?oxy-placeholder content="Writing short descriptions 
+         induces the writer to clarify the main thesis of the topic.
+         We recommended a 50 word limit."?>&lt;/shortdesc>
+  &lt;body>
+    &lt;p>&lt;?oxy-placeholder content="A paragraph element should be a self-contained
+         unit dealing with one idea or point."?>&lt;/p>
+  &lt;/body>
+&lt;/topic></codeblock></li>
+          <li>Save the template file (it should be inside your custom framework folder).</li>
+          <li>Create an archive that only contains your custom framework folder and <xref
+              href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+              the changes to your <term>framework</term> to Web Author</xref>.<p><b>Result:</b> The
+              placeholders should now be visible in that particular custom document template when
+                <xref
+                href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webapp-create-open-docs.html"
+                format="html" scope="external">creating new documents</xref>.</p></li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
