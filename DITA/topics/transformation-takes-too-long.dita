@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="transformation-takes-too-long">
+  <title>DITA OT Transformation Takes a Long Time to Process</title>
+  <troublebody>
+    <condition id="problem">
+      <title>Problem</title>
+      <p>A DITA transformation takes an extremely long time to process (over an hour, for
+        example).</p>
+    </condition>
+    <troubleSolution>
+      <cause id="cause">
+        <title>Cause</title>
+        <p>Large delays in DITA OT processing are usually caused by intensive disk operations, CPU
+          usage, or connections to remote web sites. The DITA OT processing is very disk-intensive,
+          each stage takes the entire content from the transformation temporary files folder, reads
+          it, modifies it, and then writes it back.</p>
+      </cause>
+      <remedy id="solution">
+        <title>Solution</title>
+        <steps-informal>
+          <p>There are several things you can try to troubleshoot this problem:<ul>
+              <li>If you are using a shared or remote drive, it is recommended to specify a local
+                drive for the output and temporary files directory (edit the transformation scenario
+                and in the <uicontrol>Output</uicontrol> tab, select a local directory for
+                  <uicontrol>Temporary files directory</uicontrol> and <uicontrol>Output
+                  directory</uicontrol>).</li>
+              <li>If you want to test if the publishing has a problem downloading remote resources,
+                you could disable the network adapter on the computer and then try to publish. The
+                purpose is to see if the publishing finishes without any reported error in regards
+                to obtaining a certain HTTP resource.</li>
+              <li>Using DTDs instead of XML Schemas is faster. This is because of a default
+                transformation parameter called <codeph>args.grammar.cache</codeph> that only works
+                for DTD-based DITA topics.</li>
+              <li>You can <xref href="performance-problems-large-documents.dita">increase the memory
+                  available to <ph keyref="product"/></xref>. Sometimes, just increasing the amount
+                of memory available to the DITA OT process may be enough to lower the time necessary
+                for the publishing to run.</li>
+              <li>You can enable some logging to help you determine which stage in the process is
+                taking a long time. Edit the transformation scenario and in the
+                  <uicontrol>Advanced</uicontrol> tab, enter <b>logger
+                  org.apache.tools.ant.listener.ProfileLogger</b> in the <uicontrol>Additional
+                  arguments</uicontrol> field. Then go to <menucascade>
+                  <uicontrol>Options</uicontrol>
+                  <uicontrol>Preferences</uicontrol>
+                  <uicontrol>DITA</uicontrol>
+                  <uicontrol>Logging</uicontrol>
+                </menucascade> and select <b>Always</b> for the <uicontrol>Show console
+                  output</uicontrol> option. </li>
+            </ul></p>
+        </steps-informal>
+      </remedy>
+    </troubleSolution>
+  </troublebody>
+</troubleshooting>
