@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dita-ot-define-transtype">
+  <title>Defining the Transformation Type and Allowed Parameters in a DITA-OT Plugin</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>DITA<indexterm>DITA OT Plugins<indexterm>Define transformation
+            type</indexterm></indexterm></indexterm>
+        <indexterm>DITA<indexterm>DITA OT Plugins<indexterm>Define
+          transtype</indexterm></indexterm></indexterm>
+        <indexterm>DITA<indexterm>DITA OT Plugins<indexterm>Define allowed
+            parameters</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>Custom <b>DITA-OT</b>
+      <term>plugins</term> may contribute new transformation types (transtypes) and each transtype
+      may have a set of allowed configuration parameters. If a DITA-OT plugin declares a
+        <b>transtype</b>, <ph keyref="product"/> detects that transformation type declaration and
+      presents descriptions in the <xref href="dita-ot-transformation.dita#dita-ot-transformation"
+          ><uicontrol>DITA Transformation Type</uicontrol> dialog box</xref> and the contributed
+      parameters in the <xref href="dita-map-edit-parameters.dita#dita-map-edit-parameters"
+        >transformation scenario's <uicontrol>Parameters</uicontrol> tab</xref>.</p>
+    <p>To define a transformation type and its contributed parameters in a DITA-OT plugin, follow
+      this procedure:<ol>
+        <li>If you have not already done so, <xref href="simple-dita-ot-plugin.dita">create a
+            DITA-OT <b>plugin.xml</b> file</xref> (you can easily create this file by using the
+            <uicontrol>DITA OT Plugin</uicontrol> new document template in the <xref
+            href="new-dialog-sa.dita#new-dialog-sa" product="author editor"
+              ><uicontrol>New</uicontrol> document wizard</xref><xref
+            href="creating-from-templates.dita#creating-from-templates"
+            product="authorEclipse editorEclipse"><uicontrol>New from templates</uicontrol>
+            wizard</xref>).</li>
+        <li>In the <b>plugin.xml</b> file, define the transformation type details by using the
+            <xmlelement>transtype</xmlelement> element to specify a name, description, and the
+          transtype it
+          extends.<codeblock outputclass="language-xml">&lt;transtype name="xhtml" extends="base-html" desc="HTML"&gt;</codeblock></li>
+        <li>Define allowed parameters by using the <xmlelement>param</xmlelement> element to specify
+          the name, description, and information about the default and allowed set of values. For
+          more information, see: <xref
+            href="https://www.dita-ot.org/3.1/topics/plugin-configfile.html" format="html"
+            scope="external"
+          />.<codeblock outputclass="language-xml">&lt;param name="args.indexshow" desc="Specifies whether to show the index" type="enum"&gt;
+  &lt;val>yes&lt;/val>
+  &lt;val default="true">no&lt;/val>
+&lt;/param></codeblock>Depending
+          on the type declared for a parameter, <ph keyref="product"/> will help you pick values for
+          each parameter edited in the <uicontrol>Parameters</uicontrol> tab of the transformation
+          scenario dialog box. For example, for parameters of type <b>"enum"</b>, <ph
+            keyref="product"/> will present a combo box for choosing the proper value for the
+          parameter.</li>
+        <li>Extend various extension points in your <b>plugin.xml</b>. For more information, see:
+            <xref href="https://www.dita-ot.org/3.1/extension-points/plugin-extension-points.html"
+            format="html" scope="external"/>.</li>
+        <li><xref href="dita-ot-install-plugin.dita">Install the plugin</xref>.<note>If the plugin
+            is installed using an external command line, you may need to restart <ph
+              keyref="product"/> to properly re-detect the newly contributed transtypes and
+            parameters.</note></li>
+      </ol></p>
+    <p><b>Complete plugin.xml
+      example:</b><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.pdf.prince"&gt;
+  &lt;!-- extensions --&gt;
+  &lt;feature extension="dita.conductor.transtype.check" value="pdf-prince" type="txt"/&gt;
+  &lt;feature extension="dita.conductor.target.relative" value="integrator.xml" 
+    type="file"/&gt;  
+  &lt;feature extension="dita.transtype.print" value="pdf-prince"/&gt;
+  &lt;transtype name="pdf-prince" extends="commons" desc="PDF (Prince XML)"&gt;
+    &lt;param name="princeExecPath" type="file" desc="Path to the Prince executable"/&gt;
+  &lt;/transtype&gt;
+&lt;/plugin&gt;</codeblock></p>
+    <p>For more information, watch this DITA-OT Day 2015 presentation:</p>
+    <p><object width="450" height="250" data="https://www.youtube.com/embed/LcrR0YUFlQ4"
+        outputclass="iframe">
+        <param name="allowfullscreen" value="true"/>
+      </object></p>
+  </body>
+</topic>
