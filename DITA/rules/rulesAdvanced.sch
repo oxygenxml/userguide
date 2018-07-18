@@ -583,74 +583,29 @@
   <sch:pattern id="checkNoBreakableSpace">
     <sch:rule context="text()">
       <!-- Check if the text contains a weird space character which made its way into UG via pasting from other sources -->
-      <sch:report test="contains(., ' ')" sqf:fix="replaceNBSP">Replace non breakable space with a normal space character.</sch:report>
+      <sch:report test="contains(., ' ')" sqf:fix="replaceNBSP">Replace non breakable space with a normal space character</sch:report>
       <sqf:fix id="replaceNBSP">
         <sqf:description>
-          <sqf:title>Replace NBSP with a normal space character.</sqf:title>
+          <sqf:title>Replace NBSP with a normal space character</sqf:title>
         </sqf:description>
         <sqf:stringReplace regex="[ ]" xml:space="preserve"> </sqf:stringReplace>
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
   
-
-  <!-- Find bold elements inside codeblocks and unwrap them -->
+  <!-- Unwrap all elements inside a codeblocks -->
   <sch:pattern>
-    <sch:rule context="codeblock/b">
-      <sch:report test="." sqf:fix="del">No bold elements allowed in codeblocks.</sch:report>
+    <sch:rule context="codeblock/*">
+      <sch:report test="." sqf:fix="del">No elements are allowed in codeblocks</sch:report>
       
       <sqf:fix id="del">
         <sqf:description>
-          <sqf:title>Unwrap "b" element.</sqf:title>
+          <sqf:title>Unwrap element</sqf:title>
         </sqf:description>
         <sqf:replace select="text()"></sqf:replace>
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
-  
-  <!-- Find italic elements inside codeblocks and unwrap them -->
-  <sch:pattern>
-    <sch:rule context="codeblock/i">
-      <sch:report test="." sqf:fix="del">No italic elements allowed in codeblocks.</sch:report>
-      
-      <sqf:fix id="del">
-        <sqf:description>
-          <sqf:title>Unwrap "i" element.</sqf:title>
-        </sqf:description>
-        <sqf:replace select="text()"></sqf:replace>
-      </sqf:fix>
-    </sch:rule>
-  </sch:pattern>
-  
-  <!-- Find ph elements inside codeblocks and unwrap them -->
-  <sch:pattern>
-    <sch:rule context="codeblock/ph">
-      <sch:report test="." sqf:fix="del">No italic elements allowed in codeblocks.</sch:report>
-      
-      <sqf:fix id="del">
-        <sqf:description>
-          <sqf:title>Unwrap "ph" element.</sqf:title>
-        </sqf:description>
-        <sqf:replace select="text()"></sqf:replace>
-      </sqf:fix>
-    </sch:rule>
-  </sch:pattern>
-  
-  <!-- Unwrap all "b", "i" and "ph" elements inside a codeblocks -->
-  <sch:pattern>
-    <sch:rule context="codeblock">
-      <sch:report test="b | i | ph" sqf:fix="del">No bold elements allowed</sch:report>
-      
-      <sqf:fix id="del">
-        <sqf:description>
-          <sqf:title>Unwrap "b", "i" and "ph" elements inside a "codeblock" element.</sqf:title>
-        </sqf:description>
-        <sqf:replace select="text()" match="b | i | ph"></sqf:replace>
-      </sqf:fix>
-    </sch:rule>
-  </sch:pattern>
-  
-  
   
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'
