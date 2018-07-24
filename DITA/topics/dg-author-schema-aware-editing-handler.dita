@@ -2,7 +2,7 @@
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
 <topic id="dg-author-schema-aware-editing-handler">
-  <title>Implementing a Schema-Aware Editing Handler Adapter</title>
+  <title>Handling Schema-Aware Editing Events</title>
   <prolog>
     <metadata>
       <keywords>
@@ -12,13 +12,13 @@
     </metadata>
   </prolog>
   <body>
-    <p>The <i>AuthorSchemaAwareEditingHandlerAdapter</i> extension point allows you to
-      handle certain <uicontrol>Author</uicontrol> mode actions in various ways. For example,
-      implementing the <codeph>AuthorSchemaAwareEditingHandlerAdapter</codeph> makes it possible to
-      handle events such as typing, the keyboard delete event at a given offset (using Delete or
-      Backspace keys), delete element tags, delete selection, join elements, or paste fragment. It
-      also makes it possible to improve solutions that are proposed by the paste mechanism in <ph
-        keyref="product"/> when pasting content (through the use of <xref
+    <p>The <i>AuthorSchemaAwareEditingHandlerAdapter</i> extension point allows you to handle
+      certain <uicontrol>Author</uicontrol> mode actions in various ways. For example, implementing
+      the <codeph>AuthorSchemaAwareEditingHandlerAdapter</codeph> makes it possible to handle events
+      such as typing, the keyboard delete event at a given offset (using Delete or Backspace keys),
+      delete element tags, delete selection, join elements, or paste fragment. It also makes it
+      possible to improve solutions that are proposed by the paste mechanism in <ph keyref="product"
+      /> when pasting content (through the use of <xref
         href="#dg-author-schema-aware-editing-handler/methods_for_improving_the_smart_paste_feature"
         format="dita">some specific methods</xref>).</p>
     <section id="how_to_implement_an_authorschemaawareeditinghandl">
@@ -30,8 +30,7 @@
             ><uicontrol>Schema-Aware</uicontrol> preferences page</xref>. The handler can either
         resolve a specific case, let the default implementation take place, or reject the edit
         entirely by throwing an <codeph>InvalidEditException</codeph>.</p>
-      <p>To implement your own <i>AuthorSchemaAwareEditingHandlerAdapter</i>, follow
-        this procedure:<ol>
+      <p>To implement your own <i>AuthorSchemaAwareEditingHandlerAdapter</i>, follow this procedure:<ol>
           <li>Implement the <xref
               href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorSchemaAwareEditingHandlerAdapter.html"
               format="html" scope="external"
@@ -47,8 +46,8 @@
     </section>
     <section id="example">
       <title>Example</title>
-      <p>Typing events can be handled using the <i>handleTyping</i> method. For example,
-        the <codeph>AuthorSchemaAwareEditingHandler</codeph> checks if the schema is not a learned
+      <p>Typing events can be handled using the <i>handleTyping</i> method. For example, the
+          <codeph>AuthorSchemaAwareEditingHandler</codeph> checks if the schema is not a learned
         one, was loaded successfully, and if the <xref
           href="preferences-schema-aware.dita#preferences-schema-aware/smart-paste-drag-drop"
             ><uicontrol>Smart paste and drag and drop</uicontrol> option</xref> is selected. If
@@ -94,8 +93,8 @@ authorAccess.getDocumentController().createNewDocumentTextFragment
               valid. As a possible solution, <ph keyref="product"/> might surround the pasted
               content in a sequence of ancestor elements. This <xref
                 href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorSchemaAwareEditingHandlerAdapter.html#getAncestorDetectionOptions--"
-                format="html" scope="external"><i>getAncestorDetectionOptions</i></xref>
-              method allows you to choose which parent elements might be a possible solution.</dd>
+                format="html" scope="external"><i>getAncestorDetectionOptions</i></xref> method
+              allows you to choose which parent elements might be a possible solution.</dd>
           </dlentry>
           <dlentry>
             <dt><i>canBeReplaced</i></dt>
@@ -103,18 +102,23 @@ authorAccess.getDocumentController().createNewDocumentTextFragment
               pasting content in <ph keyref="product"/>. For example, when pasting an element inside
               an empty element with the same name, this <xref
                 href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorSchemaAwareEditingHandlerAdapter.html#canBeReplaced-ro.sync.ecss.extensions.api.node.AuthorNode-"
-                format="html" scope="external"><i>canBeReplaced</i></xref> method allows
-                <ph keyref="product"/> to replace the empty node rather than pasting it after or
-              before the empty node. The callback could also reject this behavior if, for instance,
-              the replacement node contains attributes.</dd>
+                format="html" scope="external"><i>canBeReplaced</i></xref> method allows <ph
+                keyref="product"/> to replace the empty node rather than pasting it after or before
+              the empty node. The callback could also reject this behavior if, for instance, the
+              replacement node contains attributes.</dd>
           </dlentry>
         </dl>
       </p>
     </section>
   </body>
   <related-links>
-    <linklist><title>Related Information:</title><link format="html" href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorDocumentFragment.html" scope="external">
-      <linktext><i>AuthorDocumentFragment Class</i></linktext>
-    </link></linklist>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html"
+        href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorDocumentFragment.html"
+        scope="external">
+        <linktext><i>AuthorDocumentFragment Class</i></linktext>
+      </link>
+    </linklist>
   </related-links>
 </topic>
