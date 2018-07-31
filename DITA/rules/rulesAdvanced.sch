@@ -579,6 +579,33 @@
     </sch:rule>
   </sch:pattern>
   
+  <!-- Look for non breakable space characters and replace them with normal space characters -->
+  <sch:pattern id="checkNoBreakableSpace">
+    <sch:rule context="text()">
+      <!-- Check if the text contains a weird space character which made its way into UG via pasting from other sources -->
+      <sch:report test="contains(., ' ')" sqf:fix="replaceNBSP">Replace non breakable space with a normal space character</sch:report>
+      <sqf:fix id="replaceNBSP">
+        <sqf:description>
+          <sqf:title>Replace NBSP with a normal space character</sqf:title>
+        </sqf:description>
+        <sqf:stringReplace regex="[ ]" xml:space="preserve"> </sqf:stringReplace>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Unwrap all elements inside a codeblocks -->
+  <sch:pattern>
+    <sch:rule context="codeblock/*">
+      <sch:report test="." sqf:fix="del">No elements are allowed in codeblocks</sch:report>
+      
+      <sqf:fix id="del">
+        <sqf:description>
+          <sqf:title>Unwrap element</sqf:title>
+        </sqf:description>
+        <sqf:replace select="text()"></sqf:replace>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
   
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'
