@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.oxygenxml</groupId>
     <artifactId>oxygen-superpom-versions</artifactId>
-    <version>20.1-SNAPSHOT</version>
+    <version>21.0-SNAPSHOT</version>
   </parent>
 
   <groupId>com.oxygenxml.userguide</groupId>
@@ -19,6 +19,7 @@
   	Use -Duserguide.server.user=user to deploy WebHelp output using a SSH key.
   		NOTE: SSH key must be installed in ${user.home}/.ssh/id_rsa
   	Use -Duserguide.server.user=user -Duserguide.server.password=password to deploy WebHelp output using user/password (without a SSH key)
+  	Use -Deditlink.ditamap.url=URL_TO_REMOTE_DITAMAP to set the DITA Map used by "Edit Link"
    -->
 
   <description>
@@ -37,7 +38,7 @@
   </dependencies>
 
   <properties>
-    <product-version>20.1</product-version>
+    <product-version>21.0</product-version>
     <sonar.skip>true</sonar.skip>
     <dependency-check.skip>true</dependency-check.skip>
     <ANT_OPTS>-Dhttp.proxyHost=proxy.sync.ro -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.sync.ro -Dhttps.proxyPort=3128</ANT_OPTS>
@@ -60,6 +61,7 @@
       <properties>
         <userguide.server>userguide.sync.ro</userguide.server>
         <userguide.server.dir>/var/www/userguide</userguide.server.dir>
+        <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap</editlink.ditamap.url>
       </properties>
       <build>
         <plugins>
@@ -76,7 +78,9 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-private" />
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-private">
+                      <property name="editlink.ditamap.url" value="${editlink.ditamap.url}"/>
+                    </ant>
                   </tasks>
                 </configuration>
               </execution>
@@ -141,6 +145,7 @@
       <properties>
         <userguide.server>software-archive.sync.ro</userguide.server>
         <userguide.server.dir>/repository/userguides</userguide.server.dir>
+        <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide/master/DITA/UserManual.ditamap</editlink.ditamap.url>
       </properties>
 
       <build>
@@ -158,7 +163,9 @@
                 </goals>
                 <configuration>
                   <target>
-                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-public" />
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-public">
+                      <property name="editlink.ditamap.url" value="${editlink.ditamap.url}"/>
+                    </ant>
                   </target>
                 </configuration>
               </execution>
