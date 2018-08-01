@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="dcpp_how_to_use_bullet_instead_decimal_numbering_for_tasks_with_a_single_step">
+    <title>How to Use a Bullet Instead Numbering for Tasks with a Single Step</title>
+    <taskbody>
+        <context id="context_b24_5x5_q2b">
+            <p>If there is only one step (<xmlelement>step</xmlelement> element) it should display a
+                disc symbol before it instead of the decimal number.</p>
+            <p>
+                <codeblock outputclass="language-xml">...
+&lt;steps>
+   &lt;step>
+        &lt;cmd>The step&lt;/cmd>
+   &lt;/step>
+&lt;/steps>
+...</codeblock>
+            </p>
+            <p>Should be rendered as: <codeblock> o The step</codeblock>Instead
+                of:<codeblock>  1. The step</codeblock></p>
+            <p>To solve this you will need to create an XSLT template that adds a special
+                outputclass attribute (with the value <codeph>single</codeph>) to the single step,
+                then you need to match this attribute from the CSS and change its aspect.</p>
+        </context>
+        <steps id="steps_o5v_ly5_q2b">
+            <step>
+                <cmd>In the customization XSL add: </cmd>
+                <info>
+                    <codeblock outputclass="language-xml">&lt;xsl:template match="*[contains(@class, ' task/step ')][count(../*[contains(@class, ' task/step ')]) = 1]">
+    &lt;xsl:copy>
+         &lt;xsl:copy-of select="@*"/>
+         &lt;xsl:attribute name="outputclass" select="concat(@outputclass, ' single ')"/>
+         &lt;xsl:apply-templates/>
+    &lt;/xsl:copy>       
+&lt;/xsl:template></codeblock>
+                </info>
+            </step>
+            <step>
+                <cmd>In the customization CSS add:</cmd>
+                <info>
+                    <codeblock outputclass="language-css">*[outputclass ~= "single"] {
+    list-style-type:circle !important;
+    margin-left:2em;
+}</codeblock>
+                </info>
+            </step>
+        </steps>
+       
+    </taskbody>
+    <related-links>
+        <link href="pdf-xslt-extensions-pub-template.dita"/>
+    </related-links>
+</task>
