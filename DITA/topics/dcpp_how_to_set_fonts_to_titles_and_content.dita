@@ -9,23 +9,48 @@
             ><ph keyref="wysywig-or-html5-transformation"/><indexterm>Fonts</indexterm></indexterm>
         <indexterm product="pdf-css">Fonts</indexterm>
       </keywords>
+      <prodinfo>
+        <vrmlist>
+          <vrm version=""/>
+        </vrmlist>
+      </prodinfo>
     </metadata>
   </prolog>
   <body>
     <p>Suppose that in your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>,
       you have defined your font (for example, <i>Roboto</i>) using a Google web font:</p>
     <codeblock outputclass="language-css">@import url('https://fonts.googleapis.com/css?family=Roboto');</codeblock>
-    <p>For the titles, match all the <codeph>topic/title</codeph> elements:</p>
-    <codeblock outputclass="language-css">*[class ~= "topic/title"] {
-  font-family: "Roboto";
+    <p>You can force a font on all elements, then style the ones that need to be different. The
+      advantage of this method is that you do not need to trace all elements that have a font family
+      defined in the built-in CSSs, you just reset them all.</p>
+    <p>In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref> add an
+        <codeph>important</codeph> rule that associate a font to all the elements from the
+      document:</p>
+    <codeblock outputclass="language-css">*{
+  font-family:"Roboto" !important;
 }</codeblock>
-    <p>For the content, you can match the root element of the document and set another font on it
-      (for example, <i>sans-serif</i>). All elements will inherit this
-      font.<codeblock outputclass="language-css">:root {
-  font-family: sans-serif;
-}</codeblock>Since
-      the title selector from the above example is more specific, it will take precedence over the
-      selector that was used for content, thus the titles will preserve the <i>Roboto</i> font.</p>
+    <note>If you want to use the <codeph>:root</codeph> selector instead of the <codeph>*</codeph>
+      sector, without the <codeph>!important</codeph> qualifier, the elements that have a predefined
+      fonts specified in the built-in CSS will keep that font. If your content uses non-latin
+      glyphs, it is possible that the builtin fonts do not render them.</note>
+    <p>Next, identify the selectors for the elements that need to be styled with a different font
+      than the one associated above. To do this, please see the section: <xref
+        href="dcpp_debugging_the_css.dita"/>.</p>
+    <p>For example in case you want the titles or the pre-formatted text to have a different font
+      from the rest, matched by the above * selector, you need to use more specific CSS
+      selectors:</p>
+    <p>
+      <codeblock outputclass="language-css">*[class~="front-page/front-page-title"],
+*[class~="topic/title"] {
+  font-family: Arial !important;
+}
+
+*[class~="pr-d/codeph"],
+*[class~="topic/pre"] {
+  font-family: monospace !important;
+}
+</codeblock>
+    </p>
   </body>
   <related-links>
     <linklist>
