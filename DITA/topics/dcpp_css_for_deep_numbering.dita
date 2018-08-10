@@ -81,17 +81,13 @@
       <p>To display the numbers in the table of contents, a pseudo <codeph>:before</codeph> element
         is used on <xmlelement>topicmeta</xmlelement> (this contains the TOC label and the header
         and page number). </p>
-      <p>To avoid wrapping the text under the chapter/section number, these pseudo elements are
-        moved to the left of the <xmlelement>topicmeta</xmlelement> using position <b>absolute</b>: </p>
-      <codeblock outputclass="language-css">*[class ~= "map/topicref"] {
-    position:relative;
+      <codeblock outputclass="language-css">*[class ~= "map/topicref"] > *[class ~= "map/topicmeta"]:before {
+    display:inline;
+    position:static;
 }
-
-*[class ~= "map/topicref"] > *[class ~= "map/topicmeta"]:before {
-    display:block;
-    position:absolute; /* If the TOC item is wrapping, it won't wrap under the numbering. */
-    top:0.4em; /* This aligns the before with the TOC item text. */
-}  
+*[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"] {
+     display:inline !important; 
+}
 
 *[class ~= "map/topicref"][is-part] > *[class ~= "map/topicmeta"]:before {
     left: -1.5em; /* Increase the value of width and left as the depth increases. */
@@ -113,19 +109,19 @@
       <p>And now the content for each pseudo element (depending on its depth) is set:</p>
       <codeblock outputclass="language-css">
 *[class ~= "map/topicref"][is-part] > *[class ~= "map/topicmeta"]:before {
-    content: counter(toc-part, upper-roman) ".";
+    content: counter(toc-part, upper-roman) ". ";
 }
 *[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicmeta"]:before {
-    content: counter(toc-chapter) ".";
+    content: counter(toc-chapter) ". ";
 }
 *[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicref"] > *[class ~= "map/topicmeta"]:before {
-    content: counter(toc-chapter) "." counter(toc-section1);
+    content: counter(toc-chapter) "." counter(toc-section1 ". ");
 }
 *[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicref"] > *[class ~= "map/topicref"] > *[class ~= "map/topicmeta"]:before {
-    content: counter(toc-chapter) "." counter(toc-section1) "." counter(toc-section2);
+    content: counter(toc-chapter) "." counter(toc-section1) "." counter(toc-section2) ". ";
 }
 *[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicref"] > *[class ~= "map/topicref"] > *[class ~= "map/topicref"] > *[class ~= "map/topicmeta"]:before {
-    content: counter(toc-chapter) "." counter(toc-section1) "." counter(toc-section2) "." counter(toc-section3);
+    content: counter(toc-chapter) "." counter(toc-section1) "." counter(toc-section2) "." counter(toc-section3) ". ";
 }</codeblock>
       <note type="tip">When using deep numbering rules, to avoid double numbering in the TOC,
         override the default labeling behavior defined in the
