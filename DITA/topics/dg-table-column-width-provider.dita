@@ -5,18 +5,20 @@
   <title>Configuring a Table Column Width Provider</title>
   <prolog>
     <metadata>
-      <keywords><indexterm>Framework customization<indexterm>Extensions<indexterm>Author Table Column Width
-              Provider</indexterm></indexterm></indexterm></keywords>
+      <keywords>
+        <indexterm>Framework customization<indexterm>Extensions<indexterm>Author Table Column Width
+              Provider</indexterm></indexterm></indexterm>
+      </keywords>
     </metadata>
   </prolog>
   <taskbody>
     <context>
       <p>In a custom <xref keyref="glossentry_framework"><term>framework</term></xref>, the
           <codeph>table</codeph> element as well as the table columns can have specified widths. For
-        these widths to be considered by <uicontrol>Author</uicontrol> mode we need to provide the
-        means to determine them. As explained in <xref
-          href="dg-styling-table-element.dita#dg-styling-table-element"/>, if you use the
-        table element attribute <b>width</b>
+        these widths to be considered by <uicontrol>Author</uicontrol> mode, you need to provide the
+        means for determining them. As explained in <xref
+          href="dg-styling-table-element.dita#dg-styling-table-element"/>, if you use the table
+        element attribute <b>width</b>
         <ph keyref="product"/> can determine the table width automatically. In this example the
         table has <codeph>col</codeph> elements with <b>width</b> attributes that are not recognized
         by default. You will need to implement a Java extension class to determine the column
@@ -24,9 +26,8 @@
     </context>
     <steps>
       <step>
-        <cmd>Create the class
-            <i>simple.documentation.framework.TableColumnWidthProvider</i>. This class
-          must implement the <xref
+        <cmd>Create the class <i>simple.documentation.framework.TableColumnWidthProvider</i>. This
+          class must implement the <xref
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorTableColumnWidthProvider.html"
             format="html" scope="external"
               ><i>ro.sync.ecss.extensions.api.AuthorTableColumnWidthProvider</i></xref>
@@ -46,11 +47,10 @@ public class TableColumnWidthProvider
         <cmd>Method <i>init</i> is taking as argument an <xref
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorElement.html"
             format="html" scope="external"
-              ><i>ro.sync.ecss.extensions.api.node.AuthorElement</i></xref> that
-          represents the XML <codeph>table</codeph> element. In our case the column widths are
-          specified in <codeph>col</codeph> elements from the <codeph>table</codeph> element. In
-          such cases you must collect the span information by analyzing the <codeph>table</codeph>
-          element.</cmd>
+            ><i>ro.sync.ecss.extensions.api.node.AuthorElement</i></xref> that represents the XML
+            <codeph>table</codeph> element. In our case the column widths are specified in
+            <codeph>col</codeph> elements from the <codeph>table</codeph> element. In such cases you
+          must collect the span information by analyzing the <codeph>table</codeph> element.</cmd>
         <info>
           <codeblock outputclass="language-java">public void init(AuthorElement tableElement) {
 	this.tableElement = tableElement;
@@ -88,9 +88,9 @@ public class TableColumnWidthProvider
         </info>
       </step>
       <step>
-        <cmd>The method <i>isTableAndColumnsResizable</i> should check if the table
-          cells are <codeph>td</codeph>. This method determines if the table and its columns can be
-          resized by dragging the edge of a column.</cmd>
+        <cmd>The method <i>isTableAndColumnsResizable</i> should check if the table cells are
+            <codeph>td</codeph>. This method determines if the table and its columns can be resized
+          by dragging the edge of a column.</cmd>
         <info>
           <codeblock outputclass="language-java">public boolean isTableAndColumnsResizable(String tableCellsTagName) {
   return "td".equals(tableCellsTagName);
@@ -98,8 +98,8 @@ public class TableColumnWidthProvider
         </info>
       </step>
       <step>
-        <cmd>Methods <i>getTableWidth</i> and <i>getCellWidth</i> are used
-          to determine the table and column width. The table layout engine will ask this <xref
+        <cmd>Methods <i>getTableWidth</i> and <i>getCellWidth</i> are used to determine the table
+          and column width. The table layout engine will ask this <xref
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorTableColumnWidthProvider.html"
             format="html" scope="external"
               ><i>ro.sync.ecss.extensions.api.AuthorTableColumnWidthProvider</i></xref>
@@ -139,9 +139,9 @@ getCellWidth(AuthorElement cellElement, int colNumberStart,
         </info>
       </step>
       <step>
-        <cmd>Methods <i>commitTableWidthModification</i> and
-            <i>commitColumnWidthModifications</i> are used to commit changes made to the
-          width of the table or its columns when using the mouse drag gestures.</cmd>
+        <cmd>Methods <i>commitTableWidthModification</i> and <i>commitColumnWidthModifications</i>
+          are used to commit changes made to the width of the table or its columns when using the
+          mouse drag gestures.</cmd>
         <info>
           <codeblock outputclass="language-java">	public void commitTableWidthModification
 (AuthorDocumentController authorDocumentController,
