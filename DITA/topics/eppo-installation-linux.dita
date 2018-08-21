@@ -93,203 +93,158 @@
       <p>You can run the installation in unattended mode by running the installer from the command
         line with the <b>-q</b> parameter. By default, running the installer in unattended mode
         installs <ph keyref="product"/> with the default options and does not overwrite existing
-        files. You can change various options for the unattended installer using the installer <xref
-          href="#eppo-installation-linux/command-line-parameters" format="dita">command line
-          parameters</xref>.</p>
+        files. You can change various options for the unattended installer using the installer
+        command line parameters.</p>
     </section>
-    <section id="linux_installer_command_line_reference">
+    <section id="command-line-parameters">
       <title>Linux Installer Command Line Reference</title>
-      <p>The <ph keyref="product"/> installer for Linux creates a file called
+      <p>The <ph keyref="product"/> installer for Linux supports a variety of command line
+        parameters.</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Commonly Used Command Line Parameters</dt>
+            <dd>The <ph keyref="product"/> installer supports the following commonly used command
+              line parameters:<p>
+                <dl>
+                  <dlentry>
+                    <dt>-q</dt>
+                    <dd>Instructs the installer to run in unattended mode. The installer will not
+                      prompt the user for input during the install. Default settings will be used
+                      for all options unless a <xref
+                        href="#eppo-installation-linux/windows_installer_responsevarfile"
+                        format="dita"><filepath>response.varfile</filepath></xref> is specified
+                      using the <i>-varfile</i> option.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>-overwrite</dt>
+                    <dd>In unattended mode, the installer does not overwrite files with the same
+                      name if a previous version of the <ph keyref="product"/> is installed in the
+                      same folder. The <b>-overwrite</b> parameter added after the <b>-q</b>
+                      parameter forces the overwriting of these files.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>-console</dt>
+                    <dd>Displays a console during the installation.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>-varfile</dt>
+                    <dd>Specifies the location of a <xref
+                        href="#eppo-installation-linux/windows_installer_responsevarfile"
+                        format="dita"><filepath>response.varfile</filepath></xref>, normally to be
+                      used during an unattended installation.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>-V</dt>
+                    <dd>Used to define a <xref
+                        href="#eppo-installation-linux/dl-variable-parameters" format="dita"
+                        >variable parameter</xref> to be used by an installation.</dd>
+                  </dlentry>
+                </dl>
+              </p><p><u><b>EXAMPLE:</b></u><codeblock outputclass="language-bourne">oxygen.sh -q -overwrite -console -VautoVersionChecking=false</codeblock></p></dd>
+          </dlentry>
+          <dlentry id="parameters-preconfig-license">
+            <dt>Command Line Parameters for Preconfiguring License Server Details</dt>
+            <dd>The <ph keyref="product"/> installer also supports the following command line
+              parameters used for preconfiguring license server details:<p>
+                <dl>
+                  <dlentry>
+                    <dt>license.servlet.url</dt>
+                    <dd>Specifies the URL of the HTTP license server.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>license.servlet.user.name</dt>
+                    <dd>Specifies the user name for the HTTP license server.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>license.servlet.password</dt>
+                    <dd>Specifies the password for the HTTP license server, in clear form (will be
+                      stored encrypted).</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>license.servlet.password.encrypted</dt>
+                    <dd>Specifies the password for the HTTP license server, in encrypted form. Can
+                      be obtained from an entry with same name in an existing
+                        <filepath>license.xml</filepath> file (found in: <filepath product="editor"
+                        >[user_home_directory]/.com.oxygenxml</filepath><filepath product="author"
+                        >[user_home_directory]/.com.oxygenxml.author</filepath><filepath
+                        product="developer"
+                        >[user_home_directory]/.com.oxygenxml.developer</filepath>).</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>backup.license.servlet.url</dt>
+                    <dd>Specifies the URL of the backup HTTP license server.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>backup.license.servlet.user.name</dt>
+                    <dd>Specifies the user name for the backup HTTP license server.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>backup.license.servlet.password</dt>
+                    <dd>Specifies the password for the backup HTTP license server, in clear form
+                      (will be stored encrypted).</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>backup.license.servlet.password.encrypted</dt>
+                    <dd>Specifies the password for the HTTP license server, in encrypted form. Can
+                      be obtained from an entry with same name in an existing
+                        <filepath>license.xml</filepath> file (found in: <filepath product="editor"
+                        >[user_home_directory]/.com.oxygenxml</filepath><filepath product="author"
+                        >[user_home_directory]/.com.oxygenxml.author</filepath><filepath
+                        product="developer"
+                        >[user_home_directory]/.com.oxygenxml.developer</filepath>).</dd>
+                  </dlentry>
+                </dl>
+              </p><p><u><b>EXAMPLE:</b></u><codeblock outputclass="language-bourne">oxygen.sh "-Vlicense.servlet.url=http://main.licenseserver:8080/oXygenLicenseServlet/license-servlet"
+ "-Vlicense.servlet.user.name=user" "-Vlicense.servlet.password=mypass" 
+ "-Vbackup.license.servlet.url=http://backup.licenseserver:8080/oXygenLicenseServlet/license-servlet"
+ "-Vbackup.license.servlet.user.name=user" "-Vbackup.license.servlet.password=mypass"</codeblock></p></dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    <section id="windows_installer_responsevarfile">
+      <title>Linux Installer <i>response.varfile</i></title>
+      <p>The <ph keyref="product"/> installer for Linux also creates a file called
           <filepath>response.varfile</filepath>, which records the choices that the user made when
         running the installer interactively. The generated response file is found in the
           <filepath>[OXYGEN_INSTALL_DIR]/.install4j</filepath> folder. You can use the
           <filepath>response.varfile</filepath> to set the options for an <xref
           href="#eppo-installation-linux/unattended_installation" format="dita">unintended
-          install</xref>.</p>
-      <p>The following table describes some of the settings that can be used in the
-          <filepath>response.varfile</filepath>:<table frame="all" rowsep="1" colsep="1"
-          id="table_ncm_v3r_x4">
-          <title><i>response.varfile</i> Options Parameters</title>
-          <tgroup cols="3">
-            <colspec colname="c1" colnum="1" colwidth="1.25*"/>
-            <colspec colname="newCol2" colnum="2" colwidth="2.50*"/>
-            <colspec colname="c2" colnum="3" colwidth="1.25*"/>
-            <thead>
-              <row>
-                <entry>Parameter Name</entry>
-                <entry>Description</entry>
-                <entry>Values</entry>
-              </row>
-            </thead>
-            <tbody>
-              <row>
-                <entry><b>autoVersionChecking</b></entry>
-                <entry>Automatic version checking.</entry>
-                <entry><b>true</b> / <b>false</b>. Default setting is <b>true</b>.</entry>
-              </row>
-              <row>
-                <entry><b>reportProblem</b></entry>
-                <entry>Allows you to report a problem encountered while using <ph keyref="product"
-                  />.</entry>
-                <entry><b>true</b> / <b>false</b>. Default setting is <b>true</b>.</entry>
-              </row>
-              <row>
-                <entry><b>downloadResources</b></entry>
-                <entry>Allows <ph keyref="product"/> to download resources (links to video
-                  demonstrations, webinars, and upcoming events) from <ph
-                    conkeyref="reusable_links/home"/> to populate the application welcome
-                  screen.</entry>
-                <entry><b>true</b> / <b>false</b>. Default setting is <b>true</b>.</entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </table></p>
-      <p>For more information about the <filepath>response.varfile</filepath> format, see <xref
+          install</xref>. For more information about the <filepath>response.varfile</filepath>
+        format, see <xref
           href="http://resources.ej-technologies.com/install4j/help/doc/index.html#install4j.helptopics.installers.responseFile"
           format="html" scope="external">install4j site</xref>.</p>
-      <sectiondiv id="command-line-parameters"><u><b>Command Line Parameters</b></u><p>The <ph
-            keyref="product"/> installer supports the following command line parameters:<table
-            frame="all" rowsep="1" colsep="1">
-            <title>Supported Parameters</title>
-            <tgroup cols="2">
-              <colspec colname="c1" colnum="1" colwidth=".75*"/>
-              <colspec colname="c2" colnum="2" colwidth="3.25*"/>
-              <thead>
-                <row>
-                  <entry>Option</entry>
-                  <entry>Meaning</entry>
-                </row>
-              </thead>
-              <tbody>
-                <row>
-                  <entry><b>-q</b></entry>
-                  <entry>Run the installer in unattended mode. The installer will not prompt the
-                    user for input during the install. Default settings will be used for all options
-                    unless a <filepath>response.varfile</filepath> is specified using the
-                      <i>-varfile</i> option or individual settings are specified using <p>
-                      <dl>
-                        <dlentry>
-                          <dt>Example on Windows: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.exe -q </codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                        <dlentry>
-                          <dt>Example on Linux: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.sh -q </codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                      </dl>
-                    </p></entry>
-                </row>
-                <row>
-                  <entry><b>-overwrite</b></entry>
-                  <entry>In unattended mode, the installer does not overwrite files with the same
-                    name if a previous version of the <ph keyref="product"/> is installed in the
-                    same folder. The <b>-overwrite</b> parameter added after the <b>-q</b> parameter
-                    forces the overwriting of these files. <p>
-                      <dl>
-                        <dlentry>
-                          <dt>Example on Windows: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.exe -q -overwrite</codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                        <dlentry>
-                          <dt>Example on Linux: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.sh -q -overwrite</codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                      </dl>
-                    </p></entry>
-                </row>
-                <row>
-                  <entry><b>-console</b></entry>
-                  <entry>
-                    <p>To display a console for the unattended installation, add a <b>-console</b>
-                      parameter to the command line. <dl>
-                        <dlentry>
-                          <dt>Example on Windows: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">start /wait oxygen.exe -q -console</codeblock>
-                            </p>
-                            <note>The use of <i>start /wait</i> on Windows is required to make the
-                              installer run in the foreground. It you run it without <i>start
-                                /wait</i>, it will run in the background.</note>
-                          </dd>
-                        </dlentry>
-                        <dlentry>
-                          <dt>Example on Linux: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.sh -q -console</codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                      </dl></p>
-                  </entry>
-                </row>
-                <row>
-                  <entry><b>-varfile</b></entry>
-                  <entry>Points to the location of a <filepath>response.varfile</filepath> to be
-                    used during an unattended installation.<p>
-                      <dl>
-                        <dlentry>
-                          <dt>Example on Windows: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.exe -q -varfile response.varfile</codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                        <dlentry>
-                          <dt>Example on Linux: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.sh -q -varfile response.varfile</codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                      </dl>
-                    </p></entry>
-                </row>
-                <row>
-                  <entry><b>-V</b></entry>
-                  <entry>Is used to define a variable to be used by an unattended installation.<p>
-                      <dl>
-                        <dlentry>
-                          <dt>Example on Windows: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.exe -q -VusageDataCollector=false</codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                        <dlentry>
-                          <dt>Example on Linux: </dt>
-                          <dd>
-                            <p>
-                              <codeblock outputclass="language-ini">oxygen.sh -q -VusageDataCollector=false</codeblock>
-                            </p>
-                          </dd>
-                        </dlentry>
-                      </dl>
-                    </p></entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table></p></sectiondiv>
+      <p>
+        <dl id="dl-variable-parameters">
+          <dlentry>
+            <dt>Variable Parameters (can be used in the <i>response.varfile</i> or from the command
+              line)</dt>
+            <dd>The following variable parameters are supported in the
+                <filepath>response.varfile</filepath> (or from the command line):<p>
+                <dl>
+                  <dlentry>
+                    <dt>autoVersionChecking</dt>
+                    <dd>Used for automatic version checking. Possible values are <b>true</b>
+                      (default) or <b>false</b>.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>reportProblem</dt>
+                    <dd>Used to report a problem encountered while using <ph keyref="product"/>.
+                      Possible values are <b>true</b> (default) or <b>false</b>.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt>downloadResources</dt>
+                    <dd>Used to download resources (links to video demonstrations, webinars, and
+                      upcoming events) from <ph conkeyref="reusable_links/home"/> to populate the
+                      application welcome screen. Possible values are <b>true</b> (default) or
+                        <b>false</b>.</dd>
+                  </dlentry>
+                </dl>
+              </p></dd>
+          </dlentry>
+        </dl>
+      </p>
     </section>
   </body>
 </topic>
