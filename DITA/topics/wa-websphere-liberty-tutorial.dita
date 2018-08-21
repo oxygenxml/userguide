@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-websphere-liberty-tutorial">
+  <title>Deploying Web Author in WebSphere Liberty</title>
+  <body>
+    <p>The following procedure is an example for a deployment of<ph keyref="webappProduct"/> in
+      WebSphere Liberty:</p>
+    <ol>
+      <li>Download IBM WebSphere Liberty version 8.5.5.8. For information, see <xref
+          href="http://www-01.ibm.com/support/docview.wss?uid=swg24041178" format="html"
+          scope="external"/>.</li>
+      <li>Extract the contents of the downloaded archive into a folder.</li>
+      <li>Open a command line interface and go to that folder.</li>
+      <li>Execute the following
+        command:<codeblock outputclass="language-java">bin\server create</codeblock></li>
+      <li>Put the resulting <filepath>.war</filepath> file in:
+          <filepath>usr\servers\defaultServer\dropins</filepath>.</li>
+      <li>Modify <filepath>usr\servers\defaultServer\server.xml</filepath> with the following
+        code:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;server description="new server">
+    &lt;httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="5080" httpsPort="-1"/>
+
+    &lt;!-- Enable the required features -->
+    &lt;featureManager>
+        &lt;feature>localConnector-1.0&lt;/feature>
+        &lt;feature>servlet-3.1&lt;/feature>
+    &lt;/featureManager>
+
+    &lt;!-- Automatically expand WAR files -->
+    &lt;applicationManager autoExpand="true"/>
+
+    &lt;!-- WebSphere does not like Shiro JSESSION-ID cookie format.
+         Rename the default cookie. -->
+    &lt;httpSession cookieName="WEBSPHERE_JESSIONID"/>
+&lt;/server></codeblock></li>
+      <li>Create a <filepath>jvm.options</filepath> file in
+          <filepath>[WEBSPHERE]\usr\servers\defaultServer\</filepath>, with the following
+        content:<codeblock outputclass="language-java">-Doxygen.data.dir=&lt;path-to-wlp>\usr\servers\defaultServer\data</codeblock></li>
+      <li>The deployment will be made automatically by WebSphere (check
+          <filepath>[WEBSPHERE]\usr\servers\defaultServer\logs\console.log</filepath>).</li>
+      <li>In a command line interface, execute the following
+        command:<codeblock outputclass="language-java">server start --clean</codeblock></li>
+    </ol>
+    <p>
+      <note type="other" othertype="Additional Information">
+        <ul>
+          <li>The application is deployed when the URL is first accessed
+              (<i>http://localhost:5080/oxygenxml-web-author/app/oxygen.html</i>).</li>
+          <li>The <b>Web Author</b> log can be found in:
+            <filepath>data/logs/oxygen.log</filepath>.</li>
+          <li>To view the status of the server, run: <codeph>server status</codeph>.</li>
+          <li>To stop the server, run: <codeph>server stop</codeph>.</li>
+        </ul>
+      </note>
+    </p>
+  </body>
+</topic>
