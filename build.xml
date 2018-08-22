@@ -264,6 +264,12 @@
 			<equals arg1="${p-format}" arg2="webhelp-responsive"/>
 		</condition>
 		
+		<condition property="youtubeLink" value="youtubeLink" else="">
+			<equals arg1="${p-format}" arg2="eclipsehelp"/>
+			<equals arg1="${p-format}" arg2="htmlhelp"/>
+			<equals arg1="${p-format}" arg2="javahelp"/>
+		</condition>
+		
 		<condition property="pdf" value="pdf" else="">
 			<or>
 				<equals arg1="${p-format}" arg2="pdf-css"/>
@@ -327,6 +333,9 @@
 			
 			<!-- Relevant only for htmlhelp -->
 			<arg value="-DHTMLHelpCompiler=${hhc.exe}" unless:blank="${htmlhelp}" />
+
+			<!-- Relevant for CHM, EclipseHelp, JavaHelp -->
+			<arg value="-Dcom.oxygenxml.xhtml.linkToMediaResources=true" unless:blank="${youtubeLink}" />
 
 		</exec>
 		
