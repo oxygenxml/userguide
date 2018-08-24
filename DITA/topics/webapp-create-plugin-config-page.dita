@@ -41,20 +41,26 @@
             <li>Implement the <i>getPath</i> method to return a non-empty string that represents the
               path for which this extension will be served.<p>For
               example:</p><codeblock outputclass="language-ini"> {webapp-context}/plugins-dispatcher/RESULT_OF_GETPATH</codeblock></li>
-            <li>If you need to override the <i>init</i> method, make sure you call
-                <i>super.init()</i>. Otherwise, options will not be saved to disk and will be lost
-              when you restart the application.</li>
-            <li>If you need to override any of the <i>doPut/doDelete</i> methods, make sure you call
-              the <i>saveOptions</i> method at the end to save the options to disk.</li>
-            <li>If you need to override the <i>doGet</i> method, make sure it responds with the
-              result of <i>getOptionsForm</i> for header <codeph>Accept=text/html</codeph>, and with
-              the result of <i>getOptionsJson</i> when called with header
+            <li>Override the <i>init</i> method to set some defaults for your options, make sure you
+              call <i>super.init()</i>. Otherwise, options will not be saved to disk and will be
+              lost when you restart the application.</li>
+            <li>Optionally, if you need to override any of the <i>doPut/doDelete</i> methods, make
+              sure you call the <i>saveOptions</i> method at the end to save the options to
+              disk.</li>
+            <li>Optionally, if you need to override the <i>doGet</i> method, make sure it responds
+              with the result of <i>getOptionsForm</i> for header <codeph>Accept=text/html</codeph>,
+              and with the result of <i>getOptionsJson</i> when called with header
                 <codeph>Accept=application/json</codeph>. Use the <i>getOption</i> or
                 <i>getDefaultOptions</i> methods to access the current or default options.</li>
           </ul><note type="tip">For an implementation example, you can look at
               <i>com.oxygenxml.sdksamples.github.GithubPluginConfigExtension</i> in the <xref
               href="https://github.com/oxygenxml/webapp-github-plugin/blob/SNAPSHOT/src/main/java/com/oxygenxml/examples/github/GithubPluginConfigExtension.java/"
               format="html" scope="external"><i>webapp-github-plugin</i> project</xref>.</note></li>
+        <li>To use these options from the Java code of your plugin, use the  <xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/OptionsStorage.html"
+            format="html" scope="external"><i>ro.sync.ecss.extensions.api.OptionsStorage</i></xref>
+          API like in the example
+          below:<codeblock outputclass="language-java">PluginWorkspaceProvider.getPluginWorkspace().getOptionsStorage().getOption(name, defaultValue);</codeblock></li>
       </ol><b>Result:</b> A <uicontrol><image href="../img/ConfigureSearchScope16.png"
         />Configure</uicontrol> icon is now displayed next to its name in the
         <uicontrol>Administration</uicontrol> page. </p>
