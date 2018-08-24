@@ -171,7 +171,16 @@
         consecutive ordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
-  
+
+  <sch:pattern>
+    <!-- Report ordered and unordered lists with only one list item -->
+    <sch:rule context="*[contains(@class, ' topic/ul ') or contains(@class, ' topic/ol ')]">
+      <sch:report test="count(li) = 1">
+        Single list item! Converted to a paragraph and get rid of the parent list element.
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+
   <sqf:fixes>
     <!-- Merge the two lists into one -->
     <sqf:fix id="mergeLists">
@@ -710,4 +719,14 @@
       </xsl:for-each>
     </xsl:value-of>
   </xsl:function>
+  
+  <!-- Rule that detects the use of both href and keyref attribute in the same topicref element. 
+    While perfectly legit, we prefer to use only one of these attributes at a time. -->
+  <sch:pattern>
+    <sch:rule context="topicref">
+      <sch:report test="@href and @keyref">
+        Both "href" and "keyref" attributes set. Keep only one of them.
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
 </sch:schema>
