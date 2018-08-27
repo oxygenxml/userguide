@@ -175,7 +175,7 @@
   <sch:pattern>
     <!-- Report ordered and unordered lists with only one list item -->
     <sch:rule context="*[contains(@class, ' topic/ul ') or contains(@class, ' topic/ol ')]">
-      <sch:report test="count(li) = 1">
+      <sch:report test="count(li) = 1 and not(@conkeyref) and not(@conref)">
         Single list item! Converted to a paragraph and get rid of the parent list element.
       </sch:report>
     </sch:rule>
