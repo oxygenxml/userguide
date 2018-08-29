@@ -144,10 +144,10 @@
                 href="#configure-elements-attr-cc-individually/possible-attributes" format="dita"
                   ><i>possibleAttributes</i></xref> or <xref
                 href="#configure-elements-attr-cc-individually/reject-attributes" format="dita"
-                  ><i>rejectAttributes</i></xref> to specify or restrict attributes for an
-              entire <term>framework</term>.<p>For example, suppose that you only want to allow a
-                limited set of attributes in a customized <term>framework</term>. The configuration
-                file should look like
+                  ><i>rejectAttributes</i></xref> to specify or restrict attributes for an entire
+                <term>framework</term>.<p>For example, suppose that you only want to allow a limited
+                set of attributes in a customized <term>framework</term>. The configuration file
+                should look like
                 this:</p><codeblock outputclass="language-xml">&lt;elementProposals possibleAttributes="
                id domains href scope format type conref 
         	props keyref class"/></codeblock><p>Since
@@ -188,8 +188,9 @@
               <i>no-namespace</i>. Consider declaring the namespace mapping on the root of the
             configuration file and prefixing the element names from the <codeph>elementPath</codeph>
             and <codeph>model</codeph> attributes.</li>
-          <li>This configuration file only affects the content completion assistance, not
-            validation.</li>
+          <li>This configuration file only affects the content completion assistance. It has no
+            effect on validation or operations invoked from other areas in the interface (such as
+            the toolbar or menus).</li>
           <li>To test the effects of your changes, you should restart the application, although in
             some cases, you can simply use the <uicontrol><image href="../img/Refresh16.png"
               />Refresh (<shortcut>F5</shortcut>)</uicontrol> action to test your
@@ -218,8 +219,17 @@
               list item element (<codeph>ol/li</codeph>) is inserted, and also to not allow any
               other element besides a paragraph inside the ordered list items.</p><p>To achieve
               this, the configuration file should include the
-              following:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertElements="p"  
-       possibleElements="_INSERTED_"/></codeblock></p></li>
+                following:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertElements="p"  
+       possibleElements="_INSERTED_"/></codeblock><note
+                type="tip">This particular example modifies an action that inserts a list in a DITA
+                document. There are several ways to invoke this action in the interface. For
+                example, there is a toolbar button and an action in the <uicontrol>DITA</uicontrol>
+                menu that inserts a list. However, since the configuration file only affects the
+                  <term>Content Completion Assistant</term>, this modification will have no effect
+                on the behavior of the toolbar or menu action. Those actions would need to be
+                configured separately if you want the result to be the same as the content
+                completion proposal. For more information, see <xref
+                  href="dg-configuring-actions-menus-toolbar.dita"/>.</note></p></li>
           <li><b>Example 2: Insert Complex Element Structure</b><p>For a more complex example,
               suppose that you want to insert a complex structure whenever a DITA
                 <codeph>prolog</codeph> element is inserted. </p><p>For instance, if you need to
@@ -260,9 +270,10 @@
                 <codeph>id</codeph> attribute (with an empty value) whenever a DITA list item
               element (<codeph>li</codeph>) is inserted. The configuration file should include the
               following:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id"/></codeblock></p></li>
-          <li><b>Example 2: Limit Possible Attributes</b><p>Suppose that you also want to limit the number of choices for attributes that are presented to
-              the user whenever a DITA list item element (<codeph>li</codeph>) is inserted. The
-              configuration file should look like
+          <li><b>Example 2: Limit Possible Attributes</b><p>Suppose that you also want to limit the
+              number of choices for attributes that are presented to the user whenever a DITA list
+              item element (<codeph>li</codeph>) is inserted. The configuration file should look
+              like
               this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id" 
           possibleAttributes="id product platform audience"/></codeblock></p><p>Suppose
               that you want to simply restrict your users from inserting <codeph>conref</codeph>
@@ -275,7 +286,12 @@
     </section>
   </body>
   <related-links>
-    <linklist><title>Related Information:</title><link href="configuring-content-completion-proposals.dita#configuring-content-completion-proposals"/><link href="rendering-elements-cc-author.dita#rendering-elements-cc-author" product="author editor authorEclipse editorEclipse"/></linklist>
-    
+    <linklist>
+      <title>Related Information:</title>
+      <link
+        href="configuring-content-completion-proposals.dita#configuring-content-completion-proposals"/>
+      <link href="rendering-elements-cc-author.dita#rendering-elements-cc-author"
+        product="author editor authorEclipse editorEclipse"/>
+    </linklist>
   </related-links>
 </topic>
