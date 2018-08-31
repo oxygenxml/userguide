@@ -7,6 +7,7 @@
     <metadata>
       <keywords>
         <indexterm>Special characters<indexterm>Unsupported characters</indexterm></indexterm>
+        <indexterm>Special characters<indexterm>Unrecognized characters</indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
@@ -19,32 +20,40 @@
       code chart. <ph product="editor author developer">When the encoding type cannot be determined,
           <ph keyref="product"/> displays the <uicontrol>Available Java Encodings</uicontrol> dialog
         box that provides a list of all encodings supported by the Java platform.</ph></p>
-    <p product="editor author developer">If the opened document contains an unsupported character,
-        <ph keyref="product"/> applies <xref
-        href="preferences-encoding.dita#preferences-encoding/encoding-errors-handling">the policy
-        specified in the <uicontrol>Encoding Errors Handling</uicontrol> option</xref>. If the
-      policy is set to REPORT, <ph keyref="product"/> displays an error dialog box with a message
-      about the character not allowed by the encoding. If the policy is set to IGNORE, the character
-      is removed from the document displayed in the editor panel. If the policy is set to REPLACE,
-      the character is replaced with a standard replacement character for that encoding.</p>
-    <p>While in most cases you are using UTF-8, simply changing the encoding name causes the
-      application to save the file using the new encoding.</p>
-    <p product="editor author developer">When saving a document edited in the
-        <uicontrol>Text</uicontrol>, <uicontrol>Grid</uicontrol>, or <uicontrol>Design</uicontrol>
-      modes, if it contains characters not included in the encoding declared in the document prolog,
-        <ph keyref="product"/> presents a notification that you need to resolve the conflict before
-      saving the document.</p>
-    <p product="author editor">When saving a document edited in the <uicontrol>Author</uicontrol>
-      mode, all characters that fall outside the detected encoding will be automatically converted
-      to hexadecimal character entities.</p>
-    <p>When a document with a UTF-16 encoding is edited and saved in <ph keyref="product"/>, the
-      saved document has a byte order mark (BOM) that specifies the byte order of the document
-      content. The default byte order is platform-dependent. That means that a UTF-16 document
-      created on a Windows platform (where the default byte order mark is <i>UnicodeLittle</i>) has
-      a different BOM than one created on a Mac OS platform (where the byte order mark is
-        <i>UnicodeBig</i>). The byte order and the BOM of an existing document are preserved when
-      the document is edited and saved. <ph product="editor author svnClient">This behavior can be
-        changed in <ph keyref="product"/> from the <xref href="preferences-encoding.dita"
-            ><uicontrol>Encoding</uicontrol> preferences page</xref>.</ph></p>
+    <section id="opening_documents_with_unsupported_characters_fbr">
+      <title>Opening Documents with Unsupported Characters</title>
+      <p>When opening a document in <ph keyref="product"/>, if it contains characters that are not
+        supported by the specified encoding standard (these unrecognized characters are rendered as
+        an empty box <image href="../img/Unrecognized_Char.png"/>), the application determines how
+        to handle them based upon the setting specified in the <xref
+          href="preferences-encoding.dita#preferences-encoding/encoding-errors-handling"
+            ><uicontrol>Encoding Errors Handling</uicontrol> option in the
+            <uicontrol>Encoding</uicontrol> preferences page</xref>. The default setting is
+          <uicontrol>REPORT</uicontrol>, which means an error message is displayed for characters
+        that cannot be represented in the specified encoding. If the option is set to
+          <uicontrol>REPLACE</uicontrol>, the character is replaced with a standard replacement
+        character for the particular encoding. If the options is set to
+          <uicontrol>IGNORE</uicontrol>, the error is ignored and the character is not rendered.</p>
+    </section>
+    <section id="saving_documents_with_unsupported_characters">
+      <title>Saving Documents with Unsupported Characters</title>
+      <p product="editor author developer">When saving a document edited in the
+          <uicontrol>Text</uicontrol>, <uicontrol>Grid</uicontrol>, or <uicontrol>Design</uicontrol>
+        modes, if it contains characters that are not supported by the encoding declared in the
+        document prolog, <ph keyref="product"/> displays a notification that you need to resolve the
+        conflict before saving the document.</p>
+      <p product="author editor">When saving a document edited in the <uicontrol>Author</uicontrol>
+        mode, all characters that fall outside the detected encoding will be automatically converted
+        to hexadecimal character entities.</p>
+      <p>When saving a document with UTF-16 encoding, the saved document has a Byte Order Mark (BOM)
+        that specifies the byte order of the document content. The default byte order is
+        platform-dependent. That means that a UTF-16 document created on a Windows platform (where
+        the default byte order mark is <i>UnicodeLittle</i>) has a different BOM than one created on
+        a Mac OS platform (where the byte order mark is <i>UnicodeBig</i>). The byte order and the
+        BOM of an existing document are preserved when the document is edited and saved. <ph
+          product="author developer editor"> This behavior can be changed in <ph keyref="product"/>
+          from the <xref href="preferences-encoding.dita"><uicontrol>Encoding</uicontrol>
+            preferences page</xref>.</ph></p>
+    </section>
   </body>
 </topic>
