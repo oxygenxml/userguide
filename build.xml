@@ -358,10 +358,50 @@
 			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
 			</then>
 		</if>
-
-		<!-- Relevant for the javahelp -->
-		<move file="${p-output}/UserManual.jar" tofile="${p-output}/${p-product}-help.jar" failonerror="false" />
-
+	  
+	  <if>
+	    <equals arg1="${p-format}" arg2="eclipsehelp"></equals>
+	    <then>
+	      <echo>Update contexts.xml and toc.xml in the Eclipse jar file.</echo>
+	      <mkdir dir="${p-output}/temp-${p-product}"/>
+	      <unjar src="${p-output}/${p-product}-help.jar" dest="${p-output}/temp-${p-product}"/>
+	      <echo>Rename the TOC file.</echo>
+	      <move file="${p-output}/temp-${p-product}/UserManual.xml" tofile="${p-output}/temp-${p-product}/toc.xml"></move>
+	      <replaceregexp 
+	        file='${p-output}/temp-${p-product}/toc.xml'
+	        match='(href=")'
+	        replace='\1help/'
+	        encoding='UTF-8'
+	        flags='g' />
+	      <replaceregexp 
+	        file='${p-output}/temp-${p-product}/toc.xml'
+	        match='(topic=")'
+	        replace='\1help/'
+	        encoding='UTF-8'
+	        flags='g' />
+	      <replaceregexp 
+	        file='${p-output}/temp-${p-product}/contexts.xml'
+	        match='(href=")'
+	        replace='\1help/'
+	        encoding='UTF-8'
+	        flags='g' />
+	      
+	      <delete file="${p-output}/${p-product}-help.jar"/>
+	      <jar destfile="${p-output}/${p-product}-help.jar" basedir="${p-output}/temp-${p-product}">
+	        <include name="**/*"/>
+	        <exclude name="${p-product}-help.jar"/>
+	        <exclude name="plugin.*"/>
+	      </jar>
+	    </then>
+	  </if>
+	  
+	  <if>
+	    <equals arg1="${p-format}" arg2="javahelp"></equals>
+	    <then>
+     		<!-- Relevant for the javahelp -->
+     		<move file="${p-output}/UserManual.jar" tofile="${p-output}/${p-product}-help.jar" failonerror="false" />
+	    </then>
+	  </if>
 	</target>
 
 
