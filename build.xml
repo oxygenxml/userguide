@@ -352,7 +352,7 @@
 			          <arg value="helpID.properties"/>
 			      </java>
 
-			      <echo>Create ${p-output}/${product}HelpID.jar file</echo>
+			      <echo>Create ${p-output}/${p-product}HelpID.jar file</echo>
 			      <jar basedir="${p-output}" 
 			          includes="helpID.properties" 
 			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
@@ -363,33 +363,33 @@
 	    <equals arg1="${p-format}" arg2="eclipsehelp"></equals>
 	    <then>
 	      <echo>Update contexts.xml and toc.xml in the Eclipse jar file.</echo>
-	      <mkdir dir="${p-output}/temp-${product}"/>
-	      <unjar src="${p-output}/${product}-help.jar" dest="${p-output}/temp-${product}"/>
+	      <mkdir dir="${p-output}/temp-${p-product}"/>
+	      <unjar src="${p-output}/${p-product}-help.jar" dest="${p-output}/temp-${p-product}"/>
 	      <echo>Rename the TOC file.</echo>
-	      <move file="${p-output}/temp-${product}/UserManual.xml" tofile="${p-output}/temp-${product}/toc.xml"></move>
+	      <move file="${p-output}/temp-${p-product}/UserManual.xml" tofile="${p-output}/temp-${p-product}/toc.xml"></move>
 	      <replaceregexp 
-	        file='${p-output}/temp-${product}/toc.xml'
+	        file='${p-output}/temp-${p-product}/toc.xml'
 	        match='(href=")'
 	        replace='\1help/'
 	        encoding='UTF-8'
 	        flags='g' />
 	      <replaceregexp 
-	        file='${p-output}/temp-${product}/toc.xml'
+	        file='${p-output}/temp-${p-product}/toc.xml'
 	        match='(topic=")'
 	        replace='\1help/'
 	        encoding='UTF-8'
 	        flags='g' />
 	      <replaceregexp 
-	        file='${p-output}/temp-${product}/contexts.xml'
+	        file='${p-output}/temp-${p-product}/contexts.xml'
 	        match='(href=")'
 	        replace='\1help/'
 	        encoding='UTF-8'
 	        flags='g' />
 	      
-	      <delete file="${p-output}/${product}-help.jar"/>
-	      <jar destfile="${p-output}/${product}-help.jar" basedir="${p-output}/temp-${product}">
+	      <delete file="${p-output}/${p-product}-help.jar"/>
+	      <jar destfile="${p-output}/${p-product}-help.jar" basedir="${p-output}/temp-${p-product}">
 	        <include name="**/*"/>
-	        <exclude name="${product}-help.jar"/>
+	        <exclude name="${p-product}-help.jar"/>
 	        <exclude name="plugin.*"/>
 	      </jar>
 	    </then>
