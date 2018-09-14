@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_use_in_headers_text_extracted_from_the_document__xpath">
+    <title>How to Use Computed Data and Images From Document in the Header (XPath)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="wysywig-or-html5-transformation"/>
+          <indexterm>Header<indexterm>XPath</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Header<indexterm>XPath</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p>A very simple approach is to use the <codeph>oxy_xpath</codeph> directly in the content
+      property:</p>
+    <codeblock outputclass="language-css">@page front-page {    	
+     @top-center {
+          content: "Created: " oxy_xpath('//*[contains(@class, " topic/created "][1]');
+     }
+}</codeblock>
+    <p>The next example computes the number of words from the publication. It counts all the words,
+      including the ones from the TOC, but does not take into account the static labels. </p>
+    <codeblock outputclass="language-css">@page front-page {
+     @bottom-center {
+          content: "Number of words: " 
+                    oxy_xpath("string-length(normalize-space(/)) - \
+                               string-length(translate(normalize-space(/),' ','')) +1");
+     }
+}</codeblock>
+    <note>The XPath expression from the page rules are evaluated in the context of the document root
+      element, so you will need to use absolute expressions starting with <codeph>/</codeph> or
+        <codeph>//</codeph>. This is different from the case
+      <?oxy_comment_start author="dan" timestamp="20180914T145702+0300" comment="These notes are duplicated content from ch_extracting_text_from_document_using_xpath.dita from the Chemistry UG.
+Steven, maybe you find a solution, but there are two user-guides."?>when<?oxy_comment_end?>
+      the <codeph>oxy_xpath</codeph> is used in CSS rules that match an element, in this case the
+      XPath expressions are evaluated in the context of the matched element and you can use relative
+      paths.</note>
+    <note>XPath 2.0 is supported. (not schema aware) </note>
+    <p>Another example is to use an image from the document into the publication
+      header:<codeblock outputclass="language-xml">&lt;bookmeta>
+  &lt;metadata>
+   ...
+    &lt;data name="cover">
+        &lt;image href="product-cover.png" outputclass="cover-image"/>
+    &lt;/data>
+   ...
+  &lt;/metadata>
+&lt;/bookmeta></codeblock></p>
+    <p>
+      <codeblock outputclass="language-css">@page {
+   @top-center {
+        content: url("oxy_xpath('//*[contains(@outputclass, "cover-image")]/@href')");
+   }
+}</codeblock>
+    </p>
+    <p>If the URL returned by <codeph>oxy_xpath</codeph> is not absolute it is considered to be
+      relative to the CSS file. To obtain an absolute URL from one relative to the XML document you
+      can use in the XPath expression functions like <codeph>resolve-uri</codeph> and
+        <codeph>document-uri</codeph>:</p>
+    <codeblock outputclass="language-css">@page {
+   @top-center {
+        content: url(oxy_xpath("resolve-uri(//*[contains(@outputclass, 'cover-image')]/@href), document-uri(/))"));
+   }
+}</codeblock>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html"
+        href="https://www.oxygenxml.com/doc/ug-chemistry/topics/ch_headers-and-footers.html"
+        scope="external"/>
+      <link format="html" href="http://zvon.org/xxl/XPathTutorial/General/examples.html"
+        scope="external"/>
+      <link format="html"
+        href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-xpath-function.html"
+        scope="external"/>
+    </linklist>
+  </related-links>
+</topic>
