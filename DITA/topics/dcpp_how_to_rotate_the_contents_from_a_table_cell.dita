@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_rotate_the_contents_from_a_table_cell">
+    <title>How to Rotate Content from a Table Cell</title>
+    <body>
+        <p>There are cases in which you want to style the first column as a kind of table header,
+      with vertical text in it. </p>
+    <p>There is an important thing to remember: we can rotate an element from a table cell, but not
+      the cell itself. So your DITA table cell should contain a <xmlelement>div</xmlelement> or a
+        <xmlelement>p</xmlelement> element that will be rotated. The cell has to be marked somehow
+      so we can match it from the CSS. One way is to set an <xmlatt>outputclass</xmlatt> attribute
+      on it, another will be to mark the table and then match the first entries from it, etc..</p>
+    <codeblock outputclass="language-xml">  &lt;row>
+      ...
+      &lt;entry outputclass="rotated">
+            &lt;p>Rotated&lt;/p>
+      &lt;/entry>
+      ...
+ &lt;/row></codeblock>
+    <p>In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, use the
+      following rule that matches the child of the entry:</p>
+    <codeblock outputclass="language-css">*[outputclass ~= "rotated"] > * {
+  display: block;
+  transform: rotate(-90deg) !important;
+  text-align: left !important;
+
+  padding:0; 
+  margin:0;
+ 
+  white-space: nowrap;
+
+  width:150px; 
+  height:80px; 
+}</codeblock>
+    <p>The padding and margins are set to zero to clear any space that may come from other rules.
+      The width is required -  it will become the height of the cell. If this is not specified, the
+      vertical rotated text will bleed out of the cell. The height is optional.</p>
+    </body>
+</topic>
