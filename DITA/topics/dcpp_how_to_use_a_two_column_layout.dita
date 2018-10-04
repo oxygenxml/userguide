@@ -3,19 +3,46 @@
 <topic id="dcpp_how_to_use_a_two_column_layout">
   <title>How to Use a Two Column Layout</title>
   <body>
-    <p>First you need to identify which of the pages need to be changed. Pages are already defined
-      for the cover page, table of contents, chapter content, and others. The complete list is here:
-        <xref href="dcpp_default_page_definitions_css.dita"/>.</p>
-    <p>Next, add the <codeph>column-count</codeph> property to that page. For example:</p>
-    <codeblock outputclass="language-css">@page chapter{  
+    <section id="section_ph5_lxy_3fb">
+      <title>Change layout for predefined pages.</title>
+      <p>First you need to identify which of the pages need to be changed. Pages are already defined
+        for the cover page, table of contents, chapter content, and others. The complete list is
+        here: <xref href="dcpp_default_page_definitions_css.dita"/>.</p>
+      <p>Next, add the <codeph>column-count</codeph> property to that page. For example:</p>
+      <codeblock outputclass="language-css">@page chapter{  
   column-count:2;
 }</codeblock>
-    <p>If you need some of the elements to expand on all the columns, use the
-        <codeph>column-span:all</codeph> CSS property. The next snippet makes the chapter titles
-      span both columns:</p>
-    <codeblock outputclass="language-css">*[class ~= "topic/topic"][is-chapter] > *[class ~= "topic/title"] {
+      <p>If you need some of the elements to expand on all the columns, use the
+          <codeph>column-span:all</codeph> CSS property. The next snippet makes the chapter titles
+        span both columns:</p>
+      <codeblock outputclass="language-css">*[class ~= "topic/topic"][is-chapter] > *[class ~= "topic/title"] {
   column-span:all;
 }</codeblock>
+    </section>
+    <section id="section_ixc_4xy_3fb">
+      <title>Change layout for a specific topic.</title>
+      <p>If you need to have a different column layout just for one topic, you can use the following
+        technique:</p>
+      <ol id="ol_wp3_zwy_3fb">
+        <li>Define an outputclass on the topic root
+          element.<codeblock outputclass="language-xml">&lt;topic outputclass="two_columns" ...</codeblock></li>
+        <li>Define a CSS rule that changes the <codeph>page</codeph> property for the matching
+            element.<codeblock outputclass="language-css">*[class ~= "two_columns"],
+*[outputclass ~= "two_columns"]{ 
+  page: two_column_page !important; 
+}</codeblock><note>Use
+            "class" attribute for the HTML transformation, "outputclass" for the direct
+            transformation, or leave them both.</note><note>The topics from the first level are
+            using the <codeph>chapter</codeph> page. You must use <codeph>!important</codeph>
+            because the built-in rules are more specific.</note></li>
+        <li>Define a page
+          layout.<codeblock outputclass="language-css">@page two_column_page {
+  column-count: 2;
+}</codeblock></li>
+      </ol>
+      <p>Please note that the topic will be separated by other sibling topics with different page
+        layout by page breaks.</p>
+    </section>
   </body>
   <related-links>
     <linklist>
