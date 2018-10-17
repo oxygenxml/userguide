@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa_https_doc">
+  <title>HTTPS Support</title>
+  <body>
+    <p>By default, the Windows, Linux and All Platforms distributions of Web Author handle both HTTP
+      and HTTPS traffic. The default certificate used for HTTPS is a self-signed certificate that is
+      not trusted by web browsers. However, this certificate is trusted by <ph
+        keyref="webappProduct"/> itself when it connects to the internal License Server.<note>The
+        recommended way to deploy HTTPS is to use an HTTPS-capable reverse-proxy (such as NGINX) in
+        front of <ph keyref="webappProduct"/>.</note></p>
+    <section id="section_wj2_s2v_lfb">
+      <title>Replacing the HTTPS Certificate</title>
+      <p>To avoid warnings displayed by web browsers, always use a valid certificate. To install a
+        new certificate, follow these steps:<ol id="ol_wf1_bhv_lfb">
+          <li>Obtain the certificate files from a trusted Certificate Authority and convert them to
+            PEM format.</li>
+          <li>Save them in a Java Keystore:<ul id="ul_igl_sf1_mfb">
+              <li> Build the certificate chain (if needed):
+                <codeblock outputclass="language-ini">cat myhost.pem intermediate.pem root.pem > import.pem</codeblock></li>
+              <li>Convert the private key and certificate files into a PKCS12
+                file:<codeblock outputclass="language-ini">openssl pkcs12 -export -in import.pem -inkey myhost.key.pem -name web-author > server.p12</codeblock></li>
+              <li> Import the PKCS12 file into Java keystore:
+                  <codeblock outputclass="language-ini">keytool -importkeystore -srckeystore server.p12 -destkeystore 
+    [install dir]/tomcat/conf/web-author.keystore -srcstoretype pkcs12 -alias web-author </codeblock><note>The
+                  password for the <filepath>web-author.keystore</filepath> can be found in
+                    <filepath>[install dir]/tomcat/conf/server.xml</filepath>, in the
+                    <codeph>keystorePass</codeph> attribute.</note>
+              </li>
+            </ul></li>
+        </ol></p>
+    </section>
+    <section id="section_pst_2fv_lfb">
+      <title>Redirecting HTTP to HTTPS</title>
+      <p>To strengthen the security of your deployment, you should make sure all users connect to
+        Web Author using HTTPS. To redirect all HTTP traffic to HTTPS, you have to <xref
+          href="webauthor-set-system-property.dita">set the
+            <codeph>oxygen.ssl.redirect.domain</codeph> system property</xref> to the domain and
+        port of your server.</p>
+      <p><b>Example:</b><codeblock outputclass="language-ini">-Doxygen.ssl.redirect.domain=web-author-domain:8443</codeblock></p>
+    </section>
+    <section id="section_g5f_sfv_lfb">
+      <title>Removing the Web Author-specific Keystore</title>
+      <p>By default, <ph keyref="webappProduct"/> is configured to consider its HTTPS certificate as
+        trusted when presented by any server it connects to. This helps you get started quickly and
+        without errors before installing a trusted certificate. Once you configured <ph
+          keyref="webappProduct"/> with a trusted certificate, you should <xref
+          href="webauthor-set-system-property.dita">remove the
+            <codeph>oxygen.ssl.trusted.keystore</codeph> system property</xref>.</p>
+    </section>
+  </body>
+</topic>
