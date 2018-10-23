@@ -299,14 +299,7 @@
       <sch:report test="not(node())"> Empty element. Most DITA elements should not be empty.</sch:report>
     </sch:rule>
   </sch:pattern>
-  <sch:pattern>
-    <!--Tables with more entries than number of columns -->
-    <sch:rule context="*[contains(@class, ' topic/tgroup ')]">
-      <sch:assert
-        test="max(.//*[contains(@class, ' topic/row ')]/count(*[contains(@class, ' topic/entry ')])) = @cols"
-        > Maximum number of entries must equal cols attribute specified on table. </sch:assert>
-    </sch:rule>
-  </sch:pattern>
+  
   
   <!-- Add Ids to all sections, in this way you can easly refer the section from documentation -->
   <sch:pattern>
