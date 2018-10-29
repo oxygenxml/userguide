@@ -12,10 +12,11 @@
     </metadata>
   </prolog>
   <body>
-    <p>An <term>Oxygen Publishing Template</term> package must contain a template descriptor file
-      and some other resources (such as CSS files). All the template resources can be stored in
-      either a ZIP archive or in a folder. It is recommended to use a ZIP archive because it is
-      easier to share with others.</p>
+    <p>An <term>Oxygen Publishing Template</term> package for WebHelp output must contain a template
+      descriptor file and at least one CSS file, and may contain other resources (such as graphics,
+      XHTML files, XSLT files, etc.). All the template resources can be stored in either a ZIP
+      archive or in a folder. It is recommended to use a ZIP archive because it is easier to share
+      with others.</p>
   </body>
   <topic id="template_descritpor_file">
     <title>Template Descriptor File</title>
@@ -32,10 +33,11 @@
     </prolog>
     <body>
       <p>Each publishing template includes a descriptor file that defines the meta-data associated
-        with template. It is an XML file that defines all the resources included in a template (such
-        as HTML page layout files, CSS, JS, fonts, and transformation parameters).</p>
+        with template. It is an XML file with certain elements that defines all the resources
+        included in a template (such as CSS files, images, JS files, and transformation
+        parameters).</p>
       <p>The template descriptor file must have the <filepath>.opt</filepath> file extension and
-        must be located in the templates' root folder.</p>
+        must be located in the template's root folder.</p>
       <p>A template descriptor might look like this:</p>
       <codeblock outputclass="language-xml">&lt;publishing-template>
     &lt;name>Flowers&lt;/name>
@@ -105,15 +107,17 @@
       <section id="webhelp_element">
         <title>Webhelp Element</title>
         <p>The <b>webhelp</b> element contains various details that define the WebHelp Responsive
-          output. The elements that are allowed in this <b>webhelp</b> section specify the <xref
-            href="#template_descritpor_file/template_tags" format="dita">template tags</xref>, <xref
-            href="#template_descritpor_file/template_preview_image" format="dita">template preview
-            image</xref>, <xref href="#template_resources" format="dita">resources</xref> (such as
-          CSS, JS, fonts, logos), <xref href="#html_page_templates" format="dita">HTML page layout
-            files</xref>, <xref href="#transformation_parameters" format="dita">transformation
-            parameters</xref>, <xref href="#html_fragment_extension_points" format="dita">HTML
-            fragment extensions</xref> (used to add fragments to placeholders), or <xref
-            href="#xslt_extension_points" format="dita">XSLT extensions</xref>.</p>
+          output. It is a required element if you intend on using a WebHelp Responsive
+          transformation scenario. The elements that are allowed in this <b>webhelp</b> section
+          specify the <xref href="#template_descritpor_file/template_tags" format="dita">template
+            tags</xref>, <xref href="#template_descritpor_file/template_preview_image" format="dita"
+            >template preview image</xref>, <xref href="#template_resources" format="dita"
+            >resources</xref> (such as CSS, JS, fonts, logos), <xref
+            href="#transformation_parameters" format="dita">transformation parameters</xref>, <xref
+            href="#html_fragment_extension_points" format="dita">HTML fragment extensions</xref>
+          (used to add fragments to placeholders), <xref href="#xslt_extension_points" format="dita"
+            >XSLT extensions</xref>, or <xref href="#html_page_templates" format="dita">HTML page
+            layout files</xref>.</p>
         <codeblock outputclass="language-xml">    &lt;webhelp>
         &lt;tags>
           ...
@@ -182,16 +186,19 @@
     </prolog>
     <body>
       <p>The <b>resources</b> section of the descriptor file specifies a set of resources (CSS, JS,
-        fonts, logos, etc.) that are used to customize various components in generated output. These
-        resources will be copied to the output folder during the transformation process. At least
-        one CSS file must be included, while the other types of resources are optional.</p>
-      <p>The types of resources that can be specified include:<ul>
+        fonts, logos, graphics, etc.) that are used to customize various components in generated
+        output. These resources will be copied to the output folder during the transformation
+        process. At least one CSS file must be included, while the other types of resources are
+        optional.</p>
+      <p>This section is defined using the <b>resources</b> element and the types of resources that
+        can be specified include:<ul>
           <li><b>CSS files</b> - One or more CSS files that will define the styles of all generated
-            HTML pages.</li>
+            HTML pages. They are referenced using the <b>css</b> element.</li>
           <li><b>Favicon</b> - You can specify the path to an image for the <term>favicon</term>
-            associated with your website.</li>
+            associated with your website. It is referenced using the <b>favicon</b> element.</li>
           <li><b>Logo</b> - You can specify the path to a logo image that will be displayed in the
-            left side of the output header. Optionally, you can also specify:<ul>
+            left side of the output header. It is referenced using the <b>logo</b> element.
+            Optionally, you can also specify:<ul>
               <li><b>target-url</b> - will redirect the user to the specified URL if they click the
                 logo in the output.</li>
               <li><b>alt</b> - provides an alternate text for the logo image. </li>
@@ -199,14 +206,17 @@
           <li><b>JavaScript AMD module</b> - The path to a JavaScript module that uses the <xref
               href="http://requirejs.org/docs/whyamd.html#amd" format="html" scope="external">AMD
               (Asynchronous Module Definition) format</xref>. This module will be loaded in the
-            output HTML pages using the <term>RequireJS</term> library. For more information, see
-              <xref href="wh-add-js-amd.dita"/>.</li>
-          <li><b>Additional Resources (JS, Fonts)</b> - You can specify one or more sets of
-            additional resources that will be copied to the output folder during the transformation
-            process. These resources are specified with the <b>fileset</b> element and you can use
-            one or more <b>include</b> and <b>exclude</b> elements. This semantic is similar to the
-              <xref href="https://ant.apache.org/manual/Types/fileset.html" format="html"
-              scope="external">ANT FileSet</xref>.</li>
+            output HTML pages using the <term>RequireJS</term> library. It can be referenced using
+            the <b>js-amd-module</b> element. For more information, see <xref
+              href="wh-add-js-amd.dita"/>.</li>
+          <li><b>Additional Resources (graphics, JS, fonts)</b> - For other resources (such as
+            images referenced in CSS, JS, fonts, etc.) that need to be included in the output, you
+            need to instruct the transformation to include them in the output folder. You can
+            specify one or more sets of additional resources to be copied to the output folder by
+            using the <b>fileset</b> element and you can use one or more <b>include</b> and
+              <b>exclude</b> elements. This semantic is similar to the <xref
+              href="https://ant.apache.org/manual/Types/fileset.html" format="html" scope="external"
+              >ANT FileSet</xref>.</li>
         </ul><codeblock outputclass="language-xml">&lt;publishing-template>
     ...
     &lt;webhelp>
@@ -246,6 +256,346 @@
       </p>
     </body>
   </topic>
+  <topic id="transformation_parameters">
+    <title>Transformation Parameters</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            >WebHelp Responsive <indexterm>Publishing template transformation
+            parameters</indexterm></indexterm>
+          <indexterm product="webhelp-responsive">Publishing Template <indexterm>Transformation
+              parameters</indexterm></indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>You can also set one or more WebHelp transformation parameters in the descriptor
+        file.<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...    
+    &lt;webhelp>
+      ...
+      &lt;parameters>
+        &lt;parameter 
+          name="webhelp.show.main.page.toc" 
+          value="yes"/>
+        &lt;parameter 
+          name="webhelp.top.menu.depth" 
+          value="3"/>        
+        &lt;parameter 
+          name="webhelp.fragment.welcome" 
+          value="html-fragment/webhelp.fragment.welcome.html" 
+          type="filePath"/>        
+      &lt;/parameters>
+    &lt;/webhelp></codeblock></p>
+      <p>The following information can be specified in the <codeph>parameter</codeph> element:</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Parameter name</dt>
+            <dd>
+              <p>The name of the parameter. It may be one of the <xref
+                  href="webhelp-responsive-plugin-additional-parameters.dita#webhelp-responsive-plugin-additional-parameters"
+                  >WebHelp Responsive transformation parameters</xref> or a <xref
+                  keyref="dot-parameters-base-html">DITA-OT HTML-based output parameter</xref>.</p>
+              <note type="note">It is not recommended to specify an input/output parameter in the
+                descriptor file (such as the input Map, DITAVAL file, or temporary
+                directory).</note>
+              <note type="attention">JVM arguments like <term>-Xmx</term> cannot be specified as a
+                transformation parameter.</note>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Parameter Value</dt>
+            <dd>The value of the parameter. It should be a relative path to the template root folder
+              for file paths parameters.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Parameter Type</dt>
+            <dd>The type of the parameter: <codeph>string</codeph> or <codeph>filepath</codeph>. The
+                <codeph>string</codeph> value is default.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p>After <xref href="whr-create-publishing-template.dita#whr-create-publishing-template"
+          >creating a publishing template</xref> and <xref
+          href="whr-publishing-template-apply-transformation.dita#whr-publishing-template-apply-transformation"
+          >adding it to the templates gallery</xref>, when you select the template in the
+        transformation scenario dialog box<ph product="webhelp-responsive"> in <b>Oxygen XML
+            Editor/Author</b></ph>, the <uicontrol>Parameters</uicontrol> tab will automatically be
+        updated to include the parameters defined in the descriptor file. These parameters are
+        displayed in italics.</p>
+    </body>
+  </topic>
+  <topic id="xslt_extension_points">
+    <title>XSLT Extension Points</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            >WebHelp Responsive <indexterm>Publishing template XSLT
+            extensions</indexterm></indexterm>
+          <indexterm product="webhelp-responsive">Publishing Template <indexterm>XSLT
+              extensions</indexterm></indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>The publishing templates support one or more XSLT extension points. They are helpful when
+        you want to change the structure of the HTML pages that are primarily generated from XSLT
+        processing. They can be specified in the descriptor file using the following
+        structure:<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...        
+        &lt;xslt>
+            &lt;extension 
+              id="com.oxygenxml.webhelp.xsl.dita2webhelp"
+              file="xsl/customDita2webhelp.xsl"/>
+            &lt;extension
+              id="com.oxygenxml.webhelp.xsl.createMainPage"
+              file="xsl/customMainPage.xsl"/>
+        &lt;/xslt></codeblock></p>
+      <p>For more information, and a full list of the available extension points, see: <xref
+          keyref="whr-xslt-extension-points">XSLT-Import and XSLT-Parameter Extension
+          Points</xref>.<note>You can read the value of a WebHelp transformation parameter from your
+          XSLT extension stylesheets by using the <codeph>getParameter(param.name)</codeph> function
+          from the <codeph>http://www.oxygenxml.com/functions</codeph> namespace.</note></p>
+    </body>
+  </topic>
+  <topic id="html_fragment_extension_points">
+    <title>HTML Fragment Extension Points</title>
+    <prolog>
+      <metadata>
+        <keywords>
+          <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            >WebHelp Responsive <indexterm>Publishing template HTML fragment
+            extensions</indexterm></indexterm>
+          <indexterm product="webhelp-responsive">Publishing Template <indexterm>HTML fragment
+              extensions</indexterm></indexterm>
+        </keywords>
+      </metadata>
+    </prolog>
+    <body>
+      <p>The HTML pages contain component placeholders that can be used to insert custom HTML
+        fragments.</p>
+      <p>You can specify one or more HTML fragment extension points in the descriptor file using the
+        following
+        structure:<codeblock outputclass="language-xml">&lt;publishing-template>
+    ...    
+    &lt;webhelp>
+      ...
+      &lt;html-fragments>
+        &lt;fragment 
+          file="html-fragments/webhelp.fragment.welcome" 
+          placeholder="webhelp.fragment.welcome"/>
+        &lt;fragment 
+          file="html-fragments/webhelp.fragment.footer.html" 
+          placeholder="webhelp.fragment.footer"/>
+      &lt;/html-fragments></codeblock></p>
+      <p>Some of these placeholders are left empty in the default output configurations, but you can
+        use them to insert custom content. </p>
+      <p>Each placeholder has an associated parameter value in the transformation. These predefined
+        placeholders are illustrated and described below.</p>
+      <p>
+        <fig id="fig_fgc_cks_rcb">
+          <title>Predefined Placeholders Diagram</title>
+          <p>
+            <imagemap>
+              <image href="../img/webhelp_parameters_list.png" id="image_ggc_cks_rcb"
+                placement="inline"/>
+              <area>
+                <shape>rect</shape>
+                <coords>41, 31, 730, 53</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-head" format="dita"
+                  >Header</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>41, 82, 730, 103</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-before-body"
+                  format="dita">Before Body</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>41, 106, 74, 127</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-before-logo-title"
+                  format="dita">Before Logo and Title</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>181, 107, 215, 126</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-after-logo-title"
+                  format="dita">After Logo and Title</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>312, 106, 345, 126</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-before-top-menu"
+                  format="dita">Before Top Menu</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>679, 106, 713, 126</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-after-top-menu"
+                  format="dita">After Top Menu</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>40, 134, 376, 153</coords>
+                <xref
+                  href="#html_fragment_extension_points/webhelp-fragment-before-main-page-search"
+                  format="dita">Before Main Page Search Input</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>382, 133, 730, 154</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-welcome" format="dita"
+                  >Welcome Message</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>40, 180, 730, 203</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-after-main-page-search"
+                  format="dita">After Main Page Search Input</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>40, 210, 730, 231</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-before-toc-tiles"
+                  format="dita">Before Tiles or TOC</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>39, 314, 731, 335</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-after-toc-tiles"
+                  format="dita">After Tiles or TOC</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>41, 350, 730, 371</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-footer" format="dita"
+                  >Footer</xref>
+              </area>
+              <area>
+                <shape>rect</shape>
+                <coords>40, 376, 730, 397</coords>
+                <xref href="#html_fragment_extension_points/webhelp-fragment-after-body"
+                  format="dita">After Body</xref>
+              </area>
+            </imagemap>
+          </p>
+        </fig>
+      </p>
+      <p>Each of these placeholders can hold either an XHTML fragment or a path to a file that
+        contains a well-formed XHTML fragment:<dl>
+          <dlentry id="webhelp-fragment-head">
+            <dt>1- <ph conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_head"
+              /></dt>
+            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_head"/></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-before-body">
+            <dt>2- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_body"
+              /></dt>
+            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_body"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-before-logo-title">
+            <dt>3- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_logo_and_title"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_logo_and_title"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-after-logo-title">
+            <dt>4- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_logo_and_title"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_logo_and_title"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-before-top-menu">
+            <dt>5- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_top_menu"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_top_menu"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-after-top-menu">
+            <dt>6- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_top_menu"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_top_menu"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-before-main-page-search">
+            <dt>7- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_main_page_search"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_main_page_search"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-welcome">
+            <dt>8- <ph conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_welcome"
+              /></dt>
+            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_welcome"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-after-main-page-search">
+            <dt>9- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_main_page_search"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_main_page_search"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-before-toc-tiles">
+            <dt>10- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_toc_or_tiles"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_toc_or_tiles"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-after-toc-tiles">
+            <dt>11- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_toc_or_tiles"
+              /></dt>
+            <dd><ph
+                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_toc_or_tiles"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-footer">
+            <dt>12- <ph conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_footer"
+              /></dt>
+            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_footer"
+              /></dd>
+          </dlentry>
+          <dlentry id="webhelp-fragment-after-body">
+            <dt>13- <ph
+                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_body"
+              /></dt>
+            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_body"
+              /></dd>
+          </dlentry>
+        </dl></p>
+    </body>
+    <related-links>
+      <linklist>
+        <title>Related Information:</title>
+        <link href="wh-add-custom-html.dita"/>
+      </linklist>
+    </related-links>
+  </topic>
+  <topic id="id_svt_4c1_c2b" conkeyref="reusable-webhelp-responsive-macros">
+    <title/>
+  </topic>
   <topic id="html_page_templates">
     <title>HTML Page Layout Files</title>
     <prolog>
@@ -260,9 +610,16 @@
       </metadata>
     </prolog>
     <body>
-      <p>The HTML page layout files define the layout of the generated pages in the output. There
-        are four types of pages (<i>main</i>, <i>search</i>, <i>topic</i>, <i>index</i>) and each
-        type of page is a simple HTML file. Each type of page is defined inside an
+      <p>The HTML page layout files define the default layout of the generated pages in the output
+        for the built-in template. There are four types of pages (<i>main</i>, <i>search</i>,
+          <i>topic</i>, <i>index</i>) and each type of page is a simple HTML file. Each of the page
+        types have various components that appear by default and each component has a corresponding
+        element and when that element is included in the HTML file, the corresponding components
+        will appear in the output.<note type="warning">It is no longer recommended for you to
+          customize these files because if you upgrade to a newer version of <b>Oxygen</b>, those
+          files may no longer produce the desired results and if new components have been added, you
+          won't have access to them.</note></p>
+      <p>If you do choose to customize these HTML file, each type of page is defined inside an
           <b>html-page-layout-files</b> element in the descriptor
         file.<codeblock outputclass="language-xml">&lt;publishing-template>
       ...
@@ -275,11 +632,9 @@
         &lt;page-layout-file page="topic" file="page-templates/wt_topic.html"/>
         &lt;page-layout-file page="index-terms" file="page-templates/wt_terms.html"/>
       &lt;/html-page-layout-files></codeblock></p>
-      <p>These HTML files are not required in the descriptor file, but if you do use the
-          <b>html-page-layout-files</b> element, you must specify all four types of pages
-          (<i>main</i>, <i>search</i>, <i>topic</i>, <i>index</i>). If you do not specify these HTML
-        page layout files, the files from the <filepath><abbreviated-form
-            keyref="glossentry_dita_ot_dir"
+      <p>If you do use the <b>html-page-layout-files</b> element, you must specify all four types of
+        pages (<i>main</i>, <i>search</i>, <i>topic</i>, <i>index</i>). When not specified, the
+        files from the <filepath><abbreviated-form keyref="glossentry_dita_ot_dir"
           />/plugins/com.oxygenxml.webhelp.responsive/oxygen-webhelp/page-templates</filepath>
         folder will be used to define the layout of each type of page.</p>
       <p><b><u>HTML Page Components</u></b></p>
@@ -849,346 +1204,6 @@
       </section>
     </body>
   </topic>
-  <topic id="id_svt_4c1_c2b" conkeyref="reusable-webhelp-responsive-macros">
-    <title/>
-  </topic>
-  <topic id="html_fragment_extension_points">
-    <title>HTML Fragment Extension Points</title>
-    <prolog>
-      <metadata>
-        <keywords>
-          <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
-            >WebHelp Responsive <indexterm>Publishing template HTML fragment
-            extensions</indexterm></indexterm>
-          <indexterm product="webhelp-responsive">Publishing Template <indexterm>HTML fragment
-              extensions</indexterm></indexterm>
-        </keywords>
-      </metadata>
-    </prolog>
-    <body>
-      <p>The HTML pages contain component placeholders that can be used to insert custom HTML
-        fragments.</p>
-      <p>You can specify one or more HTML fragment extension points in the descriptor file using the
-        following
-        structure:<codeblock outputclass="language-xml">&lt;publishing-template>
-    ...    
-    &lt;webhelp>
-      ...
-      &lt;html-fragments>
-        &lt;fragment 
-          file="html-fragments/webhelp.fragment.welcome" 
-          placeholder="webhelp.fragment.welcome"/>
-        &lt;fragment 
-          file="html-fragments/webhelp.fragment.footer.html" 
-          placeholder="webhelp.fragment.footer"/>
-      &lt;/html-fragments></codeblock></p>
-      <p>Some of these placeholders are left empty in the default output configurations, but you can
-        use them to insert custom content. </p>
-      <p>Each placeholder has an associated parameter in the transformation. These predefined empty
-        placeholder parameters are illustrated and described below.</p>
-      <p>
-        <fig id="fig_fgc_cks_rcb">
-          <title>Predefined Placeholders Diagram</title>
-          <p>
-            <imagemap>
-              <image href="../img/webhelp_parameters_list.png" id="image_ggc_cks_rcb"
-                placement="inline"/>
-              <area>
-                <shape>rect</shape>
-                <coords>41, 31, 730, 53</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-head" format="dita"
-                  >Header</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>41, 82, 730, 103</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-before-body"
-                  format="dita">Before Body</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>41, 106, 74, 127</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-before-logo-title"
-                  format="dita">Before Logo and Title</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>181, 107, 215, 126</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-after-logo-title"
-                  format="dita">After Logo and Title</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>312, 106, 345, 126</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-before-top-menu"
-                  format="dita">Before Top Menu</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>679, 106, 713, 126</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-after-top-menu"
-                  format="dita">After Top Menu</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>40, 134, 376, 153</coords>
-                <xref
-                  href="#html_fragment_extension_points/webhelp-fragment-before-main-page-search"
-                  format="dita">Before Main Page Search Input</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>382, 133, 730, 154</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-welcome" format="dita"
-                  >Welcome Message</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>40, 180, 730, 203</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-after-main-page-search"
-                  format="dita">After Main Page Search Input</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>40, 210, 730, 231</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-before-toc-tiles"
-                  format="dita">Before Tiles or TOC</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>39, 314, 731, 335</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-after-toc-tiles"
-                  format="dita">After Tiles or TOC</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>41, 350, 730, 371</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-footer" format="dita"
-                  >Footer</xref>
-              </area>
-              <area>
-                <shape>rect</shape>
-                <coords>40, 376, 730, 397</coords>
-                <xref href="#html_fragment_extension_points/webhelp-fragment-after-body"
-                  format="dita">After Body</xref>
-              </area>
-            </imagemap>
-          </p>
-        </fig>
-      </p>
-      <p>Each of these parameters can hold either an XHTML fragment or a path to a file that
-        contains a well-formed XHTML fragment:<dl>
-          <dlentry id="webhelp-fragment-head">
-            <dt>1- <ph conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_head"
-              /></dt>
-            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_head"/></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-before-body">
-            <dt>2- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_body"
-              /></dt>
-            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_body"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-before-logo-title">
-            <dt>3- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_logo_and_title"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_logo_and_title"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-after-logo-title">
-            <dt>4- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_logo_and_title"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_logo_and_title"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-before-top-menu">
-            <dt>5- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_top_menu"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_top_menu"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-after-top-menu">
-            <dt>6- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_top_menu"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_top_menu"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-before-main-page-search">
-            <dt>7- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_main_page_search"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_main_page_search"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-welcome">
-            <dt>8- <ph conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_welcome"
-              /></dt>
-            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_welcome"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-after-main-page-search">
-            <dt>9- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_main_page_search"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_main_page_search"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-before-toc-tiles">
-            <dt>10- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_before_toc_or_tiles"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_before_toc_or_tiles"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-after-toc-tiles">
-            <dt>11- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_toc_or_tiles"
-              /></dt>
-            <dd><ph
-                conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_toc_or_tiles"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-footer">
-            <dt>12- <ph conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_footer"
-              /></dt>
-            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_footer"
-              /></dd>
-          </dlentry>
-          <dlentry id="webhelp-fragment-after-body">
-            <dt>13- <ph
-                conkeyref="reusables-webhelp-output-parameters/ph_webhelp_fragment_after_body"
-              /></dt>
-            <dd><ph conkeyref="reusables-webhelp-output-parameters/def_webhelp_fragment_after_body"
-              /></dd>
-          </dlentry>
-        </dl></p>
-    </body>
-    <related-links>
-      <linklist>
-        <title>Related Information:</title>
-        <link href="wh-add-custom-html.dita"/>
-      </linklist>
-    </related-links>
-  </topic>
-  <topic id="xslt_extension_points">
-    <title>XSLT Extension Points</title>
-    <prolog>
-      <metadata>
-        <keywords>
-          <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
-            >WebHelp Responsive <indexterm>Publishing template XSLT
-            extensions</indexterm></indexterm>
-          <indexterm product="webhelp-responsive">Publishing Template <indexterm>XSLT
-              extensions</indexterm></indexterm>
-        </keywords>
-      </metadata>
-    </prolog>
-    <body>
-      <p>The publishing template allows supports one or more XSLT extension points. They are helpful
-        when you want to change the structure of the HTML pages that are primarily generated from
-        XSLT processing. They can be specified in the descriptor file using the following
-        structure:<codeblock outputclass="language-xml">&lt;publishing-template>
-    ...
-    &lt;webhelp>
-        ...        
-        &lt;xslt>
-            &lt;extension 
-              id="com.oxygenxml.webhelp.xsl.dita2webhelp"
-              file="xsl/customDita2webhelp.xsl"/>
-            &lt;extension
-              id="com.oxygenxml.webhelp.xsl.createMainPage"
-              file="xsl/customMainPage.xsl"/>
-        &lt;/xslt></codeblock></p>
-      <p>For more information, and a full list of the available extension points, see: <xref
-          keyref="whr-xslt-extension-points">XSLT-Import and XSLT-Parameter Extension
-          Points</xref>.<note>You can read the value of a WebHelp transformation parameter from your
-          XSLT extension stylesheets by using the <codeph>getParameter(param.name)</codeph> function
-          from the <codeph>http://www.oxygenxml.com/functions</codeph> namespace.</note></p>
-    </body>
-  </topic>
-  <topic id="transformation_parameters">
-    <title>Transformation Parameters</title>
-    <prolog>
-      <metadata>
-        <keywords>
-          <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
-            >WebHelp Responsive <indexterm>Publishing template transformation
-            parameters</indexterm></indexterm>
-          <indexterm product="webhelp-responsive">Publishing Template <indexterm>Transformation
-              parameters</indexterm></indexterm>
-        </keywords>
-      </metadata>
-    </prolog>
-    <body>
-      <p>You can also set one or more WebHelp transformation parameters in the descriptor
-        file.<codeblock outputclass="language-xml">&lt;publishing-template>
-    ...    
-    &lt;webhelp>
-      ...
-      &lt;parameters>
-        &lt;parameter 
-          name="webhelp.show.main.page.toc" 
-          value="yes"/>
-        &lt;parameter 
-          name="webhelp.top.menu.depth" 
-          value="3"/>        
-        &lt;parameter 
-          name="webhelp.fragment.welcome" 
-          value="html-fragment/webhelp.fragment.welcome.html" 
-          type="filePath"/>        
-      &lt;/parameters>
-    &lt;/webhelp></codeblock></p>
-      <p>The following information can be specified in the <codeph>parameter</codeph> element:</p>
-      <p>
-        <dl>
-          <dlentry>
-            <dt>Parameter name</dt>
-            <dd>
-              <p>The name of the parameter. It may be one of the <xref
-                  href="webhelp-responsive-plugin-additional-parameters.dita#webhelp-responsive-plugin-additional-parameters"
-                  >WebHelp Responsive transformation parameters</xref> or a <xref
-                  keyref="dot-parameters-base-html">DITA-OT HTML-based output parameter</xref>.</p>
-              <note type="note">It is not recommended to specify an input/output parameter in the
-                descriptor file (such as the input Map, DITAVAL file, or temporary
-                directory).</note>
-              <note type="attention">JVM arguments like <term>-Xmx</term> cannot be specified as a
-                transformation parameter.</note>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Parameter Value</dt>
-            <dd>The value of the parameter. It should be a relative path to the template root folder
-              for file paths parameters.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>Parameter Type</dt>
-            <dd>The type of the parameter: <codeph>string</codeph> or <codeph>filepath</codeph>. The
-                <codeph>string</codeph> value is default.</dd>
-          </dlentry>
-        </dl>
-      </p>
-      <p>After <xref href="whr-create-publishing-template.dita#whr-create-publishing-template"
-          >creating a publishing template</xref> and <xref
-          href="whr-publishing-template-apply-transformation.dita#whr-publishing-template-apply-transformation"
-          >adding it to the templates gallery</xref>, when you select the template in the
-        transformation scenario dialog box<ph product="webhelp-responsive"> in <b>Oxygen XML
-            Editor/Author</b></ph>, the <uicontrol>Parameters</uicontrol> tab will automatically be
-        updated to include the parameters defined in the descriptor file. These parameters are
-        displayed in italics.</p>
-    </body>
-  </topic>
   <topic id="combining-pdf-webhelp">
     <title>Combining WebHelp Responsive and PDF Customizations in a Template Package</title>
     <body>
@@ -1196,8 +1211,17 @@
         and PDF customization in the same template package and you can use that same template in
         both types of transformations. The template descriptor file can define the customization for
         both types by including both a <codeph>webhelp</codeph> and <codeph>pdf</codeph> element and
-        some of the resources can be
-        reused.<codeblock conkeyref="reusables-transforming-documents/publishing-templates-codeblock" outputclass="language-xml"/></p>
+        some of the resources can be reused. Resources referenced in elements in the
+          <codeph>webhelp</codeph> element will only be used for WebHelp transformations, and
+        resources referenced in the elements in the <codeph>pdf</codeph> element will only be used
+        in PDF
+        transformations.<codeblock conkeyref="reusables-transforming-documents/publishing-templates-codeblock" outputclass="language-xml"/></p>
     </body>
+    <related-links product="author authorEclipse developer developerEclipse editor editorEclipse">
+      <linklist>
+        <title>Related Information:</title>
+        <link href="pdf_publishing_template_contents.dita"/>
+      </linklist>
+    </related-links>
   </topic>
 </topic>
