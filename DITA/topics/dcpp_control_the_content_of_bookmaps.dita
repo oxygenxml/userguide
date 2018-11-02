@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_control_the_content_of_bookmaps">
+    <title>Controlling the Publication Content</title>
+    <body>
+        <p>Using a plain DITA map the transformation will produce a publication with a front page, a
+      table of contents, chapters and contents, and at the end the index. This is appropriate for
+      most cases, but sometimes you may need to: <ul id="ul_llc_h3b_rfb">
+        <li>remove the TOC or index</li>
+        <li>add a glossary</li>
+        <li>change the position of the TOC of the index relative to the neighbouring topics</li>
+        <li>add a preface, a font matter or a back matter with copyright notices, abstracts,
+          etc.</li>
+      </ul>All these can be done using the DITA <b>bookmap</b>s.</p>
+    <p>A bookmap has a more elaborate structure. You should start by defining the title structure,
+      with a main title and alternative title:</p>
+    <codeblock outputclass="language-xml">&lt;!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN"  "bookmap.dtd">
+&lt;bookmap id="taskbook">
+  &lt;booktitle>
+    &lt;mainbooktitle>Publication Title&lt;/mainbooktitle>
+    &lt;booktitlealt>A very short description of the publication&lt;/booktitlealt>
+  &lt;/booktitle></codeblock>
+    <p>Then you may define a front matter. In this you may link the topics that need to appear
+      before the main content. You may also define the location where the table of contents will be
+      placed. In the example below, it appears between the "abstract" and "foreword" topics: </p>
+    <codeblock outputclass="language-xml">  &lt;frontmatter>
+    &lt;topicref href="topics/abstract.dita"/>
+    &lt;booklists>
+      &lt;toc/>
+    &lt;/booklists>
+    &lt;topicref href="topics/foreword.dita"/>
+  &lt;/frontmatter></codeblock>
+    <note>To remove the TOC from the publication, just omit the <xmlelement>toc</xmlelement> element
+      from the <xmlelement>booklists</xmlelement>.</note>
+    <p>Next, the topics are grouped into chapters:</p>
+    <codeblock outputclass="language-xml">  ...
+  &lt;chapter href="topics/installation.dita" />
+  ...</codeblock>
+    <p>At the end you may define the structure of the back matter. Just like for the frontmatter,
+      you may include some topics and some generated content, like the index. In the example below,
+      we defined that the glossary should come after the index, followed by a list of figures and
+      list of tables. At the very end we have some topic with some thank you notes.</p>
+    <codeblock outputclass="language-xml">  &lt;backmatter>
+    &lt;topicref href="topics/conclusion.dita"/>
+    &lt;booklists>
+      &lt;indexlist/>
+
+      &lt;glossarylist>
+        &lt;topicref href="topics/xp.dita" keys="xp" print="yes" />
+        &lt;topicref href="topics/anti_lock_braking_system.dita" keys="abs" print="yes" />
+      &lt;/glossarylist>
+
+      &lt;figurelist/>
+      &lt;tablelist/>     
+    &lt;/booklists>
+    &lt;topicref href="topics/thanks.dita"/>
+  &lt;/backmatter></codeblock>
+    <p>As you can see the bookmaps offer a much better control over the final content of the
+      publication. It also gives more options in controlling the metadata that will go into the PDF,
+      see the <xref href="dcpp_metadata.dita"/> topic.</p>
+    </body>
+</topic>
