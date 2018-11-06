@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_change_header_images_at_each_chapter">
+    <title>How to Change Header Images at Each Chapter</title>
+    <body>
+        <p>For this, you need to define an image reference in the metadata section of each chapter.
+      One way is to specify it in the DITA Map by using the <xmlelement>topicmeta</xmlelement>
+      section of  the <xmlelement>chapter</xmlelement> topic reference:</p>
+    <codeblock outputclass="language-xml">...
+ &lt;chapter href="topics/installing.dita">
+    &lt;topicmeta>
+      &lt;data name="header-image" value="img/installing.png"/>
+    &lt;/topicmeta>
+    ...</codeblock>
+    <p>In the above example, we have set a key value pair with the name
+        <codeph>header-image</codeph>. The <codeph>img/installing.png</codeph> is an image reference
+      relative to the DITA map URI. This information is  automatically copied into the content in
+      the merged map file, like this:</p>
+    <codeblock outputclass="language-css">&lt;topic is-chapter="true" ... >
+    &lt;title class="- topic/title ">Installing&lt;/title>
+    &lt;shortdesc class="- topic/shortdesc ">You install components to make them available for your
+      solution.&lt;/shortdesc>
+    &lt;prolog class="- topic/prolog ">
+      ...
+      &lt;data class="- topic/data " name="header-image" value="img/installing.png"/>
+      ...</codeblock>
+    <p>This information can be picked up from CSS:</p>
+    <codeblock outputclass="language-css">
+/* Define the string set variable that contains an URL */
+*[class ~= "topic/data"][name="header-image"] {
+  string-set: imgst oxy_url(oxy_xpath('/*/@xtrf'), attr(value));
+}
+
+/* Using the value='none' stops applying the image. */
+*[class ~= "topic/data"][name="header-image"][value="none"] {
+  string-set: imgst "";
+}
+
+/* Use the string set variable in one of the page margin boxes. *
+@page chapter {  
+  @top-left-corner {
+    content: string(imgst);
+    font-size:0; /* remove the font ascent and descent */
+  }
+}</codeblock>
+    <p>Details: The <xmlatt>value</xmlatt> attribute is used to build an URL relative to the URI of
+      the DITA map. To determine the base URI of the DITA map, we used the <xmlatt>xtrf</xmlatt>
+      attribute from the root element of the merged map document, extracted using the
+        <codeph>oxy_xpath</codeph> function. </p>
+    <note>The image is always aligned vertically to the middle of available space from the page
+      margin box.</note>
+    <note>Make sure you use an image of the correct size. For example if you want to place the image
+      in the top-left corner of the page, assuming the top and left page margins are of 1in, then
+      make sure the image is a square having a size of 1in.</note>
+    <note>The image is applied to all pages that follow the data element, until another data element
+      changes it:
+      <codeblock outputclass="language-xml">...
+ &lt;chapter href="topics/installing.dita">
+    &lt;topicmeta>
+      &lt;data name="header-image" value="img/installing.png"/>
+    &lt;/topicmeta>
+ &lt;/chapter>
+ &lt;chapter href="..."> &lt;!-- Uses the same installing.png image -->
+ &lt;chapter href="..."> &lt;!-- Uses the same installing.png image -->
+ &lt;chapter href="..."> &lt;!-- Uses the same installing.png image -->
+ &lt;chapter href="topics/change.dita">
+    &lt;topicmeta>
+      &lt;data name="header-image" value="img/change.png"/>
+    &lt;/topicmeta>
+ &lt;/chapter>
+ &lt;chapter href="..."> &lt;!-- Uses the same change.png image -->
+ &lt;chapter href="..."> &lt;!-- Uses the same change.png image -->
+ &lt;chapter href="..."> &lt;!-- Uses the same change.png image -->
+</codeblock>To
+      clear the image, use the <codeph>none</codeph>
+      value:<codeblock outputclass="language-xml">...
+      &lt;data name="header-image" value="none"/>
+ ...</codeblock></note>
+    </body>
+</topic>
