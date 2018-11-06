@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_how_to_use_dynamic_images_in_headers_and_footers">
+    <title>How to Use Dynamic Images in Headers and Footers</title>
+    <body>
+    <p>There are cases in which is needed to change the images from the publication header depending
+      on the current section. </p>
+    <p>For example, you want to place an image that describes the current section. Assuming that the
+      titles of the sections define some metadata attribute pointing to some image file. The image
+      references should be absolute URIs or relative to the input document.</p>
+    <codeblock outputclass="language-xml">&lt;h2 -data-header-image="installation.png">
+...
+&lt;h2 -data-header-image="configuring.png">
+...</codeblock>
+    <p>The CSS should define a <codeph>string-set</codeph> that extracts the attribute value and
+      builds an image for it using the <codeph>url</codeph> or <codeph>attr(.., url)</codeph>
+      function.</p>
+    <codeblock outputclass="language-css">@page {
+	margin: 1in;
+	@top-right-corner {
+		content: string(str);		
+		font-size:0; /* Get rid of ascent and descent to avoid spaces around the image */
+	}
+}
+
+h2 {
+	string-set: str attr(-data-header-image, url);
+}</codeblock>
+    <p>Besides the <codeph>attr</codeph> function you can add text:</p>
+    <codeblock outputclass="language-css">...
+        string-set: str "Section... " attr(-data-header-image, url);
+...</codeblock>
+    </body>
+</topic>
