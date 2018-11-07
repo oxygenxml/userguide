@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dcpp_how_to_change_header_images_at_each_chapter">
-    <title>How to Change Header Images at Each Chapter</title>
-    <body>
-        <p>For this, you need to define an image reference in the metadata section of each chapter.
-      One way is to specify it in the DITA Map by using the <xmlelement>topicmeta</xmlelement>
-      section of  the <xmlelement>chapter</xmlelement> topic reference:</p>
+  <title>How to Change Header Images at Each Chapter</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="wysywig-or-html5-transformation"/>
+          <indexterm>Header<indexterm>Change header at each
+          chapter</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Header<indexterm>Change header at each
+          chapter</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>For this, you need to define an image reference in the metadata section of each chapter. One
+      way is to specify it in the DITA map by using the <xmlelement>topicmeta</xmlelement> element
+      for the <xmlelement>chapter</xmlelement> topic reference:</p>
     <codeblock outputclass="language-xml">...
  &lt;chapter href="topics/installing.dita">
     &lt;topicmeta>
       &lt;data name="header-image" value="img/installing.png"/>
     &lt;/topicmeta>
     ...</codeblock>
-    <p>In the above example, we have set a key value pair with the name
+    <p>In the above example, there is set a key value pairs with the name
         <codeph>header-image</codeph>. The <codeph>img/installing.png</codeph> is an image reference
-      relative to the DITA map URI. This information is  automatically copied into the content in
-      the merged map file, like this:</p>
+      relative to the DITA map URI. This information is automatically copied into the content in the
+        <xref href="dcpp_debugging_the_css.dita#dcpp_debugging_the_css/merged_map_file">merged map
+        file</xref>, like this:</p>
     <codeblock outputclass="language-css">&lt;topic is-chapter="true" ... >
     &lt;title class="- topic/title ">Installing&lt;/title>
     &lt;shortdesc class="- topic/shortdesc ">You install components to make them available for your
@@ -43,18 +56,20 @@
     font-size:0; /* remove the font ascent and descent */
   }
 }</codeblock>
-    <p>Details: The <xmlatt>value</xmlatt> attribute is used to build an URL relative to the URI of
-      the DITA map. To determine the base URI of the DITA map, we used the <xmlatt>xtrf</xmlatt>
-      attribute from the root element of the merged map document, extracted using the
+    <p><b>Details</b>: The <xmlatt>value</xmlatt> attribute is used to build a URL relative to the
+      URI of the DITA map. To determine the base URI of the DITA map, the <xmlatt>xtrf</xmlatt>
+      attribute was used from the root element of the merged map document, extracted using the
         <codeph>oxy_xpath</codeph> function. </p>
-    <note>The image is always aligned vertically to the middle of available space from the page
-      margin box.</note>
-    <note>Make sure you use an image of the correct size. For example if you want to place the image
-      in the top-left corner of the page, assuming the top and left page margins are of 1in, then
-      make sure the image is a square having a size of 1in.</note>
-    <note>The image is applied to all pages that follow the data element, until another data element
-      changes it:
-      <codeblock outputclass="language-xml">...
+    <note type="other" othertype="Notes">
+      <ul>
+        <li>The image is always aligned vertically to the middle of available space from the page
+          margin box.</li>
+        <li>Make sure you use an image of the correct size. For example, if you want to place the
+          image in the top-left corner of the page, assuming the top and left page margins are 1 in,
+          then make sure the image is a square having a size of 1 in.</li>
+        <li>The image is applied to all pages that follow the data element, until another data
+          element changes
+            it:<codeblock outputclass="language-xml">...
  &lt;chapter href="topics/installing.dita">
     &lt;topicmeta>
       &lt;data name="header-image" value="img/installing.png"/>
@@ -71,10 +86,12 @@
  &lt;chapter href="..."> &lt;!-- Uses the same change.png image -->
  &lt;chapter href="..."> &lt;!-- Uses the same change.png image -->
  &lt;chapter href="..."> &lt;!-- Uses the same change.png image -->
-</codeblock>To
-      clear the image, use the <codeph>none</codeph>
-      value:<codeblock outputclass="language-xml">...
+</codeblock><p>To
+            clear the image, use the <codeph>none</codeph>
+            value:<codeblock outputclass="language-xml">...
       &lt;data name="header-image" value="none"/>
- ...</codeblock></note>
-    </body>
+ ...</codeblock></p></li>
+      </ul>
+    </note>
+  </body>
 </topic>
