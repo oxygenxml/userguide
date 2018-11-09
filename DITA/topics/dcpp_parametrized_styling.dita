@@ -3,29 +3,41 @@
 <topic id="dcpp_parametrized_styling">
     <title>Parametrized Styling</title>
     <body>
-    <p>You can activate parts of your CSS by using a custom transformation parameter that starts its
-      name with the <codeph>args.set.root.attr.</codeph> prefix.</p>
-    <p>In the following example we will use a parameter to switch from a full depth table of
-      contents to a flat one that shows only the titles of the first level topics, like chapters,
-      preface, notices. </p>
-    <p>The custom parameter is:</p>
-    <codeblock outputclass="language-ini">args.set.root.attr.only-chapters-in-toc="yes"</codeblock>
-    <p>Because this parameter starts with <codeph>args.set.root.attr</codeph>, it is recognized by
-      the publishing pipeline and its last part, the <codeph>only-chapters-in-toc</codeph> string is
-      used as the name the attribute set on the root element in the merged map document. The value
-      of the parameter will be become the attribute value. </p>
-    <note>Use only Latin alphanumeric characters for parameter names.</note>
-        <p>The namespace of this synthetic attribute is:
+    <p>You can activate parts of your CSS by using custom transformation parameters that start with
+      the <codeph>args.set.root.attr.</codeph> prefix.  </p>
+    <p>These parameters are recognized by the publishing pipeline are forwarded as synthetic
+      attribute on the root element of the merged map. The last part of the parameter name will
+      become the attribute name, while the value of the parameter will be become the attribute
+      value. The namespace of these synthetic attributes is:
         <codeph>http://www.oxygenxml.com/extensions/publishing/dita/attributes</codeph>. </p>
-    <p>The CSS that hides the <codeph>topicrefs</codeph> at level 2 or
-      more:<codeblock outputclass="language-css">@namespace a "http://www.oxygenxml.com/extensions/publishing/dita/attributes"; 
+    <note>Use only Latin alphanumeric characters for parameter names.</note>
+    <note>You can set multiple styling parameters at the same time.</note>
+    <section id="section_ecl_z1b_tfb">
+      <title>How to Limit the Depth of the TOC Using a Parameter</title>
+      <p>In the following example we will use a parameter to switch from a full depth table of
+        contents to a flat one that shows only the titles of the first level topics, like chapters,
+        preface, notices. </p>
+      <p>The custom parameter is:</p>
+      <codeblock outputclass="language-ini">args.set.root.attr.only-chapters-in-toc="yes"</codeblock>
+      <p>The CSS that hides the <codeph>topicrefs</codeph> at level 2 or
+        more:<codeblock outputclass="language-css">@namespace a "http://www.oxygenxml.com/extensions/publishing/dita/attributes"; 
 
 :root[a|only-chapters-in-toc='yes'] *[class ~= "toc/toc"] 
          > *[class ~= "map/topicref"]> *[class ~= "map/topicref"] {
   display:none;
 }</codeblock>The
-      selector <codeph>:root[a|only-chapters-in-toc='yes']</codeph> makes the rule activate only
-      when the attribute is set.</p>
-    <note>You can set multiple styling parameters at the same time.</note>
+        selector <codeph>:root[a|only-chapters-in-toc='yes']</codeph> makes the rule activate only
+        when the attribute is set.</p>
+    </section>
+    <section id="section_mpk_dbb_tfb">
+      <title>How to Change the Page Size Using a Parameter</title>
+      <p>In the next example, we will create a parameter to modify the page size. For this we define
+        the parameter in the transformation
+        scenario:<codeblock outputclass="language-ini">args.set.root.attr.page-size="A4"</codeblock></p>
+      <p>Then in the CSS we extract the attribute value and use it:</p>
+      <codeblock outputclass="language-css">@page {
+    size: oxy_xpath('/*/@*[local-name()="page-size"]');
+}</codeblock>
+    </section>
     </body>
 </topic>
