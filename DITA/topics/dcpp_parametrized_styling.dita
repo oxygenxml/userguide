@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_parametrized_styling">
+    <title>Parametrized Styling</title>
+    <body>
+    <p>You can activate parts of your CSS by using a custom transformation parameter that starts its
+      name with the <codeph>args.set.root.attr.</codeph> prefix.</p>
+    <p>In the following example we will use a parameter to switch from a full depth table of
+      contents to a flat one that shows only the titles of the first level topics, like chapters,
+      preface, notices. </p>
+    <p>The custom parameter is:</p>
+    <codeblock outputclass="language-ini">args.set.root.attr.only-chapters-in-toc="yes"</codeblock>
+    <p>Because this parameter starts with <codeph>args.set.root.attr</codeph>, it is recognized by
+      the publishing pipeline and its last part, the <codeph>only-chapters-in-toc</codeph> string is
+      used as the name the attribute set on the root element in the merged map document. The value
+      of the parameter will be become the attribute value. </p>
+    <note>Use only Latin alphanumeric characters for parameter names.</note>
+        <p>The namespace of this synthetic attribute is:
+        <codeph>http://www.oxygenxml.com/extensions/publishing/dita/attributes</codeph>. </p>
+    <p>The CSS that hides the <codeph>topicrefs</codeph> at level 2 or
+      more:<codeblock outputclass="language-css">@namespace a "http://www.oxygenxml.com/extensions/publishing/dita/attributes"; 
+
+:root[a|only-chapters-in-toc='yes'] *[class ~= "toc/toc"] 
+         > *[class ~= "map/topicref"]> *[class ~= "map/topicref"] {
+  display:none;
+}</codeblock>The
+      selector <codeph>:root[a|only-chapters-in-toc='yes']</codeph> makes the rule activate only
+      when the attribute is set.</p>
+    <note>You can set multiple styling parameters at the same time.</note>
+    </body>
+</topic>
