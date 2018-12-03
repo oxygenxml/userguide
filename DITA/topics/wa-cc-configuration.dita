@@ -35,7 +35,18 @@
                   Assistant</term>.<note>To add an action that is implemented in JavaScript, you
                   need to define a stub action with the same ID in the
                     <uicontrol>Actions</uicontrol> subtab and add it in the <uicontrol>Content
-                    Completion</uicontrol> subtab.</note></li>
+                    Completion</uicontrol> subtab.<p>The stub action will get automatically
+                    registered in the JavaScript code in the
+                      <apiname>sync.api.ActionsManager</apiname> object with the ID you specified.
+                    You have to make sure that when your JavaScript action implementation is
+                    registered in the <apiname>sync.api.ActionsManager</apiname>, it overwrites the
+                    stub action. A sample code to do this can be found
+                    below:<codeblock outputclass="language-javascript">goog.events.listen(editor, sync.api.Editor.EventTypes.ACTIONS_LOADED, 
+  function(e) {
+    if (actionsManager.getActionById('my_id') != null) {
+      actionsManager.registerAction('my_id', new MyCustomAction());
+    }
+  });</codeblock></p></note></li>
             </ul></li>
           <li> Create an archive that only contains your custom framework folder and <xref
               href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
