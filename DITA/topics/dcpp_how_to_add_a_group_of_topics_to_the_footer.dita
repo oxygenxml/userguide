@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_add_a_group_of_topics_to_the_footer">
+    <title>How to Add a Group of Topics to the Footer</title>
+    <body>
+        <p>Let see how to create a footer on only the last page, that contains the content of
+      several topic files.</p>
+    <p>There are two approaches:</p>
+    <section id="section_csz_kl3_1gb">
+      <title>Using the position:fixed CSS Property</title>
+      <ol
+        id="ol_mcl_dm3_1gb">
+        <li>Group all the footer topics under a single parent topic, under the last topic from your
+          DITA map. For example you can have the following map structure:
+          <codeblock outputclass="language-ini">
+...
+End topic
+   Footer container topic
+      Footer content topic 1
+      Footer content topic 2.
+</codeblock></li>
+        <li> Put an <xmlatt>outputclass</xmlatt>=<codeph>footer</codeph> on the
+            <xmlelement>topic</xmlelement> root element of the footer container topic, or on its
+            <xmlelement>topicref</xmlelement> in the map. </li>
+        <li> Use the CSS <codeph>position: fixed</codeph> to position this topic to the bottom of
+          the
+          page:<codeblock outputclass="language-css">*[outputclass ~= "footer"] {
+  position: fixed;
+  
+  bottom: 0.5in;
+  left: 0.5in;
+  
+  width:5in;
+  height:200pt;  
+}
+          </codeblock>
+        </li>
+      </ol>
+      <note> Make sure the width and height are enough for the content of the footer to fit. Take
+        care, the content might bleed out of the page! Use bottom and left values to position the
+        block in the page.</note>
+    </section>
+    <section id="section_hrk_vm3_1gb">
+      <title>Using the float:footnote CSS Property</title>
+      <p>The second approach would be to declare the footer block as a footnote. Assuming the same
+        DITA Map structure as above</p>
+      <codeblock outputclass="language-css">*[outputclass ~= "footer"] {
+  float:footnote;
+}
+
+*[outputclass ~= "footer"]:footnote-call{
+  color:transparent;  
+  font-size:0;
+}
+
+*[outputclass ~= "footer"]:footnote-marker{
+  color:transparent;  
+  font-size:0;
+}</codeblock>
+      <note>Use transparent colors and/or zero size font to avoid the display of the footnote
+        counters.</note>
+    </section>
+    </body>
+</topic>
