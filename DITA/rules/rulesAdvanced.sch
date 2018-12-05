@@ -508,8 +508,14 @@
   <!-- msgph -> codeph -->
   <sch:pattern>
     <sch:rule context="msgph"> 
-      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use a "codeph" element instead.        
+      <sch:report test="true()" sqf:fix="replaceWithCodeph">You should not use this element because it is not rendered properly in the output. Use a "codeph" element instead.        
       </sch:report>
+      <sqf:fix id="replaceWithCodeph">
+        <sqf:description>
+          <sqf:title>Replace "msgph" with "codeph"</sqf:title>
+        </sqf:description>
+        <sqf:replace node-type="element" target="codeph" select="node()"/>
+      </sqf:fix>
     </sch:rule>
   </sch:pattern>
   
