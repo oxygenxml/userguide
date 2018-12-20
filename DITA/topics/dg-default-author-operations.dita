@@ -679,19 +679,15 @@ returnif (not(empty($toProcess))) then
               is not defined, then the element at the cursor position will be used.<p>There may be
                 situations in which you want to look at an ancestor of the current element and take
                 decisions in the script based on this. To do this, you can set the
-                  <b>sourceLocation</b> to point to an ancestor node then declare a parameter called
-                  <b>currentElementLocation</b> in your script and use it to re-position in the
-                current element, as in the following
-                example:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" 
+                  <b>sourceLocation</b> to point to an ancestor node then use the
+                  <codeph>oxy:current-element()</codeph> function to access the current element, as
+                in the following
+                example::<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" 
   xpath-default-namespace="http://docbook.org/ns/docbook" 
-  xmlns:saxon="http://saxon.sf.net/" exclude-result-prefixes="saxon">     
-    &lt;!-- This is an XPath location to be sent by the operation to the script -->
-    &lt;xsl:param name="currentElementLocation"/>
-    
+  xmlns:oxy="http://www.oxygenxml.com/ns/author/xpath-extension-functions" 
+                           exclude-result-prefixes="oxy">     
     &lt;xsl:template match="/">
-        &lt;!-- Evaluate the XPath of the current element location -->
-        &lt;xsl:apply-templates 
-        select="saxon:eval(saxon:expression($currentElementLocation))"/>
+        &lt;xsl:apply-templates select="oxy:current-element()"/>
     &lt;/xsl:template>
     
     &lt;xsl:template match="para">
@@ -800,19 +796,17 @@ declare variable $param2 external;</codeblock></p><p>You
       </ul>
       <p>The XSLT script would look like
         this:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-  xmlns:saxon="http://saxon.sf.net/"
+  xmlns:oxy="http://www.oxygenxml.com/ns/author/xpath-extension-functions" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  exclude-result-prefixes="xs saxon" version="2.0">
-
-  &lt;xsl:param name="currentElementLocation"/>
+  exclude-result-prefixes="xs oxy" version="2.0">
 
   &lt;xsl:template match="/">
       &lt;!-- 
           sourceLocation parameter was set to /* to have a larger context.
           We can pinpoint the element that contained the caret 
-          using $currentElementLocation
+          using the oxy:current-element() function.
       -->
-     &lt;xsl:apply-templates select="saxon:eval(saxon:expression($currentElementLocation))"/>
+      &lt;xsl:apply-templates select="oxy:current-element()"/>
   &lt;/xsl:template>
 
   &lt;xsl:template match="ul">
