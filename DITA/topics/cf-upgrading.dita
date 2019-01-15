@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-upgrading">
+  <title>Upgrading Content Fusion</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Content Fusion Enterprise - Upgrading</indexterm>
+        <indexterm>Upgrading</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="preupgrade_notes">
+      <title>Pre-Upgrade Notes</title>
+      <p>
+        <ul>
+          <li>System requirements:<ul>
+              <li>Ubuntu 18.04</li>
+              <li>A minimum of 10 GB of free disk space for the installer and more for tasks that
+                will be created by the users</li>
+            </ul></li>
+          <li>You cannot upgrade <b>Content Fusion</b> on the existing machine. It needs to be
+            installed on a new machine and all tasks and configurations will be imported to the new
+            machine during the upgrade process.</li>
+          <li>Custom frameworks and plugins will need to be reinstalled manually on the new
+            machine.</li>
+          <li>The upgrade process will involve some downtime, so pick a time that does not affect
+            the users.</li>
+          <li>To test the upgrade procedure, you need to have a task created on the old machine
+            before starting the upgrade procedure.</li>
+        </ul>
+      </p>
+    </section>
+    <section id="upgrade_procedure">
+      <title>Upgrade Procedure</title>
+      <ol>
+        <li>Deploy the new version of Content Fusion on a new machine according to the appropriate
+          deployment method:<ul>
+            <li><xref href="cf-vmsphere.dita"/></li>
+            <li><xref href="cf-aws.dita"/></li>
+            <li><xref href="cf-ubuntu.dita"/></li>
+          </ul></li>
+        <li>Once the new machine is ready, <xref
+            href="cf-enterprise-configuration.dita#cf-enterprise-configuration/maintenance">enable
+            maintenance mode</xref> on the old machine. Maintenance mode is needed to ensure that
+          users are not making any changes to the tasks while the backup is being created.</li>
+        <li>Create a backup of the old machine by running the following command on the <b>old
+            machine</b>:<codeblock xml:space="preserve" outputclass="language-javascript">sudo bash /fusion/admin/create-fusion-backup.sh</codeblock>This
+          will create a backup archive <codeph>fusion-backup.tar.gz</codeph> in the current
+          directory. If the backup file already exists, it will be overwritten.</li>
+        <li>Copy the <codeph>fusion-backup.tar.gz</codeph> backup file to the <b>newly deployed
+            machine</b>.</li>
+        <li>On the <b>newly deployed machine</b>, run the following command to restore the
+              backup:<codeblock xml:space="preserve" outputclass="language-javascript">sudo bash /fusion/admin/restore-fusion-backup.sh /path/to/fusion-backup.tar.gz</codeblock><p><b>Result:</b>
+            After restoring the backup, all the user tasks and configurations will be available in
+            the new <b>Content Fusion</b> machine.<note type="important">This means that the admin
+              password on the new machine will be the same as the admin password on the old
+              machine.</note></p></li>
+        <li>Because the backup was created while maintenance mode was enabled, the new Content
+          Fusion machine will be in maintenance mode after the backup restore. Go to the <xref
+            href="cf-enterprise-configuration.dita#cf-enterprise-configuration/maintenance"
+            >Administration Page and disable maintenance mode</xref>.</li>
+        <li>Manually <xref href="cf-custom-frameworks.dita">reinstall any custom frameworks or
+            plugins</xref> that you were using on the old machine.</li>
+        <li>To test the upgrade, check to make sure the tasks and configurations that were present
+          on the old machine are now present on the new machine.</li>
+        <li>Replace the old machine with the new one.</li>
+      </ol>
+    </section>
+  </body>
+</topic>
