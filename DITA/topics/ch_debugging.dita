@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_debugging">
+  <title>Debugging the CSS</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Debugging</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>If you notice that some of the CSS properties were not applied as expected, some of the tips
+      offered in this topic might help you with the debugging process.</p>
+    <section id="merged_map_file">
+      <title>Comparing the CSS Against the Input File</title>
+      <p>The first thing that you should try is to check the file structure of the input XML or HTML
+        file and compare it to the CSS selectors to make sure they are written correctly against the
+        document structure. If you still cannot identify the problem, then inspect how the styles
+        are applied (you can try any of the methods listed below).</p>
+    </section>
+    <section id="section_hwl_jwq_5cb">
+      <title>Inspecting the Applied Styles Using the Chrome Browser</title>
+      <sectiondiv>To inspect the applied CSS styles using Chrome:</sectiondiv>
+      <ol id="ol_iwl_jwq_5cb">
+        <li>In Chrome, open the input XML or HTML file.</li>
+        <li>Click on the element you want to inspect. </li>
+        <li>Activate the <uicontrol>Chrome Developer Tools</uicontrol> by using <menucascade>
+            <uicontrol><image href="../img/WebAuthorMore16.png"/></uicontrol>
+            <uicontrol>More Tools</uicontrol>
+            <uicontrol>Developer Tools</uicontrol>
+          </menucascade>, or press <uicontrol><shortcut>CTRL+SHIFT+I</shortcut></uicontrol>.</li>
+        <li>Activate the <uicontrol>Rendering</uicontrol> pane by using <menucascade>
+            <uicontrol><image href="../img/WebAuthorMore16.png"/></uicontrol>
+            <uicontrol>More Tools</uicontrol>
+            <uicontrol>Rendering</uicontrol>
+          </menucascade>:<image
+            href="../img/dcpp_debugging_the_css_chrome_activate_rendering_pane.png"
+            placement="break" id="image_f3j_fxq_5cb"/>
+        </li>
+        <li>In the <uicontrol>Rendering</uicontrol> pane, select <uicontrol>print</uicontrol> from
+          the <uicontrol>Emulate CSS media</uicontrol> section. This will activate the CSS selectors
+          enclosed in <codeph>@media print {..}</codeph>. <image
+            href="../img/dcpp_debugging_the_css_chrome_rendering_emulate_media.png"
+            placement="break" id="image_ff5_tyq_5cb"/></li>
+      </ol>
+      <note>This allows you to debug the styling of elements, table of contents, and index, but not
+        the styles of the page margin boxes (headers, footers) or page breaks.</note>
+      <note type="tip">In the left pane of the <uicontrol>Developer Tools</uicontrol> interface, you
+        can inspect elements and their styles in the <uicontrol>Elements</uicontrol> tab. You can
+        click on any of the links to display the applied CSS files in the
+          <uicontrol>Styles</uicontrol> tab in the right pane. Editing the styles in that pane
+        results in a live preview of how the change will affect the output.</note>
+    </section>
+    <section id="section_jnm_vmq_5cb">
+      <title>Inspecting the Applied Styles Using Oxygen XML Editor/Author</title>
+      <sectiondiv>To inspect styles:</sectiondiv>
+      <ol id="ol_mwv_dnq_5cb">
+        <li>In <b>Oxygen XML Editor/Author</b>, open the input XML or HTML file.</li>
+        <li><b>[Optional]</b> From the <uicontrol>Styles</uicontrol> toolbar, choose the
+            <uicontrol>+ Print Ready</uicontrol> entry. This will activate certain CSS selectors
+          enclosed in <codeph>@media print {..}</codeph>. </li>
+        <li>Click on the element you want to style. Use the <uicontrol>Inspect Styles</uicontrol>
+          action from the Contextual Menu. A specialized <uicontrol>CSS Inspector</uicontrol> view
+          will show the built-in CSS rules.</li>
+      </ol>
+      <note type="tip">With this file opened in <uicontrol>Author</uicontrol> mode, it might be
+        helpful to switch the <uicontrol>Tags Display Mode</uicontrol> to <uicontrol><image
+            href="../img/FullTagsWithAttrs16.png" id="image_gmv_lrm_wr"/>Full Tags with
+          Attributes</uicontrol>. You might be able to identify the selector you need to style
+        without using the <uicontrol>CSS Inspector</uicontrol> view.</note>
+      <note>This allows you to debug styling of elements, but not of the page margin boxes (headers,
+        footers) or page breaks.</note>
+      <note type="caution">Do not modify the built-in rules directly in the CSS files from the
+          <b>Oxygen XML Editor/Author</b> installation. Instead, copy the rules to your own
+        customization CSS.</note>
+    </section>
+    <section id="section_xp5_vnq_5cb">
+      <title>Other techniques</title>
+      <p>These are some other techniques you may find useful:</p>
+      <ul id="ul_yp5_vnq_5cb">
+        <li>Add background and borders properties to the specific CSS rule. If they do not appear in
+          the output then there is a problem with the rule selector.</li>
+        <li>Try to use the <codeph>!important</codeph> notation to the property that is not applied,
+          or make the selector more specific (you can add more parent selectors). </li>
+        <li>To figure out how the elements are mapped into PDF, you can use this fragment in the
+          customization
+          CSS:<codeblock outputclass="language-css">* {
+   border: 1pt solid blue !important;
+}
+
+*:before(1000) {
+   content:  oxy_name() !important;
+   color: orange;
+}
+
+*:before(999) {
+   content: "[ class= '" attr(class) "'] " !important;
+   color: orange;
+}</codeblock>This
+          will show the element name, its class attribute, and will paint a blue border around each
+          of the elements in the output. It will not show the page margin boxes or some content
+          elements that were hidden.</li>
+      </ul>
+    </section>
+  </body>
+</topic>
