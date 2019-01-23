@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-configure-dropping">
+  <title>Controlling the Behavior of Drag/Drop Operations</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Configuring drag/drop</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>By default, dragging a valid URL string and dropping it into the editor in <ph
+        keyref="webappProduct"/> will automatically insert it as a linking element for the
+      particular document type you are working with. For example, in DITA it would insert an
+        <codeph>xref</codeph> element. It is also possible to configure the behavior of the drop
+      operation.</p>
+    <p>This can be done by creating a <xref href="customizing_plugins.dita#customizing_plugins"
+        >plugin</xref> and set a listener on the <i>dragstart</i> event for the type of items that
+      can be dragged. On the handler for the <i>dragstart</i> event, you can set the
+        <b>application/oxy-reference</b> custom type to the event's <i>dataTransfer</i> object.</p>
+    <p>The value of this custom type needs to be a string before being added to
+      <i>dataTransfer</i>.</p>
+    <p>The object must contain the following properties:<ul>
+        <li><b>type</b> - The reference type to insert.</li>
+        <li><b>url</b> - The URL that the reference points to.</li>
+      </ul></p>
+    <p>An example of adding custom data on the <i>dragstart</i> event handler should look like
+      this:<codeblock outputclass="language-javascript">e.dataTransfer.setData('application/oxy-reference', JSON.stringify
+     ({ url: 'http://example_url.com', type: 'image_reference' }))</codeblock></p>
+  </body>
+</topic>
