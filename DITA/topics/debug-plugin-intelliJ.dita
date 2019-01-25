@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="debug-plugin-intelliJ">
+  <title>Debugging a Plugin Using IntelliJ IDEA</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Oxygen SDK<indexterm>Debugging a
+            plugin<indexterm>IntelliJ</indexterm></indexterm></indexterm>
+        <indexterm>Plugins<indexterm>Debugging<indexterm>IntelliJ</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>To use <term>IntelliJ IDEA</term> to debug problems in the code of a <xref
+        keyref="glossentry_plugin"><term>plugin</term></xref> without having to re-bundle the
+      plugin's Java classes in a <xref keyref="glossentry_jar"><term>JAR</term></xref> library,
+      follow these steps:<ol id="ol_ops_m3p_hj">
+        <li><xref href="https://www.oxygenxml.com/xml_editor/download_oxygenxml_editor.html"
+            format="html" scope="external">Download</xref> and install <ph keyref="product"/>.</li>
+        <li>Set up the <i>Oxygen SDK</i> following <xref
+            href="https://www.oxygenxml.com/oxygen_sdk/download.html" format="html" scope="external"
+            >this set of instructions</xref>.</li>
+        <li>Create a Java Project (for example, <filepath>MyPluginProject</filepath>) from one of
+          the sample plugins (for example, the Workspace Access plugin). </li>
+        <li>In the <filepath>MyPluginProject</filepath> folder, create a folder called
+            <filepath>myPlugin</filepath>. In this new folder, copy the
+            <filepath>plugin.xml</filepath> file from the sample plugin. Modify the added
+            <filepath>plugin.xml</filepath> to add a library reference to the directory where
+          IntelliJ IDEA copies the compiled output. To find out where this directory is located, go
+          to <menucascade>
+            <uicontrol>File</uicontrol>
+            <uicontrol> Project Structure</uicontrol>
+          </menucascade>. Then select the <b>Modules</b> category and inspect the value of the
+            <uicontrol>Output path</uicontrol> text box from the <b>Path</b> tab.<p><b>Example:</b>
+            If the output path is
+              <filepath>C:/Users/myUser/Documents/MyPluginProject/target/classes</filepath>, then in
+            the <filepath>plugin.xml</filepath>, you need to add the following library reference in
+            the <i>runtime</i> element:
+            <codeblock outputclass="language-xml">&lt;library name="../target/classes"/></codeblock></p></li>
+        <li>Copy the <filepath>plugin.dtd</filepath> from the <filepath><term
+              conkeyref="reusables-user-guide/oxy-install-dir"/>/plugins</filepath> folder in the
+          root <filepath>MyPluginProject</filepath> folder.</li>
+        <li>In the <filepath>MyPluginProject</filepath> dependences (<menucascade>
+            <uicontrol>File</uicontrol>
+            <uicontrol> Project Structure</uicontrol>
+            <uicontrol>Modules</uicontrol>
+            <uicontrol>Dependences</uicontrol>
+          </menucascade>), add external <term>JAR</term> references to all the <term>JAR</term>
+          libraries in the <filepath><term conkeyref="reusables-user-guide/oxy-install-dir"
+            />/lib</filepath> folder. Now your <filepath>MyPluginProject</filepath> should compile
+          successfully.</li>
+        <li>In IntelliJ IDEA, create a new <term>Java Application</term> configuration for debugging (<menucascade>
+            <uicontrol>Run</uicontrol>
+            <uicontrol> Edit Configurations...</uicontrol>
+            <uicontrol>+</uicontrol>
+            <uicontrol>Application</uicontrol>
+          </menucascade>). Set the <uicontrol>Main class</uicontrol> box to
+            <codeph>ro.sync.exml.Oxygen</codeph> and add the following code snippet in the <b>VM
+            options</b> input box, making sure that the path to the <filepath>plugins</filepath>
+          directory is the correct
+            one:<codeblock outputclass="language-ini">-Dcom.oxygenxml.app.descriptor=ro.sync.exml.EditorFrameDescriptor -Xmx1024m 
+-XX:MaxPermSize=384m -Dcom.oxygenxml.editor.plugins.dir=D:\projects\MyPluginProject</codeblock><note
+            product="author developer">If you need to configure the <term>plugin</term> for <ph
+              keyref="product"/>, set the <codeph>com.oxygenxml.app.descriptor</codeph> to <codeph
+              product="author">ro.sync.exml.AuthorFrameDescriptor</codeph><codeph
+              product="developer">ro.sync.exml.DeveloperFrameDescriptor</codeph>.</note></li>
+        <li product="developer editor"><xref
+            href="using-breakpoints.dita#using-breakpoints/inserting_breakpoints">Add a
+              <term>breakpoint</term></xref> in the source of one of your Java classes.</li>
+        <li product="developer editor">Debug the created configuration. When the code reaches your
+            <xref href="using-breakpoints.dita#using-breakpoints"><term>breakpoint</term></xref>,
+          the IntelliJ IDEA debugging view should take over.</li>
+      </ol></p>
+  </body>
+</topic>
