@@ -13,33 +13,25 @@
   <body>
     <p>You may often find that you want a certain piece of text in a topic to have a different value
       in various circumstances. For example, if you are reusing a topic about a feature that is
-      shared between several products, you might want to make the name of the product variable so
+      shared between several products, you might want to make the name of the product a variable so
       that the correct product name is used in the manual for each product.</p>
     <p>For example, you might have a sentence like this:</p>
     <codeblock outputclass="language-ini">The quick-heat feature allows [product-name] to come up to temperature quickly.</codeblock>
     <p>You need a way to substitute the correct product name for each product. </p>
-    <p>One way to do this would be to use conditional profiling, as in the following
+    <p>One way to do this would be to use conditional profiling to provide conditional values using
+      the <codeph>product</codeph> profiling attribute, as in the following
       example:<codeblock outputclass="language-xml">&lt;p>The quick-heat feature allows 
     &lt;ph product="basic">Basic Widget&lt;/ph>
     &lt;ph product="pro">Pro Widget&lt;/ph>
 to come up to temperature quickly.&lt;/p></codeblock></p>
-    <section id="creating_variable_text_using_keys">
-      <title>Creating Variable Text Using Keys</title>
-      <p>In DITA, you can create variable text using <xref keyref="dita_background_keys"
-        >keys</xref>.</p>
-      <p>One way to do this would be to provide conditional values using the
-          <codeph>product</codeph> profiling attribute.</p>
-      <p>However, this approach means that you are repeating the product names over and over again
-        everywhere the product name is mentioned. This is time consuming for authors and will create
-        a maintenance problem if the product names change. </p>
-    </section>
-    <section id="creating_variable_content_using_a_key_reference">
-      <title>Creating Variable Content Using a Key Reference</title>
-      <p>The alternative is to use a key reference, as in the following
-        example:<codeblock outputclass="language-xml">&lt;p>The quick-heat feature allows &lt;ph keyref="product"/> 
+    <p>However, this approach means that you are repeating the product names over and over again
+      everywhere the product name is mentioned. This is time consuming for authors and will create a
+      maintenance problem if the product names change. </p>
+    <p>The alternative is to use a key reference, as in the following
+      example:<codeblock outputclass="language-xml">&lt;p>The quick-heat feature allows &lt;ph keyref="product"/> 
    to come up to temperature quickly.&lt;/p></codeblock></p>
-      <p>The definition of the key reference determines the name of the
-        product:<codeblock outputclass="language-xml">&lt;keydef keys="product" product="basic">
+    <p>The definition of the key reference determines the name of the
+      product:<codeblock outputclass="language-xml">&lt;keydef keys="product" product="basic">
     &lt;topicmeta>
       &lt;keywords>
         &lt;keyword>Basic Widget&lt;/keyword>
@@ -53,28 +45,45 @@ to come up to temperature quickly.&lt;/p></codeblock></p>
       &lt;/keywords>
     &lt;/topicmeta>
   &lt;/keydef></codeblock></p>
-      <p>When the content is published, the current value of the key <codeph>product</codeph> will
-        be inserted.</p>
-    </section>
+    <p>When the content is published, the value defined in the <codeph>product</codeph> key will be
+      inserted for each product.</p>
     <section id="inserting_a_keyref">
       <title>Inserting a Keyref</title>
-      <p>To insert a key reference into a document in <ph keyref="product"/>
-        <uicontrol>Author</uicontrol> mode, use one of the following methods:<ul>
+      <p>To insert a <xref href="insert-define-keys.dita">defined key reference</xref> into a
+        document in <ph keyref="product"/>
+        <uicontrol>Author</uicontrol> mode, use one of the following methods (the method you choose
+        simply depends on which <ph keyref="product"/> feature you prefer):<ul>
           <li><b>DITA Reusable Components View Method</b><p>Use the <xref
                 href="dita-reusable-components-view.dita#dita-reusable-components-view"
                   ><uicontrol>DITA Reusable Components</uicontrol> view</xref> to insert a
                 <i>variable reference</i> to the <xref
-                href="insert-define-keys.dita#insert-define-keys">defined key</xref>.</p></li>
+                href="insert-define-keys.dita#insert-define-keys">defined key</xref>. For example,
+              in the <uicontrol>Keys</uicontrol> tab, find a key defined as a variable and
+              double-click it. <ph keyref="product"/> will insert the variable as a
+                <xmlelement>ph</xmlelement> element with a <xmlatt>keyref</xmlatt> attribute that
+              references the specified key</p></li>
           <li><b>Code Template Method</b><p>Add the source code pattern of the <xref
                 href="insert-define-keys.dita#insert-define-keys">defined key</xref> to a <xref
                 href="preferences-editor-code-templates.dita#preferences-editor-code-templates">code
                 template</xref> so that it appears in the list of proposals in the <xref
                 keyref="glossentry_content-completion-assistant"><term>Content Completion
-                  Assistant</term></xref>.</p></li>
-          <li><b>Edit Attributes Method</b><p>Manually insert the <codeph>keyref</codeph> attribute
-              using the attributes editor as follows:<ol id="ol_vzt_ljd_zp">
-                <li>Press <uicontrol><shortcut>Enter</shortcut></uicontrol> and select any DITA
-                  element that supports the <codeph>keyref</codeph> attribute. </li>
+                  Assistant</term></xref>. For example, the code pattern could be something like
+                <codeph>&lt;ph keyref="product"/></codeph> for defined <codeph>product</codeph>
+              key.</p></li>
+          <li><b>Reuse Content Dialog Box Method</b><p>Use the <uicontrol><image
+                  href="../img/Conref20.png" id="image_jgl_grx_xr"/>Reuse Content</uicontrol> action
+              on the main toolbar to open the <xref href="insert-dita-content-reference.dita"
+                  ><uicontrol>Reuse Content</uicontrol> dialog box</xref>. Use the
+                <uicontrol>Key</uicontrol> option to select a key that is defined as a <xref
+                href="insert-dita-content-reference.dita#insert-dita-content-reference/key-ref-options-section"
+                >variable (key reference to metadata)</xref> and <ph keyref="product"/> will insert
+              the variable as a <xmlelement>ph</xmlelement> element with a <xmlatt>keyref</xmlatt>
+              attribute that references the specified key.</p></li>
+          <li><b>Manual Method</b><p>Manually insert the <codeph>keyref</codeph> attribute using the
+              attributes editor as follows:<ol id="ol_vzt_ljd_zp">
+                <li>Press <uicontrol><shortcut>Enter</shortcut></uicontrol> and select a DITA
+                  element (for example, <xmlelement>ph</xmlelement>) that supports the
+                    <codeph>keyref</codeph> attribute. </li>
                 <li>Select <uicontrol><image href="../img/Attribute16.gif" id="image_rt3_hnq_js"
                     />Edit Attributes</uicontrol> from the contextual menu <ph
                     product="author editor">(or simply press
@@ -86,12 +95,6 @@ to come up to temperature quickly.&lt;/p></codeblock></p>
                 <li>In the <uicontrol>Value</uicontrol> field, select or enter the name of the <xref
                     href="insert-define-keys.dita#insert-define-keys">defined key</xref>.</li>
               </ol></p></li>
-          <li><b>Text Mode Method</b><p>If you are using <xref
-                href="text-mode-editor.dita#text-mode-editor"><uicontrol>Text</uicontrol>
-                mode</xref>, when you insert a <codeph>keyref</codeph> attribute, after you enter
-              the first quote (<codeph>keyref="</codeph>), the <uicontrol>Content Completion
-                Assistant</uicontrol> will list all the defined keys that you can select from. Note
-              that this only works for local files.</p></li>
         </ul></p>
     </section>
   </body>
