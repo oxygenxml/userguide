@@ -212,11 +212,35 @@
 	
 	<!-- 
 		==================================
+		Windows Help (CHM) 
+		==================================	
+		-->
+	<target name="build-chm">
+		<antcall target="build-single">
+			<param name="p-product" value="author-sa" />
+			<param name="p-format" value="htmlhelp" />
+			<param name="p-type" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="developer-sa" />
+			<param name="p-format" value="htmlhelp" />
+			<param name="p-type" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="editor-sa" />
+			<param name="p-format" value="htmlhelp" />
+			<param name="p-type" value="" />
+		</antcall>
+	</target>
+
+	
+	<!-- 
+		==================================
 		All deliverables.
 		
 		==================================	
 		-->
-  <target name="build-all" depends="build-webhelp-public, build-pdf, build-eclipsehelp, build-eclipsehelp, build-javahelp">
+    <target name="build-all" depends="build-webhelp-public, build-pdf, build-eclipsehelp, build-javahelp, build-chm">
 		<echo>Build All</echo>
 	</target>
 
@@ -286,6 +310,12 @@
 			</not>
 		</condition>
 		
+		<condition property="hhc.exe" value="C:\Program Files (x86)\HTML Help Workshop\hhc.exe">
+			<os family="windows" />
+		</condition>
+		<property name="hhc.exe" value="/home/jenkins/.wine/drive_c/Program Files (x86)/HTML Help Workshop/hhc.exe" />
+		
+		
 		<delete dir="${p-output}" />
 		<mkdir dir="${p-output}" />
 
@@ -352,7 +382,7 @@
 			          <arg value="helpID.properties"/>
 			      </java>
 
-			      <echo>Create ${p-output}/${p-product}HelpID.jar file</echo>
+			      <echo>Create ${p-output}/${p-product}-HelpID.jar file</echo>
 			      <jar basedir="${p-output}" 
 			          includes="helpID.properties" 
 			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
