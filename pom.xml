@@ -225,6 +225,106 @@
     </profile>
     
     <profile>
+      <id>build-chm</id>
+      <activation>
+        <property>
+          <name>build-chm</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <userguide.server>software-archive.sync.ro</userguide.server>
+        <userguide.server.dir>/repository/userguides</userguide.server.dir>
+        <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide/master/DITA/UserManual.ditamap</editlink.ditamap.url>
+      </properties>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-chm</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-chm">
+                      <property name="editlink.ditamap.url" value="${editlink.ditamap.url}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <!-- Deploy the artifacts that enter the installation kits -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.7</version>
+            <executions>
+              <!-- Deploy CHM files to Maven Archiva Repository -->
+              <execution>
+                <id>deploy-editor-chm</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>editorCHM</artifactId>
+                  <file>${project.build.directory}/output/htmlhelp/editor-sa/editor-sa.chm</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>chm</packaging>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-author-chm</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>authorCHM</artifactId>
+                  <file>${project.build.directory}/output/htmlhelp/author-sa/author-sa.chm</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>chm</packaging>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-developer-chm</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                  <artifactId>developerCHM</artifactId>
+                  <file>${project.build.directory}/output/htmlhelp/developer-sa/developer-sa.chm</file>
+                  <groupId>com.oxygenxml</groupId>
+                  <version>${project.version}</version>
+                  <repositoryId>syncro-snapshots</repositoryId>
+                  <url>http://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <packaging>chm</packaging>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
       <id>all</id>
       <activation>
         <property>
