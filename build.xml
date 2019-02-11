@@ -313,7 +313,7 @@
 		<condition property="hhc.exe" value="C:\Program Files (x86)\HTML Help Workshop\hhc.exe">
 			<os family="windows" />
 		</condition>
-		<property name="hhc.exe" value="/home/jenkins/.wine/drive_c/Program Files (x86)/HTML Help Workshop/hhc.exe" />
+		<property name="hhc.exe" value="/home/jenkins/hhc.sh" />
 		
 		
 		<delete dir="${p-output}" />
@@ -376,7 +376,7 @@
 			<then>
 				<java classname="ro.sync.util.ant.HelpIDFinder" fork="yes" dir="." failonerror="true">
 					  <classpath>
-					  	<pathelement path="${user.home}/htmlhelp/helpidfinder.jar"/>
+					  	<pathelement path="./lib/helpidfinder.jar"/>
 					  </classpath>
 			          <arg value="${p-output}"/>
 			          <arg value="helpID.properties"/>
@@ -386,6 +386,8 @@
 			      <jar basedir="${p-output}" 
 			          includes="helpID.properties" 
 			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
+				
+				  <move file="${p-output}/UserManual.chm" tofile="${p-output}/${p-product}.chm" failonerror="false" />
 			</then>
 		</if>
 	  
