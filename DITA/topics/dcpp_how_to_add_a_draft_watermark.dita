@@ -34,21 +34,29 @@
        &lt;approved/>       
    &lt;/bookchangehistory>
 ...</codeblock>
-    <p>You can use:</p>
-    <codeblock outputclass="language-css">:root, body{
-     background-image: url(oxy_xpath('if  (//bookmeta/bookchangehistory/approved) then ""
-else  "../../images/draft-watermark.png" '));
-     background-position:center;
-     background-repeat:no-repeat;
-     background-color:inherit; 
-}
-</codeblock>
     <p>Use <codeph>oxy_xpath</codeph> every time you need to probe the value from an element other
       than the one matched by the CSS selector, and test the expression on the merged HTML file
       using the <xref href="https://www.oxygenxml.com/doc/ug-editor/topics/xpath-builder-view.html"
-        format="html" scope="external"><b>Oxygen XPath Builder</b> view</xref>. The
-        <codeph>body</codeph> selector is used here in case you want to apply the <uicontrol>DITA
-        Map PDF - based on HTML5 &amp; CSS</uicontrol> transformation type.</p>
+        format="html" scope="external"><b>Oxygen XPath Builder</b> view</xref>.</p>
+    <p>You can either use a page selector, that imposes the draft watermark on the entire page
+      surface (recommended):</p>
+    <p>
+      <codeblock outputclass="language-css">@page {
+    background-image: url(oxy_xpath('if  (//bookmeta/bookchangehistory/approved) then ""
+else  "../../images/draft-watermark.png" '));
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:inherit; 
+}</codeblock>
+    </p>
+    <p>or a an element selector, that restricts the watermark image only to the page area containing
+      the text:</p>
+    <codeblock outputclass="language-css">:root, body{
+  ... /* same as properties above */ 
+}
+</codeblock>
+    <p> The <codeph>body</codeph> selector is used here in case you want to apply the
+        <uicontrol>DITA Map PDF - based on HTML5 &amp; CSS</uicontrol> transformation type.</p>
   </body>
   <related-links>
     <linklist>
