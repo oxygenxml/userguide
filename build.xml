@@ -316,6 +316,16 @@
 		<property name="hhc.exe" value="/home/jenkins/hhc.sh" />
 		
 		
+		<if>
+			<equals arg1="${p-format}" arg2="htmlhelp"></equals>
+			<then>
+				<property name="clean.temp">no</property>
+			</then>
+			<else>
+				<property name="clean.temp">yes</property>
+			</else>
+		</if>
+		
 		<delete dir="${p-output}" />
 		<mkdir dir="${p-output}" />
 
@@ -334,6 +344,7 @@
 			<arg value="--format=${p-format}" />
 			<arg value="--output=${p-output}" />
 			<arg value="--temp=${p-temp}" />
+			<arg value="--clean.temp=${clean.temp}" />
 			<arg value="--verbose" />
 			<arg value="--input=${basedir}/DITA/UserManual.ditamap" />
 			<arg value="-filter=${p-ditaval}" />
@@ -378,16 +389,18 @@
 					  <classpath>
 					  	<pathelement path="./lib/helpidfinder.jar"/>
 					  </classpath>
-			          <arg value="${p-output}"/>
+			          <arg value="${p-temp}/temp_chm_dir"/>
 			          <arg value="helpID.properties"/>
 			      </java>
 
-			      <echo>Create ${p-output}/${p-product}-HelpID.jar file</echo>
+				<move file="${p-temp}/temp_chm_dir/helpID.properties" tofile="${p-output}/helpID.properties" failonerror="true" />
+				
+				  <echo>Create ${p-output}/${p-product}-HelpID.jar file</echo>
 			      <jar basedir="${p-output}" 
 			          includes="helpID.properties" 
 			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
 				
-				  <move file="${p-output}/UserManual.chm" tofile="${p-output}/${p-product}.chm" failonerror="false" />
+				  <move file="${p-output}/UserManual.chm" tofile="${p-output}/${p-product}.chm" failonerror="true" />
 			</then>
 		</if>
 	  
