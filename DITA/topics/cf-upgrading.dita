@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-upgrading">
+  <title>Upgrading Content Fusion</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Content Fusion Enterprise - Upgrading</indexterm>
+        <indexterm>Upgrading</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="preupgrade_notes">
+      <title>Pre-Upgrade Notes</title>
+      <p>
+        <ul>
+          <li>System requirements: On the server running Content Fusion, you need enough disk space
+            to create a backup. The backup file contains a compressed archive of all files located
+            in <filepath>/fusion/data/</filepath>, so to be safe, the free space should be at least
+            equal to the size of the data folder.</li>
+          <li>You cannot upgrade <b>Content Fusion</b> on the existing server. It needs to be
+            installed on a new server and all tasks and configurations will be imported to the new
+            server during the upgrade process.</li>
+          <li>Custom frameworks and plugins will need to be reinstalled manually on the new
+            server.</li>
+          <li>The upgrade process will involve some downtime, so pick a time that does not affect
+            the users.</li>
+        </ul>
+      </p>
+    </section>
+    <section id="upgrade_procedure">
+      <title>Upgrade Procedure</title>
+      <ol>
+        <li>Deploy the new version of Content Fusion on a new server according to the appropriate
+          deployment method:<ul>
+            <li><xref href="cf-vmsphere.dita"/></li>
+            <li><xref href="cf-aws.dita"/></li>
+            <li><xref href="cf-ubuntu.dita"/></li>
+          </ul></li>
+        <li>Once the <b>new server</b> is ready, <xref href="cf-custom-frameworks.dita">reinstall
+            any custom Web Author frameworks or plugins</xref> that you were using on the old
+          server.</li>
+        <li><xref href="cf-enterprise-configuration.dita#cf-enterprise-configuration/maintenance"
+            >Enable maintenance mode</xref> on the <b>old server</b>. Maintenance mode is needed to
+          ensure that users are not making any changes to the tasks while the backup is being
+          created.</li>
+        <li>Create a backup of the old server by running the following command on the <b>old
+            server</b>:<codeblock xml:space="preserve" outputclass="language-javascript">sudo bash /fusion/admin/create-fusion-backup.sh</codeblock>This
+          will create a backup archive <codeph>fusion-backup.tar.gz</codeph> in the current
+          directory. If the backup file already exists, it will be overwritten.</li>
+        <li>Copy the <codeph>fusion-backup.tar.gz</codeph> backup file to the <b>newly deployed
+            server</b>.</li>
+        <li>On the <b>newly deployed server</b>, run the following command to restore the
+              backup:<codeblock xml:space="preserve" outputclass="language-javascript">sudo bash /fusion/admin/restore-fusion-backup.sh /path/to/fusion-backup.tar.gz</codeblock><p><b>Result:</b>
+            After restoring the backup, all the user tasks and configurations will be available in
+            the new <b>Content Fusion</b> server.<note type="important">This means that the password
+              for the <xref href="cf-enterprise-configuration.dita" scope="external">Administration
+                Web Page</xref> on the new server will be the same as on the old
+          server.</note></p></li>
+        <li>Because the backup was created while maintenance mode was enabled, the new <b>Content
+            Fusion</b> server will be in maintenance mode after the backup restore. Go to the <xref
+            href="cf-enterprise-configuration.dita#cf-enterprise-configuration/maintenance"
+            >Administration Page and disable maintenance mode</xref>.</li>
+        <li>To test the upgrade, check to make sure the tasks and configurations that were present
+          on the old server are now present on the new server.<note>Depending on the configuration,
+            you may have to configure your mail server to accept emails from the new Content Fusion
+            server.</note></li>
+        <li>Replace the old server with the new one.</li>
+      </ol>
+    </section>
+  </body>
+</topic>

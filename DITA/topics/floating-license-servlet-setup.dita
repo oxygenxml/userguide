@@ -1,29 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="floating-license-servlet-setup">
-  <title>Setting up an HTTP License Server</title>
+  <title>Setting up an HTTP License Server (Floating or Named-User Licenses)</title>
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>HTTP floating license server</indexterm>
+        <indexterm>HTTP license server</indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
-    <p>
-      <fig id="fig_thh_hlz_x4"
-        product="author developer editor authorEclipse developerEclipse editorEclipse">
-        <title>License Server (HTTP Server)</title>
-        <image href="../img/diag_FloatingLicenseServer_XMLEditor.png" id="image_i3h_hlz_x4"
-          placement="inline"/>
-      </fig>
-    </p>
-    <p>
-      <fig product="webauthor waCustom">
-        <title>Floating License Server (HTTP Server)</title>
-        <image href="../img/diag_FloatingLicenseServer_WebAuthor.png" placement="inline"/>
-      </fig>
-    </p>
     <p>The HTTP License Server is available in several distributions, tailored for covering a
       variety of deployment configurations:<ul>
         <li><xref
@@ -51,12 +37,15 @@
               >HTTP License Server website</xref>.</li>
           <li>Run the installer and follow the on-screen instructions.</li>
           <li>You need to configure two sets of credentials:<ol>
-              <li><b>Administrator credentials</b> - used for accessing the <ph keyref="product"/>
+              <li><b>Administrator credentials</b> - Used for accessing the <ph keyref="product"/>
                 license server administrative interface.</li>
-              <li><b>Standard user credentials</b> - used by an <ph keyref="product"/> application
+              <li><b>Standard user credentials</b> - Used by an <ph keyref="product"/> application
                 to connect to the license server.</li>
             </ol></li>
-          <li>You can choose to change the default 8080 port the server will run on.</li>
+          <li>You can choose to change the default 8080 port the server will run on. If you need to
+            change the port after the installation, you can do it by editing the following
+              <i>vmoptions</i> file: <filepath>oXygen HTTP License Server\Windows
+              Service\oXygenHTTPLicenseServer.vmoptions</filepath>.</li>
           <li>Optionally, you can choose to install the server as a Windows service. In this case,
             you can choose the name of the Windows service.</li>
         </ol>
@@ -74,12 +63,16 @@
               (<filepath>licenseServer.bat</filepath> for Windows or
               <filepath>licenseServer.sh</filepath> for Linux and Mac).<note>To specify a different
               port (other than the default 8080), you can pass the new port number as an argument to
-              the scripts (for example, <filepath>licenseServer.bat 8082</filepath>).</note></li>
+              the scripts (for example, <filepath>licenseServer.bat 8082</filepath>). You can also
+              change the port by editing the following <i>vmoptions</i> file: <filepath>oXygen HTTP
+                License Server\Windows
+            Service\oXygenHTTPLicenseServer.vmoptions</filepath>.</note></li>
           <li>On the first run, you will be prompted to set two sets of credentials:<ol>
-              <li><b>Administrator credentials</b> - used for accessing the <ph keyref="product"/>
+              <li><b>Administrator credentials</b> - Used for accessing the <ph keyref="product"/>
                 license server administrative interface.</li>
-              <li><b>Standard user credentials</b> - used by an <ph keyref="product"/> application
-                to connect to the license server.</li>
+              <li><b>Standard user credentials</b> - Used by an <ph keyref="product"/> application
+                to connect to the license server.<note
+                  conkeyref="reusables-user-guide/manual-install-note" type="tip"/></li>
             </ol></li>
         </ol>
       </p>
@@ -89,9 +82,9 @@
       <p>
         <ol>
           <li>Make sure that Apache Tomcat 5.5 or higher is running on the machine you have selected
-            to be the license server. To get it, go to <xref href="http://tomcat.apache.org"
-              format="org" scope="external"/>. </li>
-          <li>Download the HTTP license server <uicontrol>Web ARchive</uicontrol> (<b>.war</b>) from
+            to be the license server (<xref href="http://tomcat.apache.org" format="org"
+              scope="external"/>). </li>
+          <li>Download the HTTP license server <uicontrol>Web Archive</uicontrol> (<b>.war</b>) from
             the <xref href="https://www.oxygenxml.com/license_server.html" format="html"
               scope="external">HTTP License Server website</xref>. </li>
           <li>Configure two Tomcat users:<ol>
@@ -124,12 +117,12 @@
             application is now up and running, but the license key is not yet registered. </li>
           <li>Go to the HTTP License Server administration page by clicking the
               <codeph>oXygenLicenseServlet</codeph> link in the manager page. You will need to
-            authenticate with the user configured with the <codeph>admin</codeph> role (Mary in our
-            example).</li>
-          <li id="activate-li">Activate the license key. This process involves binding your license
-            key to your license server deployment. The browser used in the activation process needs
-            to have Internet access. Once the process is completed you cannot activate the license
-            with another license server. Follow these steps to activate the license:<ol
+            authenticate with the user configured with the <codeph>admin</codeph> role (Mary in the
+            example above).</li>
+          <li id="activate-li"><b>Activate the license key</b>. This process involves binding your
+            license key to your license server deployment. The browser used in the activation
+            process needs to have Internet access. Once the process is completed you cannot activate
+            the license on another license server. Follow these steps to activate the license:<ol
               id="substeps_sjt_w54_5r">
               <li>Paste your license key into the form and press
                   <uicontrol>Register/Activate</uicontrol>. <p><b>Result:</b> You will be redirected
@@ -166,23 +159,44 @@
           paste it in the license registration page of the HTTP server.</li>
       </ol>
     </section>
-    <section id="automatic_subscription_renewal">
-      <title>Automatic Subscription Renewal</title>
-      <p>If the HTTP license server is configured with a subscription license, then the license
-        server will automatically check to see if a new subscription license was purchased and will
-        automatically download and install it for you.<note type="important">This automatic checking
-          procedure implies a connection to a web service located at
-            <filepath>oxygenxml.com</filepath>. You can deactivate this automatic behavior by
-          deselecting the <uicontrol>Automatically check for subscription renewal</uicontrol> option
-          from the main management page of the license server. If this options is disabled, a manual
-          license update will be needed on license expiration.</note></p>
-      <p>If the automatic renewal process fails, you can try either of the following possible solutions:<ul>
-          <li>If your server uses a proxy to connect to the Internet, go to the main management page
-            of the license server and configure the proxy settings by clicking the <uicontrol>Proxy
-              settings</uicontrol> link in the <uicontrol>Management tasks</uicontrol> section.</li>
-          <li><xref href="replace-floating-license.dita#replace-floating-license">Manually replace
-              the license key</xref>.</li>
+    <section id="automatic_subscription_renewal" product="webauthor waCustom">
+      <title>Subscription Renewal</title>
+      <p>If your subscription expires, you need to purchase a new subscription and <xref
+          href="replace-floating-license.dita#replace-floating-license">Manually replace the license
+          key</xref>.</p>
+    </section>
+    <section product="author developer editor"
+      id="preconfiguring_license_server_details_when_instal">
+      <title>Preconfiguring License Server Details When Installing <ph keyref="product"/></title>
+      <p>It is possible to install <ph keyref="product"/> with the license server details
+        preconfigured. For more information see:<ul>
+          <li><b>Windows:</b>
+            <xref
+              href="eppo-installation-windows.dita#eppo-installation-windows/parameters-preconfig-license"
+              >Windows Installation: Command-Line Parameters for Preconfiguring License Server
+              Details</xref></li>
+          <li><b>Linux:</b>
+            <xref
+              href="eppo-installation-linux.dita#eppo-installation-linux/parameters-preconfig-license"
+              >Linux Installation: Command-Line Parameters for Preconfiguring License Server
+              Details</xref></li>
         </ul></p>
     </section>
+    <section id="backup_server_information">
+      <title>Backup License Server Information</title>
+      <p>If you want to use a backup license server, the setup instructions are the same as the
+        procedures for a main license server, but it will require its own separate license key. You
+        do not need to purchase the separate license if it is to be used for a backup server, but
+        you will need to request a separate license key by contacting the <xref keyref="url_support"
+          >Oxygen support team</xref>. </p>
+    </section>
   </body>
+  <related-links product="author developer editor authorEclipse developerEclipse editorEclipse">
+    <linklist>
+      <title>Related Information:</title>
+      <link href="machine-signature-mismatch.dita">
+        <linktext>Troubleshooting: Machine Signature Mismatch Errors</linktext>
+      </link>
+    </linklist>
+  </related-links>
 </topic>

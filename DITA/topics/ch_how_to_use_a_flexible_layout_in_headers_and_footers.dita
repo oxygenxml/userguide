@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_how_to_use_a_flexible_layout_in_headers_and_footers">
+  <title>How to Use Flexible Layout in Headers and Footers</title>
+  <body>
+    <p>In typical usage, the sub-regions of the header (the page margin boxes
+        <codeph>@top-left</codeph>, <codeph>@top-center</codeph>, <codeph>@top-right</codeph>) and
+      footer (<codeph>@bottom-left</codeph>, <codeph>@bottom-center</codeph>,
+        <codeph>@bottom-right</codeph>) are distinct regions. If you are specifying content for all
+      of them, the content set in one does not use space from the others. Instead, it wraps lines in
+      its own region.</p>
+    <codeblock outputclass="language-css">@page {
+      @top-left { content: "A very long publication title..."}
+      @top-center { content: "The long organization name..."}
+      @top-right { content: counter(page)}
+}</codeblock>
+    <p>This creates a sort of table with fixed equal-sized columns, with the text wrapping inside of
+      them.</p>
+    <p>You may need to 'merge' the center and right sub-regions for the header so that the layout
+      engine has more room for topic titles before it wraps the title to a new line. </p>
+    <p>The solution is to eliminate the center part from the header and footer
+        (<codeph>@top-center</codeph> and <codeph>@bottom-center</codeph>), and move the content to
+      one of the sides:</p>
+    <codeblock outputclass="language-css">@page {
+      @top-left { content: content: "A very long publication title..."}
+      @top-right { content:  "The long organization name..." " " counter(page)}
+}</codeblock>
+  </body>
+</topic>

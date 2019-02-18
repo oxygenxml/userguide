@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_extracting_text_from_document_using_xpath">
+  <title>Extracting Text from Document Using XPath</title>
+  <body>
+    <p>You can use the <codeph>oxy_xpath</codeph> CSS extension function to execute an XPath
+      expression over the input document. The main advantage is that you can execute any XPath
+      processing, including:<ul id="ul_tdr_1vc_dfb">
+        <li>Document data retrieval </li>
+        <li>Mathematical calculations</li>
+        <li>If/then/else conditions</li>
+      </ul>You can use <codeph>oxy_xpath</codeph> in values of all properties defined in a page
+      rule.</p>
+    <note type="important">This technique is not standard and is guaranteed to work only with this
+      processor. </note>
+    <note conkeyref="reusables-dcpp-chemistry-sa-ec/note1"/>
+    <note conkeyref="reusables-dcpp-chemistry-sa-ec/note2"/>
+    <p>Suppose your document defines a creation date in a metadata section. This section may be
+      anywhere in your document. To place the creation date in the center of the publication
+      header:</p>
+    <p>
+      <codeblock outputclass="language-css">@page {
+   @top-center {
+        content: "Created: " oxy_xpath("//div[@class='created']/text()");
+   }
+}</codeblock>
+    </p>
+    <p>Another example is to use an image from the document in the publication header:</p>
+    <p>
+      <codeblock outputclass="language-css">@page {
+   @top-center {
+        content: url(oxy_xpath('//img[@class='product-img']/@href'));
+   }
+}</codeblock>
+    </p>
+    <p>If the URL returned by <codeph>oxy_xpath</codeph> is not absolute, it is considered to be
+      relative to the CSS file. To obtain a URL relative to the XML document, you can use in the
+      XPath expression functions, such as <codeph>resolve-uri</codeph> and
+        <codeph>document-uri</codeph>:</p>
+    <codeblock outputclass="language-css">@page {
+   @top-center {
+        content: url(oxy_xpath(resolve-uri(//img[@class='product-img']/@href, document-uri(/))));
+   }
+}</codeblock>
+  </body>
+</topic>

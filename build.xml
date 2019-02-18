@@ -95,7 +95,7 @@
 			<param name="p-type" value="${p-type}" />
 		</antcall>
 		<antcall target="build-single">
-			<param name="p-product" value="dcpp" />
+			<param name="p-product" value="pdf-css" />
 			<param name="p-format" value="webhelp-responsive" />
 			<param name="p-type" value="${p-type}" />
 		</antcall>
@@ -212,11 +212,35 @@
 	
 	<!-- 
 		==================================
+		Windows Help (CHM) 
+		==================================	
+		-->
+	<target name="build-chm">
+		<antcall target="build-single">
+			<param name="p-product" value="author-sa" />
+			<param name="p-format" value="htmlhelp" />
+			<param name="p-type" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="developer-sa" />
+			<param name="p-format" value="htmlhelp" />
+			<param name="p-type" value="" />
+		</antcall>
+		<antcall target="build-single">
+			<param name="p-product" value="editor-sa" />
+			<param name="p-format" value="htmlhelp" />
+			<param name="p-type" value="" />
+		</antcall>
+	</target>
+
+	
+	<!-- 
+		==================================
 		All deliverables.
 		
 		==================================	
 		-->
-  <target name="build-all" depends="build-webhelp-public, build-pdf, build-eclipsehelp, build-eclipsehelp, build-javahelp">
+    <target name="build-all" depends="build-webhelp-public, build-pdf, build-eclipsehelp, build-javahelp, build-chm">
 		<echo>Build All</echo>
 	</target>
 
@@ -264,6 +288,15 @@
 			<equals arg1="${p-format}" arg2="webhelp-responsive"/>
 		</condition>
 		
+		<condition property="youtubeLink" value="youtubeLink" else="">
+			<or>
+				<equals arg1="${p-format}" arg2="eclipsehelp"/>
+				<equals arg1="${p-format}" arg2="htmlhelp"/>
+				<equals arg1="${p-format}" arg2="javahelp"/>
+				<equals arg1="${p-format}" arg2="pdf-css-html5"/>
+			</or>
+		</condition>
+		
 		<condition property="pdf" value="pdf" else="">
 			<or>
 				<equals arg1="${p-format}" arg2="pdf-css"/>
@@ -277,6 +310,22 @@
 				<equals arg1="${editlink.ditamap}" arg2="" />
 			</not>
 		</condition>
+		
+		<condition property="hhc.exe" value="C:\Program Files (x86)\HTML Help Workshop\hhc.exe">
+			<os family="windows" />
+		</condition>
+		<property name="hhc.exe" value="/home/jenkins/hhc.sh" />
+		
+		
+		<if>
+			<equals arg1="${p-format}" arg2="htmlhelp"></equals>
+			<then>
+				<property name="clean.temp">no</property>
+			</then>
+			<else>
+				<property name="clean.temp">yes</property>
+			</else>
+		</if>
 		
 		<delete dir="${p-output}" />
 		<mkdir dir="${p-output}" />
@@ -296,6 +345,7 @@
 			<arg value="--format=${p-format}" />
 			<arg value="--output=${p-output}" />
 			<arg value="--temp=${p-temp}" />
+			<arg value="--clean.temp=${clean.temp}" />
 			<arg value="--verbose" />
 			<arg value="--input=${basedir}/DITA/UserManual.ditamap" />
 			<arg value="-filter=${p-ditaval}" />
@@ -325,8 +375,11 @@
 			<!-- Relevant only for javahelp -->
 			<arg value="-Dhelpset.name=${helpset.name}" unless:blank="${javahelp}" />
 			
-			<!-- Relevant only for htmlhelp -->
+			<!-- Relevant only for htmlhelp (CHM) -->
 			<arg value="-DHTMLHelpCompiler=${hhc.exe}" unless:blank="${htmlhelp}" />
+			
+			<!-- Relevant for CHM, EclipseHelp, JavaHelp, PDF-CSS-HTML5 -->
+			<arg value="-Dcom.oxygenxml.xhtml.linkToMediaResources=true" unless:blank="${youtubeLink}" />
 
 		</exec>
 		
@@ -335,22 +388,66 @@
 			<then>
 				<java classname="ro.sync.util.ant.HelpIDFinder" fork="yes" dir="." failonerror="true">
 					  <classpath>
-					  	<pathelement path="lib/oxygen.jar"/>
+					  	<pathelement path="./lib/helpidfinder.jar"/>
 					  </classpath>
-			          <arg value="${p-output}"/>
+			          <arg value="${p-temp}/temp_chm_dir"/>
 			          <arg value="helpID.properties"/>
 			      </java>
 
-			      <echo>Create ${p-output}/${product}HelpID.jar file</echo>
+				<move file="${p-temp}/temp_chm_dir/helpID.properties" tofile="${p-output}/helpID.properties" failonerror="true" />
+				
+				  <echo>Create ${p-output}/${p-product}-HelpID.jar file</echo>
 			      <jar basedir="${p-output}" 
 			          includes="helpID.properties" 
 			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
+				
+				  <move file="${p-output}/UserManual.chm" tofile="${p-output}/${p-product}.chm" failonerror="true" />
 			</then>
 		</if>
-
-		<!-- Relevant for the javahelp -->
-		<move file="${p-output}/UserManual.jar" tofile="${p-output}/${p-product}-help.jar" failonerror="false" />
-
+	  
+	  <if>
+	    <equals arg1="${p-format}" arg2="eclipsehelp"></equals>
+	    <then>
+	      <echo>Update contexts.xml and toc.xml in the Eclipse jar file.</echo>
+	      <mkdir dir="${p-output}/temp-${p-product}"/>
+	      <unjar src="${p-output}/${p-product}-help.jar" dest="${p-output}/temp-${p-product}"/>
+	      <echo>Rename the TOC file.</echo>
+	      <move file="${p-output}/temp-${p-product}/UserManual.xml" tofile="${p-output}/temp-${p-product}/toc.xml"></move>
+	      <replaceregexp 
+	        file='${p-output}/temp-${p-product}/toc.xml'
+	        match='(href=")'
+	        replace='\1help/'
+	        encoding='UTF-8'
+	        flags='g' />
+	      <replaceregexp 
+	        file='${p-output}/temp-${p-product}/toc.xml'
+	        match='(topic=")'
+	        replace='\1help/'
+	        encoding='UTF-8'
+	        flags='g' />
+	      <replaceregexp 
+	        file='${p-output}/temp-${p-product}/contexts.xml'
+	        match='(href=")'
+	        replace='\1help/'
+	        encoding='UTF-8'
+	        flags='g' />
+	      
+	      <delete file="${p-output}/${p-product}-help.jar"/>
+	      <jar destfile="${p-output}/${p-product}-help.jar" basedir="${p-output}/temp-${p-product}">
+	        <include name="**/*"/>
+	        <exclude name="${p-product}-help.jar"/>
+	        <exclude name="plugin.*"/>
+	      </jar>
+	    </then>
+	  </if>
+	  
+	  <if>
+	    <equals arg1="${p-format}" arg2="javahelp"></equals>
+	    <then>
+     		<!-- Relevant for the javahelp -->
+     		<move file="${p-output}/UserManual.jar" tofile="${p-output}/${p-product}-help.jar" failonerror="false" />
+	    </then>
+	  </if>
 	</target>
 
 

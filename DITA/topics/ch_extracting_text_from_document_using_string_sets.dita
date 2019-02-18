@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_extracting_text_from_document_using_string_sets">
+  <title>Extracting Text from Document Using String Sets</title>
+  <body>
+    <p>To display the title of the publication or the title of the current chapter, you will need to
+      extract some content from the document and use it in one or more page margin boxes. This is
+      possible by using a <codeph>string-set</codeph> property. It is similar to a variable that is
+      initialized to a content each time a specific element is matched.</p>
+    <p>In the following example, the text content of the <codeph>H1</codeph> element is extracted
+      and used as a publication title and the <codeph>H2</codeph> element defines the chapter
+      title:</p>
+    <codeblock outputclass="language-css">h1 {
+  string-set: publication_title content();
+}
+
+h2 {
+  string-set: chapter_title content();
+}</codeblock>
+    <note type="important">To define multiple string sets for an element, use <b>a single
+          <codeph>string-set</codeph> property</b> with a list of comma-separated
+      definitions:<codeblock outputclass="language-css">h1 {
+  string-set: publication_title content(),  publication_author attr(data-author);
+}</codeblock></note>
+    <p>The following example uses the collected strings in the top margins of the pages. It joins
+      the publication title and the chapter title by a "/" character, then places them in the outer
+      side of the pages (to the left for the left-side pages, to the right for the right-side
+      pages).</p>
+    <codeblock outputclass="language-css">@page :left {
+  @top-left { 
+    content : string(publication_title) " / " string(chapter_title);
+  }
+}
+
+@page :right {
+  @top-right {
+    content: string(publication_title) " / " string(chapter_title);
+  }
+}</codeblock>
+    <p>A string set may contain static text, content from the document, attributes from the element,
+      or counters. This is a more complex example, where a chapter number is added to the
+        <codeph>chapter_title</codeph> string set:</p>
+    <codeblock outputclass="language-css">h1 {
+  counter-reset: chapter;
+}
+
+h2 {
+  string-set: chapter_title "Chapter (" counter(chapter) ")" content();
+  counter-increment: chapter;
+}</codeblock>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="ch_how_to_use_dynamic_images_in_headers_and_footers.dita"/>
+    </linklist>
+  </related-links>
+</topic>

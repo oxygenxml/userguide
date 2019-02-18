@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_using_simulated__synthetic__styles">
+  <title>Using Simulated (Synthetic) Styles</title>
+  <body>
+    <p>Some fonts do not have a bold or italic variant, and <ph keyref="product"/> automatically
+      falls back to the regular font. This topic demonstrates how to instruct <ph keyref="product"/>
+      to synthesize font variants. Do not use this technique if you have all the font
+      components.</p>
+    <section id="section_mp2_ld1_t2b">
+      <title>Using a Simulated Styles Font from a True Type File (ttf)</title>
+      <p>Suppose you plan to style the output with the <codeph>Raleway</codeph> font and you just
+        have the <codeph>Raleway-Regular.ttf</codeph> font available. The regular font face
+        definition will be:</p>
+      <p><codeblock outputclass="language-css">@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 400; /* normal */
+  src: url("fonts/raleway/Raleway-Regular.ttf");
+}</codeblock>For
+        the missing style combinations, this example uses the <codeph>-oxy-simulate-style:
+          yes</codeph> CSS extension
+        property.<codeblock outputclass="language-css">@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 700; /* bold */
+  -oxy-simulate-style: yes;  
+  src: url("fonts/raleway/Raleway-Regular.ttf");
+}
+@font-face {
+  font-family: "Raleway";
+  font-style: italic;
+  font-weight: 400; /* normal */
+  -oxy-simulate-style: yes;  
+  src: url("fonts/raleway/Raleway-Regular.ttf");
+}
+@font-face {
+  font-family: "Raleway";
+  font-style: italic;
+  font-weight: 700; /*bold*/
+  -oxy-simulate-style: yes;
+  src: url("fonts/raleway/Raleway-Regular.ttf");
+}
+</codeblock></p>
+    </section>
+    <section id="section_thw_nb1_t2b">
+      <title>Using a Simulated Font Style from a True Type Font Collection (ttc)</title>
+      <note type="other" othertype="Chemistry Limitation">
+        <p>The <codeph>@font-face</codeph> rules in your CSS work as expected when they are pointing
+          to a <filepath>.ttf</filepath> file. If you intend to use a <filepath>.ttc</filepath>
+          collection, the value of the <codeph>font-family</codeph> property should match exactly
+          one of the font names from the collection (a collection contains multiple fonts).</p>
+      </note>
+      <p>The following example uses the <codeph>Microsoft JhengHei</codeph> font (the
+          <filepath>msjh.ttc</filepath>). Many of the Chinese fonts provide regular, light, bold,
+        but no italic or bold-italic variants. In this case, you may want <ph keyref="product"/> to
+        generate the missing variants for you. </p>
+      <p>To use the regular variant, use a simple <codeph>@font-face</codeph> definition, making
+        sure the font family is found in the collection:</p>
+      <codeblock outputclass="language-css">@font-face {
+  font-family: "Microsoft JhengHei";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/jenghei/msjh.ttc");
+}</codeblock>
+      <p>For the missing style combinations, the example uses the <codeph>-oxy-simulate-style:
+          yes</codeph> CSS extension property.</p>
+      <codeblock outputclass="language-css">@font-face {
+  font-family: "Microsoft JhengHei";
+  font-style: normal;
+  font-weight: 700;
+  -oxy-simulate-style: yes;
+  src: url("fonts/jenghei/msjh.ttc");
+}
+@font-face {
+  font-family: "Microsoft JhengHei";
+  font-style: italic;
+  font-weight: 400;
+  -oxy-simulate-style: yes;
+  src: url("fonts/jenghei/msjh.ttc");
+}
+@font-face {
+  font-family: "Microsoft JhengHei";
+  font-style: italic;
+  font-weight: 700;
+  -oxy-simulate-style: yes;
+  src: url("fonts/jenghei/msjh.ttc");
+}
+@font-face {
+  font-family: "Microsoft JhengHei";
+  font-style: normal;
+  font-weight: 100;
+  -oxy-simulate-style: yes;
+  src: url("fonts/jenghei/msjh.ttc");
+}</codeblock>
+    </section>
+  </body>
+</topic>

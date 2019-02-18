@@ -17,7 +17,7 @@
   </prolog>
   <body>
     <p>You can add custom HTML content in the WebHelp Responsive output by inserting it in a
-      well-formed XML file that will be referenced in the transformation (either from a <xref
+      well-formed XML file that will be referenced in the transformation (either from an <xref
         keyref="glossentry-wh-publishing-template"><term>Oxygen Publishing Template</term></xref> or
       using one of the <xref
         href="webhelp-responsive-plugin-additional-parameters.dita#webhelp-responsive-plugin-additional-parameters/html_fragment_extension_parameters"
@@ -26,23 +26,33 @@
       the HTML content that is inserted in the XML file.</p>
     <section id="the_xml_file">
       <title>The XML File</title>
-      <p id="p-comments">There are several things to consider in regards to this XML file:<ul>
+      <p id="p-comments">There are several things to consider regarding this XML file:<ul>
           <li conkeyref="reusables-transforming-documents/li-1"/>
           <li conkeyref="reusables-transforming-documents/li-2b"/>
-          <li conkeyref="reusables-transforming-documents/li-3"/>
+          <li conkeyref="reusables-transforming-documents/li-3" id="inline-js"/>
         </ul></p>
     </section>
     <section id="using_webhelp_macros_inside_a_html_fragment_file">
       <title>Using WebHelp Macros Inside an HTML Fragment File</title>
       <p>The XML file can use WebHelp macros, which are variables that will be expanded when the
         content of the HTML fragment file will be copied in the final output.</p>
+      <p>There are two possibilities for using macros:<ul>
+          <li><b>Directly in attribute values</b> - For example, if you want to reference a
+            JavaScript file from the Publishing Template directory, you can use the following
+            construct:<codeblock outputclass="language-xml">&lt;script type="text/javascript" src="${path(oxygen-webhelp-template-dir)}/">&lt;/script></codeblock></li>
+          <li><b>In text content</b> - Using the <codeph>&lt;whc:macro/></codeph> template
+            component:<codeblock outputclass="language-xml">&lt;script type="text/javascript" xmlns:whc="http://www.oxygenxml.com/webhelp/components"> 
+  var outDirPath = '&lt;whc:macro value="${path(oxygen-webhelp-output-dir)}"/>';
+  console.log("The output directory path is:", outDirPath);
+&lt;/script></codeblock></li>
+        </ul></p>
       <p conkeyref="reusable-webhelp-responsive-macros/list_macro_implementations"/>
     </section>
     <section id="referencing_the_html_fragment_using_a_publishing_">
       <title>Referencing the HTML fragment using a Publishing Template</title>
       <p>
         <ol>
-          <li>If you haven't already created a Publishing Template, see <xref
+          <li>If you have not already created a Publishing Template, see <xref
               href="whr_publishing_templates.dita"/>.</li>
           <li>Insert the HTML content in a well-formed XML file (for example,
               <filepath>custom-html.html</filepath>).</li>

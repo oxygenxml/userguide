@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webapp-license-troubleshooting">
+  <title>Troubleshooting License Server Issues</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>No valid license</indexterm>
+        <indexterm>License issues</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>If users are not able to open XML files because Web Author cannot obtain a valid license,
+      there are several things that could cause this issue.</p>
+    <section id="section_ctg_512_2db">
+      <title>Web Author Connection Details for the License Server are not Configured
+        Correctly</title>
+      <p>You can go to the <xref href="webapp-admin-page.dita#webapp-admin-page">Administration
+          Page</xref> and select <uicontrol>License</uicontrol> to check the <xref
+          href="webapp-configure-license-server.dita#webapp-configure-license-server">License Server
+          connection</xref>. </p>
+    </section>
+    <section id="section_nwy_fb2_2db">
+      <title>Web Author Cannot Connect to the License Server Over HTTP</title>
+      <p>This problem is linked to the deployment setup that you chose. There are several possible
+          causes:<ul id="ul_pb1_gc2_2db">
+          <li>On Windows, there is an anti-virus software or firewall that blocks the connection
+            between Web Author and the License Server. You may need to add exceptions for this
+            connection.</li>
+          <li>Due to the server configuration, Web Author uses IPv6 to connect to the License
+            Server. You can force IPv4 by <xref
+              href="webauthor-set-system-property.dita#webauthor-set-system-property">setting the
+              following System
+              Properties</xref>:<codeblock outputclass="language-javascript">-Djava.net.preferIPv4Stack=true
+-Djava.net.preferIPv4Addresses=true</codeblock><p>You
+              can also set the address that the server listens for by editing the
+                <filepath>[WEB_AUTHOR_INSTALL_DIR]/tomcat/conf/server.xml</filepath> file and adding
+              the <codeph>address="0.0.0.0"</codeph> attribute to the
+                <codeph>&lt;Connector></codeph> element.</p></li>
+          <li>The connection passes through an HTTP proxy server that blocks this connection. You
+            can add an exception in Web Author for the License Server using the <xref
+              href="webapp-proxy-settings.dita">Proxy Configuration Page</xref>.</li>
+          <li>The License Server uses a self-signed HTTPS certificate (or another certificate that
+            is not trusted by default in Java). In this case, you can go to the <xref
+              href="webapp-admin-page.dita#webapp-admin-page">Administration Page</xref> and select
+              <uicontrol>Connection</uicontrol> to configure Web Author to accept any HTTP
+            certificate.</li>
+        </ul></p>
+      <p>To gather more information about the problem:<ul>
+          <li><xref href="web-author-logs.dita">Enable verbose HTTP logging</xref> in Web
+            Author.</li>
+          <li>Check the application server access logs to check whether requests made by Web Author
+            are received by the License Server.</li>
+          <li>Check the <xref href="servlet-report-page.dita">License Server Management and
+              Statistics pages</xref>.</li>
+        </ul></p>
+    </section>
+    <section id="section_rnz_qf2_2db">
+      <title>License Server Setup is Incorrect</title>
+      <p>This might include:<ul id="ul_zyz_sf2_2db">
+          <li>The License Server is not started.</li>
+          <li>The License Server is not configured with a license.</li>
+          <li>The License Server is configured with a license for a different product.</li>
+          <li>The version of the License Server is not compatible with Web Author.</li>
+        </ul></p>
+      <p>Most of these problems can be checked by going to the License Server's administration
+        page.</p>
+    </section>
+  </body>
+</topic>

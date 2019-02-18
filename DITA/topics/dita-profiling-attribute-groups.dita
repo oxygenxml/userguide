@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dita-profiling-attribute-groups">
+  <title>Conditional Profiling Attribute Groups</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>DITA<indexterm>Profiling<indexterm>Attribute
+          groups</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="overview">
+      <title>Overview</title>
+      <p>Conditional processing attributes can be specified using <xref
+          href="https://docs.oasis-open.org/dita/dita/v1.3/cs01/part1-base/archSpec/base/usage-of-conditional-processing-attributes.html"
+          format="html" scope="external">grouped values</xref>. Groups organize the attributes into
+        subcategories. This is intended to support situations where an attribute applies to multiple
+        specialized subcategories. For example, suppose a company needs to filter content for
+        several internal teams (<i>operations</i> and <i>support</i>) and they use the
+          <xmlatt>audience</xmlatt> attribute with the values <codeph>ops</codeph> and
+          <codeph>support</codeph>, but the Support team has several levels of personnel (L1, L2,
+        and L3). They could use a group to define the levels (<i>L1</i>, <i>L2</i>, and <i>L3</i>)
+        as subcategories for the <codeph>support</codeph> value. Using groups for these
+        subcategories allows each category to be processed independently.</p>
+      <p>A major advantage is that you do not need to add new profiling attributes using a DTD
+        specialization. You can re-use existing DITA profiling attributes (such as
+          <xmlatt>product</xmlatt>, <xmlatt>audience</xmlatt>, <xmlatt>otherprops</xmlatt>) and
+        specify multiple attribute subcategories.</p>
+    </section>
+    <section id="creating_a_subject_scheme_map">
+      <title>Creating a Conditional Profiling Attribute Group</title>
+      <p>To create a group in <ph keyref="product"/>:<ol>
+          <li><ph conkeyref="reusables-preferences-pages/Open-the-preferences-page"/> and go to <menucascade>
+              <uicontrol>Editor</uicontrol>
+              <uicontrol>Edit modes</uicontrol>
+              <uicontrol>Author</uicontrol>
+              <uicontrol>Profiling / Conditional Text</uicontrol>
+            </menucascade>.</li>
+          <li><ph conkeyref="reusables-author-for-dita/ph-for-DITA-1"/><p
+              conkeyref="reusables-author-for-dita/p-for-DITA-1"/></li>
+          <li>Specify the appropriate values for the <uicontrol>Document type</uicontrol>,
+              <uicontrol>Attribute name</uicontrol>, and <uicontrol>Display name</uicontrol>.<p>For
+              information about the <uicontrol>Profiling Attribute</uicontrol> configuration dialog
+              box, see <xref
+                href="dita-profile-content.dita#dita-profile-content/define-profiling-attributes"
+              />.</p></li>
+          <li>Click the <uicontrol product="authorEclipse editorEclipse"><image
+                href="../img/Add16.png" placement="inline"/>New</uicontrol><uicontrol
+              product="author editor">New</uicontrol> button at the bottom of the attribute values
+            table.</li>
+          <li>In the <uicontrol>Value</uicontrol> field of the resulting dialog box, define groups
+            using the following format: <codeph>ParentAttrValue(SubAttrValue1
+              SubAttrValue2)</codeph>. For
+            example:<codeblock outputclass="language-ini">support(L1 L2 L3)</codeblock></li>
+          <li>Click <uicontrol>OK</uicontrol> and <uicontrol>Apply</uicontrol> to save and apply the
+            changes.</li>
+        </ol></p>
+    </section>
+    <section id="using_a_subject_scheme_in_conjuction_with_a_ditav">
+      <title>Using Conditional Groups in Conjunction with a DITAVAL File</title>
+      <p>You can use groups to customize a hierarchy of profiling attribute values and then use it
+        in conjunction with a <xref href="dita-ditaval-file.dita#dita-ditaval-file">DITAVAL file to
+          filter or flag</xref> the values. For example, suppose the company described in the
+        example in the <xref href="#dita-profiling-attribute-groups/overview" format="dita">Overview
+          section</xref> needed to generate content for the Support team, but only for L1 and L2
+        support personnel. The DITAVAL file could look like
+        this:<codeblock outputclass="language-xml">&lt;val>
+     &lt;prop action="include" att="support" val="L1"/>
+     &lt;prop action="include" att="support" val="L2"/>
+     &lt;prop action="exclude" att="support" val="L3"/>
+&lt;/val></codeblock></p>
+      <p>That DITAVAL file could then be used for a <xref
+          href="dita-condition-sets-management.dita#dita-condition-sets-management">condition
+          set</xref> to filter content in <uicontrol>Author</uicontrol> mode or during the
+        transformation stage to <xref href="publish-profiled-text.dita#publish-profiled-text">filter
+          content in the output</xref> and content profiled with the <codeph>L1</codeph> and
+          <codeph>L2</codeph> values would be included while content with the <codeph>L3</codeph>
+        value would be excluded.</p>
+      <p>This example company could also have another DITAVAL file for filtering out all content
+        profiled for any of the three subcategories (<codeph>L1</codeph>, <codeph>L2</codeph>,
+          <codeph>L3</codeph>) by simply excluding the <codeph>support</codeph> value (since
+          <codeph>L1</codeph>, <codeph>L2</codeph>, and <codeph>L3</codeph> are subcategories of
+        it).<codeblock outputclass="language-xml">&lt;val>
+     &lt;prop action="exclude" att="support"/>
+&lt;/val></codeblock></p>
+    </section>
+    <p>For more information about creating conditional profiling attribute groups, watch our video
+      demonstration:</p>
+    <p><object width="450" height="250" data="https://www.youtube.com/embed/YRi9XPK6CcY"
+        outputclass="iframe">
+        <param name="allowfullscreen" value="true"/>
+      </object></p>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link
+        href="https://docs.oasis-open.org/dita/dita/v1.3/cs01/part1-base/archSpec/base/usage-of-conditional-processing-attributes.html"
+        format="html" scope="external">
+        <linktext>DITA 1.3 Specifications: Conditional Processing Values and Groups</linktext>
+      </link>
+    </linklist>
+  </related-links>
+</topic>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_write_xpath_expressions">
+  <title>How to Write XPath Expressions</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="html5-transformation"/>
+          <indexterm>Debugging <indexterm>XPath expressions</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Debugging <indexterm>XPath expressions</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>This topic contains some guidelines for writing XPath expressions. They are used to extract
+      the content from the merged DITA map document. </p>
+    <p>This is an example where the product name meta-information is placed before the front page
+      title:<codeblock outputclass="language-css">*[class~="front-page/front-page-title"]:before {
+    text-align: left;
+    content: oxy_xpath("(//*[contains(@class, 'topic/prodname')]/text())[1]");
+    display:block;
+}</codeblock></p>
+    <p>
+      <note type="other" othertype="Notes">
+        <ul id="ol_izh_wsz_g2b">
+          <li importance="high">Do not use the DITA element names directly. You must use the DITA
+              <xmlatt>class</xmlatt> attribute instead, as these attributes are propagated to the
+            merged elements (including HTML <xmlelement>div</xmlelement> elements) while the element
+            names can be lost. By using the class selectors, you also cover DITA
+            specializations.</li>
+          <li>Use the "[1]" XPath predicate to select the first value from the document. For
+            example, <codeph>oxy_xpath("(//*[contains(@class,
+              'topic/prodname')]/text())[1]")</codeph>. The meta-information might be copied
+            multiple times in the output, inherited by the <xmlelement>topicref</xmlelement>
+            elements, so you can get many more values than expected.</li>
+          <li>Do not use strings as values for the pseudo elements content, as the string values are
+            not supported for pseudo elements. Instead, use the XPath directly. </li>
+          <li>Use the <xref
+              href="https://www.oxygenxml.com/doc/ug-editor/topics/xpath-builder-view.html"
+              format="html" scope="external"><b>Oxgyen XPath Builder</b> view</xref> to test the
+            XPath expressions.</li>
+        </ul>
+      </note>
+    </p>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="dcpp_how_to_debug_xpath_expressions.dita"/>
+    </linklist>
+  </related-links>
+</topic>

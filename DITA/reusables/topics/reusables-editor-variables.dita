@@ -76,6 +76,8 @@
         folder. The current file is the one currently opened and selected.</li>
       <li id="edVar-cfne"><b>${cfne}</b> - Current file name with extension. The current file is the
         one currently opened and selected.</li>
+      <li id="edVar-comma"><b>${comma}</b> - Used to display a comma when the actual comma symbol
+        would be considered part of some sort of instruction or delimiter.</li>
       <li id="edvar-cf"><b>${cf}</b> - Current file as file path, that is the absolute file path of
         the current edited document.</li>
       <li id="edVar-activeConditionSet"><b>${activeConditionSet}</b> - Current active <xref
@@ -111,7 +113,11 @@
       <li id="edVar-caret"><b>${caret}</b> - The position where the cursor is located. This variable
         can be used in a code template, in <uicontrol>Author</uicontrol> mode operations, or in a
           <b>selection</b>
-        <term>plugin</term>.</li>
+        <term>plugin</term>.<note product="author editor authorEclipse editorEclipse">The
+            <b>${caret}</b> editor variable is available only for parameters that take XML content
+          as values. It is replaced with the <b>${UNIQUE_CARET_MARKER_FOR_AUTHOR}</b> macro. The
+          default Author operations process this macro and position the cursor at the designated
+          offset. </note></li>
       <li id="edvar-selection"><b>${selection}</b> - The current selected text content in the
         current edited document. This variable can be used in a code template, in
           <uicontrol>Author</uicontrol> mode operations, or in a <b>selection</b>
@@ -127,12 +133,12 @@
         for Java System Properties, use the <b>${system(var.name)}</b> editor variable.</li>
       <li id="edVar-system"><b id="java_system_properties">${system(var.name)}</b> - Value of the
           <i>var.name</i> Java System Property. The Java system properties can be specified in the
-        command line arguments of the Java runtime as <i>-Dvar.name=var.value</i>. If you are
+        command-line arguments of the Java runtime as <i>-Dvar.name=var.value</i>. If you are
         looking for operating system environment variables, use the <b>${env(VAR_NAME)}</b> editor
         variable instead.</li>
       <li id="edVar-answer"><b>${answer(@id)}</b> - Used in conjunction with the <b>${ask}</b>
         editor variable. The <b>@id</b> parameter is required and identifies the answer from the
-          <b>${ask}</b> editor variable with the same id.<p><b>Example:</b></p><p>
+          <b>${ask}</b> editor variable with the same ID.<p><b>Example:</b></p><p>
           <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 &lt;topic id="topic_lcf_1c4_tdb">
@@ -242,13 +248,9 @@
                   <row>
                     <entry>
                       <p><b>Example:</b></p>
-                      <p>
-                        <ul>
-                          <li><i>${ask('File location', relative_url, 'C:/example.txt')}</i> - The
-                            dialog box has the name <i>'File location'</i>. The URL inserted in the
-                            input box is made relative to the current edited document location.</li>
-                        </ul>
-                      </p>
+                      <p><i>${ask('File location', relative_url, 'C:/example.txt')}</i> - The dialog
+                        box has the name <i>'File location'</i>. The URL inserted in the input box
+                        is made relative to the current edited document location. </p>
                     </entry>
                   </row>
                   <row>
@@ -299,16 +301,12 @@
                         selected value and can match either a key or a value.</note></entry>
                   </row>
                   <row>
-                    <entry><b>Example:</b><p>
-                        <ul>
-                          <li><i>${ask('Operating System', editable_combobox, ('win':'Microsoft
-                              Windows';'osx':'Mac OS X';'lnx':'Linux/UNIX'), 'osx')}</i> - The
-                            dialog box has the name <i>'Operating System'</i>. The drop-down menu
-                            displays the three given operating systems and also allows you to edit
-                            the entry. The associated value will be returned based upon your
-                            selection or the text you input.</li>
-                        </ul>
-                      </p></entry>
+                    <entry><b>Example:</b><p><i>${ask('Operating System', editable_combobox,
+                          ('win':'Microsoft Windows';'osx':'Mac OS X';'lnx':'Linux/UNIX'),
+                          'osx')}</i> - The dialog box has the name <i>'Operating System'</i>. The
+                        drop-down menu displays the three given operating systems and also allows
+                        you to edit the entry. The associated value will be returned based upon your
+                        selection or the text you input. </p></entry>
                   </row>
                   <row>
                     <entry morerows="2"><b>radio</b></entry>
@@ -325,14 +323,12 @@
                       value.</note></entry>
                   </row>
                   <row>
-                    <entry><b>Example:</b><ul>
-                        <li><i>${ask('Operating System', radio, ('win':'Microsoft
-                            Windows';'osx':'Mac OS X';'lnx':'Linux/UNIX'), 'osx')}</i> - The dialog
-                          box has the name <i>'Operating System'</i>. The radio button group allows
-                          you to choose between the three operating systems.<note>In this example
-                              <userinput>Mac OS X</userinput> is the default selected value and if
-                            selected it would return <i>osx</i> for the output.</note></li>
-                      </ul></entry>
+                    <entry><b>Example:</b><p><i>${ask('Operating System', radio, ('win':'Microsoft
+                          Windows';'osx':'Mac OS X';'lnx':'Linux/UNIX'), 'osx')}</i> - The dialog
+                        box has the name <i>'Operating System'</i>. The radio button group allows
+                        you to choose between the three operating systems.<note>In this example,
+                            <userinput>Mac OS X</userinput> is the default selected value and if
+                          selected, it would return <i>osx</i> for the output.</note></p></entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -343,9 +339,9 @@
           href="http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html"
           format="html" scope="external">Java SimpleDateFormat class</xref>. <b>Example:</b>
         <i>yyyy-MM-dd</i>;<note>This editor variable supports both the <b>xs:date</b> and
-            <b>xs:datetime</b> parameters. For details about <b>xs:date</b>, go to <xref
+            <b>xs:datetime</b> parameters. For details about <b>xs:date</b>, go to: <xref
             href="http://www.w3.org/TR/xmlschema-2/#date" format="html" scope="external"/>. For
-          details about <b>xs:datetime</b>, go to <xref
+          details about <b>xs:datetime</b>, go to: <xref
             href="http://www.w3.org/TR/xmlschema-2/#dateTime" format="html" scope="external"
           />.</note></li>
       <li id="edVar-dbgXML"><b>${dbgXML}</b> - The local file path to the XML document that is

@@ -21,21 +21,26 @@
       stream handler for each opened connection of a URL having that protocol. </p>
     <p>To use this type of <term>plugin</term>, you have to implement the
         <i>ro.sync.exml.plugin.urlstreamhandler.TargetedURLStreamHandlerPluginExtension</i>
-      interface, that provides the following methods:<ul id="ul_4kc_h5z_p2">
-        <li><b><i>boolean canHandleProtocol(String protocol)</i></b> - This method
-          checks if the <term>plugin</term> can handle a specific protocol. If this method returns
-            <codeph>true</codeph> for a specific protocol, the
-            <i>getURLStreamHandler(URL)</i> method will be called for each opened
-          connection of a URL having this protocol.</li>
-        <li><b><i>URLStreamHandler getURLStreamHandler(URL url)</i></b> - This method
-          provides the URL handler for the specified URL and it is called for each opened connection
-          of a URL with a protocol for which the <i>canHandleProtocol(String)</i> method
-          returns <codeph>true</codeph>. <p>If this method returns <codeph>null</codeph>, the
-            default <ph keyref="product"/>
-            <i>URLStreamHandler</i> is used.</p></li>
-      </ul>To use this type of extension in your <term>plugin</term>, create an extension of
-        <i>TargetedURLHandler</i> type in your <codeph>plugin.xml</codeph> file and
-      specify the class that implements
+      interface, that provides the following methods:</p>
+    <p><dl>
+        <dlentry>
+          <dt><b><i>boolean canHandleProtocol(String protocol)</i></b></dt>
+          <dd>This method checks if the <term>plugin</term> can handle a specific protocol. If this
+            method returns <codeph>true</codeph> for a specific protocol, the
+              <i>getURLStreamHandler(URL)</i> method will be called for each opened connection of a
+            URL having this protocol.</dd>
+        </dlentry>
+        <dlentry>
+          <dt><b><i>URLStreamHandler getURLStreamHandler(URL url)</i></b></dt>
+          <dd>This method provides the URL handler for the specified URL and it is called for each
+            opened connection of a URL with a protocol for which the
+              <i>canHandleProtocol(String)</i> method returns <codeph>true</codeph>.<p>If this
+              method returns <codeph>null</codeph>, the default <ph keyref="product"/>
+              <i>URLStreamHandler</i> is used.</p></dd>
+        </dlentry>
+      </dl>To use this type of extension in your <term>plugin</term>, create an extension of
+        <i>TargetedURLHandler</i> type in your <codeph>plugin.xml</codeph> file and specify the
+      class that implements
       <i>TargetedURLStreamHandlerPluginExtension</i>:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
 &lt;plugin name="CustomTargetedURLStreamHandlerPlugin" ..............>
@@ -51,10 +56,10 @@
 </codeblock></p>
     <p>This extension can be useful in situations when connections opened from a specific host must
       be handled in a particular way. For example, the <ph keyref="product"/>
-      <i>HTTP URLStreamHandler</i> may not be compatible for sending and receiving SOAP
-      using the SUN Web Services implementation. In this case, you can override the stream handler
-      (set by <ph keyref="product"/>) to use the default SUN <i>URLStreamHandler</i>,
-      since it is more compatible with sending and receiving SOAP requests.</p>
+      <i>HTTP URLStreamHandler</i> may not be compatible for sending and receiving SOAP using the
+      SUN Web Services implementation. In this case, you can override the stream handler (set by <ph
+        keyref="product"/>) to use the default SUN <i>URLStreamHandler</i>, since it is more
+      compatible with sending and receiving SOAP requests.</p>
     <codeblock outputclass="language-java">
 public class CustomTargetedURLStreamHandlerPluginExtension 
   implements TargetedURLStreamHandlerPluginExtension {
