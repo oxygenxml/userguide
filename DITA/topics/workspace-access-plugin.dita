@@ -10,7 +10,9 @@
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>Plugin extensions<indexterm>Workspace Access</indexterm></indexterm><indexterm>Workspace Access plugin extension</indexterm></keywords>
+        <indexterm>Plugin extensions<indexterm>Workspace Access</indexterm></indexterm>
+        <indexterm>Workspace Access plugin extension</indexterm>
+      </keywords>
     </metadata>
   </prolog>
   <conbody>
@@ -30,11 +32,13 @@
       (allows for API access to the application workspace). </p>
     <p>The <i>StandalonePluginWorkspace</i> interface has three methods that can be called to
       customize toolbars, menus, and views:</p>
-    <ul>
-      <li><b><i>addToolbarComponentsCustomizer</i></b> - Contributes to or modifies existing
-        toolbars. You can specify additional toolbar IDs in the associated
-          <filepath>plugin.xml</filepath> descriptor file using the following
-          construct:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+    <p>
+      <dl>
+        <dlentry>
+          <dt><b><i>addToolbarComponentsCustomizer</i></b></dt>
+          <dd>Contributes to or modifies existing toolbars. You can specify additional toolbar IDs
+            in the associated <filepath>plugin.xml</filepath> descriptor file using the following
+              construct:<codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
 &lt;plugin name="CustomWorkspaceAccess" ..............>
  &lt;runtime>
@@ -46,28 +50,31 @@
   &lt;toolbar id="SampleID" initialSide="NORTH" initialRow="1"/>
 &lt;/plugin>
 </codeblock><p>The
-            <codeph>toolbar</codeph> element adds a toolbar in the <ph keyref="product"/> interface
-          and allows you to contribute your own <term>plugin</term>-specific actions. The following
-          attributes are supported:<ul>
-            <li><codeph>id</codeph> - Unique identifier for the toolbar.</li>
-            <li><codeph>initialSide</codeph> - Specifies the place where the toolbar is initially
-              displayed. The allowed values are <codeph>NORTH</codeph> and
-              <codeph>SOUTH</codeph>.</li>
-            <li><codeph>initialRow</codeph> - Specifies the initial row on the specified side where
-              the toolbar is displayed. For example, the first toolbar has an initial row of
-                <codeph>0</codeph> and the next toolbar has an initial row of
-              <codeph>1</codeph>.</li>
-          </ul></p><p>The <xref
-            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/workspace/api/standalone/ToolbarInfo.html"
-            format="html" scope="external"
-            ><i>ro.sync.exml.workspace.api.standalone.ToolbarInfo</i></xref> toolbar component
-          information with the specified ID will be provided to you by the customizer interface.
-          Therefore, you will be able to provide Swing components that will appear on the toolbar
-          when the application starts.</p></li>
-      <li><b><i>addViewComponentCustomizer</i></b> - Contributes to or modifies existing views, or
-        contributes to the reserved custom view. You can specify additional view IDs in the
-        associated <filepath>plugin.xml</filepath> descriptor using the following construct:
-          <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+                <codeph>toolbar</codeph> element adds a toolbar in the <ph keyref="product"/>
+              interface and allows you to contribute your own <term>plugin</term>-specific actions.
+              The following attributes are supported:<ul>
+                <li><codeph>id</codeph> - Unique identifier for the toolbar.</li>
+                <li><codeph>initialSide</codeph> - Specifies the place where the toolbar is
+                  initially displayed. The allowed values are <codeph>NORTH</codeph> and
+                    <codeph>SOUTH</codeph>.</li>
+                <li><codeph>initialRow</codeph> - Specifies the initial row on the specified side
+                  where the toolbar is displayed. For example, the first toolbar has an initial row
+                  of <codeph>0</codeph> and the next toolbar has an initial row of
+                    <codeph>1</codeph>.</li>
+              </ul></p><p>The <xref
+                href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/workspace/api/standalone/ToolbarInfo.html"
+                format="html" scope="external"
+                  ><i>ro.sync.exml.workspace.api.standalone.ToolbarInfo</i></xref> toolbar component
+              information with the specified ID will be provided to you by the customizer interface.
+              Therefore, you will be able to provide Swing components that will appear on the
+              toolbar when the application starts.</p></dd>
+        </dlentry>
+        <dlentry>
+          <dt><b><i>addViewComponentCustomizer</i></b></dt>
+          <dd>Contributes to or modifies existing views, or contributes to the reserved custom view.
+            You can specify additional view IDs in the associated <filepath>plugin.xml</filepath>
+            descriptor using the following construct:
+              <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE plugin SYSTEM "../plugin.dtd">
 &lt;plugin name="CustomWorkspaceAccess" ..............>
  &lt;runtime>
@@ -79,32 +86,36 @@
  &lt;view id="SampleID" initialSide="WEST" initialRow="0"/>
 &lt;/plugin>
 </codeblock><p>The
-            <codeph>view</codeph> element adds a view in the <ph keyref="product"/> interface and
-          allows you to contribute your own <term>plugin</term>-specific UI components. The
-          following attributes are supported:<ul>
-            <li><codeph>id</codeph> - Unique identifier of the view component.</li>
-            <li><codeph>initialSide</codeph> - Specifies the place where the view is initially
-              displayed. The allowed values are: <codeph>NORTH</codeph>, <codeph>SOUTH</codeph>,
-                <codeph>EAST</codeph>, and <codeph>WEST</codeph>.</li>
-            <li><codeph>initialRow</codeph> - Specifies the initial row on the specified side where
-              the view is displayed. For example, in <ph keyref="product"/>, the <xref
-                href="using-the-project-view.dita#using-the-project-view"
-                  ><uicontrol>Project</uicontrol> view</xref> has an initial row of
-                <codeph>0</codeph> and the <xref href="outliner-view.dita#outliner-view"
-                  ><uicontrol>Outline</uicontrol> view</xref> has an initial row of
-                <codeph>1</codeph>. Both views are in the <option>WEST</option> part of the
-              workbench.</li>
-            <li><codeph>initialState</codeph> - Specifies the initial state of the view. The allows
-              values are: <codeph>hidden</codeph>, <codeph>docked</codeph>,
-                <codeph>autohide</codeph>, and <codeph>floating</codeph>. By default, the view is
-              visible and docked.</li>
-          </ul></p><p>The <i>ro.sync.exml.workspace.api.standalone.ViewInfo</i> view component
-          information with the specified ID will be provided to you by the customizer interface.
-          Therefore, you will be able to provide Swing components that will appear on the view when
-          the application starts.</p></li>
-      <li><b><i>addMenuBarCustomizer</i></b> - Contributes to or modifies existing menu
-        components.</li>
-    </ul>
+                <codeph>view</codeph> element adds a view in the <ph keyref="product"/> interface
+              and allows you to contribute your own <term>plugin</term>-specific UI components. The
+              following attributes are supported:<ul>
+                <li><codeph>id</codeph> - Unique identifier of the view component.</li>
+                <li><codeph>initialSide</codeph> - Specifies the place where the view is initially
+                  displayed. The allowed values are: <codeph>NORTH</codeph>, <codeph>SOUTH</codeph>,
+                    <codeph>EAST</codeph>, and <codeph>WEST</codeph>.</li>
+                <li><codeph>initialRow</codeph> - Specifies the initial row on the specified side
+                  where the view is displayed. For example, in <ph keyref="product"/>, the <xref
+                    href="using-the-project-view.dita#using-the-project-view"
+                      ><uicontrol>Project</uicontrol> view</xref> has an initial row of
+                    <codeph>0</codeph> and the <xref href="outliner-view.dita#outliner-view"
+                      ><uicontrol>Outline</uicontrol> view</xref> has an initial row of
+                    <codeph>1</codeph>. Both views are in the <option>WEST</option> part of the
+                  workbench.</li>
+                <li><codeph>initialState</codeph> - Specifies the initial state of the view. The
+                  allows values are: <codeph>hidden</codeph>, <codeph>docked</codeph>,
+                    <codeph>autohide</codeph>, and <codeph>floating</codeph>. By default, the view
+                  is visible and docked.</li>
+              </ul></p><p>The <i>ro.sync.exml.workspace.api.standalone.ViewInfo</i> view component
+              information with the specified ID will be provided to you by the customizer interface.
+              Therefore, you will be able to provide Swing components that will appear on the view
+              when the application starts.</p></dd>
+        </dlentry>
+        <dlentry>
+          <dt><b><i>addMenuBarCustomizer</i></b></dt>
+          <dd>Contributes to or modifies existing menu components.</dd>
+        </dlentry>
+      </dl>
+    </p>
     <p>Access to the opened editors can be done by first getting access to all URLs opened in the
       workspace using the <i>StandalonePluginWorkspace.getAllEditorLocations(int editingArea)</i>
       API method. <ph product="author editor">There are two available editing areas: the
@@ -129,10 +140,10 @@
       <ul>
         <li>A simple Maven-based sample of a workspace access plugin is available here: <xref
             href="https://github.com/oxygenxml/sample-plugin-workspace-access" format="html"
-            scope="external"/></li>
+            scope="external"/>.</li>
         <li>A more complex sample of a workspace access plugin mimicking a CMS integration is
-          available in the Author SDK:  <xref href="https://www.oxygenxml.com/oxygen_sdk.html"
-            format="html" scope="external"/></li>
+          available in the Author SDK: <xref href="https://www.oxygenxml.com/oxygen_sdk.html"
+            format="html" scope="external"/>.</li>
       </ul></p>
   </conbody>
 </concept>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa--cc-customization-example1">
+  <title>Example: Configure Content Completion to Insert a Certain XML Structure</title>
+  <body>
+    <p>It is possible to configure the <term>Content Completion Assistant</term> to insert a certain
+      XML structure instead of an element. For example, suppose that whenever a DITA
+        <xmlelement>change-completed</xmlelement> element is inserted with the <term>Content
+        Completion Assistant</term>, you want the current date to be inserted as the text content of
+      the <xmlelement>change-completed</xmlelement> element.</p>
+    <p>This can be achieved by defining a <xref
+        href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-create-custom-actions.html"
+        format="html" scope="external">custom <uicontrol>Author</uicontrol> mode action</xref> in
+      your custom <term>framework</term>:<ol>
+        <li> In <b>Oxygen XML Editor/Author</b>, go to <menucascade>
+            <uicontrol>Options</uicontrol>
+            <uicontrol>Preferences</uicontrol>
+            <uicontrol>Document Type Association</uicontrol>
+          </menucascade> and edit the document type configuration for your
+          <term>framework</term>.</li>
+        <li>Go to the <uicontrol>Author</uicontrol> tab, then the <uicontrol>Actions</uicontrol>
+          subtab, and click the <uicontrol><image href="../img/Add16.png" id="image_p55_2t4_5r"
+            />New</uicontrol> button.</li>
+        <li>Define the custom action and include the following details:<ul>
+            <li>In the <uicontrol>Activation XPath</uicontrol> field, enter
+                <codeph>oxy:allows-child-element("change-completed")</codeph>. For information about
+              the <codeph>oxy:allows-child-element</codeph> function, see: <xref
+                href="https://www.oxygenxml.com/doc/ug-editor/topics/oxy-allows-child-element.html"
+                format="html" scope="external"/>.</li>
+            <li>For <uicontrol>Operation</uicontrol>, choose
+                <codeph>ro.sync.ecss.extensions.commons.operations.InsertFragmentOperation</codeph>.
+              For information about the <codeph>InsertFragmentOperation</codeph>, see <xref
+                href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-author-op-InsertFragmentOperation-arguments.html"
+                format="html" scope="external"/>.</li>
+            <li>In the <uicontrol>Arguments</uicontrol> table, double-click
+                <uicontrol>fragment</uicontrol> and for its value, enter
+                <codeph>&lt;change-completed>${date('YYYY-MM-DD')}&lt;/change-completed></codeph>.</li>
+          </ul></li>
+        <li>Go to the <uicontrol>Content Completion</uicontrol> subtab and <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/the-content-completion-tab.html"
+            format="html" scope="external">add the action to the content completion
+          menu</xref>.</li>
+        <li>Remove the <xmlelement>change-completed</xmlelement> element from the content completion
+          list. You can do this by editing the <filepath>cc_config.xml</filepath> configuration file
+          for your custom framework and use the <codeph>rejectElements</codeph> element to filter
+          out the <xmlelement>change-completed</xmlelement> element. For information, see <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/configure-elements-attr-cc-individually.html"
+            format="html" scope="external">Configuring the Proposals for Elements and
+            Attributes</xref>.</li>
+        <li>Save the changes to your custom framework.</li>
+        <li> Create an archive that only contains your custom framework folder and <xref
+            href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+            the changes to your <term>framework</term> to Web Author</xref>.</li>
+      </ol></p>
+    <note type="tip">Another possibility to achieve this specific example is to use a <xref
+        href="dg-form-controls-properties-matrix.dita">custom form control</xref> when the
+        <xmlelement>change-completed</xmlelement> element is empty.</note>
+  </body>
+</topic>

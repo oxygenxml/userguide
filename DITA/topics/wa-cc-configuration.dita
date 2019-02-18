@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="wa-cc-configuration">
-    <title>Customizing the Content Completion Assistant</title>
+  <title>Customizing the Content Completion Assistant</title>
   <prolog>
     <metadata>
       <keywords>
@@ -26,26 +26,43 @@
               <uicontrol>(Options</uicontrol>
               <uicontrol>Preferences)</uicontrol>
             </menucascade> and go to <uicontrol>Document Type Associations</uicontrol>.</li>
-          <li>Select your document type and click the <uicontrol>Extend</uicontrol> button. For more
-            information about extending a <term>framework</term>, see <xref
-              href="https://www.oxygenxml.com/doc/ug-editor/topics/author-document-type-extension-sharing.html"
-              format="html" scope="external">Extending and Sharing a Framework (Document
-              Type)</xref>.</li>
+          <li>Select your document type and click the <uicontrol>Extend</uicontrol> button.</li>
           <li>Go to the <uicontrol>Author</uicontrol> tab and <uicontrol>Content
               Completion</uicontrol> subtab. In this subtab, you can specify:<ul>
               <li>Elements to remove from the proposals listed in the <term>Content Completion
                   Assistant</term>.</li>
               <li>Actions to be added to the proposals listed in the <term>Content Completion
-                  Assistant</term>.</li>
+                  Assistant</term>.<note>To add an action that is implemented in JavaScript, you
+                  need to define a stub action with the same ID in the
+                    <uicontrol>Actions</uicontrol> subtab and add it in the <uicontrol>Content
+                    Completion</uicontrol> subtab.<p>The stub action will be automatically
+                    registered in the JavaScript code in the
+                      <codeph>sync.api.ActionsManager</codeph> object with the ID you specified.
+                    Make sure that when your JavaScript action implementation is registered in the
+                      <codeph>sync.api.ActionsManager</codeph>, it overwrites the stub action. A
+                    sample code to do
+                    this:<codeblock outputclass="language-javascript">goog.events.listen(editor, sync.api.Editor.EventTypes.ACTIONS_LOADED, 
+  function(e) {
+    if (actionsManager.getActionById('my_id') != null) {
+      actionsManager.registerAction('my_id', new MyCustomAction());
+    }
+  });
+...</codeblock></p></note></li>
             </ul></li>
+          <li> Create an archive that only contains your custom framework folder and <xref
+              href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+              the changes to your <term>framework</term> to Web Author</xref>.</li>
         </ol></p>
     </section>
     <section id="section_hfb_vns_vz">
       <title>Customizing Content Completion Using a Configuration File</title>
-      <p>You can use a <filepath>cc_config.xml</filepath> configuration file that is specific to
-        each document type (<term>framework</term>) to configure the values that are proposed in
-        certain contexts, to customize the attributes or elements that are proposed, or to customize
-        how certain aspects of the proposals are rendered in the interface.<ul>
+      <p>You can use a <filepath>cc_config.xml</filepath> configuration file for your custom
+        framework to configure the values that are proposed in certain contexts, to customize the
+        attributes or elements that are proposed, or to customize how certain aspects of the
+        proposals are rendered in the interface. You would then save the configuration file in the
+          <filepath>resources</filepath> folder inside your custom framework directory and <xref
+          href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+          your <term>framework</term> to Web Author</xref>.<ul>
           <li>To configure the possible elements or attributes that are proposed in the
               <term>Content Completion Assistant</term>, see <xref
               href="https://www.oxygenxml.com/doc/ug-editor/topics/configure-elements-attr-cc-individually.html"

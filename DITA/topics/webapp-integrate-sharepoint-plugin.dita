@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="webapp-integrate-sharepoint-plugin">
-  <title>Configuring a SharePoint Plugin Integration</title>
+  <title>Integrating Web Author with SharePoint Online</title>
   <prolog>
     <metadata>
       <keywords>
@@ -13,12 +13,14 @@
   <body>
     <p>The <ph keyref="webappProduct"/> includes a <xref keyref="glossentry_plugin"
           ><term>plugin</term></xref> that allows you to use the <ph keyref="webappProduct"/> to
-      edit files stored in a SharePoint repository. You can configure your SharePoint integration to
-      use the <i>OAuth</i> 2.0 authentication flow to access files stored in a public or
-      private repository. You will then have access to some file checking in/out toolbar buttons
+      edit files stored in a SharePoint Online repository. You can configure your SharePoint
+      integration to use the <i>OAuth</i> 2.0 authentication flow to access files stored in a public
+      or private repository. You will then have access to some file checking in/out toolbar buttons
       that are specific to SharePoint.</p>
+    <note>To integrate <ph keyref="webappProduct"/> with a SharePoint On-Premise server, use the
+        <xref href="wa-integrate-CMIS.dita">generic CMIS plugin</xref>.</note>
     <section id="configure_a_sharepoint_integration">
-      <title>Configure a SharePoint Integration</title>
+      <title>Configuring a SharePoint Integration</title>
       <p>To configure your SharePoint integration, follow this procedure:<ol>
           <li>Register a new application in the Azure Management Portal at: <xref
               href="https://manage.windowsazure.com/" format="html" scope="external"/>.<p>For
@@ -32,30 +34,34 @@
                   href="https://azure.microsoft.com/en-us/documentation/articles/active-directory-integrating-applications/"
                   format="html" scope="external"><b>Integrating Applications with Azure Active
                     Directory</b></xref></li>
-            </ul><note type="tip">Your situation may be different than ours, but as an example, our
-              developer used the following procedure for the registration process:<ol>
+            </ul><note type="tip">Your situation may require a different procedure, but here is an
+              example of a common procedure for the registration process:<ol>
                 <li>Go to: <xref href="https://manage.windowsazure.com/" format="html"
                     scope="external"/>.</li>
                 <li>Sign in with your credentials.</li>
-                <li>Go to your Active Directory.</li>
-                <li>Switch to the <uicontrol>Applications</uicontrol> tab.</li>
-                <li>Click <b>Add</b> on the footer.</li>
-                <li>Choose <b>Add an application my organization is developing</b>.</li>
-                <li>Enter a name (for example: "<i>Oxygen XML Web Author</i>").</li>
-                <li>Fill the form:<p>Sign-On URL: The URL of the Web Author Dashboard (for example,
-                      <b>http://mycompany.com/oxygenxml-web-author/app/oxygen.html</b>).</p><p>API
-                    ID URL: Some Unique URL: (for example,
-                    <b>http://mycompany.com/web-author/</b>).</p></li>
-                <li>Click <b>Submit</b>.</li>
-                <li>The app is created. Click <b>Configure</b>.</li>
-                <li>Click <b>Add Application</b> and choose one of the following:<ul>
-                    <li>Office 365 SharePoint online and choose the following "Delegated
-                      Permissions": "Read and write items and lists in all site collections".</li>
-                    <li>Windows Azure Active Directory and choose the following "Delegated
-                      Permissions": "Sign in and read user profile".</li>
+                <li>Go to your <uicontrol>Azure Active Directory</uicontrol>.</li>
+                <li>Choose the <uicontrol>App registrations</uicontrol> category.</li>
+                <li>Click <b>New application registration</b> on the header.</li>
+                <li>Fill the form<ol id="ol_xwp_lkg_hfb">
+                    <li>Enter a name (for example: "<i>Oxygen XML Web Author</i>").</li>
+                    <li>Leave the <uicontrol>Application type</uicontrol> as <uicontrol>Web app /
+                        API</uicontrol>.</li>
+                    <li>Sign-On URL: The URL of the Web Author Dashboard (for example,
+                        <b>http://mycompany.com:8080/oxygenxml-web-author/app/oxygen.html</b>).</li>
+                  </ol></li>
+                <li>Click <b>Create</b>.</li>
+                <li>The app is created. Click <b>Settings</b>.</li>
+                <li>Click <b>Required permissions</b> and choose all of the following:<ul>
+                    <li>Office 365 SharePoint online and choose the following <uicontrol>Delegated
+                        Permissions</uicontrol>: "Read and write items and lists in all site
+                      collections".</li>
+                    <li>Windows Azure Active Directory and choose the following <uicontrol>Delegated
+                        Permissions</uicontrol>: "Sign in and read user profile".</li>
+                    <li>Microsoft Graph API and choose the following <uicontrol>Delegated
+                        Permissions</uicontrol>: "Read items in all site collections".</li>
                   </ul></li>
-                <li>Change the <b>Reply URL</b> to a URL of the following
-                      form:<p><b>http://mycompany.com:8080/oxygenxml-web-author/plugins-dispatcher/sp-oauth</b></p><p>where
+                <li>Click <b>Reply URLs</b> to a URL of the following form:
+                      <p><b>http://mycompany.com:8080/oxygenxml-web-author/plugins-dispatcher/sp-oauth</b></p><p>where
                     the URL of the Dashboard is:
                       <b>http://mycompany.com:8080/oxygenxml-web-author/app/oxygen.html</b>.</p></li>
                 <li>In the <b>Keys</b> section, select a duration to generate a new key.</li>
@@ -68,7 +74,7 @@
           <li>Go to the <xref href="../topics/webapp-admin-page.dita#webapp-admin-page"
                 ><uicontrol>Administration Page</uicontrol></xref>, in the
               <uicontrol>Plugins</uicontrol> section click on the <uicontrol><image
-                href="../img/ConfigureSearchScope16.png"></image>Configure</uicontrol> icon for the
+                href="../img/ConfigureSearchScope16.png"/>Configure</uicontrol> icon for the
             SharePoint <term>plugin</term>, and enter the <uicontrol>Client ID</uicontrol>,
               <uicontrol>Client Secret</uicontrol>, and <uicontrol>Redirect URL</uicontrol> in the
               <uicontrol>Plugin configuration</uicontrol> dialog box. You can also configure the

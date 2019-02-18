@@ -23,9 +23,9 @@
         <dl>
           <dlentry>
             <dt>Document Schema</dt>
-            <dd>Web Author supports any XML schema in any schema language. It also offers <xref
-                href="webauthor-predefined-frameworks.dita#webauthor-predefined-frameworks">built-in
-                support for DITA, DocBook, TEI and XHTML</xref>.</dd>
+            <dd>Web Author supports any XML-based schema in any schema language. It also offers
+                <xref href="webauthor-predefined-frameworks.dita#webauthor-predefined-frameworks"
+                >built-in support for DITA, DocBook, TEI and XHTML</xref>.</dd>
           </dlentry>
           <dlentry>
             <dt>Add Support for a New XML Vocabulary</dt>
@@ -90,10 +90,8 @@
         </ul></p>
     </section>
     <section id="section_zzf_pns_vz">
-      <title>How to Create a Customized Framework (Document Type)</title>
-      <p>You can create a custom <term>framework</term> by extending an existing one: </p>
-      <p>
-        <ol>
+      <title>How to Create a Custom Framework (Document Type)</title>
+      <p>You can create a custom <term>framework</term> by extending an existing one: <ol>
           <li>In a location where you have full write access, create a folder structure similar to
             this: <filepath>custom_frameworks/dita-extension</filepath>. </li>
           <li>Open a standalone version of <term>Oxygen XML Editor/Author</term>.</li>
@@ -112,7 +110,7 @@
           <li>Give the extension an appropriate name (for example, <b><i>DITA - Custom</i></b>),
             select <uicontrol>External</uicontrol> for the <uicontrol>Storage</uicontrol> option,
             and specify an appropriate path (for example,
-              <filepath>path/to/.../custom_frameworks/dita-extension/dita-extension.framework</filepath>).</li>
+              <filepath>path/to/.../custom_frameworks/dita-extension/dita-custom.framework</filepath>).</li>
           <li id="make-changes-li">Make your changes to the extension. There is a large variety of
             ways to customize your extended <term>framework</term>. These are just some of the ways:<ul>
               <li>The <xref
@@ -120,11 +118,10 @@
                   format="html" scope="external"><uicontrol>Document Type</uicontrol> configuration
                   dialog box</xref> contains various tabs and subtabs that allow you to configure
                 the extended <term>framework</term>.</li>
-              <li id="new-templates-li">You can <xref
-                  href="https://www.oxygenxml.com/doc/ug-editor/topics/create-your-own-templates.html"
-                  format="html" scope="external">create your own custom document templates</xref>
-                and once the framework is uploaded to <term>Web Author</term>, users will have
-                access to the templates when creating a new document.</li>
+              <li id="new-templates-li">You can <xref href="wa-file-templates.dita">create your own
+                  custom document templates</xref> and once the framework is uploaded to <term>Web
+                  Author</term>, users will have access to the templates when creating a new
+                document.</li>
               <li>See the <xref
                   href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-complex-customization-tutorial.html"
                   format="html" scope="external">Oxygen Advanced Framework Customization
@@ -141,13 +138,12 @@
             </ul></li>
           <li>Click <uicontrol>OK</uicontrol> to close the dialog box and then
               <uicontrol>OK</uicontrol> or <uicontrol>Apply</uicontrol> to save the changes.</li>
-          <li>Create an archive that only contains your custom framework folder that you created in
-            the first step of this procedure. The archive should contain exactly one folder (for
-            example, <codeph>dita-extension</codeph>). You will need this archive structure to <xref
+          <li>Create an archive that contains your custom framework folder that you created in the
+            first step of this procedure. The archive should contain exactly one folder on the first
+            level. You will need this archive structure to <xref
               href="#customizing_frameworks/deploying_a_framework" format="dita">upload the
                 <term>framework</term> to Web Author</xref>.</li>
-        </ol>
-      </p>
+        </ol></p>
     </section>
     <section id="developing_and_testing_a_framework_using_the_weba">
       <title>Testing a Custom Framework Using the Oxygen XML Web Author Test Server Add-on</title>
@@ -165,7 +161,7 @@
                   <uicontrol>Install new add-ons</uicontrol>
                 </menucascade> to open an add-on selection dialog box.</li>
               <li>In the <uicontrol>Show add-ons from</uicontrol> text box, enter the following url:
-                  <b>http://www.oxygenxml.com/InstData/Addons/optional/updateSite.xml</b>.</li>
+                  <b>https://www.oxygenxml.com/InstData/Addons/optional/updateSite.xml</b>.</li>
               <li>Select the <b>Oxygen Web Author Test Server</b> add-on and click
                   <uicontrol>Next</uicontrol>.</li>
               <li>Select the <b>I accept all terms of the end user license agreement</b> option and
@@ -247,14 +243,24 @@
             query:<codeblock outputclass="language-css">@media oxygen AND (platform:webapp) {
  ... 
 }</codeblock></li>
-          <li>If the <term>framework</term> contains <uicontrol>Author</uicontrol> mode operations
-            (Java implementations of the
+          <li>If the <term>framework</term> contains custom <uicontrol>Author</uicontrol> mode
+            operations (Java implementations of the
               <codeph>ro.sync.ecss.extensions.api.AuthorOperation</codeph> interface), they can be
             enabled to be used by the <ph keyref="webappProduct"/> using the
-              <codeph>ro.sync.ecss.extensions.api.WebappCompatible</codeph>
-                annotation.<note><uicontrol>Author</uicontrol> mode operations that use <term>Java
-                Swing</term> components to display a graphical interface are not compatible with the
-                <ph keyref="webappProduct"/> and they should not be annotated.</note></li>
+              <codeph>ro.sync.ecss.extensions.api.WebappCompatible</codeph> annotation.<p>If you
+              plan to invoke a custom <uicontrol>Author</uicontrol> mode operation from the
+              JavaScript code (as in <xref keyref="jscript_api_customaction">this tutorial</xref>),
+              the operation has to be annotated with
+                <codeph>ro.sync.ecss.extensions.api.webapp.WebappRestSafe</codeph>. <note
+                type="warning">Operations annotated with
+                  <codeph>ro.sync.ecss.extensions.api.webapp.WebappRestSafe</codeph> can be invoked
+                with user supplied parameters. Use this annotation only for operations that are safe
+                to execute with any parameter combination. For example, an action that would execute
+                a process on the server based on a command-line script specified by the user is
+                  <b>not</b> safe.</note></p><note><uicontrol>Author</uicontrol> mode operations
+              that use <term>Java Swing</term> components to display a graphical interface are not
+              compatible with the <ph keyref="webappProduct"/> and they should not be
+              annotated.</note></li>
           <li>The <ph keyref="webappProduct"/> continuously validates the XML documents using the
             default validation scenarios defined at <term>framework</term> level. Only the
             validation units that have the <xref

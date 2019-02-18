@@ -11,12 +11,13 @@
     </metadata>
   </prolog>
   <body>
-    <p>You can process an XML or HTML document from a command line interface like this:</p>
+    <p>You can process an XML or HTML document from a command-line interface like this:</p>
     <codeblock outputclass="language-ini">chemistry -in my_file.xml -out my_file.pdf</codeblock>
     <codeblock outputclass="language-ini">chemistry -in my_file.html -out my_file.pdf</codeblock>
     <p>You can specify one or more CSS files to be used. If the document is an HTML document, it may
-      reference other stylesheets, or embed styles using the <codeph>style</codeph> element. The
-      command line CSS files take precedence over files referenced from the document:</p>
+      include references to other stylesheets or styles could be embedded using the
+        <codeph>style</codeph> element. The command-line CSS files take precedence over files
+      referenced from the document:</p>
     <codeblock outputclass="language-ini">chemistry -in my_file.html -out my_file.pdf -css style1.css style2.css</codeblock>
     <section id="section_i4y_j1b_wz">
       <title>Required Parameters</title>
@@ -39,13 +40,19 @@
       <title>Optional Parameters</title>
       <p>
         <dl>
-          <dlentry>
-            <dt>-v</dt>
-            <dd>Shows the version of the processor.</dd>
+          <dlentry id="dt_rrt_44f_qfb">
+            <dt>-catalog-prefer</dt>
+            <dd>Catalog preference mode. Possible values are: 'system' or 'public'. Default is
+              'public'.</dd>
           </dlentry>
           <dlentry>
-            <dt>-help</dt>
-            <dd>Prints the usage information.</dd>
+            <dt>-catalogs</dt>
+            <dd>The path to one or more XML catalogs, in URI or File syntax. You can separate the
+              paths by using the ";" (semi-colon) character. You can use a catalog to solve DTD or
+              Schema references to local files. If the list of catalog files is big, you may run
+              into command-line size limitations. In this case, consider passing it as the <xref
+                href="environment_variables.dita#environment_variables/dt_cy1_b5f_qfb"/> environment
+              variable.</dd>
           </dlentry>
           <dlentry>
             <dt>-css</dt>
@@ -57,24 +64,53 @@
                 <codeph>xml-stylesheet</codeph> processing instruction).</dd>
           </dlentry>
           <dlentry>
-            <dt>-catalogs</dt>
-            <dd>The path to one or more XML catalogs, in URI or File syntax. You can separate the
-              catalogs by using the ":" or ";" symbols. You can use a catalog to solve DTD or Schema
-              references to local files.</dd>
+            <dt>-disable-xinclude</dt>
+            <dd>A security setting that disables XML inclusions (XInclude). This is recommended when
+              using Chemistry in a Web context. In addition, you should use a Java Security Manager
+              to control the exact permissions granted to the processor.</dd>
           </dlentry>
           <dlentry>
-            <dt>-catalog-prefer</dt>
-            <dd>Catalog preference mode. Possible values are: 'system' or 'public'. Default is
-              'public'.</dd>
+            <dt>-disable-xxe</dt>
+            <dd>A security setting that disables XML external entities. This is recommended when
+              using Chemistry in a Web context. In addition, you should use a Java Security Manager
+              to control the exact permissions granted to the processor.</dd>
           </dlentry>
           <dlentry>
-            <dt>-image-resolution</dt>
-            <dd>The resolution (in DPI) of the raster images (an integer), for images that do not
-              provide this meta information. For changing the resolution using CSS, see: <xref
-                href="ch_graphics.dita#ch_image_resolution"/>.</dd>
-            <dd>
-              <codeblock outputclass="language-ini">-image-resolution 72</codeblock>
-            </dd>
+            <dt>-dump-fo</dt>
+            <dd>Dumps the FO file (before converting it to PDF) in the same location as the output
+              file. This can be used for debugging purposes.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-dump-styled-content</dt>
+            <dd>Dumps the intermediate, annotated XML file in the same location as the output file.
+              This can be used for debugging purposes.</dd>
+          </dlentry>
+          <dlentry id="enable-latin-ligatures">
+            <dt>-enable-latin-ligatures</dt>
+            <dd>Used to enable ligatures between some of the characters from the Latin glyph range.
+              The character sequences that might be combined is highly dependent on the font, but
+              usually they are: "fi", "fl", "tt". <note type="warning">The combined characters might
+                not be searchable in PDF readers (for instance, the sequence "fi" from the word
+                "file" can be replaced by a single character and the word will not be found when
+                searching). Use this only when you intend to print on physical media, (such as
+                paper). Ligatures for non-Latin scripts, (such as Arabic) are enabled by default,
+                and do not cause search problems.</note></dd>
+          </dlentry>
+          <dlentry>
+            <dt>-fonts-dir</dt>
+            <dd>The directory with additional fonts. The TTF files should be placed directly in it
+              (no subdirectory).</dd>
+          </dlentry>
+          <dlentry id="generate-named-destinations">
+            <dt>-generate-named-destinations</dt>
+            <dd>Controls whether or not the <codeph>id</codeph> attributes from the input document
+              are used to generate PDF named destinations (anchors). Accepted values are
+                <codeph>yes</codeph> (default) or <codeph>no</codeph>. For more informations, see
+                <xref href="ch_named_destinations.dita"/>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-help</dt>
+            <dd>Prints the usage information.</dd>
           </dlentry>
           <dlentry>
             <dt>-http-proxy-host</dt>
@@ -86,38 +122,13 @@
               port.<codeblock outputclass="language-ini">-http-proxy-host my.proxy.server -http-proxy-port 3128</codeblock></dd>
           </dlentry>
           <dlentry>
-            <dt>-dump-styled-content</dt>
-            <dd>Dumps the intermediate style annotated XML file next to the output. Use this for
-              debugging purposes.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-dump-fo</dt>
-            <dd>Dumps the FO file before converting it to PDF.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-show-pdf</dt>
-            <dd>Opens the created PDF file in the default application (Windows only).</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-pdf-ua</dt>
-            <dd>Produces output that conforms to PDF/UA-1 accessibility standards. Conversion will
-              break if fonts are not embedded. See: <xref href="ch_accessibility.dita"/>.</dd>
-          </dlentry>
-          <dlentry id="no-rtl-mirroring">
-            <dt>-no-rtl-mirroring</dt>
-            <dd>Disables switching of left and right margins, padding and borders for right-to-left
-              content. To make stylesheet development easier, the left margin automatically becomes
-              the right margin when the paragraph has an RTL orientation.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-no-network</dt>
-            <dd>Denies access to all your network connections. If your XML document or CSS files
-              reference remote resources, the transformation will fail.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-fonts-dir</dt>
-            <dd>The directory with additional fonts. The TTF files should be placed directly in it
-              (no subdirectory).</dd>
+            <dt>-image-resolution</dt>
+            <dd>The resolution (in DPI) of the raster images (an integer), for images that do not
+              provide this meta information. For changing the resolution using CSS, see: <xref
+                href="ch_graphics.dita#ch_image_resolution"/>.</dd>
+            <dd>
+              <codeblock outputclass="language-ini">-image-resolution 72</codeblock>
+            </dd>
           </dlentry>
           <dlentry>
             <dt>-log4j-file</dt>
@@ -136,16 +147,41 @@ log4j.appender.R=org.apache.log4j.ConsoleAppender
 log4j.appender.R.layout=org.apache.log4j.PatternLayout
 log4j.appender.R.layout.ConversionPattern=%r %p [ %t ] %c - %m%n</codeblock></dd>
           </dlentry>
-          <dlentry id="enable-latin-ligatures">
-            <dt>-enable-latin-ligatures</dt>
-            <dd>Used to enable ligatures between some of the characters from the Latin glyph range.
-              The character sequences that might be combined is highly dependent on the font, but
-              usually they are: "fi", "fl", "tt". <note type="warning">Take special care, the
-                combined characters might not be searchable in PDF readers (for instance, the
-                sequence "fi" from the word "file" can be replaced by a single character and the
-                word will not be found when searching). Use this only when you intend to print on
-                physical media, (such as paper). Ligatures for non-Latin scripts, (such as Arabic)
-                are enabled by default, and do not cause search problems.</note></dd>
+          <dlentry id="no-aggressive-hyphenation">
+            <dt>-no-aggressive-hyphenation</dt>
+            <dd><ph keyref="product"/> normally uses an aggressive technique to create hyphenation
+              points at underscores, dots, and case changes. To disable this functionality, use this
+                <codeph>-no-aggressive-hyphenation</codeph> parameter.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-no-network</dt>
+            <dd>Denies access to all your network connections. If your XML document or CSS files
+              reference remote resources, the transformation will fail.</dd>
+          </dlentry>
+          <dlentry id="no-rtl-mirroring">
+            <dt>-no-rtl-mirroring</dt>
+            <dd>Disables switching of left and right margins, padding and borders for right-to-left
+              content. To make stylesheet development easier, the left margin automatically becomes
+              the right margin when the paragraph has an RTL orientation.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-pdf-ua</dt>
+            <dd>Produces output that conforms to PDF/UA-1 accessibility standards. Conversion will
+              break if fonts are not embedded. See: <xref href="ch_accessibility.dita"/>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-show.changes.and.comments.as.pdf.sticky.notes</dt>
+            <dd>When set to <b>yes</b> (default), the review elements are shown as PDF annotations.
+              When set to <b>no</b>, the review elements are left in the document object model and
+              can be styled using CSS rules.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-show-pdf</dt>
+            <dd>Opens the created PDF file in the default application (Windows only).</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-v</dt>
+            <dd>Shows the version of the processor.</dd>
           </dlentry>
           <dlentry id="xmx-command">
             <dt id="dt_gry_yhz_2bb">-Xmx&lt;NNN>m</dt>
@@ -154,30 +190,12 @@ log4j.appender.R.layout.ConversionPattern=%r %p [ %t ] %c - %m%n</codeblock></dd
               memory:<codeblock outputclass="language-ini">-Xmx1024m</codeblock></dd>
             <dd>
               <note>The default is 512MB.</note>
-              <note>Larger memory settings (beyond 1GB) is permitted only when the Java Virtual
+              <note>Larger memory settings (beyond 1GB) are permitted only when the Java Virtual
                 Machine that runs <ph keyref="product"/> is 64 bits and there is enough physical
                 memory accessible to the operating system.</note>
               <note importance="high">If the <codeph>JAVA_ARG_LINE</codeph> environment variable is
                 set, this parameter is ignored.</note>
             </dd>
-          </dlentry>
-          <dlentry id="no-aggressive-hyphenation">
-            <dt>-no-aggressive-hyphenation</dt>
-            <dd><ph keyref="product"/> normally uses an aggressive technique to create hyphenation
-              points at underscores, dots, and case changes. To disable this functionality, use this
-                <codeph>-no-aggressive-hyphenation</codeph> parameter.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-disable-xxe</dt>
-            <dd>A security setting that disables XML external entities. This is recommended when
-              using Chemistry in a Web context. In addition, you should use a Java Security Manager
-              to control the exact permissions granted to the processor.</dd>
-          </dlentry>
-          <dlentry>
-            <dt>-disable-xinclude</dt>
-            <dd>A security setting that disables XML inclusions (XInclude). This is recommended when
-              using Chemistry in a Web context. In addition, you should use a Java Security Manager
-              to control the exact permissions granted to the processor.</dd>
           </dlentry>
         </dl>
       </p>

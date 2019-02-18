@@ -34,7 +34,17 @@
               <filepath>resources</filepath> folder for the particular <term>framework</term>.<p>For
               example: <filepath>/frameworks/[Document
               Type]/resources/xhtml2content.xsl</filepath></p></li>
-          <li>Add your customized styling in the XSLT file.</li>
+          <li>Add your customized styling in the XSLT file. A list of supported parameters can be
+            found in the <xref
+              href="#author-customize-smart-paste/supported_parameters_for_the_custom_xslt"
+              format="dita"/> section below.<note type="tip">The built-in DITA framework includes an
+                <filepath>xhtml2ditaDriver.xsl</filepath> file (in <filepath><term
+                  conkeyref="reusables-user-guide/oxy-install-dir"
+                />/frameworks/dita/resources</filepath>) that imports various other stylesheets that
+              apply cleanup and handle the conversion from the pasted HTML content to DITA. If you
+              are using a custom extension of the DITA framework, you can copy the entire contents
+              of the built-in <filepath>dita/resources</filepath> folder and customize the
+              stylesheets according to your needs.</note></li>
           <li>You can test modifications done in the stylesheet by pasting content without having to
             restart <ph keyref="product"/>.</li>
         </ol></p>
@@ -70,13 +80,52 @@
 
 &lt;/xsl:stylesheet></codeblock></p>
     </section>
-    <note type="tip">The built-in DITA framework includes a
-        <filepath>xhtml2ditaDriver.xsl</filepath> file (in <filepath><term
-          conkeyref="reusables-user-guide/oxy-install-dir"/>/frameworks/dita/resources</filepath>)
-      that imports various other stylesheets that apply cleanup and handle the conversion from the
-      pasted HTML content to DITA. If you are using a custom extension of the DITA framework, you
-      can copy the entire contents of the built-in <filepath>dita/resources</filepath> folder and
-      customize the stylesheets according to your needs.</note>
+    <section id="supported_parameters_for_the_custom_xslt">
+      <title>Supported Parameters for the Custom Smart Paste XSLT</title>
+      <p>The following parameters can be used in your XSLT stylesheet for customizing the
+          <term>Smart Paste</term> mechanism:</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>inTableContext</dt>
+            <dd>The custom XSLT stylesheet receives this parameter with a value of <b>true</b> if
+              the end user is pasting content inside a table.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>folderOfPasteTargetXml</dt>
+            <dd>A URL pointing to the folder where the current edited XML document is located. This
+              is used to save images relative to the current XML document.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>context.path.names</dt>
+            <dd>A sequence of element names showing the current context in the XML document where
+              the paste occurred.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>context.path.uris</dt>
+            <dd>A sequence of namespaces, one for each context path name.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>context.path.separator</dt>
+            <dd>The separator between the path names. Its value can be used to split the context
+              path names to a sequence.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p>By default, there is an extra check in place to ensure that the applied XSLT does not
+        remove the original text from the pasted content. If there is a file called
+          <filepath>externalPasteOptions.xml</filepath> in the <filepath>resources</filepath>
+        folder, you can use it to specify the default behavior for checking if the XSLT stylesheet
+        loses content during
+        conversion:<codeblock outputclass="language-xml">&lt;!-- Options that control external paste 
+(automatic conversions when pasting HTML and URL flavors from the clipboard). -->
+&lt;pasteOptions>
+	&lt;!--True to check if the entire sequence of words which get pasted are
+           converted to the target vocabulary. If the check fails, the content
+           will be inserted as a simple sequence of words without any formatting.-->
+    &lt;checkEntireContentIsFullyPreserved>true&lt;/checkEntireContentIsFullyPreserved>
+&lt;/pasteOptions></codeblock></p>
+    </section>
   </body>
   <related-links>
     <linklist>
@@ -87,6 +136,7 @@
         scope="external">
         <linktext>Oxygen XML Blog: How Special Paste Works in Oxygen (DITA)</linktext>
       </link>
+      <link href="dg-drop-paste-handler.dita"/>
     </linklist>
   </related-links>
 </topic>

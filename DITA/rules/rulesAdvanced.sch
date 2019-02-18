@@ -171,7 +171,16 @@
         consecutive ordered lists. You can probably merge them into one. </sch:report>
     </sch:rule>
   </sch:pattern>
-  
+
+  <sch:pattern>
+    <!-- Report ordered and unordered lists with only one list item -->
+    <sch:rule context="*[contains(@class, ' topic/ul ') or contains(@class, ' topic/ol ')]">
+      <sch:report test="count(li) = 1 and not(@conkeyref) and not(@conref)">
+        Single list item! Converted to a paragraph and get rid of the parent list element.
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+
   <sqf:fixes>
     <!-- Merge the two lists into one -->
     <sqf:fix id="mergeLists">
@@ -222,7 +231,7 @@
   
   <sch:pattern>
     <!-- Report cases when the lines in a codeblock exceeds 90 characters -->
-    <sch:rule context="*[contains(@class, ' pr-d/codeblock ') and not(@outputclass='language-css')]" role="warn">
+    <sch:rule context="*[contains(@class, ' pr-d/codeblock ') and not(@outputclass='language-css') and not(@outputclass='language-bourne')]" role="warn">
       <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 90)"/>
       <sch:report test="string-length($offendingLines) > 0">
         Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 90 characters. </sch:report>
@@ -290,14 +299,7 @@
       <sch:report test="not(node())"> Empty element. Most DITA elements should not be empty.</sch:report>
     </sch:rule>
   </sch:pattern>
-  <sch:pattern>
-    <!--Tables with more entries than number of columns -->
-    <sch:rule context="*[contains(@class, ' topic/tgroup ')]">
-      <sch:assert
-        test="max(.//*[contains(@class, ' topic/row ')]/count(*[contains(@class, ' topic/entry ')])) = @cols"
-        > Maximum number of entries must equal cols attribute specified on table. </sch:assert>
-    </sch:rule>
-  </sch:pattern>
+  
   
   <!-- Add Ids to all sections, in this way you can easly refer the section from documentation -->
   <sch:pattern>
@@ -506,8 +508,14 @@
   <!-- msgph -> codeph -->
   <sch:pattern>
     <sch:rule context="msgph"> 
-      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use a "codeph" element instead.        
+      <sch:report test="true()" sqf:fix="replaceWithCodeph">You should not use this element because it is not rendered properly in the output. Use a "codeph" element instead.        
       </sch:report>
+      <sqf:fix id="replaceWithCodeph">
+        <sqf:description>
+          <sqf:title>Replace "msgph" with "codeph"</sqf:title>
+        </sqf:description>
+        <sqf:replace node-type="element" target="codeph" select="node()"/>
+      </sqf:fix>
     </sch:rule>
   </sch:pattern>
   
@@ -579,6 +587,33 @@
     </sch:rule>
   </sch:pattern>
   
+  <!-- Look for non breakable space characters and replace them with normal space characters -->
+  <sch:pattern id="checkNoBreakableSpace">
+    <sch:rule context="text()">
+      <!-- Check if the text contains a weird space character which made its way into UG via pasting from other sources -->
+      <sch:report test="contains(., ' ')" sqf:fix="replaceNBSP">Replace non breakable space with a normal space character</sch:report>
+      <sqf:fix id="replaceNBSP">
+        <sqf:description>
+          <sqf:title>Replace NBSP with a normal space character</sqf:title>
+        </sqf:description>
+        <sqf:stringReplace regex="[ ]" xml:space="preserve"> </sqf:stringReplace>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Unwrap all elements inside a codeblocks -->
+  <sch:pattern>
+    <sch:rule context="codeblock/*">
+      <sch:report test="." sqf:fix="del">No elements are allowed in codeblocks</sch:report>
+      
+      <sqf:fix id="del">
+        <sqf:description>
+          <sqf:title>Unwrap element</sqf:title>
+        </sqf:description>
+        <sqf:replace select="text()"></sqf:replace>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
   
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'

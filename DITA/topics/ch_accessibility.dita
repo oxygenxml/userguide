@@ -10,20 +10,21 @@
     </metadata>
   </prolog>
   <body>
-    <p>Make sure your PDF output is accessible for those who are blind or visually impaired. Many
-      government organizations require the documents to be accessible.</p>
+    <p>It is recommended that you make your PDF output accessible for people who are blind or
+      visually impaired. Many government organizations require the documents to be accessible.</p>
     <section id="section_wg5_wgl_xz">
       <title>PDF Accessibility Tagging</title>
       <p>By default, <ph keyref="product"/> partially creates accessible PDF documents in the sense
         that most of the paragraphs, tables, lists, headers, and footers are tagged automatically
-        for any XML vocabulary, so a PDF reader could use this information to present the content. </p>
-      <p>In addition, the default HTML CSS used by <ph keyref="product"/> defines accessibility tags
-        for headings (<codeph>H1..H6</codeph>), quotation (<codeph>Q</codeph>), sections
-          (<codeph>SECTION</codeph>), and pre-formatted text <codeph>PRE</codeph>. </p>
+        for any XML vocabulary, and PDF readers use this information to present the content. </p>
+      <p>In addition, the default CSS files used by <ph keyref="product"/> to generate PDF based on
+        HTML defines accessibility tags for headings (<codeph>H1..H6</codeph>), quotations
+          (<codeph>Q</codeph>), sections (<codeph>SECTION</codeph>), and pre-formatted text
+          (<codeph>PRE</codeph>). </p>
       <p>However, this tagging just takes the element name into account. If your element has a
         different semantic, you can impose a different PDF accessibility tag by using the
-          <codeph>-oxy-pdf-tag-type</codeph>. In the following example, a paragraph with the class
-        "note" will be marked as such:</p>
+          <codeph>-oxy-pdf-tag-type</codeph> extension. In the following example, a paragraph with
+        the <codeph>note</codeph> class will be marked:</p>
       <codeblock outputclass="language-css">p.note {
   -oxy-pdf-tag-type: "Note";
 }</codeblock>
@@ -31,52 +32,55 @@
         marked as artifacts, so they are ignored by the screen readers.</note>
     </section>
     <section id="section_lrg_43k_xz">
-      <title>Hints to Make your Document More Accessible</title>
-      <ol id="ol_mnv_r3k_xz">
-        <li>The title of the document must be marked using the metadata. <p>This is important for
-            accessibility since it will allow the screen reader to identify the publication
-              title.<codeblock outputclass="language-css">title {
+      <title>Hints for Making Documents More Accessible</title>
+      <p><b>Hint 1:</b> The title of the document must be marked using the metadata. </p>
+      <p>This is important for accessibility since it will allow the screen reader to identify the
+        publication title. This is an example using the <codeph>-oxy-pdf-meta-title</codeph>
+          extension:<codeblock outputclass="language-css">title {
     -oxy-pdf-meta-title: content(text);
 }</codeblock><note>The
-              default CSS for HTML already contains this rule.</note></p></li>
-        <li>Use <codeph>xml:lang</codeph> on the root of your document. For HTML documents use the
-            <codeph>lang</codeph> attribute.</li>
-        <li>Put an alternate text on all the images. <p><ph keyref="product"/> supports the
-              <codeph>-oxy-alt-text</codeph> extension CSS property that can be used to associate
-            the alternate text. </p><p>The following is an example from the <ph keyref="product"/>
-            default CSS for HTML, where it maps the property to the value of the
-              <codeph>alt</codeph> attribute of the <codeph>img</codeph>
-            tag:</p><codeblock outputclass="language-css">img {
+          default CSS files for generating PDF based on HTML already contains this rule.</note></p>
+      <p><b>Hint 2:</b> Use <codeph>xml:lang</codeph> on the root of your document. For HTML
+        documents, use the <codeph>lang</codeph> attribute.</p>
+      <p><b>Hint 3:</b> Put an alternate text on all the images. </p>
+      <p><ph keyref="product"/> supports the <codeph>-oxy-alt-text</codeph> extension that can be
+        used to associate the alternate text. </p>
+      <p>The following is an example from the <ph keyref="product"/> default CSS for generating PDF
+        based on HTM, where it maps the property to the value of the <codeph>alt</codeph> attribute
+        of the <codeph>img</codeph> tag:</p>
+      <codeblock outputclass="language-css">img {
    -oxy-alt-text: attr(alt);
-}</codeblock><p>For
-            embedded SVG, <ph keyref="product"/> automatically uses the <codeph>title</codeph>
-            element as alternate text of the image.</p><p>For embedded MathML, <ph keyref="product"
-            /> automatically uses the <codeph>alttext</codeph> attribute as alternate text of the
-            equation.</p></li>
-      </ol>
+}</codeblock>
+      <p>For embedded SVG, <ph keyref="product"/> automatically uses the <codeph>title</codeph>
+        element as the alternate text of the image.</p>
+      <p>For embedded MathML, <ph keyref="product"/> automatically uses the <codeph>alttext</codeph>
+        attribute as the alternate text of the equation.</p>
     </section>
     <section id="section_gsx_2ld_xz">
       <title>Fully Accessible PDF (PDF/UA1)</title>
       <p>To make the PDF fully accessible, you have to activate the PDF/UA-1 mode. PDF/UA documents
         meet the regulations set in Section 508. This mode has special requirements:</p>
       <ol id="ol_xm5_zkd_xz">
-        <li>Activate the PDF UA-1 mode from the command line, using the <codeph>-pdf-ua</codeph>
+        <li>Activate the PDF UA-1 mode from the command line using the <codeph>-pdf-ua</codeph>
           parameter.</li>
-        <li>All the fonts must be embedded. If you are using one of the basic fonts ("Times",
-          "Helvetica",…), make sure you explicitly define CSS font faces for them. For details, see:
-            <xref href="ch_fonts.dita#ch_font_embedding"/>. <note type="trouble">If you are using
-            fonts other than the basic ones and still have problems embedding the basic default
-            fonts, make sure all elements are styled using one of your fonts of choice. A catch all
-            CSS rule might come
-            handy:<codeblock outputclass="language-css">* {
+        <li>All the fonts must be embedded. If you are using one of the basic fonts (such as
+          "Times", "Helvetica", etc.), make sure you explicitly define CSS font faces for them. For
+          details, see: <xref href="ch_fonts_font_embedding.dita"/>. <note type="trouble">If you are
+            using fonts other than the basic ones and still have problems embedding the basic
+            default fonts, make sure all elements are styled using one of your fonts of choice. A
+            catch all CSS rule might be
+            helpful:<codeblock outputclass="language-css">* {
   font-family: lato;
 }</codeblock></note></li>
         <li>The title of the document must be marked using the metadata. This is important for
-          accessibility since it will allow the screen reader to identify the publication title. For
-          HTML, the default CSS contains this rule. You can use something similar for other XML
-          vocabularies:<codeblock outputclass="language-css">title {
+          accessibility since it will allow the screen reader to identify the publication title.
+          This is important for accessibility since it will allow the screen reader to identify the
+          publication title. This is an example using the <codeph>-oxy-pdf-meta-title</codeph>
+            extension:<codeblock outputclass="language-css">title {
     -oxy-pdf-meta-title: content(text);
-}</codeblock></li>
+}</codeblock><note>The
+            default CSS files for generating PDF based on HTML already contains this
+          rule.</note></li>
       </ol>
     </section>
     <section id="section_krm_lcy_zz">

@@ -15,20 +15,19 @@
     <context>
       <p>In a custom <xref keyref="glossentry_framework"><term>framework</term></xref>, the
           <codeph>table</codeph> element can have cells that span over multiple columns and rows. As
-        explained in <xref href="dg-styling-table-element.dita#dg-styling-table-element"
-        />, you need to indicate <ph keyref="product"/> a method to determine the cell spanning. If
-        you use the cell element attributes <codeph>rowspan</codeph> and <codeph>colspan</codeph> or
+        explained in <xref href="dg-styling-table-element.dita#dg-styling-table-element"/>, you need
+        to indicate <ph keyref="product"/> a method to determine the cell spanning. If you use the
+        cell element attributes <codeph>rowspan</codeph> and <codeph>colspan</codeph> or
           <codeph>rows</codeph> and <codeph>cols</codeph>, <ph keyref="product"/> can determine the
-        cell spanning automatically. In our example the <codeph>td</codeph> element uses the
-        attributes <codeph>row_span</codeph> and <codeph>column_span</codeph> that are not
+        cell spanning automatically. In the following example, the <codeph>td</codeph> element uses
+        the attributes <codeph>row_span</codeph> and <codeph>column_span</codeph> that are not
         recognized by default. You will need to implement a Java extension class for defining the
         cell spanning.</p>
     </context>
     <steps>
       <step>
-        <cmd>Create the class
-            <i>simple.documentation.framework.TableCellSpanProvider</i>. This class must
-          implement the <xref
+        <cmd>Create the class <i>simple.documentation.framework.TableCellSpanProvider</i>. This
+          class must implement the <xref
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorTableCellSpanProvider.html"
             format="html" scope="external"
               ><i>ro.sync.ecss.extensions.api.AuthorTableCellSpanProvider</i></xref>
@@ -43,28 +42,27 @@ public class TableCellSpanProvider
         </info>
       </step>
       <step>
-        <cmd>The <i>init</i> method is taking as argument the <xref
+        <cmd>The <i>init</i> method takes <xref
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/node/AuthorElement.html"
             format="html" scope="external"
-              ><i>ro.sync.ecss.extensions.api.node.AuthorElement</i></xref> that
-          represents the XML <codeph>table</codeph> element. In our case the cell span is specified
-          for each of the cells so you leave this method empty. However, there are cases (such as
-          the CALS table model) when the cell spanning is specified in the <codeph>table</codeph>
-          element. In such cases, you must collect the span information by analyzing the
-            <codeph>table</codeph> element.</cmd>
+            ><i>ro.sync.ecss.extensions.api.node.AuthorElement</i></xref> that represents the XML
+            <codeph>table</codeph> element as its argument. In this example, the cell span is
+          specified for each of the cells so you leave this method empty. However, there are cases
+          (such as the CALS table model) when the cell spanning is specified in the
+            <codeph>table</codeph> element. In such cases, you must collect the span information by
+          analyzing the <codeph>table</codeph> element.</cmd>
         <info>
           <codeblock outputclass="language-java">public void init(AuthorElement table) {
 }</codeblock>
         </info>
       </step>
       <step>
-        <cmd>The <i>getColSpan</i> method is taking as argument the table cell. The
-          table layout engine will ask this <i>AuthorTableSpanSupport</i> implementation
-          what is the column span and the row span for each XML element from the table that was
-          marked as cell in the CSS using the property <codeph>display:table-cell</codeph>. The
-          implementation is simple and just parses the value of <b>column_span</b> attribute. The
-          method must return <codeph>null</codeph> for all the cells that do not change the span
-          specification.</cmd>
+        <cmd>The <i>getColSpan</i> method is taking as argument the table cell. The table layout
+          engine will ask this <i>AuthorTableSpanSupport</i> implementation what is the column span
+          and the row span for each XML element from the table that was marked as cell in the CSS
+          using the property <codeph>display:table-cell</codeph>. The implementation is simple and
+          just parses the value of <b>column_span</b> attribute. The method must return
+            <codeph>null</codeph> for all the cells that do not change the span specification.</cmd>
         <info>
           <codeblock outputclass="language-java">public Integer getColSpan(AuthorElement cell) {
   Integer colSpan = null;
@@ -108,8 +106,8 @@ public class TableCellSpanProvider
         </info>
       </step>
       <step>
-        <cmd>The method <i>hasColumnSpecifications</i> always returns
-            <codeph>true</codeph> considering column specifications always available.</cmd>
+        <cmd>The method <i>hasColumnSpecifications</i> always returns <codeph>true</codeph>
+          considering column specifications always available.</cmd>
         <info>
           <p>
             <codeblock outputclass="language-java">public boolean hasColumnSpecifications(AuthorElement tableElement) {
@@ -117,7 +115,6 @@ public class TableCellSpanProvider
 }</codeblock>
           </p>
           <note conkeyref="reusable_notes_java-files/sdf_project"/>
-          
         </info>
       </step>
       <step>

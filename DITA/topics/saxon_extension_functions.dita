@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="saxon_extension_functions">
+  <title>Using Saxon Integrated Extension Functions</title>
+  <body>
+    <p>Saxon, the transformation and validation engine used by <ph keyref="product"/>, can be
+      customized by adding custom functions (called <xref
+        href="https://www.saxonica.com/documentation9.5/extensibility/integratedfunctions/"
+        format="html" scope="external">Integrated Extension Functions</xref>) that can be called
+      from XPath.</p>
+    <p>To define such a function, follow these steps:<ol id="ol_smm_sk2_nfb">
+        <li>Create a file with a Java class that extends
+            <codeph>net.sf.saxon.lib.ExtensionFunctionDefinition</codeph>. Here is an
+          example:<codeblock outputclass="language-java">private static class ShiftLeft extends ExtensionFunctionDefinition {
+  @Override
+  public StructuredQName getFunctionQName() {
+    return new StructuredQName("eg", "http://example.com/saxon-extension", "shift-left");
+  }
+
+
+  @Override
+  public SequenceType[] getArgumentTypes() {
+  	return new SequenceType[] {SequenceType.SINGLE_INTEGER, SequenceType.SINGLE_INTEGER};
+  }
+
+
+  @Override
+  public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+  	return SequenceType.SINGLE_INTEGER;
+  }
+
+
+  @Override
+  public ExtensionFunctionCall makeCallExpression() {
+  	return new ExtensionFunctionCall() {
+	  public SequenceIterator call(SequenceIterator[] arguments, XPathContext context)
+                    throws XPathException {
+  	    long v0 = ((IntegerValue)arguments[0].next()).longValue();
+  		long v1 = ((IntegerValue)arguments[1].next()).longValue();
+  		long result = v0&lt;&lt;v1;
+        return Value.asIterator(Int64Value.makeIntegerValue(result));
+      }
+    };
+  }
+}</codeblock></li>
+        <li>Compile the class and add it to a JAR file. </li>
+        <li>Add a file called <b>net.sf.saxon.lib.ExtensionFunctionDefinition</b> that contains the
+          fully qualified name of the Java class in the <filepath>META-INF/services/</filepath>
+          folder of the JAR file.<note>To add more function definitions in the same JAR file, you
+            need to add their fully qualified names on different lines.</note></li>
+      </ol></p>
+    <p>To enable <ph keyref="product"/> to pick up your custom function definition, the JAR file
+      should be added to the classpath of the transformer. Here are some possibilities:<ul
+        id="ul_kcp_mr2_nfb">
+        <li>If you develop a framework, you just need to link the JAR file <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/document-type-classpath-tab.html"
+            format="html" scope="external" product="waCustom">in the
+              <uicontrol>Classpath</uicontrol> tab</xref><xref
+            href="document-type-classpath-tab.dita"
+            product="author developer editor authorEclipse developerEclipse editorEclipse">in the
+              <uicontrol>Classpath</uicontrol> tab</xref>.</li>
+        <li>In a <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/create-validation-scenario.html#create-validation-scenario"
+            format="html" scope="external" product="waCustom">validation scenario</xref><xref
+            href="create-validation-scenario.dita"
+            product="author developer editor authorEclipse developerEclipse editorEclipse"
+            >validation scenario</xref>, you can use the <uicontrol>Extensions</uicontrol> button to
+          open a dialog box where you can add libraries.</li>
+        <li>In a transformation scenario, you can use the <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/xslt-tab.html" format="html"
+            scope="external" product="waCustom"><uicontrol>Extensions</uicontrol> button in the
+              <uicontrol>XSLT</uicontrol> tab</xref><xref href="xslt-tab.dita#xslt-tab/extensions"
+            product="author developer editor authorEclipse developerEclipse editorEclipse"
+              ><uicontrol>Extensions</uicontrol> button in the <uicontrol>XSLT</uicontrol>
+            tab</xref> to open a dialog box where you can add libraries.</li>
+        <li product="author developer editor waCustom">You can also create a plugin that <xref
+            href="https://www.oxygenxml.com/doc/ug-editor/topics/oxygen-plugin.html#oxygen-plugin__referencing_libraries"
+            format="html" scope="external" product="waCustom">contributes such a JAR file in the Web
+            Author classpath</xref><xref href="oxygen-plugin.dita" product="author developer editor"
+            >contributes such a JAR file in the classpath</xref>.</li>
+      </ul></p>
+  </body>
+</topic>

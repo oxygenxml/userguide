@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
 <concept id="dg-action-list-function">
-  <title><codeph>oxy_action_list()</codeph> Function</title>
+  <title>Action Lists: <codeph>oxy_action_list()</codeph> Function</title>
   <shortdesc>This function allows you to define a sequential list of actions directly in the CSS,
     rather than referencing them from the associated framework.</shortdesc>
   <prolog>
@@ -14,11 +14,15 @@
   </prolog>
   <conbody>
     <p>The <codeph>oxy_action_list()</codeph> function is used from the <xref
-        href="button-group-editor.dita"><i>oxy_buttonGroup()</i> function</xref>.</p>
+        href="button-group-editor.dita"><i>oxy_buttonGroup()</i> function</xref> that provides a
+      graphical group of buttons with multiple custom actions. These actions are normally defined in
+      the associated Document Type (<term>framework</term> configuration) but the
+        <codeph>oxy_action_list()</codeph> function allows you to define the actions directly in the
+      CSS instead of the <term>framework</term> configuration.</p>
     <p>The arguments received by the <codeph>oxy_action_list()</codeph> function are a list of
       actions (executed sequentially) that are defined with the <xref href="dg-action-function.dita"
           ><i>oxy_action()</i> function</xref>. The following properties are supported in the
-        <codeph>oxy_action_list()</codeph> function:</p>
+        <codeph>oxy_action()</codeph> function:</p>
     <p id="oxy-action-properties1">
       <ul>
         <li><codeph>name</codeph> - The name of the action. The name of the first defined action
@@ -33,22 +37,28 @@
       </ul>
     </p>
     <p><u><b>Example: <i>oxy_action_list</i>
-      Function</b></u><codeblock outputclass="language-css">oxy_action_list(
-  oxy_action(
-    name, 'Insert', 
-    description, 
-        'Insert an element after the current one', 
-    operation, InsertFragmentOperation, 
-    arg-fragment, '&lt;element&gt;&lt;/element&gt;',
-    arg-insertLocation, '.',
-    arg-insertPosition, 'After'
-  ),
-  oxy_action(
-    name, 'Delete', 
-    description, 'Deletes the current element', 
-    operation, DeleteElementOperation 
+      Function</b></u><codeblock outputclass="language-css">p:after {
+    content: oxy_buttonGroup(
+    label, 'A group of actions', 
+    icon, url('http://www.oxygenxml.com/img/icn_oxy20.png'),
+    actions, 
+      oxy_action_list(
+          oxy_action(
+                name, 'Insert a new paragraph', 
+                description, 'Insert an element after the current one', 
+                operation, 'InsertFragmentOperation', 
+                arg-fragment, '&lt;p>&lt;/p>',
+                arg-insertLocation, '.',
+                arg-insertPosition, 'After'
+          ),
+          oxy_action(
+                name, 'Delete', 
+                description, 'Deletes the current element', 
+                operation, 'DeleteElementOperation' 
+          )
+      )
   )
-)</codeblock></p>
+}</codeblock></p>
     <note type="tip">A code template is available to make it easy to add the
         <codeph>oxy_action_list</codeph> function with the <xref
         keyref="glossentry_content-completion-assistant"><term>Content Completion
@@ -58,7 +68,10 @@
       <codeph>oxy_action_list</codeph> code template.</note>
   </conbody>
   <related-links>
-    <linklist><title>Related Information:</title><link href="dg-action-function.dita#dg-action-function"/>
-    <link href="button-group-editor.dita#button-group-editor"/></linklist>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="dg-action-function.dita#dg-action-function"/>
+      <link href="button-group-editor.dita#button-group-editor"/>
+    </linklist>
   </related-links>
 </concept>

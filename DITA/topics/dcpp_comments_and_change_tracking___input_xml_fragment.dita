@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dcpp_comments_and_change_tracking___input_xml_fragment">
-  <title>Comments and Change Tracking - Input XML fragment</title>
+  <title>Comments and Tracked Changes - XML Fragment</title>
   <body>
-    <p>The following sections contain information about how each of the tracked change types are
-      structured.</p>
+    <p>This section contains information about how each type of tracked change is structured in <ph
+        product="author developer editor authorEclipse developerEclipse editorEclipse pdf-css">the
+          <xref href="dcpp_debugging_the_css.dita#dcpp_debugging_the_css/merged_map_file">merged map
+          XML file</xref></ph><ph product="chemistry">an XML file</ph>.</p>
     <section id="section_rh1_bg2_2db">
       <title>Insertions</title>
-      <p>For an insertion type of tracked change, the structure defining the insertion details is
-        inside the range, the inserted text is highlighted by an
+      <p>For an insertion type of tracked change, the structure that defines the insertion details
+        is inside the <i>range</i> (<xmlelement>oxy-range-start</xmlelement> to
+          <xmlelement>oxy-range-end</xmlelement>), the inserted text is highlighted by an
           <xmlelement>oxy-insert-hl</xmlelement> element, and the details are stored in the
           <xmlelement>oxy-insert</xmlelement> element.</p>
       <codeblock outputclass="language-xml">    &lt;oxy:oxy-range-start id="sc_1" hr_id="1"/>
@@ -27,9 +30,10 @@
     </section>
     <section id="section_pjn_5g2_2db">
       <title>Comments</title>
-      <p>Similar to insertions, comments are defined  in a range, the comment details in the
-          <xmlelement>oxy-comment</xmlelement> element, and the highlighted content is wrapped in a
-          <xmlelement>oxy-comment-hl</xmlelement> element.</p>
+      <p>Similar to insertions, comments are defined in a <i>range</i>
+          (<xmlelement>oxy-range-start</xmlelement> to <xmlelement>oxy-range-end</xmlelement>), the
+        comment details is in the <xmlelement>oxy-comment</xmlelement> element, and the highlighted
+        content is wrapped in the <xmlelement>oxy-comment-hl</xmlelement> element. </p>
       <p>
         <codeblock outputclass="language-xml">    &lt;oxy:oxy-range-start id="sc_1" hr_id="1"/>
       
@@ -45,13 +49,15 @@
           
     &lt;oxy:oxy-range-end hr_id="1"/>           </codeblock>
       </p>
+      <note>Comments that are marked as done have a <codeph>flag="done"</codeph>
+        attribute:<codeblock outputclass="language-xml">&lt;oxy:oxy-comment href="#sc_6" hr_id="6" flag="done"></codeblock></note>
     </section>
     <section id="section_mr5_qh2_2db">
       <title>Attribute changes</title>
-      <p>The attribute changes are more complex. The range is empty, and is directly under the
-        affected element (the one that has modified attributes). The
+      <p>The attribute changes are more complex. The <i>range</i> is empty, and is directly above
+        the affected element (the one that has modified attributes). The
           <xmlelement>oxy-attributes</xmlelement> element contains details about multiple attribute
-        changes, each stored in a <xmlelement>oxy-attributed-change</xmlelement> element. </p>
+        changes, each stored in the <xmlelement>oxy-attributed-change</xmlelement> element. </p>
       <p>
         <codeblock outputclass="language-xml">&lt;element>
 
@@ -60,7 +66,7 @@
 
   &lt;oxy:oxy-attributes href="#sc_3" hr_id="3">
 
-     &lt;oxy:oxy-attribute-change type="<b>inserted</b>" name="<b>platform</b>">
+     &lt;oxy:oxy-attribute-change type="inserted" name="platform">
           &lt;oxy:oxy-author>dan&lt;/oxy:oxy-author>
           &lt;oxy:oxy-current-value>windows&lt;/oxy:oxy-current-value>
           &lt;oxy:oxy-date>2018/03/15&lt;/oxy:oxy-date>
@@ -68,7 +74,7 @@
           &lt;oxy:oxy-tz>+02:00&lt;/oxy:oxy-tz>
      &lt;/oxy:oxy-attribute-change>
     ....
-     &lt;oxy:oxy-attribute-change type="<b>removed</b>" name="<b>audience</b>">
+     &lt;oxy:oxy-attribute-change type="removed" name="audience">
         ....    
      &lt;/oxy:oxy-attribute-change>
   &lt;/oxy:oxy-attributes>
@@ -81,9 +87,7 @@
       <p>For a deletion, there are some elements that define the start and end of the deletion, and
         the highlighted text is wrapped in the <xmlelement>oxy-delete-hl</xmlelement> element.</p>
       <codeblock outputclass="language-xml">   &lt;oxy:oxy-range-start id="sc_2" hr_id="2"/>
-
-        &lt;oxy:oxy-delete-hl> This is a deleted text. &lt;/oxy:oxy-delete-hl>
-
+   &lt;oxy:oxy-delete-hl> This is a deleted text. &lt;/oxy:oxy-delete-hl>
    &lt;oxy:oxy-range-end hr_id="2"/>
 </codeblock>
       <p>There is a structure that offers details about the deletion change, using the
@@ -91,11 +95,16 @@
         the same ID value:</p>
       <codeblock outputclass="language-xml">   &lt;oxy:oxy-delete href="#sc_2" hr_id="2">
        &lt;oxy:oxy-author>dan&lt;/oxy:oxy-author>
-       &lt;oxy:oxy-content>&amp;lt;step&amp;gt;&amp;lt;cmd&amp;gt;This is a deleted &amp;lt;image href="ac%20co.. &lt;/oxy:oxy-content>
+       &lt;oxy:oxy-content>&lt;image href="../img/ex.gif">&lt;/oxy:oxy-content>
        &lt;oxy:oxy-date>2018/03/14&lt;/oxy:oxy-date>
        &lt;oxy:oxy-hour>11:38:06&lt;/oxy:oxy-hour>
        &lt;oxy:oxy-tz>+02:00&lt;/oxy:oxy-tz>
    &lt;/oxy:oxy-delete></codeblock>
+    </section>
+    <section id="section_i4q_1qw_1fb">
+      <title>Colored Highlights</title>
+      <p>To show some text as highlighted with a background color:
+        <codeblock outputclass="language-xml">  &lt;oxy:oxy-color-hl color="rgba(140,255,140,50)">Some colored text.&lt;/oxy:oxy-color-hl></codeblock></p>
     </section>
   </body>
 </topic>
