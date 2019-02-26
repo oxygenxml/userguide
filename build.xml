@@ -293,6 +293,7 @@
 				<equals arg1="${p-format}" arg2="eclipsehelp"/>
 				<equals arg1="${p-format}" arg2="htmlhelp"/>
 				<equals arg1="${p-format}" arg2="javahelp"/>
+				<equals arg1="${p-format}" arg2="pdf-css-html5"/>
 			</or>
 		</condition>
 		
@@ -313,8 +314,18 @@
 		<condition property="hhc.exe" value="C:\Program Files (x86)\HTML Help Workshop\hhc.exe">
 			<os family="windows" />
 		</condition>
-		<property name="hhc.exe" value="/home/jenkins/.wine/drive_c/Program Files (x86)/HTML Help Workshop/hhc.exe" />
+		<property name="hhc.exe" value="/home/jenkins/hhc.sh" />
 		
+		
+		<if>
+			<equals arg1="${p-format}" arg2="htmlhelp"></equals>
+			<then>
+				<property name="clean.temp">no</property>
+			</then>
+			<else>
+				<property name="clean.temp">yes</property>
+			</else>
+		</if>
 		
 		<delete dir="${p-output}" />
 		<mkdir dir="${p-output}" />
@@ -334,6 +345,7 @@
 			<arg value="--format=${p-format}" />
 			<arg value="--output=${p-output}" />
 			<arg value="--temp=${p-temp}" />
+			<arg value="--clean.temp=${clean.temp}" />
 			<arg value="--verbose" />
 			<arg value="--input=${basedir}/DITA/UserManual.ditamap" />
 			<arg value="-filter=${p-ditaval}" />
@@ -366,7 +378,7 @@
 			<!-- Relevant only for htmlhelp (CHM) -->
 			<arg value="-DHTMLHelpCompiler=${hhc.exe}" unless:blank="${htmlhelp}" />
 			
-			<!-- Relevant for CHM, EclipseHelp, JavaHelp -->
+			<!-- Relevant for CHM, EclipseHelp, JavaHelp, PDF-CSS-HTML5 -->
 			<arg value="-Dcom.oxygenxml.xhtml.linkToMediaResources=true" unless:blank="${youtubeLink}" />
 
 		</exec>
@@ -376,16 +388,20 @@
 			<then>
 				<java classname="ro.sync.util.ant.HelpIDFinder" fork="yes" dir="." failonerror="true">
 					  <classpath>
-					  	<pathelement path="${user.home}/htmlhelp/helpidfinder.jar"/>
+					  	<pathelement path="./lib/helpidfinder.jar"/>
 					  </classpath>
-			          <arg value="${p-output}"/>
+			          <arg value="${p-temp}/temp_chm_dir"/>
 			          <arg value="helpID.properties"/>
 			      </java>
 
-			      <echo>Create ${p-output}/${p-product}-HelpID.jar file</echo>
+				<move file="${p-temp}/temp_chm_dir/helpID.properties" tofile="${p-output}/helpID.properties" failonerror="true" />
+				
+				  <echo>Create ${p-output}/${p-product}-HelpID.jar file</echo>
 			      <jar basedir="${p-output}" 
 			          includes="helpID.properties" 
 			          jarfile="${p-output}/${p-product}-HelpID.jar"/>
+				
+				  <move file="${p-output}/UserManual.chm" tofile="${p-output}/${p-product}.chm" failonerror="true" />
 			</then>
 		</if>
 	  

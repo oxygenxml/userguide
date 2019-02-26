@@ -615,6 +615,20 @@
     </sch:rule>
   </sch:pattern>
   
+  <!-- There should be no markup inside a topic title -->
+  <sch:pattern>
+    <sch:rule context="topic/title/*">
+      <sch:report test="." sqf:fix="del">No elements are allowed inside topic titles</sch:report>
+      
+      <sqf:fix id="del">
+        <sqf:description>
+          <sqf:title>Unwrap element</sqf:title>
+        </sqf:description>
+        <sqf:replace select="text()"></sqf:replace>
+      </sqf:fix>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'
     - the 'linklist' must have a title
