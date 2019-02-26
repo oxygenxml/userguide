@@ -18,31 +18,43 @@
       positioning of the graphical elements or artwork. In the foreground, you can place text
       fragments using a series of <codeph>:after</codeph> pseudo elements bound to the front page
       title. </p>
-    <p>Consider the following SVG document. </p>
+    <p>To set the size to an SVG image you should specify the <xmlatt>witdth</xmlatt> and
+        <xmlatt>height</xmlatt> attributes on the <xmlelement>svg</xmlelement> root element, using
+      specified unit values: in, cm, etc. This should be enough only if all the coordinates from
+      your drawing have unit identifiers.</p>
+    <p> If in your drawing you are using unit-less coordinates like the
+      following:<codeblock outputclass="language-xml">&lt;polygon points="17.78 826.21 577.51 ....</codeblock>then
+      make sure you also specify a <xmlatt>viewBox</xmlatt> attribute on the
+        <xmlelement>svg</xmlelement> root element that defines the abstract rectangle containing the
+      drawing:</p>
+    <codeblock outputclass="language-xml">&lt;svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in" viewBox="0 0 600 850"></codeblock>
+    <p>Consider the following SVG document, see that it has the <xmlatt>width</xmlatt>,
+        <xmlatt>height</xmlatt> and <xmlatt>viewBox</xmlatt> attributes. The width and height have a
+      physical units, they are in inches. The view box is and rectangle coordinates are unit-less. </p>
     <p>
       <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-&lt;svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in">
-    &lt;desc>A gradient as big as a page.&lt;/desc>
-    &lt;defs>
-        &lt;linearGradient id="lc"
-            x1="0%" y1="0%"
-            x2="0%" y2="100%"
-            spreadMethod="pad">
-            &lt;stop offset="0%"   stop-color="#00DD00" stop-opacity="1"/>
-            &lt;stop offset="100%" stop-color="#00AA00" stop-opacity="1"/>
-        &lt;/linearGradient>
-    &lt;/defs>    
-    &lt;rect x="0" y="0" width="100%" height="100%" rx="10" ry="10"
-        style="fill:url(#lc);
-        stroke: #005000;
-        stroke-width: 3;"/>
-    &lt;text x="45%" y="95%"  color="#FFFFAA" font-size="0.7cm"> Sample &lt;/text>
+&lt;svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in" viewBox="0 0 110 110">
+  &lt;desc>A gradient as big as a page.&lt;/desc>
+  &lt;defs>
+    &lt;linearGradient id="lc"
+      x1="0%" y1="0%"
+      x2="0%" y2="100%"
+      spreadMethod="pad">
+      &lt;stop offset="0%"   stop-color="#00DD00" stop-opacity="1"/>
+      &lt;stop offset="100%" stop-color="#00AA00" stop-opacity="1"/>
+    &lt;/linearGradient>
+  &lt;/defs>    
+  &lt;rect x="5" y="5" width="100" height="100" rx="10" ry="10"
+    style="fill:url(#lc);
+    stroke: #005000;
+    stroke-width: 3;"/>
+  &lt;text x="33%" y="50%"  color="#FFFFAA"> Sample &lt;/text>
 &lt;/svg></codeblock>
     </p>
-    <p>It shows a gradient, but it can be anything, and the "Sample" text. It is as large as a
-      US-LETTER page and can be used in a publication using this page size.</p>
+    <p>This example shows a gradient. It is as large as a US-LETTER page and can be used in a
+      publication using this page size.</p>
     <note conkeyref="reusables-dcpp/note_pqy_hdn_vcb"/>
     <p>In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, add the
       following:</p>
