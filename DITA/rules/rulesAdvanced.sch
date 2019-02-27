@@ -618,7 +618,7 @@
   <!-- There should be no markup inside a topic title -->
   <sch:pattern>
     <sch:rule context="topic/title/*">
-      <sch:report test="." sqf:fix="del">No elements are allowed inside topic titles</sch:report>
+      <sch:report test=". and name(.) != 'ph'" sqf:fix="del">No elements other than "ph" are allowed inside topic titles</sch:report>
       
       <sqf:fix id="del">
         <sqf:description>
