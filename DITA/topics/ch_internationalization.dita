@@ -12,23 +12,24 @@
   <topic id="ch_choosing_the_fonts">
     <title>Choosing the Fonts</title>
     <body>
-      <p>An important step in making sure your document is published properly in different scripts
+      <p>An important step in making sure your document is published properly in multiple scripts
         (languages) is choosing a font that covers the entire set of characters from that script
         (language).</p>
       <p>However, you can specify a series of font families (using the CSS
-          <codeph>font-family</codeph> property) that are used as fall-backs. Once a word cannot be
-        rendered using the first specified font, the next font family is tried. The following
-        example uses some common fonts available on Windows to make a CSS stylesheet capable of
-        properly displaying a large number of languages, from all European to Asian languages:</p>
+          <codeph>font-family</codeph> property) that are used as fall-backs. If a word cannot be
+        rendered using the first specified font, the processor tries the next font family, and so
+        on. The following example uses some common fonts available in Windows to make a CSS
+        stylesheet capable of properly displaying a large number of languages, from all European to
+        Asian languages:</p>
       <codeblock outputclass="language-css">* {
 	font-family: Calibri, SimSun, "Malgun Gothic";	
 }</codeblock>
       <p>Assigning a font for all the elements, and not relying on <xref
           href="ch_fonts.dita#ch_fonts">basic fonts</xref>, makes the document <xref
           href="ch_accessibility.dita">accessible</xref>.<note>If your CSS does not assign a font to
-          a part of your document, then the following sequence of fonts are used: Serif, Times,
-          Times New Roman, Symbol, MingLiU, MS Mincho, Arial Unicode MS. This combination covers a
-          wide character range, but might be different from what you need.</note></p>
+          a part of your document, then the following sequence of fonts is used: Serif, Times, Times
+          New Roman, Symbol, MingLiU, MS Mincho, Arial Unicode MS. This combination covers a wide
+          character range, but might be different from what you need.</note></p>
     </body>
   </topic>
   <topic id="ch_suport_for_right_to_left_languages">
@@ -41,9 +42,9 @@
       </metadata>
     </prolog>
     <body>
-      <p>The Unicode BIDI algorithm is applied automatically. For best result in HTML, make sure you
-        mark the right-to-left content, or the left-to-right content embedded in right-to-left, with
-        proper direction attributes:</p>
+      <p>The Unicode BIDI algorithm is applied automatically. For best results in HTML, make sure
+        you mark the right-to-left content, or the left-to-right content embedded in right-to-left,
+        with proper direction attributes:</p>
       <codeblock outputclass="language-xml">&lt;p dir='rtl'>SOME ARABIC TEXT &lt;p dir='ltr'>Some latin words.&lt;/p>.&lt;/p></codeblock>
       <p>For arbitrary XML, use the <codeph>unicode-bidi</codeph> and <codeph>direction</codeph> CSS
         properties:</p>
@@ -54,7 +55,7 @@
     unicode-bidi: embed; 
 } </codeblock>
       <note>There are built-in rules in <ph keyref="product"/> that automatically match the
-          <codeph>dir</codeph> attribute in any XML vocabulary, with the same semantic as for HTML.
+          <codeph>dir</codeph> attribute in any XML vocabulary with the same semantic as for HTML.
         The accepted values are: <b>ltr</b>, <b>rtl</b>, <b>auto</b>. If you use other attribute
         names or other values for this attribute, you should add CSS rules similar to the one
         above.</note>
@@ -68,8 +69,7 @@
       <p>Suppose it is placed in a <codeph>div</codeph> with the default <codeph>ltr</codeph>
         direction. The orange line is painted in its left border. But if it is placed in a
           <codeph>div</codeph> with the <codeph>rtl</codeph> direction, the orange line will be
-        painted in its right border because that is where the text begins. In a sense, "left"
-        becomes "start".</p>
+        painted in its right border because that is where the text begins.</p>
       <note>To disable this behavior, you may use the <xref
           href="ch_command_line_interface.dita#ch_command_line_interface/no-rtl-mirroring"/>
         command-line parameter.</note>
@@ -101,8 +101,8 @@
       </metadata>
     </prolog>
     <body>
-      <p>When developing a CSS that will apply to output localized to a number of countries, you
-        must consider changing the static text (CSS generated) depending on the language. </p>
+      <p>When developing a CSS that will apply to output localized for multiple languages, you
+        should consider changing the static text (CSS generated) depending on the language. </p>
       <note>Your document must use the <codeph>xml:lang</codeph> or <codeph>lang</codeph> attributes
         to specify the content language, ideally on the root element. The value must be specified
         using a language identifier (such as "en", "en-US", "en-CA", "fr", "fr-CA").</note>
@@ -114,19 +114,21 @@
 ... 
 &lt;/dif></codeblock>
       <p>The CSS may be written starting with a default rule that will be used when the content has
-        other language than the ones that are expected. This rules will also be used for English
-        content:</p>
+        languages other than the ones that are expected (for example, in English):</p>
       <codeblock outputclass="language-css">div.chp > h2:before{
     content: "Chapter " counter(chp);
 }</codeblock>
-      <p>Next, write rules for each of the languages:</p>
+      <p>Next, write rules for each of the specific languages:</p>
       <codeblock outputclass="language-css">div.chp > h2:lang(de):before{
     content: "Kapitel " counter(chp);
 }
 div.chp > h2:lang(fr):before{
     content: "Chapitre " counter(chp);
 }</codeblock>
-      <p>A good practice is to keep all the static text for a specific language in a separate CSS. </p>
+      <p>
+        <note type="tip">A good practice is to keep all the static text for a specific language in a
+          separate CSS.</note>
+      </p>
       <p>To make the maintenance easier, you can separate the strings from the counter value by
         using one of the advanced features of <ph keyref="product"/> (the <codeph>:before</codeph>
         and <codeph>:after</codeph> pseudo elements) with <xref
@@ -145,7 +147,7 @@ div.chp > h2:before(1){
 div.chp > h2:lang(fr):before(2){
     content: "Chapitre ";
 }</codeblock>
-      <note>The multiple-level pseudo elements is a non standard feature, and might not work if you
+      <note>The multiple-level pseudo elements are non-standard features, and might not work if you
         switch to another processor.</note>
     </body>
   </topic>
