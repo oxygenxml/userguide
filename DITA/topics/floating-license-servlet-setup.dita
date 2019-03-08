@@ -87,17 +87,20 @@
           <li>Download the HTTP license server <uicontrol>Web Archive</uicontrol> (<b>.war</b>) from
             the <xref href="https://www.oxygenxml.com/license_server.html" format="html"
               scope="external">HTTP License Server website</xref>. </li>
-          <li>Configure two Tomcat users:<ol>
+          <li>Configure three Tomcat user roles:<ol>
               <li>One user with the role <i>user</i>, used by an <ph keyref="product"/> application
                 to connect to the license server. In the subsequent example, this user name is
                   <b>John</b>.</li>
-              <li>Another user with the roles <i>admin</i> and <i>manager-gui</i>, used for
-                accessing the HTTP License Server administrative interface and the Tomcat management
-                interface. In the subsequent example, this user name is <b>Mary</b>.</li>
+              <li>Another user with the role <i>admin</i>, used for accessing the HTTP License
+                Server administrative interface and the Tomcat management interface. In the
+                subsequent example, this user name is <b>Mary</b>.</li>
+              <li>Another user with the role <i>manager</i>, used for accessing the HTTP License
+                Server main page and the statistics pages. In the subsequent example, this user name
+                is <b>Henry</b>.</li>
             </ol>A typical way to achieve this is to edit the <filepath>tomcat-users.xml</filepath>
             file from your Tomcat installation (if using a Tomcat <b>zip</b>/<b>tar.gz</b>
             distribution, by default this configuration file is found in the
-              <filepath>/TomcatInstallFolder/conf/</filepath> directory). After adding the two
+              <filepath>/TomcatInstallFolder/conf/</filepath> directory). After adding the three
             users, the configuration file might look like
             this:<codeblock outputclass="language-xml">&lt;tomcat-users xmlns="http://tomcat.apache.org/xml"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -106,13 +109,14 @@
   &lt;!-- ... other user and role definitions ... -->
   &lt;role rolename="user"/>
   &lt;role rolename="admin"/>
-  &lt;role rolename="manager-gui"/>
+  &lt;role rolename="manager"/>
   &lt;user username="John" password="user_pass" roles="user"/>
-  &lt;user username="Mary" password="admin_pass" roles="admin,manager-gui"/>
+  &lt;user username="Mary" password="admin_pass" roles="admin"/>
+  &lt;user username="Henry" password="admin_pass" roles="manager"/>
 &lt;/tomcat-users></codeblock></li>
           <li>Go to the Tomcat Web Application Manager page and log-in with the user you configured
-            with the <i>manager-gui</i> role (<b>Mary</b> in the example above). In the
-              <uicontrol>WAR file to deploy</uicontrol> section, choose the WAR file and click the
+            with the <i>admin</i> role (<b>Mary</b> in the example above). In the <uicontrol>WAR
+              file to deploy</uicontrol> section, choose the WAR file and click the
               <uicontrol>Deploy</uicontrol> button. The <codeph>oXygenLicenseServlet</codeph>
             application is now up and running, but the license key is not yet registered. </li>
           <li>Go to the HTTP License Server administration page by clicking the
@@ -144,20 +148,6 @@
             configuration file. </li>
         </ol>
       </p>
-    </section>
-    <section id="manual_activation_proc">
-      <title>Manual License Activation Procedure</title>
-      <ol id="ol_lsk_bb5_wr">
-        <li>Access the HTTP license server by following the link provided by the Tomcat Web
-          Application Manager page. You will be taken to the license registration page.</li>
-        <li>Copy the license server activation code.</li>
-        <li>Go to the activation page at
-          <filepath>http://www.oxygenxml.com/activation/</filepath>.</li>
-        <li>Paste the license server activation code and license key in the displayed form, then
-          click <uicontrol>Register/Activate</uicontrol>.</li>
-        <li>The activated license key is displayed on-screen. Copy the activated license key and
-          paste it in the license registration page of the HTTP server.</li>
-      </ol>
     </section>
     <section id="automatic_subscription_renewal" product="webauthor waCustom">
       <title>Subscription Renewal</title>
