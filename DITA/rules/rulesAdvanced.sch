@@ -617,7 +617,11 @@
   
   <!-- There should be no markup inside a topic title -->
   <sch:pattern>
-    <sch:rule context="topic/title/*">
+    <sch:rule context="topic/title/* 
+                    | task/title/* 
+                    | troubleshooting/title/* 
+                    | concept/title/* 
+                    | glossentry/title/*">
       <sch:report test=". and name(.) != 'ph'" sqf:fix="del">No elements other than "ph" are allowed inside topic titles</sch:report>
       
       <sqf:fix id="del">
@@ -628,6 +632,7 @@
       </sqf:fix>
     </sch:rule>
   </sch:pattern>
+  
   
   <!-- Rules for 'related-links':
     - we want the 'related-links' to contain only one 'linklist'
