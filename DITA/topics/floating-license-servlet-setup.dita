@@ -81,14 +81,15 @@
       <title>Installation Steps for the HTTP License Server WAR Distribution</title>
       <p>
         <ol>
-          <li>Make sure that you Java Servlet Container installed on the machine you have selected
-            to be the license server. We recommend  Apache Tomcat 5.5 or higher (available from
-              <xref href="http://tomcat.apache.org" format="org" scope="external"/>).<note>By
-              default, the license server stores the statistics database and other data in the Java
-              Servlet Container's temporary directory. If you are not using Apache Tomcat this
-              directory may be deleted when the server is stopped or restarted. <p>You can set the
-                  <codeph>oxygen.license.server.work.dir</codeph> system property to specify a
-                different path for the directory where the database is stored.</p></note></li>
+          <li>Make sure that you have Java Servlet Container installed on the machine you have
+            selected to be the license server. Apache Tomcat 5.5 or higher is recommended (available
+            from <xref href="http://tomcat.apache.org" format="org" scope="external"/>).<note
+              type="important">By default, the license server stores the statistics database and
+              other data in the Java Servlet Container's temporary directory. If you are not using
+              Apache Tomcat, this directory may be deleted when the server is stopped or restarted.
+              However, you can set the <codeph>oxygen.license.server.work.dir</codeph> system
+              property to specify a different path for the directory where the database is
+              stored.</note></li>
           <li>Download the HTTP license server <uicontrol>Web Archive</uicontrol> (<b>.war</b>) from
             the <xref href="https://www.oxygenxml.com/license_server.html" format="html"
               scope="external">HTTP License Server website</xref>. </li>
@@ -103,7 +104,7 @@
               <li>Another user with the role <i>manager</i>, used for accessing the HTTP License
                 Server main page and the statistics pages. In the subsequent example, this user name
                 is <b>Henry</b>.</li>
-            </ol>For <b>Apache Tomcat</b>, a typical way to achieve this is to edit the
+            </ol>For example, in Apache Tomcat, a typical way to achieve this is to edit the
               <filepath>tomcat-users.xml</filepath> file from your Tomcat installation (if using a
             Tomcat <b>zip</b>/<b>tar.gz</b> distribution, by default this configuration file is
             found in the <filepath>/TomcatInstallFolder/conf/</filepath> directory). After adding
@@ -120,40 +121,61 @@
   &lt;user username="Mary" password="admin_pass" roles="admin"/>
   &lt;user username="Henry" password="admin_pass" roles="manager"/>
 &lt;/tomcat-users></codeblock></li>
-          <li>Deploy the WAR file. <p>In Apache Tomcat go to the Web Application Manager page and
-              log-in with the user you configured with the <i>admin</i> role (<b>Mary</b> in the
-              example above). In the <uicontrol>WAR file to deploy</uicontrol> section, choose the
-              WAR file and click the <uicontrol>Deploy</uicontrol> button. The
+          <li>Deploy the WAR file. <p>For example, in Apache Tomcat, go to the Web Application
+              Manager page and log in with the user you configured with the <i>admin</i> role
+                (<b>Mary</b> in the example above). In the <uicontrol>WAR file to deploy</uicontrol>
+              section, choose the WAR file and click the <uicontrol>Deploy</uicontrol> button. The
                 <codeph>oXygenLicenseServlet</codeph> application is now up and running, but the
               license key is not yet registered. </p></li>
           <li>Go to the HTTP License Server administration page. By default, the address of this
             page is <codeph>http://&lt;server-address>/oXygenLicenseServlet</codeph>. In Apache
-            Tomcat you can open this page also by clicking the <codeph>oXygenLicenseServlet</codeph>
-            link in the manager page. <p>You will need to authenticate with the user configured with
-              the <codeph>admin</codeph> role (Mary in the example above).</p></li>
+            Tomcat, you can also open this page by clicking the
+              <codeph>oXygenLicenseServlet</codeph> link in the manager page. <p>You will need to
+              authenticate with the user configured with the <codeph>admin</codeph> role (Mary in
+              the example above).</p></li>
           <li id="activate-li"><b>Activate the license key</b>. This process involves binding your
             license key to your license server deployment. The browser used in the activation
-            process needs to have Internet access. Once the process is completed you cannot activate
-            the license on another license server. Follow these steps to activate the license:<ol
-              id="substeps_sjt_w54_5r">
-              <li>Paste your license key into the form and press
-                  <uicontrol>Register/Activate</uicontrol>. <p><b>Result:</b> You will be redirected
-                  to an online form hosted on the <ph keyref="product"/> website. This form is
-                  pre-filled with an activation code that uniquely identifies your license server
-                  deployment, and your license key.</p></li>
-              <li>Press <uicontrol>Register/Activate</uicontrol>.<p>If the activation process is
-                  successfully completed, your license server is running. Follow the on-screen
-                  instructions to configure the <ph keyref="product"/> client applications.</p></li>
-            </ol></li>
+            process needs to have Internet access.<note>If you cannot access the internet during the
+              deployment, you can <xref
+                href="#floating-license-servlet-setup/manual_license_activation_procedure_for_users_who"
+                format="dita">manually activate the license key</xref>.</note><p>Once the process is
+              completed you cannot activate the license on another license server. Follow these
+              steps to activate the license:<ol id="substeps_sjt_w54_5r">
+                <li>Paste your license key into the form and press
+                    <uicontrol>Register/Activate</uicontrol>. <p><b>Result:</b> You will be
+                    redirected to an online form hosted on the <ph keyref="product"/> website. This
+                    form is pre-filled with an activation code that uniquely identifies your license
+                    server deployment, and your license key.</p></li>
+                <li>Press <uicontrol>Register/Activate</uicontrol>.<p>If the activation process is
+                    successfully completed, your license server is running. Follow the on-screen
+                    instructions to configure the <ph keyref="product"/> client
+                  applications.</p></li>
+              </ol></p></li>
           <li>The application's log file location is specified by the
               <codeph>log4j.appender.R2.File</codeph> property from the
-              <filepath>WEB-INF/lib/log4j.properties</filepath> configuration file. <p>In Apache
-              Tomcat, the configuration file is located at
+              <filepath>WEB-INF/lib/log4j.properties</filepath> configuration file. <p>For example,
+              in Apache Tomcat, the configuration file is located at
                 <filepath>TomcatInstallDir/webapps/oXygenLicenseServlet/WEB-INF/lib/log4j.properties</filepath>
               and the default log file location is
                 <filepath>TomcatInstallDir/logs/oxygenLicenseServlet.log</filepath>.</p></li>
         </ol>
       </p>
+    </section>
+    <section id="manual_license_activation_procedure_for_users_who">
+      <title>Manual License Activation Procedure (For Users Whose License Server is Offline)</title>
+      <p>If your license server is not connected to the internet, and hence the license cannot be
+        activated automatically during the installation, you can manually activate the license by
+        following these steps:<ol>
+          <li>Access the HTTP license server management page in a web browser.</li>
+          <li>Copy the license server machine signature code.</li>
+          <li>Go to the activation page at: <xref href="http://www.oxygenxml.com/activation/"
+              format="html" scope="external"/>.</li>
+          <li>Enter or paste the license server machine signature code and the license key, then
+            click <uicontrol>Activate</uicontrol>.<p><b>Step Result:</b> The activated license key
+              is displayed on-screen.</p></li>
+          <li>Copy the activated license key and paste it in the license registration page of the
+            HTTP server.</li>
+        </ol></p>
     </section>
     <section id="automatic_subscription_renewal" product="webauthor waCustom">
       <title>Subscription Renewal</title>
