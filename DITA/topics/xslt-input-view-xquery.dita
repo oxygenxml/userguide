@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="xslt-input-view-xquery">
+  <title>XQuery Input View</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>XQuery<indexterm>Input view</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The structure of the source documents of an edited XQuery is displayed in a tree form in a
+      view called the <uicontrol>XQuery Input</uicontrol> view. <ph
+        conkeyref="reusables-user-guide/reopen-view"/> The tree nodes represent the elements of the
+      documents.</p>
+    <p>You can use the <uicontrol>XQuery Input</uicontrol> view to drag and drop a node into the
+      editing area to quickly insert XQuery expressions.</p>
+    <p>
+      <fig id="figure-xquery-input-view-oxygen" product="editor developer">
+        <title>XQuery Input View</title>
+        <image href="../img/sa_xquery_input_view.png"/>
+      </fig>
+    </p>
+    <p>
+      <fig id="figure-xquery-input-view-oxygenEclipse" product="editorEclipse developerEclipse">
+        <title>XQuery Input View</title>
+        <image href="../img/ec_xquery_input_view.png"/>
+      </fig>
+    </p>
+    <p><b><u>Example</u>:</b></p>
+    <p>For the following XML
+      documents:<codeblock outputclass="language-xml">
+                    &lt;movies&gt;
+                    &lt;movie id="1"&gt;
+                    &lt;title&gt;The Green Mile&lt;/title&gt;
+                    &lt;year&gt;1999&lt;/year&gt;
+                    &lt;/movie&gt;
+                    &lt;movie id="2"&gt;
+                    &lt;title&gt;Taxi Driver&lt;/title&gt;
+                    &lt;year&gt;1976&lt;/year&gt;
+                    &lt;/movie&gt;
+                    &lt;/movies&gt;</codeblock><codeblock outputclass="language-xml">
+                    &lt;reviews&gt;
+                    &lt;review id="100" movie-id="1"&gt;
+                    &lt;rating&gt;5&lt;/rating&gt;
+                    &lt;comment&gt;It is made after a great Stephen King book.
+                    &lt;/comment&gt;
+                    &lt;author&gt;Paul&lt;/author&gt;
+                    &lt;/review&gt;
+                    &lt;review id="101" movie-id="1"&gt;
+                    &lt;rating&gt;3&lt;/rating&gt;
+                    &lt;comment&gt;Tom Hanks does a really nice acting.&lt;/comment&gt;
+                    &lt;author&gt;Beatrice&lt;/author&gt;
+                    &lt;/review&gt;
+                    &lt;review id="104" movie-id="2"&gt;
+                    &lt;rating&gt;4&lt;/rating&gt;
+                    &lt;comment&gt;Robert De Niro is my favorite actor.&lt;/comment&gt;
+                    &lt;author&gt;Maria&lt;/author&gt;
+                    &lt;/review&gt;    
+                    &lt;/reviews&gt;</codeblock></p>
+    <p>and the following
+      XQuery:<codeblock outputclass="language-xml">                    let $review := doc("reviews.xml")
+                    for $movie in doc("movies.xml")/movies/movie
+                    let $movie-id := $movie/@id
+                    return
+                    &lt;movie id="{$movie/@id}"&gt;
+                    {$movie/title}
+                    {$movie/year}
+                    &lt;maxRating&gt;
+                    {
+                    
+                    }
+                    &lt;/maxRating&gt;
+                    &lt;/movie&gt;</codeblock></p>
+    <p>If you drag the <b>review</b> element and drop it between the braces, the following pop-up
+      menu is displayed:</p>
+    <p><image href="../img/sa_xquery_input_drag_popup_menu.png"/></p>
+    <p>Select <uicontrol>FLWOR review</uicontrol>, the resulting document will look like this:</p>
+    <p><image href="../img/ec_xquery_input_drop_result_doc.png"/></p>
+  </body>
+</topic>
