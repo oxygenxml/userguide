@@ -51,6 +51,60 @@
         <image href="../img/convert-xml-to-json.png" id="image_pgg_nkf_jd"/>
       </fig>
     </p>
+    <section id="limitations">
+      <title>Conversion Details</title>
+      <p>If any elements contain attributes in the XML document, the attributes are converted to
+        properties in the converted JSON document. If the XML document contains more than one
+        element with the same name, they will be converted into an array of object in the converted
+        JSON document.</p>
+      <p>For example, the following XML
+        document:<codeblock outputclass="language-xml">&lt;personnel>
+  &lt;person id="person.one">
+    &lt;name>Boss&lt;/name>
+  &lt;/person>
+  &lt;person id="person.two">
+    &lt;name>Worker&lt;/name>
+  &lt;/person>
+&lt;/personnel></codeblock></p>
+      <p>it is converted
+        to:<codeblock outputclass="language-json">{
+  "personnel": {
+    "person": [
+      {
+        "id": "person.one",
+        "name": "Boss"
+      },
+      {
+        "id": "person.two",
+        "name": "Worker"
+      }
+    ]
+  }
+}</codeblock></p>
+      <p>If the XML document contains elements with mixed content (text plus elements), the
+        converted JSON document will contain a <codeph>content</codeph> property with its value set
+        as the text
+        content.<codeblock outputclass="language-xml">&lt;person>
+  &lt;name>Boss &lt;i>One&lt;/i>&lt;/name>
+&lt;/person></codeblock></p>
+      <p>is converted
+        to:<codeblock outputclass="language-json">{
+  "person": {
+    "name": {
+      "content": "Boss",
+      "i": "One"
+    }
+  }
+}</codeblock></p>
+      <p>If the XML document contains element names that contains hexadecimal codes (for example, if
+        they were escaped during a <xref
+          href="convert-JSON-to-XML.dita#convert-JSON-to-XML/limitations">JSON to XML
+          conversion</xref>), it will be converted to the normal character value in the converted
+        JSON document.</p>
+      <codeblock outputclass="language-xml">&lt;_X24_id>personnel-id&lt;/_X24_id></codeblock>
+      <p>is converted
+        to:<codeblock outputclass="language-json">{"$id": "personnel-id"}</codeblock></p>
+    </section>
     <section id="online_xml_to_json_converter">
       <title>Online XML to JSON Converter</title>
       <p><b>For a simple ONLINE tool for converting a single XML file to JSON, or vice versa, go to:
@@ -58,4 +112,10 @@
             scope="external"/></b>.</p>
     </section>
   </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="convert-JSON-to-XML.dita"/>
+    </linklist>
+  </related-links>
 </topic>
