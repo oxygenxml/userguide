@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="dita-embedding-latex-equations">
+  <title>Adding LaTeX Equations in DITA Topics</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>DITA<indexterm>Topics<indexterm>LaTeX
+          equations</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>LaTeX is a high-quality typesetting system that includes features designed for the production
+      of technical and scientific documentation. LaTeX can also be used to express mathematical
+      formulas in a textual format. By default, web browsers and PDF readers do not have support to
+      show mathematical equations written in LaTeX, but there are open-source projects that can read
+      LaTeX and convert it to other image types.</p>
+    <p>Adding support for writing LaTeX equations in a DITA topic implies three stages:<ol
+        id="ul_kcm_jw1_chb">
+        <li>Find a way to write the equation in the DITA XML content. You can either create a DITA
+          DTD specialization and add a new element (for example, called
+            <xmlelement>latex</xmlelement> and it extends the DITA <xmlelement>foreign</xmlelement>
+          element). Alternatively, you can directly use the DITA <xmlelement>foreign</xmlelement>
+          element with a specific <xmlatt>outputclass</xmlatt> attribute value:
+          <codeblock outputclass="language-xml">&lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+&lt;topic id="testEquation">
+  &lt;title>Test equation&lt;/title>
+  &lt;body>
+    &lt;p>&lt;foreign outputclass="embed-latex">L' = {L}{\sqrt{1-\frac{v^2}{c^2}}}&lt;/foreign>&lt;/p>
+  &lt;/body>
+&lt;/topic></codeblock></li>
+        <li> If you want <ph keyref="product"/> to properly present the LaTeX equation when editing
+          in the <b>Author</b> visual mode, you need a plugin that converts the equation content to
+          an image. There is a sample plugin that does that here: <xref
+            href="https://github.com/oxygenxml/wsaccess-javascript-sample-plugins/tree/master/latex-images-support"
+            format="html" scope="external"/>. You can download and copy the plugin folder
+            <b>latex-images-support</b> to the <ph keyref="product"/>
+          <b>plugins</b> folder, then restart <ph keyref="product"/>.</li>
+        <li>The final stage would be to publish the content to HTML-based or PDF output. The
+          following DITA Open Toolkit plugin automatically converts LaTeX images to SVG when
+          publishing: <xref href="https://github.com/oxygenxml/dita-latex" format="html"
+            scope="external"/>.</li>
+      </ol></p>
+  </body>
+</topic>
