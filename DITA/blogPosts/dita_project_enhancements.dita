@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dita_project_enhancements">
+    <title>DITA Project Enhancements</title>
+    <body>
+        <p>A DITA project file defines a set of deliverables. For each deliverable you have a
+            context containing the published DITA Map and filters. The deliverable also specifies
+            one or more transtypes, for each transtype specifying a set of parameter names and
+            values. The file format of the DITA Project can be either<xref
+                href="https://github.com/dita-ot/dita-ot/blob/develop/src/test/resources/org/dita/dost/project/simple.xml"
+                format="html" scope="external"> XML</xref> or <xref
+                href="https://github.com/dita-ot/dita-ot/blob/develop/src/test/resources/org/dita/dost/project/simple.json"
+                format="html" scope="external">JSON</xref>. So what could we do with the DITA
+            Project in Oxygen?</p>
+        <section id="section_e41_rgs_dhb">
+            <title>Publishing</title>
+            <p>In the future the DITA Open Toolkit (probably version 3.4 or 4.0) will allow
+                publishing multiple deliverables by providing such a DITA project from the command
+                line. </p>
+        </section>
+        <section id="section_t1p_tgs_dhb">
+            <title>Editing the DITA Project</title>
+            <p>We need a special framework containing a schema, custom CSS for editing the DITA
+                project in the Oxygen Author visual editing mode. We also need an ANT-based
+                transformation scenario for publishing the DITA project.</p>
+        </section>
+        <section id="section_lb3_xgs_dhb">
+            <title>Adding the DITA Project in the "Master Files" folder</title>
+            <p>Once such a DITA project is added to the "Master Files" folder Oxygen could parse it
+                and obtain a list of (root map, filter) pairs. We can use this list of root maps
+                when renaming or moving content (topics, maps, resources) in the Project view. We
+                can use the (root map, filter) pairs to allow in the DITA Maps Manager selecting
+                such a pair if somebody wants to edit a topic in such a particular context.</p>
+        </section>
+        <section id="section_nzq_13s_dhb">
+            <title>Using the DITA Project information for editing</title>
+            <p>We have a specific drop-down "Filters" button both in the DITA Maps manager view and
+                in the main editing area. The button takes effect over all the files opened in the
+                application. We also have a "Root map" combo box in the DITA Maps Manager. Again, it
+                takes effect over all the maps and topics opened in the application. The DITA
+                Project would contribute (root map, filter) pairs which could be contributed in the
+                UI. Where could we contribute them? Maybe the "Root map" combo box could become a
+                "Contexts" combo box listing either DITAVAL files or (map, filter) pairs. If we want
+                to allow for certain files people to use certain editing contexts (thus avoiding to
+                apply the editing context on a per-application wide basis) we have an architectural
+                problem, the DITA Keys resolver is more or less a singleton object, but you would
+                need sometimes multiple such keys resolvers. </p>
+        </section>
+        <section id="section_b15_qhs_dhb">
+            <title>Using the DITA Project for the "Validate and check for completeness"
+                action</title>
+            <p>Right now the "Validate and check for completeness" starts validation from a
+                particular DITA Map and has a set of DITAVAL filters which can be set. Maybe if a
+                DITA Project is opened in the main editing area, we could have a special
+                "Validation" button for it on the toolbar, validating all the DITA Maps with all the
+                filters specified inside it.</p>
+        </section>
+        <section id="section_zfv_ghs_dhb">
+            <title>DITA Project extensibility</title>
+            <p>From what I discussed with Jarno, ideally in the DITA project file we could include
+                our own XML tags from a specific namespace. In this way, for a certain deliverable
+                context we could for example also define the "reusable" content folders, the
+                "images" folders, information which could be used for information displayed in our
+                "DITA Reusable Components" view.</p>
+        </section>
+    </body>
+</topic>
