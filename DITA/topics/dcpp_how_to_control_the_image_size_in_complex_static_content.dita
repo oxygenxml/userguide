@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_control_the_image_size_in_complex_static_content">
+  <title>How to Control the Image Size in Complex Static Content</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="html5-transformation"/>
+          <indexterm>Images<indexterm>Control image size</indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="html5-transformation"/>
+          <indexterm>Images<indexterm>SControl image size</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Images<indexterm>Control image size</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>It is common to have text and images mixed together in a <codeph>:before</codeph> or
+        <codeph>:after</codeph> pseudo element. For example, for notes you may have both artwork and
+      text:</p>
+    <codeblock outputclass="language-css">*[class ~= "topic/note"]::before {
+    content: url('note.png') "Some text";
+}</codeblock>
+    <p>If you want to change the size of the image, you have two options:</p>
+    <ul id="ol_j4g_tfj_fhb">
+      <li>Use the <codeph>image-resolution</codeph> CSS property:
+        <codeblock outputclass="language-css">*[class ~= "topic/note"] {
+    image-resolution:300dpi;
+}</codeblock></li>
+      <li> Separate the image from the text and apply the width and height CSS properties only on
+        the image, using the width and height properties. You could use multiple
+          <codeph>:before</codeph> pseudo-elements for that, considering that the farthest content
+        presented before the actual content of an element is matched by the <codeph>:before</codeph>
+        with the highest number in the brackets:</li>
+    </ul>
+    <codeblock outputclass="language-css">*[class ~= "topic/note"]:before(2) {
+    content: url('note.png') ;
+    width:0.5in;
+}
+
+*[class ~= "topic/note"]:before(1) {
+    content: "Some text";
+}</codeblock>
+  </body>
+</topic>
