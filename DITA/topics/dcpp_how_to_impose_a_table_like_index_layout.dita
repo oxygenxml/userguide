@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_impose_a_table_like_index_layout">
+    <title>How to Impose a Table-like Index Layout</title>
+    <body>
+		<p>In case you need to place on the same line the index labels and links but with some extra
+			alignment constraints, you can use inline blocks to give the index a table-like
+			appearance:</p>
+		<image href="../img/dcpp_how_to_impose_a_table_like_index_layout.png" id="image_jy1_bzf_lhb"/>
+		<p>We need to place on the same line the elements having the class:<dl>
+				<dlentry>
+					<dt><codeph>index/formatted-value</codeph></dt>
+					<dd>This is the text of the index term.</dd>
+				</dlentry>
+				<dlentry>
+					<dt><codeph>index/refid</codeph></dt>
+					<dd>This element contains a list of links.</dd>
+				</dlentry>
+			</dl></p>
+		<p>We use a fixed width for the formatted value and the links container, almost half of the
+			available width. To achieve the index hierarchycal layout, we will set progressive padding to
+			the formatted value text.</p>
+		<codeblock outputclass="language-css">*[class~="index/formatted-value"],
+*[class~="index/refid"]{
+   display:inline-block;
+}
+
+*[class~="index/formatted-value"]{
+   width:45%;
+}
+*[class~="index/refid"] {
+   width:45%;
+}
+
+
+/* Hide the sequences of links that actually do not contain links. */
+*[class ~= "index/entry"] > *[class~="index/refid"]{
+	display:none;
+}
+*[class ~= "index/entry"] > *[class~="index/refid"]:has(*[class~="index/link"]){
+	display:inline-block;
+}
+
+/* Move the nesting of indexterms from margin to padding */
+*[class ~= "index/groups"] *[class ~= "index/entry"] {
+    margin-left: 0;
+}
+*[class ~= "index/groups"] 
+	*[class ~= "index/entry"] 
+	*[class~="index/formatted-value"]{
+    padding-left: 0.2em;
+}
+*[class ~= "index/groups"] 
+	*[class ~= "index/entry"] 
+	*[class ~= "index/entry"] 
+	*[class~="index/formatted-value"]{
+    padding-left: 0.4em;
+}
+*[class ~= "index/groups"] 
+	*[class ~= "index/entry"] 
+	*[class ~= "index/entry"] 
+	*[class ~= "index/entry"] 
+	*[class~="index/formatted-value"]{
+    padding-left: 0.6em;
+}
+
+/* Some styling */
+*[class~="index/formatted-value"],
+*[class~="index/refid"]{
+    padding:0.2em;
+    background-color:#EEEEEE;
+}</codeblock>
+		<p>To avoid bleeding of the indexterm label, you may need to activate hyphenation:</p>
+		<p>
+			<codeblock outputclass="language-css">*[class~="index/formatted-value"] {
+	hyphens:auto
+}</codeblock>
+		</p>
+	</body>
+	<related-links>
+		<link href="dcpp_hyphenation.dita"/>
+	</related-links>
+</topic>
