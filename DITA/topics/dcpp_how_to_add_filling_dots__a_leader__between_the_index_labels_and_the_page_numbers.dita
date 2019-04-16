@@ -18,15 +18,25 @@
     <p>In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, add the
       following CSS rule:</p>
     <p>
-      <codeblock outputclass="language-css">*[class~="index/formatted-value"],
+      <codeblock outputclass="language-css">
+*[class~="index/formatted-value"],
 *[class~="index/refid"] {
     display:inline;
 }
 
-*[class~="index/entry"] {
+
+/* Hide the sequences of links that actually do not contain links. */
+*[class~="index/group"] *[class ~= "index/entry"] > *[class~="index/refid"]{
+	display:none;
+}
+*[class~="index/group"] *[class ~= "index/entry"] > *[class~="index/refid"]:has(*[class~="index/link"]){
+	display:inline;
+}
+
+*[class~="index/group"] *[class~="index/entry"] {
     text-align:justify;
 }
-*[class~="index/entry"] *[class~="index/formatted-value"]:after {
+*[class~="index/group"] *[class ~= "index/entry"] > *[class~="index/refid"]:before{
     content:leader('.');
 }</codeblock>
     </p>
