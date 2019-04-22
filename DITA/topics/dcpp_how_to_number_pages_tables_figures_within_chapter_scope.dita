@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task id="dcpp_how_to_change_reset_the_table_numbering">
-  <title>How to Number Tables and Figures within Chapter Scope (HTML5 transformation) </title>
-  <prolog>
-    <metadata>
-      <keywords>
-        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
-            ><ph keyref="html5-transformation"/><indexterm>Tables<indexterm>Table
-              numbering</indexterm></indexterm></indexterm>
-        <indexterm product="pdf-css">Tables<indexterm>Table numbering</indexterm></indexterm>
-      </keywords>
-    </metadata>
-  </prolog>
-  <taskbody>
-  	<context><p>By default, the table titles are formatted like
-				this:<codeblock outputclass="language-ini">Table TT. Lore Ipsum Title</codeblock></p><p>Similarly,
-				the figures are formatted like:</p><p>
+<task id="dcpp_how_to_number_tables_figures_within_chapter_scope">
+	<title>How to Number Pages, Tables and Figures within Chapter Scope </title>
+	<prolog>
+		<metadata>
+			<keywords>
+				<indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+						><ph keyref="html5-transformation"/><indexterm>Tables<indexterm>Table
+							numbering</indexterm></indexterm></indexterm>
+				<indexterm product="pdf-css">Tables<indexterm>Table numbering</indexterm></indexterm>
+			</keywords>
+		</metadata>
+	</prolog>
+	<taskbody>
+		<context>
+			<p>By default, the table titles are formatted like
+				this:<codeblock outputclass="language-ini">Table TT. Lore Ipsum Title</codeblock></p>
+			<p>Similarly, the figures are formatted like:</p>
+			<p>
 				<codeblock outputclass="language-ini">Figure FF. Lore Ipsum Title</codeblock>
-			</p><p><i>TT</i> is the number of the table (table counter) that starts being counted from the
-				beginning of the publication.</p><p><i>FF</i> is the number of the figure (figure counter)
-				that starts being counted from the beginning of the publication.</p><p>One use-case is to have those two counters be incremented only within the scope of each chapter,
-				and prefixed by the number of each chapter like in the following example for tables:</p><codeblock outputclass="language-ini">1. First Chapter
+			</p>
+			<p><i>TT</i> is the number of the table (table counter) that starts being counted from the
+				beginning of the publication.</p>
+			<p><i>FF</i> is the number of the figure (figure counter) that starts being counted from the
+				beginning of the publication.</p>
+			<p>Our use-case is to have those two counters be incremented within the scope of each chapter,
+				and prefixed by the number of each chapter like in the following example for tables:</p>
+			<codeblock outputclass="language-ini">1. First Chapter
 	Table 1.1 Installation
 	Table 1.2 Prerequisites
 2. Second Chapter
 	Table 2.1 Tools
 	Table 2.2 Accessories
 3. Third Chapter
-	Table 3.1 Cleanup</codeblock><p>and
-		similarly for the figures.</p></context>
-  	<steps>
-  		<step>
+	Table 3.1 Cleanup</codeblock>
+			<p>and similarly for the figures.</p>
+		</context>
+		<steps>
+			<step>
 				<cmd>For the HTML5 based transformation, start by disabling the automatic table and figure
 					numbering. </cmd>
 				<substeps id="substeps_h32_mlw_mhb">
@@ -54,18 +61,18 @@
 					</substep>
 				</substeps>
 			</step>
-  		<step>
-				<cmd>Reset the table counter at the start of each chapter</cmd>
+			<step>
+				<cmd>Reset the counters at the start of each chapter</cmd>
 				<info>
 					<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-chapter]{
-  counter-reset:section1 tablecount figcount !important;
+  counter-reset:page 1 section1 tablecount figcount !important;
 }  				</codeblock>
 					<note>The counter-reset property is not additive, it will simply overwrite the existing
 						definitions. We need to preserve the other counter resets that come from the built-in
 						CSS, like the <codeph>section1</codeph> counter. </note>
 				</info>
 			</step>
-  		<step>
+			<step>
 				<cmd>Increment the table counter at each table, and the figure counter at each figure</cmd>
 				<info>
 					<codeblock outputclass="language-css">*[class ~= "topic/table"]{
@@ -75,8 +82,8 @@
   counter-increment: figcount;
 }</codeblock>
 				</info>
-			</step>  		
-  		<step>
+			</step>
+			<step>
 				<cmd>Use the chapter and table/figure counters in the titles.</cmd>
 				<info>
 					<codeblock outputclass="language-css">*[class ~= "topic/table"] > caption:before {
@@ -87,7 +94,7 @@
 } 				</codeblock>
 				</info>
 			</step>
-  		<step>
+			<step>
 				<cmd>Use the chapter and table/figure counters in the links.</cmd>
 				<info>
 					<codeblock outputclass="language-css">*[class ~= "topic/xref"][type="table"],
@@ -118,9 +125,6 @@
 }</codeblock></note>
 				</info>
 			</step>
-  		
-  		
-  	</steps>
- 	
-  </taskbody>
+		</steps>
+	</taskbody>
 </task>
