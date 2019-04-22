@@ -14,17 +14,57 @@
         <indexterm product="pdf-css">Front matter<indexterm>Style topics</indexterm></indexterm>
         <indexterm product="pdf-css">Back matter<indexterm>Style topics</indexterm></indexterm>
       </keywords>
+			<prodinfo>
+				<vrmlist>
+					<vrm version=""/>
+				</vrmlist>
+			</prodinfo>
     </metadata>
   </prolog>
     <body>
-        <p>Suppose you want the topics from the <term>front matter</term> and <term>back
-        matter</term> to start at the middle of the page and use a smaller fine print.</p>
-        <p>In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, add the
-      following:</p>
-        <codeblock outputclass="language-css">*[class ~= "map/map"] > *[class ~= "topic/topic"]:not([is-chapter]){
-    margin-top: 50%;
-    border-top: 5pt solid silver;
-    font-size: 0.5em;
+		<section id="section_fx2_k2y_mhb">
+			<title>Style all the topics with the same aspect</title>
+			<p>All the topics referred from the <xmlelement>frontmatter</xmlelement> and
+					<xmlelement>backmatter</xmlelement> book map elements are formatted using the
+					<codeph>matter-page</codeph> as defined in <xref
+					href="dcpp_default_page_definitions_css.dita"/>. In the merged file the back matter and
+				front matter elements are omitted, and their child topic content is matched using a CSS rule
+				like the one below:</p>
+			<codeblock outputclass="language-css">*[class ~= "map/map"] > *[class ~= "topic/topic"]:not([is-chapter]){
+  page: matter-page;
+  ...
 }</codeblock>
+		</section>
+		<section id="section_ygc_m2y_mhb">
+			<title>Style the topics depending on their role</title>
+			<p>There might be cases when you need to distinguish between different topics having different
+				roles in your publication:<ul id="ul_enm_xcy_mhb">
+					<li>preface</li>
+					<li>notice</li>
+					<li>abstract</li>
+					<li>copyright</li>
+				</ul>These are referred from the DITA map by specialized <xmlelement>topicref</xmlelement>
+				elements, with different class attribute values. </p>
+			<p>The class attribute values are then passed by the transformation process on to the
+				corresponding topic elements from the merged map content. For example, a topic that was
+				referred by a <xmlelement>preface</xmlelement> map element has now a " bookmap/preface "
+				value in its <xmlatt>topicrefclass</xmlatt> attribute:</p>
+			<codeblock outputclass="language-xml">&lt;topic 
+	class="- topic/topic " 
+	id="unique_1" 
+	topicrefclass="- map/topicref bookmap/preface " .. >
+...
+&lt;/topic></codeblock>
+			<p>This can be used to match and apply different styling, or even a different page layout:</p>
+			<codeblock outputclass="language-css">@page preface-page {
+	background-color:silver;
+	@top-center{
+		content: "Custom Preface Header";
+	}
+}
+*[class ~= "topic/topic"][@topicrefclass ~= "bookmap/preface"] {
+	page: preface-page;
+}</codeblock>
+		</section>
     </body>
 </topic>
