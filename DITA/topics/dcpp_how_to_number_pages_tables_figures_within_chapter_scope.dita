@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task id="dcpp_how_to_number_pages_tables_figures_within_chapter_scope">
-	<title>How to Number Pages, Tables and Figures within Chapter Scope </title>
-	<prolog>
-		<metadata>
-			<keywords>
-				<indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
-						><ph keyref="html5-transformation"/><indexterm>Tables<indexterm>Table
-							numbering</indexterm></indexterm></indexterm>
-				<indexterm product="pdf-css">Tables<indexterm>Table numbering</indexterm></indexterm>
-			</keywords>
-		</metadata>
-	</prolog>
-	<taskbody>
-		<context>
-			<p>By default, the table titles are formatted like
-				this:<codeblock outputclass="language-ini">Table TT. Lore Ipsum Title</codeblock></p>
-			<p>Similarly, the figures are formatted like:</p>
-			<p>
-				<codeblock outputclass="language-ini">Figure FF. Lore Ipsum Title</codeblock>
-			</p>
-			<p><i>TT</i> is the number of the table (table counter) that starts being counted from the
-				beginning of the publication.</p>
-			<p><i>FF</i> is the number of the figure (figure counter) that starts being counted from the
-				beginning of the publication.</p>
-			<p>Our use-case is to have those two counters be incremented within the scope of each chapter,
-				and prefixed by the number of each chapter like in the following example for tables:</p>
-			<codeblock outputclass="language-ini">1. First Chapter
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_number_pages_tables_figures_within_chapter_scope">
+  <title>How to Number Pages, Tables, and Figures Within Chapter Scope </title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="html5-transformation"/><indexterm>Tables<indexterm>Table
+              numbering</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css">Tables<indexterm>Table numbering</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>By default, the table titles are formatted like
+      this:<codeblock outputclass="language-ini">Table TT. Lore Ipsum Title</codeblock></p>
+    <p>Similarly, the figures are formatted like this:</p>
+    <p>
+      <codeblock outputclass="language-ini">Figure FF. Lore Ipsum Title</codeblock>
+    </p>
+    <p><i>TT</i> is the number of the table (table counter) that starts being counted from the
+      beginning of the publication.</p>
+    <p><i>FF</i> is the number of the figure (figure counter) that starts being counted from the
+      beginning of the publication.</p>
+    <p>A common use-case is to have those two counters be incremented within the scope of each
+      chapter, and prefixed by the number of each chapter like in the following example for
+      tables:</p>
+    <codeblock outputclass="language-ini">1. First Chapter
 	Table 1.1 Installation
 	Table 1.2 Prerequisites
 2. Second Chapter
@@ -34,17 +34,13 @@
 	Table 2.2 Accessories
 3. Third Chapter
 	Table 3.1 Cleanup</codeblock>
-			<p>and similarly for the figures.</p>
-		</context>
-		<steps>
-			<step>
-				<cmd>For the HTML5 based transformation, start by disabling the automatic table and figure
-					numbering. </cmd>
-				<substeps id="substeps_h32_mlw_mhb">
-					<substep>
-						<cmd>Remove the labels from the table titles.</cmd>
-						<info>In your customization
-							CSS<codeblock outputclass="language-css">.table--title-label,
+    <p>and similarly for the figures.</p>
+    <ol>
+      <li>For the HTML5 based transformation, start by disabling the automatic table and figure
+        numbering. <ol id="substeps_h32_mlw_mhb">
+          <li>Remove the labels from the table titles. <itemgroup>In your <xref
+                href="dcpp_the_customization_css.dita">customization
+              CSS</xref>:<codeblock outputclass="language-css">.table--title-label,
 .fig--title-label {
   display:none;
 }
@@ -52,52 +48,38 @@
 *[class ~= "listentry/number"],
 *[class ~= "listentry/prefix"]{
 	display:none;
-}		</codeblock></info>
-					</substep>
-					<substep>
-						<cmd>Make the links use only the title text. Set the transformation parameters:
-								<codeph>args.tablelink.style=TITLE</codeph> and
-								<codeph>args.figurelink.style=TITLE</codeph>. </cmd>
-					</substep>
-				</substeps>
-			</step>
-			<step>
-				<cmd>Reset the counters at the start of each chapter</cmd>
-				<info>
-					<codeblock outputclass="language-css">*[class ~= "topic/topic"][is-chapter]{
+}		</codeblock></itemgroup>
+          </li>
+          <li>Make the links use only the title text. Set the transformation parameters:
+              <codeph>args.tablelink.style=TITLE</codeph> and
+              <codeph>args.figurelink.style=TITLE</codeph>. </li>
+        </ol></li>
+      <li>Reset the counters at the start of each chapter <itemgroup>
+          <codeblock outputclass="language-css">*[class ~= "topic/topic"][is-chapter]{
   counter-reset:page 1 section1 tablecount figcount !important;
 }  				</codeblock>
-					<note>The counter-reset property is not additive, it will simply overwrite the existing
-						definitions. We need to preserve the other counter resets that come from the built-in
-						CSS, like the <codeph>section1</codeph> counter. </note>
-				</info>
-			</step>
-			<step>
-				<cmd>Increment the table counter at each table, and the figure counter at each figure</cmd>
-				<info>
-					<codeblock outputclass="language-css">*[class ~= "topic/table"]{
+          <note>The counter-reset property is not additive, it will simply overwrite the existing
+            definitions. You need to preserve the other counter resets that come from the built-in
+            CSS, like the <codeph>section1</codeph> counter. </note>
+        </itemgroup></li>
+      <li>Increment the table counter at each table, and the figure counter at each figure.<itemgroup>
+          <codeblock outputclass="language-css">*[class ~= "topic/table"]{
   counter-increment: tablecount;
 }  				
 *[class~="topic/fig"] {
   counter-increment: figcount;
 }</codeblock>
-				</info>
-			</step>
-			<step>
-				<cmd>Use the chapter and table/figure counters in the titles.</cmd>
-				<info>
-					<codeblock outputclass="language-css">*[class ~= "topic/table"] > caption:before {
+        </itemgroup></li>
+      <li>Use the chapter and table/figure counters in the titles. <itemgroup>
+          <codeblock outputclass="language-css">*[class ~= "topic/table"] > caption:before {
   content: "Table " counter(chapter) "-" counter(tablecount) "  ";
 } 				
 *[class ~= "topic/fig"] > figcaption:before {
   content: "Figure " counter(chapter) "-" counter(figcount) "  ";
 } 				</codeblock>
-				</info>
-			</step>
-			<step>
-				<cmd>Use the chapter and table/figure counters in the links.</cmd>
-				<info>
-					<codeblock outputclass="language-css">*[class ~= "topic/xref"][type="table"],
+        </itemgroup></li>
+      <li>Use the chapter and table/figure counters in the links. <itemgroup>
+          <codeblock outputclass="language-css">*[class ~= "topic/xref"][type="table"],
 *[class ~= "placeholder/tablelist"] *[class ~= "listentry/entry"]:before{
   content: "Table " 
   target-counter(attr(href), chapter, decimal) 
@@ -112,19 +94,18 @@
   "-" 
   target-counter(attr(href), figcount, decimal) "  ";
 }</codeblock>
-					<note>The <codeph>listentry/entry</codeph> are the entries from the DITA Bookmap
-							<xmlelement>figurelist</xmlelement> and <xmlelement>tablelist</xmlelement>
-						elements.</note>
-				</info>
-				<info>
-					<note>The labels provided by this sample CSS are not localized. You should use the
-							<codeph>:lang</codeph> selector to provide labels for other languages, if there is the
-						case.<codeblock outputclass="language-css">*[class ~= "topic/xref"][type="table"]:lang(fr) {
+          <note>The <codeph>listentry/entry</codeph> are the entries from the DITA bookmap
+              <xmlelement>figurelist</xmlelement> and <xmlelement>tablelist</xmlelement>
+            elements.</note>
+        </itemgroup><itemgroup>
+          <note>The labels provided by this sample CSS are not localized. You should use the
+              <codeph>:lang</codeph> selector to provide labels for other languages, if
+            applicable.<codeblock outputclass="language-css">*[class ~= "topic/xref"][type="table"]:lang(fr) {
   content: "Tableau " .....
   .....
 }</codeblock></note>
-				</info>
-			</step>
-		</steps>
-	</taskbody>
-</task>
+        </itemgroup>
+      </li>
+    </ol>
+  </body>
+</topic>
