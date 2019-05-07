@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_position_text_in_the_headers_and_footers">
+	<title>How to Position Text in the Headers and Footers</title>
+	<body>
+		<p>By default, the name of the publication and chapter titles are placed in the
+				<codeph>top-left</codeph> or <codeph>top-right</codeph> page margin boxes:</p>
+		<codeblock outputclass="language-css">   @page :left {
+        @top-left {
+            content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+        }
+    }
+
+    @page :right{
+        @top-right {
+            content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+        }
+    }</codeblock>
+		<p>If you want to change this, you should use the <codeph>content</codeph> CSS properties of
+			other page margin boxes, and inhibit the above ones content. For example to set the chapter
+			title in the page top left corner, you can use:</p>
+		<codeblock outputclass="language-css">   @page :left {
+        @top-left {
+            content:none;
+        }
+        @top-left-corner {
+            content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+            white-space: nowrap;	
+            text-align:left;
+        }
+    }
+
+    @page :right{
+        @top-right {
+            content: none;
+        }
+        @top-right-corner {
+            content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+            white-space: nowrap;	
+            text-align:right;
+        }
+    }</codeblock>
+		<note>The corner page margin boxes are fixed and limited as available space. We used the
+				<codeph>text-align</codeph> and <codeph>white-space</codeph> properties to make the text
+			bleed out of these boxes towards the center of the page. If you plan adding an image or
+			artwork background, you should consider the techinique described in: <xref
+				href="dcpp_how_to_simulate_the_header_and_footer_by_using_a_page_background_image.dita"
+			/>.</note>
+	</body>
+</topic>

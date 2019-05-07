@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_remove_the_chapter_number_before_the_page_number_in_index_links">
+	<title>How to Avoid Resetting The Page Counter in Chapter Scope Numbering</title>
+	<body>
+		<p>When using the <codeph>deep-chapter-scope</codeph> numbering, the page numbers are reset at
+			the start of each chapter, and the links from the index contain both the chapter number and
+			the page number.</p>
+		<p>To remove the page counter reset, copy the rule from the built-in CSS and remove the page
+			reset. It will result something similar to:</p>
+		<codeblock outputclass="language-css">*[class ~= "map/map"][p|numbering='deep-chapter-scope'] *[class ~= "topic/topic"][is-chapter]{
+  counter-reset:section1 tablecount figcount !important;
+}</codeblock>
+		<p>In addition, remove the chapter counter from the index links, as it has no meaning now, the
+			page number should be enough:</p>
+		<p>
+			<codeblock outputclass="language-css">*[class ~= "map/map"][p|numbering='deep-chapter-scope'] *[class ~= "index/groups"] *[class ~= "index/link"] {
+    content: target-counter(attr(href), page) ", ";
+}
+*[class ~= "map/map"][p|numbering='deep-chapter-scope'] *[class ~= "index/groups"] *[class ~= "index/link"]:last-child {
+    content: target-counter(attr(href), page);    
+}</codeblock>
+		</p>
+	</body>
+</topic>
