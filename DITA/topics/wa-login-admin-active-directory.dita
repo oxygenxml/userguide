@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-login-admin-active-directory">
+  <title>Using Active Directory Authentication</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Administration page<indexterm>Log in using Active
+          Directory</indexterm></indexterm>
+        <indexterm>Active Directory</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>To configure the <xref href="webapp-admin-page.dita">Web Author Administration page</xref> to
+      use authentication from an Active Directory server, you need to edit the
+        <filepath>shiro.ini</filepath> file located in the following location depending on your type
+      of distribution:</p>
+    <ul id="ul_m2n_gpw_vhb">
+      <li><b>WAR distribution</b>: <filepath>WEB-INF/shiro.ini</filepath></li>
+      <li><b>Windows/Linux/All Platforms</b>:
+          <filepath>tomcat/webapps/oxygen-xml-web-author/WEB-INF/shiro.ini</filepath></li>
+    </ul>
+    <p>Replace the line: </p>
+    <codeblock outputclass="language-javascript">usersFileRealm = ro.sync.auth.PropertiesRealmWithDefaultUsersFile </codeblock>
+    <p>with some lines like this:</p>
+    <codeblock outputclass="language-javascript">usersFileRealm = org.apache.shiro.realm.activedirectory.ActiveDirectoryRealm
+usersFileRealm.url=ldap://&lt;server-address>:389
+usersFileRealm.principalSuffix=@my-company.ro
+usersFileRealm.searchBase=CN=Users,DC=mycompany,DC=com
+usersFileRealm.groupRolesMap="CN=Web Author Admins,DC=mycompany,DC=com":"admin"
+
+usersFileRealm.systemUsername=&lt;user>
+usersFileRealm.systemPassword=***</codeblock>
+    <p>where</p>
+    <ul id="ul_n2n_gpw_vhb">
+      <li><i>principalSuffix</i> is usually the mail domain so that you do not have to enter it in
+        the login form.</li>
+      <li><i>CN=Users,DC=mycompany,DC=com</i> is a query used to search for the user.</li>
+      <li><i>CN=Web Author Admins,DC=mycompany,DC=com</i> is the group that will have access to the
+          <xref href="webapp-admin-page.dita">Web Author Administration page</xref>.</li>
+    </ul>
+    <note>The embedded license server does not support Active Directory authentication. The admin
+      user for that license server is the one configured during the installation procedure.</note>
+  </body>
+</topic>
