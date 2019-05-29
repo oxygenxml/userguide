@@ -545,12 +545,12 @@
   </sch:pattern>
   
   <!-- List items that have a paragraph as their first child are not rendered ok in WebHelp. -->
-  <sch:pattern>
+<!--  <sch:pattern>
     <sch:rule context="li">
       <sch:report test="child::node()[1][not(self::text()) or normalize-space(self::text())=''] and child::*[1][local-name() = 'p']" subject="p">
         The list item should not have a paragraph as its first child.</sch:report>
     </sch:rule>
-  </sch:pattern> 
+  </sch:pattern> -->
   
   <sch:pattern>
     <sch:rule context="text()">
