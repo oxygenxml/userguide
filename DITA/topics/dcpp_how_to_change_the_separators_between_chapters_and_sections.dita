@@ -13,9 +13,9 @@
     </metadata>
   </prolog>
     <body>
-    <p>There are a number of <codeph>strings</codeph> defined for part, chapter, and sections. Each
-      of these strings start with the " | " character as a separator. For example, in the header of
-      a page, you may find a sequence of
+    <p>There are some <codeph>strings</codeph> defined for part, chapter, and sections. Each of
+      these strings start with the " | " character as a separator. For example, in the header of a
+      page, you may find a sequence of
         strings:<codeblock outputclass="language-ini">My Publication | Introduction | Getting Started </codeblock><ol
         id="ol_ub3_s54_1db">
         <li>"My Publication" is the value of the <codeph>maptitle</codeph> string.</li>
@@ -32,17 +32,18 @@
 *[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"] {
     string-set: chaptertitle " - " counter(chapter) " - " content();
 }</codeblock>
-    <p>If you enabled the <xref href="dcpp_css_for_deep_numbering.dita"/>, then use:</p>
+    <p>If you enabled the <xref href="dcpp_numbering_types.dita"
+				>deep numbering for chapters and subsections</xref>, then use:</p>
     <codeblock outputclass="language-css">/* 
  * Alter the string sets that are shown in the header of the page.
  */
-*[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
-    string-set: parttitle " - " counter(part, upper-roman) " - " content(), chaptertitle  ""; /* Avoid propagating a past chapter title on a new part */
+*[class ~= "map/map"][p|numbering^='deep'] *[class ~= "topic/topic"][is-part] > *[class ~= "topic/title"] {
+    string-set: parttitle " - " counter(part, upper-roman) " - " content(), chaptertitle  "" ; /* Avoid propagating a past chapter title on a new part */
 }
-*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"] {
-    string-set: chaptertitle " - " counter(chapter) " - " content(), sectiontitle "";
+*[class ~= "map/map"][p|numbering^='deep'] *[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"] {
+    string-set: chaptertitle " - " counter(chapter) " - " content(), sectiontitle "" ;
 }
-*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/topic"] > *[class ~= "topic/title"] {
+*[class ~= "map/map"][p|numbering^='deep'] *[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/topic"] > *[class ~= "topic/title"] {
     string-set: sectiontitle " - " counter(chapter) "." counter(section1) " - " content();
 }</codeblock>
   </body>
