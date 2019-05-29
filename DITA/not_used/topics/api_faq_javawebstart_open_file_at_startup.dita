@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="api_faq_javawebstart_open_file_at_startup">
+  <title><?oxy_comment_start author="Steven" timestamp="20190306T081319+0200" comment="JWS is no longer used so this topic moved to not_used folder"?>Dynamically
+    Open File in <ph keyref="product"/> Distributed via JavaWebStart<?oxy_comment_end?></title>
+  <body>
+    <section id="question">
+      <title>Question</title>
+      <p>How can I dynamically open a file in an <ph keyref="product"/> distributed via JWS?</p>
+    </section>
+    <section id="answer">
+      <title>Answer</title>
+      <p>The JWS packager Ant build file that is included with <ph keyref="product"/> signs by
+        default the JNLP file (this means that a copy of it is included in the main <term>JAR</term>
+        library) in this
+        step:<codeblock outputclass="language-xml">&lt;copy file="${outputDir}/${packageName}/${productName}.jnlp" 
+          tofile="${home}/JNLP-INF/APPLICATION.JNLP"/&gt;</codeblock></p>
+      <p>Signing the JNLP file is required by newer Java versions and means that it is impossible to
+        automatically generate a JNLP file containing some dynamic arguments. The solution is to use
+        the signed JNLP template feature of Java 7, bundle inside the <term>JAR</term> library a
+        signed <filepath>APPLICATION_TEMPLATE.JNLP</filepath> instead of an
+          <filepath>APPLICATION.JNLP</filepath> with a wildcard command-line argument:
+        <codeblock outputclass="language-xml">&lt;application-desc main-class="ro.sync.jws.JwsDeployer"&gt; 
+   &lt;argument&gt;*&lt;/argument&gt;
+&lt;/application-desc&gt;</codeblock></p>
+      <p>Then you can replace the wildcard in the externally placed JNLP to the actual, dynamic,
+        command-line argument value.</p>
+      <p>A different, more complicated approach would be to have the JNLP file signed and always
+        referenced as a URL argument a location like this:
+        <codeblock outputclass="language-ini">http://path/to/server/redirectEditedURL.php</codeblock>When
+        the URL gets clicked on the client side you would also call a PHP script on the server side
+        that would update the redirect location for <codeph>redirectEditedURL.php</codeph> to point
+        to the clicked XML resource. Then the opened <ph keyref="product"/> would try to connect to
+        the redirect PHP and be redirected to open the XML.</p>
+    </section>
+  </body>
+</topic>

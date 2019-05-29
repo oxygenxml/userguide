@@ -19,6 +19,29 @@
     <p>The <codeph>target-counter</codeph> function may be used together with the
         <codeph>leader</codeph> function to create table of contents. See: <xref
         href="ch_creating_a_toc.dita"/>.</p>
+		<p>The processor supports both <codeph>target-counter</codeph> and
+				<codeph>target-counters</codeph> functions, on page or other counters associated to your
+			document elements. For example, you can use the <codeph>target-counter</codeph> to fetch the
+			number of the chapter that contains the target:</p>
+		<codeblock outputclass="language-xml">&lt;div class="chapter" id="intro">
+... For details see the chapter: &lt;a href="#install" class="number"/>.
+&lt;/div>
+&lt;div class="chapter" id="install">
+...
+&lt;/div></codeblock>
+		<p>The text should render like:</p>
+		<codeblock outputclass="language-xml">For details see the chapter 2.</codeblock>
+		<p>you can use the CSS:</p>
+		<codeblock outputclass="language-css">:root {
+   counter-reset: chapter;
+}
+div.chapter{
+   counter-increment: chapter;
+}
+a.number {
+	content: target-counter(attr(href), chapter, decimal);
+	oxy-link: attr(href);
+}</codeblock>
   </body>
   <related-links>
     <linklist>

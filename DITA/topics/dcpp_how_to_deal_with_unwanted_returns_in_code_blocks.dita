@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_deal_with_unwanted_returns_in_code_blocks">
+    <title>How to Deal with Unwanted Returns in Code Blocks</title>
+    <body>
+        <p>There are cases where the source file contains long lines of code that need to continue
+      onto the next line in the rendered PDF (to wrap visually). </p>
+		<p>When the user copies the block from the PDF reader, they get two separated lines. This means
+      that the command fails when users copy it from the PDF to the command-line terminal (because
+      it comes in as two commands). </p>
+		<p>For example, the command:</p>
+		<p>
+			<codeblock outputclass="language-bourne">$gist = ls -l * | count -n | some more </codeblock>
+		</p>
+		<p>May be rendered in the PDF on two lines:</p>
+		<codeblock outputclass="language-bourne">$gist = ls -l * | count -n 
+| some more </codeblock>
+		<p>And this is invalid when used in the terminal.</p>
+		<p>There is no CSS workaround for this, but to manually format the command line, add a line
+      continuation character like this:</p>
+		<p>
+			<codeblock outputclass="language-bourne">$gist = ls -l * | count -n \
+| some more </codeblock>
+		</p>
+		<note>For Linux/Mac OSX, the continuation character is the backslash <codeph>\</codeph>. For
+      Windows, this is the shift character <codeph>^</codeph>.</note>
+		<p>The command-line processor will now recognize that the first line is continuing on to the next
+      one.</p>
+    </body>
+</topic>
