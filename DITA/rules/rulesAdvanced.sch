@@ -497,9 +497,9 @@
     
   </sch:pattern>
   
-  <!-- msgblock, screen, pre -> codeblock -->
+  <!-- msgblock, screen -> codeblock -->
   <sch:pattern>
-    <sch:rule context="msgblock | screen | pre"> 
+    <sch:rule context="msgblock | screen"> 
       <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Use a "codeblock" element instead.        
       </sch:report>
     </sch:rule>
