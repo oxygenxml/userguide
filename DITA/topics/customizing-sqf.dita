@@ -18,30 +18,34 @@
     <p>You can define and customize Schematron <xref keyref="glossentry_quick-fix"><term>Quick
           Fixes</term></xref> directly in the current Schematron file or in a separate Schematron
       file. The Schematron <term>Quick Fixes</term> are an extension of the Schematron language and
-      they allow you to define fixes for Schematron error messages. You can refer the <term>Quick
-        Fixes</term> from the <codeph>assert</codeph> or <codeph>report</codeph> elements in the
-      values of the <codeph>sqf:fix</codeph> attributes.</p>
+      they allow you to define fixes for Schematron error messages. You can reference the
+        <term>Quick Fixes</term> using the <xmlatt>sqf:fix</xmlatt> attribute inside the
+        <xmlelement>assert</xmlelement> or <xmlelement>report</xmlelement> elements (for example:
+        <codeph>&lt;assert test="title" sqf:fix="removeComments">Remove
+        comments&lt;/assert></codeph>).</p>
       <section id="defining_a_schematron_quick_fix">
       <title>Defining a Schematron Quick Fix</title>
       <p>The basics of a Schematron <term>Quick Fix</term> is defined by an ID, name, description,
         and the operations to be executed.<ul id="ul_ydb_tlz_hr">
-          <li><b>ID</b> - Defined by the <codeph>id</codeph> attribute from the <codeph>fix</codeph>
-            element and must be unique in the current context. It is used to refer the <term>Quick
-              Fix</term> from a <codeph>report</codeph> or <codeph>assert</codeph> element.</li>
+          <li><b>ID</b> - Defined by the <xmlatt>id</xmlatt> attribute from the
+              <xmlelement>sqf:fix</xmlelement> element and must be unique in the current context. It
+            is used to refer the <term>Quick Fix</term> from a <xmlelement>report</xmlelement> or
+              <xmlelement>assert</xmlelement> element.</li>
           <li><b>Name</b> - The name of the <term>Quick Fix</term> is defined by the
-              <codeph>title</codeph> element.</li>
-          <li><b>Description</b> - Defined by the text in the paragraphs (<codeph>p</codeph>) of the
-              <codeph>description</codeph> element.</li>
+              <xmlelement>sqf:title</xmlelement> element.</li>
+          <li><b>Description</b> - Defined by the text in the paragraphs
+              (<xmlelement>sqf:p</xmlelement>) of the <xmlelement>sqf:description</xmlelement>
+            element.</li>
           <li><b>Operations</b> - The following basic types of <xref
               href="sqf-operations.dita#sqf-operations">operations (elements)</xref> are
               supported:<ul id="ul_q2q_fc1_3r">
-              <li><codeph>&lt;sqf:add&gt;</codeph> Element - To add a new node or fragment in the
+              <li><xmlelement>sqf:add</xmlelement> Element - To add a new node or fragment in the
                 document.</li>
-              <li><codeph>&lt;sqf:delete&gt;</codeph> Element - To remove a node from the
+              <li><xmlelement>sqf:delete</xmlelement> Element - To remove a node from the
                 document.</li>
-              <li><codeph>&lt;sqf:replace&gt;</codeph> Element - To replace a node with another node
+              <li><xmlelement>sqf:replace</xmlelement> Element - To replace a node with another node
                 or fragment.</li>
-              <li><codeph>&lt;sqf:stringReplace&gt;</codeph> Element - To replace text content with
+              <li><xmlelement>sqf:stringReplace</xmlelement> Element - To replace text content with
                 other text or a fragment.</li>
             </ul></li>
         </ul></p>
@@ -52,48 +56,49 @@
         </fig>
       </p>
       <p>The assertion message that generates the <term>Quick Fix</term> is added as the
-          <codeph>description</codeph> of the problem to be fixed. The <codeph>title</codeph> is
-        presented as the name of the <term>Quick Fix</term>. The content of the paragraphs
-          (<codeph>p</codeph>) within the <codeph>description</codeph> element are presented in the
-        tooltip message when the <term>Quick Fix</term> is selected. </p>
+          <xmlelement>sqf:description</xmlelement> of the problem to be fixed. The
+          <xmlelement>sqf:title</xmlelement> is presented as the name of the <term>Quick Fix</term>.
+        The content of the paragraphs (<xmlelement>sqf:p</xmlelement>) within the
+          <xmlelement>sqf:description</xmlelement> element are presented in the tooltip message when
+        the <term>Quick Fix</term> is selected. </p>
     </section>
       <section id="additional_elements_supported_in_the_schematron_q">
       <title>Additional Elements Supported in the Schematron Quick Fixes</title>
       <p>
         <dl>
           <dlentry>
-            <dt><b><codeph>&lt;sqf:user-entry></codeph></b></dt>
+            <dt><b>&lt;sqf:user-entry></b></dt>
             <dd>This element defines a value that must be set manually by the user. For more
               information, see <xref href="user-entry-sqf-operation.dita#user-entry-sqf-operation"
               />.</dd>
           </dlentry>
           <dlentry>
-            <dt><b><codeph>&lt;sqf:call-fix></codeph></b></dt>
+            <dt><b>&lt;sqf:call-fix></b></dt>
             <dd>This element calls another <term>Quick Fix</term> within a <term>Quick Fix</term>.
               The called <term>Quick Fix</term> must be defined globally or in the same Schematron
               rule as the calling <term>Quick Fix</term>. A calling <term>Quick Fix</term> adopts
               the activity elements of the called <term>Quick Fix</term> and should not include
               other activity elements. You can also specify which parameters are sent by using the
-                <codeph>&lt;sqf:with-param></codeph> child element.</dd>
+                <xmlelement>sqf:with-param</xmlelement> child element.</dd>
           </dlentry>
           <dlentry>
-            <dt><b><codeph>&lt;sqf:group></codeph></b></dt>
+            <dt><b>&lt;sqf:group></b></dt>
             <dd>Allows you to group multiple <term>Quick Fixes</term> and refer them from an
-                <codeph>assert</codeph> or <codeph>report</codeph> element.</dd>
+              <xmlelement>assert</xmlelement> or <xmlelement>report</xmlelement> element.</dd>
           </dlentry>
           <dlentry>
-            <dt><b><codeph>&lt;sqf:fixes></codeph></b></dt>
+            <dt><b>&lt;sqf:fixes></b></dt>
             <dd>Is defined globally and contains global fixes and groups of fixes.</dd>
           </dlentry>
           <dlentry>
-            <dt><b><codeph>&lt;sqf:copy-of></codeph></b></dt>
-            <dd>Used to copy the selected nodes that are specified by the <codeph>select</codeph>
+            <dt><b>&lt;sqf:copy-of></b></dt>
+            <dd>Used to copy the selected nodes that are specified by the <xmlatt>select</xmlatt>
               attribute. The element with its attribute is treated as an
-                <codeph>xsl:copy-of</codeph> with a <codeph>select</codeph> attribute, as defined in
+                <codeph>xsl:copy-of</codeph> with a <xmlatt>select</xmlatt> attribute, as defined in
               the XSLT specification.</dd>
           </dlentry>
           <dlentry>
-            <dt><b><codeph>&lt;sqf:param></codeph></b></dt>
+            <dt><b>&lt;sqf:param></b></dt>
             <dd>Defines a parameter for a <term>Quick Fix</term>. If the parameter is defined as
                 <codeph>abstract</codeph> then the <codeph>type</codeph> and default value should
               not be specified and the fix can be called from an abstract pattern that defines this
