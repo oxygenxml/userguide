@@ -28,7 +28,8 @@
 
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/li ')]">
-      <sch:report test="count(text()[normalize-space(.)!=''])>0" role="error" sqf:fix="wrapInP"> 
+      <sch:let name="paragraphs" value="count(*[substring-before(substring-after(@class, ' '), ' ')='topic/p'])"/>
+      <sch:report test="$paragraphs>0 and count(text()[normalize-space(.)!=''])>0" role="error" sqf:fix="wrapInP">
         You should wrap the text that you entered directly inside the <sch:name/> element in a "p"
         element. </sch:report>
       <sqf:fix id="wrapInP">
