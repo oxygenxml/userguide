@@ -43,16 +43,18 @@
       <p><b>Elements:</b></p>
       <p>To control the <b>elements</b> that are proposed for an element, you can use the following
         attributes for the <xmlelement>elementProposals</xmlelement> element:<ul id="ul_ghd_c55_kr">
-          <li><b>path</b> - A path within the document that matches the element that will have its
-            content completion proposals changed. For example, <codeph>"title"</codeph> matches all
-            the <xmlelement>title</xmlelement> elements in the document, while
-              <codeph>"chapter/title"</codeph> matches only the <xmlelement>title</xmlelement>
-            elements that are direct children of the <xmlelement>chapter</xmlelement> element. You
-            can use simplified forms of XPath in this attribute.<p>The XPath expressions can accept
-              multiple attribute conditions and inside each condition you can use <i>AND/OR</i>
-              boolean operators and parentheses to override the priority.</p><p>You can use one or
-              more of the following attribute conditions (default attribute values are not taken
-              into account):<ul>
+          <li>
+            <p><b>path</b> - A path within the document that matches the element that will have its
+              content completion proposals changed. For example, <codeph>"title"</codeph> matches
+              all the <xmlelement>title</xmlelement> elements in the document, while
+                <codeph>"chapter/title"</codeph> matches only the <xmlelement>title</xmlelement>
+              elements that are direct children of the <xmlelement>chapter</xmlelement> element. You
+              can use simplified forms of XPath in this attribute.</p>
+            <p>The XPath expressions can accept multiple attribute conditions and inside each
+              condition you can use <i>AND/OR</i> boolean operators and parentheses to override the
+              priority.</p>
+            <p>You can use one or more of the following attribute conditions (default attribute
+              values are not taken into account):<ul>
                 <li><i>element[@attr]</i> - Matches all instances of the specified element that
                   include the specified attribute.</li>
                 <li><i>element[not(@attr)]</i> - Matches all instances of the specified element that
@@ -62,11 +64,12 @@
                 <li><i>element[@attr != "value"]</i> - Matches all instances of the specified
                   element that include the specified attribute and its value is different than the
                   one given.</li>
-              </ul></p><p><b>Example:</b> The following are examples of how you could use multiple
-              boolean operators and parentheses inside an attribute
-              condition:</p><codeblock outputclass="language-ini">*[@a and @b or @c and @d]
-*[@a and (@b or @c) and @d]</codeblock><p>The
-              following are just examples of how simplified XPath expressions might look like:<ul>
+              </ul></p>
+            <p><b>Example:</b> The following are examples of how you could use multiple boolean
+              operators and parentheses inside an attribute condition:</p>
+            <codeblock outputclass="language-ini">*[@a and @b or @c and @d]
+*[@a and (@b or @c) and @d]</codeblock>
+            <p>The following are just examples of how simplified XPath expressions might look like:<ul>
                 <li><i>elementName</i></li>
                 <li><i>//elementName</i></li>
                 <li><i>/elementName1/elementName2/elementName3</i></li>
@@ -75,7 +78,8 @@
                       <codeph>&lt;elementProposals xmlns:db5="http://docbook.org/ns/docbook"
                       path="db5:listitem" insertElements="db5:para" /></codeph></note></li>
                 <li><i>//xs:documentation[@lang="en"]</i></li>
-              </ul></p><note>
+              </ul></p>
+            <note>
               <p>If the <xmlatt>path</xmlatt> attribute is missing, the customization will apply to
                 the proposals for all elements. You can intentionally omit this attribute and use
                   <xref href="#configure-elements-attr-cc-individually/possible-elements"
@@ -90,7 +94,8 @@
                 this:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image fig" /></codeblock></p>
               <p>Since the <xmlatt>path</xmlatt> attribute is missing, the specified element will be
                 filtered out from the proposals for the entire <term>framework</term>.</p>
-            </note></li>
+            </note>
+          </li>
           <li><b>insertElements</b> - A space-separated sequence of child element names. Each time
             the element specified in the <xmlatt>path</xmlatt> attribute is inserted into the
             document, these child elements will also be inserted in the order that they are listed.
@@ -99,34 +104,40 @@
             An empty value (<codeph>""</codeph>) means that no child elements should be
               inserted.<note>If this attribute is missing, the default required child elements will
               be inserted, as specified in the associated schema for the document.</note></li>
-          <li id="possible-elements"><b>possibleElements</b> - A space-separated list of element
-            names that will be shown in the content completion list when invoked inside an element
-            that is specified in the <xmlatt>path</xmlatt> attribute. For example, <codeph>"b i
-              codeph ph"</codeph> means that the <term>Content Completion Assistant</term> will
-            contain these four elements when invoked on the element specified in the
-              <xmlatt>path</xmlatt> attribute. The following other possible values are also supported:<ul>
-              <li><b><i>NONE</i></b> - There will be no proposals in the content completion
-                list.</li>
-              <li><b><i>ALL</i></b> - All the possible elements specified in the associated schema
-                will be presented in the content completion list. This is also the default behavior
-                if this attribute is missing.</li>
-              <li><b><i>INSERTED</i></b> - The proposals will be the same list of elements that are
-                defined in the <xmlatt>insertElements</xmlatt> attribute.</li>
-            </ul><p>When using this attribute to specify multiple elements, only use one entry with
-              the element names separated by a
-              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleElements="b i codeph ph" /></codeblock></p></li>
-          <li id="reject-elements"><b>rejectElements</b> - A space-separated list of element names
-            that will be filtered out from the list of proposals that are presented in the content
-            completion list. Each time the element specified in the <xmlatt>path</xmlatt> attribute
-            is inserted into the document, the list of proposals in the <term>Content Completion
-              Assistant</term> will include the entries that are defined in the associated schema,
-            minus the elements specified in this attribute.<p>This setting also influences
-              copy/paste and insertion behaviors. For example, if you reject the insertions of
-              images in paragraphs and you try to paste an image inside a paragraph, by default the
-              application will take your choice into account and try to insert the image in a place
-              where it is allowed.</p><p>When using this attribute to specify multiple elements,
-              only use one entry with the element names separated by a
-              space:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image fig imagemap foreign" /></codeblock></p></li>
+          <li id="possible-elements">
+            <p><b>possibleElements</b> - A space-separated list of element names that will be shown
+              in the content completion list when invoked inside an element that is specified in the
+                <xmlatt>path</xmlatt> attribute. For example, <codeph>"b i codeph ph"</codeph> means
+              that the <term>Content Completion Assistant</term> will contain these four elements
+              when invoked on the element specified in the <xmlatt>path</xmlatt> attribute. The
+              following other possible values are also supported:<ul id="ul_khb_nl3_t3b">
+                <li><b><i>NONE</i></b> - There will be no proposals in the content completion
+                  list.</li>
+                <li><b><i>ALL</i></b> - All the possible elements specified in the associated schema
+                  will be presented in the content completion list. This is also the default
+                  behavior if this attribute is missing.</li>
+                <li><b><i>INSERTED</i></b> - The proposals will be the same list of elements that
+                  are defined in the <xmlatt>insertElements</xmlatt> attribute.</li>
+              </ul></p>
+            <p>When using this attribute to specify multiple elements, only use one entry with the
+              element names separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleElements="b i codeph ph" /></codeblock></p>
+          </li>
+          <li id="reject-elements">
+            <p><b>rejectElements</b> - A space-separated list of element names that will be filtered
+              out from the list of proposals that are presented in the content completion list. Each
+              time the element specified in the <xmlatt>path</xmlatt> attribute is inserted into the
+              document, the list of proposals in the <term>Content Completion Assistant</term> will
+              include the entries that are defined in the associated schema, minus the elements
+              specified in this attribute.</p>
+            <p>This setting also influences copy/paste and insertion behaviors. For example, if you
+              reject the insertions of images in paragraphs and you try to paste an image inside a
+              paragraph, by default the application will take your choice into account and try to
+              insert the image in a place where it is allowed.</p>
+            <p>When using this attribute to specify multiple elements, only use one entry with the
+              element names separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals rejectElements="image fig imagemap foreign" /></codeblock></p>
+          </li>
         </ul></p>
       <p><b>Attributes:</b></p>
       <p>To control the <b>attributes</b> that are proposed for an element, you can use the
@@ -164,21 +175,25 @@
             this:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li">
     &lt;insertAttribute name="platform" value="test"/>
 &lt;/elementProposals></codeblock></li>
-          <li id="possible-attributes"><b>possibleAttributes</b> - A space-separated list of
-            attribute names that will be shown in the content completion list when invoked inside an
-            element that is specified in the <xmlatt>path</xmlatt> attribute.<p>When using this
-              attribute to specify multiple attributes, only use one entry with the attribute names
-              separated by a
-              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleAttributes="scope format type" /></codeblock></p></li>
-          <li id="reject-attributes"><b>rejectAttributes</b> - A space-separated list of attribute
-            names that will be filtered out from the list of proposals that are presented in the
-            content completion list. Each time the element specified in the <xmlatt>path</xmlatt>
-            attribute is inserted into the document, the list of proposals in the <term>Content
-              Completion Assistant</term> will include the entries that are defined in the
-            associated schema, minus the attributes specified in this attribute.<p>When using this
-              attribute to specify multiple attributes, only use one entry with the attribute names
-              separated by a
-              space:<codeblock outputclass="language-xml">&lt;elementProposals rejectAttributes="importance platform product" /></codeblock></p></li>
+          <li id="possible-attributes">
+            <p><b>possibleAttributes</b> - A space-separated list of attribute names that will be
+              shown in the content completion list when invoked inside an element that is specified
+              in the <xmlatt>path</xmlatt> attribute.</p>
+            <p>When using this attribute to specify multiple attributes, only use one entry with the
+              attribute names separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals possibleAttributes="scope format type" /></codeblock></p>
+          </li>
+          <li id="reject-attributes">
+            <p><b>rejectAttributes</b> - A space-separated list of attribute names that will be
+              filtered out from the list of proposals that are presented in the content completion
+              list. Each time the element specified in the <xmlatt>path</xmlatt> attribute is
+              inserted into the document, the list of proposals in the <term>Content Completion
+                Assistant</term> will include the entries that are defined in the associated schema,
+              minus the attributes specified in this attribute.</p>
+            <p>When using this attribute to specify multiple attributes, only use one entry with the
+              attribute names separated by a
+              space:<codeblock outputclass="language-xml">&lt;elementProposals rejectAttributes="importance platform product" /></codeblock></p>
+          </li>
         </ul></p>
     </section>
     <section id="other_important_notes">
@@ -215,11 +230,13 @@
       <title>Examples: Configuring the Element Proposals </title>
       <p>
         <ul>
-          <li><b>Example 1: Automatically Insert Elements</b><p>Suppose that you want to
-            automatically insert a paragraph element (<xmlelement>p</xmlelement>) whenever a DITA ordered
-            list item element (<xmlelement>ol/li</xmlelement>) is inserted, and also to not allow any
-              other element besides a paragraph inside the ordered list items.</p><p>To achieve
-              this, the configuration file should include the
+          <li>
+            <p><b>Example 1: Automatically Insert Elements</b></p>
+            <p>Suppose that you want to automatically insert a paragraph element
+                (<xmlelement>p</xmlelement>) whenever a DITA ordered list item element
+                (<xmlelement>ol/li</xmlelement>) is inserted, and also to not allow any other
+              element besides a paragraph inside the ordered list items.</p>
+            <p>To achieve this, the configuration file should include the
                 following:<codeblock outputclass="language-xml">&lt;elementProposals path="ol/li" insertElements="p"  
        possibleElements="_INSERTED_"/></codeblock><note
                 type="tip">This particular example modifies an action that inserts a list in a DITA
@@ -230,11 +247,14 @@
                 on the behavior of the toolbar or menu action. Those actions would need to be
                 configured separately if you want the result to be the same as the content
                 completion proposal. For more information, see <xref
-                  href="dg-configuring-actions-menus-toolbar.dita"/>.</note></p></li>
-          <li><b>Example 2: Insert Complex Element Structure</b><p>For a more complex example,
-              suppose that you want to insert a complex structure whenever a DITA
-            <xmlelement>prolog</xmlelement> element is inserted. </p><p>For instance, if you need to
-              insert the following structure inside <xmlelement>prolog</xmlelement>
+                  href="dg-configuring-actions-menus-toolbar.dita"/>.</note></p>
+          </li>
+          <li>
+            <p><b>Example 2: Insert Complex Element Structure</b></p>
+            <p>For a more complex example, suppose that you want to insert a complex structure
+              whenever a DITA <xmlelement>prolog</xmlelement> element is inserted. </p>
+            <p>For instance, if you need to insert the following structure inside
+                <xmlelement>prolog</xmlelement>
               elements:<codeblock outputclass="language-xml">    &lt;prolog>
       &lt;author>&lt;/author>
       &lt;metadata>
@@ -243,23 +263,27 @@
               &lt;keyword>&lt;/keyword>
           &lt;/keywords>
       &lt;/metadata>
-    &lt;/prolog></codeblock></p><p>The
-              configuration file should include the
+    &lt;/prolog></codeblock></p>
+            <p>The configuration file should include the
               following:<codeblock outputclass="language-xml">    &lt;elementProposals path="prolog" insertElements="author metadata"/>
     &lt;elementProposals path="prolog/metadata" insertElements="keywords"/>
     &lt;elementProposals path="prolog/metadata/keywords" 
-           insertElements="keyword, keyword"/></codeblock></p></li>
-          <li><b>Example 3: Limit Possible Elements</b><p>Suppose that you also want to limit the
-            proposals for the <xmlelement>keywords</xmlelement> element to only allow the user to insert
-            <xmlelement>audience</xmlelement> or <xmlelement>keyword</xmlelement> elements. The configuration
-              file should include the
+           insertElements="keyword, keyword"/></codeblock></p>
+          </li>
+          <li>
+            <p><b>Example 3: Limit Possible Elements</b></p>
+            <p>Suppose that you also want to limit the proposals for the
+                <xmlelement>keywords</xmlelement> element to only allow the user to insert
+                <xmlelement>audience</xmlelement> or <xmlelement>keyword</xmlelement> elements. The
+              configuration file should include the
               following:<codeblock outputclass="language-xml">&lt;elementProposals path="prolog/metadata" insertElements="keywords" 
-           possibleElements="audience keywords"/></codeblock></p><p>Suppose
-             that you want to simply restrict your users from inserting <xmlelement>image</xmlelement>
-             elements inside DITA list item elements (<xmlelement>li</xmlelement>), but still propose all
-              the other elements that are defined in the associated schema. The configuration file
-              should look like
-              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" rejectElements="image" /></codeblock></p></li>
+           possibleElements="audience keywords"/></codeblock></p>
+            <p>Suppose that you want to simply restrict your users from inserting
+                <xmlelement>image</xmlelement> elements inside DITA list item elements
+                (<xmlelement>li</xmlelement>), but still propose all the other elements that are
+              defined in the associated schema. The configuration file should look like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" rejectElements="image" /></codeblock></p>
+          </li>
         </ul>
       </p>
     </section>
@@ -267,21 +291,26 @@
       <title>Examples: Configuring the Attributes Proposals</title>
       <p>
         <ul>
-          <li><b>Example 1: Automatically Insert Attributes</b><p>Suppose that you want to insert an
-                <xmlatt>id</xmlatt> attribute (with an empty value) whenever a DITA list item
-            element (<xmlelement>li</xmlelement>) is inserted. The configuration file should include the
-              following:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id"/></codeblock></p></li>
-          <li><b>Example 2: Limit Possible Attributes</b><p>Suppose that you also want to limit the
-              number of choices for attributes that are presented to the user whenever a DITA list
-              item element (<xmlelement>li</xmlelement>) is inserted. The configuration file should look
-              like
+          <li>
+            <p><b>Example 1: Automatically Insert Attributes</b></p>
+            <p>Suppose that you want to insert an <xmlatt>id</xmlatt> attribute (with an empty
+              value) whenever a DITA list item element (<xmlelement>li</xmlelement>) is inserted.
+              The configuration file should include the
+              following:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id"/></codeblock></p>
+          </li>
+          <li>
+            <p><b>Example 2: Limit Possible Attributes</b></p>
+            <p>Suppose that you also want to limit the number of choices for attributes that are
+              presented to the user whenever a DITA list item element (<xmlelement>li</xmlelement>)
+              is inserted. The configuration file should look like
               this:<codeblock outputclass="language-xml">&lt;elementProposals path="li" insertAttributes="id" 
-          possibleAttributes="id product platform audience"/></codeblock></p><p>Suppose
-              that you want to simply restrict your users from inserting <xmlatt>conref</xmlatt>
-            attributes inside DITA topics (<xmlelement>topic</xmlelement> element), but still propose all
-              the other attributes that are defined in the associated schema. The configuration file
-              should look like
-              this:<codeblock outputclass="language-xml">&lt;elementProposals path="topic" rejectAttributes="conref" /></codeblock></p></li>
+          possibleAttributes="id product platform audience"/></codeblock></p>
+            <p>Suppose that you want to simply restrict your users from inserting
+                <xmlatt>conref</xmlatt> attributes inside DITA topics
+                (<xmlelement>topic</xmlelement> element), but still propose all the other attributes
+              that are defined in the associated schema. The configuration file should look like
+              this:<codeblock outputclass="language-xml">&lt;elementProposals path="topic" rejectAttributes="conref" /></codeblock></p>
+          </li>
         </ul>
       </p>
     </section>
