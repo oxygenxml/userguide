@@ -28,7 +28,7 @@
 
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/li ')]">
-      <sch:let name="paragraphs" value="count(*[substring-before(substring-after(@class, ' '), ' ')='topic/p'])"/>
+      <sch:let name="paragraphs" value="count(*[substring-before(substring-after(@class, ' '), ' ')='topic/p '])"/>
       <sch:report test="$paragraphs>0 and count(text()[normalize-space(.)!=''])>0" role="error" sqf:fix="wrapInP">
         When a "p" element exists later within the <sch:name/> element, you should also wrap the initial text content in a "p"
         element. </sch:report>
