@@ -4,7 +4,7 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   queryBinding="xslt2">
   <sch:ns uri="http://oxygenxml.com/dita/blockElements" prefix="e"/>
-  <sch:pattern id="check.note">
+  <!--<sch:pattern id="check.note">
     <sch:rule context="note" role="warning">
       <sch:let name="paragraphs" value="count(*[substring-before(substring-after(@class, ' '), ' ')='topic/p'])"/>
       <sch:let name="blockElements" value="count(*[substring-before(substring-after(@class, ' '), ' ')=document('blockElements.xml')//e:class])"/>
@@ -25,7 +25,7 @@
         &lt;note>Note: Before having...&lt;/note>. Embedding the label for an element in its text
         will limit the ways in which the element can be presented. </sch:report>
     </sch:rule>
-  </sch:pattern>
+  </sch:pattern>-->
 
   <sch:pattern>
     <sch:rule context="*[contains(@class, ' topic/li ')]">
