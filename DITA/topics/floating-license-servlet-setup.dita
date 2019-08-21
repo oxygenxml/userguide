@@ -97,23 +97,25 @@
           <li>Download the HTTP license server <uicontrol>Web Archive</uicontrol> (<b>.war</b>) from
             the <xref href="https://www.oxygenxml.com/license_server.html" format="html"
               scope="external">HTTP License Server website</xref>. </li>
-          <li>Configure three user roles in your installation of the Java Servlet Container (such as
-            Apache Tomcat):<ol>
-              <li>One user with the role <i>user</i>, used by an <ph keyref="product"/> application
-                to connect to the license server. In the subsequent example, this user name is
-                  <b>John</b>.</li>
-              <li>Another user with the role <i>admin</i>, used for accessing the HTTP License
-                Server administrative interface and the management interface. In the subsequent
-                example, this user name is <b>Mary</b>.</li>
-              <li>Another user with the role <i>manager</i>, used for accessing the HTTP License
-                Server main page and the statistics pages. In the subsequent example, this user name
-                is <b>Henry</b>.</li>
-            </ol>For example, in Apache Tomcat, a typical way to achieve this is to edit the
-              <filepath>tomcat-users.xml</filepath> file from your Tomcat installation (if using a
-            Tomcat <b>zip</b>/<b>tar.gz</b> distribution, by default this configuration file is
-            found in the <filepath>/TomcatInstallFolder/conf/</filepath> directory). After adding
-            the three users, the configuration file might look like
-            this:<codeblock outputclass="language-xml">&lt;tomcat-users xmlns="http://tomcat.apache.org/xml"
+          <li>
+            <p>Configure three user roles in your installation of the Java Servlet Container (such
+              as Apache Tomcat):<ol id="ol_asc_kb5_53b">
+                <li>One user with the role <i>user</i>, used by an <ph keyref="product"/>
+                  application to connect to the license server. In the subsequent example, this user
+                  name is <b>John</b>.</li>
+                <li>Another user with the role <i>admin</i>, used for accessing the HTTP License
+                  Server administrative interface and the management interface. In the subsequent
+                  example, this user name is <b>Mary</b>.</li>
+                <li>Another user with the role <i>manager</i>, used for accessing the HTTP License
+                  Server main page and the statistics pages. In the subsequent example, this user
+                  name is <b>Henry</b>.</li>
+              </ol></p>
+            <p>For example, in Apache Tomcat, a typical way to achieve this is to edit the
+                <filepath>tomcat-users.xml</filepath> file from your Tomcat installation (if using a
+              Tomcat <b>zip</b>/<b>tar.gz</b> distribution, by default this configuration file is
+              found in the <filepath>/TomcatInstallFolder/conf/</filepath> directory). After adding
+              the three users, the configuration file might look like
+              this:<codeblock outputclass="language-xml">&lt;tomcat-users xmlns="http://tomcat.apache.org/xml"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
               version="1.0">
@@ -124,44 +126,59 @@
   &lt;user username="John" password="user_pass" roles="user"/>
   &lt;user username="Mary" password="admin_pass" roles="admin"/>
   &lt;user username="Henry" password="admin_pass" roles="manager"/>
-&lt;/tomcat-users></codeblock></li>
-          <li>Deploy the WAR file. <p>For example, in Apache Tomcat, go to the Web Application
-              Manager page and log in with the user you configured with the <i>admin</i> role
-                (<b>Mary</b> in the example above). In the <uicontrol>WAR file to deploy</uicontrol>
-              section, choose the WAR file and click the <uicontrol>Deploy</uicontrol> button. The
+&lt;/tomcat-users></codeblock></p>
+          </li>
+          <li>
+            <p>Deploy the WAR file.</p>
+            <p>For example, in Apache Tomcat, go to the Web Application Manager page and log in with
+              the user you configured with the <i>admin</i> role (<b>Mary</b> in the example above).
+              In the <uicontrol>WAR file to deploy</uicontrol> section, choose the WAR file and
+              click the <uicontrol>Deploy</uicontrol> button. The
                 <codeph>oXygenLicenseServlet</codeph> application is now up and running, but the
-              license key is not yet registered. </p></li>
-          <li>Go to the HTTP License Server administration page. By default, the address of this
-            page is <codeph>http://&lt;server-address>/oXygenLicenseServlet</codeph>. In Apache
-            Tomcat, you can also open this page by clicking the
-              <codeph>oXygenLicenseServlet</codeph> link in the manager page. <p>You will need to
-              authenticate with the user configured with the <codeph>admin</codeph> role (Mary in
-              the example above).</p></li>
-          <li id="activate-li"><b>Activate the license key</b>. This process involves binding your
-            license key to your license server deployment. The browser used in the activation
-            process needs to have Internet access.<note>If you cannot access the internet during the
-              deployment, you can <xref
-                href="#floating-license-servlet-setup/manual_license_activation_procedure_for_users_who"
-                format="dita">manually activate the license key</xref>.</note><p>Once the process is
-              completed you cannot activate the license on another license server. Follow these
-              steps to activate the license:<ol id="substeps_sjt_w54_5r">
-                <li>Paste your license key into the form and click
-                    <uicontrol>Register/Activate</uicontrol>. <p><b>Result:</b> You will be
-                    redirected to an online form hosted on the <ph keyref="product"/> website. This
-                    form is pre-filled with an activation code that uniquely identifies your license
-                    server deployment, and your license key.</p></li>
-                <li>Click <uicontrol>Register/Activate</uicontrol>.<p>If the activation process is
-                    successfully completed, your license server is running. Follow the on-screen
-                    instructions to configure the <ph keyref="product"/> client
-                  applications.</p></li>
-              </ol></p></li>
-          <li>The application's log file location is specified by the
-              <codeph>log4j.appender.R2.File</codeph> property from the
-              <filepath>WEB-INF/lib/log4j.properties</filepath> configuration file. <p>For example,
-              in Apache Tomcat, the configuration file is located at
+              license key is not yet registered. </p>
+          </li>
+          <li>
+            <p>Go to the HTTP License Server administration page. By default, the address of this
+              page is <codeph>http://&lt;server-address>/oXygenLicenseServlet</codeph>. In Apache
+              Tomcat, you can also open this page by clicking the
+                <codeph>oXygenLicenseServlet</codeph> link in the manager page.</p>
+            <p>You will need to authenticate with the user configured with the
+                <codeph>admin</codeph> role (Mary in the example above).</p>
+          </li>
+          <li id="activate-li">
+            <p><b>Activate the license key</b>. This process involves binding your license key to
+              your license server deployment. The browser used in the activation process needs to
+              have Internet access.<note>If you cannot access the internet during the deployment,
+                you can <xref
+                  href="#floating-license-servlet-setup/manual_license_activation_procedure_for_users_who"
+                  format="dita">manually activate the license key</xref>.</note></p>
+            <p>Once the process is completed you cannot activate the license on another license
+              server. Follow these steps to activate the license:<ol id="substeps_sjt_w54_5r">
+                <li>
+                  <p>Paste your license key into the form and click
+                      <uicontrol>Register/Activate</uicontrol>.</p>
+                  <p><b>Step Result:</b> You will be redirected to an online form hosted on the <ph
+                      keyref="product"/> website. This form is pre-filled with an activation code
+                    that uniquely identifies your license server deployment, and your license
+                    key.</p>
+                </li>
+                <li>
+                  <p>Click <uicontrol>Register/Activate</uicontrol>.</p>
+                  <p>If the activation process is successfully completed, your license server is
+                    running. Follow the on-screen instructions to configure the <ph keyref="product"
+                    /> client applications.</p>
+                </li>
+              </ol></p>
+          </li>
+          <li>
+            <p>The application's log file location is specified by the
+                <codeph>log4j.appender.R2.File</codeph> property from the
+                <filepath>WEB-INF/lib/log4j.properties</filepath> configuration file.</p>
+            <p>For example, in Apache Tomcat, the configuration file is located at
                 <filepath>TomcatInstallDir/webapps/oXygenLicenseServlet/WEB-INF/lib/log4j.properties</filepath>
               and the default log file location is
-                <filepath>TomcatInstallDir/logs/oxygenLicenseServlet.log</filepath>.</p></li>
+                <filepath>TomcatInstallDir/logs/oxygenLicenseServlet.log</filepath>.</p>
+          </li>
         </ol>
       </p>
     </section>
@@ -174,9 +191,11 @@
           <li>Copy the license server machine signature code.</li>
           <li>Go to the activation page at: <xref href="http://www.oxygenxml.com/activation/"
               format="html" scope="external"/>.</li>
-          <li>Enter or paste the license server machine signature code and the license key, then
-            click <uicontrol>Activate</uicontrol>.<p><b>Step Result:</b> The activated license key
-              is displayed on-screen.</p></li>
+          <li>
+            <p>Enter or paste the license server machine signature code and the license key, then
+              click <uicontrol>Activate</uicontrol>.</p>
+            <p><b>Step Result:</b> The activated license key is displayed on-screen.</p>
+          </li>
           <li>Copy the activated license key and paste it in the license registration page of the
             HTTP server.</li>
         </ol></p>
