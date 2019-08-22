@@ -16,64 +16,70 @@
       <ol id="ol_icd_rdt_pm">
         <li>Create a folder for your <term>plugin</term> in the DITA-OT <b>plugins</b> folder
               (<filepath><term keyref="glossentry_dita_ot_dir"/>/plugins/</filepath>).</li>
-        <li>Create a <b>plugin.xml</b> file (in the same <term>plugin</term> folder) that contains
-          the extension points of the <term>plugin</term>.<note>You can easily create this file by
-            using the <uicontrol>DITA-OT Plugin</uicontrol> template that is included in <ph
-              keyref="product"/> (from the <xref href="new-dialog-sa.dita#new-dialog-sa"
-              product="author editor"><uicontrol>New</uicontrol> document wizard</xref><xref
-              href="creating-from-templates.dita#creating-from-templates"
-              product="authorEclipse editorEclipse"><uicontrol>New from templates</uicontrol>
-              wizard</xref> you can find this template in <menucascade>
-              <uicontrol>Framework templates</uicontrol>
-              <uicontrol>DITA</uicontrol>
-              <uicontrol>plugin</uicontrol>
-            </menucascade>).</note>
-          <u><b>Example: Media Plugin
+        <li>
+          <p>Create a <b>plugin.xml</b> file (in the same <term>plugin</term> folder) that contains
+            the extension points of the <term>plugin</term>.<note>You can easily create this file by
+              using the <uicontrol>DITA-OT Plugin</uicontrol> template that is included in <ph
+                keyref="product"/> (from the <xref href="new-dialog-sa.dita#new-dialog-sa"
+                product="author editor"><uicontrol>New</uicontrol> document wizard</xref><xref
+                href="creating-from-templates.dita#creating-from-templates"
+                product="authorEclipse editorEclipse"><uicontrol>New from templates</uicontrol>
+                wizard</xref> you can find this template in <menucascade>
+                <uicontrol>Framework templates</uicontrol>
+                <uicontrol>DITA</uicontrol>
+                <uicontrol>plugin</uicontrol>
+              </menucascade>).</note></p>
+          <p><u><b>Example: Media Plugin
             File</b></u><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.media">
   &lt;feature extension="package.support.name" value="Oxygen XML Editor Support"/>
   &lt;feature extension="package.support.email" value="support@oxygenxml.com"/>
   &lt;feature extension="package.version" value="21.0"/>
   &lt;feature extension="dita.xsl.xhtml" value="xhtmlMedia.xsl" type="file"/>
   &lt;feature extension="dita.xsl.xslfo" value="pdfMedia.xsl" type="file"/>
-&lt;/plugin></codeblock><p>The
-            most important extensions in it are the references to the XSLT stylesheets that will be
-            used to style the HTML and PDF outputs. </p><p>You can find other <b>DITA-OT</b>
+&lt;/plugin></codeblock></p>
+          <p>The most important extensions in it are the references to the XSLT stylesheets that
+            will be used to style the HTML and PDF outputs. </p>
+          <p>You can find other <b>DITA-OT</b>
             <term>plugin</term> extension points here: <xref
               href="http://www.dita-ot.org/dev/extension-points/extension-points-by-plugin.html"
-              format="html" scope="external"/>.</p></li>
-        <li>Create an XSLT stylesheet to customize the output types. In this example, to customize
-          the HTML output, it is necessary to create an XSLT stylesheet called <b>xhtmlMedia.xsl</b>
-          (in the same <term>plugin</term> folder).<note type="tip">You can <ph
-              product="author editor">use the <xref
-                href="find-and-replace-text-in-files.dita#find-and-replace-text-in-files"
-                  ><uicontrol>Find/Replace in Files</uicontrol> action</xref> to </ph>find an XSLT
-            stylesheet with content that is similar to the desired output and use it as a template
-            to overwrite parts of your stylesheet. For example, suppose you want to overwrite HTML
-            content produced from a DITA <b>codeblock</b> element. Since a DITA
-            <xmlelement>object</xmlelement> element has the <xmlatt>class</xmlatt> attribute value
-              <codeph>- topic/object </codeph>, you can take part of the class attribute value
-              (<b>topic/object</b>) and search the <b>DITA-OT</b> resources for a similar
-            stylesheet. The search might find the XSLT stylesheet <filepath><term
-                keyref="glossentry_dita_ot_dir"
-              />/plugins/org.dita.xhtml/xsl/xslhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath>.<p>You
-              can use it as a starting point to overwrite the <b>xhtmlMedia.xsl</b> stylesheet. For
-              example, the results might
-              be:<codeblock outputclass="language-xml">&lt;xsl:template 
+              format="html" scope="external"/>.</p>
+        </li>
+        <li>
+          <p>Create an XSLT stylesheet to customize the output types. In this example, to customize
+            the HTML output, it is necessary to create an XSLT stylesheet called
+              <b>xhtmlMedia.xsl</b> (in the same <term>plugin</term> folder).<note type="tip">You
+              can <ph product="author editor">use the <xref
+                  href="find-and-replace-text-in-files.dita#find-and-replace-text-in-files"
+                    ><uicontrol>Find/Replace in Files</uicontrol> action</xref> to </ph>find an XSLT
+              stylesheet with content that is similar to the desired output and use it as a template
+              to overwrite parts of your stylesheet. For example, suppose you want to overwrite HTML
+              content produced from a DITA <b>codeblock</b> element. Since a DITA
+                <xmlelement>object</xmlelement> element has the <xmlatt>class</xmlatt> attribute
+              value <codeph>- topic/object </codeph>, you can take part of the class attribute value
+                (<b>topic/object</b>) and search the <b>DITA-OT</b> resources for a similar
+              stylesheet. The search might find the XSLT stylesheet <filepath><term
+                  keyref="glossentry_dita_ot_dir"
+                />/plugins/org.dita.xhtml/xsl/xslhtml/xsl/xslhtml/dita2htmlImpl.xsl</filepath>.</note></p>
+          <p>You can use it as a starting point to overwrite the <b>xhtmlMedia.xsl</b> stylesheet.
+            For example, the results might
+            be:<codeblock outputclass="language-xml">&lt;xsl:template 
    match="*[contains(@class, ' topic/object ')][contains(@outputclass, 'video')]">
  &lt;video class="embed-responsive-item">
    &lt;xsl:call-template name="commonattributes"/>
    &lt;xsl:call-template name="setidaname"/>
    &lt;xsl:call-template name="copySource"/>
  &lt;/video>
-&lt;/xsl:template></codeblock></p></note></li>
-        <li>Create additional XSLT stylesheets to customize all other desired output types. In this
-          example, to customize the PDF output it is necessary to create an XSLT stylesheet called
-            <b>pdfMedia.xsl</b> (in the same <term>plugin</term> folder). <p>In this case, you might
-            find an appropriate XSLT stylesheet called <filepath><term
+&lt;/xsl:template></codeblock></p>
+        </li>
+        <li>
+          <p>Create additional XSLT stylesheets to customize all other desired output types. In this
+            example, to customize the PDF output it is necessary to create an XSLT stylesheet called
+              <b>pdfMedia.xsl</b> (in the same <term>plugin</term> folder).</p>
+          <p>In this case, you might find an appropriate XSLT stylesheet called <filepath><term
                 keyref="glossentry_dita_ot_dir"/>/plugins/org.dita.pdf2/xsl/fo/topic.xsl</filepath>
             to use as a starting point to overwrite the <b>pdfMedia.xsl</b> stylesheet, with results
             looking something like
-          this:</p><codeblock outputclass="language-xml">&lt;!--Treat video, audio or iframe objects as links-->
+            this:<codeblock outputclass="language-xml">&lt;!--Treat video, audio or iframe objects as links-->
 &lt;xsl:template 
            match="*[contains(@class,' topic/object ')][@outputclass = 'video']">
     &lt;xsl:variable name="target" select="@data"/>
@@ -93,34 +99,40 @@
            &lt;/fo:basic-link>                        
         &lt;/xsl:if>
      &lt;/fo:inline>
-&lt;/xsl:template></codeblock></li>
-        <li>To install the created <term>plugin</term> in the <b>DITA-OT</b>, run the built-in
-          transformation scenario called <xref
-            href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"><uicontrol>Run
-              DITA-OT Integrator</uicontrol></xref> by executing it from the <xref
-            href="builtin-transformation-scenarios.dita#builtin-transformation-scenarios"
-                ><uicontrol><image href="../img/ApplyStyleSheet16.png" id="image_qwt_3ts_yq"/>Apply
-              Transformation Scenario(s)</uicontrol> dialog box</xref>. If the integrator is not
-          visible, select the <b>Show all scenarios</b> option that is available in the
-              <uicontrol><image href="../img/Settings16.png" id="image_km5_xrs_yq"
-            />Settings</uicontrol> drop-down menu. For more information, see <xref
-            href="dita-ot-install-plugin.dita"/>.<p><b>Results of running the integrator using the
-              media plugin example:</b></p><p>XSLT content is applied with priority when publishing
-            to both HTML and PDF outputs.</p><ol id="ol_vnx_h2t_pm">
-            <li>For the HTML output, in the XSLT stylesheet <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />/plugins/org.dita.xhtml/xsl/dita2html-base.xsl</filepath>, a new import
-              automatically
-                appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../plugins/com.oxygenxml.media/xhtmlMedia.xsl"/&gt;</codeblock><p>This
-                import is placed after all base imports and thus has a higher priority. For more
-                information about imported template precedence, see: <xref
-                  href="http://www.w3.org/TR/xslt#import" format="html" scope="external"/>.</p></li>
-            <li>Likewise, for the PDF output, in the top-level stylesheet <filepath><term
-                  keyref="glossentry_dita_ot_dir"
-                />/plugins/org.dita.pdf2/xsl/fo/topic2fo_shell_fop.xsl</filepath>, a new import
-              statement
-              appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../../../com.oxygenxml.media/pdfMedia.xsl"/&gt;</codeblock></li>
-          </ol></li>
+&lt;/xsl:template></codeblock></p>
+        </li>
+        <li>
+          <p>To install the created <term>plugin</term> in the <b>DITA-OT</b>, run the built-in
+            transformation scenario called <xref
+              href="ditamap-run-dita-ot-integrator.dita#ditamap-run-dita-ot-integrator"
+                ><uicontrol>Run DITA-OT Integrator</uicontrol></xref> by executing it from the <xref
+              href="builtin-transformation-scenarios.dita#builtin-transformation-scenarios"
+                  ><uicontrol><image href="../img/ApplyStyleSheet16.png" id="image_qwt_3ts_yq"
+                />Apply Transformation Scenario(s)</uicontrol> dialog box</xref>. If the integrator
+            is not visible, select the <b>Show all scenarios</b> option that is available in the
+                <uicontrol><image href="../img/Settings16.png" id="image_km5_xrs_yq"
+              />Settings</uicontrol> drop-down menu. For more information, see <xref
+              href="dita-ot-install-plugin.dita"/>.</p>
+          <p><b>Results of running the integrator using the media plugin example:</b></p>
+          <p>XSLT content is applied with priority when publishing to both HTML and PDF outputs.<ol
+              id="ol_vnx_h2t_pm">
+              <li>
+                <p>For the HTML output, in the XSLT stylesheet <filepath><term
+                      keyref="glossentry_dita_ot_dir"
+                    />/plugins/org.dita.xhtml/xsl/dita2html-base.xsl</filepath>, a new import
+                  automatically
+                  appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../plugins/com.oxygenxml.media/xhtmlMedia.xsl"/&gt;</codeblock></p>
+                <p>This import is placed after all base imports and thus has a higher priority. For
+                  more information about imported template precedence, see: <xref
+                    href="http://www.w3.org/TR/xslt#import" format="html" scope="external"/>.</p>
+              </li>
+              <li>Likewise, for the PDF output, in the top-level stylesheet <filepath><term
+                    keyref="glossentry_dita_ot_dir"
+                  />/plugins/org.dita.pdf2/xsl/fo/topic2fo_shell_fop.xsl</filepath>, a new import
+                statement
+                appeared:<codeblock outputclass="language-xml">&lt;xsl:import href="../../../com.oxygenxml.media/pdfMedia.xsl"/&gt;</codeblock></li>
+            </ol></p>
+        </li>
       </ol>
     </p>
     <p>Now, you can distribute your <term>plugin</term> folder to anyone that has a DITA-OT
