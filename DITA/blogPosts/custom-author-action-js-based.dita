@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="custom_author_action_js_based">
+  <title>Implementing a Custom Author Action to Split a Table</title>
+  <body>
+        <p>Let's say you are editing XML documents belonging to a certain vocabulary (like
+        <b>DITA</b>) for which there is a framework configuration available. The purpose of this
+      post is to create a new custom Author action for splitting the current edited table in two
+      based on the table row in which the cursor is located. The custom action will use Javascript
+      to call Oxygen's API and accomplish this. Here are some steps to follow:<ol
+        id="ol_p5g_jpn_qcb">
+        <li>
+          <p>Follow the steps 1,3, 4 and 5 listed in this older blog post to create an extension of
+            the <b>DITA</b> framework: <xref
+              href="http://blog.oxygenxml.com/2016/10/customizing-dita-visual-editing.html"
+              format="html" scope="external"/>.</p>
+        </li>
+        <li>
+          <p>In the <b>Document Type Association</b> preferences page, edit the <b>DITA</b>
+            framework extension you just created. Go to the <b>Author->Actions</b> tab and create a
+            new action with the ID <b>split.table</b>. Use the predefined <xref
+              href="https://www.oxygenxml.com/doc/versions/21.1/ug-editor/topics/dg-default-author-operations.html#dg-default-author-operations__jsoperation"
+              format="html" scope="external"><b>JSOperation</b></xref> to invoke a custom Javascript
+            code. The custom action definition would look like this:</p>
+          <p><image href="https://www.oxygenxml.com/forum/files/splitTableCustomAction.png"
+              id="image_xvz_mrn_qcb" width="600" scope="external" scale="50"/></p>
+        </li>
+        <li>Set as value to the <b>script</b> parameter of the operation the following
+            <b>Javascript</b>
+          code:<codeblock outputclass="language-javascript">function doOperation(){
+    current = authorAccess.getDocumentController().getNodeAtOffset(authorAccess.getEditorAccess().getCaretOffset()); 
+    tableNode = null;
+    rowNode = null;
+    while(current != null) {
+      if(tableNode == null &amp;&amp; ("table".equals(current.getName()) || "informaltable".equals(current.getName()))) {
+        tableNode = current;
+      }
+      if(rowNode == null &amp;&amp; ("row".equals(current.getName()) || "strow".equals(current.getName()))) {
+        rowNode = current;
+      }
+      current = current.getParent();
+    }
+    if(tableNode != null &amp;&amp; rowNode != null) {
+      //Create a fragment starting from the row to the end of the table
+      secondTable = authorAccess.getDocumentController().createDocumentFragment(rowNode.getStartOffset(), tableNode.getEndOffset());
+      //Delete the content from the first table.
+      authorAccess.getDocumentController().delete(rowNode.getStartOffset(), tableNode.getEndOffset() - 1);
+      //Insert the second table.
+      authorAccess.getDocumentController().insertFragment(tableNode.getEndOffset() + 1, secondTable);
+    }
+}</codeblock></li>
+        <li>
+          <p>Go to the <b>Author->Toolbar</b> tab and use the <b>Current actions</b> panel to add
+            the action with ID <b>split.table</b> to the toolbar.</p>
+        </li>
+        <li>
+          <p>When editing a DITA topic, pressing the toolbar action for splitting the table should
+            now call your custom action and split the current table.</p>
+        </li>
+        <li>You can add keyboard shortcuts for all custom actions either when defining them or from
+          the Oxygen main menu <b>Preferences</b>-><b>Menu Shortcut Keys</b> page.</li>
+      </ol></p>
+    </body>
+</topic>
