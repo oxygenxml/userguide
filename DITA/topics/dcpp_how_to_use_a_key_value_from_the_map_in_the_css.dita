@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_use_a_key_value_from_the_map_in_the_css">
+    <title>How to Use a Key Value from the Map in the CSS</title>
+    <body>
+        <p>The main condition is to have this key referenced from the content (either topic or map). </p>
+		<p>If you do not have it referenced, you may force a reference by using the
+				<xmlelement>topicmeta</xmlelement> or <xmlelement>bookmeta</xmlelement>  section of your map
+			and a <xmlelement>data</xmlelement> element. This has no effect on the published content, but
+			allows the CSS rules to use its content.</p>
+		<codeblock outputclass="language-xml">  &lt;bookmeta>
+    ....
+    &lt;data keyref="my_key"/>
+    ....
+  &lt;/bookmeta></codeblock>
+		<p>This is expanded in the merged HTML file to: </p>
+		<codeblock outputclass="language-xml">&lt;div class="- map/topicmeta bookmap/bookmeta topicmeta bookmeta">
+	...
+	&lt;div keyref="my_key" class="- topic/data data">
+		&lt;div class="- topic/keyword keyword">KEY VALUE&lt;/div>
+	&lt;/div>
+	...
+&lt;/div></codeblock>
+		<p>Let's consider we need the key expanded value in the footer of  the publication. You can
+			define a string-set on this data element:</p>
+		<codeblock outputclass="language-css">*[class ~= "topic/data"][keyref="my_key"] {
+	string-set: key-string content(text);
+}
+@page {	
+	@bottom-left {
+		content: "My key is: " string(key-string) !important;		
+	}
+}</codeblock>
+		<p>Or you can use the value from a <codeph>:before</codeph> pseudo element, like the one for the
+			title:</p>
+		<codeblock outputclass="language-css">*[class ~= "topic/title"]:before {
+	content: oxy_xpath("//*[contains(@class, 'topic/data')][@keyref = 'my_key']//text()");
+}</codeblock>
+		<p>Another use-case is to use the key as a source for a custom PDF document property:</p>
+		<codeblock outputclass="language-css">*[class ~= "topic/data"][keyref="my_key"] {
+	-oxy-pdf-meta-custom: attr(keyref) content(text);
+}</codeblock>
+    </body>
+</topic>
