@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-unit-test-plugin">
+  <title>Writing Java Unit Tests for Plugin Code</title>
+  <body>
+    <p>This tutorial assumes that you have a <xref
+        href="customizing_plugins.dita#customizing_plugins/add-plugin-section">Maven project that
+        implements a plugin for <ph keyref="webappProduct"/></xref>. </p>
+    <p>You need to create an <i>AuthorDocumentModel</i>, which is the server-side model for an XML
+      document opened in the browser. For this, you need to use the <xref
+        href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/WebappAuthorDocumentFactory.html"
+        format="html" scope="external"
+            ><codeph><i>ro.sync.ecss.extensions.api.webapp.WebappAuthorDocumentFactory</i></codeph></xref>
+      class. However, this class has to be configured to run in a development mode by following
+      these steps:<ol id="ol_oyx_vth_l3b">
+        <li>You need to declare a dependency on <codeph>mockito-all</codeph> in the
+            <filepath>pom.xml</filepath> file, like
+          this:<codeblock outputclass="language-xml">&lt;dependency>
+  &lt;groupId>org.mockito&lt;/groupId>
+  &lt;artifactId>mockito-all&lt;/artifactId>
+  &lt;version>1.10.19&lt;/version>
+  &lt;scope>test&lt;/scope>
+&lt;/dependency></codeblock></li>
+        <li>In the root folder of your project, you need to create a
+            <filepath>test/fake_editor_home/frameworks/</filepath> folder and place all the
+          frameworks you want to use in tests in this folder. The Web Author's default frameworks
+          are available in the <b>Oxygen</b> Maven
+          repository:<codeblock outputclass="language-xml">&lt;dependency>
+  &lt;groupId>com.oxygenxml&lt;/groupId>
+  &lt;artifactId>frameworks&lt;/artifactId>
+  &lt;version>${oxygen.version}&lt;/version>
+  &lt;type>zip&lt;/type>
+&lt;/dependency></codeblock></li>
+        <li>Call <codeph>MockAuthorDocumentFactory.initForTests()</codeph> on your test's
+            <codeph>setUp()</codeph> method. </li>
+      </ol></p>
+  </body>
+</topic>
