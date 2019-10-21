@@ -44,7 +44,7 @@
       <title>How to Embed the Edit Link in Published DITA Output (WebHelp or PDF)</title>
       <p><b>Oxygen XML Editor/Author</b> comes bundled with a built-in DITA-OT plugin that can be
         used to embed an <i>Edit</i> link in the WebHelp and PDF output for each topic.</p>
-      <p>To embed an <i>Edit</i> link in DITA WebHelp or PDF output, follow this procedure:<ol>
+      <p>To embed an <i>Edit</i> link for each topic in DITA WebHelp or PDF output, follow this procedure:<ol>
           <li>In <b>Oxygen XML Editor/Author</b>, edit a DITA Map WebHelp Responsive or DITA Map PDF
             transformation scenario and open the <uicontrol>Parameters</uicontrol> tab.</li>
           <li>Set values for the following parameters:<ul>
@@ -60,10 +60,45 @@
       <p><b>Result:</b> In the WebHelp or PDF output, all topics will have an
           <uicontrol>Edit</uicontrol> link to the right side of the title and clicking the link will
         launch that particular document in <ph keyref="webappProduct"/>.</p>
+      <p>
+        <note type="tip">For PDF output, if you want the edit link to be attached to an entire
+          bookmap, you need to call the <b>add-map-edit-link</b> named template in your front page
+          customization. For
+          example:<codeblock outputclass="language-xml">&lt;xsl:template name="createFrontCoverContents">
+  &lt;!-- set the title -->
+  &lt;fo:block xsl:use-attribute-sets= class="code-quote">"__frontmatter__title">
+    &lt;xsl:choose>
+      &lt;xsl:when test="$map/*[contains(@class,' topic/title ')][1]">
+        &lt;xsl:apply-templates select="$map/*[contains(@class,' topic/title ')][1]"/>
+      &lt;/xsl:when>
+      &lt;xsl:when test="$map//*[contains(@class,' bookmap/mainbooktitle ')][1]">
+        &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/mainbooktitle ')]
+[1]"/>
+      &lt;/xsl:when>
+      &lt;xsl:when test="//*[contains(@class, ' map/map ')]/@title">
+        &lt;xsl:value-of select="//*[contains(@class, ' map/map ')]/@title"/>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;xsl:value-of select="/descendant::*[contains(@class, ' topic/topic ')]
+[1]/*[contains(@class, ' topic/title ')]"/>
+      &lt;/xsl:otherwise>
+    &lt;/xsl:choose>
+    &lt;fo:block>
+      &lt;xsl:call-template name="add-map-edit-link"/>
+    &lt;/fo:block>
+  &lt;/fo:block>
+    
+  &lt;!-- set the subtitle -->
+  &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/booktitlealt ')]"/>
+  &lt;fo:block xsl:use-attribute-sets= class="code-quote">"__frontmatter__owner">
+    &lt;xsl:apply-templates select="$map//*[contains(@class,' bookmap/bookmeta ')]"/>
+  &lt;/fo:block>
+&lt;/xsl:template></codeblock></note>
+      </p>
     </section>
     <section id="how_to_embed_the_edit_link_in_published_pdf5_outp">
       <title>How to Embed the Edit Link in Published PDF5 Output</title>
-      <p>To embed an <i>Edit</i> link in DITA PDF5 output (obtained using the <xref
+      <p>To embed an <i>Edit</i> link for each topic in DITA PDF5 output (obtained using the <xref
           href="https://github.com/AntennaHouse/pdf5-ml" format="html" scope="external">PDF5-ML
           plugin</xref>), follow this procedure:<ol id="ol_jgl_lbq_f2b">
           <li>Add the following import <codeph>xsl:include
