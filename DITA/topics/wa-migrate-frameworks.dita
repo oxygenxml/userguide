@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="wa-migrate-frameworks">
+  <title>Migrating a Framework from Oxygen XML Editor/Author to Web Author</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Migrate Oxygen frameworks</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>Frameworks developed for <i>Oxygen XML Editor/Author</i> have a high degree of compatibility
+      with <ph keyref="webappProduct"/>. However, in some cases, additional work is required to make
+      the framework compatible with both products.</p>
+    <section id="section_kjk_tkw_ljb">
+      <title>General Recommendations</title>
+      <p>You can use the <xref
+          href="customizing_frameworks.dita#customizing_frameworks/developing_and_testing_a_framework_using_the_weba"
+          >Web Author Test Server add-on</xref> to test your framework in both products with minimal
+          overhead.<note>It is always useful to check out the server log. It can be found in the
+          plugin's folder in: <filepath>tomcat/logs/oxygen.log</filepath>.</note></p>
+    </section>
+    <section id="section_zsm_flw_ljb">
+      <title>Document Styles</title>
+      <p>The CSS styles used to render the document in the desktop application can be re-used in Web
+        Author, although there are some <xref href="webapp_css_limitations.dita"
+        >limitations</xref>.</p>
+    </section>
+    <section id="section_k2h_qtx_jjb">
+      <title>Toolbar and Contextual Menu Actions</title>
+      <p>Some of the toolbar actions may not be appear in Web Author. The most common reason is that
+        the toolbar actions use a custom <codeph>AuthorOperation</codeph> that is not <xref
+          href="customizing_frameworks.dita#customizing_frameworks/author-mode-operation-li">marked
+          as compatible with Web Author</xref>. Sometimes, this is just a matter of annotating your
+        custom Java class. In other cases (for example, when the <codeph>AuthorOperation</codeph> is
+        used to show a custom Java Swing dialog box), it has to be <xref
+          href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/21.1.0.0/jsdoc/tutorial-customaction.html"
+          format="html" scope="external">re-implemented in JavaScript</xref>.</p>
+      <p>This is how the toolbar structure is built:<ul id="ul_oyt_v5x_jjb">
+          <li>The default structure of the toolbar is defined in the
+              <filepath>*.framework</filepath> file and is common with the one in the desktop
+            editor. You can visualize it using the <xref
+              href="https://www.oxygenxml.com/doc/ug-editor/topics/the-document-type-dialog.html"
+              format="html" scope="external">Document Type Configuration dialog box</xref>.</li>
+          <li>The client-side component of Web Author retrieves this configuration using an HTTP
+            request to something like
+              <codeph>./rest/VERSION/actions/actionsConfig/docNNN.NNN</codeph>. Actions that are not
+            compatible are removed from this configuration. You can check it in the browser's Dev
+            Tools <uicontrol>Network</uicontrol> tab.</li>
+          <li>If you are extending another framework, it can <xref
+              href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/21.1.0.0/jsdoc/tutorial-removeaction.html"
+              format="html" scope="external">override the configuration of the toolbar</xref> using
+            JavaScript code. </li>
+          <li>When the contextual menu is shown, actions that are not enabled at a specific position
+            are not shown.</li>
+        </ul></p>
+      <note>The actions on the Web Author toolbar are not disabled based on the location of the
+        cursor. However, they always try to find a valid position for that element in a position
+        that is close to the cursor location.</note>
+    </section>
+  </body>
+</topic>
