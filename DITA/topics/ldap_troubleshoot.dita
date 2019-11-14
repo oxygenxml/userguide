@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ldap_troubleshoot">
+  <title>Testing the LDAP Configuration</title>
+  <body>
+    <p>After configuring the <ph keyref="cfEnterprise"/> to use <xref
+        href="cf-enterprise-configuration.dita#cf-enterprise-configuration/LDAP-Auth">LDAP
+        authentication</xref>, you can test to make sure the configuration is correct by following
+      these steps:</p>
+    <ol id="ol_eh3_vzj_mjb">
+      <li>Go to the <xref href="content_fusion_user_interface.dita">Content Fusion browser
+          interface</xref>. The login screen should now display a <uicontrol>Username</uicontrol>
+        and <uicontrol>Password</uicontrol> field now that LDAP authentication is enabled.</li>
+      <li>Log in with your LDAP credentials. If the login succeeds, LDAP authentication is
+        configured properly. Otherwise, continue with the subsequent steps.</li>
+      <li>View the <xref href="cf-enterprise-configuration.dita#cf-enterprise-configuration/logs"
+          >server logs</xref> in a new browser tab and for the <uicontrol>Service name</uicontrol>,
+        choose <i>Content Fusion</i>.</li>
+      <li>You should see multiple logs, but the last logs should be related to the failed login you
+        just attempted. Search through these logs for: <b>[LDAP] Authentication failed
+          for</b>.<p>The logged errors may be different depending on your LDAP server, but here are
+          a few examples of what the logs might look like:<dl>
+            <dlentry>
+              <dt>Wrong host/port configured</dt>
+              <dd>
+                <codeblock outputclass="language-ini">[com.oxygenxml.webreviewer.authz.OxygenAuthorizingRealm.doGetUsrPassAuthInfo
+(OxygenAuthorizingRealm.java:203)] [http-nio-8079-exec-3] OxygenAuthorizingRealm - [LDAP]
+Authentication failed for 'username'. org.apache.shiro.authc.AuthenticationException: 
+javax.naming.CommunicationException: ldap.example.com:3899
+[Root exception is java.net.ConnectException: Connection refused: connect]</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>SSL enabled, but connecting to non-SSL host</dt>
+              <dd>
+                <codeblock outputclass="language-ini">[com.oxygenxml.webreviewer.authz.OxygenAuthorizingRealm.doGetUsrPassAuthInfo
+(OxygenAuthorizingRealm.java:203)] [http-nio-8079-exec-2] OxygenAuthorizingRealm - [LDAP]
+Authentication failed for 'username'. org.apache.shiro.authc.AuthenticationException: 
+javax.naming.CommunicationException: simple bind failed: ldap.example.com:389 [Root 
+exception is javax.net.ssl.SSLHandshakeException: Remote host closed connection during
+handshake]</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>SSL enabled, but certificate not trusted</dt>
+              <dd>
+                <codeblock outputclass="language-ini">[com.oxygenxml.webreviewer.authz.OxygenAuthorizingRealm.doGetUsrPassAuthInfo
+(OxygenAuthorizingRealm.java:203)] [http-nio-8079-exec-2] OxygenAuthorizingRealm - [LDAP]
+Authentication failed for 'username'. org.apache.shiro.authc.AuthenticationException: 
+javax.naming.ServiceUnavailableException: ldap.example.com:636; socket closed</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Wrong ID attribute configured</dt>
+              <dd>
+                <codeblock outputclass="language-ini">[com.oxygenxml.webreviewer.authz.OxygenAuthorizingRealm.doGetUsrPassAuthInfo
+(OxygenAuthorizingRealm.java:203)] [http-nio-8079-exec-2] OxygenAuthorizingRealm - [LDAP]
+Authentication failed for 'username'. org.apache.shiro.authc.AuthenticationException: 
+Missing LDAP required attributes: [id]</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Wrong Base DN/Additional user DN configured</dt>
+              <dd>
+                <codeblock outputclass="language-ini">[com.oxygenxml.webreviewer.authz.OxygenAuthorizingRealm.doGetUsrPassAuthInfo
+(OxygenAuthorizingRealm.java:203)] [http-nio-8079-exec-8] OxygenAuthorizingRealm - [LDAP] 
+Authentication failed for 'wrong-username'. 
+org.apache.shiro.authc.AuthenticationException: javax.naming.AuthenticationException: 
+[LDAP: error code 49 - Invalid Credentials]</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Wrong user-name or password used in login-form</dt>
+              <dd>
+                <codeblock outputclass="language-ini">[com.oxygenxml.webreviewer.authz.OxygenAuthorizingRealm.doGetUsrPassAuthInfo
+(OxygenAuthorizingRealm.java:203)] [http-nio-8079-exec-8] OxygenAuthorizingRealm - [LDAP] 
+Authentication failed for 'wrong-username'. 
+org.apache.shiro.authc.AuthenticationException: javax.naming.AuthenticationException: 
+[LDAP: error code 49 - Invalid Credentials]</codeblock>
+              </dd>
+            </dlentry>
+          </dl><note>The meaning of LDAP error codes (such as <i>error code 49</i>) can be found in
+            your LDAP manual.</note></p></li>
+    </ol>
+  </body>
+</topic>
