@@ -4,32 +4,48 @@
   <title>Front Matter and Back Matter - XML Fragment</title>
   <body>
     <p>In the <xref href="dcpp_debugging_the_css.dita#dcpp_debugging_the_css/merged_map_file">merged
-        map file</xref>, the frontmatter topics are wrapped in an
-        <xmlelement>oxy:front-matter</xmlelement> element that has the class
-        <codeph>bookmap/frontmatter</codeph> (it is a clone of the original
-        <xmlelement>frontmatter</xmlelement> element from the map):</p>
+        map file</xref>, the frontmatter topic references are wrapped in an
+        <xmlelement>frontmatter</xmlelement> element that has the class
+        <codeph>bookmap/frontmatter</codeph>. Then, the referenced content is marked with the
+      attribute <xmlatt>is-frontmatter="true"</xmlatt>:</p>
     <codeblock outputclass="language-xml">&lt;bookmap xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ...>
-    &lt;oxy:front-page xmlns:oxy="http://www.oxygenxml.com/extensions/author" 
-                    class=" front-page/front-page ">
+    &lt;oxy:front-page class="- front-page/front-page ">
        ...
     &lt;/oxy:front-page>
-    &lt;oxy:front-matter xmlns:oxy="http://www.oxygenxml.com/extensions/author" 
-                  class="- map/topicref bookmap/frontmatter ">
-        &lt;concept xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" 
-                  class="- topic/topic concept/concept "
-            id="unique_1" oid="concept-1">
+    &lt;opentopic:map xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder"
+    class="- toc/toc ">
+        ...
+        &lt;frontmatter xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot"
+        class="- map/topicref bookmap/frontmatter ">
           ...
-    &lt;/oxy:front-matter></codeblock>
+          &lt;topicref class="- map/topicref " href="#unique_1" type="concept">
+          ...
+        &lt;/frontmatter>
+    &lt;/opentopic:map>
+    &lt;concept xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot"
+    class="- topic/topic concept/concept " id="unique_1" is-frontmatter="true"
+    topicrefclass="- map/topicref bookmap/bookabstract " nd:nd-id="concept-1" oid="concept-1"></codeblock>
     <div>
       <p conkeyref="reusables-dcpp/mmap_pqy_hdn_vca"/>
       <codeblock outputclass="language-xml">&lt;div xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ...>
     &lt;div class=" front-page/front-page front-page">
        ...
     &lt;/div>
-    &lt;div class="- map/topicref bookmap/frontmatter frontmatter">
-        &lt;div class="- topic/topic concept/concept " id="unique_1" oid="concept-1">
+    &lt;div class="- toc/toc toc">
+      &lt;div class="- map/topicref bookmap/frontmatter topicref frontmatter">
+        &lt;div href="#unique_2" type="topic" class="- map/topicref topicref">
         ...
-    &lt;/div></codeblock>
+        &lt;/div>
+    &lt;/div>
+    &lt;article xmlns:nd="http://www.oxygenxml.com/css2fo/named-destinations"
+    class="- topic/topic concept/concept topic concept nested0"
+    aria-labelledby="ariaid-title1" id="unique_1" is-frontmatter="true"
+    topicrefclass="- map/topicref bookmap/bookabstract " nd:nd-id="concept-1"
+    oid="concept-1"></codeblock>
     </div>
+    <note>The process also applies for the backmatter topic references inside
+        <xmlelement>backmatter</xmlelement> element with <codeph>bookmap/backmatter</codeph> class
+      and referenced content with <xmlatt>is-backmatter="true"</xmlatt> attribute both in merged map
+      and merged html files.</note>
   </body>
 </topic>
