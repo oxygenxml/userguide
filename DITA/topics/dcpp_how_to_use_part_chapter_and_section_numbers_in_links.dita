@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dcpp_how_to_use_chapter_and_section_numbers_in_links">
-    <title>How to Use Chapter and Sections Numbers in Links</title>
+    <title>How to Use Part, Chapter and Sections Numbers in Links</title>
     <body>
         <p>Let us assume you have a link in the third chapter that points to a paragraph in the
       first chapter, the second subsection, and you need this structural information (1.2) presented
@@ -10,12 +10,13 @@
       the target. The <codeph>chapter-and-sections</codeph> built-in counter is already updated with
       both the chapter number and the nested sections:</p>
     <codeblock outputclass="language-css">*[class ~= "topic/xref"]:after {
-	content: target-counters(attr(href), chapter-and-sections, ".");	
+	content: target-counters(attr(href), chapter-and-sections, ".") !important;	
 }</codeblock>
     <p>This counter does not include the part number, so take care when linking between parts: you
       may consider adding the target part number explicitly:</p>
     <codeblock outputclass="language-css">*[class ~= "topic/xref"]:after {
-	content: target-counter(attr(href), part) "." target-counters(attr(href), chapter-and-sections, ".");	
+	content: "[" target-counter(attr(href), part, upper-roman) "/" target-counters(attr(href), chapter-and-sections, ".") "]" !important;
+	color:blue;	
 }</codeblock>
     </body>
 </topic>
