@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_change_bars">
+  <title>Change Bars</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Change Bars</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The change bars are used to mark some revised elements in content. They are useful for
+      example in technical documentation to flag added content in a new version of the file.</p>
+    <section id="section_l1x_zsk_dkb">
+      <title>Display change bars using the <codeph>:changebar</codeph> pseudo-element</title>
+      <p>Suppose you have the following
+        document:<codeblock outputclass="language-xml">&lt;p>Once every 6000 kilometers or three months, you need to change the oil in your car.
+It will extend your car lifetime.&lt;span class="cb">This should be done by a specialist
+in a controlled environment.&lt;/span>&lt;/p></codeblock></p>
+      <p>To mark the <codeph>span</codeph> element as being a change bar, you can use the
+          <codeph>::changebar</codeph>
+        pseudo-element:<codeblock outputclass="language-css">.cb::changebar {
+  -oxy-changebar-offset: 1mm;
+  -oxy-changebar-placement: start;
+  -oxy-changebar-style: solid;
+  -oxy-changebar-color: black;
+  -oxy-changebar-width: 1pt;
+}</codeblock></p>
+      <note>The change bars can be customized using 5 properties: <p>
+          <dl>
+            <dlentry>
+              <dt>-oxy-changebar-offset</dt>
+              <dd>Defines the distance between the text and the change bar</dd>
+            </dlentry>
+            <dlentry>
+              <dt>-oxy-changebar-placement</dt>
+              <dd>Defines the position of the change bar</dd>
+            </dlentry>
+            <dlentry>
+              <dt>-oxy-changebar-style</dt>
+              <dd>Defines the appearance of the change bar</dd>
+            </dlentry>
+            <dlentry>
+              <dt>-oxy-changebar-color</dt>
+              <dd>Defines the change bar color</dd>
+            </dlentry>
+            <dlentry>
+              <dt>-oxy-changebar-width</dt>
+              <dd>Define the change bar width</dd>
+            </dlentry>
+          </dl>
+        </p></note></section>
+    <section id="section_lv5_gtk_dkb">
+      <title>Display change bars using start and end markers</title>
+      <p>Suppose you have the following
+        document:<codeblock outputclass="language-xml">&lt;p>Once every 6000 kilometers or three months, you need to change the oil in your car.
+It will extend your car lifetime.&lt;change-bar-start color="blue">This should be done by 
+a specialist in a controlled environment.&lt;change-bar-end>&lt;/p></codeblock></p>
+      <p>To display the change bar inside the paragraph, you can use the <codeph>display:
+          -oxy-changebar-start</codeph> and <codeph>display: -oxy-changebar-end</codeph> properties
+        on the custom elements <xmlelement>change-bar-start</xmlelement> and
+          <xmlelement>change-bar-end</xmlelement>:<codeblock outputclass="language-css">change-bar-start {
+  display: -oxy-changebar-start;
+  -oxy-changebar-color: attr(color);
+}
+change-bar-end {
+  display: -oxy-changebar-end;
+}</codeblock></p><note>
+        <ul id="ul_zdm_w5k_dkb">
+          <li>The -oxy-changebar CSS properties are also supported in this case.</li>
+          <li>All the -oxy-changebar CSS properties support the attr(), oxy_xpath() and calc()
+            functions.</li>
+        </ul>
+      </note><note>In case you don't want to create new elements to mark change bars starting and
+        ending point, you can use the <codeph>display</codeph> property on both
+          <codeph>::before</codeph> and <codeph>::after</codeph> pseudo elements (NB you can also
+        use <codeph>::changebar</codeph>).</note>
+    </section>
+  </body>
+</topic>
