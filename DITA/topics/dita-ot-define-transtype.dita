@@ -48,19 +48,45 @@
 &lt;/param></codeblock>Depending
           on the type declared for a parameter, <ph keyref="product"/> will help you pick values for
           each parameter edited in the <uicontrol>Parameters</uicontrol> tab of the transformation
-          scenario dialog box. For example, for parameters of type <b>"enum"</b>, <ph
+          scenario configuration dialog box. For example, for parameters of type <b>"enum"</b>, <ph
             keyref="product"/> will present a combo box for choosing the proper value for the
           parameter.</li>
-        <li>Extend various extension points in your <b>plugin.xml</b>. For more information, see:
-            <xref href="https://www.dita-ot.org/3.1/extension-points/plugin-extension-points.html"
-            format="html" scope="external"/>.</li>
+        <li>You can also extend various extension points in your <b>plugin.xml</b>. For more
+          information, see: <xref
+            href="https://www.dita-ot.org/3.1/extension-points/plugin-extension-points.html"
+            format="html" scope="external"/>.<note type="other"
+            othertype="Plugin Extension Example - Promote Parameters">
+            <p>It is possible to promote certain transformation parameters so that they appear above
+              the table of allowed parameters and values in the <uicontrol>Parameters</uicontrol>
+              tab of the transformation scenario configuration dialog box. To do this, you could
+              create a <filepath>pluginExtension.xml</filepath> file in the root folder of the
+              DITA-OT plugin and use the <xmlelement>promotedParams</xmlelement> element to define
+              the promoted parameters. Here is an
+              example:<codeblock outputclass="language-xml">&lt;extensionPlugin>
+    &lt;transtype name="pdf-css-html5">
+        &lt;promotedParams>
+            &lt;param name="args.css" promotedName="CSS"/>
+            &lt;param name="args.css.param.numbering" promotedName="Numbering"/>
+            &lt;param name="args.chapter.layout" promotedName="Chapter layout"/>
+        &lt;/promotedParams>
+    &lt;/transtype>
+&lt;/extensionPlugin></codeblock></p>
+            <p>The example above results in the <uicontrol>Parameters</uicontrol> tab looking like
+              this:</p>
+            <p>
+              <fig id="fig_vx1_vw3_jkb">
+                <title>Promoted Parameters</title>
+                <image href="../img/promoted-parameters.png" id="image_o3s_5x3_jkb"/>
+              </fig>
+            </p>
+          </note></li>
         <li><xref href="dita-ot-install-plugin.dita">Install the plugin</xref>.<note>If the plugin
             is installed using an external command line, you may need to restart <ph
               keyref="product"/> to properly re-detect the newly contributed transtypes and
             parameters.</note></li>
       </ol></p>
-    <p><b>Complete plugin.xml
-      example:</b><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.pdf.prince"&gt;
+    <p><b>Example of a <i>plugin.xml</i>
+      File:</b><codeblock outputclass="language-xml">&lt;plugin id="com.oxygenxml.pdf.prince"&gt;
   &lt;!-- extensions --&gt;
   &lt;feature extension="dita.conductor.transtype.check" value="pdf-prince" type="txt"/&gt;
   &lt;feature extension="dita.conductor.target.relative" value="integrator.xml" 
