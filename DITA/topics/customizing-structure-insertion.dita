@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="customizing-structure-insertion">
+  <title>Customizing XML Markup Insertion</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Framework customization<indexterm>Customizing structure
+          insertion</indexterm></indexterm>
+        <indexterm>Customizing structure insertion</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>Some built-in frameworks include a configuration file that defines shortcut patterns that can
+      be used in <uicontrol>Author</uicontrol> mode to automatically insert a certain XML structure.
+      More specifically, the XML structure (fragment) automatically replaces a specific prefix
+      pattern. For example, if you are editing a DITA document using the built-in DITA framework,
+      entering a hyphen (<b>-</b>) at the beginning of a paragraph would automatically replace the
+      hyphen with an unordered list element (<xmlelement>ul</xmlelement>) with a child list item
+      element (<xmlelement>li</xmlelement>). This is made possible by the <term>AutoCorrect</term>
+      mechanism in <ph keyref="product"/>.</p>
+    <p>It is possible to customize the particular configuration file
+        (<filepath>structure-autocorrect.xml</filepath>) to define your own markup insertion
+      shortcut patterns by following these steps:<ol id="ol_js3_4k5_kq">
+        <li>Create a new <filepath>resources</filepath> folder (if it does not already exist) in the
+            <filepath>frameworks</filepath> directory for the particular document type (for example,
+            <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/resources</filepath>).</li>
+        <li><ph conkeyref="reusables-preferences-pages/Open-the-preferences-page"/> and go to
+            <uicontrol>Document Type Association</uicontrol>. Select the particular document type,
+          click the <uicontrol>Edit</uicontrol> button, and in the <xref
+            href="document-type-classpath-tab.dita#document-type-classpath-tab"
+              ><uicontrol>Classpath</uicontrol> tab</xref> add a link to that
+            <filepath>resources</filepath> folder (if it does not already exist).</li>
+        <li>Create a new <filepath>structure-autocorrect.xml</filepath> file or edit an existing one
+          (this file already exists in the <filepath>resources</filepath> folder of particular
+          document types and you can use an existing file as a starting point for your
+          customization).</li>
+        <li>
+          <p>Make the appropriate changes to your <filepath>structure-autocorrect.xml</filepath>
+            file. The file should look like
+            this:<codeblock outputclass="language-xml">&lt;structure-autocorrect>
+  &lt;!-- Unordered lists -->
+  &lt;prefix-replacement prefix="-">
+    &lt;ul>&lt;li/>&lt;/ul>
+  &lt;/prefix-replacement>  
+  &lt;!-- Ordered lists -->
+  &lt;prefix-replacement prefix="1.">
+    &lt;ol>&lt;li/>&lt;/ol>
+  &lt;/prefix-replacement>  
+  &lt;!-- Code block -->  
+  &lt;prefix-replacement prefix="```">
+    &lt;codeblock/>
+  &lt;/prefix-replacement>
+&lt;/structure-autocorrect> </codeblock></p>
+          <p>Using this example, when a user enters one of the defined prefixes at the start of an
+            element that allows the corresponding fragment, <ph keyref="product"/> will
+            automatically replace the prefix with its corresponding fragment. For example, entering
+            a hyphen (<b>-</b>) at the beginning of a paragraph would automatically replace the
+            hyphen with an unordered list element (<xmlelement>ul</xmlelement>) with a child list
+            item element (<xmlelement>li</xmlelement>). Any subsequently added content would be
+            placed inside the first node/element that does not have a child node/element (in this
+            example, the cursor would be placed in the first <xmlelement>li</xmlelement>
+            element).</p>
+        </li>
+        <li>Save the file in the <filepath>resources</filepath> folder for the particular document
+          type, using the fixed name: <filepath>structure-autocorrect.xml</filepath> (for example,
+            <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/resources/structure-autocorrect.xml</filepath>).</li>
+        <li>Restart the application and open a document for your particular framework to test your
+          customization. </li>
+      </ol></p>
+  </body>
+</topic>
