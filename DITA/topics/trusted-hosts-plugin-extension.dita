@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="trusted-hosts-plugin-extension">
+  <title>Trusted Hosts Plugin Extension</title>
+  <shortdesc>This type of <xref keyref="glossentry_plugin"><term>plugin</term></xref> allows
+    developers to control the URL connections <ph keyref="product"/> opens.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Plugin extensions<indexterm>Trusted Hosts</indexterm></indexterm>
+        <indexterm>Security</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The name of the <term>plugin</term> extension is <b><i>TrustedHosts</i></b> and it allows
+      developers to control the <ph keyref="product"/> opens. By implementing this plugin extension,
+      the application will automatically allow or deny connection from web sites you consider and
+      configure as malicious.</p>
+    <p>To develop an integration project, follow this steps:</p>
+    <ul>
+      <li>Copy the <filepath>oxygen.jar</filepath> file from <filepath><term
+        conkeyref="reusables-user-guide/oxy-install-dir"/>/lib</filepath> to the
+        <filepath>lib</filepath> folder of your project.</li>
+      <li>Implement the <i>ro.sync.exml.plugin.workspace.security.TrustedHostsProviderExtension</i>
+        extension point.</li>
+      <li>In the <term>plugin</term> descriptor define the <xmlelement>extension</xmlelement>
+        element that points to the implementation of your classes, following
+        example:<codeblock outputclass="language-xml">&lt;extension type="TrustedHosts" class="my.trusted.hosts.provider.implementation"/></codeblock></li>
+    </ul>
+    <p>Detailed information regarding the accepted or rejected connections from plugins are logged
+      in the <xref href="view-status-information.dita"><uicontrol>Information</uicontrol></xref>
+      view.</p>
+    <p>Example implementation:</p>
+    <codeblock outputclass="language-java">
+      import ro.sync.exml.plugin.workspace.security.Response;
+      import ro.sync.exml.plugin.workspace.security.TrustedHostsProviderExtension;
+
+      public class DummyTrustedHostsProviderImpl implements 
+                  TrustedHostsProviderExtension {
+        @Override
+        public Response isTrusted(String hostName) {
+          /* Connections from this website will always be 
+           *considered safe and always accepted.
+           */
+          if (hostName.contains("trusted.website")) {
+            return TRUSTED;
+          } else if(hostName.contains("malicious.website")) {
+            // Always reject connections from malicious website
+            return UNTRUSTED;
+          }
+          /* All other connections are unknown, so a dialog will 
+           *appear and ask user's confirmation
+           *to allow or deny the connection to this website.*/
+          return UNKNOWN;
+        }
+}</codeblock>
+  </body>
+</topic>
