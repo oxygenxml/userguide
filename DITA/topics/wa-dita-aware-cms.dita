@@ -32,5 +32,29 @@
           This will override the Web Author's default behavior that will fetch the main DITA map and
           all the nested sub-maps from the CMS, parse them, and determine the keys.</li>
       </ul></p>
+    <section id="section_rct_wxl_pkb">
+      <title>Changing the DITA context after the editor is loaded</title>
+      <p>When a topic is reused in multiple DITA contexts defined by a DITA Map and DITAVAL filter a
+        CMS may provide the user a widget to switch between these contexts. To implement this
+        behavior one needs to use the JavaScript API similar with the snippet
+        below:<codeblock>var map = "http://example.com/path/to/ditamap"; 
+var filter = "http://example.com/path/to/ditaval"; 
+var isDirty = editor.isDirty(); 
+editor.getActionsManager() 
+  .invokeOperation('ro.sync.servlet.operation.SetDitaMapOperation', { 
+    ditamap: map, 
+    ditaval: filter })
+  .then(function(result) { 
+    if (result === 'SUCCESS') { 
+      var editingContextManager = workspace.getEditingContextManager();   
+      editingContextManager.updateDitaContext(new sync.api.DitaContext(map, filter)); 
+    } else { 
+      alert('FAILED'); 
+    } 
+  }) 
+  .thenAlways(function () { editor.setDirty(isDirty); });</codeblock></p>
+    </section>
+    <p>where <codeph>map</codeph> and <codeph>filter</codeph> are the <xref href="oxy-url.dita"
+        >OXY-URL</xref>s of the DITA Map and DITAVAL filter files.</p>
   </body>
 </topic>
