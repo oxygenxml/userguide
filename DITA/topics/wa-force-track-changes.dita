@@ -38,5 +38,21 @@ sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED, function(e) {
         link that launches Web Author</xref> so that when a user clicks the constructed link, the
       documented will be opened in Web Author with the <term>Change Tracking</term> feature
       enabled.</note>
+    <section id="section_j5h_53d_4kb">
+      <title>Changing the Change Tracking State Programmatically</title>
+      <p>To change the state of the change tracking feature after the document is loaded, you need
+        to include code in your plugin's JavaScript code, similar to
+        this:<codeblock outputclass="language-javascript">// Assuming you have an 'editor' variable of type sync.api.Editor
+var editingSupport = editor.getEditingSupport();
+if (editingSupport.getType() === sync.api.Editor.EditorTypes.AUTHOR) {
+  var manager = editingSupport.getChangeTrackingManager();
+  if (!manager.isTrackingChanges()) {
+    var am = editingSupport.getActionsManager();
+    am.getActionById("Author/TrackChanges").actionPerformed(function(){
+      am.refreshActionsStatus("Author/TrackChanges");
+    });
+  }
+}</codeblock></p>
+    </section>
   </body>
 </topic>

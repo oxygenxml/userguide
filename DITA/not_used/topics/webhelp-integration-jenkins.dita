@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webhelp-integration-jenkins">
+  <title><?oxy_comment_start author="Steven" timestamp="20200202T185306-0500" comment="Not applicable for DocBook."?>Automating
+    DITA to WebHelp Classic Output with Jenkins<?oxy_comment_end?></title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Jenkins integration</indexterm>
+        <indexterm>Automate Output with Jenkins</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>This procedure assumes that you have already <xref
+        href="integrating-webhelp-plugin-with-dita-ot-classic.dita">integrated, configured, and
+        registered the <ph keyref="product"/> with the DITA Open Toolkit</xref>.</p>
+    <p>To integrate WebHelp output with the Jenkins continuous integration tool, follow these steps:<ol>
+        <li>Create a Maven project to incorporate the DITA-OT that already integrates <ph
+            keyref="product"/>.</li>
+        <li>Go to the root of your Maven project and edit the <filepath>pom.xml</filepath> file to
+          include the following
+          fragment:<codeblock outputclass="language-xml">&lt;properties>
+    &lt;dita-ot-dir>${basedir}/tools/dita-ot&lt;/dita-ot-dir>
+    &lt;!-- 
+        The path to the DITA map that you want to process. 
+    -->
+    &lt;input-file>path/to/input_file&lt;/input-file>
+          
+    &lt;!-- 
+       Specifies the path of the output directory.
+    -->
+    &lt;output-dir>path/to/output_dir&lt;/output-dir>
+        		
+    &lt;!--
+        DITA-OT optional build parameters.
+    -->        
+    &lt;options>-v&lt;/options>
+&lt;/properties>
+    
+&lt;plugin>
+    &lt;artifactId>exec-maven-plugin&lt;/artifactId>
+    &lt;groupId>org.codehaus.mojo&lt;/groupId>
+    &lt;executions>
+        &lt;execution>
+            &lt;!-- Run WebHelp Classic transformation -->
+            &lt;id>run-webhelp-classic&lt;/id>
+            &lt;phase>generate-sources&lt;/phase>
+            &lt;goals>
+                &lt;goal>exec&lt;/goal>
+            &lt;/goals>
+            &lt;configuration>
+                &lt;executable>${dita-ot-dir}/bin/dita.bat --format=webhelp
+                    --input=${input-file} --output=${output-dir} ${options}&lt;/executable>
+            &lt;/configuration>
+        &lt;/execution>
+    &lt;/executions>
+&lt;/plugin></codeblock></li>
+        <li>Go to the Jenkins top page and <xref
+            href="https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project"
+            format="html" scope="external">create a new Jenkins job</xref>. Configure this job to
+          suit your particular requirements, such as the build frequency and location of the Maven
+          project.</li>
+      </ol></p>
+  </body>
+</topic>
