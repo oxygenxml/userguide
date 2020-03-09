@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="dcpp_the_xpath_function_format_date_does_not_format_using_the_specified_locale">
-    <title>The XPath function format-date() does not respect the specified locale</title>
+    <title>The format-date() XPath Function Does not Respect the Specified Locale</title>
     <body>
         <p>The XPath expressions are evaluated using the Saxon HE processor. This processor does not
-			support other languages than English. (<xref
-				href="https://sourceforge.net/p/saxon/mailman/message/26849522/" format="html"
-				scope="external"/>)</p>
-        <p>Formatting a date using other language code:
-			<codeblock outputclass="language-css">title:before {
+      support languages other than English (<xref
+        href="https://sourceforge.net/p/saxon/mailman/message/26849522/" format="html"
+        scope="external"/>).</p>
+        <p>Formatting a date using another language code:
+      <codeblock outputclass="language-css">title:before {
    content: oxy_xpath('format-date(current-date(), "[Mn] [Y]", "ru", (), ())');
 }</codeblock>results
-			in an output like: <codeph>[Language: en]september 2019</codeph>, the image of the date being
-			formatted in English.</p>
-        <p>You can either switch to a more language neutral format that avoids the months names:</p>
+      in an output like: <codeph>[Language: en]september 2019</codeph>, with the date being
+      formatted in English.</p>
+        <p>As a solution, you can either switch to a more language neutral format that avoids the
+      months names:</p>
         <p>
             <codeblock outputclass="language-css">title:before{
    content: oxy_xpath('format-date( current-date(), "[M] [Y]", "en", (), ())');
 }</codeblock>
         </p>
-        <p>or you can use a more complex XPath expression, like:</p>
+        <p>or you can use a more complex XPath expression, like this:</p>
         <codeblock outputclass="language-css">title:before{
             
             content: oxy_xpath("let $cm:= format-date(current-date(), '[MNn]') \
