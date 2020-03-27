@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa_inserting_xml_elements">
+  <title>Inserting XML Elements</title>
+  <body>
+    <p>In <ph keyref="product"/> XML elements can be inserted by using the Content Completion
+      assistant or by using an Author-mode action that can be added in the toolbar, contextual menu,
+      or even in the Content Completion assistant.</p>
+    <section id="section_or4_ssy_dlb">
+      <title>Inserting Elements with Content Completion</title>
+      <p>In this case, a list of elements valid at the caret position is displayed. Showing only
+        valid elements may prove limiting in some situations. </p>
+      <p>For example, assume the user just finished to write the <codeph>title</codeph> of a
+          <codeph>section</codeph> and wants to insert a <codeph>table</codeph>. The caret is still
+        in the <codeph>title</codeph> element and <codeph>table</codeph> is not valid at this
+        position. However, it is valid immediately after the <codeph>title</codeph>. </p>
+      <p>To make it easier to insert elements in such cases, <ph keyref="product"/> presents also a
+        list with all the elements, even if invalid at the caret position. If the user chooses to
+        insert one of them, it inserts the element in a <term>Schema Aware</term> mode. This means
+        that some strategies are applied to keep the document valid, for example inserting the
+        element in a nearby position or inserting a required ancestor.</p>
+      <p>Various aspects of the <xref href="wa-cc-configuration.dita">Content Completion assistant
+          can be configured</xref> using either configuration files or the JavaScript or Java
+        API.</p>
+    </section>
+    <section id="section_bzb_vsy_dlb">
+      <title>Inserting Elements using Author Actions</title>
+      <p>An Author-mode action can be added in the toolbar, contextual menu or even in the Content
+        Completion assistant. Such an action has one or more operation modes. The evaluation of an
+        XPath expression activates an operation mode. The first activated operation mode is executed
+        when you trigger the action. </p>
+      <p>A simple action to insert an element can use a single operation mode with
+          <uicontrol>Activation XPath</uicontrol> set to <codeph>true</codeph>. The operation should
+        be <codeph>InsertFragmentOperation</codeph> and the <codeph>schemaAware</codeph> parameter
+        should be set to true. With this setup, the action inserts the element in the expected
+        position while keeping the document valid.</p>
+      <p>If you identify some cases in which the action behavior is less than optimal, you can add
+        an another operation mode that:</p>
+      <p><ul id="ul_s2s_lw5_dlb">
+          <li>Has the <uicontrol>Activation XPath</uicontrol> configured to match the particular XML
+            structure in which you observe the undesired behavior. You can use some <ph
+              keyref="product"/>-specific <xref
+              href="https://www.oxygenxml.com/doc/versions/22.0/ug-editor/topics/xpath-activation-expressions.html"
+              format="html" scope="external">extension functions</xref> like:
+              <codeph>oxy:allows-child-element()</codeph>.</li>
+          <li>Uses the <codeph>InsertFragmentOperation</codeph> operation. </li>
+          <li>Has the <codeph>schemaAware</codeph> parameter set to false. This allows you to
+            precisely control the insertion point.</li>
+          <li>Use the <uicontrol>insertLocation</uicontrol> and
+              <uicontrol>insertPosition</uicontrol> parameters to specify the desired insertion
+            location.</li>
+          <li>Configure the <uicontrol>fragment</uicontrol> parameter to the actual fragment to be
+            inserted. This fragment should contain:<ul id="ul_c3r_ww5_dlb">
+              <li>all the ancestors that need to be inserted to make the document valid</li>
+              <li>all the required descendants of the element</li>
+              <li>all the required attributes of the element</li>
+            </ul></li>
+        </ul>The original operation mode should be left later in the list as a fallback.</p>
+      <p>In even more complicated cases, you may need to identify a particular caret position that
+        is impossible to represent in XPath, for example, when the caret is between the title and
+        the body of a topic. For these cases, you can use a more relaxed XPath like
+          <codeph>.[local-name() = 'topic']</codeph> and use a custom implementation of the Java
+          <codeph>AuthorOperation</codeph> interface.</p>
+    </section>
+    <section id="section_rmh_2vy_dlb">
+      <title>Showing a Dialog to Configure the Newly Inserted Element</title>
+      <p>Sometimes, to determine how to configure an element before it is inserted, user input is
+        required. For example, to insert a link, the user has to choose the link target. If you want
+        to prompt the user for input, for example to choose the target of a link, to determine you
+        can use the <xref href="webapp_editor_variables.dita#webapp_editor_variables/edVar-ask"
+            ><i>${ask}</i> editor variable</xref> or use the JavaScript API.</p>
+    </section>
+  </body>
+</topic>
+  
