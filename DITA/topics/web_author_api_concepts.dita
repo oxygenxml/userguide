@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="web_author_api_concepts">
+    <title>Web Author API Concepts</title>
+    <body>
+        <p><ph keyref="product"/> is a web application with two components</p>
+    <p>
+      <ul id="ul_kdy_twy_dlb">
+        <li>The back-end is implemented in Java. It stores the DOM model of the document and is
+          responsible for advanced processing of the XML document, such as: validation and executing
+          operations whose behavior is influenced by the document schema.</li>
+        <li>The front-end is implemented in JavaScript. It renders the user interface of the editor,
+          provides basic access to the document model and makes requests to the back-end to modify
+          the document in response to the user actions. Some performance-sensitive actions such as
+          typing, are first executed on the front-end and then the result is synchronized with the
+          back-end.</li>
+      </ul>
+    </p>
+    <p>Each of the components offers an API that can be used from a framework or from a plugin.</p>
+    <section id="section_opf_4xy_dlb">
+      <title>JavaScript API Concepts</title>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Workspace</dt>
+            <dd>The <codeph>workspace</codeph> global variable is the entry point for the JavaScript
+              API. It provides access to functions and objects for that particular browser tab (or
+                <codeph>iframe</codeph> in case of an integration). The <term>workspace</term> has
+              side-views that can be configured.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Editor</dt>
+            <dd>In a <term>workspace</term> one or more editors are loaded. The <term>editor</term>
+              represents the area where the document to be edited is rendered.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Editing Support</dt>
+            <dd>When an <term>Editor</term> is loaded, depending on the document, an <term>editing
+                support</term> is created. It can be one of:<p>
+                <ul id="ul_ksc_tyy_dlb">
+                  <li>Author-mode editing support that is used for XML documents to provide WYSIWYG
+                    editing features</li>
+                  <li>Markdown editing support - used to edit Markdown documents</li>
+                  <li>Plain-text editing support - used to provide read-only access to any textual
+                    documents</li>
+                  <li>Image editing support - used to provide view-only access to images</li>
+                  <li>Diff editing support - used by the File Comparison plugin to display two
+                    documents side-by-side.</li>
+                  <li>Custom editing supports can be implemented for other use-cases.</li>
+                </ul>
+              </p><p>If the document loading fails, no editing support is created.</p></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Loading Option</dt>
+            <dd>Configuration options that can be specified before the editor loading is attempted,
+              for
+              example:<codeblock outputclass="language-javascript">goog.events.listen(workspace, sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED,
+  function(e) {
+    if (e.options.url.endsWith('.dita')) {
+      // DITA files will be opened in no-tags mode.
+      e.options['tags-mode'] = 'no-tags';
+    }
+});</codeblock></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Action</dt>
+            <dd>An action is a JavaScript object that extends the
+                <codeph>sync.actions.AbstractAction</codeph> that implements a behavior and is
+              configured with rendering information such as icons or textual descriptions. Some
+              actions are automatically constructed from the framework configuration and others are
+              explicitly implemented in JavaScript extensions. Such an action can be added as a
+              button on the toolbar, in the contextual menu, or in the Content Completion
+              assistant.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Operation</dt>
+            <dd>An operation is a Java implementation of the <xref
+                href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorOperation.html"
+                format="html" scope="external"
+                  ><codeph>ro.sync.ecss.extensions.api.AuthorOperation</codeph></xref> interface. It
+              can be invoked asynchronously from the JavaScript code using
+                <codeph>sync.api.ActionsManager#invokeOperation</codeph>. This is the primary way to
+              communicate between JavaScript API and Java API.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Enhancer</dt>
+            <dd>An <term>Enhancer</term> is a JavaScript class used to make a custom form-control
+              rendered on the back-end interactive. </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    <section id="section_zzh_41z_dlb">
+      <title>Java API Concepts</title>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>PluginWorkspace</dt>
+            <dd>Object instance of
+                <codeph>ro.sync.ecss.extensions.api.webapp.access.WebappPluginWorkspace</codeph>
+              which can be used to make global customizations that affect all users, such as
+              registering an <codeph>URIResolver</codeph>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Editing Session</dt>
+            <dd>An editing session corresponds to an XML document opened in a browser tab. It is the
+              back-end counterpart of an Author-mode <codeph>editing support</codeph>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>System ID</dt>
+            <dd>The <xref href="oxy-url.dita">OXY-URL</xref> of a the edited document.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Context ID</dt>
+            <dd>A token that uniquely identifies an user session connected to the <ph
+                keyref="product"/> back-end. It is stored in the userInfo part of the System ID and
+              is the same for all documents opened in the same user session.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>User Session</dt>
+            <dd>The session established between the user's browser and the back-end using a session
+              cookie.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>AuthorDocumentModel</dt>
+            <dd>Instance of the
+                <codeph>ro.sync.ecss.extensions.api.webapp.AuthorDocumentModel</codeph>, the
+              server-side model of the edited XML document.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Operation</dt>
+            <dd>An operation is a Java implementation of the <xref
+                href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorOperation.html"
+                format="html" scope="external"
+                  ><codeph>ro.sync.ecss.extensions.api.AuthorOperation</codeph></xref> interface. An
+              operation makes an atomic edit of the document. Some operations may extend
+                <codeph>ro.sync.ecss.extensions.api.webapp.AuthorOperationWithResult</codeph> to
+              return a result when invoked by JavaScript code.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Framework</dt>
+            <dd>Set of files that configure the editor for a particular XML vocabulary. The main
+              file of a framework is the framework descriptor and has a
+                <filepath>.framework</filepath> file extension. This descriptor has references to
+              additional configuration files. </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Form Control</dt>
+            <dd>Embedded widget that can be used to provide specialized editing interfaces for XML
+              attributes and elements. Some examples are combo-boxes, radio buttons, or date
+              pickers.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Styles</dt>
+            <dd><ph keyref="product"/> uses CSS to configure the rendering of a document. After
+              matching CSS rules against an element a set of styles used to render the element are
+              determined.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Pseudo-element</dt>
+            <dd>Boxes whose rendering can be configured using CSS, but which do not appear in the
+              XML document. For
+              example:<codeblock outputclass="language-css">note:before {
+  content: "Note:";
+}</codeblock></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Pseudo-class</dt>
+            <dd>Flag that can be set on an XML node while the document is opened in the editor. They
+              are not serialized in the XML document but can be used in CSS selectors. For
+              example:<codeblock outputclass="language-css">colspecs:closed > * {
+  display: none;
+}</codeblock></dd>
+          </dlentry>
+          <dlentry>
+            <dt>Schema Aware</dt>
+            <dd>Mode of operation in which schema information is taken into by editing functions,
+              for example, when the user tries to insert an element in an invalid position, the
+              editor inserts the element in a nearby position where it is valid.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    </body>
+</topic>
