@@ -19,19 +19,20 @@
       </metadata>
     </prolog>
     <body>
-      <p>Images are very important in any printed material. This section contains information about
-        how you can reference them from your HTML or XML documents.</p>
+      <p>This section contains information about how you can reference images from your HTML or XML
+        documents.</p>
       <p>For HTML, the <codeph>img</codeph> tag is recognized as an image without any other styling
         in your CSS files:</p>
       <codeblock outputclass="language-xml">...
 &lt;p> And this is the picture of a happy face: &lt;img src="happy.png" />. &lt;/p>
 ...</codeblock>
       <p>For XML, you must add CSS rules that pick up the content of an attribute and uses it as a
-        source for an image.</p>
+        source for the image.</p>
       <codeblock outputclass="language-xml">...
 &lt;para> And this is the picture of a happy face: &lt;imagedata fileref="happy.png"/>.&lt;/para>
 ...</codeblock>
-      <p>The following example uses static content on the <codeph>imagedata</codeph> before pseudo-element:</p>
+      <p>The following example uses static content on the <codeph>imagedata</codeph>
+        <i>:before</i> pseudo-element:</p>
       <codeblock outputclass="language-css">imagedata[fileref]:before {
     content: attr(fileref, url);
 }</codeblock>
@@ -48,9 +49,9 @@
         <p>For HTML, it is enough to use the image attributes directly in your document.</p>
         <codeblock outputclass="language-xml">&lt;img src="my_image.png" width="300" height="250" /></codeblock>
         <p>For an arbitrary XML, you can indicate the image width and height through a rule that
-          matches the element (or its pseudo-elements <codeph>:before</codeph> or
-            <codeph>:after</codeph>) and sets the <codeph>width</codeph> and <codeph>height</codeph>
-          CSS properties.</p>
+          matches the element (or its <codeph>:before</codeph> or <codeph>:after</codeph>
+          pseudo-elements) and sets the <codeph>width</codeph> and <codeph>height</codeph> CSS
+          properties.</p>
         <codeblock outputclass="language-css">imagedata {
     display: inline;
     content: attr(src, url);
@@ -130,7 +131,7 @@ div.cover {
         </section>
         <section id="element_background_images">
           <title>Element Background Images</title>
-          <p>You can style the background of your elements as you do for web pages:</p>
+          <p>You can style the background of your elements the same as for web pages:</p>
           <codeblock outputclass="language-css">section {
     background-image: url("my_repeating_pattern.svg");
     background-repeat: repeat-y;
@@ -147,13 +148,13 @@ div.cover {
           it will have the same effective size on the screen and on paper. For example, if the image
           has 144 dots in width, and an embedded resolution of 72dpi, it will be two inches on
           screen and on paper.</p>
-        <p>The problems start to arise when the resolution is not set in the image, and the PDF
+        <p>The problems start to arise when the resolution is not set on the image, and the PDF
           processor has to decide what resolution to use to determine the size of the graphic. To
           solve this, the processor extracts the DPI from:</p>
         <ul id="ol_tyf_cnz_xz">
           <li>The <codeph>image-resolution</codeph> CSS property associated to the element that
             contains the image.</li>
-          <li>The command-line parameter <codeph>-image-resolution</codeph> .</li>
+          <li>The <codeph>-image-resolution</codeph> command-line parameter.</li>
           <li>The built-in fallback resolution of 96 DPI.</li>
         </ul>
         <p>The recommended way to change this is by using the CSS Level 4
@@ -173,7 +174,8 @@ div.cover {
     image-resolution: from-image;
 }</codeblock></note>
         <note>To change the resolution for images that appear in a page margin box, set this
-          property on that margin box, or directly on the @page rule, to apply to all page margin
+          property on that margin box, or directly on the <i>@page</i> rule, to apply it to all page
+          margin
           boxes:<codeblock outputclass="language-css">@page front-page {
     image-resolution: 600dpi;
 }
@@ -197,7 +199,7 @@ div.cover {
     <topic id="ch_supported_image_types">
       <title>Supported Image Types</title>
       <body>
-        <p><ph keyref="product"/> supports the following raster image types:</p>
+        <p><ph keyref="product"/> supports the following types of raster images:</p>
         <ul id="ul_qyb_mkz_xz">
           <li>BMP (Microsoft Windows Bitmap)</li>
           <li>GIF (Graphics Interchange Format)</li>
@@ -205,7 +207,7 @@ div.cover {
           <li>PNG (Portable Network Graphic)</li>
           <li>TIFF (Tag Image Format File)</li>
         </ul>
-        <p>And the following vector images:</p>
+        <p>And the following types of vector images:</p>
         <ul id="ul_mpy_x33_b1b">
           <li>SVG (Scalable Vector Graphics)</li>
           <li>WMF (Windows Metafile)</li>
@@ -233,28 +235,30 @@ div.cover {
       <body>
         <p><ph keyref="product"/> supports SVG images. The advantage of using SVG is that the image
           looks good on paper.</p>
-        <section id="section_b1s_vk1_yz"><title>SVG Referenced or Embedded into the
-            Document</title><p>These can be either referenced as external
-            resources:</p><codeblock outputclass="language-xml">&lt;p> This is an SVG showing a happy face: &lt;img src="happy.svg"/>&lt;/p></codeblock><p>Or
-            embedded into the document, as SVG
-          fragments:</p><codeblock outputclass="language-xml">&lt;p> This is a red circle: 
+        <section id="section_b1s_vk1_yz">
+          <title>SVG Referenced or Embedded in the Document</title>
+          <p>These can either be referenced as external
+            resources:<codeblock outputclass="language-xml">&lt;p> This is an SVG showing a happy face: &lt;img src="happy.svg"/>&lt;/p></codeblock></p>
+          <p>or embedded in the document as SVG
+            fragments:<codeblock outputclass="language-xml">&lt;p> This is a red circle: 
    &lt;svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 50 50" width="50" height="50">
        &lt;circle cx="25" cy="25" r="10" />
    &lt;/svg>
-&lt;/p></codeblock>The
-          document styles are also applied to the SVG fragments. For instance if the
-            <xmlelement>circle</xmlelement> element has the class <codeph>sun</codeph>, you could
-          change its appearance by using <codeph>.sun {fill="orange"}</codeph> in your main CSS. As
-          a general rule of thumb, keep distinct names for the SVG fragments class attributes from
-          the ones used for general content styling.<note>For HTML5, the namespace declaration is
-            not required.</note></section>
+&lt;/p></codeblock></p>
+          <p>The document styles are also applied to the SVG fragments. For instance, if the
+              <xmlelement>circle</xmlelement> element has the <codeph>sun</codeph> class, you could
+            change its appearance by using <codeph>.sun {fill="orange"}</codeph> in your main CSS.
+            As a general rule of thumb, keep distinct names for the SVG fragment class attributes
+            from the ones used for general content styling.<note>For HTML5, the namespace
+              declaration is not required.</note></p>
+        </section>
         <section id="section_m2s_yk1_yz">
           <title>Using SVG for Styling</title>
-          <p>To use it to decorate an element:</p>
+          <p>To use SVG to decorate an element:</p>
           <codeblock outputclass="language-css">div.note:before {
     content:url("images/note.svg");
 }</codeblock>
-          <p>To set an SVG image as background of a page, or a page margin box:</p>
+          <p>To set an SVG image as the background of a page, or a page margin box:</p>
           <codeblock outputclass="language-css">@page coverpage{
     background-image: url("images/clipart.svg");
     background-repeat:no-repeat;
@@ -280,10 +284,10 @@ div.cover {
         </metadata>
       </prolog>
       <body>
-        <p>MathML equations can be either referenced from the document as external resources (the
+        <p>MathML equations can either be referenced from the document as external resources (the
           file should be ending with the "mml" extension):</p>
         <codeblock outputclass="language-xml">&lt;p> The quadratic formula: &lt;img src="quadratic.mml"/>&lt;/p></codeblock>
-        <p>Or embedded directly in the document:</p>
+        <p>or embedded directly in the document:</p>
         <codeblock outputclass="language-xml">  &lt;p> The quadratic formula:
    &lt;math>
     &lt;mi>x&lt;/mi>
@@ -304,9 +308,13 @@ div.cover {
     &lt;/mfrac>
    &lt;/math>
   &lt;/p></codeblock>
-        <note>No styling is required to show the embedded MathML in the output. It works
-          automatically for HTML or other XML.</note>
-        <note>For HTML5 the namespace declaration is not required.</note>
+        <note type="other" othertype="Notes">
+          <ul id="ul_plc_h2k_hlb">
+            <li>No styling is required to show the embedded MathML in the output. It works
+              automatically for HTML or XML document types.</li>
+            <li>For HTML5, the namespace declaration is not required.</li>
+          </ul>
+        </note>
       </body>
     </topic>
     <topic id="ch_supported_colors">
@@ -320,7 +328,7 @@ div.cover {
           <li><b>rbga</b> - Used for transparent colors by specifying each color channel and the
             transparency. For example, the following would result in the background color being
             magenta since the red color from the parent <codeph>div</codeph> element will be visible
-            through the blue color of the <codeph>p</codeph>
+            through the blue color of the <xmlelement>p</xmlelement>
             element:<codeblock outputclass="language-css">div{
   background-color:rgba(255,0,0,0.3)
 }
