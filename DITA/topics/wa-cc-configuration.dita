@@ -87,6 +87,24 @@
           href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/cc/ContentCompletionSortPriorityAssigner.html"
           format="html" scope="external">ContentCompletionSortPriorityAssigner API</xref>.</p>
     </section>
+    <section id="section_ykl_w3s_hlb">
+      <title>Filtering Content Completion Assistant Entries using JavaScript</title>
+      <p>You can remove entries from the <term>Content Completion Assistant</term> using JavaScript
+        by adding them to the <codeph>filterCCItems</codeph> list of the
+          <codeph>sync.api.Editor.ActionsLoadedEvent</codeph>. The initial content of the
+          <codeph>filterCCItems</codeph> list is composed of entries configured in the <xref
+          href="#wa-cc-configuration/section_zzf_pns_vz">Document Type Configuration dialog
+          box</xref>.</p>
+      <p>An example that removes the <codeph>abbreviated-form</codeph> DITA element can be found
+        below:<codeblock outputclass="language-javascript">goog.events.listen(workspace, sync.api.Workspace.EventType.EDITOR_LOADED, function(e) {
+  var editor = e.editor;
+  goog.events.listen(editor, sync.api.Editor.EventTypes.ACTIONS_LOADED, function(e) {
+    if (e.actionsConfiguration.filterCCItems) {
+      e.actionsConfiguration.filterCCItems.push('abbreviated-form');
+    }
+  });
+}); </codeblock></p>
+    </section>
     <section id="section_jnp_k15_dlb">
       <title>Customizing the Behavior for Invalid Elements</title>
       <p>When an invalid element is selected in the content completion list, <ph keyref="product"/>
