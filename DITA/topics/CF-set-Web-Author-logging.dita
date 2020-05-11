@@ -11,35 +11,30 @@
             format="html" scope="external"><b>Deploying Content Fusion Enterprise Using VMware
               vSphere</b></xref>).</li>
         <li>Edit the <codeph>log4j.properties</codeph> file from the Web Author Docker container and
-          then restart that container.</li>
-        <li>Run the following commands with administrator privileges:<ul id="ul_wpp_mm1_plb">
-            <li>
-              <codeblock outputclass="language-bourne">sudo su</codeblock>
-            </li>
-            <li>
-              <codeblock outputclass="language-bourne">cd /fusion</codeblock>
-            </li>
-          </ul></li>
-        <li>Copy the <codeph>log4j.properties</codeph> file from the Web Author Docker container to
-          the
-          host:<codeblock outputclass="language-bourne">docker cp "$(docker-compose ps -q webauthor)":
+          then restart that container:<ol id="ol_yqp_444_qlb">
+            <li>Go to the Content Fusion
+              directory:<codeblock outputclass="language-bourne">cd /fusion</codeblock></li>
+            <li>Copy the <codeph>log4j.properties</codeph> file from the Web Author Docker container
+              to the
+              host:<codeblock outputclass="language-bourne">sudo docker cp "$(docker-compose ps -q webauthor)":
 /tomcat/webapps/oxygen-xml-web-author/WEB-INF/log4j.properties log4j.properties</codeblock></li>
-        <li>
-          <p>Open this (<codeph>log4j.properties</codeph>) file in an editor to add lines to enable
-            additional logging. Once you have finished editing the file, you can copy it to the Web
-            Author container with:</p>
-          <p>
-            <codeblock outputclass="language-bourne">docker cp log4j.properties "$(docker-compose ps -q webauthor)":
+            <li>
+              <p>Open this (<codeph>log4j.properties</codeph>) file in an editor to add lines to
+                enable additional logging. Once you have finished editing the file, you can copy it
+                to the Web Author container with:</p>
+              <p>
+                <codeblock outputclass="language-bourne">sudo docker cp log4j.properties "$(docker-compose ps -q webauthor)":
 /tomcat/webapps/oxygen-xml-web-author/WEB-INF/log4j.properties</codeblock>
-          </p>
-        </li>
-        <li>Restart the Web Author Docker container to apply the
-          changes:<codeblock outputclass="language-bourne">docker-compose restart webauthor</codeblock></li>
+              </p>
+            </li>
+            <li>Restart the Web Author Docker container to apply the
+              changes:<codeblock outputclass="language-bourne">sudo docker-compose restart webauthor</codeblock></li>
+          </ol></li>
         <li>
           <p>[Optional] To verify the content of the <codeph>log4j.properties</codeph> file, you can
             run:</p>
           <p>
-            <codeblock outputclass="language-bourne">docker-compose exec webauthor cat /tomcat/webapps/oxygen-xml-web-author/WEB-INF/log4j.properties</codeblock>
+            <codeblock outputclass="language-bourne">sudo docker-compose exec webauthor cat /tomcat/webapps/oxygen-xml-web-author/WEB-INF/log4j.properties</codeblock>
           </p>
           <p>
             <note>These changes will be lost in case the Web Author Docker container is
@@ -47,7 +42,7 @@
           </p>
         </li>
         <li>[Optional] If you have not changed the default docker log driver, you can see the live
-          feed of logs by running:<codeblock outputclass="language-bourne">docker-compose logs --follow webauthor</codeblock><p>
+          feed of logs by running:<codeblock outputclass="language-bourne">sudo docker-compose logs --follow webauthor</codeblock><p>
             <note>It will block your current console until you press Ctrl+C (Command+C on OS
               X).</note>
           </p></li>
