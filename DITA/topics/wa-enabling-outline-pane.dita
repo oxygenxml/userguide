@@ -21,14 +21,19 @@
       framework, follow these steps:<ol id="ol_n21_zpk_slb">
         <li>Create a configuration file named <b>webAuthorOutlineConfig.xml</b>. The following is an
           example of what this configuration file looks like for
-          DocBook:<codeblock outputclass="language-xml">&lt;outline> 
+            DocBook:<codeblock outputclass="language-xml">&lt;outline> 
   &lt;structureMode editable="yes" default="no">
     &lt;preferredAttributes names="id xml:id"/> 
   &lt;/structureMode> 
   &lt;tocMode editable="yes" default="yes">
     &lt;elements names="section sect1 sect2 sect3 sect4 sect5 simplesect article book"/> 
   &lt;/tocMode> 
-&lt;/outline></codeblock></li>
+&lt;/outline></codeblock><p>Notice
+            that there are two elements that define the two modes:
+              <xmlelement>structureMode</xmlelement> (for the <uicontrol>Structure</uicontrol> mode
+            that displays the information in the pane as a general tag overview of the current XML
+            document) and <xmlelement>tocMode</xmlelement> (for the <uicontrol>Contents</uicontrol>
+            mode that displays the information in the pane like a table of contents).</p></li>
         <li>This configuration file must be stored in a folder this is an immediate child your
           custom framework folder: <itemgroup>
             <p><b><u>Example:</u></b>
@@ -65,5 +70,29 @@
     "    }\n" + 
     "}");
     }</codeblock></note>
+    <section id="section_o5s_mtk_slb">
+      <title>How to Configure the Displayed Names of Elements in the Outline Pane</title>
+      <p>The <b>Contents</b> mode (table of contents mode) uses a heuristic algorithm to present the
+          <i>title</i> (name) for any given element. For advanced use-cases, it is possible to
+        configure the location of the element title presented the <uicontrol>Outline</uicontrol>
+        pane.</p>
+      <p>Here is an DocBook example of what the <xmlelement>tocMode</xmlelement> element would look
+        like for this type of
+        configuration:<codeblock outputclass="language-xml">&lt;outline> 
+  &lt;tocMode editable="no">
+    &lt;elements names="section sect1 sect2 sect3 sect4 sect5 simplesect article book"/> 
+    &lt;titleLocator element="section" location="title, @spectitle"/>  
+    &lt;titleLocator element="section1" location="title"/>  
+  &lt;/tocMode> 
+&lt;/outline></codeblock></p>
+      <p>The value of the <xmlatt>location</xmlatt> attribute is a simplified XPath that supports a
+        comma-separated list of:<ul id="ul_p3l_jvk_slb">
+          <li>Element names</li>
+          <li>Attributes (prefixed with @)</li>
+        </ul></p>
+      <p>The first element in the list returned by the XPath is used. If no
+          <xmlelement>titleLocator</xmlelement> element is present, or if no match is found in the
+        document, the default algorithm is used to retrieve the text for the given element.</p>
+    </section>
   </body>
 </topic>
