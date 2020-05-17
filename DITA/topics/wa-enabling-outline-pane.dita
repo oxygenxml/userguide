@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-enabling-outline-pane">
+  <title>Enabling the Outline Pane for DITA and Other Frameworks</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Outline pane customization</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="webappProduct"/> includes an <xref
+        href="https://www.oxygenxml.com/doc/ug-webauthor/wa-outline-pane.html" format="html"
+        scope="external"><uicontrol>Outline</uicontrol> side-pane</xref> that displays a general tag
+      overview of the currently open document. It is enabled and available, by default, for DocBook,
+      TEI, and XHTML documents. However, it is possible to configure other frameworks (such as DITA)
+      to display the pane.</p>
+    <p>To enable the <xref href="https://www.oxygenxml.com/doc/ug-webauthor/wa-outline-pane.html"
+        format="html" scope="external"><uicontrol>Outline</uicontrol> pane</xref> for a custom
+      framework, follow these steps:<ol id="ol_n21_zpk_slb">
+        <li>Create a configuration file named <b>webAuthorOutlineConfig.xml</b>. The following is an
+          example of what this configuration file looks like for
+          DocBook:<codeblock outputclass="language-xml">&lt;outline> 
+  &lt;structureMode editable="yes" default="no">
+    &lt;preferredAttributes names="id xml:id"/> 
+  &lt;/structureMode> 
+  &lt;tocMode editable="yes" default="yes">
+    &lt;elements names="section sect1 sect2 sect3 sect4 sect5 simplesect article book"/> 
+  &lt;/tocMode> 
+&lt;/outline></codeblock></li>
+        <li>This configuration file must be stored in a folder this is an immediate child your
+          custom framework folder: <itemgroup>
+            <p><b><u>Example:</u></b>
+              <filepath>path/to/.../custom_framework/outline-config</filepath></p>
+          </itemgroup></li>
+        <li> In <b>Oxygen XML Editor/Author</b>, go to <menucascade>
+            <uicontrol>Options</uicontrol>
+            <uicontrol>Preferences</uicontrol>
+            <uicontrol>Document Type Association</uicontrol>
+          </menucascade> and edit the document type configuration for your custom framework. In the
+            <uicontrol>Classpath</uicontrol> tab, add a link to the folder where you stored the
+          configuration file.</li>
+        <li> Create an archive that only contains your custom framework folder and <xref
+            href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
+            the changes to your <term>framework</term> to Web Author</xref>.</li>
+      </ol></p>
+    <note type="tip">It is also possible to send the <uicontrol>Outline</uicontrol> pane
+      configuration through the <codeph>outlineConfigurationProvider</codeph> loading option. This
+      function that has a callback that receives the JSON configuration as a parameter. It can be
+      set like
+      this:<codeblock outputclass="language-javascript">goog.events.listen(workspace,sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED,function(e)
+ {
+    e.options.outlineConfigurationProvider = function(callback) {
+        callback("{\n" + 
+    "    \"structureMode\": {\n" + 
+    "        \"editable\": \"yes\",\n" + 
+    "        \"defaultMode\": \"no\",\n" + 
+    "        \"preferredAttributes\": {\"names\": \"id xml:id\"}\n" + 
+    "    },\n" + 
+    "    \"tocMode\": {\n" + 
+    "        \"editable\": \"yes\",\n" + 
+    "        \"defaultMode\": \"yes\",\n" + 
+    "        \"elements\": {\"names\": \"topic\"}\n" + 
+    "    }\n" + 
+    "}");
+    }</codeblock></note>
+  </body>
+</topic>
