@@ -14,29 +14,69 @@
     <p>To install <b>Oxygen Feedback</b> in your WebHelp output generated using a transformation
       from a command line (using the <b>Oxygen XML WebHelp</b> plugin or <b>Oxygen Publishing
         Engine</b>), use this procedure:</p>
-    <p><b><u>Prerequisites</u></b><ul id="ul_cbv_d3x_fjb">
-        <li>You must have a licensed version of <b>Oxygen XML WebHelp</b> or <b>Oxygen Publishing
-            Engine</b>. </li>
-        <li conkeyref="reusables-feedback/prereq2"/>
-      </ul></p>
-    <p><b id="installation1"><u>Installation Procedure</u></b><ol id="ol_pwy_sjx_fjb">
-        <li conkeyref="reusables-feedback/li1"/>
-        <li conkeyref="reusables-feedback/li2"/>
-        <li conkeyref="reusables-feedback/li3"/>
-        <li conkeyref="reusables-feedback/li4"/>
-        <li>In the <uicontrol>Installation</uicontrol> page, choose the <uicontrol>Install Feedback
-            in WebHelp output generated from a command line</uicontrol> option.</li>
-        <li>Create an XML file (for example, <filepath>feedback-install.xml</filepath>) on disk with
-          the content generated in the <uicontrol>Installation</uicontrol> page in the admin
-          UI.</li>
-        <li>
-          <p>Use the <codeph>webhelp.fragment.feedback</codeph> parameter to specify the path to the
-            file created in the previous step. For
-            example:<codeblock outputclass="">dita.bat
+    <section id="section_z1j_rr3_zlb">
+      <title>Prerequisites</title>
+      <p>
+        <ul id="ul_cbv_d3x_fjb">
+          <li>You must have a licensed version of <b>Oxygen XML WebHelp</b> or <b>Oxygen Publishing
+              Engine</b>. </li>
+          <li conkeyref="reusables-feedback/prereq2"/>
+        </ul>
+      </p>
+    </section>
+    <section id="section_b2w_sr3_zlb">
+      <title>Installation Procedure</title>
+      <p>
+        <ol id="ol_pwy_sjx_fjb">
+          <li conkeyref="reusables-feedback/li1"/>
+          <li conkeyref="reusables-feedback/li2"/>
+          <li conkeyref="reusables-feedback/li3"/>
+          <li conkeyref="reusables-feedback/li4"/>
+          <li>In the <uicontrol>Installation</uicontrol> page, choose the <uicontrol>Install
+              Feedback in WebHelp output generated from a command line</uicontrol> option.</li>
+          <li>Create an XML file (for example, <filepath>feedback-install.xml</filepath>) on disk
+            with the content generated in that <uicontrol>Installation</uicontrol> page.</li>
+          <li>
+            <p>Reference the file you just created in a command-line transformation. There are
+              several options for doing this:<ul id="ul_ez1_ts3_zlb">
+                <li>Specify the path to the newly created XML file using the
+                    <codeph>webhelp.fragment.feedback</codeph> parameter in your command-line
+                  script:<codeblock outputclass="">dita.bat
 ...[Other parameters]...
--Dwebhelp.fragment.feedback=c:\path\to\feedback-install.xml</codeblock></p>
-        </li>
-        <li conkeyref="reusables-feedback/li-run-transformation"/>
-      </ol></p>
+-Dwebhelp.fragment.feedback=c:\path\to\feedback-install.xml</codeblock></li>
+                <li>Specify the path to the newly created XML file using an <xref
+                    href="http://oxygenxml.com/doc/ug-webhelp-responsive/topics/whr-publishing-template.html"
+                    format="html" scope="external"><term>Oxygen Publishing
+                    Template</term></xref>:<ol id="ol_ryr_ht3_zlb">
+                    <li>Create a Publishing Template, if you have not already done so. If you need
+                      help, see <xref
+                        href="http://oxygenxml.com/doc/ug-webhelp-responsive/topics/whr_publishing_templates.html"
+                        format="html" scope="external">Working with Publishing
+                      Templates</xref>.</li>
+                    <li>Copy the newly created XML file to a folder inside the publishing template's
+                      root folder.</li>
+                    <li>Open the template descriptor file associated with your publishing template
+                      and add a reference to the newly created XML file in the
+                        <term>html-fragments</term>
+                      section.<codeblock outputclass="language-xml">&lt;publishing-template>
+ ...    
+  &lt;html-fragments>
+    &lt;fragment file="custom-template/feedback-install.xml" 
+     placeholder="webhelp.fragment.feedback"/>
+  &lt;/html-fragments></codeblock></li>
+                    <li>Reference the <term>Publishing Template</term> in your command-line script
+                      using one of the procedures found <xref
+                        href="https://www.oxygenxml.com/doc/ug-webhelp-responsive/topics/whr-create-edit-pt-script.html"
+                        format="html" scope="external">here (depending on whether your template has
+                        one descriptor file or multiple files)</xref>.</li>
+                  </ol></li>
+              </ul></p>
+          </li>
+          <li>
+            <p>Run the transformation and deploy the WebHelp output to a web server.</p>
+          </li>
+        </ol>
+      </p>
+    </section>
   </body>
 </topic>
