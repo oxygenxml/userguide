@@ -126,42 +126,7 @@
     </table>
     <section id="creating_an_xml_catalog_with_a_template">
       <title>Creating an XML Catalog with a Template</title>
-      <p>An <xref keyref="glossentry_xml-catalog"><term>XML Catalog</term></xref> file can be
-        created quickly in <ph keyref="product"/> starting from the two document templates called
-          <i>OASIS XML Catalog 1.0</i> and <i>OASIS XML Catalog 1.1</i>. They are available when
-          <xref href="new-dialog-sa.dita#new-dialog-sa" product="author developer editor">creating
-          new document templates</xref><xref
-          href="creating-from-templates.dita#creating-from-templates"
-          product="authorEclipse developerEclipse editorEclipse">creating new document
-          templates</xref>.</p>
-      <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;!DOCTYPE catalog 
-      PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" 
-      "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd">
-
-&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-
-    &lt;!-- Use "system" and "public" mappings when resolving DTDs -->
-    &lt;system 
-          systemId="http://www.docbook.org/xml/4.4/docbookx.dtd" 
-          uri="frameworks/docbook/4.4/dtd/docbookx.dtd"/>     
-
-    &lt;!-- "systemSuffix" matches any system ID ending in a specified string -->
-    &lt;systemSuffix 
-          systemIdSuffix="docbookx.dtd" 
-          uri="frameworks/docbook/dtd/docbookx.dtd"/>
-
-    &lt;!-- Use "uri" for resolving XML Schema and XSLT stylesheets -->
-    &lt;uri 
-          name="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" 
-          uri="frameworks/docbook/5.0/rng/docbookxi.rng"/>
-
-    &lt;!-- The "uriSuffix" matches any URI ending in a specified string -->
-    &lt;uriSuffix 
-          uriSuffix="docbook.xsl" 
-          uri="frameworks/docbook/xsl/fo/docbook.xsl"/>
-
-&lt;/catalog></codeblock>
+      <p>An <xref keyref="glossentry_xml-catalog"><term>XML Catalog</term></xref> file can be created quickly in <ph keyref="product"/> starting from the document template called <i>OASIS XML Catalog</i>. It is available when <xref href="new-dialog-sa.dita#new-dialog-sa" product="author developer editor">creating new document templates</xref><xref href="creating-from-templates.dita#creating-from-templates" product="authorEclipse developerEclipse editorEclipse">creating new document templates</xref>.</p>
     </section>
     <section id="catalog-order">
       <title>How <ph keyref="product"/> Determines which Catalog to Use</title>
@@ -185,16 +150,20 @@
           <li>Default built-in catalogs.</li>
         </ul></p>
     </section>
-    <p><b><u>Example:</u></b></p>
-    <p>An <term>XML Catalog</term> can be used to map an XML Schema specified with an URN in the
-        <xmlatt>xsi:noNamespaceSchemaLocation</xmlatt> attribute of an XML document to a local copy
-      of the schema.</p>
-    <p>Considering the following XML document code
-      snippet:<codeblock outputclass="language-xml">&lt;topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    <div>
+      <div>
+        <p><b><u>Example: Using an XML catalog to map an absolute XML Schema reference to an XML schema located relative to the XML catalog</u></b></p>
+        <p>An <term>XML Catalog</term> can be used to map an XML Schema specified with an URN in the <xmlatt>xsi:noNamespaceSchemaLocation</xmlatt> attribute of an XML document to a local copy of the schema.</p>
+        <p>Considering the following XML document code snippet:<codeblock outputclass="language-xml">&lt;topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:noNamespaceSchemaLocation="urn:oasis:names:tc:dita:xsd:topic.xsd:1.1"&gt;</codeblock></p>
-    <p>The URN can be resolved to a local schema file with a catalog entry like
-      this:<codeblock outputclass="language-xml">&lt;uri name="urn:oasis:names:tc:dita:xsd:topic.xsd:1.1"
+        <p>The URN can be resolved to a local schema file with an XML catalog entry like this:<codeblock outputclass="language-xml">&lt;uri name="urn:oasis:names:tc:dita:xsd:topic.xsd:1.1"
     uri="topic.xsd"/&gt;</codeblock></p>
+      </div>
+      <p><b><u>Example: Using an XML catalog to map an imported XML Schema reference to an XML schema located relative to the XML catalog</u></b></p>
+      <p>An <term>XML Catalog</term> can be used to map an <codeph>xs:import</codeph> or <codeph>xs:include</codeph> XML Schema reference to a local copy of the schema.</p>
+      <p>Considering the following <codeph>xs:include</codeph> inside an XML Schema:<codeblock outputclass="language-xml">&lt;xs:include schemaLocation="someFolder/common.xsd"/></codeblock></p>
+      <p>The reference can be resolved to a local schema file with an XML catalog entry like this:<codeblock outputclass="language-xml">&lt;uriSuffix uriSuffix="someFolder/common.xsd" uri="relative/path/to/common.xsd"/></codeblock></p>
+    </div>
   </body>
   <related-links>
     <linklist>
