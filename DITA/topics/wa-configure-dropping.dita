@@ -13,26 +13,33 @@
     <p>By default, dragging a valid URL string and dropping it into the editor in <ph
         keyref="webappProduct"/> will automatically insert it as a linking element for the
       particular document type you are working with. For example, in DITA it would insert an
-        <codeph>xref</codeph> element. It is also possible to configure the behavior of the drop
-      operation.</p>
-    <p>This can be done by creating a <xref href="customizing_plugins.dita#customizing_plugins"
-        >plugin</xref> and setting a listener on the <i>dragstart</i> event for the type of items
-      that can be dragged. On the handler for the <i>dragstart</i> event, you can set the
-        <b>application/oxy-reference</b> custom type to the event's <i>dataTransfer</i>
+        <codeph>xref</codeph> element.</p>
+    <p>If the user drags an HTML elements that represents a file from a side-view or a CMS window
+      you can make <ph keyref="webappProduct"/> insert links to that file when the element is
+      dropped in the editor. This can be done by writing JavaScript code that lets <ph
+        keyref="webappProduct"/> know that the dropped element represents a reference to a file. </p>
+    <p>This code should set a listener on the <codeph>dragstart</codeph> event for the type of items
+      that can be dragged. On the handler for the <codeph>dragstart</codeph> event, you can set the
+        <b>application/oxy-reference</b> custom type to the event's <codeph>dataTransfer</codeph>
         object.<note>Internet Explorer does not support custom types, so it should be set to
           <b>text</b> for this browser.</note></p>
     <p>The value of this custom type needs to be a string before being added to
-      <i>dataTransfer</i>.</p>
+        <codeph>dataTransfer</codeph>.</p>
     <p>The object must contain the following properties:<ul>
         <li><b>type</b> - The reference type to insert.</li>
-        <li><b>url</b> - The URL that the reference points to.</li>
+        <li><b>url</b> - The <xref href="oxy-url.dita">OXY-URL</xref> that the reference points
+          to.</li>
       </ul></p>
-    <p>An example of adding custom data on the <i>dragstart</i> event handler should look like
+    <p>An example of adding custom data on the <codeph>dragstart</codeph> event handler should look
+      like
       this:<codeblock outputclass="language-javascript">// type needs to be set to 'text' for IE only.
 var type = 'application/oxy-reference'; 
 e.dataTransfer.setData(type, JSON.stringify({ 
   url: 'http://example_url.com', 
   type: 'xml_reference' 
 }));</codeblock></p>
+    <p>To customize what element gets inserted when a link is dropped, one can use the
+        <codeph>ro.sync.ecss.extensions.api.AuthorExternalObjectInsertionHandler</codeph> Java
+      API.</p>
   </body>
 </topic>
