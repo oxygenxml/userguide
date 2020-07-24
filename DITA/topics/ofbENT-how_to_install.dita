@@ -88,14 +88,148 @@
               href="ofbENT-database-setup.dita"/>.</li>
           <li><?oxy_comment_start author="Steven" timestamp="20200724T004517-0400" comment="OFB-1621 was mentioned for this, but it doesn&apos;t say how to actually set up the license."?>Set
             up the license for Feedback Enterprise.<?oxy_comment_end?></li>
-          <li>Setup application properties, see <xref format="html"
-              href="https://jira.sync.ro/browse/OFB-1617" scope="external">OFB-1617</xref></li>
-          <li>Setup email notifications, <xref format="html"
-              href="https://jira.sync.ro/browse/OFB-1618" scope="external">OFB-1618</xref></li>
-          <li>Start application, <xref format="html" href="https://jira.sync.ro/browse/OFB-1619"
-              scope="external">OFB-1619</xref></li>
-          <li>Create your first administrator account, <xref format="html"
-              href="https://jira.sync.ro/browse/OFB-1636" scope="external">OFB-1636</xref></li>
+          <li>Set up the application properties by opening
+              <filepath>{Installation-Directory}/config/feedback-application.properties</filepath>
+            and setting the following:<p>
+              <dl>
+                <dlentry>
+                  <dt>Application Host URL</dt>
+                  <dd>
+                    <p>The server URL where the application will be deployed. It must contain the
+                      protocol and port and it will be used in the email notifications:</p>
+                    <codeblock outputclass="language-bourne">feedback.server.host.url= http://example.com</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Image Upload Configuration</dt>
+                  <dd>
+                    <p>Image upload allowed extensions:</p>
+                    <codeblock outputclass="language-bourne">feedback.upload.extensions= jpg, jpeg, png, gif</codeblock>
+                    <p>Set it to <i>true</i> for images to be validated before being uploaded or
+                        <i>false</i> to not validate them.</p>
+                    <codeblock outputclass="language-bourne">feedback.image.validation= true</codeblock>
+                    <p>Sets the maximum allowed size of an image in KB.</p>
+                    <codeblock outputclass="language-bourne">feedback.max.file.upload.size= 2048</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Comment Configuration</dt>
+                  <dd>
+                    <p>Sets the limit of how many characters a comment can have.</p>
+                    <codeblock outputclass="language-bourne">feedback.max.comment.character.size= 10000</codeblock>
+                    <p>Sets the number of days that a deleted comment can be restored. After that,
+                      the comment is permanently deleted.</p>
+                    <codeblock outputclass="language-bourne">feedback.comment.expiration.period= 30</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Accounts Management Configuration</dt>
+                  <dd>
+                    <p>Sets the number of hours that a newly created account can be activated before
+                      it expires.</p>
+                    <codeblock outputclass="language-bourne">feedback.account.expiration.period= 24</codeblock>
+                    <p>Sets the number of days that a deleted account can be recovered.</p>
+                    <codeblock outputclass="language-bourne">feedback.account.termination.period= 14</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Role Change Settings</dt>
+                  <dd>
+                    <p>Sets the number of hours that a site ownership transfer is valid. If the
+                      transfer is not accepted within that time, it will automatically be
+                      cancelled:</p>
+                    <codeblock outputclass="language-bourne">feedback.valid.transfer.site.ownership.period= 24</codeblock>
+                    <p>Sets the number of days that a role change is pending. If not accepted within
+                      that time, it will automatically be cancelled.</p>
+                    <codeblock outputclass="language-bourne">feedback.valid.role.change.period= 1</codeblock>
+                  </dd>
+                </dlentry>
+              </dl>
+            </p></li>
+          <li>Set up email notifications (<ph keyref="product"/> requires an email server to send
+            account confirmation emails, password reset emails, or comment activity emails. Open
+              <filepath>{Installation-Directory}/config/feedback-mail.properties</filepath> and set
+            the following:<p>
+              <dl>
+                <dlentry>
+                  <dt>Configure the SMTP Outgoing Server</dt>
+                  <dd>
+                    <p>The SMTP name:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.host= smtp.example.com</codeblock>
+                    <p>The SMTP port:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.port= 25</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Configure the From Email Address</dt>
+                  <dd>
+                    <p>The name that will be displayed in the <b>From</b> field for email messages
+                      sent by this server:</p>
+                    <codeblock outputclass="language-bourne">feedback.email.sender= company@sender.example.com</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Configure SMTP Authentication</dt>
+                  <dd>
+                    <p>The username used in the authenticated SMTP:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.username= sa</codeblock>
+                    <p>The password used in the authenticated SMTP:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.password=</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Configure STARTTLS Protocol Command</dt>
+                  <dd>
+                    <p>If <b>true</b>, it enables the use of the STARTTLS command (if supported by
+                      the server) to switch the connection to a TLS-protected connection before
+                      issuing any login commands. If the server does not support STARTTLS, the
+                      connection continues without the use of TLS:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.starttls.enable= true</codeblock>
+                    <p>If <b>true</b>, it requires the use of the STARTTLS command. If the server
+                      does not support the STARTTLS command, or the command fails, the connect
+                      method will fail. The default is <b>false</b>.</p>
+                    <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.starttls.required= false</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Configure SSL Authentication</dt>
+                  <dd>
+                    <p>If set to <b>true</b>, it uses SSL to connect and uses the SSL port by
+                      default. The default is <b>false</b> for the SMTP protocol and <b>true</b> for
+                      the SMTPS protocol:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.ssl.enable= true</codeblock>
+                    <p>Specifies the port to connect to when using the specified socket factory. If
+                      not set, the default port will be used.</p>
+                    <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.ssl.socketFactory.port= 465</codeblock>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Advanced Properties</dt>
+                  <dd>
+                    <p>The default message encoding:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.default-encoding= UTF-8</codeblock>
+                    <p><ph keyref="product"/> uses JavaMail for sending emails and it allows
+                      additional properties to be set using the following pattern:</p>
+                    <codeblock outputclass="language-bourne">spring.mail.properties.{JAVA.MAIL.PROPERTY}=</codeblock>
+                    <p>See all available properties in the JavaMail documentation at: <xref
+                        href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html#properties"
+                        format="html" scope="external"
+                      />.<codeblock outputclass="language-bourne">spring.mail.properties.*=</codeblock></p>
+                  </dd>
+                </dlentry>
+              </dl>
+            </p></li>
+          <li>Start <ph keyref="product"/> as a Linux Service. For detailed instructions, see <xref
+              href="ofbENT-how-to-start-as-linux-service.dita"/>.</li>
+          <li>Create your first administrator account:<ol id="ol_wbc_vwf_lmb">
+              <li>Go to the location where the Feedback server is deployed (e.g.
+                  <filepath>http://localhost:8080</filepath>).</li>
+              <li>In the resulting setup page, define your first platform admin.</li>
+              <li>Enter the required information and click the <uicontrol>Create</uicontrol>
+                button.</li>
+            </ol><note>The setup page is only visible the first time the application is started.
+              After the first platform admin is defined, that page will no longer be
+              available.</note></li>
         </ol>
       </p>
     </section>
