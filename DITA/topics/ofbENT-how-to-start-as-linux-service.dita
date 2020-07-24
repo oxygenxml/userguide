@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ofbENT-how-to-start-as-linux-service">
+  <title>How to Start Oxygen Feedback as a Linux Server</title>
+  <body>
+    <ol id="ol_vzd_gvf_lmb">
+      <li>Log in to the machine as a root user.</li>
+      <li>Go to the <ph keyref="product"/> installation directory.</li>
+      <li>Give executable privileges to the
+        jar:<codeblock outputclass="language-bourne">chmod u+x ./oxygen-feedback.jar</codeblock></li>
+      <li>Edit the <filepath>oxygen-feedback.service</filepath> file and update the value for
+          <codeph>ExecStart</codeph>, <codeph>WorkingDirectory</codeph>, and user properties (e.g.
+        via <i>vim</i>, <i>vi</i>, or
+        <i>gedit</i>):<codeblock outputclass="language-bourne">[Unit]
+Description=Oxygen Feedback
+After=syslog.target
+
+[Service]
+User=user
+Type=exec
+PIDFile=&lt;installation_directory>/pid.file
+# The path to the oxygen-feedback scripts.
+ExecStart=&lt;installation_directory>/bin/start.sh
+ExecStop=&lt;installation_directory>/bin/stop.sh
+WorkingDirectory=&lt;installation_directory>
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target</codeblock></li>
+      <li>Copy the <filepath>oxygen-feedback.service</filepath> file to the
+          <filepath>/etc/systemd/system/oxygen-feedback.service</filepath> file and give the
+        permissions:<codeblock outputclass="language-bourne">cp ./oxygen-feedback.service.template /etc/systemd/system/oxygen-feedback.service
+chmod 644 /etc/systemd/system/oxygen-feedback.service</codeblock></li>
+      <li>Enable the service and start
+        it:<codeblock outputclass="language-bourne">systemctl daemon-reload
+systemctl enable oxygen-feedback.service
+systemctl start oxygen-feedback.service
+systemctl status oxygen-feedback.service</codeblock></li>
+    </ol>
+    <p>Pass additional arguments using the <filepath>oxygen-feedback.conf</filepath> file from
+      installation folder via:</p>
+    <ul id="ul_wzd_gvf_lmb">
+      <li>RUN_ARGS - The arguments to pass to the program (e.g:
+        <codeph>-Dserver.port=9999</codeph>).</li>
+      <li>JAVA_OPTS - Options that are passed to the JVM when it is launched.</li>
+      <li>JAVA_HOME - The location of the java executable is discovered by using the PATH by
+        default, but you can set it explicitly if there is an executable file at
+          <filepath>$JAVA_HOME/bin/java</filepath>.</li>
+    </ul>
+    <note type="warning">If you need to edit the
+        <filepath>/etc/systemd/system/oxygen-feedback.service</filepath> file after that, you must
+      run:<codeblock outputclass="language-javascript">systemctl daemon-reload</codeblock></note>
+  </body>
+</topic>
