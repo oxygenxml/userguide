@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ofbENT-https-procedure">
+  <title>Running Oxygen Feedback Over HTTPS </title>
+  <body>
+    <p>There are two possible ways to run <ph keyref="product"/> over HTTPS:<ul id="ul_ds1_5wf_gmb">
+        <li>By using a reverse proxy.</li>
+        <li>By using the built-in SSL support in <ph keyref="product"/>.</li>
+      </ul></p>
+    <section id="section_arh_vxf_gmb">
+      <title>Reverse Proxy Method (Recommended)</title>
+      <p>It is strongly recommend to use a reverse proxy infrastructure to set up <ph
+          keyref="product"/>. This will allow you to have more control over security parameters. For
+        example, you can use Nginx.</p>
+      <p><u><b>Using Nginx</b></u></p>
+      <ol id="ol_mtv_yz2_lmb">
+        <li>[Prerequisite] Nginx must be installed and <ph keyref="product"/> must be up and running
+          on <codeph>http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port}</codeph>.</li>
+        <li>Configure Nginx as a reverse proxy or a reverse proxy with SSL:<p><b>Sample
+              configuration for Nginx as a reverse
+            proxy:</b><codeblock outputclass="language-bourne">server { 
+    listen 80; 
+    server_name ${your_server_name}; 
+    location / { 
+        proxy_pass http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port};
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Host $host; 
+        proxy_set_header X-Forwarded-Proto $scheme; 
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  
+        client_max_body_size 0; 
+    } 
+}</codeblock></p><p>For more information, see: <xref
+              href="https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/"
+              format="html" scope="external"/>.</p><p><b>Sample configuration for Nginx as a reverse
+              proxy with
+            SSL:</b><codeblock outputclass="language-bourne"># Redirects trafic from http to https. 
+server { 
+    listen 80 default_server; 
+    server_name ${your_server_name}; 
+    return 301 https://$server_name$request_uri; 
+}
+                    
+server { 
+    listen 443 ssl; 
+    server_name ${your_server_name}; 
+                    
+    ssl_certificate ${path_to_your_certificate_file}; 
+    ssl_certificate_key ${path_to_your_certificate_key_file};
+                    
+    location / { 
+        proxy_pass http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port};
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Host $host; 
+        proxy_set_header X-Forwarded-Proto $scheme; 
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  
+        client_max_body_size 0; 
+    } 
+}</codeblock></p><p>There are other SSL configuration parameters that you may want to
+            configure, depending on your needs. It is strongly advised to read more about this at:
+              <xref
+              href="https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/"
+              format="html" scope="external"/>. </p><p>An online configuration generator can be
+            found here: <xref href="https://mozilla.github.io/server-side-tls/ssl-config-generator/"
+              format="html" scope="external"/>.</p></li>
+        <li>Restart Nginx. </li>
+      </ol>
+    </section>
+    <section id="section_x4c_zzf_gmb">
+      <title>Built-in SSL Support</title>
+      <p>To configure the built-in SSL support for <ph keyref="product"/>, follow these steps:<ol
+          id="ol_cvw_rch_gmb">
+          <li>Generate a certificate or use an existing one.<p>[Optional] If you do not have a
+              certificate, use the following procedure to generate a self-signed certificate on a
+              Ubuntu machine. This should be used for testing purposes.</p><ol id="ol_bqb_v3h_gmb">
+              <li>Generate the private
+                key:<codeblock outputclass="language-bourne">openssl genrsa -out private.pem 2048</codeblock></li>
+              <li>Generate the public
+                key:<codeblock outputclass="language-bourne">openssl rsa -in private.pem -outform PEM -pubout -out public.pem</codeblock></li>
+              <li>Create a CSR (Certificate Signing
+                  Request):<codeblock outputclass="language-bourne">openssl req -new -key private.pem -out certificate.csr</codeblock><note>After
+                  running this command, you will be prompted to enter some values. Follow the
+                  instructions on the screen and enter the corresponding values.</note></li>
+              <li>Create a self-signed
+                certificate:<codeblock outputclass="language-bourne">openssl x509 -req -days 365 -in certificate.csr -signkey private.pem -out certificate.crt</codeblock></li>
+              <li>Generate a PKCS12
+                  file:<codeblock outputclass="language-bourne">openssl pkcs12 -export -in certificate.crt -inkey private.pem -out feedback.p12 -name feedback -CAfile certificate.crt -chain</codeblock><p>The
+                  path of this file will be used for
+                  <codeph>server.ssl.key-store</codeph>.</p><p>The <b>name</b> attribute value will
+                  be used for <codeph>server.ssl.key-alias</codeph>.</p><p>The <b>export
+                    password</b> value you entered will be used for
+                    <codeph>server.ssl.key-store-password</codeph>.</p></li>
+            </ol></li>
+          <li>Go to <codeph>&lt;OxygenFeedback-installation-directory>/config</codeph> and open the
+              <filepath>server.properties</filepath> file.</li>
+          <li>Set the value for <codeph>server.ssl.enabled</codeph> to be
+            true:<codeblock outputclass="language-bourne">server.ssl.enabled = true</codeblock></li>
+          <li>[Optional] Change the <codeph>http.port</codeph> and <codeph>https.port</codeph> with
+            according to your needs. The default values are 8080 for http and 8443 for
+              https.<note>If you want to use ports 80 and 443, you need to have root permission to
+              open them on a Linux machine.</note></li>
+          <li>Set the type of keystore file to be used for the server certificate. If you followed
+            the instructions to generate a self-signed SSL certificate, you will need to set this
+            property to
+            <codeph>PKCS12</codeph>:<codeblock outputclass="language-bourne">server.ssl.key-store-type=${certificate_key_store_type}</codeblock></li>
+          <li>Set the path name of the keystore file where you have stored the server certificate to
+            be
+            loaded:<codeblock outputclass="language-bourne">server.ssl.key-store=${certificate_file_path}</codeblock></li>
+          <li>Set the password used to access the specified keystore file. If you followed the
+            instructions to generate a self-signed SSL certificate, you will need to use the
+            password set when you generated the PKCS12
+            file:<codeblock outputclass="language-bourne">server.ssl.key-store-password=${password}</codeblock></li>
+          <li>Set the alias that identifies the key in the key
+            store:<codeblock outputclass="language-bourne">server.ssl.key-alias=${alias}</codeblock></li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
