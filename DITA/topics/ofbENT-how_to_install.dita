@@ -1,8 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="ofbENT-how_to_install">
-  <title>How to Install Feedback Enterprise From a Zip Archive</title>
+  <title>How to Install Feedback Enterprise Service on Linux</title>
   <body>
-    <p>...</p>
+    <section id="section_bzb_tdf_lmb">
+      <title>Requirements</title>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Operating System</dt>
+            <dd>Ubuntu 18</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Java</dt>
+            <dd>JRE version 11</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Database</dt>
+            <dd>
+              <ul id="ul_xdm_t2f_lmb">
+                <li>PostgreSQL 11, 12</li>
+                <li>MySQL 8.0</li>
+              </ul>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>CPU</dt>
+            <dd>2 virtual cores</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Memory</dt>
+            <dd>2 GB RAM</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Storage</dt>
+            <dd>20 GB disk storage</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Browser</dt>
+            <dd>
+              <ul id="ul_cts_cgf_lmb">
+                <li>Google Chrome 78.0 [recommended for optimal performance and user
+                  experience]</li>
+                <li>Mozilla Firefox 70.0</li>
+                <li>Microsoft Internet Explorer 11</li>
+                <li>Microsoft Edge 44</li>
+                <li>OS X Safari 13</li>
+                <li>Chrome for Android 78.0 [mobile devices]</li>
+                <li>Safari Mobile iOS 13 [mobile devices]</li>
+              </ul>
+              <note type="tip">For more details, see: <xref href="ofb-browser-compatibility.dita"
+                />.</note>
+            </dd>
+          </dlentry>
+        </dl>
+        <note type="attention">It is recommended to create a dedicated user to configure and run the
+          service.</note>
+      </p>
+    </section>
+    <section id="section_ljk_ghf_lmb">
+      <title>Installation</title>
+      <p>
+        <ol id="ol_xnh_jhf_lmb">
+          <li>Create an installation directory, then download and unzip the Feedback installation
+            package there.<p>Sample code to create the install
+              directory:</p><codeblock outputclass="language-bourne">   sudo mkdir /opt/feedback
+   sudo chown feedback: /opt/feedback</codeblock><p>Sample code to extract the archive
+              content:</p><codeblock outputclass="language-bourne">   cd /opt/feedback
+   tar zxvf oxygen-feedback-{version}-SNAPSHOT-package-enterprise.zip</codeblock></li>
+          <li>[Optional] [Recommended] Create an application home directory. By default, the
+            Feedback home directory value is the installation directory, but if you want to define a
+            custom value, you can add the custom path to
+              <filepath>feedback-home.properties</filepath> or pass it via the
+              <codeph>-Dfeedback.home=</codeph> JVM argument.<note>The structure of the <i>home
+                folder</i> should contain the <i>config</i> and <i>data</i>
+              directories.</note><p>The home directory is used to store configuration files and
+              application data (such as images for avatars and logos). It is recommended to be set
+              to separate application files by the data files.</p><p>Sample code to create a home
+              directory:</p><codeblock outputclass="language-bourne">   sudo mkdir /var/feedback
+   sudo chown feedback: /var/feedback</codeblock></li>
+          <li>Set service port. By default, the service uses the port 8080. To change the port that
+            the service runs on, open
+              <filepath>{Installation-Directory}/config/feedback-server.properties</filepath> and
+            set the <b>http.port</b> property to your desired value.<p>For
+              example:<codeblock outputclass="language-bourne">   http.port=8081</codeblock></p></li>
+          <li>Set up the database. For detailed instructions, see: <xref
+              href="ofbENT-database-setup.dita"/>.</li>
+          <li><?oxy_comment_start author="Steven" timestamp="20200724T004517-0400" comment="OFB-1621 was mentioned for this, but it doesn&apos;t say how to actually set up the license."?>Set
+            up the license for Feedback Enterprise.<?oxy_comment_end?></li>
+          <li>Setup application properties, see <xref format="html"
+              href="https://jira.sync.ro/browse/OFB-1617" scope="external">OFB-1617</xref></li>
+          <li>Setup email notifications, <xref format="html"
+              href="https://jira.sync.ro/browse/OFB-1618" scope="external">OFB-1618</xref></li>
+          <li>Start application, <xref format="html" href="https://jira.sync.ro/browse/OFB-1619"
+              scope="external">OFB-1619</xref></li>
+          <li>Create your first administrator account, <xref format="html"
+              href="https://jira.sync.ro/browse/OFB-1636" scope="external">OFB-1636</xref></li>
+        </ol>
+      </p>
+    </section>
   </body>
 </topic>
