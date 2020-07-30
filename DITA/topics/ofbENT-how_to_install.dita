@@ -55,42 +55,49 @@
           </dlentry>
         </dl>
         <note type="attention">It is recommended to create a dedicated user to configure and run the
-          service.</note>
+          service (for example, named <b>feedback</b>).</note>
       </p>
     </section>
     <section id="section_ljk_ghf_lmb">
       <title>Installation</title>
       <p>
         <ol id="ol_xnh_jhf_lmb">
+          <li>Download the
+              <?oxy_comment_start author="Steven" timestamp="20200729T214300-0400" comment="Need to add a link once I know what it is."?><b>Oxygen
+              Feedback</b> kit<?oxy_comment_end?>.</li>
           <li>Create an installation directory, then download and unzip the Feedback installation
             package there.<p>Sample code to create the install
-              directory:</p><codeblock outputclass="language-bourne">   sudo mkdir /home/feedback/oxygen-feedback
-   sudo chown feedback: /home/feedback/oxygen-feedback</codeblock><p>Sample code to
-              extract the archive
-            content:</p><codeblock outputclass="language-bourne">   cd /home/feedback/oxygen-feedback
-   unzip oxygen-feedback-{version}-SNAPSHOT-package-enterprise.zip</codeblock></li>
-          <li>[Optional] [Recommended] Create an application home directory. By default, the
-            Feedback home directory value is the installation directory, but if you want to define a
-            custom value, you can add the custom path to
-              <filepath>feedback-home.properties</filepath> or pass it via the
-              <codeph>-Dfeedback.home=</codeph> JVM argument.<note>The structure of the <i>home
-                folder</i> should contain the <i>config</i> and <i>data</i>
-              directories.</note><p>The home directory is used to store configuration files and
-              application data (such as images for avatars and logos). It is recommended to be set
-              to separate application files by the data files.</p><p>Sample code to create a home
-              directory:</p><codeblock outputclass="language-bourne">   sudo mkdir /home/feedback/oxygen-feedback-home
-   sudo chown feedback: /home/feedback/oxygen-feedback-home</codeblock></li>
+              directory:</p><codeblock outputclass="language-bourne">sudo mkdir /{oxygen-feedback-user-home-dir}/oxygen-feedback
+sudo chown feedback: /{oxygen-feedback-user-home-dir}/oxygen-feedback</codeblock><p>Sample
+              code to extract the archive
+            content:</p><codeblock outputclass="language-bourne">cd /{oxygen-feedback-user-home-dir}/oxygen-feedback
+unzip oxygen-feedback-{version}-SNAPSHOT-package-enterprise.zip</codeblock></li>
+          <li>[Optional] Create an application home directory. By default, the Feedback home
+            directory value is the installation directory, but if you want to define a custom value,
+            you can add the custom path to <filepath>feedback-home.properties</filepath> or pass it
+            via the <codeph>-Dfeedback.home=</codeph> command-line argument.<ol id="ol_zn5_znw_mmb">
+              <li>Edit
+                <filepath>feedback-home.properties</filepath>:<codeblock outputclass="language-bourne">sudo vi *{oxygen-feedback-user-home-dir}*/feedback-home.properties</codeblock></li>
+              <li>Set the <codeph>feedback.home</codeph>
+                property:<codeblock outputclass="language-bourne"># Oxygen Feedback home path property (by default, the current installation directory)
+feedback.home=/var/feedback</codeblock></li>
+              <li>Copy the <i>config</i> and <i>data</i> directories to the Feedback home
+                directory:<codeblock outputclass="language-bourne">cp -R {oxygen-feedback-user-home-dir}/config /var/feedback/config
+cp -R {oxygen-feedback-user-home-dir}/data /var/feedback/data</codeblock></li>
+            </ol></li>
           <li>Set service port. By default, the service uses the port 8080. To change the port that
             the service runs on, open
-              <filepath>{Installation-Directory}/config/feedback-server.properties</filepath> and
-            set the <b>http.port</b> property to your desired value.<p>For
-              example:<codeblock outputclass="language-bourne">   http.port=8081</codeblock></p></li>
-          <li>Set up the database. For detailed instructions, see: <xref
-              href="ofbENT-database-setup.dita"/>.</li>
+              <filepath>/{oxygen-feedback-user-home-dir}/config/feedback-server.properties</filepath>
+            and set the <b>http.port</b> property to your desired value.<p>For
+              example:<codeblock outputclass="language-bourne">http.port=8081</codeblock></p></li>
+          <li>Set up the database. MySQL 8.0 and PostgreSQL 11 or 12 are
+                  supported.<p><b><u>MySQL</u></b></p><p conkeyref="reusables-feedback/MySQL"
+                  /><p><b><u>PostgreSQL</u></b></p><p conkeyref="reusables-feedback/PostgreSQL"
+            /></li>
           <li><?oxy_comment_start author="Steven" timestamp="20200724T004517-0400" comment="OFB-1621 was mentioned for this, but it doesn&apos;t say how to actually set up the license."?>Set
             up the license for Feedback Enterprise.<?oxy_comment_end?></li>
           <li>Set up the application properties by opening
-              <filepath>{Installation-Directory}/config/feedback-application.properties</filepath>
+              <filepath>/{oxygen-feedback-user-home-dir}/config/feedback-application.properties</filepath>
             and setting the following:<p>
               <dl>
                 <dlentry>
@@ -149,8 +156,8 @@
             </p></li>
           <li>Set up email notifications (<ph keyref="product"/> requires an email server to send
             account confirmation emails, password reset emails, or comment activity emails. Open
-              <filepath>{Installation-Directory}/config/feedback-mail.properties</filepath> and set
-            the following:<p>
+              <filepath>/{oxygen-feedback-user-home-dir}/config/feedback-mail.properties</filepath>
+            and set the following:<p>
               <dl>
                 <dlentry>
                   <dt>Configure the SMTP Outgoing Server</dt>
@@ -220,8 +227,11 @@
                 </dlentry>
               </dl>
             </p></li>
-          <li>Start <ph keyref="product"/> as a Linux Service. For detailed instructions, see <xref
-              href="ofbENT-how-to-start-as-linux-service.dita"/>.</li>
+          <li>Run <codeph>/bin/start.sh</codeph> to start <ph keyref="product"/>. Go to
+              <filepath>http://localhost:8080</filepath> (change the port if you set it to something
+            else) to launch <ph keyref="product"/> in your browser. If this is the first time
+            configuring the service, you will be asked to set up the first administration
+            account.</li>
           <li>Create your first administrator account:<ol id="ol_wbc_vwf_lmb">
               <li>Go to the location where the Feedback server is deployed (e.g.
                   <filepath>http://localhost:8080</filepath>).</li>
