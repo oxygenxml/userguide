@@ -2,9 +2,9 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="ofbENT-how_to_install">
   <title>How to Install Oxygen Feedback Enterprise Service on Linux</title>
-  <body>
-    <section id="section_bzb_tdf_lmb">
-      <title><u>Requirements</u></title>
+  <topic id="fb-requirements">
+    <title>Requirements</title>
+    <body>
       <p>
         <dl>
           <dlentry>
@@ -50,243 +50,248 @@
                 <li>Safari Mobile iOS 13 [mobile devices]</li>
               </ul>
               <note type="tip">For more details, see: <xref href="ofb-browser-compatibility.dita"
-                />.</note>
+              />.</note>
             </dd>
           </dlentry>
         </dl>
         <note type="attention">It is recommended to create a dedicated user to configure and run the
           service (for example, named <b>feedback</b>).</note>
       </p>
-    </section>
-    <section id="section_ljk_ghf_lmb">
-      <title><u>Installation</u></title>
-    </section>
-    <section id="section_lzw_rlz_mmb">
-      <title>I. Download Kit</title>
-      <p>Download the
+    </body>
+  </topic>
+  
+  <topic id="fb-install-steps">
+    <title>Installation</title>
+    <body>
+      
+      
+      <section id="section_lzw_rlz_mmb">
+        <title>1. Download Kit</title>
+        <p>Download the
           <?oxy_comment_start author="Steven" timestamp="20200729T214300-0400" comment="Need to add a link once I know what it is."?><b>Oxygen
-          Feedback</b> kit<?oxy_comment_end?>.</p>
-    </section>
-    <section id="section_ny5_tlz_mmb">
-      <title>II. Create Installation Directory</title>
-      <p>Create an installation directory (subsequently referred to as
+            Feedback</b> kit<?oxy_comment_end?>.</p>
+      </section>
+      <section id="section_ny5_tlz_mmb">
+        <title>2. Create Installation Directory</title>
+        <p>Create an installation directory (subsequently referred to as
           <codeph>{oxygen-feedback-user-home-dir}</codeph>) and unzip the downloaded kit to this new
-        directory.</p>
-      <p>Sample code to create the install
-        directory:<codeblock outputclass="language-bourne">sudo mkdir {oxygen-feedback-user-home-dir}/oxygen-feedback
+          directory.</p>
+        <p>Sample code to create the install
+          directory:<codeblock outputclass="language-bourne">sudo mkdir {oxygen-feedback-user-home-dir}/oxygen-feedback
 sudo chown feedback: {oxygen-feedback-user-home-dir}/oxygen-feedback</codeblock></p>
-      <p>Sample code to extract the archive
-        content:<codeblock outputclass="language-bourne">cd &lt;{oxygen-feedback-user-home-dir}/oxygen-feedback
+        <p>Sample code to extract the archive
+          content:<codeblock outputclass="language-bourne">cd &lt;{oxygen-feedback-user-home-dir}/oxygen-feedback
 unzip oxygen-feedback-{version}-SNAPSHOT-package-enterprise.zip</codeblock></p>
-    </section>
-    <section id="section_jlx_ylz_mmb">
-      <title>III. [Optional] Create Home Directory</title>
-      <p>By default, the Feedback home directory value is the installation directory, but if you
-        want to define a custom value, you can add the custom path to
+      </section>
+      <section id="section_jlx_ylz_mmb">
+        <title>3. [Optional] Create Home Directory</title>
+        <p>By default, the Feedback home directory value is the installation directory, but if you
+          want to define a custom value, you can add the custom path to
           <filepath>feedback-home.properties</filepath> or pass it via the
           <codeph>-Dfeedback.home=</codeph> command-line argument.<ol id="ol_zn5_znw_mmb">
-          <li>Edit
-            <filepath>feedback-home.properties</filepath>:<codeblock outputclass="language-bourne">sudo vi {oxygen-feedback-user-home-dir}/feedback-home.properties</codeblock></li>
-          <li>Set the <codeph>feedback.home</codeph>
-            property:<codeblock outputclass="language-bourne"># Oxygen Feedback home path property (by default, the current installation directory)
+            <li>Edit
+              <filepath>feedback-home.properties</filepath>:<codeblock outputclass="language-bourne">sudo vi {oxygen-feedback-user-home-dir}/feedback-home.properties</codeblock></li>
+            <li>Set the <codeph>feedback.home</codeph>
+              property:<codeblock outputclass="language-bourne"># Oxygen Feedback home path property (by default, the current installation directory)
 feedback.home=&lt;oxygen-feedback-user-home-dir>/oxygen-feedback-home</codeblock></li>
-          <li>Copy the <i>config</i> and <i>data</i> directories to the Feedback home
-            directory:<codeblock outputclass="language-bourne">cp -R /{oxygen-feedback-user-home-dir}/oxygen-feedback/config /{oxygen-feedback-user-home-dir}/oxygen-feedback-home/config
+            <li>Copy the <i>config</i> and <i>data</i> directories to the Feedback home
+              directory:<codeblock outputclass="language-bourne">cp -R /{oxygen-feedback-user-home-dir}/oxygen-feedback/config /{oxygen-feedback-user-home-dir}/oxygen-feedback-home/config
 cp -R /{oxygen-feedback-user-home-dir}/oxygen-feedback/data /{oxygen-feedback-user-home-dir}/oxygen-feedback-home/data</codeblock></li>
-        </ol></p>
-    </section>
-    <section id="section_axp_cmz_mmb">
-      <title>IV. Set Service Port</title>
-      <p>By default, the service uses the port 8080. To change the port that the service runs on,
-        open <filepath>{oxygen-feedback-user-home-dir}/config/feedback-server.properties</filepath>
-        and set the <b>http.port</b> property to your desired value.</p>
-      <p>For example:<codeblock outputclass="language-bourne">http.port=8081</codeblock></p>
-    </section>
-    <section id="section_mdf_gmz_mmb">
-      <title>V. Set Up Database</title>
-      <p>MySQL 8.0 and PostgreSQL 11 or 12 are supported.</p>
-      <p><b><u>MySQL</u></b></p>
-      <p conkeyref="reusables-feedback/MySQL"/>
-      <p><b><u>PostgreSQL</u></b></p>
-      <p conkeyref="reusables-feedback/PostgreSQL"/>
-    </section>
-    <section id="set_up_license">
-      <title>VI. Set Up License</title>
-      <p>Set up the license for Feedback Enterprise:<ol id="ol_szl_pt2_nmb">
+          </ol></p>
+      </section>
+      <section id="section_axp_cmz_mmb">
+        <title>4. Set Service Port</title>
+        <p>By default, the service uses the port 8080. To change the port that the service runs on,
+          open <filepath>{oxygen-feedback-user-home-dir}/config/feedback-server.properties</filepath>
+          and set the <b>http.port</b> property to your desired value.</p>
+        <p>For example:<codeblock outputclass="language-bourne">http.port=8081</codeblock></p>
+      </section>
+      <section id="section_mdf_gmz_mmb">
+        <title>5. Set Up Database</title>
+        <p>MySQL 8.0 and PostgreSQL 11 or 12 are supported.</p>
+        <p><b><u>MySQL</u></b></p>
+        <p conkeyref="reusables-feedback/MySQL"/>
+        <p><b><u>PostgreSQL</u></b></p>
+        <p conkeyref="reusables-feedback/PostgreSQL"/>
+      </section>
+      <section id="set_up_license">
+        <title>6. Set Up License</title>
+        <p>Set up the license for Feedback Enterprise:<ol id="ol_szl_pt2_nmb">
           <li>Go to the <filepath>{oxygen-feedback-user-home-dir}</filepath> (or to the Feedback
             server installation directory) and create a new file called
-              <filepath>licensekey.txt</filepath>.</li>
+            <filepath>licensekey.txt</filepath>.</li>
           <li>Copy and paste your license key inside the <filepath>licensekey.txt</filepath>
             file.</li>
           <li>Save the file.</li>
         </ol></p>
-    </section>
-    <section id="section_fh1_nmz_mmb">
-      <title>VII. Set Up Application Properties</title>
-      <p>Set up the application properties by opening
+      </section>
+      <section id="section_fh1_nmz_mmb">
+        <title>7. Set Up Application Properties</title>
+        <p>Set up the application properties by opening
           <filepath>{oxygen-feedback-user-home-dir}/config/feedback-application.properties</filepath>
-        and setting the following:</p>
-      <p>
-        <dl>
-          <dlentry>
-            <dt>Application Host URL</dt>
-            <dd>
-              <p>The server URL where the application will be deployed. It must contain the protocol
-                and port and it will be used in the email notifications:</p>
-              <codeblock outputclass="language-bourne">feedback.server.host.url= http://example.com</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Image Upload Configuration</dt>
-            <dd>
-              <p>Image upload allowed extensions:</p>
-              <codeblock outputclass="language-bourne">feedback.upload.extensions= jpg, jpeg, png, gif</codeblock>
-              <p>Set it to <i>true</i> for images to be validated before being uploaded or
+          and setting the following:</p>
+        <p>
+          <dl>
+            <dlentry>
+              <dt>Application Host URL</dt>
+              <dd>
+                <p>The server URL where the application will be deployed. It must contain the protocol
+                  and port and it will be used in the email notifications:</p>
+                <codeblock outputclass="language-bourne">feedback.server.host.url= http://example.com</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Image Upload Configuration</dt>
+              <dd>
+                <p>Image upload allowed extensions:</p>
+                <codeblock outputclass="language-bourne">feedback.upload.extensions= jpg, jpeg, png, gif</codeblock>
+                <p>Set it to <i>true</i> for images to be validated before being uploaded or
                   <i>false</i> to not validate them.</p>
-              <codeblock outputclass="language-bourne">feedback.image.validation= true</codeblock>
-              <p>Sets the maximum allowed size of an image in KB.</p>
-              <codeblock outputclass="language-bourne">feedback.max.file.upload.size= 2048</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Comment Configuration</dt>
-            <dd>
-              <p>Sets the limit of how many characters a comment can have.</p>
-              <codeblock outputclass="language-bourne">feedback.max.comment.character.size= 10000</codeblock>
-              <p>Sets the number of days that a deleted comment can be restored. After that, the
-                comment is permanently deleted.</p>
-              <codeblock outputclass="language-bourne">feedback.comment.expiration.period= 30</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Accounts Management Configuration</dt>
-            <dd>
-              <p>Sets the number of hours that a newly created account can be activated before it
-                expires.</p>
-              <codeblock outputclass="language-bourne">feedback.account.expiration.period= 24</codeblock>
-              <p>Sets the number of days that a deleted account can be recovered.</p>
-              <codeblock outputclass="language-bourne">feedback.account.termination.period= 14</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Role Change Settings</dt>
-            <dd>
-              <p>Sets the number of hours that a site ownership transfer is valid. If the transfer
-                is not accepted within that time, it will automatically be cancelled:</p>
-              <codeblock outputclass="language-bourne">feedback.valid.transfer.site.ownership.period= 24</codeblock>
-              <p>Sets the number of days that a role change is pending. If not accepted within that
-                time, it will automatically be cancelled.</p>
-              <codeblock outputclass="language-bourne">feedback.valid.role.change.period= 1</codeblock>
-            </dd>
-          </dlentry>
-        </dl>
-      </p>
-    </section>
-    <section id="section_vkr_pmz_mmb">
-      <title>VIII. Set Up Email Notifications</title>
-      <p><ph keyref="product"/> requires an email server to send account confirmation emails,
-        password reset emails, or comment activity emails. Open
+                <codeblock outputclass="language-bourne">feedback.image.validation= true</codeblock>
+                <p>Sets the maximum allowed size of an image in KB.</p>
+                <codeblock outputclass="language-bourne">feedback.max.file.upload.size= 2048</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Comment Configuration</dt>
+              <dd>
+                <p>Sets the limit of how many characters a comment can have.</p>
+                <codeblock outputclass="language-bourne">feedback.max.comment.character.size= 10000</codeblock>
+                <p>Sets the number of days that a deleted comment can be restored. After that, the
+                  comment is permanently deleted.</p>
+                <codeblock outputclass="language-bourne">feedback.comment.expiration.period= 30</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Accounts Management Configuration</dt>
+              <dd>
+                <p>Sets the number of hours that a newly created account can be activated before it
+                  expires.</p>
+                <codeblock outputclass="language-bourne">feedback.account.expiration.period= 24</codeblock>
+                <p>Sets the number of days that a deleted account can be recovered.</p>
+                <codeblock outputclass="language-bourne">feedback.account.termination.period= 14</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Role Change Settings</dt>
+              <dd>
+                <p>Sets the number of hours that a site ownership transfer is valid. If the transfer
+                  is not accepted within that time, it will automatically be cancelled:</p>
+                <codeblock outputclass="language-bourne">feedback.valid.transfer.site.ownership.period= 24</codeblock>
+                <p>Sets the number of days that a role change is pending. If not accepted within that
+                  time, it will automatically be cancelled.</p>
+                <codeblock outputclass="language-bourne">feedback.valid.role.change.period= 1</codeblock>
+              </dd>
+            </dlentry>
+          </dl>
+        </p>
+      </section>
+      <section id="section_vkr_pmz_mmb">
+        <title>8. Set Up Email Notifications</title>
+        <p><ph keyref="product"/> requires an email server to send account confirmation emails,
+          password reset emails, or comment activity emails. Open
           <filepath>&lt;feedback-home-directory>/config/feedback-mail.properties</filepath> and set
-        the following:</p>
-      <p>
-        <dl>
-          <dlentry>
-            <dt>Configure the SMTP Outgoing Server</dt>
-            <dd>
-              <p>The SMTP name:</p>
-              <codeblock outputclass="language-bourne">spring.mail.host= smtp.example.com</codeblock>
-              <p>The SMTP port:</p>
-              <codeblock outputclass="language-bourne">spring.mail.port= 25</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Configure the From Email Address</dt>
-            <dd>
-              <p>The name that will be displayed in the <b>From</b> field for email messages sent by
-                this server:</p>
-              <codeblock outputclass="language-bourne">feedback.email.sender= company@sender.example.com</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Configure SMTP Authentication</dt>
-            <dd>
-              <p>The username used in the authenticated SMTP:</p>
-              <codeblock outputclass="language-bourne">spring.mail.username= sa</codeblock>
-              <p>The password used in the authenticated SMTP:</p>
-              <codeblock outputclass="language-bourne">spring.mail.password=</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Configure STARTTLS Protocol Command</dt>
-            <dd>
-              <p>If <b>true</b>, it enables the use of the STARTTLS command (if supported by the
-                server) to switch the connection to a TLS-protected connection before issuing any
-                login commands. If the server does not support STARTTLS, the connection continues
-                without the use of TLS:</p>
-              <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.starttls.enable= true</codeblock>
-              <p>If <b>true</b>, it requires the use of the STARTTLS command. If the server does not
-                support the STARTTLS command, or the command fails, the connect method will fail.
-                The default is <b>false</b>.</p>
-              <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.starttls.required= false</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Configure SSL Authentication</dt>
-            <dd>
-              <p>If set to <b>true</b>, it uses SSL to connect and uses the SSL port by default. The
-                default is <b>false</b> for the SMTP protocol and <b>true</b> for the SMTPS
-                protocol:</p>
-              <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.ssl.enable= true</codeblock>
-              <p>Specifies the port to connect to when using the specified socket factory. If not
-                set, the default port will be used.</p>
-              <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.ssl.socketFactory.port= 465</codeblock>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Advanced Properties</dt>
-            <dd>
-              <p>The default message encoding:</p>
-              <codeblock outputclass="language-bourne">spring.mail.default-encoding= UTF-8</codeblock>
-              <p><ph keyref="product"/> uses JavaMail for sending emails and it allows additional
-                properties to be set using the following pattern:</p>
-              <codeblock outputclass="language-bourne">spring.mail.properties.{JAVA.MAIL.PROPERTY}=</codeblock>
-              <p>See all available properties in the JavaMail documentation at: <xref
+          the following:</p>
+        <p>
+          <dl>
+            <dlentry>
+              <dt>Configure the SMTP Outgoing Server</dt>
+              <dd>
+                <p>The SMTP name:</p>
+                <codeblock outputclass="language-bourne">spring.mail.host= smtp.example.com</codeblock>
+                <p>The SMTP port:</p>
+                <codeblock outputclass="language-bourne">spring.mail.port= 25</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Configure the From Email Address</dt>
+              <dd>
+                <p>The name that will be displayed in the <b>From</b> field for email messages sent by
+                  this server:</p>
+                <codeblock outputclass="language-bourne">feedback.email.sender= company@sender.example.com</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Configure SMTP Authentication</dt>
+              <dd>
+                <p>The username used in the authenticated SMTP:</p>
+                <codeblock outputclass="language-bourne">spring.mail.username= sa</codeblock>
+                <p>The password used in the authenticated SMTP:</p>
+                <codeblock outputclass="language-bourne">spring.mail.password=</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Configure STARTTLS Protocol Command</dt>
+              <dd>
+                <p>If <b>true</b>, it enables the use of the STARTTLS command (if supported by the
+                  server) to switch the connection to a TLS-protected connection before issuing any
+                  login commands. If the server does not support STARTTLS, the connection continues
+                  without the use of TLS:</p>
+                <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.starttls.enable= true</codeblock>
+                <p>If <b>true</b>, it requires the use of the STARTTLS command. If the server does not
+                  support the STARTTLS command, or the command fails, the connect method will fail.
+                  The default is <b>false</b>.</p>
+                <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.starttls.required= false</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Configure SSL Authentication</dt>
+              <dd>
+                <p>If set to <b>true</b>, it uses SSL to connect and uses the SSL port by default. The
+                  default is <b>false</b> for the SMTP protocol and <b>true</b> for the SMTPS
+                  protocol:</p>
+                <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.ssl.enable= true</codeblock>
+                <p>Specifies the port to connect to when using the specified socket factory. If not
+                  set, the default port will be used.</p>
+                <codeblock outputclass="language-bourne">spring.mail.properties.mail.smtp.ssl.socketFactory.port= 465</codeblock>
+              </dd>
+            </dlentry>
+            <dlentry>
+              <dt>Advanced Properties</dt>
+              <dd>
+                <p>The default message encoding:</p>
+                <codeblock outputclass="language-bourne">spring.mail.default-encoding= UTF-8</codeblock>
+                <p><ph keyref="product"/> uses JavaMail for sending emails and it allows additional
+                  properties to be set using the following pattern:</p>
+                <codeblock outputclass="language-bourne">spring.mail.properties.{JAVA.MAIL.PROPERTY}=</codeblock>
+                <p>See all available properties in the JavaMail documentation at: <xref
                   href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html#properties"
                   format="html" scope="external"
                 />.<codeblock outputclass="language-bourne">spring.mail.properties.*=</codeblock></p>
-            </dd>
-          </dlentry>
-        </dl>
-      </p>
-    </section>
-    <section id="section_kxq_rmz_mmb">
-      <title>IX. Start Oxygen Feedback</title>
-      <p>Run <codeph>&lt;feedback-installation-directory>/bin/start.sh</codeph> to start <ph
+              </dd>
+            </dlentry>
+          </dl>
+        </p>
+      </section>
+      <section id="section_kxq_rmz_mmb">
+        <title>9. Start Oxygen Feedback</title>
+        <p>Run <codeph>&lt;feedback-installation-directory>/bin/start.sh</codeph> to start <ph
           keyref="product"/>. Go to <filepath>http://localhost:8080</filepath> (change the port if
-        you set it to something else) to launch <ph keyref="product"/> in your browser.</p>
-    </section>
-    <section id="section_ump_tmz_mmb">
-      <title>X. Create First Administrator Account</title>
-      <p>Create your first administrator account:<ol id="ol_wbc_vwf_lmb">
+          you set it to something else) to launch <ph keyref="product"/> in your browser.</p>
+      </section>
+      <section id="section_ump_tmz_mmb">
+        <title>10. Create First Administrator Account</title>
+        <p>Create your first administrator account:<ol id="ol_wbc_vwf_lmb">
           <li>Go to the location where the Feedback server is deployed (e.g.
-              <filepath>http://localhost:8080</filepath>).</li>
+            <filepath>http://localhost:8080</filepath>).</li>
           <li>In the resulting setup page, define your first platform admin.</li>
           <li>Enter the required information and click the <uicontrol>Create</uicontrol>
-              button.<note>The setup page is only visible the first time the application is started.
+            button.<note>The setup page is only visible the first time the application is started.
               After the first platform admin is defined, that page will no longer be
               available.</note></li>
         </ol></p>
-    </section>
-  </body>
-  <related-links>
-    <linklist>
-      <title>Related Information:</title>
-      <link href="ofbENT-how-to-start-as-linux-service.dita"/>
-      <link href="ofbENT-configure_http_proxy.dita"/>
-      <link href="ofbENT-set_up_oauth.dita"/>
-      <link href="ofbENT-access_instance_logs.dita"/>
-      <link href="ofbENT-gzip-compression.dita"/>
-      <link href="ofbENT-https-procedure.dita"/>
-    </linklist>
-  </related-links>
+      </section>
+    </body>
+    <related-links>
+      <linklist>
+        <title>Related Information:</title>
+        <link href="ofbENT-how-to-start-as-linux-service.dita"/>
+        <link href="ofbENT-configure_http_proxy.dita"/>
+        <link href="ofbENT-set_up_oauth.dita"/>
+        <link href="ofbENT-access_instance_logs.dita"/>
+        <link href="ofbENT-gzip-compression.dita"/>
+        <link href="ofbENT-https-procedure.dita"/>
+      </linklist>
+    </related-links>
+  </topic>
 </topic>
