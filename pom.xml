@@ -1036,6 +1036,63 @@
         </plugins>
       </build>
     </profile>
+    
+    <profile>
+      <id>build-single</id>
+      <activation>
+        <property>
+          <name>build-single</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <userguide.server>software-archive.sync.ro</userguide.server>
+        <userguide.server.dir>/repository/userguides</userguide.server.dir>
+        <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide/master/DITA/UserManual.ditamap</editlink.ditamap.url>
+      </properties>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-single</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-single">
+                      <property name="editlink.ditamap.url" value="${editlink.ditamap.url}"/>
+                      <property name="p-product" value="${product}" />
+                      <property name="p-format" value="${format}" />
+                      <property name="p-type" value="${type}" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
   </profiles>
 
