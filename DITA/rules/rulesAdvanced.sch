@@ -536,14 +536,6 @@
     </sch:rule>
   </sch:pattern>
   
-  <!-- example -> create a manual rendering inside a new paragraph -->
-  <sch:pattern>
-    <sch:rule context="example"> 
-      <sch:report test="true()">You should not use this element because it is not rendered properly in the output. Create a manual rendering inside a new paragraph.        
-      </sch:report>
-    </sch:rule>
-  </sch:pattern>
-  
   <!-- List items that have a paragraph as their first child are not rendered ok in WebHelp. -->
 <!--  <sch:pattern>
     <sch:rule context="li">
