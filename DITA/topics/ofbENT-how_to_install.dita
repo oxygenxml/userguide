@@ -71,48 +71,59 @@
           <?oxy_comment_start author="Steven" timestamp="20200729T214300-0400" comment="Need to add a link once I know what it is."?><b>Oxygen
             Feedback</b> kit<?oxy_comment_end?>.</p>
       </section>
+      <section id="section_bnt_t2g_smb">
+        <title>2. Create the feedback user </title>
+        <p>
+          <codeblock>useradd feedback</codeblock>
+        </p>
+      </section>
       <section id="section_ny5_tlz_mmb">
-        <title>2. Create Installation Directory</title>
+        <title>3. Create Installation Directory</title>
         <p>Create an installation directory (subsequently referred to as
             <codeph>{oxygen-feedback-install-dir}</codeph>) and unzip the downloaded kit to this new
-          directory.</p>
+          directory. The application files are stored in this directory.</p>
         <p>Sample code to create the install
-          directory:<codeblock outputclass="language-bourne">sudo mkdir {oxygen-feedback-user-home-dir}/oxygen-feedback
-sudo chown feedback: {oxygen-feedback-user-home-dir}/oxygen-feedback</codeblock></p>
+          directory:<codeblock outputclass="language-bourne">export OXYGEN_FEEDBACK_INSTALL_DIR=/home/feedback/oxygen-feedback
+sudo mkdir $OXYGEN_FEEDBACK_INSTALL_DIR
+sudo chown feedback: $OXYGEN_FEEDBACK_INSTALL_DIR</codeblock></p>
         <p>Sample code to extract the archive
-          content:<codeblock outputclass="language-bourne">cd {oxygen-feedback-user-home-dir}/oxygen-feedback
-unzip oxygen-feedback-{version}-package-enterprise.zip</codeblock></p>
+          content:<codeblock outputclass="language-bourne">cd $OXYGEN_FEEDBACK_INSTALL_DIR
+# Copy here the downloaded archive 
+unzip oxygen-feedback-*-package-enterprise.zip</codeblock></p>
       </section>
       <section id="section_jlx_ylz_mmb">
-        <title>3. [Optional] Create Home Directory</title>
+        <title>4. [Optional] Create Separate Home Directory (for Config and Data)</title>
         <p>By default, the Feedback home directory value is the installation directory, but if you
           want to define a custom value, you can add the custom path to
             <filepath>feedback-home.properties</filepath> or pass it via the
-            <codeph>-Dfeedback.home=</codeph> command-line argument.</p>
+            <codeph>-Dfeedback.home=</codeph> command-line argument. The home directory will store
+          the configuration and other data. It is recommended to have it separate from the
+          installation directory, you can manage updates more easily.</p>
         <note>This directory is subsequently referred to as
-            <codeph>{oxygen-feedback-home-dir}</codeph>. </note>
+            <codeph>OXYGEN_FEEDBACK_HOME_DIR</codeph>. </note>
         <p>
           <ol id="ol_zn5_znw_mmb">
             <li>Edit
-              <filepath>feedback-home.properties</filepath>:<codeblock outputclass="language-bourne">sudo vi {oxygen-feedback-install-dir}/feedback-home.properties</codeblock></li>
+              <filepath>feedback-home.properties</filepath>:<codeblock outputclass="language-bourne">sudo vi $OXYGEN_FEEDBACK_INSTALL_DIR/feedback-home.properties</codeblock></li>
             <li>Set the <codeph>feedback.home</codeph>
               property:<codeblock outputclass="language-bourne"># Oxygen Feedback home path property (by default, the current installation directory)
 feedback.home=&lt;oxygen-feedback-user-home-dir>/oxygen-feedback-home</codeblock></li>
             <li>Copy the <i>config</i> and <i>data</i> directories to the Feedback home
-              directory:<codeblock outputclass="language-bourne">cp -R /{oxygen-feedback-install-dir}/oxygen-feedback/config /{oxygen-feedback-user-home-dir}/oxygen-feedback-home/config
-cp -R /{oxygen-feedback-install-dir}/oxygen-feedback/data /{oxygen-feedback-user-home-dir}/oxygen-feedback-home/data</codeblock></li>
+              directory:<codeblock outputclass="language-bourne">export OXYGEN_FEEDBACK_HOME_DIR=/home/feedback/oxygen-feedback-home
+cp -R $OXYGEN_FEEDBACK_INSTALL_DIR/config $OXYGEN_FEEDBACK_HOME_DIR
+cp -R $OXYGEN_FEEDBACK_INSTALL_DIR/data $OXYGEN_FEEDBACK_HOME_DIR</codeblock></li>
           </ol>
         </p>
       </section>
       <section id="section_axp_cmz_mmb">
-        <title>4. Set Service Port</title>
+        <title>5. Set Service Port</title>
         <p>By default, the service uses the port 8080. To change the port that the service runs on,
-          open <filepath>{oxygen-feedback-home-dir}/config/feedback-server.properties</filepath> and
+          open <filepath>$OXYGEN_FEEDBACK_HOME_DIR/config/feedback-server.properties</filepath> and
           set the <b>http.port</b> property to your desired value.</p>
         <p>For example:<codeblock outputclass="language-bourne">http.port=8081</codeblock></p>
       </section>
       <section id="section_mdf_gmz_mmb">
-        <title>5. Set Up Database</title>
+        <title>6. Set Up Database</title>
         <p>MySQL 8.0 and PostgreSQL 11 or 12 are supported.</p>
         <p><b><u>MySQL</u></b></p>
         <p conkeyref="reusables-feedback/MySQL"/>
@@ -120,7 +131,7 @@ cp -R /{oxygen-feedback-install-dir}/oxygen-feedback/data /{oxygen-feedback-user
         <p conkeyref="reusables-feedback/PostgreSQL"/>
       </section>
       <section id="set_up_license">
-        <title>6. Set Up License</title>
+        <title>7. Set Up License</title>
         <p>Set up the license for Feedback Enterprise:<ol id="ol_szl_pt2_nmb">
           <li>Go to the <filepath>{oxygen-feedback-home-dir}</filepath> (or to the Feedback server
               installation directory) and create a new file called
@@ -131,7 +142,7 @@ cp -R /{oxygen-feedback-install-dir}/oxygen-feedback/data /{oxygen-feedback-user
         </ol></p>
       </section>
       <section id="section_fh1_nmz_mmb">
-        <title>7. Set Up Application Properties</title>
+        <title>8. Set Up Application Properties</title>
         <p>Set up the application properties by opening
             <filepath>{oxygen-feedback-home-dir}/config/feedback-application.properties</filepath>
           and setting the following:</p>
@@ -192,7 +203,7 @@ cp -R /{oxygen-feedback-install-dir}/oxygen-feedback/data /{oxygen-feedback-user
         </p>
       </section>
       <section id="section_vkr_pmz_mmb">
-        <title>8. Set Up Email Notifications</title>
+        <title>9. Set Up Email Notifications</title>
         <p><ph keyref="product"/> requires an email server to send account confirmation emails,
           password reset emails, or comment activity emails. Open
             <filepath>{oxygen-feedback-home-dir}/config/feedback-mail.properties</filepath> and set
@@ -269,13 +280,13 @@ cp -R /{oxygen-feedback-install-dir}/oxygen-feedback/data /{oxygen-feedback-user
         </p>
       </section>
       <section id="section_kxq_rmz_mmb">
-        <title>9. Start Oxygen Feedback</title>
+        <title>10. Start Oxygen Feedback</title>
         <p>Run <codeph>{oxygen-feedback-install-dir}/bin/start.sh</codeph> to start <ph
             keyref="product"/>. Go to <filepath>http://localhost:8080</filepath> (change the port if
           you set it to something else) to launch <ph keyref="product"/> in your browser.</p>
       </section>
       <section id="section_ump_tmz_mmb">
-        <title>10. Create First Administrator Account</title>
+        <title>11. Create First Administrator Account</title>
         <p>Create your first administrator account:<ol id="ol_wbc_vwf_lmb">
           <li>Go to the location where the Feedback server is deployed (e.g.
             <filepath>http://localhost:8080</filepath>).</li>
