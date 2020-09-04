@@ -49,8 +49,33 @@
             id="ul_ppr_ybj_dmb">
             <li>The <xmlelement>incorrect-term</xmlelement> element must include a
                 <xmlelement>match</xmlelement> element.</li>
+            <li>On the <xmlelement>match</xmlelement> element you can specify the
+                <xmlatt>type</xmlatt> attribute with values <codeph>character</codeph>,
+                <codeph>whole-words</codeph> or <codeph>regular-expression</codeph>. The default
+              value is <codeph>whole-word</codeph>, excepts when the matched term contains Japanese,
+              Chinese or Korean characters because Asian languages do not usually use spaces to
+              separate words.
+              Example:<codeblock outputclass="language-xml">    &lt;incorrect-term>
+        &lt;match type="character">ing&lt;/match>
+        &lt;message>Progresive tense should not be allowed&lt;/message>
+    &lt;/incorrect-term></codeblock></li>
+            <li>Each <xmlelement>match</xmlelement> element has a <xmlatt>severity</xmlatt>
+              attribute which can be set to one of the values <codeph>info</codeph>,
+                <codeph>warning</codeph> or <codeph>error</codeph>.
+              Example:<codeblock outputclass="language-xml">    &lt;incorrect-term severity="error">
+        &lt;match>he&lt;/match>
+        &lt;message>Pronounts should be avoided.&lt;/message>
+    &lt;/incorrect-term></codeblock></li>
             <li>The <xmlelement>suggestion</xmlelement> element can be left blank or there can be
               one or more of them inside the <xmlelement>incorrect-term</xmlelement> element.</li>
+            <li>You can set the <xmlatt>format</xmlatt> attribute on the
+                <xmlelement>suggestion</xmlelement> element with value <codeph>xml</codeph> if you
+              want to replace the match with an XML fragment. For
+              example:<codeblock outputclass="language-xml">   &lt;incorrect-term ignorecase="true">
+        &lt;match type="whole-word">Oxygen XML Editor&lt;/match>
+        &lt;suggestion format="xml">&amp;lt;ph keyref=&amp;quot;oxygen&amp;quot;/>&lt;/suggestion>
+        &lt;message>Replace all occurrences of product with key reference&lt;/message>
+    &lt;/incorrect-term></codeblock></li>
             <li>The <xmlelement>message</xmlelement> element is optional. If present, its content is
               displayed in a tooltip when you hover over a highlight.</li>
             <li>The <xmlatt>ignorecase</xmlatt> attribute specifies whether or not the match is
@@ -83,5 +108,8 @@
           terms) within the document with the content inside the first
             <xmlelement>suggestion</xmlelement> element from the terminology file.</li>
       </ul></p>
+    <p>The terminology checking can be disabled by clicking the <uicontrol>Show/Hide Terminology
+        Highlights</uicontrol> toolbar button. Space preserve elements like code blocks should be
+      automatically skipped by the checker.</p>
   </body>
 </topic>
