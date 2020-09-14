@@ -310,14 +310,58 @@ touch licensekey.txt</codeblock></li>
           </dl>
         </p>
       </section>
+      <section id="section_lwc_24s_zmb">
+        <title>10. [Optional] Configure LDAP Authentication</title>
+        <p>Optionally, configure LDAP authentication for <ph keyref="product"/>:<ol
+            id="ul_nsj_j4s_zmb">
+            <li>Enable LDAP authentication support by editing the
+                <filepath>$OXYGEN_FEEDBACK_HOME_DIR/config/feedback-ldap.properties</filepath> file
+              and set the <codeph>feedback.ldap.enabled</codeph> property to <b>true</b>.</li>
+            <li>Configure the URL for your LDAP server by setting the
+                <codeph>feedback.ldap.serverUrl</codeph> property. For
+              example:<codeblock outputclass="language-bourne">feedback.ldap.serverUrl=ldap://ldap.example.com:33389/dc=myco,dc=org</codeblock></li>
+            <li>
+              <p>Specify the pattern for the search filter used to identify a user entity on the
+                LDAP server by setting the <codeph>feedback.ldap.userSearchFilter</codeph> property.
+                For
+                example:<codeblock outputclass="language-bourne">(|(mail={0})(uid={0}))</codeblock></p>
+              <p>The substituted parameter is the user's login name. This example pattern enables
+                user authentication with both the username and email address.</p>
+            </li>
+            <li>Specify the name of the email attribute for the LDAP user entity by setting the
+                <codeph>feedback.ldap.emailAttribute</codeph> property.<note type="important">For
+                the authentication to work, it is mandatory that your LDAP users entities have an
+                associated email address.</note></li>
+          </ol></p>
+        <p><b>Example of the Configuration Properties File</b></p>
+        <codeblock outputclass="language-bourne">###########################################################################
+# Stores the configuration properties for the LDAP authentication support #
+###########################################################################
+
+# Flag used to enable the LDAP authentication support.
+feedback.ldap.enabled=true# Specifies the LDAP server URL.
+
+# For example: "ldap://ldap.example.com:33389/dc=myco,dc=org".
+feedback.ldap.serverUrl=ldap://ldap.example.com:33389/dc=myco,dc=org
+
+# The LDAP filter used to search for users. 
+# For example "(uid={0})". The substituted parameter is the user's login name.
+feedback.ldap.userSearchFilter=(|(mail={0})(uid={0}))
+
+# The name of the email attribute of the user entity.
+feedback.ldap.emailAttribute=mail
+
+# Property for choosing whether or not to enable new account registration
+feedback.ldap.userRegistrationEnabled=true</codeblock>
+      </section>
       <section id="section_kxq_rmz_mmb">
-        <title>10. Start Oxygen Feedback</title>
+        <title>11. Start Oxygen Feedback</title>
         <p>Run <codeph>$OXYGEN_FEEDBACK_INSTALL_DIR/bin/start.sh</codeph> to start <ph
             keyref="product"/>. Go to <filepath>http://localhost:8080</filepath> (change the port if
           you set it to something else) to launch <ph keyref="product"/> in your browser.</p>
       </section>
       <section id="section_ump_tmz_mmb">
-        <title>11. Create First Administrator Account</title>
+        <title>12. Create First Administrator Account</title>
         <p>Create your first administrator account:<ol id="ol_wbc_vwf_lmb">
           <li>Go to the location where the Feedback server is deployed (e.g.
             <filepath>http://localhost:8080</filepath>).</li>
