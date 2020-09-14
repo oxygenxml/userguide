@@ -32,5 +32,33 @@
 	&lt;appender-ref ref="CONSOLE"/>
 &lt;/logger>  </codeblock>
     </section>
+    <section id="section_ypf_wst_zmb">
+      <title>How to Receive Logs via Email</title>
+      <p>To receive logs via email, define a custom email appender by using this procedure:<ol
+          id="ol_uds_1tt_zmb">
+          <li>Edit the <filepath>{oxygen-feedback-user-home-dir}/feedback-logback.xml</filepath>
+            file and add the following lines to set up an email
+            appender:<codeblock outputclass="language-xml">&lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+     &lt;smtpHost>[smtp mail host]&lt;/smtpHost>
+     &lt;smtpPort>[smtp mail port]&lt;/smtpPort>	    
+     &lt;!-- One or more recipients are possible -->
+     &lt;to>recipient@example.com&lt;/to>
+     &lt;from>sender@example.com&lt;/from>
+     &lt;!-- Define custom e-mail subject -->
+     &lt;subject>Oxygen Feedback: %logger{20} - %msg&lt;/subject>
+     &lt;!-- Custom e-mail body -->
+     &lt;layout class="ch.qos.logback.classic.PatternLayout">
+        &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
+     &lt;/layout>
+&lt;/appender></codeblock></li>
+          <li>Add this appender to the root element of the <codeph>feedback-logback.xml</codeph>
+              file:<codeblock outputclass="language-xml">&lt;root level="INFO">
+    &lt;appender-ref ref="EMAIL"/>
+&lt;/root></codeblock><note>The <codeph>level</codeph> attribute values can be:
+                <i>ALL</i>, <i>INFO</i>, <i>DEBUG</i>, <i>WARN</i>, <i>ERROR</i>.</note></li>
+          <li>Save the modifications and <xref href="ofbENT-how-to-start-as-linux-service.dita"
+              >restart <ph keyref="product"/></xref>.</li>
+        </ol></p>
+    </section>
   </body>
 </topic>
