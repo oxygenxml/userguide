@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_use_image_maps">
+    <title>How to Use Image Maps</title>
+    <body>
+        <p>The DITA <xmlelement>imagemap</xmlelement> element is supported by the PDF transformation. </p>
+        <p>
+            <ol
+                id="ol_it4_mtn_nnb">
+                <li>Start by determining the width and height of your image and then specify it on the <xmlelement>image</xmlelement> element using the <xmlatt>width</xmlatt> and <xmlatt>height</xmlatt> attributes. When no unit is indicated the image size and area coordinates are in pixels. <note>The size you define here in pixels is very important when you will specify the coordinates of the shapes. The built-in CSS used by the transformation uses a 120DPI resolution for raster images and can be changed using customization rules. In PDF the pixels are always resolved to a 96PPI, so any coordinate specified in the area will be interpreted function of this factor. So to get predictible results, always specify the size of the imag in pixels, and use the image rectangular bounds to define coordinates.</note><note>You can use other CSS unit, including percents. The percents are solved relative to the image size and represent a way of creating "responsive" image maps (reuse the map on same image having different sizes depending on the position in the document). If you are using the same customization CSS for HTML web output as well, make sure you use only pixels as some of the browsers support only these units.</note><codeblock outputclass="language-xml">  &lt;imagemap>
+    &lt;image href="../images/Gear_pump_exploded.png"
+        id="gear_pump_exploded"
+        width="640"
+        height="480">
+        &lt;alt>Gear Pump&lt;/alt>
+    &lt;/image>
+&lt;/imagemap></codeblock></li>
+                <li>In the map element, add areas, each with a shape and a set of coordinates:<codeblock outputclass="language-xml">  &lt;imagemap>
+    &lt;image ...> ... &lt;/image>
+    &lt;area>
+        &lt;shape>circle&lt;/shape>
+        &lt;coords>172, 265, 14&lt;/coords>
+        &lt;xref
+            href="parts/bushings.dita#bushings_topic/bushings"
+            format="dita">Bushings&lt;/xref>
+    &lt;/area>
+    &lt;area>
+        &lt;shape>poly&lt;/shape>
+        &lt;coords>568, 81, 576, 103, 468, 152, 455, 130&lt;/coords>
+        &lt;xref
+            href="parts/drive-shaft.dita#drive_shaft_topic/drive_shaft"
+            format="dita">Drive Shaft&lt;/xref>
+    &lt;/area>
+    ....
+ &lt;/imagemap</codeblock><p>The type of areas are the ones defined in the HTML standard: <codeph>circle</codeph>, <codeph>poly</codeph>, <codeph>rect</codeph>, <codeph>default</codeph>. For more details see: <xref
+                            href="https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element"
+                            format="html"
+                            scope="external"/></p></li>
+                <li>Verify how the shapes look in the output. You can make the shapes visible by one
+          of the methods:<ul id="ul_t2p_qk4_nnb">
+            <li>Using the transformation parameters: <codeph>show.image.map.area.shapes</codeph> and
+                <codeph>show.image.map.area.shapes</codeph>.</li>
+            <li>Adding a CSS snippet to your customization. The shapes have the class
+                <codeph>image-map-shape</codeph>, the bullet around the image map number
+                <codeph>image-map-number</codeph>, and the text inside the bullet:
+                <codeph>image-map-number-text</codeph>. To make them translucent yellow
+              :<codeblock outputclass="language-css">.image-map-shape{
+	fill: yellow;
+	fill-opacity: 0.5;
+	stroke-opacity: 0.5;
+}
+.image-map-number-text {
+	visibility: visible;	
+}
+.image-map-number {
+	fill: yellow;
+	fill-opacity: 0.4;
+	stroke-opacity: 0.7;
+}</codeblock></li>
+          </ul>
+        </li>
+            </ol>
+        </p>    </body>
+</topic>
