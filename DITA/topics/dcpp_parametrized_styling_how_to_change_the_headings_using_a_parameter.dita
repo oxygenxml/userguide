@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_change_the_headdings_using_a_parameter">
+    <title>How to Change the Headings Using a Parameter</title>
+    <body>
+        <p>Consider you need to change the headings of your publication by specifying a static text in a parameter.</p>
+        <p>Establish a name for your parameter, it has to start with <codeph>args.css.param.</codeph>. We want to inject a heading text, so let's name it <codeph>args.css.param.heading.text</codeph>. It will have the text value that you will pass when starting the transformation. This parameter does not have to be registered anywhere -  it will be automatically recognized and passed as an XML attribute on the root of the merged file, as specified in <xref
+                href="dcpp_parametrized_styling.dita"/>.</p>
+        <p>Next, alter your customization CSS to make use of the parameter value. In the example below, we will simply place the text in the central part of the header:</p>
+        <codeblock outputclass="language-css">@page front-page, table-of-contents, chapter {
+    @top-center{
+        content: oxy_xpath("/*/@heading.text");
+    }    
+}</codeblock>
+        <note>You can use any XPath 2.0 here. It will be executed in the context of the merged map document, so you can collect any data from it. You can use if/then/else expressions if your parameter is in fact a switch.</note>
+        <p>Another use case is to alter the string-sets that are used in the headers, not the headers directly, as it is explained here: <xref
+                href="dcpp_how_to_use_in_headers_text_extracted_from_the_document__xpath.dita"/>. You can use this technique to alter the chapter titles for example:</p>
+        <codeblock>*[class ~= "map/map"][numbering^='deep'] 
+   *[class ~= "topic/topic"][is-chapter]:not([is-part]) > 
+        *[class ~= "topic/title"] {
+    string-set: 
+            chaptertitle " | " counters(chapter-and-sections, "." ) " - " oxy_xpath("/*/@heading.text") content(), 
+            sectiontitle "";
+}</codeblock>
+        <note>This is a rule copied from p-numbering-deep.css, it may change if future versions.</note>
+    </body>
+</topic>
