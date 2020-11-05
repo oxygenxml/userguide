@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_continue_list_numbering">
+    <title>How to Continue List Numbering</title>
+    <body>
+        <p>It is possible to continue an ordered list numbering even when the content is split on
+      multiple <xmlelement>ol</xmlelement> elements.</p>
+    <p>You just need to define an <xmlatt>outputclass</xmlatt> attribute on the lists where
+      numbering should continue:<codeblock outputclass="language-xml">&lt;ol>
+  &lt;li>First Item&lt;/li>
+  &lt;li>Second Item&lt;/li>
+&lt;/ol>
+&lt;p>A paragraph&lt;/p>
+&lt;ol outputclass="continue">
+  &lt;li>Third Item&lt;/li>
+&lt;/ol></codeblock></p>
+    <p>Then set the following content inside your CSS
+      customization:<codeblock outputclass="language-css">*[class~="topic/ol"] {
+  counter-reset: list-counter;
+}
+
+*[class~="topic/ol"][outputclass="continue"] {
+  counter-reset: none;
+}
+
+*[class~="topic/ol"] > *[class~="topic/li"] {
+  counter-increment: list-counter;
+}
+
+*[class~="topic/ol"] > *[class~="topic/li"]::marker {
+  content: counter(list-counter)".\00a0";
+}</codeblock></p>
+    </body>
+</topic>
