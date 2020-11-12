@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-publishing-support">
+  <title>PDF Publishing Support</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Publishing</indexterm>
+        <indexterm>Publish to PDF</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="webappProduct"/> supports transforming Web Author content to PDF. Users can
+      either print the current document and a PDF will be generated or they can download the current
+      document as PDF. The <xref
+        href="https://www.oxygenxml.com/chemistry-html-to-pdf-converter.html" format="html"
+        scope="external"><b>Oxygen PDF Chemistry</b></xref> engine is used behind the scenes to
+      produce the PDF and it is customizable using CSS.</p>
+    <section id="section_zgv_z2j_qnb">
+      <title>Enabling Publishing Support</title>
+      <p>The Web Author publishing support can be enabled by <xref
+          href="webapp-configure-plugins.dita">installing the <i><uicontrol>Web Author
+              Publishing</uicontrol></i> plugin</xref>. Once installed and enabled, two actions are
+        contributed to the Web Author interface (available in the <uicontrol><image
+            href="../img/WebappMore18.png" id="image_ccw_shj_qnb"/>More drop-down
+          menu</uicontrol>):<ul id="ul_zdx_jfj_qnb">
+          <li><uicontrol>Print</uicontrol> - Generates a PDF from the current document and prints
+            it. The PDF is generated using the same CSS files used by the editor.</li>
+          <li><uicontrol>Download PDF</uicontrol> - Downloads a PDF version of the document based on
+            the framework configuration:<ul id="ul_hxq_whj_qnb">
+              <li>By default, the editor styles are used.</li>
+              <li>If one or more publishing scenarios based on <b>Oxygen PDF Chemistry</b> are
+                configured, they appear in a sub-menu of the <uicontrol>Download PDF</uicontrol>
+                menu item.</li>
+            </ul></li>
+        </ul></p>
+    </section>
+    <section id="section_dgj_23j_qnb">
+      <title>Notes About Configuring the Plugin in the Administration Page</title>
+      <p>When configuring the plugin in the <xref href="webapp-admin-page.dita">Administration
+          Page</xref>, the PDF generation invokes an external process on the server. You can
+        configure:</p>
+      <ul id="ul_csq_g3j_qnb">
+        <li>The memory allocated to a publishing process.</li>
+        <li>The maximum number of concurrent publishing processes.</li>
+      </ul>
+      <note>The content communicated to and from the publishing process is encrypted.</note>
+    </section>
+    <section id="section_xx4_43j_qnb">
+      <title>Configuring the CSS</title>
+      <p>Depending on the action (<uicontrol>Print</uicontrol> or <uicontrol>Download
+          PDF</uicontrol>), some CSS files are used (either those configured to render the document
+        in the editor or the ones specified in the transformation scenario).</p>
+      <p>Some hints:</p>
+      <ul id="ul_bn3_q3j_qnb">
+        <li>You can use <xmlatt>media</xmlatt>
+          <codeph>print {}</codeph> rules to configure CSS rules that apply only for generating
+          PDF.</li>
+        <li>For DITA, a file located at <filepath>css/webauthor/p-dita.css</filepath> is also loaded
+          along with the editor styles.</li>
+        <li>You can match an element based on its pseudo-classes. For example, to match a
+            <codeph>-oxy-expanded</codeph> pseudo-class, you can use the following syntax:
+          <codeblock outputclass="language-javascript">@namespace oxy-pseudo "https://oxygenxml.com/ns/pseudo-elements/";
+*[oxy-pseudo|p-oxy-expanded]) {
+  ... 
+}</codeblock></li>
+        <li>You can use any CSS extension supported by the <xref
+            href="https://www.oxygenxml.com/chemistry-html-to-pdf-converter.html" format="html"
+            scope="external"><b>Oxygen PDF Chemistry</b></xref> engine.</li>
+        <li>The PDF generation engine will work on a resolved document. If your content uses DITA
+            <i>conrefs</i>, XInclude, or another content reference mechanism, the references will be
+          expanded before the file is sent to the CMS.</li>
+        <li>Links to other XML files will not work in the generated PDF. You may want to customize
+          your CSS to handle this. </li>
+        <li>Fonts that cover the characters in the document have to be installed on the server that
+          run Web Author. For example, see: <xref
+            href="https://www.oxygenxml.com/doc/ug-chemistry/topics/ch_internationalization.html"
+            format="html" scope="external">Localization</xref>.</li>
+      </ul>
+    </section>
+  </body>
+</topic>
