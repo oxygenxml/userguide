@@ -125,7 +125,38 @@
               resulting XML file contains some hints and it is an example of an action configuration
               that will insert a new paragraph.</p></li>
           <li>
-            <p>Configure the action as needed and save your changes.</p>
+            <p>Configure the action as needed and save your changes.<note>You can use XInclude to reuse different
+                fragments, like XPath expressions or configured operations between
+                    actions.<p><b>Example</b>: Reusing an XPath
+                  expression:</p><codeblock outputclass="language-xml">&lt;a:operations>
+    &lt;a:operation id="InsertFragmentOperation">
+      &lt;a:xpathCondition>
+        &lt;xi:include href="expression.txt" 
+            xmlns:xi="http://www.w3.org/2001/XInclude" parse="text"/>
+        &lt;/a:xpathCondition>
+      &lt;a:arguments>
+        &lt;a:argument name="insertLocation">
+            &lt;xi:include href="expression.txt" 
+                xmlns:xi="http://www.w3.org/2001/XInclude" parse="text"/>
+            &lt;/a:argument>
+      &lt;/a:arguments>
+    &lt;/a:operation>
+  &lt;/a:operations></codeblock><p>Where the content of the
+                    <filepath>expression.txt</filepath> file is
+                    <codeph>self::para</codeph></p><p><b>Example</b>: Reusing an entire
+                  operation:<codeblock outputclass="language-xml">  &lt;a:operations xmlns:a="http://www.oxygenxml.com/ns/author/external-action">
+      &lt;xi:include href="operation.xml"
+          xpointer="element(/1/1)" xmlns:xi="http://www.w3.org/2001/XInclude" />
+  &lt;/a:operations></codeblock></p><p>Where the content of
+                    <filepath>operation.xml</filepath>
+                  is:<codeblock outputclass="language-xml">&lt;a:operations xmlns:a="http://www.oxygenxml.com/ns/author/external-action">
+    &lt;a:operation id="ToggleSurroundWithElementOperation">
+        &lt;a:xpathCondition>ancestor-or-self::p&lt;/a:xpathCondition>
+        &lt;a:arguments>
+            &lt;a:argument name="element">&lt;i/>&lt;/a:argument>
+        &lt;/a:arguments>
+    &lt;/a:operation>
+&lt;/a:operations></codeblock></p></note></p>
             <p><b>Step Result:</b> At this point, the action has been created but it needs to be
               added to the UI (in a toolbar or menu).</p>
           </li>
