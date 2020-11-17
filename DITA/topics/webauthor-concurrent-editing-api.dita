@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webauthor-concurrent-editing-api">
+  <title>Integrating Concurrent Editing</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Enabling shared session</indexterm>
+        <indexterm>Enabling concurrent editing</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p><ph keyref="webappProduct"/> offers a feature that can be enabled to provide the ability for
+      teams to edit and review content concurrently. A user can share their editing session by using
+      the <uicontrol><image href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"/>Share
+        Session</uicontrol> toolbar button and then sending the retrieved URL to other collaborators
+      and then all of them can edit and review the same document simultaneously.</p>
+  </body>
+  <topic id="topic_k2k_qgt_rnb">
+    <title>Enabling the Share Session Action</title>
+    <body>
+      <p>To enable the <uicontrol><image href="../img/wa-share-session-button.png"
+            id="image_fvg_w15_rnb"/>Share Session</uicontrol> action, a plugin can set the
+          <codeph>sharedSessionCompatible</codeph>
+        <xref keyref="jscript_api_workspace_LoadingOptions">loading option</xref>.</p>
+      <p>For the feature to work correctly, when a concurrent session is active, CMS connectors
+        should ensure that:</p>
+      <ul id="ul_aq3_jgt_rnb">
+        <li>Any save/commit action is disabled for session guests.</li>
+        <li>Any check-in/check-out actions are disabled for session guests.</li>
+        <li>The document is editable for guests even though they do not have a lock for it.</li>
+      </ul>
+      <p>To detect that a user is a <i>guest</i>, you can use a code that uses an experimental API
+        like
+        this:<codeblock outputclass="language-javascript">var mgr = editor.getEditingSupport().getConcurrentEditingManager();    
+if (mgr &amp;&amp; !mgr.isCreator()) {      
+      ...
+} </codeblock></p>
+      <note type="other" othertype="Important Notes About Concurrent Editing">
+        <ul id="ul_r51_fc5_rnb">
+          <li>Concurrent editing does not work if <ph keyref="webappProduct"/> is deployed on
+            multiple servers behind a <xref href="webapp-loadbalancing.dita">load
+            balancer</xref>.</li>
+          <li>Concurrent editing does not work if <ph keyref="webappProduct"/> is accessed through a
+            NGINX (a reverse proxy) with its default configuration. It requires the following NGINX
+            configuration for the <filepath>/oxygen-xml-web-author/ws</filepath>
+            path:<codeblock outputclass="language-javascript">location /oxygen-xml-web-author/ws {
+  proxy_http_version 1.1;
+      
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header Host $host;
+      
+  proxy_pass "http://web-author:8080/oxygen-xml-web-author/ws";
+} </codeblock></li>
+          <li>If the shared document contains content references (i.e. <codeph>xi:include</codeph>
+            or DITA <codeph>conref</codeph>) from other files, only the user that inserted them
+            needs to have permission to open them from the file server. All other users that are
+            part of the shared session will be able to see them. This also happens when those users
+            would not have permission to open the referenced file in the CMS.</li>
+        </ul>
+      </note>
+      <section id="section_mnm_x25_rnb">
+        <title>Disabling the Share Session Action</title>
+        <p>To remove the <uicontrol><image href="../img/wa-share-session-button.png"
+              id="image_vv2_c25_rnb"/>Share Session</uicontrol> action from the toolbar, simply
+          disable the <uicontrol>Concurrent Editing Plugin</uicontrol> in the <xref
+            href="webapp-admin-page.dita#webapp-admin-page">Administration Page</xref>.</p>
+      </section>
+    </body>
+  </topic>
+  <topic id="topic_n2z_sgt_rnb">
+    <title>CMS-owned Concurrent Editing Sessions</title>
+    <body>
+      <p>Aside from using the <uicontrol><image href="../img/wa-share-session-button.png"
+            id="image_txt_2f5_rnb"/>Share Session</uicontrol> action, a more integrated concurrent
+        editing approach is to have a concurrent editing room owned by the CMS. </p>
+      <p>The CMS should be responsible for:<ul id="ul_sht_mgt_rnb">
+          <li>Ensuring that aside from the Web Author users, no other users are modifying the file.
+            The CMS can use a "service" account to hold the "lock" on the edited file, or to do a
+            check-out.</li>
+          <li>Creating the concurrent editing room.</li>
+          <li>Enabling users to join the room.</li>
+          <li>Saving the content of the room.</li>
+          <li>Closing the room.</li>
+        </ul></p>
+      <section id="section_evc_zgt_rnb">
+        <title>Creating a Concurrent Editing Room</title>
+        <p>The CMS can use the following code to create a concurrent editing
+          <i>room</i>:<codeblock outputclass="language-javascript">editor.getEditingSupport().getConcurrentEditingManager().createRoom().then(roomId =>
+window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
+        <p>The ID of the room can then be shared with other users. To join an existing room, the
+            <codeph>roomId</codeph> URL parameter can be used.</p>
+        <p>By using the Java API, a room can be created like this:</p>
+        <codeblock outputclass="language-javascript">String roomId = RoomsManager.INSTANCE.createRoomFromDocument(AuthorDocumentModel) </codeblock>
+        <p>This code can be used during the editor loading on the following callbacks:</p>
+        <ul id="ul_vw1_mht_rnb">
+          <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph></li>
+          <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph></li>
+        </ul>
+      </section>
+      <section id="section_jkr_4ht_rnb">
+        <title>Saving the Content of the Room</title>
+        <p>To Save a document edited in a concurrent editing room, the CMS can use the room
+            <i>Observer</i>, which provides the "source-of-truth" for the document content. The
+            <i>Observer</i> integrates changes made by each user in batches. This helps to keep an
+          informative version history.</p>
+        <p>For example, to implement auto-save, a CMS should:</p>
+        <ul id="ul_fww_pht_rnb">
+          <li>Add an <codeph>EditListener</codeph> on the observer
+              (<codeph>room.getObserver()</codeph>) to be notified when the document state is
+            changed.</li>
+          <li>Periodically call <codeph>room.getObserver().sync(peerId -> { }};</codeph>. The
+            callback is called after integrating a batch of changes from a single user.</li>
+          <li>After integrating each batch of changes, the CMS can call
+              <codeph>room.getObserver().createInputStream()</codeph> to obtain a reader over the
+            document content at that point. The reader should be consumed immediately.</li>
+        </ul>
+      </section>
+      <section id="section_wfk_qht_rnb">
+        <title>Enabling Users to Join a Room</title>
+        <p>To enable users to join a room, there are several options:</p>
+        <ul id="ul_jmz_rht_rnb">
+          <li>Add <codeph>roomId=&lt;the-id></codeph> in the URL</li>
+          <li>Add <codeph>roomId=&lt;the-id></codeph> as a loading option in a JS plugin.</li>
+          <li>Set <codeph>roomId=&lt;the-id></codeph> as a session attribute in one of the following
+            Java listeners:<ul id="ul_kmz_rht_rnb">
+              <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph></li>
+              <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph></li>
+            </ul></li>
+        </ul>
+      </section>
+      <section id="section_anj_sht_rnb">
+        <title>Closing the Room</title>
+        <p>A room created this way is not closed when the last user leaves. It should be closed
+          using <codeph>Room.close()</codeph> when all the users have left and all the changes are
+          saved.</p>
+      </section>
+    </body>
+  </topic>
+</topic>
