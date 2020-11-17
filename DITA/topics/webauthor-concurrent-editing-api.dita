@@ -33,9 +33,8 @@
         <li>Any check-in/check-out actions are disabled for session guests.</li>
         <li>The document is editable for guests even though they do not have a lock for it.</li>
       </ul>
-      <p>To detect that a user is a <i>guest</i>, you can use a code that uses an experimental API
-        like
-        this:<codeblock outputclass="language-javascript">var mgr = editor.getEditingSupport().getConcurrentEditingManager();    
+      <p>To detect that a user is a <i>guest</i>, you can use the following JavaScript
+        code:<codeblock outputclass="language-javascript">var mgr = editor.getEditingSupport().getConcurrentEditingManager();    
 if (mgr &amp;&amp; !mgr.isCreator()) {      
       ...
 } </codeblock></p>
@@ -89,7 +88,7 @@ if (mgr &amp;&amp; !mgr.isCreator()) {
         </ul></p>
       <section id="section_evc_zgt_rnb">
         <title>Creating a Concurrent Editing Room</title>
-        <p>The CMS can use the following code to create a concurrent editing
+        <p>The CMS can use the following JavaScript code to create a concurrent editing
           <i>room</i>:<codeblock outputclass="language-javascript">editor.getEditingSupport().getConcurrentEditingManager().createRoom().then(roomId =>
 window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
         <p>The ID of the room can then be shared with other users. To join an existing room, the
@@ -98,8 +97,16 @@ window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
         <codeblock outputclass="language-javascript">String roomId = RoomsManager.INSTANCE.createRoomFromDocument(AuthorDocumentModel) </codeblock>
         <p>This code can be used during the editor loading on the following callbacks:</p>
         <ul id="ul_vw1_mht_rnb">
-          <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph></li>
-          <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph></li>
+          <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph>.
+            In this case, the room ID has to be added to the <codeph>sessionAttributes</codeph> map
+            using the <codeph>ro.sync.ecss.extensions.api.webapp.ce.Room.ROOM_ID_ATTRIBUTE</codeph>
+            key.</li>
+          <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph>.
+            In this case the room ID has to be added as an attribute to the editing context of the
+            current document using the with
+              <codeph>ro.sync.ecss.extensions.api.webapp.ce.Room.ROOM_ID_ATTRIBUTE</codeph> as the
+            name. The editing context can be obtained by calling:
+              <codeph>authorDocumentModel.getAuthorAccess().getEditorAccess().getEditingContext()</codeph>.</li>
         </ul>
       </section>
       <section id="section_jkr_4ht_rnb">
@@ -124,8 +131,10 @@ window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
         <title>Enabling Users to Join a Room</title>
         <p>To enable users to join a room, there are several options:</p>
         <ul id="ul_jmz_rht_rnb">
-          <li>Add <codeph>roomId=&lt;the-id></codeph> in the URL</li>
-          <li>Add <codeph>roomId=&lt;the-id></codeph> as a loading option in a JS plugin.</li>
+          <li>Add <codeph>roomId=&lt;the-id></codeph> as an URL parameter</li>
+          <li>Add <codeph>roomId=&lt;the-id></codeph> as a <xref
+              href="web_author_api_concepts.dita#web_author_api_concepts/loading-option">loading
+              option</xref> in a JavaScript plugin.</li>
           <li>Set <codeph>roomId=&lt;the-id></codeph> as a session attribute in one of the following
             Java listeners:<ul id="ul_kmz_rht_rnb">
               <li><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph></li>
@@ -140,5 +149,12 @@ window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
           saved.</p>
       </section>
     </body>
+    <related-links>
+      <link
+        href="https://github.com/oxygenxml/web-author-sample-plugins/tree/master/web-author-rooms-manager-plugin"
+        format="html" scope="external">
+        <linktext>Open Source Sample Room Manager Plugin</linktext>
+      </link>
+    </related-links>
   </topic>
 </topic>
