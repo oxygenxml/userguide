@@ -43,10 +43,14 @@ if (mgr &amp;&amp; !mgr.isCreator()) {
           <li>Concurrent editing does not work if <ph keyref="webappProduct"/> is deployed on
             multiple servers behind a <xref href="webapp-loadbalancing.dita">load
             balancer</xref>.</li>
-          <li>Concurrent editing does not work if <ph keyref="webappProduct"/> is accessed through a
-            NGINX (a reverse proxy) with its default configuration. It requires the following NGINX
-            configuration for the <filepath>/oxygen-xml-web-author/ws</filepath>
-            path:<codeblock outputclass="language-javascript">location /oxygen-xml-web-author/ws {
+          <li>
+            <p><ph keyref="webappProduct"/> use Web Sockets to propagate changes in real time
+              between collaborators. If you are using a reverse proxy, some additional configuration
+              may be required to enable Web Socket connections to the <codeph>./ws</codeph> endpoint
+              of the application.</p>
+            <p>For example, NGINX requires the following configuration for the
+                <filepath>/oxygen-xml-web-author/ws</filepath>
+              path:<codeblock outputclass="language-javascript">location /oxygen-xml-web-author/ws {
   proxy_http_version 1.1;
       
   proxy_set_header Upgrade $http_upgrade;
@@ -54,7 +58,8 @@ if (mgr &amp;&amp; !mgr.isCreator()) {
   proxy_set_header Host $host;
       
   proxy_pass "http://web-author:8080/oxygen-xml-web-author/ws";
-} </codeblock></li>
+}</codeblock></p>
+          </li>
           <li>If the shared document contains content references (i.e. <codeph>xi:include</codeph>
             or DITA <codeph>conref</codeph>) from other files, only the user that inserted them
             needs to have permission to open them from the file server. All other users that are
