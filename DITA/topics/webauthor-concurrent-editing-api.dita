@@ -74,6 +74,28 @@ if (mgr &amp;&amp; !mgr.isCreator()) {
       
   proxy_pass "http://web-author:8080/oxygen-xml-web-author/ws";
 }</codeblock></p>
+            <p>As another example, when using Apache HTTP server as a reverse proxy, a system
+              administrator needs to enable the following modules:</p>
+            <ul id="ul_gp2_zl4_snb">
+              <li>
+                <p><codeph>rewrite</codeph></p>
+              </li>
+              <li>
+                <p><codeph>proxy_http</codeph></p>
+              </li>
+              <li>
+                <p><codeph>proxy_wstunnel</codeph>
+                </p>
+              </li>
+            </ul>
+            <p>Also, a configuration similar with the one below should be
+              added:<codeblock>ProxyPass /oxygen-xml-web-author http://&lt;internal-host>:8080/oxygen-xml-web-author
+ProxyPassReverse /oxygen-xml-web-author http://&lt;internal-host>:8080/oxygen-xml-web-author
+
+RewriteEngine on
+RewriteCond %{​HTTP:Upgrade}​ websocket [NC]
+RewriteCond %{​HTTP:Connection}​ upgrade [NC]
+RewriteRule ^/oxygen-xml-web-author/?(.*) "ws://&lt;internal-host>:8080/oxygen-xml-web-author/$1" [P,L]</codeblock></p>
           </li>
           <li>If the shared document contains content references (i.e. <codeph>xi:include</codeph>
             or DITA <codeph>conref</codeph>) from other files, only the user that inserted them
@@ -176,6 +198,12 @@ window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
           href="https://github.com/oxygenxml/web-author-sample-plugins/tree/master/web-author-rooms-manager-plugin"
           scope="external">
           <linktext>Open Source Sample Room Manager Plugin</linktext>
+        </link>
+        <link
+          href="https://github.com/oxygenxml/web-author-sample-plugins/tree/master/web-author-rooms-saver-sample-plugin"
+          format="html" scope="external">
+          <linktext>Open Source Sample Plugin for Saving Content in a Concurrent Editing
+            Room</linktext>
         </link>
       </linklist>
     </related-links>
