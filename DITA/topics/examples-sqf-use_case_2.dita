@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="examples-sqf-use_case_2">
+  <title>SQF Use Case 2: Impose an ID for all DITA Section Elements</title>
+  <body>
+    <p><b>Description:</b> The following sample Schematron rule checks if each DITA
+        <xmlelement>section</xmlelement> element has a specified ID.</p>
+    <p><b>Sample
+      Code:</b><codeblock outputclass="language-xml">&lt;&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+  queryBinding="xslt2"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process"&gt;
+  &lt;sch:pattern&gt;
+    &lt;!-- Add IDs to all sections to impose link targets --&gt;
+    &lt;sch:rule context="section"&gt;
+      &lt;sch:assert test="@id" sqf:fix="addId addIds"&gt; [Bug] All sections should
+        have an @id attribute &lt;/sch:assert&gt;
+      
+      &lt;sqf:fix id="addId"&gt;
+        &lt;sqf:description&gt;
+          &lt;sqf:title&gt;Add @id to the current section&lt;/sqf:title&gt;
+          &lt;sqf:p&gt;Add an @id attribute to the current section. The ID is
+            generated from the section title.&lt;/sqf:p&gt;
+        &lt;/sqf:description&gt;
+        &lt;!-- Generate an id based on the section title. If there is no title then
+          generate a random id. --&gt;
+        &lt;sqf:add target="id" node-type="attribute"
+          select="
+            concat('section_',
+            if (exists(title) and string-length(title) &gt; 0)
+            then
+              substring(lower-case(replace(replace(
+              normalize-space(string(title)), '\s', '_'), 
+              '[^a-zA-Z0-9_]', '')), 0, 50)
+            else
+              generate-id())"/&gt;
+      &lt;/sqf:fix&gt;
+      &lt;sqf:fix id="addIds"&gt;
+        &lt;sqf:description&gt;
+          &lt;sqf:title&gt;Add @id to all sections&lt;/sqf:title&gt;
+          &lt;sqf:p&gt;Add an @id attribute to each section from the document. The ID
+            is generated from the section title.&lt;/sqf:p&gt;
+        &lt;/sqf:description&gt;
+        &lt;!-- Generate an id based on the section title. If there is no title then
+          generate a random id. --&gt;
+        &lt;sqf:add match="//section[not(@id)]" target="id" node-type="attribute"
+          select="
+            concat('section_',
+            if (exists(title) and string-length(title) &gt; 0)
+            then substring(lower-case(replace(replace(
+            normalize-space(string(title)), '\s', '_'), 
+            '[^a-zA-Z0-9_]', '')), 0, 50)
+            else generate-id())"/&gt;
+      &lt;/sqf:fix&gt;
+    &lt;/sch:rule&gt;
+  &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+    <p><b>Result:</b> The engine displays an error message if an <xmlatt>id</xmlatt> attribute is
+      missing for any <xmlelement>section</xmlelement> element in a DITA topic and the Quick Fix
+      mechanism proposes options for inserting the missing ID.</p>
+  </body>
+</topic>

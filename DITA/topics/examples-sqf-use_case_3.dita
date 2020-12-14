@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="examples-sqf-use_case_3">
+  <title>SQF Use Case 3: Impose a Short Description in an Abstract Element</title>
+  <body>
+    <p><b>Description:</b> The following sample Schematron rule checks a DITA topic to make sure it
+      contains a <xmlelement>shortdesc</xmlelement> element inside an
+        <xmlelement>abstract</xmlelement> element and the sample Quick Fix proposes options for
+      correcting the missing structure.</p>
+    <p><b>Sample
+      Code:</b><codeblock outputclass="language-xml">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+  &lt;sch:pattern&gt;
+    &lt;sch:rule context="shortdesc"&gt;
+      &lt;sch:assert test="parent::abstract" sqf:fix="moveToAbstract moveToExistingAbstract"&gt;
+                The short description must be added in an abstract element
+      &lt;/sch:assert&gt;
+      &lt;!-- Check if there is an abstarct element --&gt;
+      &lt;sch:let name="abstractElem" value="preceding-sibling::abstract | 
+                following-sibling::abstract"/&gt;
+            
+      &lt;!-- Create an abstract element and add the short description --&gt;
+      &lt;sqf:fix id="moveToAbstract" use-when="not($abstractElem)"&gt;
+          &lt;sqf:description&gt;
+              &lt;sqf:title&gt;Move short description in an abstract element&lt;/sqf:title&gt;
+          &lt;/sqf:description&gt;
+           sqf:replace&gt;
+              &lt;abstract&gt;
+                  &lt;xsl:apply-templates mode="copyExceptClass" select="."/&gt;
+              &lt;/abstract&gt;
+          &lt;/sqf:replace&gt;
+      &lt;/sqf:fix&gt;
+            
+      &lt;!-- Move the short description in the abstract element--&gt;
+       sqf:fix id="moveToExistingAbstract" use-when="$abstractElem"&gt;
+          &lt;sqf:description&gt;
+              &lt;sqf:title&gt;Move short description in the abstract element&lt;/sqf:title&gt;
+          &lt;/sqf:description&gt;
+          &lt;sch:let name="shortDesc"&gt;
+              &lt;xsl:apply-templates mode="copyExceptClass" select="."/&gt;
+          &lt;/sch:let&gt;
+          &lt;sqf:add match="$abstractElem" select="$shortDesc"/&gt;
+          &lt;sqf:delete/&gt;
+      &lt;/sqf:fix&gt;
+    &lt;/sch:rule&gt;
+  &lt;/sch:pattern&gt;  
+    
+    
+  &lt;!-- Template used to copy the current node --&gt;
+  &lt;xsl:template match="node() | @*" mode="copyExceptClass"&gt;
+      &lt;xsl:copy copy-namespaces="no"&gt;
+          &lt;xsl:apply-templates select="node() | @*" mode="copyExceptClass"/&gt;
+      &lt;/xsl:copy&gt;
+  &lt;/xsl:template&gt;
+  &lt;!-- Template used to skip the @class attribute from being copied --&gt;
+  &lt;xsl:template match="@class" mode="copyExceptClass"/&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+    <p><b>Result:</b> The engine displays an error message if an <xmlelement>abstract</xmlelement>
+      element does not contain a <xmlelement>shortdesc</xmlelement> element and the Quick Fix
+      mechanism proposes options for inserting the missing structure or to move the
+        <xmlelement>shortdesc</xmlelement> element inside the <xmlelement>abstract</xmlelement>
+      element.</p>
+  </body>
+</topic>
