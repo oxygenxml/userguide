@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="examples-schematron-use_case_6">
+  <title>Schematron Use Case 6: Restrict Certain Words from the Title</title>
+  <body>
+    <p><b>Description:</b> The following sample rule checks for instances of specified words to be
+      restricted from a <xmlelement>title</xmlelement> element (in this example, the words
+        <i>test</i> and <i>hello</i> are restricted).</p>
+    <p><b>Sample
+      Code:</b><codeblock outputclass="language-xml">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+    queryBinding="xslt2"&gt;
+    &lt;sch:let name="words" value="'test,hello'"/&gt;
+    &lt;sch:let name="wordsToMatch" value="replace($words, ',', '|')"/&gt;
+    &lt;sch:pattern&gt;
+        &lt;sch:rule context="title"&gt;
+            &lt;sch:report test="matches(text(), $wordsToMatch)" role="warn"&gt;
+                The following words should not be added in the title: 
+                &lt;sch:value-of select="$words"/&gt;
+            &lt;/sch:report&gt;
+        &lt;/sch:rule&gt;
+    &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+    <p><b>Result:</b> The engine displays an error message if one of the specified restricted words
+      appear in a title.</p>
+  </body>
+</topic>

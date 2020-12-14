@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="examples-schematron-use_case_2">
+  <title>Schematron Use Case 2: Check for Missing IDs</title>
+  <body>
+    <p><b>Description:</b> The following sample rule checks for missing or undefined IDs in a TEI
+      document. Specifically, it looks for IDs from the <codeph>tei:rs/@ref</codeph> attribute
+      defined in the document named <filepath>persons.xml</filepath> (as <codeph>xml:id</codeph> of
+      a TEI <codeph>person</codeph> element).</p>
+    <p><b>Sample
+      Code:</b><codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"&gt;
+    &lt;sch:ns uri="http://www.tei-c.org/ns/1.0" prefix="tei"/&gt;
+    &lt;sch:let name="personIds" 
+        value="document('../persons.xml')/tei:TEI//tei:person/@xml:id"/&gt;
+    &lt;sch:pattern&gt;
+        &lt;sch:rule context="tei:rs"&gt;
+            &lt;sch:let name="refIds" 
+               value="for $id in tokenize(@ref, ' ') return substring-after($id, '#')"/&gt;
+            &lt;sch:let name="missingIds" 
+               value="for $id in $refIds return (if($id = $personIds) then '' else $id)"/&gt;
+            
+            &lt;sch:report test="$missingIds != ''"&gt;
+                The following ids "&lt;sch:value-of select="$missingIds"/&gt;" 
+                are not define in "&lt;sch:value-of select="$personIds"/&gt;"
+            &lt;/sch:report&gt;
+        &lt;/sch:rule&gt;
+    &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+    <p>where the XML document looks something like
+      this:<codeblock outputclass="language-xml">&lt;tei xmlns="http://www.tei-c.org/ns/1.0"&gt;
+    &lt;rs ref="../SomePerson/persons.xml#EDP ../personography/HAMpersons.xml#SD"&gt;text&lt;/rs&gt;
+    &lt;rs ref="../SomePerson/persons.xml#EDP"&gt;text&lt;/rs&gt;
+&lt;/tei&gt;</codeblock></p>
+    <p><b>Result:</b> The engine displays an error message listing the missing/undefined IDs.</p>
+  </body>
+</topic>
