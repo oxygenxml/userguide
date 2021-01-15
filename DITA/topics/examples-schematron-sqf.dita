@@ -41,4 +41,493 @@
       
       
     </body>
+  <topic id="topic_g12_53d_34b">
+    <title>Schematron Examples</title>
+    <body>
+      <section id="section_cvr_zgd_34b">
+        <title>Schematron Use Case 1: Impose a Relax NG Schema Declaration</title>
+        <p><b>Description:</b> The following sample rule is useful if, for example, you need to
+          enforce the use of Relax NG schema declarations in all of your documents (i.e. instead of
+          using DTD schemas). </p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_tkm_1hd_34b">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+  queryBinding="xslt2" xmlns:saxon="http://saxon.sf.net/"&gt;
+  &lt;sch:let name="rngDeclaration"
+    value="processing-instruction('xml-model')
+     [saxon:get-pseudo-attribute('schematypens')='http://relaxng.org/ns/structure/1.0']"/&gt;
+  &lt;sch:pattern&gt;
+    &lt;sch:rule context="/element()"&gt;
+      &lt;sch:assert test="exists($rngDeclaration)"&gt;You must define a Relax NG schema  
+        declaration in the document (DTD schemas are not supported).&lt;/sch:assert&gt;
+    &lt;/sch:rule&gt;
+  &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+        <p><b>Result:</b> The engine checks for a Relax NG schema declaration in the document and
+          displays an error if it is missing. The error is reported on the document's root element
+            (<codeph>/element()</codeph>).</p>
+      </section>
+      <section id="section_gvk_2hd_34b">
+        <title>Schematron Use Case 2: Check for Missing IDs</title>
+        <p><b>Description:</b> The following sample rule checks for missing or undefined IDs in a
+          TEI document. Specifically, it looks for IDs from the <codeph>tei:rs/@ref</codeph>
+          attribute defined in the document named <filepath>persons.xml</filepath> (as
+            <codeph>xml:id</codeph> of a TEI <codeph>person</codeph> element).</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_nx5_nhd_34b">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"&gt;
+    &lt;sch:ns uri="http://www.tei-c.org/ns/1.0" prefix="tei"/&gt;
+    &lt;sch:let name="personIds" 
+        value="document('../persons.xml')/tei:TEI//tei:person/@xml:id"/&gt;
+    &lt;sch:pattern&gt;
+        &lt;sch:rule context="tei:rs"&gt;
+            &lt;sch:let name="refIds" 
+               value="for $id in tokenize(@ref, ' ') return substring-after($id, '#')"/&gt;
+            &lt;sch:let name="missingIds" 
+               value="for $id in $refIds return (if($id = $personIds) then '' else $id)"/&gt;
+            
+            &lt;sch:report test="$missingIds != ''"&gt;
+                The following ids "&lt;sch:value-of select="$missingIds"/&gt;" 
+                are not define in "&lt;sch:value-of select="$personIds"/&gt;"
+            &lt;/sch:report&gt;
+        &lt;/sch:rule&gt;
+    &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+        <p>where the XML document looks something like
+          this:<codeblock outputclass="language-xml" id="codeblock_ox5_nhd_34b">&lt;tei xmlns="http://www.tei-c.org/ns/1.0"&gt;
+    &lt;rs ref="../SomePerson/persons.xml#EDP ../personography/HAMpersons.xml#SD"&gt;text&lt;/rs&gt;
+    &lt;rs ref="../SomePerson/persons.xml#EDP"&gt;text&lt;/rs&gt;
+&lt;/tei&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message listing the missing/undefined
+          IDs.</p>
+      </section>
+      <section id="section_ypj_4hd_34b">
+        <title>Schematron Use Case 3: Check for Broken Links</title>
+        <p><b>Description:</b> The following sample rule detects broken links in DITA
+            <xmlelement>xref</xmlelement> or <xmlelement>link</xmlelement> elements. The first
+          example only checks links that do not contain an anchor (<b>#</b>).</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_lvt_phd_34b">&lt;rule
+  context="*[contains(@class, ' topic/xref ') or contains(@class, ' topic/link ')]
+  [@href][not(contains(@href, '#'))][not(@scope = 'external')]
+  [not(@type) or @type='dita']"&gt;
+  &lt;assert test="doc-available(resolve-uri(@href, base-uri(.)))"&gt;
+    The document linked by &lt;value-of select="local-name()"/&gt; 
+    "&lt;value-of select="@href"/&gt;" does not exist!&lt;/assert&gt;
+&lt;/rule&gt;</codeblock></p>
+        <p>For links that contain an anchor, the Schematron rule must look something like
+          this:<codeblock outputclass="language-xml" id="codeblock_mvt_phd_34b">&lt;rule
+  context="*[contains(@class, ' topic/xref ') or contains(@class, ' topic/link ')]
+  [@href][contains(@href, '#')][not(@scope = 'external')]
+  [not(@type) or @type='dita']"&gt;
+  &lt;let name="file" value="substring-before(@href, '#')"/&gt;
+  &lt;let name="idPart" value="substring-after(@href, '#')"/&gt;
+  &lt;let name="topicId"
+    value="if (contains($idPart, '/')) then substring-before($idPart, '/') else $idPart"/&gt;
+  &lt;let name="id" value="substring-after($idPart, '/')"/&gt;
+  
+  &lt;assert test="document($file, .)//*[@id=$topicId]"&gt;
+    Invalid topic id "&lt;value-of select="$topicId"/&gt;" &lt;/assert&gt;
+  &lt;assert test="$id ='' or document($file, .)//*[@id=$id]"&gt;
+    No such id "&lt;value-of select="$id"/&gt;" is defined! &lt;/assert&gt;
+  &lt;assert test="$id='' or document($file, .)//*[@id=$id]
+    [ancestor::*[contains(@class, ' topic/topic ')][1][@id=$topicId]]"&gt; 
+    The id "&lt;value-of select="$id"/&gt;" is not in the scope of the referenced topic id 
+    "&lt;value-of select="$topicId"/&gt;". &lt;/assert&gt;
+&lt;/rule&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message when a broken link or cross reference
+          is detected.</p>
+      </section>
+      <section id="section_g3t_vgd_34b">
+        <title>Schematron Use Case 4: Check for Duplicate IDs</title>
+        <p><b>Description:</b> The following sample rule detects if there are two sibling
+            <xmlelement>step</xmlelement> elements with the same <xmlatt>id</xmlatt> value in a DITA
+          Task document.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_wpc_xgd_34b">&lt;sch:rule context="*[contains(@class, ' task/step ')]"&gt;
+    &lt;sch:let name="id" value="@id"/&gt;
+    &lt;sch:report
+        test="preceding-sibling::element()[contains(@class, ' task/step ')][@id = $id]"&gt;
+        Element with duplicate ID "&lt;sch:value-of select="$id"/&gt;" detected. 
+    &lt;/sch:report&gt;
+&lt;/sch:rule&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message when a duplicate ID is detected in
+          sibling <xmlelement>step</xmlelement> elements within a DITA Task document.</p>
+      </section>
+      <section id="section_pts_qhd_34b">
+        <title>Schematron Use Case 5: Check for Duplicate DITA Topic References</title>
+        <p><b>Description:</b> The following sample rule checks a DITA map for duplicate
+            <xmlelement>topicref</xmlelement> elements with the same <xmlatt>href</xmlatt>
+          value.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_gck_13d_34b">&lt;sch:rule context="*[contains(@class, ' map/topicref ')]"&gt;
+    &lt;sch:let name="href" value="@href"/&gt;
+    &lt;sch:report
+        test="preceding::element()[contains(@class, ' map/topicref ')][@href = $href]"&gt;
+        Duplicate topicref "&lt;sch:value-of select="$href"/&gt;" detected in map.
+    &lt;/sch:report&gt;
+&lt;/sch:rule&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message when multiple
+            <xmlelement>topicref</xmlelement> elements with the same <xmlatt>href</xmlatt> value are
+          detected in a DITA map.</p>
+      </section>
+      <section id="section_ptn_13d_34b">
+        <title>Schematron Use Case 6: Restrict Certain Words from the Title</title>
+        <p><b>Description:</b> The following sample rule checks for instances of specified words to
+          be restricted from a <xmlelement>title</xmlelement> element (in this example, the words
+            <i>test</i> and <i>hello</i> are restricted).</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_e3m_c3d_34b">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+    queryBinding="xslt2"&gt;
+    &lt;sch:let name="words" value="'test,hello'"/&gt;
+    &lt;sch:let name="wordsToMatch" value="replace($words, ',', '|')"/&gt;
+    &lt;sch:pattern&gt;
+        &lt;sch:rule context="title"&gt;
+            &lt;sch:report test="matches(text(), $wordsToMatch)" role="warn"&gt;
+                The following words should not be added in the title: 
+                &lt;sch:value-of select="$words"/&gt;
+            &lt;/sch:report&gt;
+        &lt;/sch:rule&gt;
+    &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if one of the specified restricted
+          words appear in a title.</p>
+      </section>
+      <section id="section_t5r_c3d_34b">
+        <title>Schematron Use Case 7: Check the Location of a Resource</title>
+        <p><b>Description:</b> The following sample rule checks if the path to a resource (in this
+          case, an image) is specified correctly. Specifically, this sample rule reports that the
+          image must be located in the current project (the images location must be relative to the
+          parent folder and no more than one <codeph>"../"</codeph> in the path.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_t5f_g3d_34b">&lt;sch:rule context="image"&gt;
+    &lt;sch:report test="count(tokenize(@href, '\.\./')) &gt; 2"&gt;
+        The image must be located in the current project. It is currently located
+        in: &lt;sch:value-of select="@href"/&gt;
+    &lt;/sch:report&gt;
+&lt;/sch:rule&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if an image is detected in a location
+          other than the current project, relative to the parent folder.</p>
+      </section>
+      <section id="section_fpk_g3d_34b">
+        <title>Schematron Use Case 8: Check for Extra Spaces at Beginning/End of Elements</title>
+        <p><b>Description:</b> The following sample rule checks for spaces at the beginning and end
+          of elements.<note type="tip" id="note_trm_h3d_34b">You could specify a list of elements to
+            check to make the rule context-sensitive.</note></p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_urm_h3d_34b">&lt;rule context="p|ph|codeph|filename|indexterm|xref|user-defined|user-input"&gt;
+  &lt;let name="firstNodeIsElement" value="node()[1] instance of element()"/&gt;
+  &lt;let name="lastNodeIsElement" value="node()[last()] instance of element()"/&gt;
+  &lt;report test="(not($firstNodeIsElement) and matches(.,'^\s',';j')) 
+                or (not($lastNodeIsElement) and matches(.,'\s$',';j'))"
+          role="warning"&gt;
+                Textual elements should not begin or end with whitespace.&lt;/report&gt;
+&lt;/rule&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if a whitespace is detected a the
+          beginning or end of a textual element.</p>
+      </section>
+      <section id="section_emq_h3d_34b">
+        <title>Schematron Use Case 9: Impose Capitalizing the First Letter</title>
+        <p><b>Description:</b> The following sample rule detects if elements start with a capital
+          letter or a number. The rule is implemented using abstract patterns. The abstract pattern
+            <codeph>starts-with-capital</codeph> has one argument representing the element to be
+          checked. There are two implementations of the abstract pattern, one that specifies the
+            <xmlelement>tittle</xmlelement> element as the element to verify, and one that specifies
+          the <xmlelement>li</xmlelement> element.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_nmz_33d_34b">&lt;sch:pattern abstract="true" id="starts-with-capital"&gt;
+    &lt;sch:rule context="$element" role="information"&gt;
+        &lt;sch:let name="firstNodeIsElement" value="node()[1] instance of element()"/&gt;
+        &lt;sch:report test="(not($firstNodeIsElement) and (not(matches(., '^[A-Z|0-9]'))))"&gt;
+            Start the element &amp;lt;$element&amp;gt; with a capital letter.&lt;/sch:report&gt;
+    &lt;/sch:rule&gt;
+&lt;/sch:pattern&gt;
+&lt;sch:pattern is-a="starts-with-capital"&gt;
+    &lt;sch:param name="element" value="title"/&gt;
+&lt;/sch:pattern&gt;
+&lt;sch:pattern is-a="starts-with-capital"&gt;
+    &lt;sch:param name="element" value="li"/&gt;
+&lt;/sch:pattern&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if a title begins with a word that
+          does not contain a capital letter or number as its first character.</p>
+      </section>
+      <section id="section_ynp_m3d_34b">
+        <title>Schematron Use Case 10: Check for Specified Terms in a Paragraph</title>
+        <p><b>Description:</b> The following sample rule checks if any DITA
+            <xmlelement>p</xmlelement> elements contain certain keywords defined in an external
+          document.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_b5q_n3d_34b">&lt;sch:pattern&gt;
+    &lt;sch:let name="keys" value="document('keys-common.ditamap')//keyword"/&gt;
+    &lt;sch:rule context="p"&gt;
+        &lt;sch:let name="text" value="."/&gt;
+        &lt;sch:let name="matchedKeys" value="$keys[contains($text, normalize-space(.))]"/&gt;
+        &lt;sch:report id="now001" test="count($matchedKeys) &gt; 0" role="error"&gt;
+           The paragraph text contains the keywords: &lt;sch:value-of select="$matchedKeys"/&gt;
+        &lt;/sch:report&gt;
+    &lt;/sch:rule&gt;
+&lt;/sch:pattern&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if any of the keywords listed in an
+          external document are detected within a DITA <xmlelement>p</xmlelement> element.</p>
+      </section>
+      <section id="section_nm3_43d_34b">
+        <title>Schematron Use Case 11: Impose a Minimum Value</title>
+        <p><b>Description:</b> The following sample rule determines the
+            <xmlelement>type</xmlelement> element value with the minimum version specified by the
+            <xmlatt>version</xmlatt> attribute and then verifies that they are all equal to the
+          determined value.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_gnl_p3d_34b">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"&gt;
+    &lt;sch:let name="typeValue" value="//Node1[not(@version &gt; 
+                      ../Node1/@version)][1]/Type/text()"/&gt;
+    
+    &lt;sch:pattern&gt;
+        &lt;sch:rule context="Type"&gt;
+            &lt;sch:assert test="text() = $typeValue"&gt;
+                The Type value must be "&lt;sch:value-of select="$typeValue"/&gt;"
+            &lt;/sch:assert&gt;
+        &lt;/sch:rule&gt;
+    &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+        <p>where the XML file would look something like
+          this:<codeblock outputclass="language-xml" id="codeblock_hnl_p3d_34b">&lt;root&gt;
+    &lt;Node1 version="1"&gt;
+        &lt;Element1&gt;Value1&lt;/Element1&gt;
+        &lt;Type&gt;123456&lt;/Type&gt;
+    &lt;/Node1&gt;
+    &lt;Node1 version="2"&gt;
+        &lt;Element1&gt;Value1&lt;/Element1&gt;
+        &lt;Type&gt;123456&lt;/Type&gt;
+    &lt;/Node1&gt;
+    &lt;Node1 version="3"&gt;
+        &lt;Element1&gt;Value1&lt;/Element1&gt;
+        &lt;Type&gt;1234567&lt;/Type&gt;
+    &lt;/Node1&gt;
+&lt;/root&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if a <xmlelement>type</xmlelement>
+          element value does not equal the minimum version specified by the <xmlatt>version</xmlatt>
+          attribute.</p>
+      </section>
+    </body>
+  </topic>
+  <topic id="topic_bzv_y3d_34b">
+    <title>SQF (Schematron Quick Fix) Examples</title>
+    <body>
+      <section id="section_xgg_q3d_34b">
+        <title>SQF Use Case 1: Impose a DITA Prolog</title>
+        <p><b>Description:</b> The following sample Schematron rule checks a DITA topic to make sure
+          it contains <xmlelement>prolog</xmlelement>, <xmlelement>critdates</xmlelement>,
+            <xmlelement>revised</xmlelement> elements and the sample Quick Fix proposes options for
+          inserting the missing elements.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_cdc_r3d_34b">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process"&gt;
+  &lt;sch:pattern&gt;
+    &lt;sch:rule context="*[contains(@class, ' topic/topic ')]"&gt;
+      &lt;sch:assert sqf:fix="add_prolog" test="prolog" role="warn"&gt;Every topic must contain
+            prolog/critdates/revised elements where the revised modified date is in 
+            YYYY-MM-DD format.&lt;/sch:assert&gt;
+      &lt;sqf:fix id="add_prolog"&gt;
+        &lt;sqf:description&gt;
+          &lt;sqf:title&gt;Add prolog/critdates/revised elements, where the revised element's
+                     @modified attribute value is the current date in YYYY-MM-DD
+                     format.&lt;/sqf:title&gt;
+          &lt;/sqf:description&gt;
+          &lt;sqf:add match="*[contains(@class, ' topic/body ')]" node-type="element"
+              position="before" target="prolog"&gt;
+              &lt;critdates&gt;
+                &lt;revised modified=""&gt; &lt;/revised&gt;
+              &lt;/critdates&gt;
+          &lt;/sqf:add&gt;
+      &lt;/sqf:fix&gt;
+    &lt;/sch:rule&gt;
+
+    &lt;sch:rule context="*[contains(@class, ' topic/prolog ')]"&gt;
+      &lt;sch:report role="warn" test="not(critdates)" sqf:fix="add_critdates"&gt;The prolog
+          element must have critdates/revised elements with the @modified attribute value
+          in YYYY-MM-DD format.&lt;/sch:report&gt;
+      &lt;sqf:fix id="add_critdates"&gt;
+        &lt;sqf:description&gt;
+          &lt;sqf:title&gt;Add the critdates element.&lt;/sqf:title&gt;
+        &lt;/sqf:description&gt;
+        &lt;sqf:add node-type="element" target="critdates"&gt;
+          &lt;revised modified=""&gt; &lt;/revised&gt;
+        &lt;/sqf:add&gt;
+      &lt;/sqf:fix&gt;
+    &lt;/sch:rule&gt;
+
+    &lt;sch:rule context="*[contains(@class, ' topic/critdates ')]"&gt;
+      &lt;sch:report role="warn" test="not(revised)" sqf:fix="add_revised"&gt;The critdates
+             element must have revised @modified in YYYY-MM-DD format. &lt;/sch:report&gt;
+      &lt;sqf:fix id="add_revised"&gt;
+        &lt;sqf:description&gt;
+          &lt;sqf:title&gt;Add the revised element.&lt;/sqf:title&gt;
+        &lt;/sqf:description&gt;
+        &lt;sqf:add node-type="element" target="revised"/&gt;
+      &lt;/sqf:fix&gt;
+    &lt;/sch:rule&gt;
+  &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if the
+            <xmlelement>prolog</xmlelement>, <xmlelement>critdates</xmlelement>, or
+            <xmlelement>revised</xmlelement> elements are missing from a DITA topic and the Quick
+          Fix mechanism proposes options for inserting the missing elements.</p>
+      </section>
+      <section id="section_ocv_bjd_34b">
+        <title>SQF Use Case 2: Impose an ID for all DITA Section Elements</title>
+        <p><b>Description:</b> The following sample Schematron rule checks if each DITA
+            <xmlelement>section</xmlelement> element has a specified ID and the sample Quick Fix
+          proposes options for inserting the missing IDs.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_k11_2jd_34b">&lt;&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+  queryBinding="xslt2"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process"&gt;
+  &lt;sch:pattern&gt;
+    &lt;!-- Add IDs to all sections to impose link targets --&gt;
+    &lt;sch:rule context="section"&gt;
+      &lt;sch:assert test="@id" sqf:fix="addId addIds"&gt; [Bug] All sections should
+        have an @id attribute &lt;/sch:assert&gt;
+      
+      &lt;sqf:fix id="addId"&gt;
+        &lt;sqf:description&gt;
+          &lt;sqf:title&gt;Add @id to the current section&lt;/sqf:title&gt;
+          &lt;sqf:p&gt;Add an @id attribute to the current section. The ID is
+            generated from the section title.&lt;/sqf:p&gt;
+        &lt;/sqf:description&gt;
+        &lt;!-- Generate an id based on the section title. If there is no title then
+          generate a random id. --&gt;
+        &lt;sqf:add target="id" node-type="attribute"
+          select="
+            concat('section_',
+            if (exists(title) and string-length(title) &gt; 0)
+            then
+              substring(lower-case(replace(replace(
+              normalize-space(string(title)), '\s', '_'), 
+              '[^a-zA-Z0-9_]', '')), 0, 50)
+            else
+              generate-id())"/&gt;
+      &lt;/sqf:fix&gt;
+      &lt;sqf:fix id="addIds"&gt;
+        &lt;sqf:description&gt;
+          &lt;sqf:title&gt;Add @id to all sections&lt;/sqf:title&gt;
+          &lt;sqf:p&gt;Add an @id attribute to each section from the document. The ID
+            is generated from the section title.&lt;/sqf:p&gt;
+        &lt;/sqf:description&gt;
+        &lt;!-- Generate an id based on the section title. If there is no title then
+          generate a random id. --&gt;
+        &lt;sqf:add match="//section[not(@id)]" target="id" node-type="attribute"
+          select="
+            concat('section_',
+            if (exists(title) and string-length(title) &gt; 0)
+            then substring(lower-case(replace(replace(
+            normalize-space(string(title)), '\s', '_'), 
+            '[^a-zA-Z0-9_]', '')), 0, 50)
+            else generate-id())"/&gt;
+      &lt;/sqf:fix&gt;
+    &lt;/sch:rule&gt;
+  &lt;/sch:pattern&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if an <xmlatt>id</xmlatt> attribute
+          is missing for any <xmlelement>section</xmlelement> element in a DITA topic and the Quick
+          Fix mechanism proposes options for inserting the missing ID.</p>
+      </section>
+      <section id="section_njr_2jd_34b">
+        <title>SQF Use Case 3: Impose a Short Description in an Abstract Element</title>
+        <p><b>Description:</b> The following sample Schematron rule checks a DITA topic to make sure
+          it contains a <xmlelement>shortdesc</xmlelement> element inside an
+            <xmlelement>abstract</xmlelement> element and the sample Quick Fix proposes options for
+          correcting the missing structure.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_ads_gjd_34b">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+  &lt;sch:pattern&gt;
+    &lt;sch:rule context="shortdesc"&gt;
+      &lt;sch:assert test="parent::abstract" sqf:fix="moveToAbstract moveToExistingAbstract"&gt;
+                The short description must be added in an abstract element
+      &lt;/sch:assert&gt;
+      &lt;!-- Check if there is an abstarct element --&gt;
+      &lt;sch:let name="abstractElem" value="preceding-sibling::abstract | 
+                following-sibling::abstract"/&gt;
+            
+      &lt;!-- Create an abstract element and add the short description --&gt;
+      &lt;sqf:fix id="moveToAbstract" use-when="not($abstractElem)"&gt;
+          &lt;sqf:description&gt;
+              &lt;sqf:title&gt;Move short description in an abstract element&lt;/sqf:title&gt;
+          &lt;/sqf:description&gt;
+           sqf:replace&gt;
+              &lt;abstract&gt;
+                  &lt;xsl:apply-templates mode="copyExceptClass" select="."/&gt;
+              &lt;/abstract&gt;
+          &lt;/sqf:replace&gt;
+      &lt;/sqf:fix&gt;
+            
+      &lt;!-- Move the short description in the abstract element--&gt;
+       sqf:fix id="moveToExistingAbstract" use-when="$abstractElem"&gt;
+          &lt;sqf:description&gt;
+              &lt;sqf:title&gt;Move short description in the abstract element&lt;/sqf:title&gt;
+          &lt;/sqf:description&gt;
+          &lt;sch:let name="shortDesc"&gt;
+              &lt;xsl:apply-templates mode="copyExceptClass" select="."/&gt;
+          &lt;/sch:let&gt;
+          &lt;sqf:add match="$abstractElem" select="$shortDesc"/&gt;
+          &lt;sqf:delete/&gt;
+      &lt;/sqf:fix&gt;
+    &lt;/sch:rule&gt;
+  &lt;/sch:pattern&gt;  
+    
+    
+  &lt;!-- Template used to copy the current node --&gt;
+  &lt;xsl:template match="node() | @*" mode="copyExceptClass"&gt;
+      &lt;xsl:copy copy-namespaces="no"&gt;
+          &lt;xsl:apply-templates select="node() | @*" mode="copyExceptClass"/&gt;
+      &lt;/xsl:copy&gt;
+  &lt;/xsl:template&gt;
+  &lt;!-- Template used to skip the @class attribute from being copied --&gt;
+  &lt;xsl:template match="@class" mode="copyExceptClass"/&gt;
+&lt;/sch:schema&gt;</codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if an
+            <xmlelement>abstract</xmlelement> element does not contain a
+            <xmlelement>shortdesc</xmlelement> element and the Quick Fix mechanism proposes options
+          for inserting the missing structure or to move the <xmlelement>shortdesc</xmlelement>
+          element inside the <xmlelement>abstract</xmlelement> element.</p>
+      </section>
+      <section id="section_l3f_bkd_34b">
+        <title>SQF Use Case 4: Impose a Certain Article Type</title>
+        <p><b>Description:</b> The following sample Schematron rule checks the
+            <xmlatt>article-type</xmlatt> attribute to make sure its value is one of the specified
+          allowed values (<b>abstract</b>, <b>addendum</b>, <b>announcement</b>,
+            <b>article-commentary</b>) and the sample Quick Fix proposes options for replacing any
+          other detected value with one of the allowed values.</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_q4d_ckd_34b">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+   
+  &lt;sch:let name="articleTypes" value="('abstract', 'addendum', 'announcement', 
+      'article-commentary')"/>
+   
+  &lt;sch:pattern>
+    &lt;sch:rule context="article/@article-type">
+      &lt;sch:assert test=". = $articleTypes" sqf:fix="setArticleType">
+        Should be one of the article types: 
+          &lt;sch:value-of select="$articleTypes"/>&lt;/sch:assert>
+       
+      &lt;sqf:fix id="setArticleType" use-for-each="$articleTypes">
+        &lt;sqf:description>
+          &lt;sqf:title>Set article type to '&lt;sch:value-of select="$sqf:current"/>'
+          &lt;/sqf:title>
+        &lt;/sqf:description>
+          &lt;sqf:replace node-type="attribute" target="article-type" select="$sqf:current"/>
+      &lt;/sqf:fix>
+    &lt;/sch:rule>
+  &lt;/sch:pattern>
+&lt;/sch:schema></codeblock></p>
+        <p><b>Result:</b> The engine displays an error message if an <xmlatt>article-type</xmlatt>
+          attribute has any other value other than <b>abstract</b>, <b>addendum</b>,
+            <b>announcement</b>, or <b>article-commentary</b> and the Quick Fix mechanism proposes
+          options for replacing the disallowed value with one of those four allowed values (using
+          the <codeph>use-for-each</codeph> construct).</p>
+      </section>
+    </body>
+  </topic>
 </topic>
