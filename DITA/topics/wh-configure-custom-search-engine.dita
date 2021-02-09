@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wh-configure-custom-search-engine">
+  <title>How to Configure a Custom Search Engine</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Responsive<indexterm>Custom search engine</indexterm></indexterm>
+        <indexterm product="webhelp">Custom search engine</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>It is possible to integrate a custom search engine into your WebHelp Responsive output. This
+      is done by using the following transformation parameters:</p>
+    <p>
+      <dl id="dl_v43_bvc_p4b">
+        <dlentry>
+          <dt>webhelp.fragment.custom.search.engine.results</dt>
+          <dd>This parameter can be used to replace the search results area with custom XHTML
+            content. The value of the parameter is the path to an XHTML file that contains your
+            custom content.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>webhelp.fragment.custom.search.engine.script</dt>
+          <dd>This parameter can be used to replace WebHelp's built-in search engine with your own
+            custom search engine. The value of the parameter is the path to an XHTML file that
+            contains the scripts required for your custom search engine to run.</dd>
+        </dlentry>
+      </dl>
+    </p>
+    <p>To integrate a custom search engine into your WebHelp Responsive output, follow these steps: <ol>
+        <li>If you have not already created a Publishing Template, see <xref
+            href="whr-create-publishing-template.dita">How to Create a Publishing
+          Template</xref>.</li>
+        <li>Create the following items in the folder that contains your publishing descriptor file
+          (the <filepath>.opt</filepath> file):<itemgroup>
+            <ul>
+              <li>A file named <filepath>custom-search-results-fragment.xml</filepath>. </li>
+              <li>A file named <filepath>custom-search-script-fragment.xml</filepath>.</li>
+              <li>A folder named <filepath>js</filepath>. </li>
+            </ul>
+          </itemgroup></li>
+        <li>In the <b>custom-search-results-fragment.xml</b> file, define the HTML structure that
+          will be used as the search results area. For example: <itemgroup>
+            <codeblock outputclass="language-xml">&lt;div id="cumstom-search-results">...&lt;/div></codeblock>
+            <note>The custom search engine script will need to find an HTML element from the HTML
+              structure that will be used as the search results area and write the search results
+              inside it. In this example, it is the <xmlelement>div</xmlelement> element with the id
+                <i>custom-search-results</i>.</note>
+          </itemgroup></li>
+        <li>In the <b>js</b> folder, create a file named <b>custom-search.js</b>. </li>
+        <li>As a starting point, you can copy the following content to the <b>custom-search.js</b>
+          file: <itemgroup>
+            <codeblock outputclass="language-javascript">$(document).ready(function () {
+  const params = new URLSearchParams(window.location.search);
+  const searchQuery = params.get('searchQuery');
+  // Implement your custom search engine
+  // Display the search results
+});</codeblock>
+            <note type="important">The value entered by the user in the search page will be
+              available in the URL's query parameters in a parameter named
+                <codeph>searchQuery</codeph>.</note>
+            <note type="attention"><i>URLSearchParams</i> is not supported on all browsers (it is
+              used as an example). A list with the supported browsers can be found <xref
+                href="https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams#browser_compatibility"
+                format="html" scope="external">here</xref>. A different solution should be used if
+              you need to support other browsers. </note>
+          </itemgroup></li>
+        <li>Implement your custom search engine. <itemgroup>
+            <note type="note">The search results should be pushed into the
+                <xmlelement>div</xmlelement> element created earlier with the id
+                <i>custom-search-results</i>.</note>
+          </itemgroup></li>
+        <li>In the <b>custom-search-script-fragment.xml</b> file, define the scripts that are
+          required for your custom search engine to run. For example: <itemgroup>
+            <codeblock outputclass="language-xml">&lt;div>
+    &lt;script src="${oxygen-webhelp-template-dir}/js/custom-search.js">&lt;/script>
+&lt;/div></codeblock>
+          </itemgroup></li>
+        <li>Copy the <b>js</b> folder to the output folder during the transformation process. For
+          this, open the <filepath>.opt</filepath> file and add the following content in the
+            <xmlelement>resources</xmlelement> section (see <xref
+            href="whr_publishing_template_contents.dita#template_resources">Template
+            Resources</xref> for more details):<itemgroup>
+            <codeblock outputclass="language-xml">&lt;fileset>
+  &lt;include name="js/**"/>
+&lt;/fileset></codeblock>
+          </itemgroup></li>
+        <li>Set the transformation parameters needed to enable the custom search engine. For this,
+          open the <filepath>.opt</filepath> file and add the following content inside the
+            <xmlelement>webhelp</xmlelement> element: <itemgroup>
+            <codeblock outputclass="language-xml">&lt;html-fragments>
+  &lt;fragment file="custom-search-script-fragment.xml" 
+      placeholder="webhelp.fragment.custom.search.engine.script"/>
+  &lt;fragment file="custom-search-results-fragment.xml" 
+      placeholder="webhelp.fragment.custom.search.engine.results"/>
+&lt;/html-fragments></codeblock>
+          </itemgroup></li>
+        <li> Run the transformation with this publishing template selected. <itemgroup>
+            <note>A publishing template containing all the steps we described, except for the actual
+              custom search engine implementation is available to download <xref
+                href="https://github.com/oxygenxml/oxygen-publishing-template-samples/tree/master/templates/custom-search-engine"
+                format="html" scope="external"> here</xref>. You can use it as a starting point.
+            </note>
+          </itemgroup>
+        </li>
+      </ol></p>
+  </body>
+</topic>
