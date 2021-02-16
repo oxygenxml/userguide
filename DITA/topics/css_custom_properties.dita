@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="css_custom_properties">
+    <title>CSS custom properties (CSS variables)</title>
+  <shortdesc><term>Custom properties</term> (also referred to as <term>CSS variables</term>) are
+    properties defined by CSS authors that contain specific values to be reused throughout a
+    document.</shortdesc>
+  <body>
+    <p>Complex websites have many of CSS rules, often with a lot of repeated values. For example,
+      the same color might be used in dozens of different places, requiring global search and
+      replace if that color needs to change. Custom properties allow a value to be stored in one
+      place, then referenced in multiple other places. An additional benefit is semantic
+      identifiers. For example, <codeph>--main-text-color</codeph> is easier to understand than
+        <codeph>#00ff00</codeph>, especially if this same color is also used in other contexts.</p>
+    <p><term>Custom properties</term> follow the same rules as other CSS properties, so you're able
+      to define and use them at multiple levels, following standard CSS cascading and specificity
+      rules. </p>
+    <section id="section_l4w_ljy_q4b">
+      <title>Usage</title>
+      <p>A custom property name begins with a double hyphen (<codeph>--</codeph>) and its value that
+        can be any valid CSS value. You use the custom property value by specifying your custom
+        property name inside the <term>var()</term> function, in place of a regular property
+        value:</p>
+    </section>
+    <example id="example_knk_4jy_q4b">
+      <title>Defining a custom property</title>
+      <codeblock id="codeblock_wyc_qjy_q4b" outputclass="language-css">element {
+  --main-bg-color: brown;
+  background-color: var(--main-bg-color);
+}
+</codeblock>
+    </example>
+    <note id="note_og4_4ky_q4b">Custom property names are case sensitive: <i>--my-color</i> will be
+      treated as a separate custom property to <i>--My-color</i>.</note>
+    <section id="section_chv_cmy_q4b">
+      <title>Inheritance of custom properties</title>
+      <p>If you define a custom property on an element you will be able to access it on all of its
+        descendents.</p>
+    </section>
+    <example id="example_xf5_qny_q4b">
+      <title>Inheritance</title>
+      <codeblock id="codeblock_w1m_rny_q4b" outputclass="language-xml">&lt;one>
+  &lt;two>
+    &lt;three/>
+    &lt;four/>
+  &lt;/two>
+&lt;/one></codeblock>
+      <codeblock id="codeblock_udn_zny_q4b" outputclass="language-css">one {
+  --color:green;
+}
+
+three {
+  --color:red;
+}
+
+* {
+  color: var(--color);
+}</codeblock>
+      <p>Result:<ul id="ul_evf_1py_q4b">
+          <li><xmlelement>one</xmlelement> has the color green. </li>
+          <li><xmlelement>two</xmlelement> has the color green.</li>
+          <li><xmlelement>three</xmlelement> has the color red.</li>
+          <li><xmlelement>four</xmlelement> has the color green.</li>
+        </ul></p>
+    </example>
+    <section id="section_ojh_gpy_q4b">
+      <title>Custom properties fallback values</title>
+      <p>The <term>var()</term> function has two arguments. The first argument is the name of the
+        custom property to be substituted. The second argument (optional) is a fallback value, which
+        is used as the substitution value when the referenced custom property is invalid or
+        undefined.</p>
+    </section>
+    <example id="example_mmy_xpy_q4b">
+      <title>Specifying a fallback value</title>
+      <codeblock outputclass="language-css" id="codeblock_tkl_1qy_q4b">one {
+  color: var(--color, blue);
+}
+
+one {
+color: var(--color, var(--fallback-color, red));
+}
+</codeblock>
+    </example>
+    <section id="section_cfl_kl2_r4b">
+      <title>Dependencies</title>
+      <p>A custom property can refer the value of another custom property through the<term>
+          var()</term> function.</p>
+    </section>
+    <example id="example_jcj_wm2_r4b">
+      <title>A custom property safely using a variable</title>
+      <codeblock id="codeblock_jqf_zm2_r4b" outputclass="language-css">:root {
+  --border-color: red;
+  --main-border: 1px solid var(--main-color, green);
+}</codeblock>
+    </example>
+    <note id="note_flp_m42_r4b"> This can create cyclic dependencies where two or more custom
+      properties each attempt to refer to each other.</note>
+    <example id="example_smn_3n2_r4b">
+      <title>An invalid situation of variables depending on each other</title>
+      <codeblock outputclass="language-css" id="codeblock_rjg_wn2_r4b">:root {
+  --color:    var(--bg-color);
+  --bg-color: var(--color);
+}</codeblock>
+    </example>
+    <example id="example_qrb_p42_r4b">
+      <title>Combining custom variables with <codeph>calc()</codeph></title>
+      <codeblock id="codeblock_ynd_q42_r4b" outputclass="language-css">:root {
+  --foo: 10px;
+  --bar: calc(var(--foo) + 10px); 
+}</codeblock>
+    </example>
+
+  </body>
+</topic>
