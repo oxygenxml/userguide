@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="wh-add-custom-html">
-  <title>How to Insert HTML Content</title>
+  <title>How to Insert Custom HTML Content</title>
   <prolog>
     <metadata>
       <keywords>
@@ -27,9 +27,67 @@
     <section id="the_xml_file">
       <title>The XML File</title>
       <p id="p-comments">There are several things to consider regarding this XML file:<ul>
-          <li conkeyref="reusables-transforming-documents/li-1"/>
+          <li id="li_v3w_qqt_s4b">
+            <p id="p_w3w_qqt_s4b"><b>Well-Formedness</b> - If the content of the file is not <xref
+                href="checking-xml-well-formedness.dita#checking-xml-well-formedness"
+                product="author developer editor authorEclipse developerEclipse editorEclipse"
+                  ><i>XML Well-formed</i></xref><ph product="webhelp webhelp-responsive ope"><i>XML
+                  Well-formed</i></ph>, the transformation will automatically convert
+              non-well-formed HTML content to a well-formed XML equivalent (assuming the
+                <codeph>webhelp.enable.html.fragments.conversion</codeph> transformation parameter
+              is set to <b>true</b>).</p>
+            <p id="p_x3w_qqt_s4b">For example, if the HTML content includes several
+                <xmlelement>script</xmlelement> or <xmlelement>link</xmlelement> elements, the XML
+              fragment would have multiple root elements and to make it well-formed, it would be
+              wrapped it in an <xmlelement>html</xmlelement> element. This element tag will be
+              filtered out and only its children will be copied to the output documents. Similarly,
+              you can wrap your content in <xmlelement>head</xmlelement>,
+                <xmlelement>body</xmlelement>, <xmlelement>html/head</xmlelement>, or
+                <xmlelement>html/body</xmlelement> elements.</p>
+            <p id="p_k4m_kjt_s4b">
+              <note id="note_tkt_ljt_s4b" type="tip">If you do not want the transformation to
+                automatically convert non-well-formed content into well-formed XML content, you can
+                set the <codeph>webhelp.enable.html.fragments.conversion</codeph> transformation
+                parameter to <b>false</b>. This will instead cause the transformation to fail if at
+                least one HTML fragment is not well-formed.</note>
+            </p>
+          </li>
           <li conkeyref="reusables-transforming-documents/li-2b"/>
-          <li conkeyref="reusables-transforming-documents/li-3" id="inline-js"/>
+          <li id="inline-js">
+            <p id="p_rqm_rqt_s4b"><b>Inline JavaScript or CSS Content</b>:</p>
+            <p id="p_sqm_rqt_s4b"
+              >JavaScript:<codeblock outputclass="language-xml">&lt;script type="text/javascript">
+    /* Include JavaScript code here. */
+ 
+    function myFunction() {
+      return true;
+    }
+&lt;/script> </codeblock></p>
+            <p id="p_tqm_rqt_s4b">CSS:<codeblock outputclass="language-xml">&lt;style>
+    /* Include CSS style rules here. */
+
+    *{
+      color:red
+    } 
+&lt;/style></codeblock><note id="note_uqm_rqt_s4b">
+                <p id="p_vqm_rqt_s4b">The WebHelp transformation automatically wraps inline
+                  JavaScript or CSS content in an XML comment. Also, if the commented content
+                  contains constructs that are not allowed in an XML comment, those constructs are
+                  escaped.</p>
+                <p id="p_wqm_rqt_s4b"><b>[Important]</b> XML comment tags (both the start and end
+                  tags) must be on lines by themselves. If they are on the same line as any of the
+                  script's content, it will likely result in a JavaScript error.</p>
+                <codeblock outputclass="language-xml">&lt;script type="text/javascript">
+  &lt;!--
+    /* Include JavaScript code here. */
+ 
+    function myFunction() {
+      return true;
+    }
+  --/>
+&lt;/script> </codeblock>
+              </note></p>
+          </li>
         </ul></p>
     </section>
     <section id="using_webhelp_macros_inside_a_html_fragment_file">
