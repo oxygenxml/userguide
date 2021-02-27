@@ -3,26 +3,26 @@
 <topic id="wa-plugin-best-practices">
   <title>Best Practices for Plugin Developers</title>
   <body>
-    <p>This document is meant to provide tips for those who develop custom plugins to extend the
+    <p id="p_jys_dgk_54b">This document is meant to provide tips for those who develop custom plugins to extend the
       functionality of  <ph keyref="webappProduct"/>.</p>
     <section id="section_crz_gvb_mjb">
       <title>Preserving Compatibility for Plugins Developed Prior to New Features Being Added in Web
         Author</title>
-      <p>It is possible that functionality added in a custom plugin relies on a certain behavior in
+      <p id="p_kys_dgk_54b">It is possible that functionality added in a custom plugin relies on a certain behavior in
           <ph keyref="webappProduct"/> that could change in future releases. Although the API will
         still be compatible, some functions may not work properly if those specific functions were
         developed in the plugin based on a previous behavior.</p>
-      <p>Starting with version 21.1.1, functionality was added to open documents in the Web Author
+      <p id="p_lys_dgk_54b">Starting with version 21.1.1, functionality was added to open documents in the Web Author
         visual editor without reloading the entire webpage (for example, topics can be opened from
         the DITA Map view without refreshing the page). Some custom functionality added in plugins
         prior to this release might require a page reload to work properly. For example, custom
         toolbar actions may no longer work as expected, or a side view might display the wrong
         information.</p>
-      <p>More specifically, a plugin's JavaScript code is loaded only once (when the web page is
+      <p id="p_mys_dgk_54b">More specifically, a plugin's JavaScript code is loaded only once (when the web page is
         loaded), while a framework's JavaScript code is loaded each time the visual editor is
         loaded. So, if the plugin extends functionality that is also defined in a framework, the
         code from the plugin will not be loaded if the entire webpage is not refreshed.</p>
-      <p>To preserve full compatibility (at the cost of not being able to take advantage of the
+      <p id="p_nys_dgk_54b">To preserve full compatibility (at the cost of not being able to take advantage of the
         benefits of not requiring a full refresh whenever a document is opened in the editor), there
         is an option called <xref
           href="webapp-admin-page.dita#webapp-admin-page/change-editors-without-reload"
@@ -30,12 +30,12 @@
           href="webapp-admin-page.dita"/>. Disabling this option will force the page to be reloaded
         whenever a document is opened. This could be a temporary solution while your custom plugin
         is being updated to account for the new behavior.</p>
-      <note type="other" othertype="Common Mistakes">
+      <note type="other" othertype="Common Mistakes" id="note_oys_dgk_54b">
         <ul id="ul_o5l_tmc_y3b">
-          <li>Plugins keep a singleton object to hold information about the current editor. Since it
+          <li id="li_pys_dgk_54b">Plugins keep a singleton object to hold information about the current editor. Since it
             is now possible to have multiple editors opened at once, this approach is no longer
             possible.</li>
-          <li>Plugins fail to clean up memory and listeners associated with the current editor when
+          <li id="li_qys_dgk_54b">Plugins fail to clean up memory and listeners associated with the current editor when
             it is closed. Prior to version 21.1.1, this approach worked fine because the browser tab
             was reloaded anyway.</li>
         </ul>
@@ -43,26 +43,26 @@
     </section>
     <section id="section_yhn_bnc_y3b">
       <title>Disposing <codeph>AbstratAction</codeph> Implementations</title>
-      <p>If a plugin implements the <codeph>AbstractAction</codeph> class, you should consider
+      <p id="p_rys_dgk_54b">If a plugin implements the <codeph>AbstractAction</codeph> class, you should consider
         implementing the <codeph>dispose</codeph> method of this class. Typical things to do in the
           <codeph>dispose</codeph> method include:<ol id="ol_hgs_qsc_y3b">
-          <li>Dispose any dialog box that was created by the action.</li>
-          <li>Reverse any changes to the page DOM outside the editor content.</li>
-          <li>Remove any global listeners (i.e. on the <codeph>window</codeph> object).</li>
-          <li>Clear timers started using <codeph>setTimeout</codeph> or
+          <li id="li_sys_dgk_54b">Dispose any dialog box that was created by the action.</li>
+          <li id="li_tys_dgk_54b">Reverse any changes to the page DOM outside the editor content.</li>
+          <li id="li_uys_dgk_54b">Remove any global listeners (i.e. on the <codeph>window</codeph> object).</li>
+          <li id="li_vys_dgk_54b">Clear timers started using <codeph>setTimeout</codeph> or
             <codeph>setInterval</codeph>.</li>
-          <li>Abort or ignore the results of any HTTP request that is in-progress.</li>
+          <li id="li_wys_dgk_54b">Abort or ignore the results of any HTTP request that is in-progress.</li>
         </ol></p>
     </section>
     <section id="section_gyt_dtc_y3b">
       <title>Making Custom Side Views React to Editor Changes</title>
-      <p>In Web Author, a <codeph>sync.view.ViewRenderer</codeph> class is informed when the current
+      <p id="p_xys_dgk_54b">In Web Author, a <codeph>sync.view.ViewRenderer</codeph> class is informed when the current
         editor has changed using the <codeph>editorChanged</codeph> method. This method can be
         called multiple times and the view needs to be updated when a new editor becomes active.</p>
-      <p>The view should also reset its state when the current editor is disposed. This situation
+      <p id="p_yys_dgk_54b">The view should also reset its state when the current editor is disposed. This situation
         can be identified by listening on the <codeph>sync.api.Editor.EventTypes.DISPOSE</codeph>
         event. </p>
-      <p>Although not as popular, Web Author has special editors (or previews) for non-XML files
+      <p id="p_zys_dgk_54b">Although not as popular, Web Author has special editors (or previews) for non-XML files
         (for example, Markdown documents, images, or plain text files). There is also an empty
         editor that simply displays an error message for files that fail to load (for example, files
         that cannot be found on the file server). A <codeph>sync.view.ViewRenderer</codeph>
@@ -76,11 +76,11 @@
     </section>
     <section id="section_l4n_1vc_y3b">
       <title>Clearing Information Related to the Current Editor</title>
-      <p>If a plugin listens on <codeph>sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED</codeph>
+      <p id="p_azs_dgk_54b">If a plugin listens on <codeph>sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED</codeph>
         or <codeph>sync.api.Workspace.EventType.EDITOR_LOADED</codeph> events to store some
         information regarding the current editor, you should make sure to reset this information
         when the editor is disposed.</p>
-      <p>Events such as <codeph>sync.api.Workspace.EventType.BEFORE_EDITOR_DISPOSED</codeph> or
+      <p id="p_bzs_dgk_54b">Events such as <codeph>sync.api.Workspace.EventType.BEFORE_EDITOR_DISPOSED</codeph> or
           <codeph>sync.api.Workspace.EventType.EDITOR_DISPOSED</codeph> can be used to clear all
         information.</p>
     </section>
