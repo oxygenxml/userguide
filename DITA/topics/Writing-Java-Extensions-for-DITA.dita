@@ -3,21 +3,21 @@
 <topic id="Writing-Java-Extensions-for-DITA">
   <title>Writing Java Extensions for DITA</title>
   <body>
-    <p>Although most of the editor configuration for a specific document type can be done using
+    <p id="p_zdt_dgk_54b">Although most of the editor configuration for a specific document type can be done using
       configuration files, for some of the most advanced customization requirements, you need to
       write <xref href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-extensions-bundle.html"
         format="html" scope="external">Java extensions</xref>.</p>
-    <p>Such Java extensions can be registered using the <xref
+    <p id="p_a2t_dgk_54b">Such Java extensions can be registered using the <xref
         href="https://www.oxygenxml.com/doc/ug-editor/topics/the-document-type-dialog.html"
         format="html" scope="external">Document Type Configuration dialog box</xref>. When extending
       a framework that already has Java extensions registered (such as DITA), you want to inherit
       the behavior of the extensions from the base framework.</p>
-    <p>Suppose you want to register an <codeph>AuthorReferenceResolver</codeph> subclass called
+    <p id="p_b2t_dgk_54b">Suppose you want to register an <codeph>AuthorReferenceResolver</codeph> subclass called
         <codeph>MyConrefResolver</codeph>. Here are the required steps:</p>
-    <p>
+    <p id="p_c2t_dgk_54b">
       <ol id="ol_jv5_vqj_mmb">
-        <li>Create a Maven project for your Java extension and add the following
-          dependencies:<codeblock outputclass="language-xml">&lt;dependency>
+        <li id="li_d2t_dgk_54b">Create a Maven project for your Java extension and add the following
+          dependencies:<codeblock outputclass="language-xml" id="codeblock_e2t_dgk_54b">&lt;dependency>
       &lt;groupId>com.oxygenxml&lt;/groupId>
       &lt;artifactId>oxygen-sdk&lt;/artifactId>
       &lt;version>${oxygen.version}&lt;/version>
@@ -27,24 +27,24 @@
       &lt;artifactId>oxygen-dita-extensions&lt;/artifactId>
       &lt;version>${oxygen.version}&lt;/version>
 &lt;/dependency></codeblock></li>
-        <li>Create a <codeph>MyConrefResolver.java</codeph> Java source file that contains your
+        <li id="li_f2t_dgk_54b">Create a <codeph>MyConrefResolver.java</codeph> Java source file that contains your
           reference resolver implementation. To inherit the default behavior for resolving
           references, this class should extend the default reference resolver implementation for
           DITA: <codeph>ro.sync.ecss.extensions.dita.conref.DITAConRefResolver</codeph>. You can
           then override some of the methods according to your
-              needs.<note><codeph>DITAConRefResolver</codeph> has only one non-deprecated
+              needs.<note id="note_g2t_dgk_54b"><codeph>DITAConRefResolver</codeph> has only one non-deprecated
             constructor, which receives a
               <codeph>ro.sync.ecss.dita.ContextKeyManagerProvider</codeph> parameter.</note></li>
-        <li>Create a <codeph>MyDITAExtensionsBundle</codeph> Java source file that extends
+        <li id="li_h2t_dgk_54b">Create a <codeph>MyDITAExtensionsBundle</codeph> Java source file that extends
             <codeph>ro.sync.ecss.extensions.dita.DITAExtensionsBundle</codeph>. Override the
             <codeph>createAuthorReferenceResolver</codeph> method to return an instance of
             <codeph>MyConrefResolver</codeph> passing the <codeph>keyManagerProvider</codeph> field
-          of the base class to the constructor.<note>The <codeph>MyConrefResolver</codeph> can also
+          of the base class to the constructor.<note id="note_i2t_dgk_54b">The <codeph>MyConrefResolver</codeph> can also
             be specified as an extension directly in the Document Type Configuration dialog box.
             However, if specified directly, the default constructor will be used. In the case of the
               <codeph>DITAConRefResolver</codeph>, this causes keys to not be resolved in Web
             Author.</note></li>
-        <li>Create a JAR file with your compiled Java classes and add it to your framework's
+        <li id="li_j2t_dgk_54b">Create a JAR file with your compiled Java classes and add it to your framework's
           classpath using the Document Type Configuration dialog box.</li>
       </ol>
     </p>
