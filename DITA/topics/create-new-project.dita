@@ -12,7 +12,7 @@
     </metadata>
   </prolog>
   <body>
-    <p><ph keyref="product"/> allows you to organize your XML-related files into projects. This
+    <p id="p_otl_bgk_54b"><ph keyref="product"/> allows you to organize your XML-related files into projects. This
       helps you manage and organize your files and also allows you to perform batch operations (such
       as validation and transformation) over multiple files.<ph product="author developer editor">
         You can also <xref href="sharing-projects.dita#sharing-projects">share your project settings
@@ -23,41 +23,41 @@
       to manage projects, and the files and folders contained within.</p>
     <section id="creating_a_new_project" product="author developer editor">
       <title>Creating a New Project</title>
-      <p>To create a new project, select <uicontrol><image href="../img/NewProject16.png"
+      <p id="p_ptl_bgk_54b">To create a new project, select <uicontrol><image href="../img/NewProject16.png"
             id="image_nsh_3sh_ymb"/>New Project</uicontrol> from the <uicontrol>Project</uicontrol>
         menu, the <uicontrol>New</uicontrol> menu in the contextual menu, or the drop-down menu at
         the top-left of the <uicontrol>Project</uicontrol> view.</p>
-      <p>This opens a new project wizard:</p>
-      <p>
+      <p id="p_qtl_bgk_54b">This opens a new project wizard:</p>
+      <p id="p_rtl_bgk_54b">
         <fig id="fig_ngk_55q_js">
           <title>New Project Wizard</title>
           <image href="../img/New-Project-dialog.png" id="image_odn_xh4_y4"/>
         </fig>
       </p>
-      <p>With the exception of the <i>Default project</i> template, which is a pseudo-template and
+      <p id="p_stl_bgk_54b">With the exception of the <i>Default project</i> template, which is a pseudo-template and
         does not exist on the local disk (it is used only to create a new <filepath>.xpr</filepath>
         file), project templates are actually ZIP archives (with a <filepath>.zxpr</filepath>
         extension) and are stored within the file template directory structure (for example,
           <filepath>frameworks\dita\templates\sample-project\Sample DITA
-          Project.zxpr</filepath>).<note type="tip">Archives with a <filepath>.zxpr</filepath>
+          Project.zxpr</filepath>).<note type="tip" id="note_ttl_bgk_54b">Archives with a <filepath>.zxpr</filepath>
           extension can be edited in the <xref href="archive-browser-view.dita"><uicontrol>Archive
               Browser</uicontrol> view</xref>.</note></p>
-      <p>After selecting a project template, you can specify the following:</p>
-      <p>
-        <dl>
-          <dlentry>
+      <p id="p_utl_bgk_54b">After selecting a project template, you can specify the following:</p>
+      <p id="p_vtl_bgk_54b">
+        <dl id="dl_wtl_bgk_54b">
+          <dlentry id="dlentry_xtl_bgk_54b">
             <dt>Project file name</dt>
             <dd>Specifies the name of the new project file. <ph keyref="product"/> provides a
               default proposal for the file name based on the following rules:<ul
                 id="ul_ohk_bwh_ymb">
-                <li>If there is an <filepath>.xpr</filepath> file inside the archive, its name is
+                <li id="li_ytl_bgk_54b">If there is an <filepath>.xpr</filepath> file inside the archive, its name is
                   used.</li>
-                <li>Otherwise, the name of the template is used.</li>
+                <li id="li_ztl_bgk_54b">Otherwise, the name of the template is used.</li>
               </ul></dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="dlentry_a5l_bgk_54b">
             <dt>Project directory</dt>
-            <dd>Specifies the directory where the archive content will be extracted.<note>The
+            <dd>Specifies the directory where the archive content will be extracted.<note id="note_b5l_bgk_54b">The
                 archive should not contain an extra single folder as the root. For the
                   <uicontrol>Project directory</uicontrol> path to work properly, the archive must
                 have the <filepath>.xpr</filepath> file on the first level, along with the other
@@ -65,22 +65,57 @@
           </dlentry>
         </dl>
       </p>
-      <p>Once you are done, click the <uicontrol>Create</uicontrol> button to begin the creation
+      <p id="p_c5l_bgk_54b">Once you are done, click the <uicontrol>Create</uicontrol> button to begin the creation
         process. <ph keyref="product"/> extracts the content from the archive inside the path
         specified in the <uicontrol>Project directory</uicontrol> field.</p>
     </section>
+    <section id="section_ir4_cck_t4b" product="author developer editor">
+      <title>Editor Variables in Project Templates</title>
+      <p id="p_d5l_bgk_54b">By default, the editor variables inside project resources created from a project template
+        are not resolved. To start having them resolved, the project template <xref
+          href="customizing-templates.dita">must be customized</xref> by using the
+          <codeph>expandEditorVariablesIncludeFilter</codeph> property. This filter determines the
+        resources where the editor variables will be resolved. If you need to exclude a subset of
+        resources from the set specified by the <codeph>expandEditorVariablesIncludeFilter</codeph>
+        property, the <codeph>expandEditorVariablesExcludeFilter</codeph> property can be used.<note
+          id="note_avq_jjk_t4b">Usually, project files (<codeph>*.xpr</codeph>), framework files
+            (<codeph>*.framework</codeph>), and framework extension scripts (<codeph>*.exf</codeph>)
+          should be excluded from the editor variable resolving process.</note></p>
+      <p id="p_e5l_bgk_54b">The values of the inclusion and exclusion filters can be file paths relative to the project
+        directory that can use wildcards or simply wildcards. Each filter can have multiple values,
+        separated by spaces.</p>
+      <p id="p_bhk_zzr_t4b">Possible filter values:<ul id="ol_w1h_11s_t4b">
+          <li id="li_x1h_11s_t4b"><codeph>./*</codeph> - Matches all resources from the first level
+            in the project directory.</li>
+          <li id="li_y1h_11s_t4b"><codeph>*</codeph> or <codeph>./**</codeph> - Matches all
+            resources on all levels inside the project directory.</li>
+          <li id="li_z1h_11s_t4b"><codeph>dir1/dir2/*.dita</codeph> - Matches all
+              <codeph>.dita</codeph> files from <filepath>[PROJECT_DIR]/dir1/dir2</filepath>, but
+            not from subdirectories of <filepath>dir2</filepath>.</li>
+          <li id="li_abh_11s_t4b"><codeph>dir1/dir2/**/*.dita</codeph> - Matches all
+              <codeph>.dita</codeph> files from <filepath>[PROJECT_DIR]/dir1/dir2</filepath>,
+            including those from subdirectories of <filepath>dir2</filepath>.</li>
+          <li id="li_bbh_11s_t4b"><codeph>dir1/**/*</codeph> - Matches all resources on all levels
+            inside <filepath>[PROJECT_DIR]/dir1</filepath>.</li>
+          <li id="li_cbh_11s_t4b"><codeph>dir1/article1.xml, dir2/article2.xml</codeph> - Matches
+            only the two <codeph>.xml</codeph> files.</li>
+          <li id="li_dbh_11s_t4b"><codeph>./**/*_suffix.md, ./**/prefix_*.html</codeph> - Matches
+            all <codeph>.md</codeph> files with names that end with <codeph>_suffix</codeph> and all
+              <codeph>.html</codeph> files with names that start with <codeph>prefix_</codeph>.</li>
+        </ul></p>
+    </section>
     <section id="section_jf2_nxh_ymb" product="authorEclipse developerEclipse editorEclipse">
       <title>Creating a New Project</title>
-      <p>To create a new project, select <menucascade>
+      <p id="p_f5l_bgk_54b">To create a new project, select <menucascade>
           <uicontrol>New</uicontrol>
           <uicontrol>XML Project</uicontrol>
         </menucascade> or <menucascade>
           <uicontrol>New</uicontrol>
           <uicontrol>Sample XML Project</uicontrol>
         </menucascade> from the contextual menu or <uicontrol>File</uicontrol> menu.</p>
-      <p>This opens a dialog box that allows you to create and customize a new project and adds it
+      <p id="p_g5l_bgk_54b">This opens a dialog box that allows you to create and customize a new project and adds it
         to the structure of the project in the <uicontrol>Project Explorer</uicontrol> view.</p>
-      <p>You can either create a new XML document from scratch by choosing one of the available
+      <p id="p_h5l_bgk_54b">You can either create a new XML document from scratch by choosing one of the available
         types in the wizard. You can also create one from a template by selecting <menucascade>
           <uicontrol>File</uicontrol>
           <uicontrol>New</uicontrol>
@@ -91,7 +126,7 @@
         the <uicontrol>Framework templates</uicontrol> folder. If your company has created its own
         templates, you can also find them there.</p>
     </section>
-    <section id="adding_items_to_the_project"><title>Adding Items to the Project</title><p>To add
+    <section id="adding_items_to_the_project"><title>Adding Items to the Project</title><p id="p_i5l_bgk_54b">To add
         items to the project, select <ph product="authorEclipse developerEclipse editorEclipse">the
           desired document type or folder from the <uicontrol>New</uicontrol> menu of the contextual
           menu, when invoked from the <uicontrol>Project Explorer</uicontrol> view (or from the
@@ -101,9 +136,9 @@
             <uicontrol>New from Templates</uicontrol>
           </menucascade> from the contextual menu.</ph><ph product="author developer editor">any of
           the following actions that are available when invoking the contextual menu in the
-            <uicontrol>Project</uicontrol> view:</ph></p><p>
-        <dl product="author developer editor">
-          <dlentry>
+            <uicontrol>Project</uicontrol> view:</ph></p><p id="p_j5l_bgk_54b">
+        <dl product="author developer editor" id="dl_k5l_bgk_54b">
+          <dlentry id="dlentry_l5l_bgk_54b">
             <dt><menucascade>
                 <uicontrol>New</uicontrol>
                 <uicontrol><image href="../img/New16.png"/>File</uicontrol>
@@ -111,7 +146,7 @@
             <dd>Opens a <uicontrol>New</uicontrol> file dialog box that helps you create a new file
               and adds it to the project structure.</dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="dlentry_m5l_bgk_54b">
             <dt><menucascade>
                 <uicontrol>New</uicontrol>
                 <uicontrol><image href="../img/NewFolder16.png"/>Folder</uicontrol>
@@ -123,9 +158,9 @@
       </p><ph product="author developer editor">The project itself is considered a logical folder.
         You can add a logical folder, or content to a logical folder, by using one of the following
         actions that are available in the contextual menu, when invoked from the <i>project
-        root</i>:</ph><p>
-        <dl product="author developer editor">
-          <dlentry>
+        root</i>:</ph><p id="p_n5l_bgk_54b">
+        <dl product="author developer editor" id="dl_o5l_bgk_54b">
+          <dlentry id="dlentry_p5l_bgk_54b">
             <dt><menucascade>
                 <uicontrol>New</uicontrol>
                 <uicontrol><image href="../img/LogicalFolderWindows16.png" placement="inline"
@@ -134,7 +169,7 @@
             <dd>Creates a logical folder in the tree structure (the icon is a magenta folder on Mac
               OS X - <image href="../img/LogicalFolderOpenMac16.png" placement="inline"/>).</dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="dlentry_q5l_bgk_54b">
             <dt><menucascade>
                 <uicontrol>New</uicontrol>
                 <uicontrol>Logical Folders from Web</uicontrol>
@@ -143,20 +178,20 @@
               structure of logical folders. The newly created logical folders contain the file
               structure of the folder it points to.</dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="dlentry_r5l_bgk_54b">
             <dt><uicontrol><image href="../img/AddLinksToFoldersWindows16.png" placement="inline"
                 />Add Folder</uicontrol></dt>
             <dd>Adds a link to a physical folder, whose name and content mirror a real folder that
-              exists in the local file system (the icon of this action is different on Mac OS X -
+              exists in the local file system (the icon of this action is different on macOS -
                 <image href="../img/AddLinksToFoldersMac16.png" placement="inline"
                 id="image_jy1_4t2_tq"/>).</dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="dlentry_s5l_bgk_54b">
             <dt><uicontrol><image href="../img/AddFiles16.png" placement="inline"/>Add
                 Files</uicontrol></dt>
             <dd>Adds links to files on the local file system.</dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="dlentry_t5l_bgk_54b">
             <dt><uicontrol><image href="../img/AddSelectedFile16.png" id="image_h3n_r4h_5r"/>Add
                 Edited File</uicontrol></dt>
             <dd>Adds a link to the currently edited file in the project.</dd>
@@ -165,7 +200,7 @@
       </p></section>
     <section id="using_linked_folders_shortcuts">
       <title>Using Linked Folders (Shortcuts)</title>
-      <p>Another easy way to organize your XML working files is to place them in a directory and
+      <p id="p_u5l_bgk_54b">Another easy way to organize your XML working files is to place them in a directory and
         then to create a corresponding linked folder in your project. If you add new files to that
         folder, you can simply use the <uicontrol><image href="../img/Refresh16.png"/>Refresh
             (<shortcut>F5</shortcut>)</uicontrol> action from the project contextual menu and the
@@ -175,9 +210,9 @@
           view</xref> will display the existing files and subdirectories. If your files are
         scattered among several folders, but represent the same class of files, you might find it
         useful to combine them in a logical folder.</p>
-      <p><ph product="author developer editor">You can create linked folders (shortcuts) by dragging
-          and dropping folders from the Windows Explorer (Mac OS X Finder) to the project tree, or
-          by selecting <uicontrol><image href="../img/AddLinksToFoldersWindows16.png"
+      <p id="p_v5l_bgk_54b"><ph product="author developer editor">You can create linked folders (shortcuts) by dragging
+          and dropping folders from the Windows Explorer (macOS Finder) to the project tree, or by
+          selecting <uicontrol><image href="../img/AddLinksToFoldersWindows16.png"
               placement="inline"/>Add Folder</uicontrol> in the contextual menu from the <i>project
             root</i>. Linked folders are displayed in the <xref
             href="../topics/using-the-project-view.dita#using-the-project-view"
@@ -189,25 +224,25 @@
             href="../topics/using-the-project-view.dita#using-the-project-view"
               ><uicontrol>Project</uicontrol> view</xref> are marked with a special icon.</ph><ph
           product="authorEclipse developerEclipse editorEclipse">You can create linked folders
-          (shortcuts) by dragging and dropping folders from the Windows Explorer (Mac OS X Finder)
-          to the project tree, or by using the contextual menu from the location in the project tree
+          (shortcuts) by dragging and dropping folders from the Windows Explorer (macOS Finder) to
+          the project tree, or by using the contextual menu from the location in the project tree
           where you want it added and selecting <menucascade>
             <uicontrol>New</uicontrol>
             <uicontrol>Folder</uicontrol>
             <uicontrol>Advanced</uicontrol>
           </menucascade>. The linked folders presented in the <xref
-            href="using-the-project-view.dita#using-the-project-view"
-              ><uicontrol>Project Explorer</uicontrol> view</xref> are marked with a special icon. To
-          create a file inside a linked folder, use the contextual menu and select <menucascade>
+            href="using-the-project-view.dita#using-the-project-view"><uicontrol>Project
+              Explorer</uicontrol> view</xref> are marked with a special icon. To create a file
+          inside a linked folder, use the contextual menu and select <menucascade>
             <uicontrol>New</uicontrol>
             <uicontrol>File</uicontrol>
           </menucascade> (you can use the <uicontrol>Advanced</uicontrol> button to link to a file
-          in the local file system).</ph><note>Files may have multiple instances within the folder
+          in the local file system).</ph><note id="note_w5l_bgk_54b">Files may have multiple instances within the folder
           system, but cannot appear twice within the same folder.</note></p>
     </section>
-    <p>For more information on managing projects and their content, see <xref
+    <p id="p_x5l_bgk_54b">For more information on managing projects and their content, see <xref
         href="using-the-project-view.dita#using-the-project-view"/>. </p>
-    <p product="author developer editor">For more details about how you can share projects with
+    <p product="author developer editor" id="p_y5l_bgk_54b">For more details about how you can share projects with
       other users, see <xref href="sharing-projects.dita#sharing-projects"/>.</p>
   </body>
   <related-links>

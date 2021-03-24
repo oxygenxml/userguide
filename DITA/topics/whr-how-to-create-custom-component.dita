@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="whr-how-to-create-custom-component">
+  <title>How to Add a Custom Component for WebHelp Output</title>
+  <body>
+    <p>This topic explains how to use several customization methods to define and implement a custom
+      component for WebHelp output pages.</p>
+    <section id="section_yml_zwv_t4b">
+      <title>Predefined components</title>
+      <p>The WebHelp output is based on a set of <xref href="html_page_templates.dita">HTML Page
+          Layout Files</xref> that define the default layout of the generated pages. Each layout
+        file is made of a set of various components. Each component is described using an associated
+        XML element that is processed at the generation time resulting in its associated component
+        being included in the output pages.</p>
+      <p>Here are a few examples of predefined components: <uicontrol>Logo</uicontrol>,
+          <uicontrol>Title</uicontrol>, <uicontrol>Menu</uicontrol>, <uicontrol>Search
+          Input</uicontrol>, <uicontrol>Topics Tiles</uicontrol>, <uicontrol>Topic
+          Breadcrumb</uicontrol>, <uicontrol>Topic Content</uicontrol>, <uicontrol>Publication Table
+          of Contents</uicontrol>. A complete list with all the available components is available
+        here: <xref href="whr-html5-pages.dita">Layout of the Responsive Page Types</xref>.</p>
+      <p>For example, the page component that is used to define the Search Input field in the
+        WebHelp HTML pages is defined as
+        follows:<codeblock outputclass="language-xml">&lt;!-- Search form -->
+&lt;whc:webhelp_search_input class="navbar-form wh_topic_page_search search" role="form"/></codeblock>
+        At publishing time, the above component will be expanded
+        into:<codeblock outputclass="language-xml">&lt;div class=" wh_search_input navbar-form wh_topic_page_search search">
+  &lt;form id="searchForm" method="get" role="search" action="../search.html">
+    &lt;div>
+      &lt;input type="search" placeholder="Search "
+        class="wh_search_textfield ui-autocomplete-input" id="textToSearch"
+        name="searchQuery" aria-label="Search query" required="required" 
+        autocomplete="off"/>
+      &lt;button type="submit" class="wh_search_button" aria-label="Search">
+        &lt;span class="search_input_text">Search&lt;/span>
+      &lt;/button>
+    &lt;/div>
+  &lt;/form>
+&lt;/div></codeblock></p>
+    </section>
+    <section id="section_icb_jrv_t4b">
+      <title>Customization Methods</title>
+      <p dir="ltr">The most common customization methods for the WebHelp Responsive output
+          include:<ul id="ul_uxw_msv_t4b">
+          <li>Apply <xref href="webhelp-customizing-with-css.dita">custom CSS styles</xref> to
+            change the default layout and styles.</li>
+          <li><xref href="wh-add-custom-html.dita">Insert additional HTML content</xref> using one
+            of the available <xref
+              href="whr_publishing_template_contents.dita#html_fragment_extension_points">HTML
+              Fragment Placeholder parameters</xref>.</li>
+          <li>Extend the default processing using <xref
+              href="whr_publishing_template_contents.dita#xslt_extension_points">XSLT Extension
+              Points</xref>.</li>
+          <li>Configure available <xref href="webhelp-responsive-plugin-additional-parameters.dita"
+              >Transformation Parameters</xref>.</li>
+        </ul></p>
+    </section>
+    <section id="section_mw1_f5v_t4b">
+      <title>Use Case: Custom Link Component</title>
+      <p>For the subsequent procedure, suppose you have a DITA project for a User Manual and you
+        also have various video demonstrations available on your website that supplement the
+        documentation. You may want to link a video demonstration for a particular feature it its
+        associated DITA topic in the WebHelp output. </p>
+      <p>You could simply add a link somewhere in your DITA topic, but this approach would not be
+        very suitable for a printable (PDF) version of your User Manual. Thus, you need to include
+        the link to the associated video demonstration only in the WebHelp output of your User
+        Manual (and not the PDF version).</p>
+      <p>One way to link a video with its associated topic is to include its URL in the metadata
+        section. For example:<codeblock outputclass="language-xml">&lt;prolog>
+   &lt;metadata>
+      &lt;othermeta name="video-link" content="https://www.youtube.com/watch?v=zNmXfKWXwO8"/>
+   &lt;/metadata>
+&lt;/prolog></codeblock></p>
+      <p>Next, you need to instruct WebHelp to pick up the URL from the metadata and generate a link
+        in a specific location of the HTML output page. You can achieve this by creating your own
+        WebHelp custom component.</p>
+    </section>
+    <section id="section_ynp_twv_t4b">
+      <title>Creating a Custom Component</title>
+      <p id="p_ftk_gck_v4b">You can combine several of the available customization methods to define
+        and implement your own WebHelp custom component.</p>
+      <p id="p_ksk_gck_v4b">
+        <fig id="fig_z2c_gfy_t4b">
+          <title>Custom Component</title>
+          <image align="center" href="../img/custom-component.png" id="image_afc_gfy_t4b"
+            placement="break"/>
+        </fig>
+      </p>
+      <p>To create a custom component that displays a link to the current topic's associated video
+        tutorial, follow these steps:</p>
+      <ol id="ol_dd1_m1w_t4b">
+        <li>Define your component. For example, it may have the following form:
+          <codeblock outputclass="language-xml">&lt;comp:video-link xmlns:comp="http://example.com/custom-components"/></codeblock>The
+          component is an XML element that belongs to a custom defined namespace.</li>
+        <li>Insert the component in your topic pages. To do this, you will have to save the
+          associated XML element in an HTML Fragment file (for example, named
+            <filepath>video-link-fragment.xml</filepath>).</li>
+        <li>Reference the HTML Fragment file in your current <xref
+            href="whr_publishing_template_contents.dita#template_descritpor_file">Publishing
+            Template's descriptor file</xref> and associate it with an HTML Fragment placeholder
+          that is available for the topic pages
+            (<codeph>webhelp.fragment.before.topic.toolbar</codeph> in this case):
+            <codeblock outputclass="language-xml">&lt;html-fragments>
+   &lt;fragment file="component/html-fragment/video-link-fragment.xml" 
+        placeholder="webhelp.fragment.before.topic.toolbar"/>
+&lt;/html-fragments></codeblock><note>The HTML Fragment file is referenced using a path
+            relative to the Publishing Template root directory.</note></li>
+        <li>Create a custom XSLT file that processes the custom component and picks up the video URL
+          available in the current topic's metadata and generates a link to the page that contains
+          the
+          video:<codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:comp="http://example.com/custom-components"
+    exclude-result-prefixes="xs comp"
+    version="3.0">
+    
+    &lt;!-- Custom component implementation -->
+    &lt;xsl:template match="comp:video-link" mode="copy_template">
+        &lt;xsl:param name="ditaot_topicContent" tunnel="yes"/>
+        &lt;!-- Look for a 'video-link' &lt;meta> element in the current topic content -->
+        &lt;xsl:variable name="videoLinkMeta"  
+              select="$ditaot_topicContent//*:meta[@name='video-link']"/>
+        &lt;xsl:if test="exists($videoLinkMeta)">
+            &lt;div class="video-link-container">
+                &lt;a href="{$videoLinkMeta[1]/@content}"
+                   class="video-link" target="_blank" aria-label="Video">
+                    &lt;span>Video&lt;/span>
+                &lt;/a>
+            &lt;/div>
+        &lt;/xsl:if>
+    &lt;/xsl:template>
+    
+&lt;/xsl:stylesheet></codeblock> The HTML content generated for your component will look
+          like this:<codeblock outputclass="language-xml">&lt;div class="video-link-container">
+    &lt;a href="https://www.youtube.com/watch?v=zNmXfKWXwO8" 
+      class="video-link" target="_blank"
+        aria-label="Video">
+        &lt;span>Video&lt;/span>
+    &lt;/a>
+&lt;/div></codeblock></li>
+        <li>Reference the above XSL file in your Publishing Template's descriptor file using the
+          XSLT extension point associated with the XSL module that generates an HTML file for each
+          DITA topic:<codeblock outputclass="language-xml">&lt;xslt>
+    &lt;extension file="component/xsl/video-link-impl.xsl" 
+       id="com.oxygenxml.webhelp.xsl.dita2webhelp"/>
+&lt;/xslt></codeblock></li>
+        <li>Create a custom CSS file that contains the rules for styling the output for your
+          component:<codeblock outputclass="language-css">@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.video-link-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 10;
+    justify-content: flex-end;
+}
+
+.video-link {
+    display: flex;
+    align-items: center;
+    color: #fff !important;
+}
+
+.video-link:before {
+    content: "smart_display";
+    font-family: 'Material Icons';
+    font-size: 20px;
+    display: inline-block;
+    word-wrap: normal;
+    white-space: nowrap;
+}
+
+.video-link span {
+    display: none;
+}
+
+.wh_right_tools {
+    padding: 0;
+}</codeblock></li>
+        <li>Reference the above CSS file in your Publishing Template's descriptor
+          file:<codeblock outputclass="language-xml">&lt;resources>
+    &lt;!-- .... -->
+    &lt;css file="component/css/video-link.css"/>
+&lt;/resources></codeblock></li>
+      </ol>
+      <p id="p_wyw_r2k_v4b"><b>Result:</b> An icon that is a link to the video appears in the header
+        stripe in the output page.</p>
+      <p id="p_ckt_x2k_v4b">
+        <fig id="fig_dkt_x2k_v4b">
+          <title>Custom Link to Video Component</title>
+          <image href="../img/link-to-video.png" placement="break"/>
+        </fig>
+      </p>
+    </section>
+    <section id="section_ef4_rfy_t4b">
+      <title>Sample Publishing Template</title>
+      <p>A sample Publishing Template that contains all the above customizations is available here:
+          <xref
+          href="https://github.com/oxygenxml/oxygen-publishing-template-samples/tree/master/templates/video-link-custom-component"
+          format="html" scope="external"/>.</p>
+    </section>
+  </body>
+</topic>
