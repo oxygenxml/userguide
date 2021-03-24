@@ -4,22 +4,22 @@
 <topic id="dg-create-custom-css">
   <title>Step 5: Create a Custom CSS</title>
   <body>
-    <p>If you read the <xref href="dg-customization-tutorial-overview.dita">Framework Customization
+    <p id="p_ixb_dgk_54b">If you read the <xref href="dg-customization-tutorial-overview.dita">Framework Customization
         Overview</xref> then you already have some basic knowledge about creating simple styles. The
       example document contains elements from various namespaces, so you need to use CSS Level 3
       extensions (supported by the <uicontrol>Author</uicontrol> mode layout engine) to associate
       specific properties with that element.</p>
     <section id="defining_the_general_layout">
       <title>Defining the General Layout</title>
-      <p>Now the basic layout of the rendered documents is created.</p>
-      <p>Elements that are stacked one on top of the other are: <codeph>book</codeph>,
+      <p id="p_jxb_dgk_54b">Now the basic layout of the rendered documents is created.</p>
+      <p id="p_kxb_dgk_54b">Elements that are stacked one on top of the other are: <codeph>book</codeph>,
           <codeph>article</codeph>, <codeph>section</codeph>, <codeph>title</codeph>,
           <codeph>figure</codeph>, <codeph>table</codeph>, <codeph>image</codeph>. These elements
         are marked as having <codeph>block</codeph> style for display. Elements that are placed one
         after the other in a flowing sequence are: <codeph>b</codeph>, <codeph>i</codeph>. These
         will have <codeph>inline</codeph> display.</p>
-      <p>
-        <codeblock outputclass="language-css">/* Vertical flow */
+      <p id="p_lxb_dgk_54b">
+        <codeblock outputclass="language-css" id="codeblock_mxb_dgk_54b">/* Vertical flow */
 book,
 section,
 para,
@@ -34,18 +34,18 @@ b,i {
     display:inline;
 }</codeblock>
       </p>
-      <note type="important">Having <codeph>block</codeph> display children in an
+      <note type="important" id="note_nxb_dgk_54b">Having <codeph>block</codeph> display children in an
           <codeph>inline</codeph> display parent results in <ph keyref="product"/> changing the
         style of the parent to <codeph>block</codeph> display.</note>
     </section>
     <section id="styling_an_element">
       <title>Styling an Element</title>
-      <p>The title of any section must be bold and smaller than the title of the parent section. To
+      <p id="p_oxb_dgk_54b">The title of any section must be bold and smaller than the title of the parent section. To
         create this effect, a sequence of CSS rules must be created. The <codeph>*</codeph> operator
         matches any element, it can be used to match titles having progressive depths in the
         document.</p>
-      <p>
-        <codeblock outputclass="language-css">title{
+      <p id="p_pxb_dgk_54b">
+        <codeblock outputclass="language-css" id="codeblock_qxb_dgk_54b">title{
     font-size: 2.4em;
     font-weight:bold;    
 }
@@ -59,62 +59,62 @@ b,i {
     font-size: 1.2em;
 }</codeblock>
       </p>
-      <p>It is useful to have before the title a constant text, indicating that it refers to a
+      <p id="p_rxb_dgk_54b">It is useful to have before the title a constant text, indicating that it refers to a
         section. This text can include also the current section number. The <codeph>:before</codeph>
         and <codeph>:after</codeph> pseudo-elements will be used, plus the CSS counters.</p>
-      <p>First declare a counter named <codeph>sect</codeph> for each <codeph>book</codeph> or
+      <p id="p_sxb_dgk_54b">First declare a counter named <codeph>sect</codeph> for each <codeph>book</codeph> or
           <codeph>article</codeph>. The counter is set to zero at the beginning of each such
         element:</p>
-      <p>
-        <codeblock outputclass="language-css">book, 
+      <p id="p_txb_dgk_54b">
+        <codeblock outputclass="language-css" id="codeblock_uxb_dgk_54b">book, 
 article{
     counter-reset:sect;
 }
                         </codeblock>
       </p>
-      <p>The <codeph>sect</codeph> counter is incremented with each <codeph>section</codeph>, that
+      <p id="p_vxb_dgk_54b">The <codeph>sect</codeph> counter is incremented with each <codeph>section</codeph>, that
         is a direct child of a <codeph>book</codeph> or an <codeph>article</codeph> element.</p>
-      <p>
-        <codeblock outputclass="language-css">book &gt; section,
+      <p id="p_wxb_dgk_54b">
+        <codeblock outputclass="language-css" id="codeblock_xxb_dgk_54b">book &gt; section,
 article &gt; section{
     counter-increment:sect;
 }   </codeblock>
       </p>
-      <p>The "static" text that will prefix the section title is composed of the constant "Section
+      <p id="p_yxb_dgk_54b">The "static" text that will prefix the section title is composed of the constant "Section
         ", followed by the decimal value of the <codeph>sect</codeph> counter and a dot.</p>
-      <p>
-        <codeblock outputclass="language-css">book &gt; section &gt; title:before,
+      <p id="p_zxb_dgk_54b">
+        <codeblock outputclass="language-css" id="codeblock_ayb_dgk_54b">book &gt; section &gt; title:before,
 article &gt; section &gt; title:before{
     content: "Section " counter(sect) ". ";
 }</codeblock>
       </p>
-      <p>To make the documents easy to read, you add a margin to the sections. In this way the
+      <p id="p_byb_dgk_54b">To make the documents easy to read, you add a margin to the sections. In this way the
         higher nesting level, the larger the left side indent. The margin is expressed relatively to
         the parent bounds:</p>
-      <p>
-        <codeblock outputclass="language-css">section{
+      <p id="p_cyb_dgk_54b">
+        <codeblock outputclass="language-css" id="codeblock_dyb_dgk_54b">section{
     margin-left:1em;
     margin-top:1em;
 }</codeblock>
       </p>
-      <p>
-        <fig>
+      <p id="p_eyb_dgk_54b">
+        <fig id="fig_fyb_dgk_54b">
           <title>A sample of nested sections and their titles.</title>
           <image href="../img/dg_sections.png"/>
         </fig>
       </p>
-      <p>In the above screenshot you can see a sample XML document rendered by the CSS stylesheet.
+      <p id="p_gyb_dgk_54b">In the above screenshot you can see a sample XML document rendered by the CSS stylesheet.
         The selection "avoids" the text that is generated by the CSS "content" property. This
         happens because the CSS generated text is not present in the XML document and is just a
         visual aid.</p>
     </section>
     <section id="styling_inline_elements">
       <title>Styling Inline Elements</title>
-      <p>The "bold" style is obtained by using the <codeph>font-weight</codeph> CSS property with
+      <p id="p_hyb_dgk_54b">The "bold" style is obtained by using the <codeph>font-weight</codeph> CSS property with
         the value <codeph>bold</codeph>, while the "italic" style is specified by the
           <codeph>font-style</codeph> property:</p>
-      <p>
-        <codeblock outputclass="language-css">b {
+      <p id="p_iyb_dgk_54b">
+        <codeblock outputclass="language-css" id="codeblock_jyb_dgk_54b">b {
     font-weight:bold;
 }
 
@@ -125,57 +125,57 @@ i {
     </section>
     <section id="styling_images">
       <title>Styling Images</title>
-      <p>The CSS 2.1 does not specify how an element can be rendered as an image. To overpass this
+      <p id="p_kyb_dgk_54b">The CSS 2.1 does not specify how an element can be rendered as an image. To overpass this
         limitation, <ph keyref="product"/> supports a CSS Level 3 extension allowing to load image
         data from a URL. The URL of the image must be specified by one of the element attributes and
         it is resolved through the catalogs specified in <ph keyref="product"/>.</p>
-      <codeblock outputclass="language-css">
+      <codeblock outputclass="language-css" id="codeblock_lyb_dgk_54b">
 image{
     display:block;
     content: attr(href, url);
     margin-left:2em;
 }</codeblock>
-      <p>The <codeph>image</codeph> element has the required <xmlatt>href</xmlatt> attribute of type
+      <p id="p_myb_dgk_54b">The <codeph>image</codeph> element has the required <xmlatt>href</xmlatt> attribute of type
           <codeph>xs:anyURI</codeph>. The <xmlatt>href</xmlatt> attribute contains an image location
         so the rendered content is obtained by using the
-        function:<codeblock outputclass="language-css">attr(href, url)</codeblock> The first
+        function:<codeblock outputclass="language-css" id="codeblock_nyb_dgk_54b">attr(href, url)</codeblock> The first
         argument is the name of the attribute pointing to the image file. The second argument of the
           <codeph>attr</codeph> function specifies the type of the content. If the type has the
           <codeph>url</codeph> value, then <ph keyref="product"/> identifies the content as being an
         image. If the type is missing, then the content will be the text representing the attribute
         value.</p>
-      <p><ph keyref="product"/> handles both absolute and relative specified URLs. If the image has
+      <p id="p_oyb_dgk_54b"><ph keyref="product"/> handles both absolute and relative specified URLs. If the image has
         an <i>absolute</i> URL location (for example:
         "http://www.oasis-open.org/images/standards/oasis_standard.jpg") then it is loaded directly
         from this location. If the image URL is <i>relative</i> specified to the XML document (for
         example: "images/my_screenshot.jpg") then the location is obtained by adding this value to
         the location of the edited XML document.</p>
-      <p>An image can also be referenced by the name of a DTD entity that specifies the location of
+      <p id="p_pyb_dgk_54b">An image can also be referenced by the name of a DTD entity that specifies the location of
         the image file. For example, if the document declares an entity <b>graphic</b> that points
         to a JPEG image file:</p>
-      <codeblock outputclass="language-xml">&lt;!ENTITY graphic SYSTEM "depo/keyboard_shortcut.jpg" NDATA JPEG&gt;</codeblock>
-      <p>and the image is referenced in the XML document by specifying the name of the entity as the
+      <codeblock outputclass="language-xml" id="codeblock_qyb_dgk_54b">&lt;!ENTITY graphic SYSTEM "depo/keyboard_shortcut.jpg" NDATA JPEG&gt;</codeblock>
+      <p id="p_ryb_dgk_54b">and the image is referenced in the XML document by specifying the name of the entity as the
         value of an attribute:</p>
-      <codeblock outputclass="language-xml">&lt;mediaobject&gt;
+      <codeblock outputclass="language-xml" id="codeblock_syb_dgk_54b">&lt;mediaobject&gt;
     &lt;imageobject&gt;
         &lt;imagedata entityref="graphic" scale="50"/&gt;
     &lt;/imageobject&gt;
 &lt;/mediaobject&gt;</codeblock>
-      <p>The CSS should use the functions <codeph>url</codeph>, <codeph>attr</codeph> and
+      <p id="p_tyb_dgk_54b">The CSS should use the functions <codeph>url</codeph>, <codeph>attr</codeph> and
           <codeph>unparsed-entity-uri</codeph> for displaying the image in the
           <uicontrol>Author</uicontrol> mode:</p>
-      <codeblock outputclass="language-css">imagedata[entityref]{
+      <codeblock outputclass="language-css" id="codeblock_uyb_dgk_54b">imagedata[entityref]{
     content: url(unparsed-entity-uri(attr(entityref))); 
 }
 </codeblock>
-      <p>To take into account the value of the <xmlatt>width</xmlatt> attribute of the
+      <p id="p_vyb_dgk_54b">To take into account the value of the <xmlatt>width</xmlatt> attribute of the
           <codeph>imagedata</codeph> and use it for resizing the image, the CSS can define the
         following rule:</p>
-      <codeblock outputclass="language-css">imagedata[width]{
+      <codeblock outputclass="language-css" id="codeblock_wyb_dgk_54b">imagedata[width]{
   width:attr(width, length);
 }</codeblock>
-      <p>
-        <fig>
+      <p id="p_xyb_dgk_54b">
+        <fig id="fig_yyb_dgk_54b">
           <title>Samples of images in Author</title>
           <image href="../img/dg_images_in_author.png"/>
         </fig>

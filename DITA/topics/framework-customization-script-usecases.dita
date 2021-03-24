@@ -3,31 +3,31 @@
 <topic id="framework-customization-script-usecases">
   <title>Framework Extension Script File</title>
   <body>
-    <p>The framework extension file is used to describe a new framework configuration. Optionally,
+    <p id="p_qxz_cgk_54b">The framework extension file is used to describe a new framework configuration. Optionally,
       you can extend an existing built-in framework configuration (such as DITA or DocBook) and then
       make additions and changes to it.</p>
-    <p>The easiest way to create such a file is to use the <xref href="new-dialog-sa.dita"
+    <p id="p_rxz_cgk_54b">The easiest way to create such a file is to use the <xref href="new-dialog-sa.dita"
         product="author editor"><b>New</b> document wizard</xref><xref
         href="new-dialog-eclipse.dita" product="authorEclipse editorEclipse"><b>New</b> document
         wizard</xref> and choose the <b>Extend Framework Script</b> or <b>Create Framework
         Script</b> template.</p>
-    <p>The following examples assume that the newly created framework extends a built-in one. </p>
+    <p id="p_sxz_cgk_54b">The following examples assume that the newly created framework extends a built-in one. </p>
     <section id="section_kmt_jry_jnb">
       <title>Basic Information</title>
-      <p>Once you have created a new script file, you need to:</p>
+      <p id="p_txz_cgk_54b">Once you have created a new script file, you need to:</p>
       <ul id="ul_ovk_r3d_knb">
-        <li>Specify the name of the framework using the <xmlelement>name</xmlelement> element.
+        <li id="li_uxz_cgk_54b">Specify the name of the framework using the <xmlelement>name</xmlelement> element.
           Optionally, you can also add a description using the <xmlelement>description</xmlelement>
           element.</li>
-        <li>If you want to extend an existing framework (such as DITA or DocBook), specify the name
+        <li id="li_vxz_cgk_54b">If you want to extend an existing framework (such as DITA or DocBook), specify the name
           of the extended framework using the <xmlatt>base</xmlatt> attribute on the
             <xmlelement>script</xmlelement> element.</li>
-        <li>The <xmlelement>priority</xmlelement> element might be needed to instruct <ph
-            keyref="product"/> to use this new framework instead of the one being extended or other
-          frameworks that match the same document.</li>
+        <li id="li_wxz_cgk_54b">The <xmlelement>priority</xmlelement> element might be needed to
+          instruct <ph keyref="product"/> to use this new framework instead of the one being
+          extended or another framework that matches the same document.</li>
       </ul>
-      <p><u><b>Example: Extending the Built-in DITA
-        Framework</b></u><codeblock outputclass="language-xml">&lt;script xmlns="http://www.oxygenxml.com/ns/framework/extend"
+      <p id="p_xxz_cgk_54b"><u><b>Example: Extending the Built-in DITA
+        Framework</b></u><codeblock outputclass="language-xml" id="codeblock_yxz_cgk_54b">&lt;script xmlns="http://www.oxygenxml.com/ns/framework/extend"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.oxygenxml.com/ns/framework/extend 
   http://www.oxygenxml.com/ns/framework/extend/frameworkExtensionScript.xsd"
@@ -39,79 +39,93 @@
     </section>
     <section id="section_classpath">
       <title>Changing the Association Rules</title>
-      <p>
+      <p id="p_zxz_cgk_54b">
         <ph keyref="product"/> identifies the type of a document when the document matches at least
         one of the <i>association rules</i>.</p>
-      <p><b><u>Example: Instructing the Built-in Associations to Inherit None to Add Your
-          Own</u></b><codeblock outputclass="language-xml">&lt;associationRules inherit="none">
+      <p id="p_ayz_cgk_54b"><b><u>Example: Instructing the Built-in Associations to Inherit None to Add Your
+          Own</u></b><codeblock outputclass="language-xml" id="codeblock_byz_cgk_54b">&lt;associationRules inherit="none">
   &lt;addRule rootElementLocalName="concept"/>
   &lt;addRule fileName="test.xml"/>
 &lt;/associationRules></codeblock></p>
     </section>
     <section id="section_snf_rry_jnb">
       <title>Changing the Classpath</title>
-      <p>The <uicontrol>Classpath</uicontrol> tab displays a list of folders and <xref
+      <p id="p_cyz_cgk_54b">The <uicontrol>Classpath</uicontrol> tab displays a list of folders and <xref
           keyref="glossentry_jar"><term>JAR</term></xref> libraries that hold implementations for
         API extensions, implementations for custom <uicontrol>Author</uicontrol> mode operations,
         various resources (such as stylesheets), and <xref keyref="glossentry_framework"
             ><term>framework</term></xref> translation files. <ph keyref="product"/> loads the
         resources looking in the folders in the order they appear in the list.</p>
-      <p><b><u>Example: Customizing and Extending the Classpath Inherited From the Base
-            Framework</u></b><codeblock outputclass="language-xml">  &lt;classpath inherit="all">
+      <p id="p_dyz_cgk_54b"><b><u>Example: Customizing and Extending the Classpath Inherited From
+            the Base
+          Framework</u></b><codeblock outputclass="language-xml" id="codeblock_eyz_cgk_54b">  &lt;classpath inherit="all">
     &lt;!-- Contribute this resource before the ones inherited from the base framework
     because Oxygen loads the resources looking in the folders in the order they 
     appear in the list.
     -->
     &lt;addEntry path="${framework}/resources_2x" position="before"/>
     
-    &lt;removeEntry path="${framework}/refactoring/"/>
-  &lt;/classpath></codeblock></p>
+    &lt;removeEntry path="${baseFramework}/refactoring/"/>
+  &lt;/classpath></codeblock><note id="note_x2v_fxc_v4b">When removing entries with
+          framework editor variables, take into consideration how they were added in the base
+          framework. <ul id="ul_y2v_fxc_v4b">
+            <li>An entry present in the base framework with the path
+                <filepath>${framework}/file</filepath> can be removed using an identical path or by
+              using the <term>${baseFramework}</term> variable:
+                <filepath>${baseFramework}/file</filepath>.</li>
+            <li>An entry present in the base framework with the path
+                <filepath>${frameworkDir}/file</filepath> can be removed using an identical path or
+              by using the <term>${baseFrameworkDir}</term> variable:
+                <filepath>${baseFrameworkDir}/file</filepath>.</li>
+          </ul></note></p>
     </section>
     <section id="section_cv1_ztm_knb">
       <title>Changing XML Catalogs</title>
-      <p>For cases where you need to reference the location of a schema file from a remote web
+      <p id="p_fyz_cgk_54b">For cases where you need to reference the location of a schema file from a remote web
         location and an internet connection may not be available, an <xref
           keyref="glossentry_xml-catalog"><term>XML Catalog</term></xref> may be used to map the web
         location to a local file system entry.</p>
-      <p><b><u>Example: Customizing and Extending the XML Catalogs Inherited From the Base
-            Framework</u></b><codeblock outputclass="language-xml">&lt;xmlCatalogs inherit="all">
+      <p id="p_gyz_cgk_54b"><b><u>Example: Customizing and Extending the XML Catalogs Inherited From
+            the Base
+        Framework</u></b><codeblock outputclass="language-xml" id="codeblock_hyz_cgk_54b">&lt;xmlCatalogs inherit="all">
   &lt;!-- Contribute this resource before the ones inherited from the base framework
     because Oxygen loads the resources looking in the folders in the order they 
     appear in the list.
     -->
   &lt;addEntry path="${framework}/catalog.xml" position="before"/>
   
-  &lt;removeEntry path="${framework}/oldCatalog.xml"/>
+  &lt;removeEntry path="${baseFramework}/oldCatalog.xml"/>
 &lt;/xmlCatalogs></codeblock></p>
     </section>
     <section id="section_fdb_2xm_knb">
       <title>Changing the Document Templates</title>
-      <p>You can create your own custom document templates or remove templates inherited from the
+      <p id="p_iyz_cgk_54b">You can create your own custom document templates or remove templates inherited from the
         base framework.</p>
-      <p><b><u>Example: Customizing and Extending the XML Catalogs Inherited From the Base
-            Framework</u></b><codeblock outputclass="language-xml">&lt;documentTemplates inherit="all">
+      <p id="p_jyz_cgk_54b"><b><u>Example: Customizing and Extending the XML Catalogs Inherited From
+            the Base
+        Framework</u></b><codeblock outputclass="language-xml" id="codeblock_kyz_cgk_54b">&lt;documentTemplates inherit="all">
   &lt;!-- Contribute this resource before the ones inherited from the base framework
     to make them appear first in the list.
     -->
   &lt;addEntry path="${framework}/newTemplates" position="before"/>
   
-  &lt;removeEntry path="${framework}/oldTemplates"/>
+  &lt;removeEntry path="${baseFramework}/oldTemplates"/>
 &lt;/documentTemplates></codeblock></p>
     </section>
     <section id="section_u4j_5xm_knb">
       <title>Adding New Transformation Scenarios and Removing Existing Ones</title>
-      <p>You can import newly created transformation scenarios and export them in one of the
+      <p id="p_lyz_cgk_54b">You can import newly created transformation scenarios and export them in one of the
         following locations:<ul id="ul_fw5_dzm_knb">
-          <li>The <xref href="scenarios-view.dita"/>.</li>
-          <li>The <xref href="configure-transformation-dialog.dita"/>.</li>
-          <li>The <xref href="document-type-transformation-tab.dita"/>.</li>
+          <li id="li_myz_cgk_54b">The <xref href="scenarios-view.dita"/>.</li>
+          <li id="li_nyz_cgk_54b">The <xref href="configure-transformation-dialog.dita"/>.</li>
+          <li id="li_oyz_cgk_54b">The <xref href="document-type-transformation-tab.dita"/>.</li>
         </ul></p>
-      <p><b><u>Example: Importing New Transformation Scenarios</u></b></p>
-      <p>The <xmlatt>href</xmlatt> attribute from the <xmlelement>addScenarios</xmlelement> element
+      <p id="p_pyz_cgk_54b"><b><u>Example: Importing New Transformation Scenarios</u></b></p>
+      <p id="p_qyz_cgk_54b">The <xmlatt>href</xmlatt> attribute from the <xmlelement>addScenarios</xmlelement> element
         is used to point to the location of the scenarios export file. You can also remove any
         scenario inherited from the base framework as well as setting the default scenarios (the one
         used when another specific scenario is not
-        specified).<codeblock outputclass="language-xml">&lt;transformationScenarios>
+        specified).<codeblock outputclass="language-xml" id="codeblock_ryz_cgk_54b">&lt;transformationScenarios>
   &lt;addScenarios href="scenarioExport.scenarios"/>
   &lt;removeScenario name="DITA HTML5"/>
   &lt;defaultScenarios>
@@ -122,18 +136,18 @@
     </section>
     <section id="section_bkx_zym_knb">
       <title>Adding New Validation Scenarios and Removing Existing Ones</title>
-      <p>You can import newly created validation scenarios and export them in one of the following
+      <p id="p_syz_cgk_54b">You can import newly created validation scenarios and export them in one of the following
           locations:<ul id="ul_ckx_zym_knb">
-          <li>The <xref href="create-validation-scenario.dita">Configure Validation Scenario Dialog
+          <li id="li_tyz_cgk_54b">The <xref href="create-validation-scenario.dita">Configure Validation Scenario Dialog
               Box</xref>.</li>
-          <li>The <xref href="document-type-validation-tab.dita"/>.</li>
+          <li id="li_uyz_cgk_54b">The <xref href="document-type-validation-tab.dita"/>.</li>
         </ul></p>
-      <p><b><u>Example: Importing New Validation Scenarios</u></b></p>
-      <p>The <xmlatt>href</xmlatt> attribute from the <xmlelement>addScenarios</xmlelement> element
+      <p id="p_vyz_cgk_54b"><b><u>Example: Importing New Validation Scenarios</u></b></p>
+      <p id="p_wyz_cgk_54b">The <xmlatt>href</xmlatt> attribute from the <xmlelement>addScenarios</xmlelement> element
         is used to point to the location of the scenarios export file. You can also remove any
         scenario inherited from the base framework as well as setting the default scenarios (the one
         used when another specific scenario is not
-        specified).<codeblock outputclass="language-xml">&lt;validationScenarios>
+        specified).<codeblock outputclass="language-xml" id="codeblock_xyz_cgk_54b">&lt;validationScenarios>
   &lt;addScenarios href="validationScenarioExport.scenarios"/>
   &lt;removeScenario name="DITA"/>
   &lt;defaultScenarios>
@@ -144,37 +158,37 @@
     </section>
     <section id="section_kyz_sry_jnb">
       <title>Customizing the Author Mode Through New CSS Files</title>
-      <p>The <uicontrol>Author</uicontrol> mode layout is driven by CSS rules. To customize it, you
+      <p id="p_yyz_cgk_54b">The <uicontrol>Author</uicontrol> mode layout is driven by CSS rules. To customize it, you
         need to create new CSS files and add them in the new framework.</p>
-      <p><b><u>Example: Using Larger Fonts in
-        Titles</u></b><codeblock outputclass="language-xml">&lt;author>
+      <p id="p_zyz_cgk_54b"><b><u>Example: Using Larger Fonts in
+        Titles</u></b><codeblock outputclass="language-xml" id="codeblock_azz_cgk_54b">&lt;author>
     &lt;css>
       &lt;removeCss path="${framework}/base.css"/>
       &lt;!-- 
-        Adding CSS after the ones in the base gives the oportunity to 
+        Adding CSS after the ones in the base gives the opportunity to 
         override rules from previous CSSs. 
       -->
       &lt;addCss path="${framework}/titles.css" position="after"/>
     &lt;/css>
   &lt;/author></codeblock></p>
-      <p>The <filepath>${framework}/titles.css</filepath> file contains a rule like
-        this:<codeblock outputclass="language-css">*[class~='topic/title'] {
+      <p id="p_bzz_cgk_54b">The <filepath>${framework}/titles.css</filepath> file contains a rule like
+        this:<codeblock outputclass="language-css" id="codeblock_czz_cgk_54b">*[class~='topic/title'] {
   font-size:larger;
 }</codeblock></p>
-      <p><b><u>Example: Creating an Alternate CSS That Activates When the User Selects it in the
-            Styles Menu</u></b><codeblock outputclass="language-xml">  &lt;author>
+      <p id="p_dzz_cgk_54b"><b><u>Example: Creating an Alternate CSS That Activates When the User Selects it in the
+            Styles Menu</u></b><codeblock outputclass="language-xml" id="codeblock_ezz_cgk_54b">  &lt;author>
     &lt;css>
       &lt;addCss path="${framework}/pink.css" title="Pink titles" alternate="true"/>
     &lt;/css>
   &lt;/author></codeblock></p>
-      <p>The <filepath>${framework}/pink.css</filepath> file contains a rule like
-        this:<codeblock outputclass="language-css">*[class~='topic/title'] {
+      <p id="p_fzz_cgk_54b">The <filepath>${framework}/pink.css</filepath> file contains a rule like
+        this:<codeblock outputclass="language-css" id="codeblock_gzz_cgk_54b">*[class~='topic/title'] {
   color:#FF1493;
 }</codeblock></p>
     </section>
     <section id="section_qzt_5ry_jnb">
       <title>Defining Author Actions for the New Framework</title>
-      <p>Create <xref href="dg-create-custom-actions.dita#dg-create-custom-actions/section_2"
+      <p id="p_hzz_cgk_54b">Create <xref href="dg-create-custom-actions.dita#dg-create-custom-actions/section_2"
           >external author actions</xref>, save them in a <xref
           href="dg-create-custom-actions.dita#dg-create-custom-actions/section_ht2_3jg_jlb">specific
           subdirectory of your particular framework directory</xref>, and they will be loaded
@@ -182,7 +196,7 @@
     </section>
     <section id="section_f3p_2ld_4nb">
       <title>Removing Author Actions from the Base Framework</title>
-      <p>Suppose that the base framework configuration defines some <xref
+      <p id="p_izz_cgk_54b">Suppose that the base framework configuration defines some <xref
           href="dg-create-custom-actions.dita">author actions</xref> that are added in <xref
           href="the-menu-sub-tab.dita">the main menu</xref>, <xref
           href="the-contextual-menu-sub-tab.dita">contextual menu</xref>, <xref
@@ -190,11 +204,11 @@
           href="the-content-completion-tab.dita">content completion window</xref>. If you do not
         want to inherit one of these actions in the new framework and you also want to remove it
         from all the GUI elements, you can use the <xmlelement>removeAction</xmlelement>
-          element:<codeblock outputclass="language-xml">&lt;author>
+          element:<codeblock outputclass="language-xml" id="codeblock_jzz_cgk_54b">&lt;author>
   &lt;authorActions>
     &lt;removeAction id="action.to.remove"/>
   &lt;/authorActions>
-&lt;/author></codeblock><note>If the new framework has an <xref
+&lt;/author></codeblock><note id="note_kzz_cgk_54b">If the new framework has an <xref
             href="dg-create-custom-actions.dita#dg-create-custom-actions/section_2">external author
             action</xref> with the same ID as one of the actions specified in a
             <xmlelement>removeAction</xmlelement> element, the action will not be removed from the
@@ -202,19 +216,19 @@
     </section>
     <section id="section_b3l_yb2_knb">
       <title>Author Toolbar Configuration</title>
-      <p>The <uicontrol>Author</uicontrol> mode-specific toolbars for the new framework can be
+      <p id="p_lzz_cgk_54b">The <uicontrol>Author</uicontrol> mode-specific toolbars for the new framework can be
         customized by:</p>
       <ul id="ul_i5v_yry_jnb">
-        <li>Adding or removing actions from toolbars.</li>
-        <li>Changing toolbar groups by adding or removing actions.</li>
-        <li>Creating new toolbars and action groups.</li>
+        <li id="li_mzz_cgk_54b">Adding or removing actions from toolbars.</li>
+        <li id="li_nzz_cgk_54b">Changing toolbar groups by adding or removing actions.</li>
+        <li id="li_ozz_cgk_54b">Creating new toolbars and action groups.</li>
       </ul>
-      <p><b><u>Example: Customizing the
-          Toolbar</u></b><codeblock outputclass="language-xml">  &lt;author>
+      <p id="p_pzz_cgk_54b"><b><u>Example: Customizing the
+          Toolbar</u></b><codeblock outputclass="language-xml" id="codeblock_qzz_cgk_54b">  &lt;author>
     &lt;toolbars>
       &lt;toolbar>
 
-        &lt;!-- Remove an action inherited from the the base frmaework. -->
+        &lt;!-- Remove an action inherited from the base framework. -->
         &lt;removeAction id="bold"/>
         
         &lt;!-- Insert an action into an existing group -->
@@ -232,14 +246,14 @@
         &lt;/group>
       &lt;/toolbar>
     &lt;/toolbars>
-  &lt;/author></codeblock><note>If you create a toolbar or group configuration and a
-          toolbar/group with the same name already exists in the base framework, you will change the
-          one inherited instead of creating a new one. You can inspect the names of the existing
-          toolbars/groups inherited from the base framework in the <xref href="the-toolbar-tab.dita"
-          />.</note></p>
-      <p><b><u>Example: Creating a New Toolbar</u></b></p>
-      <p>A new toolbar is created if the <xmlatt>name</xmlatt> attribute does not match a toolbar
-        inherited from the base.<codeblock outputclass="language-xml">&lt;author>
+  &lt;/author></codeblock><note id="note_rzz_cgk_54b">If you create a toolbar or group
+          configuration and a toolbar/group with the same name already exists in the base framework,
+          you will change the one inherited instead of creating a new one. You can inspect the names
+          of the existing toolbars/groups inherited from the base framework in the <xref
+            href="the-toolbar-tab.dita"/>.</note></p>
+      <p id="p_szz_cgk_54b"><b><u>Example: Creating a New Toolbar</u></b></p>
+      <p id="p_tzz_cgk_54b">A new toolbar is created if the <xmlatt>name</xmlatt> attribute does not match a toolbar
+        inherited from the base.<codeblock outputclass="language-xml" id="codeblock_uzz_cgk_54b">&lt;author>
     &lt;toolbars>
       &lt;toolbar name="Extra Toolbar">
         &lt;!-- Add actions, separators and new groups-->
@@ -253,15 +267,15 @@
       &lt;/toolbar>
     &lt;/toolbars>
   &lt;/author></codeblock></p>
-      <p><b><u>Example: Adding an Action in the Toolbar at a Specific Location</u></b></p>
-      <p>You can insert items (actions or groups) relative to other items already present in the
+      <p id="p_vzz_cgk_54b"><b><u>Example: Adding an Action in the Toolbar at a Specific Location</u></b></p>
+      <p id="p_wzz_cgk_54b">You can insert items (actions or groups) relative to other items already present in the
         toolbar because they were inherited from the base framework configuration. The
           <xmlatt>anchor</xmlatt> attribute specifies either the ID of an action or the name of a
         group already present in the toolbar and the <xmlatt>position</xmlatt> attribute specifies
-        whether the new item should be added before or after it.<note>If the <xmlatt>anchor</xmlatt>
+        whether the new item should be added before or after it.<note id="note_xzz_cgk_54b">If the <xmlatt>anchor</xmlatt>
           attribute is missing, the entries will be added either first or last, according to
             <xmlatt>position</xmlatt>
-        value.</note><codeblock outputclass="language-xml">      &lt;toolbar>
+        value.</note><codeblock outputclass="language-xml" id="codeblock_yzz_cgk_54b">      &lt;toolbar>
         &lt;addAction id="insert.note" anchor="bold" position="before"/>
         
         &lt;group name="Table menu" anchor="${i18n(link)}" position="after">
@@ -271,14 +285,14 @@
     </section>
     <section id="section_egc_zr2_knb">
       <title>Author Menu and Contextual Menu Configuration</title>
-      <p>The <uicontrol>Author</uicontrol> mode-specific menus for the new framework can be
+      <p id="p_zzz_cgk_54b">The <uicontrol>Author</uicontrol> mode-specific menus for the new framework can be
         customized by:</p>
       <ul id="ul_yky_pz2_knb">
-        <li>Adding or removing actions and submenus.</li>
-        <li>Changing existing submenus by adding or removing actions.</li>
+        <li id="li_a11_dgk_54b">Adding or removing actions and submenus.</li>
+        <li id="li_b11_dgk_54b">Changing existing submenus by adding or removing actions.</li>
       </ul>
-      <p><b><u>Example: Customizing the Contextual
-          Menu</u></b><codeblock outputclass="language-xml">    &lt;contextualMenu>
+      <p id="p_c11_dgk_54b"><b><u>Example: Customizing the Contextual
+          Menu</u></b><codeblock outputclass="language-xml" id="codeblock_d11_dgk_54b">    &lt;contextualMenu>
       &lt;!-- Add new actions and submenu -->
       &lt;separator/>
       &lt;addAction id="insert.table"/>
@@ -293,20 +307,20 @@
       
       &lt;!-- Remove a submenu inherited from the base framework. -->
       &lt;removeSubmenu name="${i18n(link)}"/>
-    &lt;/contextualMenu></codeblock><note>The framework main menu is configured similarly,
-          inside a <xmlelement>menu</xmlelement> container.</note><note type="tip">You can inspect
+    &lt;/contextualMenu></codeblock><note id="note_e11_dgk_54b">The framework main menu is configured similarly,
+          inside a <xmlelement>menu</xmlelement> container.</note><note type="tip" id="note_f11_dgk_54b">You can inspect
           the names of the submenus inherited from the base framework in the <xref
             href="the-contextual-menu-sub-tab.dita"/> and <xref href="the-menu-sub-tab.dita"
           />.</note></p>
-      <p><b><u>Example: Adding an Action in the Contextual Menu at a Specific Location</u></b></p>
-      <p>You can insert new actions and submenus relative to other actions and submenus already
+      <p id="p_g11_dgk_54b"><b><u>Example: Adding an Action in the Contextual Menu at a Specific Location</u></b></p>
+      <p id="p_h11_dgk_54b">You can insert new actions and submenus relative to other actions and submenus already
         present in the menu because they were inherited from the base framework configuration. The
           <xmlatt>anchor</xmlatt> attribute specifies the ID of an <uicontrol>Author</uicontrol>
         mode action or a name of a submenu already present in the menu and the
           <xmlatt>position</xmlatt> attribute specifies whether the new action should be added
-        before or after it.<note>If the <xmlatt>anchor</xmlatt> attribute is missing, the entries
+        before or after it.<note id="note_i11_dgk_54b">If the <xmlatt>anchor</xmlatt> attribute is missing, the entries
           will be added either first or last, according to <xmlatt>position</xmlatt>
-        value.</note><codeblock outputclass="language-xml">    &lt;contextualMenu>
+        value.</note><codeblock outputclass="language-xml" id="codeblock_j11_dgk_54b">    &lt;contextualMenu>
       &lt;addAction id="insert.note" anchor="edit.image.map" position="before"/>
       
       &lt;submenu name="Table menu" anchor="${i18n(insert)}" position="after">
@@ -316,19 +330,20 @@
     </section>
     <section id="section_cgh_yzm_knb">
       <title>Configuring the Content Completion in Author Mode</title>
-      <p>You can replace content completion entries obtained from the associated schema with <xref
+      <p id="p_k11_dgk_54b">You can replace content completion entries obtained from the associated schema with <xref
           href="dg-create-custom-actions.dita"><uicontrol>Author</uicontrol> mode
         actions</xref>.</p>
-      <p>In the <xmlelement>authorActions</xmlelement> container, you can specify the
+      <p id="p_l11_dgk_54b">In the <xmlelement>authorActions</xmlelement> container, you can specify the
           <uicontrol>Author</uicontrol> mode actions to be contributed. Optionally, you can mark
         them as a replacement for an existing schema proposal with the
           <xmlatt>replacedElement</xmlatt> attribute.</p>
-      <p>The <xmlelement>schemaProposals</xmlelement> element allows you to remove proposals
-        detected from the associated schema through the <xmlelement>removeProposal</xmlelement>
-        element. If some proposals were removed in the base framework configuration and you want
-        them re-added, you can do so though the <xmlelement>addProposal</xmlelement> element.</p>
-      <p><b><u>Example: Customizing the Content Completion
-        Assistant</u></b><codeblock outputclass="language-xml">&lt;contentCompletion>
+      <p id="p_m11_dgk_54b">The <xmlelement>schemaProposals</xmlelement> element allows you to
+        remove proposals detected from the associated schema through the
+          <xmlelement>removeProposal</xmlelement> element. If some proposals were removed in the
+        base framework configuration and you want them re-added, you can do so through the
+          <xmlelement>addProposal</xmlelement> element.</p>
+      <p id="p_n11_dgk_54b"><b><u>Example: Customizing the Content Completion
+        Assistant</u></b><codeblock outputclass="language-xml" id="codeblock_o11_dgk_54b">&lt;contentCompletion>
   &lt;authorActions>
     &lt;addAction id="insert.note" replacedElement="note" inCCWindow="true"/> 
   &lt;/authorActions>
@@ -343,15 +358,15 @@
     </section>
     <section id="section_ffm_k1s_knb">
       <title>Using Framework Extension Points</title>
-      <p>The <uicontrol>Extensions</uicontrol> tab specifies implementations of Java interfaces used
+      <p id="p_p11_dgk_54b">The <uicontrol>Extensions</uicontrol> tab specifies implementations of Java interfaces used
         to provide advanced functionality to the document type. Libraries that contain the
         implementations must be present in the <xref
           href="#framework-customization-script-usecases/section_snf_rry_jnb" format="dita"
           >classpath of your framework</xref>. The Javadoc available at <xref
           href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/" format="html"
           scope="external"/> contains details about how each API implementation functions.</p>
-      <p><b><u>Example: Setting a Custom Extensions
-        Bundle</u></b><codeblock outputclass="language-xml">&lt;extensionPoints>
+      <p id="p_q11_dgk_54b"><b><u>Example: Setting a Custom Extensions
+        Bundle</u></b><codeblock outputclass="language-xml" id="codeblock_r11_dgk_54b">&lt;extensionPoints>
   &lt;extension 
     name="extensionsBundleClassName" 
     value="ro.sync.ecss.extensions.dita.map.DITAMapExtensionsBundle"/>
@@ -359,18 +374,17 @@
     </section>
     <section id="section_dfy_d5d_qnb">
       <title>Reusing Parts of the Script Using XInclude</title>
-      <p>Elements in the script can be specified in dedicated files that can then be referenced
+      <p id="p_s11_dgk_54b">Elements in the script can be specified in dedicated files that can then be referenced
         using XInclude in the script.</p>
-      <p><b><u>Example: Using XInclude to Reference Elements in the
-        Script</u></b><codeblock outputclass="language-xml">&lt;script xmlns="http://www.oxygenxml.com/ns/framework/extend">
+      <p id="p_t11_dgk_54b"><b><u>Example: Using XInclude to Reference Elements in the
+        Script</u></b><codeblock outputclass="language-xml" id="codeblock_u11_dgk_54b">&lt;script xmlns="http://www.oxygenxml.com/ns/framework/extend">
     &lt;name>New framework&lt;/name>
     &lt;xi:include href="classpath.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 &lt;/script></codeblock></p>
-      <p>Where the referenced <filepath>classpath.xml</filepath> has this
-        content:<codeblock outputclass="language-xml">&lt;classpath xmlns="http://www.oxygenxml.com/ns/framework/extend">
+      <p id="p_v11_dgk_54b">Where the referenced <filepath>classpath.xml</filepath> has this
+        content:<codeblock outputclass="language-xml" id="codeblock_w11_dgk_54b">&lt;classpath xmlns="http://www.oxygenxml.com/ns/framework/extend">
     &lt;addEntry path="test.jar"/>
 &lt;/classpath></codeblock></p>
     </section>
   </body>
 </topic>
-<?oxy_options track_changes="on"?>

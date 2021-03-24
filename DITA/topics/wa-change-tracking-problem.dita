@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA 1.3 Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="wa-change-tracking-problem">
+  <title>Delete Table Row Operation Fails When Change Tracking is Enabled</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Common problems<indexterm>Operation cannot be executed</indexterm></indexterm>
+        <indexterm>Known issues<indexterm>Operation cannot be executed</indexterm></indexterm>
+        <indexterm>Operation cannot be executed</indexterm>
+        <indexterm>Deactivate change tracking</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <troublebody>
+    <condition id="problem">
+      <title>Problem</title>
+      <p id="p_lsr_dgk_54b">I tried to delete an empty row in table that I added myself with change tracking enabled,
+        and I received the following
+        error:<codeblock outputclass="language-ini" id="codeblock_msr_dgk_54b">This operation cannot be executed on a table while change tracking is enabled.
+Deactivate change tracking and try again. </codeblock></p>
+    </condition>
+    <troubleSolution>
+      <cause id="cause">
+        <title>Cause</title>
+        <p id="p_nsr_dgk_54b">Some complex operations are blocked when change tracking in enabled to prevent breaking
+          the XML structure.</p>
+      </cause>
+      <remedy id="solution">
+        <title>Solution</title>
+        <steps-informal>
+          <p id="p_osr_dgk_54b">The deletion in this particular case should not have caused an issue, so an
+            administrator could set the <codeph>changeTrackingBehavior</codeph> parameter for the
+              <codeph>DeleteTableRowOperation</codeph> with one of the following values:<ul
+              id="ul_l5p_3ys_s4b">
+              <li id="li_m5p_3ys_s4b"><b>Block</b> - The operation is not executed when change
+                tracking is activated.</li>
+              <li id="li_frf_kys_s4b"><b>Allow</b> - The operation is executed when change tracking
+                is activated. In the future, if complex table operations are performed, the
+                resulting table layout may be broken.</li>
+              <li id="li_ewh_mys_s4b"><b>Allow without change tracking</b> - The operation is
+                executed with change tracking disabled.</li>
+              <li id="li_uwj_4ys_s4b"><b>Allow</b> - The editor decides which strategy to use,
+                possibly asking the end user.</li>
+            </ul></p>
+        </steps-informal>
+      </remedy>
+    </troubleSolution>
+  </troublebody>
+</troubleshooting>
