@@ -25,35 +25,72 @@
       id="d2e47"/>
     <section id="configuration_file">
       <title>Configuring Proposed Values</title>
-      <p id="p_ay1_dgk_54b">For the purposes of adding or replacing the values that are proposed, the configuration
-        file (<filepath>cc_config.xml</filepath>) includes a series of <codeph>match</codeph>
-        instructions that will match an element or attribute name. You also have the possibility of
-        using an <xmlatt>editable</xmlatt> attribute on the <xmlelement>match</xmlelement> element
-        to specify the editable state of the attribute values, as reflected in the <xref
-          href="author-attributes-view.dita#author-attributes-view"
-            ><uicontrol>Attributes</uicontrol> view</xref> and the <xref
-          href="author-attributes-view.dita#author-attributes-view/in-place-attr-editor"
-            ><uicontrol>In-place Attributes Editor</uicontrol></xref>. The possible values for the
-          <xmlatt>editable</xmlatt> attribute are:<ul id="ul_by1_dgk_54b">
-          <li id="li_cy1_dgk_54b"><b>true</b> - The attribute values can be edited by choosing from a combo box or
-            manually providing a value.</li>
-          <li id="li_dy1_dgk_54b"><b>false</b> - The attribute values cannot be edited.</li>
-          <li id="li_ey1_dgk_54b"><b>onlyAllowedItems</b> - The attribute values can be edited, but only by choosing
-            from a list of proposed values, in a non-editable combo box.</li>
+      <p id="p_ay1_dgk_54b">For the purposes of adding or replacing the values that are proposed,
+        the configuration file (<filepath>cc_config.xml</filepath>) includes a series of
+          <codeph>valueProposals</codeph> instructions that will match an element or attribute name
+        and has the following attributes:<ul id="ul_ssl_g5p_cpb">
+          <li><p><b>path</b> - A path within the document that matches the element or attribute that
+              will have its content completion proposals changed. For example:<ul
+                id="ul_ddd_hcq_cpb">
+                <li><codeph>path="title"</codeph> matches all the <xmlelement>title</xmlelement>
+                  elements in the document</li>
+                <li><codeph>path="chapter/title"</codeph> matches only the
+                    <xmlelement>title</xmlelement> elements that are direct children of the
+                    <xmlelement>chapter</xmlelement> element</li>
+                <li><codeph>path="@xml:lang"</codeph> matches all the <xmlatt>xml:lang</xmlatt>
+                  attributes in the document</li>
+                <li><codeph>path="title/@xml:lang"</codeph> matches only the
+                    <xmlatt>xml:lang</xmlatt> attributes that appear on
+                    <xmlelement>title</xmlelement> elements. </li>
+              </ul></p>You can use simplified forms of XPath in this attribute.<p
+              conref="configure-elements-attr-cc-individually.dita#configure-elements-attr-cc-individually/p_path_attr_first"
+              conrefend="configure-elements-attr-cc-individually.dita#configure-elements-attr-cc-individually/p_path_attr_examples"
+              /><note id="note_t51_dgk_54b">Using a namespace prefix requires that you declare it on
+              the <xmlelement>valueProposals</xmlelement> element or the root element. For example:
+                <codeph>&lt;valueProposals xmlns:db5="http://docbook.org/ns/docbook"
+                path="db5:listitem"/></codeph></note></li>
+          <li><b>editable</b> - Specifies the editable state of the attribute values, as reflected
+            in the <xref href="author-attributes-view.dita#author-attributes-view"
+                ><uicontrol>Attributes</uicontrol> view</xref> and the <xref
+              href="author-attributes-view.dita#author-attributes-view/in-place-attr-editor"
+                ><uicontrol>In-place Attributes Editor</uicontrol></xref>. The possible values for
+            the <xmlatt>editable</xmlatt> attribute are:<ul id="ul_by1_dgk_54b">
+              <li id="li_cy1_dgk_54b"><b>true</b> - The attribute values can be edited by choosing
+                from a combo box or manually providing a value.</li>
+              <li id="li_dy1_dgk_54b"><b>false</b> - The attribute values cannot be edited.</li>
+              <li id="li_ey1_dgk_54b"><b>onlyAllowedItems</b> - The attribute values can be edited,
+                but only by choosing from a list of proposed values, in a non-editable combo
+                box.</li>
+            </ul></li>
         </ul></p>
-      <p id="p_fy1_dgk_54b">A new value is specified inside one or more <xmlelement>item</xmlelement> elements, which
-        are grouped inside an <xmlelement>items</xmlelement> element. The behavior of the
-          <xmlelement>items</xmlelement> element is specified with the help of the
-          <xmlatt>action</xmlatt> attribute, which can have any of the following values:<ul
-          id="ul_ghd_c55_kr">
-          <li id="li_gy1_dgk_54b"><b>append</b> - Adds new values to appear in the proposals list (default value).</li>
-          <li id="li_hy1_dgk_54b"><b>addIfEmpty</b> - Adds new values to the proposals list only if no other values are
-            contributed by the schema.</li>
-          <li id="li_iy1_dgk_54b"><b>replace</b> - Replaces the values contributed by the schema with new values to
-            appear in the proposals list.</li>
+      <p id="p_fy1_dgk_54b">The new value proposals are specified in the
+          <xmlelement>valueProposals</xmlelement> element through: <ul id="ul_kbn_ldq_cpb">
+          <li>one or more <xmlelement>item</xmlelement> elements, which are grouped inside an
+              <xmlelement>items</xmlelement> element</li>
+          <li>an <xmlelement>xslt</xmlelement> element that refers an XSLT script which gets
+            executed and must return an <xmlelement>items</xmlelement> element.</li>
         </ul></p>
-      <p id="p_jy1_dgk_54b">The values in the configuration file can be specified either directly or by calling an
-        external XSLT file that will extract data from an external source.</p>
+      <p>The behavior of the <xmlelement>items</xmlelement> or <xmlelement>xslt</xmlelement> element
+        is specified with the help of the <xmlatt>action</xmlatt> attribute, which can have any of
+        the following values:<ul id="ul_ghd_c55_kr">
+          <li id="li_gy1_dgk_54b"><b>append</b> - Adds new values to appear in the proposals list
+            (default value).</li>
+          <li id="li_hy1_dgk_54b"><b>addIfEmpty</b> - Adds new values to the proposals list only if
+            no other values are contributed by the schema.</li>
+          <li id="li_iy1_dgk_54b"><b>replace</b> - Replaces the values contributed by the schema
+            with new values to appear in the proposals list.</li>
+        </ul></p>
+      <p id="p_jy1_dgk_54b">The values in the configuration file can be specified either directly or
+        by calling an external XSLT file that will extract data from an external source. An
+          <xmlelement>xslt</xmlelement> element must be used in this situation.</p>
+      <note id="note_xmh_qyp_cpb"><codeph>valueProposals</codeph> offers more flexibility compared
+        to the old <codeph>match</codeph> element that was marked as
+        deprecated.<codeblock id="codeblock_ytb_sbq_cpb" outputclass="language-xml">&lt;match elementName="lg" elementNS="http://www.oxygenxml.com/ns/samples">
+    &lt;items action="replace">
+        &lt;item value="stanza"/>
+        &lt;item value="refrain"/>
+    &lt;/items>
+&lt;/match></codeblock></note>
     </section>
     <section id="other_important_notes">
       <title>Other Important Notes About the Configuration File</title>
@@ -61,7 +98,8 @@
         <ul id="ul_ly1_dgk_54b">
           <li id="li_my1_dgk_54b">This configuration file only affects the content completion assistance, not
             validation.</li>
-          <li id="li_ny1_dgk_54b">To test the effects of your changes, you should restart the application.</li>
+          <li id="li_ny1_dgk_54b">To test the effects of your changes, you should <xref
+              href="author-editing-refreshing.dita">Refresh the source document</xref>.</li>
         </ul>
       </note>
     </section>
@@ -72,21 +110,40 @@
       <p id="p_py1_dgk_54b">
         <codeblock outputclass="language-xml" id="codeblock_qy1_dgk_54b">&lt;!-- Replaces the values for an element with the local name "lg",
       from the given namespace -->
-&lt;match elementName="lg" elementNS="http://www.oxygenxml.com/ns/samples">
-    &lt;items action="replace">
-        &lt;item value="stanza"/>
-        &lt;item value="refrain"/>
-    &lt;/items>
-&lt;/match>
+&lt;valueProposals path="x:lg" xmlns:x="http://www.oxygenxml.com/ns/samples">
+  &lt;items action="replace">
+    &lt;item value="stanza"/>
+    &lt;item value="refrain"/>
+  &lt;/items>
+&lt;/valueProposals>
 
-&lt;!-- Adds two values for an attribute with the local name "type",
-      from any namespace -->
-&lt;match attributeName="type" editable="onlyAllowedItems">
+&lt;!-- Adds two values for an attribute "type", from no namespace -->
+&lt;valueProposals path="@type" editable="onlyAllowedItems">
     &lt;items>
         &lt;item value="stanza"/>
         &lt;item value="refrain"/>
     &lt;/items>
-&lt;/match></codeblock>
+&lt;/valueProposals></codeblock>
+      </p>
+    </section>
+    <section id="section_vsr_fxp_cpb">
+      <title>Example: Using attribute conditions</title>
+      <p>The possible values of an attribute depend on the value of another attribute from the same
+        element:</p>
+      <p>
+        <codeblock outputclass="language-xml" id="codeblock_wsr_fxp_cpb">&lt;valueProposals path="property[@name='color']">
+  &lt;items>
+    &lt;item value="red"/>
+    &lt;item value="blue"/>
+  &lt;/items>
+&lt;/valueProposals>
+
+&lt;valueProposals path="property[@name='shape']">
+  &lt;items>
+    &lt;item value="rectangle"/>
+    &lt;item value="square"/>
+  &lt;/items>
+&lt;/valueProposals></codeblock>
       </p>
     </section>
     <section id="example_calling_an_external_xslt_script">
@@ -128,15 +185,13 @@
   &lt;property name="color" value=""/>
   &lt;!-- The possible values for @value should be "square" and "rectangle" -->
   &lt;property name="shape" value=""/>
-&lt;/sampleArticle></codeblock>The
-        content completion configuration
+&lt;/sampleArticle></codeblock>The content completion configuration
         file:<codeblock outputclass="language-xml" id="codeblock_cz1_dgk_54b">&lt;config xmlns="http://www.oxygenxml.com/ns/ccfilter/config">
-    &lt;match elementName="property" attributeName="value">
+    &lt;valueProposals path="property/@value">
       &lt;xslt href="get_values.xsl" useCache="false" action="replace"/>
-    &lt;/match>
-&lt;/config></codeblock>The
-        stylesheet that defines the possible values based on the context of the property on which
-        the content completion was
+    &lt;/valueProposals>
+&lt;/config></codeblock>The stylesheet that defines the possible values based on the context
+        of the property on which the content completion was
         invoked:<codeblock outputclass="language-xml" id="codeblock_dz1_dgk_54b">&lt;xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
