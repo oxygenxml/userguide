@@ -34,11 +34,11 @@
     <note id="note_b1w_ncp_bpb">For any <codeph>background-image</codeph>, it is recommended to use
       SVG instead of PNG (or JPG) because it will scale it to the page size.</note>
     <section id="section_grg_5bs_cpb">
-      <title>How to Add Dynamically the Second Cover Page</title>
-      <p>It's possible to set dynamically the path to the SVG image to be displayed on the secondary
-        cover page.</p>
-      <p>First, you need to declare a <xmlelement>data</xmlelement> into the map's metadata
-        containing the URL to your cover image</p>
+      <title>How to Dynamically Add a Second Cover Page</title>
+      <p>It is possible to dynamically set the path to the SVG image that will be displayed on the
+        secondary cover page.</p>
+      <p>First, you need to declare a <xmlelement>data</xmlelement> element in the bookmap's
+        metadata that contains the URL to your cover image:</p>
         <codeblock id="codeblock_c33_gcs_cpb" outputclass="language-xml">&lt;bookmap>
   &lt;booktitle>
     ...
@@ -50,17 +50,20 @@
   &lt;/bookmeta>
 ...
 &lt;/bookmap></codeblock>
-      <note id="note_rsr_kcs_cpb">This can be also done on a ditamap, by using the
-          <xmlelement>topicmeta</xmlelement> after the map <xmlelement>title</xmlelement>.</note>
-      <p>Then you need to modify the page declaration inside your CSS stylesheet and replace the
-        background-image property value by the result of the oxy_xpath() function:</p>
+      <note id="note_rsr_kcs_cpb">This can also be done on a normal DITA map by using the
+          <xmlelement>topicmeta</xmlelement> after the map's <xmlelement>title</xmlelement>.</note>
+      <p>Next, you need to modify the page declaration inside your CSS stylesheet and replace the
+          <codeph>background-image</codeph> property value with the result of the
+          <codeph>oxy_xpath()</codeph> function:</p>
       <codeblock id="codeblock_ns5_2ds_cpb" outputclass="language-css">@page second-cover {
   ... 
   background-image: url(oxy_xpath("//*[contains(@class, 'bookmap/bookmeta')]//*[contains(@class, 'topic/data')][@name='second-cover-url']/@value"));
   ...
 }</codeblock>
-      <p>Like this you can reuse the same stylesheet on multiple maps, you just need to change the
-        data value for each of them.</p>
+      <p>
+        <note id="note_dy5_pvc_dpb" type="tip">You can reuse the same stylesheet on multiple maps.
+          You just need to change the data value for each of them.</note>
+      </p>
     </section>
   </body>
 </topic>
