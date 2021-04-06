@@ -6,8 +6,8 @@
     <p id="p_lnq_dgk_54b">The following procedure is an example for a deployment of<ph keyref="webappProduct"/> in
       WebSphere Liberty:</p>
     <ol id="ol_mnq_dgk_54b">
-      <li id="li_nnq_dgk_54b">Download IBM WebSphere Liberty version 8.5.5.8. For information, see <xref
-          href="http://www-01.ibm.com/support/docview.wss?uid=swg24041178" format="html"
+      <li id="li_nnq_dgk_54b">Download IBM WebSphere Liberty version 21.0.0.3. For information, see
+          <xref href="http://www-01.ibm.com/support/docview.wss?uid=swg24041178" format="html"
           scope="external"/>.</li>
       <li id="li_onq_dgk_54b">Extract the contents of the downloaded archive into a folder.</li>
       <li id="li_pnq_dgk_54b">Open a command-line interface and go to that folder.</li>
@@ -17,27 +17,31 @@
           <filepath>usr\servers\defaultServer\dropins</filepath>.</li>
       <li id="li_tnq_dgk_54b">Modify <filepath>usr\servers\defaultServer\server.xml</filepath> with
         the following
-        code:<codeblock outputclass="language-xml" id="codeblock_unq_dgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;server description="new server">
-    &lt;httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="5080" httpsPort="-1"/>
+        code:<codeblock outputclass="language-xml" id="codeblock_unq_dgk_54b">&lt;server description="new server">
 
-    &lt;!-- Enable the required features -->
+    &lt;!-- Enable features -->
     &lt;featureManager>
+        &lt;feature>javaee-8.0&lt;/feature>
         &lt;feature>localConnector-1.0&lt;/feature>
-        &lt;feature>servlet-3.1&lt;/feature>
-        &lt;feature>websocket-1.1&lt;/feature>
     &lt;/featureManager>
+    &lt;!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    &lt;httpEndpoint httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
 
-    &lt;!-- Automatically expand WAR files -->
+    &lt;!-- Automatically expand WAR files and EAR files -->
     &lt;applicationManager autoExpand="true"/>
 
-    &lt;!-- WebSphere does not like Shiro JSESSION-ID cookie format.
-         Rename the default cookie. -->
-    &lt;httpSession cookieName="WEBSPHERE_JESSIONID"/>
-   &lt;!-- Force Websphere to respect initialization timing of servlets and filters according to specification -->
-    &lt;webContainer
-      com.ibm.ws.webcontainer.initFilterBeforeInitServlet="true"
-      com.ibm.ws.webcontainer.invokeFilterInitAtStartup="true"/>
+     &lt;httpSession cookieName="WEBSPHERE_JESSIONID"/>
+
+     &lt;webContainer
+       com.ibm.ws.webcontainer.initFilterBeforeInitServlet="true"
+       com.ibm.ws.webcontainer.invokeFilterInitAtStartup="true"  />
+
+    &lt;applicationMonitor updateTrigger="mbean"/>
+
+    &lt;keyStore id="defaultKeyStore" password="[keystore password]"/>
+
+    &lt;basicRegistry id="basic" realm="BasicRealm">
+    &lt;/basicRegistry>
 &lt;/server></codeblock></li>
       <li id="li_vnq_dgk_54b">Create a <filepath>jvm.options</filepath> file in
           <filepath>[WEBSPHERE]\usr\servers\defaultServer\</filepath>, with the following
@@ -47,6 +51,17 @@
       <li id="li_ynq_dgk_54b">In a command-line interface, execute the following
         command:<codeblock outputclass="language-java" id="codeblock_znq_dgk_54b">server start --clean</codeblock></li>
     </ol>
+    <p>When running the server with IBM JRE an additional snippet must be added to the server.xml
+      file:</p>
+    <p>
+      <codeblock id="codeblock_mdb_jmv_2pb">&lt;webApplication
+      id="oxygen-xml-web-author"
+      location="oxygen-xml-web-author"
+      name="oxygen-xml-web-author"
+      contextRoot="oxygen-xml-web-author">
+    &lt;classloader delegation="parentLast" />
+  &lt;/webApplication></codeblock>
+    </p>
     <p id="p_a4q_dgk_54b">
       <note type="other" othertype="Additional Information" id="note_b4q_dgk_54b">
         <ul id="ul_c4q_dgk_54b">
