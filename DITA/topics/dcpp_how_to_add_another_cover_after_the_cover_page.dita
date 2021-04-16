@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_add_another_cover_after_the_cover_page">
+  <title>How to Add a Second Cover Page</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Cover page<indexterm>Add second cover</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Cover page<indexterm>Add second
+          cover</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>It is possible to add a second cover page after the front-page by defining another
+      page-selector:<codeblock id="codeblock_xxm_cbp_bpb" outputclass="language-css">@page second-cover {
+  @top-left {content: none};
+  @top-right {content: none};
+  @bottom-center {content: none};
+   
+  background-image: url("second-cover.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+*[class ~= 'front-page/front-page']:after(1){
+  page: second-cover;
+  page-break-after: always;
+  display: block;
+  content: "\2002";
+}</codeblock></p>
+    <note id="note_b1w_ncp_bpb">For any <codeph>background-image</codeph>, it is recommended to use
+      SVG instead of PNG (or JPG) because it will scale it to the page size.</note>
+    <section id="section_grg_5bs_cpb">
+      <title>How to Dynamically Add a Second Cover Page</title>
+      <p>It is possible to dynamically set the path to the SVG image that will be displayed on the
+        secondary cover page.</p>
+      <p>First, you need to declare a <xmlelement>data</xmlelement> element in the bookmap's
+        metadata that contains the URL to your cover image:</p>
+        <codeblock id="codeblock_c33_gcs_cpb" outputclass="language-xml">&lt;bookmap>
+  &lt;booktitle>
+    ...
+  &lt;/booktitle>
+  &lt;bookmeta>
+    &lt;metadata>
+      &lt;data name="second-cover-url" value="covers/second-cover.svg"/>
+    &lt;/metadata>
+  &lt;/bookmeta>
+...
+&lt;/bookmap></codeblock>
+      <note id="note_rsr_kcs_cpb">This can also be done on a normal DITA map by using the
+          <xmlelement>topicmeta</xmlelement> after the map's <xmlelement>title</xmlelement>.</note>
+      <p>Next, you need to modify the page declaration inside your CSS stylesheet and replace the
+          <codeph>background-image</codeph> property value with the result of the
+          <codeph>oxy_xpath()</codeph> function:</p>
+      <codeblock id="codeblock_ns5_2ds_cpb" outputclass="language-css">@page second-cover {
+  ... 
+  background-image: url(oxy_xpath("//*[contains(@class, 'bookmap/bookmeta')]//*[contains(@class, 'topic/data')][@name='second-cover-url']/@value"));
+  ...
+}</codeblock>
+      <p>
+        <note id="note_dy5_pvc_dpb" type="tip">You can reuse the same stylesheet on multiple maps.
+          You just need to change the data value for each of them.</note>
+      </p>
+    </section>
+  </body>
+</topic>

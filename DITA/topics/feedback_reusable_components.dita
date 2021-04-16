@@ -208,5 +208,87 @@ feedback.datasource.password=password</codeblock></li>
     <note type="warning" id="site-base-url-note">The comments component will only appear on pages
       within the hierarchy of this base URL. For example, <filepath>https://example.com/a</filepath>
       <b>IS</b> a base URL for <filepath>https://example.com/a/b</filepath>, while it <b>IS NOT</b>
-      a base URL for <filepath>https://example.com/abc</filepath>.</note></body>
+      a base URL for <filepath>https://example.com/abc</filepath>.</note>
+    <!--LDAP-->
+    <ol id="ul_nsj_j4s_zmb">
+      <li id="li_kkw_dgk_54b">Enable LDAP authentication support by editing the
+          <filepath>$OXYGEN_FEEDBACK_HOME_DIR/config/feedback-ldap.properties</filepath> file and
+        set the <codeph>feedback.ldap.enabled</codeph> property to <b>true</b>.</li>
+      <li id="li_lkw_dgk_54b">Configure the URL for your LDAP server by setting the
+          <codeph>feedback.ldap.serverUrl</codeph> property. For
+        example:<codeblock outputclass="language-bourne" id="codeblock_mkw_dgk_54b">feedback.ldap.serverUrl=ldap://ldap.example.com:33389/dc=myco,dc=org</codeblock></li>
+      <li id="li_nkw_dgk_54b">
+        <p id="p_okw_dgk_54b">Specify the pattern for the search filter used to identify a user
+          entity on the LDAP server by setting the <codeph>feedback.ldap.userSearchFilter</codeph>
+          property. For
+          example:<codeblock outputclass="language-bourne" id="codeblock_pkw_dgk_54b">(|(mail={0})(uid={0}))</codeblock></p>
+        <p id="p_qkw_dgk_54b">The substituted parameter is the user's login name. This example
+          pattern enables user authentication with both the username and email address.</p>
+      </li>
+      <li id="li_rkw_dgk_54b">Specify the name of the email attribute for the LDAP user entity by
+        setting the <codeph>feedback.ldap.emailAttribute</codeph> property.<note type="important"
+          id="note_skw_dgk_54b">For the authentication to work, it is mandatory that your LDAP users
+          entities have an associated email address.</note></li>
+      <li id="li_tkw_dgk_54b">Specify whether or not new account registration is allowed by setting
+        the <codeph>feedback.ldap.userRegistrationEnabled</codeph> property. For example, to disable
+        new account registration (hides the <uicontrol>Sign Up</uicontrol> form in the login
+          page):<codeblock outputclass="language-bourne" id="codeblock_ukw_dgk_54b">feedback.ldap.userRegistrationEnabled=false</codeblock><note
+          id="note_vkw_dgk_54b">The <codeph>feedback.ldap.userRegistrationEnabled</codeph> property
+          does not disable the possibility of authenticating using a local (DB) account. It only
+          hides the <uicontrol>Sign Up</uicontrol> form, thus inhibiting the possibility of creating
+          new local user accounts.</note></li>
+    </ol>
+    <p id="p_wkw_dgk_54b"><b>Example of the Configuration Properties
+      File</b><codeblock outputclass="language-bourne" id="codeblock_xkw_dgk_54b">###########################################################################
+# Stores the configuration properties for the LDAP authentication support #
+###########################################################################
+
+# Flag used to enable the LDAP authentication support.
+feedback.ldap.enabled=true# Specifies the LDAP server URL.
+
+# For example: "ldap://ldap.example.com:33389/dc=myco,dc=org".
+feedback.ldap.serverUrl=ldap://ldap.example.com:33389/dc=myco,dc=org
+
+# The LDAP filter used to search for users. 
+# For example "(uid={0})". The substituted parameter is the user's login name.
+feedback.ldap.userSearchFilter=(|(mail={0})(uid={0}))
+
+# The name of the email attribute of the user entity.
+feedback.ldap.emailAttribute=mail
+
+# The name of the attribute containing the user's full (display) name.
+feedback.ldap.nameAttribute=cn
+
+# The name of the ID attribute of the user entity.
+feedback.ldap.idAttribute=uid
+
+# Credentials of the user that has privileges to search the directory
+# If not provided, anonymous bind is used.
+feedback.ldap.admin.dn=cn=john.doe,cn=users,dc=myco,dc=org
+feedback.ldap.admin.password=myPassword
+
+# Property for choosing whether or not to enable new account registration
+feedback.ldap.userRegistrationEnabled=true</codeblock></p>
+    <p id="p_ohn_qzz_gpb">If your LDAP server does not support anonymous binding (i.e. it requires
+      authentication), you can specify the <i>DN</i> (distinguished name) and password of a user
+      that has privileges for searching the LDAP user directory by setting both of the following
+      configuration properties in the
+        <filepath>$OXYGEN_FEEDBACK_HOME_DIR/config/feedback-ldap.properties</filepath> file:<ul
+        id="ul_szz_1b1_hpb">
+        <li id="li_tzz_1b1_hpb"><b><codeph>feedback.ldap.admin.dn</codeph></b> - Specifies the
+          distinguished name of the user with LDAP searching privileges.</li>
+        <li id="li_t2w_jb1_hpb"><b><codeph>feedback.ldap.admin.password</codeph></b> - Specifies the
+          password of the user with LDAP searching privileges.</li>
+      </ul><note id="note_oty_mb1_hpb">If these properties are missing or left blank, anonymous
+        binding is used.</note></p>
+    <p id="p_gln_lc1_hpb">The following optional properties can also set in the
+        <filepath>$OXYGEN_FEEDBACK_HOME_DIR/config/feedback-ldap.properties</filepath> file:<ul
+        id="ul_nqs_pc1_hpb">
+        <li id="li_oqs_pc1_hpb"><b><codeph>feedback.ldap.idAttribute</codeph></b> - Specifies the
+          name of the ID attribute for the user entity. If omitted, the value defaults to
+          <b>uid</b>.</li>
+        <li id="li_pqs_pc1_hpb"><b><codeph>feedback.ldap.nameAttribute</codeph></b> - Specifies the
+          name of the attribute that contains the full display name of the user. If omitted, the
+          value defaults to <b>cn</b>.</li>
+      </ul></p></body>
 </topic>
