@@ -6,40 +6,49 @@
     <p id="p_lnq_dgk_54b">The following procedure is an example for a deployment of<ph keyref="webappProduct"/> in
       WebSphere Liberty:</p>
     <ol id="ol_mnq_dgk_54b">
-      <li id="li_nnq_dgk_54b">Download IBM WebSphere Liberty version 8.5.5.8. For information, see <xref
-          href="http://www-01.ibm.com/support/docview.wss?uid=swg24041178" format="html"
+      <li id="li_nnq_dgk_54b">Download IBM WebSphere Liberty version 21.0.0.3. For information, see
+        <xref href="http://www-01.ibm.com/support/docview.wss?uid=swg24041178" format="html"
           scope="external"/>.</li>
       <li id="li_onq_dgk_54b">Extract the contents of the downloaded archive into a folder.</li>
       <li id="li_pnq_dgk_54b">Open a command-line interface and go to that folder.</li>
       <li id="li_qnq_dgk_54b">Execute the following
         command:<codeblock outputclass="language-java" id="codeblock_rnq_dgk_54b">bin\server create</codeblock></li>
       <li id="li_snq_dgk_54b">Put the resulting <filepath>.war</filepath> file in:
-          <filepath>usr\servers\defaultServer\dropins</filepath>.</li>
+        <filepath>usr\servers\defaultServer\dropins</filepath>.</li>
       <li id="li_tnq_dgk_54b">Modify <filepath>usr\servers\defaultServer\server.xml</filepath> with
         the following
-        code:<codeblock outputclass="language-xml" id="codeblock_unq_dgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;server description="new server">
-    &lt;httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="5080" httpsPort="-1"/>
+        code:<codeblock outputclass="language-xml" id="codeblock_unq_dgk_54b">&lt;server description="new server">
 
-    &lt;!-- Enable the required features -->
+    &lt;!-- Enable features -->
     &lt;featureManager>
+        &lt;feature>javaee-8.0&lt;/feature>
         &lt;feature>localConnector-1.0&lt;/feature>
-        &lt;feature>servlet-3.1&lt;/feature>
-        &lt;feature>websocket-1.1&lt;/feature>
     &lt;/featureManager>
+    &lt;!-- To access this server from a remote client add a host attribute to 
+         the following element, e.g. host="*" -->
+    &lt;httpEndpoint httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
 
-    &lt;!-- Automatically expand WAR files -->
+    &lt;!-- Automatically expand WAR files and EAR files -->
     &lt;applicationManager autoExpand="true"/>
-
-    &lt;!-- WebSphere does not like Shiro JSESSION-ID cookie format.
-         Rename the default cookie. -->
+    &lt;classloading useJarUrls="true"/>
     &lt;httpSession cookieName="WEBSPHERE_JESSIONID"/>
+
+    &lt;webContainer
+       com.ibm.ws.webcontainer.initFilterBeforeInitServlet="true"
+       com.ibm.ws.webcontainer.invokeFilterInitAtStartup="true"  />
+
+    &lt;applicationMonitor updateTrigger="mbean"/>
+
+    &lt;keyStore id="defaultKeyStore" password="[keystore password]"/>
+
+    &lt;basicRegistry id="basic" realm="BasicRealm">
+    &lt;/basicRegistry>
 &lt;/server></codeblock></li>
       <li id="li_vnq_dgk_54b">Create a <filepath>jvm.options</filepath> file in
-          <filepath>[WEBSPHERE]\usr\servers\defaultServer\</filepath>, with the following
+        <filepath>[WEBSPHERE]\usr\servers\defaultServer\</filepath>, with the following
         content:<codeblock outputclass="language-java" id="codeblock_wnq_dgk_54b">-Doxygen.data.dir=&lt;path-to-wlp>\usr\servers\defaultServer\data</codeblock></li>
       <li id="li_xnq_dgk_54b">The deployment will be made automatically by WebSphere (check
-          <filepath>[WEBSPHERE]\usr\servers\defaultServer\logs\console.log</filepath>).</li>
+        <filepath>[WEBSPHERE]\usr\servers\defaultServer\logs\console.log</filepath>).</li>
       <li id="li_ynq_dgk_54b">In a command-line interface, execute the following
         command:<codeblock outputclass="language-java" id="codeblock_znq_dgk_54b">server start --clean</codeblock></li>
     </ol>
@@ -47,7 +56,7 @@
       <note type="other" othertype="Additional Information" id="note_b4q_dgk_54b">
         <ul id="ul_c4q_dgk_54b">
           <li id="li_d4q_dgk_54b">The application is deployed when the URL is first accessed
-              (<i>http://localhost:5080/oxygenxml-web-author/app/oxygen.html</i>).</li>
+            (<i>http://localhost:5080/oxygenxml-web-author/app/oxygen.html</i>).</li>
           <li id="li_e4q_dgk_54b">The <b>Web Author</b> log can be found in:
             <filepath>data/logs/oxygen.log</filepath>.</li>
           <li id="li_f4q_dgk_54b">To view the status of the server, run: <codeph>server status</codeph>.</li>
