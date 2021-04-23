@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="whr_generating_output_docker">
+    <title>Running from a Docker image</title>
+    <shortdesc>It is possible to install the WebHelp Responsive plugin in a Docker
+        image.</shortdesc>
+    <taskbody>
+        <context>
+            <p>To install the Oxygen XML WebHelp Responsive plugin in a Docker image, follow these
+                steps:</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Download and install Docker</cmd>
+            </step>
+            <step>
+                <cmd>Create a folder, for example: <filepath>webhelp-docker</filepath>.</cmd>
+            </step>
+            <step>
+                <cmd> In the <filepath>webhelp-docker</filepath> folder place  the
+                        <filepath>licensekey.txt</filepath> file for the WebHelp Responsive plugin
+                    and create a file named <filepath>Dockerfile</filepath></cmd>
+            </step>
+            <step>
+                <cmd>Insert the following content in the <filepath>Dockerfile</filepath> file
+                    created in the previous step:</cmd>
+                <info>
+                    <codeblock id="codeblock_lm2_ycd_jpb"># Use the latest DITA-OT image as parent
+FROM ghcr.io/dita-ot/dita-ot:3.6.1
+
+# Build argument form the WebHelp download link
+ARG WEBHELP_DOWNLOAD_LINK
+
+# Download the WebHelp zip kit.
+RUN curl -o /tmp/oxygen-webhelp.zip ${WEBHELP_DOWNLOAD_LINK}
+
+# Unzip the WebHelp kit to the plugins directory of the DITA-OT distribution.
+RUN unzip /tmp/oxygen-webhelp.zip -d /opt/app/plugins
+
+# Remove the WebHelp zip.
+RUN rm /tmp/oxygen-webhelp.zip
+
+# Copy the license key.
+COPY licensekey.txt /opt/app/
+
+# Install the WebHelp plugins.
+RUN dita --install</codeblock>
+                </info>
+            </step>
+            <step>
+                <cmd>Build an image from the Dockerfile. For this, run the folllwing command:</cmd>
+                <info>
+                    <codeblock id="codeblock_v4j_h2d_jpb">docker image build --build-arg WEBHELP_DOWNLOAD_LINK=https://www.oxygenxml.com/InstData/WebHelp/oxygen-webhelp-dot-3.x.zip -t webhelp-docker:23.1 ${PATH_TO_DOCKERFILE}</codeblock>
+                </info>
+            </step>
+            <step>
+                <cmd>Run WebHelp Responsive transformation from docker:</cmd>
+                <info>
+                    <codeblock id="codeblock_okq_mfd_jpb">docker run -it \
+-v ${PATH_TO_DITAMAP}:/src webhelp-docker:23.1 \
+-i /src/map.ditamap \
+-o /src/out \
+-f webhelp-responsive -v</codeblock>
+                </info>
+            </step>
+        </steps>
+    </taskbody>
+</task>
