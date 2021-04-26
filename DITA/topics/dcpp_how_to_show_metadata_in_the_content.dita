@@ -13,9 +13,24 @@
     </metadata>
   </prolog>
   <body>
-    <p id="p_tgr_cgk_54b">Suppose you need to present the <b>Author</b> and the <b>ISBN</b> (when it exists) just under
-      the publication title and suppose your bookmap
-      contains:<codeblock outputclass="language-xml" id="codeblock_ugr_cgk_54b">&lt;bookmap id="taskbook">
+    <p id="p_xgr_cgk_54b">The following CSS extensions are used in the following examples: <ul
+        id="ul_c3t_xcf_scb">
+        <li id="li_ygr_cgk_54b"><b><xref
+              href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-xpath-function.html"
+              format="html" scope="external">oxy_xpath</xref></b> - Executes an XPath expression and
+          returns a string content. Use this whenever you need to extract data from elements other
+          than the one matched by the CSS rule selector.</li>
+        <li id="li_zgr_cgk_54b"><b><codeph>:after(N)</codeph></b> - Creates more than one
+            <i>after</i> pseudo-element. The argument value represents how far the generated content
+          is from the real content. In the example above, the content of the <codeph>:after</codeph>
+          is closer to the title (upper) than the content of the <codeph>:after(2)</codeph>.</li>
+      </ul><note id="note_ahr_cgk_54b">The <codeph>attr()</codeph> CSS function can also be used but
+        is limited to extracting attribute values from the matched element.</note></p>
+    <section id="section_c53_vll_kpb">
+      <title>Processing Bookmap Metadata</title>
+      <p>Suppose you need to present the <b>Author</b> and the <b>ISBN</b> (when it exists) just
+        under the publication title and suppose your bookmap
+        contains:<codeblock outputclass="language-xml" id="codeblock_ywm_yll_kpb">&lt;bookmap id="taskbook">
     &lt;booktitle>
         &lt;booklibrary>Retro Tools&lt;/booklibrary>
         &lt;mainbooktitle>Product tasks&lt;/mainbooktitle>
@@ -32,10 +47,11 @@
             &lt;isbn>071271271X&lt;/isbn>
             &lt;booknumber>SG99-9999-00&lt;/booknumber>
 ...        </codeblock></p>
-    <p id="p_vgr_cgk_54b">The entire <xmlelement>booktitle</xmlelement> element content is displayed on the first page
-      of the PDF, so if you need to add the information after it, in your <xref
-        href="dcpp_the_customization_css.dita">customization CSS</xref>, add the following CSS
-      rules:<codeblock outputclass="language-css" id="codeblock_wgr_cgk_54b">*[class ~= "bookmap/booktitle"]:after {
+      <p id="p_vgr_cgk_54b">The entire <xmlelement>booktitle</xmlelement> element content is
+        displayed on the first page of the PDF, so if you need to add the information after it, in
+        your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, add the
+        following CSS
+        rules:<codeblock outputclass="language-css" id="codeblock_wgr_cgk_54b">*[class ~= "bookmap/booktitle"]:after {
     display: block;
     content: "by " oxy_xpath('//*[contains(@class, " bookmap/bookmeta ")]/*[contains(@class, " topic/author ")]/text()');
     margin-top: 4em;
@@ -48,19 +64,32 @@
     text-align: center;
     color: gray;
 }</codeblock></p>
-    <p id="p_xgr_cgk_54b">The following CSS extensions were used in this example: <ul id="ul_c3t_xcf_scb">
-        <li id="li_ygr_cgk_54b"><b><xref href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-xpath-function.html"
-              format="html" scope="external">oxy_xpath</xref></b> - Executes an XPath expression and
-          returns a string content. Use this whenever you need to extract data from elements other
-          than the one matched by the CSS rule selector.</li>
-        <li id="li_zgr_cgk_54b"><b><codeph>:after(N)</codeph></b> - Creates more than one <i>after</i> pseudo-element.
-          The argument value represents how far the generated content is from the real content. In
-          the example above, the content of the <codeph>:after</codeph> is closer to the title
-          (upper) than the content of the <codeph>:after(2)</codeph>.</li>
-      </ul><note id="note_ahr_cgk_54b">The <codeph>attr()</codeph> CSS function can also be used but is limited to
-        extracting attribute values from the matched element.</note></p>
+    </section>
+    <section id="section_lq2_jrl_kpb">
+      <title>Processing Ditamap Metadata</title>
+      <p>Suppose you need to present the <b>Revision Date</b> just under the publication title and
+        suppose your ditamap
+        contains:<codeblock outputclass="language-xml" id="codeblock_egq_krl_kpb">&lt;map>
+  &lt;title>Growing Flowers&lt;/title>
+  &lt;topicmeta>
+    &lt;critdates>
+      &lt;revised modified="2021-04-26"/>
+    &lt;/critdates>
+...</codeblock></p>
+      <p>The entire <xmlelement>title</xmlelement> element content is displayed on the first page of
+        the PDF, so if you need to add the information after it, in your <xref
+          href="dcpp_the_customization_css.dita">customization CSS</xref>, add the following CSS
+          rules:<codeblock outputclass="language-css" id="codeblock_ul2_lrl_kpb">*[class ~= "front-page/front-page-title"] > *[class ~= "topic/title"]:after {
+    display: block;
+    content: "last revision " (//*[contains(@class, " map/topicmeta ")])[1]//*[contains(@class, " topic/revised ")]/@modified;
+    margin-top: 4em;
+    text-align: center;
+    color: gray;
+}</codeblock><note id="note_njb_yrl_kpb">The <codeph>[1]</codeph> predicate is used to
+          avoid duplicated results as the topicmeta is included in all children topics.</note></p>
+    </section>
     <section id="section_d5l_mdf_scb">
-      <title>Generating Synthetic Pages for Metadata.</title>
+      <title>Generating Synthetic Pages for Metadata</title>
       <p id="p_bhr_cgk_54b">Suppose you need to show this information on a page that follows the title page, instead of
         on the title page. In this case, you need to prepare a named page and place the content in
         it. In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, add the
