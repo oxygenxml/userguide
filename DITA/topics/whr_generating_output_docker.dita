@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task id="whr_generating_output_docker">
-    <title>Running from a Docker image</title>
-    <shortdesc>It is possible to install the WebHelp Responsive plugin in a Docker
-        image.</shortdesc>
+    <title>Running WebHelp Responsive from a Docker image</title>
+    <shortdesc>This topic explains how to install the <b>WebHelp Responsive</b> plugin in a Docker
+    image.</shortdesc>
     <taskbody>
         <context>
-            <p>To install the Oxygen XML WebHelp Responsive plugin in a Docker image, follow these
-                steps:</p>
+            <p>To install the <b>Oxygen XML WebHelp Responsive</b> plugin in a Docker image, follow
+        these steps:</p>
         </context>
         <steps>
             <step>
-                <cmd>Download and install Docker</cmd>
-            </step>
+        <cmd>Download and install Docker.</cmd>
+      </step>
             <step>
-                <cmd>Create a folder, for example: <filepath>webhelp-docker</filepath>.</cmd>
-            </step>
-            <step>
-                <cmd> In the <filepath>webhelp-docker</filepath> folder place  the
-                        <filepath>licensekey.txt</filepath> file for the WebHelp Responsive plugin
-                    and create a file named <filepath>Dockerfile</filepath></cmd>
-            </step>
-            <step>
-                <cmd>Insert the following content in the <filepath>Dockerfile</filepath> file
-                    created in the previous step:</cmd>
-                <info>
-                    <codeblock id="codeblock_lm2_ycd_jpb"># Use the latest DITA-OT image as parent
+        <cmd>Create a folder (for example, <filepath>webhelp-docker</filepath>).</cmd>
+      </step>
+            <step id="step_avg_grm_kpb">
+        <cmd>Move the <filepath>licensekey.txt</filepath> file for the <b>WebHelp Responsive</b>
+          plugin to the newly created folder.</cmd>
+      </step>
+      <step id="step_bvg_grm_kpb">
+        <cmd>Create a new file named <filepath>Dockerfile</filepath> with the following content and
+          store it in the newly created folder:</cmd>
+        <info>
+          <codeblock id="codeblock_lm2_ycd_jpb" outputclass="language-bourne"># Use the latest DITA-OT image as parent
 FROM ghcr.io/dita-ot/dita-ot:3.6.1
 
 # Build argument form the WebHelp download link
@@ -45,24 +44,25 @@ COPY licensekey.txt /opt/app/
 
 # Install the WebHelp plugins.
 RUN dita --install</codeblock>
-                </info>
-            </step>
+        </info>
+      </step>
             <step>
-                <cmd>Build an image from the Dockerfile. For this, run the folllwing command:</cmd>
-                <info>
-                    <codeblock id="codeblock_v4j_h2d_jpb">docker image build --build-arg WEBHELP_DOWNLOAD_LINK=https://www.oxygenxml.com/InstData/WebHelp/oxygen-webhelp-dot-3.x.zip -t webhelp-docker:23.1 ${PATH_TO_DOCKERFILE}</codeblock>
-                </info>
-            </step>
+        <cmd>Build an image from the <filepath>Dockerfile</filepath> by running the folllowing
+          command:</cmd>
+        <info>
+          <codeblock id="codeblock_v4j_h2d_jpb" outputclass="language-bourne">docker image build --build-arg WEBHELP_DOWNLOAD_LINK=https://www.oxygenxml.com/InstData/WebHelp/oxygen-webhelp-dot-3.x.zip -t webhelp-docker:23.1 ${PATH_TO_DOCKERFILE}</codeblock>
+        </info>
+      </step>
             <step>
-                <cmd>Run WebHelp Responsive transformation from docker:</cmd>
-                <info>
-                    <codeblock id="codeblock_okq_mfd_jpb">docker run -it \
+        <cmd>Run a WebHelp Responsive transformation from docker:</cmd>
+        <info>
+          <codeblock id="codeblock_okq_mfd_jpb" outputclass="language-bourne">docker run -it \
 -v ${PATH_TO_DITAMAP}:/src webhelp-docker:23.1 \
 -i /src/map.ditamap \
 -o /src/out \
 -f webhelp-responsive -v</codeblock>
-                </info>
-            </step>
+        </info>
+      </step>
         </steps>
     </taskbody>
 </task>
