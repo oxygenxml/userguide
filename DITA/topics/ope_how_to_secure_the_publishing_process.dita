@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ope_how_to_secure_the_publishing_process">
+    <title>How to secure the publishing process</title>
+    <body>
+        <p>In case you are building a publishing service based on the <xref
+				href="https://www.oxygenxml.com/publishing_engine.html" format="html"
+				scope="external"><b>Oxygen Publishing Engine</b></xref>, there are several questions
+			you should take into account:<ul id="ul_pph_5mb_lpb">
+				<li>Is the set of input documents coming from a trusted source? </li>
+				<li>Is the publishing template customization under your organization control, or is
+					it uploaded by another party?</li>
+			</ul>If the data or customization are not fully controlled, you must take some steps to
+			make the publishing process as secure as possible.</p>
+		<p>The <xref href="https://www.oxygenxml.com/publishing_engine.html" format="html"
+				scope="external"><b>Oxygen Publishing Engine</b></xref> is a Java process that
+			invokes an ANT script that processes the input documents in stages, up to the final
+			output. When using a CSS based PDF transformation, besides the normal processing, a new
+			Java process is forked: the Chemistry process that transforms the merged DITA map into a
+			PDF file. </p>
+		<p>Java has a built-in security mechanism that let you control exactly the set of accessible
+			resources. It has command line options that allow the caller to indicate a <xref
+				href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/PolicyFiles.html"
+				format="html" scope="external">security policy file</xref>. </p>
+		<p>Because there are two processes, we need two policy files needed for securing the
+			publishing process:</p>
+		<section id="section_jyn_z5r_4pb">
+			<title>The <filepath>ope.policy</filepath> file</title>
+			<p>It is located here: <codeph>${OPE-INSTALL_DIR}/config/ope.policy</codeph> This can be
+				used as a starting point (a template) for securing just the primary OPE process. You
+				can add more permissions for other resources. <note id="note_t41_4yr_4pb">When
+					change this file,  it is better to save it in another location and change it
+					there. This way, when upgrading the OPE you will not loose the
+				changes.</note></p>
+			<codeblock id="codeblock_wlg_3vr_4pb" outputclass="language-java">....
+grant {
+
+	/////////////////////////////////////////////////////////////////
+	// Permissions for the Publishing Engine input and output.
+	
+	// The installation directory of the OPE
+	permission java.io.FilePermission "${ope.install.dir}", "read";
+	permission java.io.FilePermission "${ope.install.dir}/-", "read";
+	
+	// The output directory where the files will be stored.
+	// This property should be set to the main "out" folder, 
+	// not the transtype subfolder like: "out/pdf-css-html5".
+	permission java.io.FilePermission "${ope.output.dir}", "read, write";
+	permission java.io.FilePermission "${ope.output.dir}/-", "read, write, delete";
+	
+....</codeblock>
+			<p>In the snipped above, the variables are in fact system properties that must be
+				specified when starting the primary DITA transformation process.</p>
+			<p>To start the OPE process with the security constraints, you have to use the
+				environment variable ANT_OPTS to set the Java system properties that activate the
+				security mechanism, the <codeph>java.security.manager</codeph>, and  the
+					<codeph>java.security.policy</codeph> that points to either the file given as
+				example, in the config folder, or to the one you changed. The
+					<codeph>OPE_INSTALL_DIR</codeph> should be the directory where the OPE is
+				installed, the file syntax (not url).
+				<codeblock id="codeblock_d1g_qwr_4pb" outputclass="language-bourne">SET OPE_INSTALL_DIR="C:\ope"
+ANT_OPTS=-Djava.security.policy="file:/%OPE_INSTALL_DIR%/config/ope.policy" \
+         -Djava.security.manager</codeblock>We need to set values to the variables
+				used in the policy file. This can be done using the same
+				ANT_OPTS:<codeblock id="codeblock_y4d_fxr_4pb" outputclass="language-bourne">SET ANT_OPTS=%ANT_OPTS% \
+-Dope.allowed.sys.props.for.saxon="file.separator;path.separator;line.separator;OT_VERSION;webhelp.*;user.dir" \
+-Dope.install.dir="%OPE_INSTALL_DIR%" \
+-Dope.input.dir="test\map" \
+-Dope.output.dir="test\map\out" \
+-Dope.temp.dir="test\map\temp" \
+-Dope.publishing.template.dir="test\templates\template" \
+-Djava.io.tmpdir="test\map\temp\pdf-css-html5" \
+-Dcss.processor.path.chemistry="%OPE_INSTALL_DIR%\plugins\com.oxygenxml.pdf.css\lib\oxygen-pdf-chemistry\chemistry.bat" </codeblock></p>
+			<p>
+				<note id="note_thp_5vr_4pb">If you plan to create your own policy file you can
+					specify directly the paths, without the need to pass them as system properties.
+					Take care to quote the paths and escape the backslash file separators on
+					Windows. The "*" means all files from the folder, the "-" operator means all
+					files from a folder and its subfolders. For
+					example:<codeblock id="codeblock_ns5_dwr_4pb" outputclass="language-javascript">permission java.io.FilePermission "C:\\folder\\with\\images\\-", "read";</codeblock>Of
+					course, you have also the option of using more variables. Make sure you set them
+					in the ANT_OPTS.</note>
+			</p>
+		</section>
+		<section id="section_xkq_dvr_4pb">
+			<title>The <filepath>chemistry.policy</filepath> file</title>
+			<p>It is located here:
+					<codeph>${OPE-INSTALL_DIR}/plugins/com.oxygenxml.pdf.css/lib/oxygen-pdf-chemistry/config/chemistry.policy</codeph>
+				This also can be used as it is or as a template, for securing the Chemistry process
+				that is forked by the OPE.</p>
+			<p>This time the security policy file can be specified using a system property argument,
+					<codeph>chemistry.security.policy</codeph>. In addition to that we need to
+				specify a folder where Chemistry will create its temporary files and font cache
+					<codeph>chemistry.workspace</codeph>:</p>
+			<codeblock id="codeblock_agy_bbs_4pb" outputclass="language-bourne">dita.bat -Dchemistry.security.policy="%OPE_INSTALL_DIR%\plugins\com.oxygenxml.pdf.css\lib\oxygen-pdf-chemistry\config\chemistry.policy \
+-Dchemistry.workspace="C:\some\dir\for\chemistry\fonts\cache\and\temp\files"</codeblock>
+			<p>
+				<note id="note_mhb_pbs_4pb">If you plan to change the chemistry policy file,  it is
+					better to save it in another location and change it there. This way, when
+					upgrading the OPE you will not loose the changes.</note>
+			</p>
+		</section>
+    </body>
+</topic>
