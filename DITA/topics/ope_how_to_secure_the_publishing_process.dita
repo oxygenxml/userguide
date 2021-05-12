@@ -50,17 +50,18 @@ grant {
 			<p>In the snippet above, the variables are system properties that must be specified when starting
         the primary DITA transformation process.</p>
 			<p>To start the OPE process with the security constraints, you have to use the
-          <codeph>ANT_OPTS</codeph> environment variable to set the Java system properties that
-        activate the security mechanism (the <codeph>java.security.manager</codeph> and
-          <codeph>java.security.policy</codeph>) that points to either the file specified in the
-          <filepath>config</filepath> folder or to the one you changed. The <i>OPE_INSTALL_DIR</i>
-        should be the directory where the OPE is installed in file syntax form (not URL).
-        <codeblock id="codeblock_d1g_qwr_4pb" outputclass="language-bourne">SET OPE_INSTALL_DIR="C:\ope"
+					<codeph>ANT_OPTS</codeph> environment variable to set the Java system properties
+				that activate the security mechanism (the <codeph>java.security.manager</codeph> and
+					<codeph>java.security.policy</codeph>) that points to either the file specified
+				in the <filepath>config</filepath> folder or to the one you changed. The
+					<i>OPE_INSTALL_DIR</i> should be the directory where the OPE is installed in
+				file syntax form (not URL).
+				<codeblock id="codeblock_d1g_qwr_4pb" outputclass="language-bourne">SET OPE_INSTALL_DIR="C:\ope"
 ANT_OPTS=-Djava.security.policy="file:/%OPE_INSTALL_DIR%/config/ope.policy" \
-         -Djava.security.manager</codeblock>You need to set values to the variables used in
-        the policy file. This can be done using the same <codeph>ANT_OPTS</codeph> environment
-        variable:<codeblock id="codeblock_y4d_fxr_4pb" outputclass="language-bourne">SET ANT_OPTS=%ANT_OPTS% \
--Dope.allowed.sys.props.for.saxon="file.separator;path.separator;line.separator;OT_VERSION;webhelp.*;user.dir" \
+         -Djava.security.manager</codeblock>You need to set values to the variables
+				used in the policy file. This can be done using the same <codeph>ANT_OPTS</codeph>
+				environment
+				variable:<codeblock id="codeblock_y4d_fxr_4pb" outputclass="language-bourne">SET ANT_OPTS=%ANT_OPTS% \
 -Dope.install.dir="%OPE_INSTALL_DIR%" \
 -Dope.input.dir="test\map" \
 -Dope.output.dir="test\map\out" \
@@ -77,20 +78,29 @@ ANT_OPTS=-Djava.security.policy="file:/%OPE_INSTALL_DIR%/config/ope.policy" \
           example:<codeblock id="codeblock_ns5_dwr_4pb" outputclass="language-javascript">permission java.io.FilePermission "C:\\folder\\with\\images\\-", "read";</codeblock>Of
           course, you have also the option of using more variables. Make sure you set them in the
             <codeph>ANT_OPTS</codeph> environment variable.</note>
+				<note id="note_trz_14y_4pb">You can control the set of system properties the XSLT
+					processor can read by using the parameter:
+						<codeph>ope.allowed.sys.props.for.saxon</codeph>. It accepts a ";" separated
+					list of property names. The built-in default is:
+					<codeblock id="codeblock_mn1_g4y_4pb" outputclass="language-bourne">-Dope.allowed.sys.props.for.saxon="file.separator;path.separator;line.separator;OT_VERSION;webhelp.*;user.dir"</codeblock></note>
 			</p>
+			<note id="note_kc2_k4y_4pb" type="tip">It is good practice to specify another temporary
+				directory that will be used by the Java process (the <codeph>java.io.tmpdir</codeph>
+				parameter), not leaving the process to read and write in the system wide temporary
+				folder. </note>
 		</section>
 		<section id="section_xkq_dvr_4pb">
 			<title>The 'chemistry.policy' File</title>
 			<p>It is located here:
-          <codeph>${OPE-INSTALL_DIR}/plugins/com.oxygenxml.pdf.css/lib/oxygen-pdf-chemistry/config/chemistry.policy</codeph>.
-        This also can be used as it is, or as a template, for securing the Chemistry process that is
-        forked by the OPE.</p>
+					<codeph>${OPE_INSTALL_DIR}/plugins/com.oxygenxml.pdf.css/lib/oxygen-pdf-chemistry/config/chemistry.policy</codeph>.
+				This also can be used as it is, or as a template, for securing the Chemistry process
+				that is forked by the OPE.</p>
 			<p>This time, the security policy file can be specified using a system property argument:
-          <codeph>chemistry.security.policy</codeph>. In addition, you need to specify a folder
-        where Chemistry will create its temporary files and font cache using the
-          <codeph>chemistry.workspace</codeph> property:</p>
+					<codeph>chemistry.security.policy</codeph>. In addition, you need to specify a
+				folder where Chemistry will create its temporary files and font cache using the
+					<codeph>chemistry.security.workspace</codeph> property:</p>
 			<codeblock id="codeblock_agy_bbs_4pb" outputclass="language-bourne">dita.bat -Dchemistry.security.policy="%OPE_INSTALL_DIR%\plugins\com.oxygenxml.pdf.css\lib\oxygen-pdf-chemistry\config\chemistry.policy \
--Dchemistry.workspace="C:\some\dir\for\chemistry\fonts\cache\and\temp\files"</codeblock>
+-Dchemistry.security.workspace="C:\some\dir\for\chemistry\fonts\cache\and\temp\files"</codeblock>
 			<p>
 				<note id="note_mhb_pbs_4pb">If you plan to change the chemistry policy file, it is better to
           save it in another location and change it there. This ensures that you will not lose
