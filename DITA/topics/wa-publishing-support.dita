@@ -144,5 +144,28 @@
       <p id="p_lb5_fzy_qpb"><b>Result:</b> The <codeph>java.security.debug=access,failure</codeph>
         system property will be set.</p>
     </section>
+    <section id="section_jzw_ybz_qpb">
+      <title>Configure Security Policy</title>
+      <p id="p_kzw_ybz_qpb">The PDF publishing plugin runs <xref
+        href="https://www.oxygenxml.com/chemistry-html-to-pdf-converter.html" format="html"
+        scope="external"><b>Oxygen PDF Chemistry</b></xref> with a security policy. The
+        configuration file for the policy is found in:
+        <filepath>policy/chemistry-publishing.policy</filepath>. The path is relative to the base
+        directory of the plugin. The policy file can be modified to grant the Chemistry process
+        permissions to access files, directories, and system properties.</p>
+      <p id="p_ax4_pcz_qpb">Access errors are logged in the <filepath>oxygen.log</filepath> file and
+        have the following
+        format:<codeblock outputclass="language-bourne">java.security.AccessControlException: access denied("java.io.FilePermission" "/path/to/directory" "read)</codeblock></p>
+      <p id="p_cb2_xcz_qpb">To fix the permission, the <i>"path/to/directory"</i> must be added to
+        the policy
+        file:<codeblock outputclass="language-bourne">permission java.io.FilePermission "path/to/directory", "read";</codeblock></p>
+      <p id="p_tth_xcz_qpb">A similar approach can be used when the PDF creation process cannot
+        access system properties.</p>
+      <p id="p_c22_ndz_qpb">The logged error looks like
+        this:<codeblock outputclass="language-bourne">access: access denied ("java.util.PropertyPermission" "java.system.property.name" "read")</codeblock></p>
+      <p id="p_ox3_xcz_qpb">To fix the permission to access system properties, you would need to add
+        the following configuration line to the policy
+        file:<codeblock outputclass="language-bourne">permission java.util.PropertyPermission "java.system.property.name" ,"read";</codeblock></p>
+    </section>
   </body>
 </topic>
