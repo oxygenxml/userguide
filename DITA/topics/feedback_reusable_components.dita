@@ -244,39 +244,31 @@ feedback.datasource.password=password</codeblock></li>
 ###########################################################################
 
 # Flag used to enable the LDAP authentication support.
-feedback.ldap.enabled=true
+feedback.ldap.enabled=true# Specifies the LDAP server URL.
 
-# Flag used to enable users to register with a Feedback local (non-ldap) account.
-feedback.ldap.userRegistrationEnabled=true
-
-# Specifies the LDAP server URL of the form ldap://localhost:389/base_dn
-# LDAPS URLs may be used
 # For example: "ldap://ldap.example.com:33389/dc=myco,dc=org".
 feedback.ldap.serverUrl=ldap://ldap.example.com:33389/dc=myco,dc=org
 
 # The LDAP filter used to search for users. 
-# For example "(uid=\{0})". The substituted parameter is the user's login name.
-feedback.ldap.userSearchFilter=(|(mail=\{0})(uid=\{0}))
-
-# Context name to search for users in, relative to the Base DN specified in the server URL
-# May be empty -> the search will be performed against the Base DN
-# For example: "cn=users"
-# => Considering "ldap://ldap.example.com:33389/dc=myco,dc=org" as server URL, then the users will be searched under "cn=users,dc=myco,dc=org"
-feedback.ldap.userSearchBase=cn=users
+# For example "(uid={0})". The substituted parameter is the user's login name.
+feedback.ldap.userSearchFilter=(|(mail={0})(uid={0}))
 
 # The name of the email attribute of the user entity.
-# Defaults to 'mail'
 feedback.ldap.emailAttribute=mail
 
 # The name of the attribute containing the user's full (display) name.
-# Defaults to 'cn'
 feedback.ldap.nameAttribute=cn
 
-# Credentials of the user that has privileges to search the directory. Simple binding is used.
+# The name of the ID attribute of the user entity.
+feedback.ldap.idAttribute=uid
+
+# Credentials of the user that has privileges to search the directory
 # If not provided, anonymous bind is used.
-feedback.ldap.admin.dn=cn=admin,cn=users,dc=myco,dc=org
-# Must be non-empty if 'feedback.ldap.admin.dn' is provided
-feedback.ldap.admin.password=myPassword</codeblock></p>
+feedback.ldap.admin.dn=cn=john.doe,cn=users,dc=myco,dc=org
+feedback.ldap.admin.password=myPassword
+
+# Property for choosing whether or not to enable new account registration
+feedback.ldap.userRegistrationEnabled=true</codeblock></p>
     <p id="p_ohn_qzz_gpb">If your LDAP server does not support anonymous binding (i.e. it requires
       authentication), you can specify the <i>DN</i> (distinguished name) and password of a user
       that has privileges for searching the LDAP user directory by setting both of the following
@@ -292,10 +284,9 @@ feedback.ldap.admin.password=myPassword</codeblock></p>
     <p id="p_gln_lc1_hpb">The following optional properties can also set in the
         <filepath>$OXYGEN_FEEDBACK_HOME_DIR/config/feedback-ldap.properties</filepath> file:<ul
         id="ul_nqs_pc1_hpb">
-        <li id="li_oqs_pc1_hpb"><b><codeph>feedback.ldap.userSearchBase</codeph></b> - Specifies the
-          context name to be used when searching for users (relative to the <i>Base DN</i> specified
-          in the server URL). If this property is left empty, the search will be performed against
-          the <i>Base DN</i>.</li>
+        <li id="li_oqs_pc1_hpb"><b><codeph>feedback.ldap.idAttribute</codeph></b> - Specifies the
+          name of the ID attribute for the user entity. If omitted, the value defaults to
+          <b>uid</b>.</li>
         <li id="li_pqs_pc1_hpb"><b><codeph>feedback.ldap.nameAttribute</codeph></b> - Specifies the
           name of the attribute that contains the full display name of the user. If omitted, the
           value defaults to <b>cn</b>.</li>
