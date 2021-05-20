@@ -6,60 +6,99 @@
     <p id="p_jmx_bgk_54b">Depending on the type of edits, the following markup appears in the document source code when
       you activate the <xref keyref="glossentry_track-changes"><term>Track Changes</term>
         feature</xref>:<table frame="all" id="table_udr_t4z_whb" colsep="1" rowsep="1">
-        <tgroup cols="4">
-          <colspec colname="c1" colwidth="1.0*"/>
-          <colspec colname="c2" colwidth="2.18*"/>
-          <colspec colname="c3" colwidth="2.25*"/>
-          <colspec colname="c4" colwidth="2.32*"/>
-          <thead>
-            <row>
-              <entry>Edit Type</entry>
-              <entry>Processing Instruction Start Marker</entry>
-              <entry>Processing Instruction End Marker</entry>
-              <entry>Attributes</entry>
-            </row>
-          </thead>
-          <tbody>
-            <row>
-              <entry>Insertion</entry>
-              <entry><xmlelement>?oxy_insert_start?</xmlelement></entry>
-              <entry><xmlelement>?oxy_insert_end?</xmlelement></entry>
-              <entry>author, timestamp</entry>
-            </row>
-            <row>
-              <entry>Split</entry>
-              <entry><xmlelement>?oxy_insert_start?</xmlelement></entry>
-              <entry><xmlelement>?oxy_insert_end?</xmlelement></entry>
-              <entry>author, timestamp, type="split"</entry>
-            </row>
-            <row>
-              <entry>Surround</entry>
-              <entry><xmlelement>?oxy_insert_start?</xmlelement></entry>
-              <entry><xmlelement>?oxy_insert_end?</xmlelement></entry>
-              <entry>author, timestamp, type="surround"</entry>
-            </row>
-            <row>
-              <entry>Deletion</entry>
-              <entry><xmlelement>?oxy_delete?</xmlelement></entry>
-              <entry> _</entry>
-              <entry>author, timestamp, content</entry>
-            </row>
-            <row>
-              <entry>Comment</entry>
-              <entry><xmlelement>?oxy_comment_start?</xmlelement></entry>
-              <entry><xmlelement>?oxy_comment_end?</xmlelement></entry>
-              <entry>author, timestamp, comment, mid</entry>
-            </row>
-            <row>
-              <entry>Attribute Change</entry>
-              <entry><xmlelement>?oxy_attributes?</xmlelement></entry>
-              <entry> _</entry>
-              <entry>id, type, oldValue, author, timestamp</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table></p>
-    <p id="p_kmx_bgk_54b">If a comment intersects another, the <xmlatt>mid</xmlatt> attribute is used to correctly
-      identify start and end processing instruction markers.</p>
+          <tgroup cols="4">
+            <colspec colname="c1" colwidth="1.0*"/>
+            <colspec colname="c2" colwidth="2.18*"/>
+            <colspec colname="c3" colwidth="2.25*"/>
+            <colspec colname="c4" colwidth="2.32*"/>
+            <thead>
+              <row>
+                <entry>Edit Type</entry>
+                <entry>Processing Instruction Start Marker</entry>
+                <entry>Processing Instruction End Marker</entry>
+                <entry>Attributes</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>Insertion</entry>
+                <entry><xmlelement>?oxy_insert_start?</xmlelement></entry>
+                <entry><xmlelement>?oxy_insert_end?</xmlelement></entry>
+                <entry><xref href="#track-changes-format/common-attributes"
+                /></entry>
+              </row>
+              <row>
+                <entry>Split</entry>
+                <entry><xmlelement>?oxy_insert_start?</xmlelement></entry>
+                <entry><xmlelement>?oxy_insert_end?</xmlelement></entry>
+                <entry><xref href="#track-changes-format/common-attributes"
+                />, type="split"</entry>
+              </row>
+              <row>
+                <entry>Surround</entry>
+                <entry><xmlelement>?oxy_insert_start?</xmlelement></entry>
+                <entry><xmlelement>?oxy_insert_end?</xmlelement></entry>
+                <entry><xref href="#track-changes-format/common-attributes"
+                />, type="surround"</entry>
+              </row>
+              <row>
+                <entry>Deletion</entry>
+                <entry><xmlelement>?oxy_delete?</xmlelement></entry>
+                <entry> _</entry>
+                <entry><xref href="#track-changes-format/common-attributes"
+                />, content</entry>
+              </row>
+              <row>
+                <entry>Comment</entry>
+                <entry><xmlelement>?oxy_comment_start?</xmlelement></entry>
+                <entry><xmlelement>?oxy_comment_end?</xmlelement></entry>
+                <entry><xref href="#track-changes-format/common-attributes"
+                />, mid, parentID </entry>
+              </row>
+              <row>
+                <entry>Attribute Change</entry>
+                <entry><xmlelement>?oxy_attributes?</xmlelement></entry>
+                <entry> _</entry>
+                <entry>Attributes of the <term>Processing Instruction</term> have the name as the
+                  attribute that was changed on the <term>XML element</term>. The value is an
+                  attribute <xref href="#track-changes-format/change-descriptor">change
+                    descriptor</xref>.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table></p>
+    <p id="p_kmx_bgk_54b">If a comment intersects another, the <xmlatt>mid</xmlatt> attribute is
+      used to correctly identify start and end processing instruction markers.</p>
+    <section id="common-attributes">
+      <title>Common Attributes</title>
+      <p>The following attributes can be added on both change tracking and comment processing
+        instructions:</p>
+      <p>
+        <ul id="ul_o1x_nn2_rpb">
+          <li><xmlatt>id</xmlatt> - Used to link a reply to its parent comment or change.</li>
+          <li><xmlatt>comment</xmlatt> - The comment message associated with a comment or
+            change.</li>
+          <li><xmlatt>timestamp</xmlatt> - The time when the change or comment was created.</li>
+          <li><xmlatt>author</xmlatt> - The name of the author that created the change or
+            comment.</li>
+          <li><xmlatt>flag</xmlatt> - The value <codeph>done</codeph> means that the item is
+            <uicontrol>Marked as Done</uicontrol>.</li>
+        </ul>
+      </p>
+    </section>
+    <section id="change-descriptor">
+      <title>Attribute Change Descriptor</title>
+      <p>The value of the attributes for a <term>Processing Instruction</term> is an (escaped) XML
+        element as
+        in:<codeblock id="codeblock_crn_542_rpb" outputclass="language-xml">&lt;change type="modified" oldValue="word" author="John" timestamp="20210520T091038+0000" /></codeblock></p>
+    </section>
   </body>
+  <related-links>
+    <link
+      href="https://github.com/oxygenxml/dita-classic-pdf-review/tree/master/com.oxygenxml.pdf.review/review"
+      format="html" scope="external">
+      <linktext><b>dita-classic-pdf-review</b> - an open-source project that contains XSLT
+        stylesheets to process the review markup</linktext>
+    </link>
+  </related-links>
 </topic>
