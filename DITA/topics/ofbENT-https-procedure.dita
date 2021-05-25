@@ -13,12 +13,14 @@
           keyref="product"/>. This will allow you to have more control over security parameters. For
         example, you can use Nginx.</p>
       <p id="p_jnw_dgk_54b"><u><b>Using Nginx</b></u></p>
-      <ol id="ol_mtv_yz2_lmb">
-        <li id="li_knw_dgk_54b">[Prerequisite] Nginx must be installed and <ph keyref="product"/> must be up and running
-          on <codeph>http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port}</codeph>.</li>
-        <li id="li_lnw_dgk_54b">Configure Nginx as a reverse proxy or a reverse proxy with SSL:<p id="p_mnw_dgk_54b"><b>Sample
-              configuration for Nginx as a reverse
-            proxy:</b><codeblock outputclass="language-bourne" id="codeblock_nnw_dgk_54b">server { 
+      <p id="p_bdz_4hm_spb">
+        <ol id="ol_mtv_yz2_lmb">
+          <li id="li_knw_dgk_54b">[Prerequisite] <term>Nginx</term> must be installed and <ph
+              keyref="product"/> must be up and running on
+              <codeph>http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port}</codeph>.</li>
+          <li id="li_lnw_dgk_54b">Configure Nginx as a reverse proxy or a reverse proxy with SSL:<p
+              id="p_mnw_dgk_54b"><b>Sample configuration for Nginx as a reverse
+              proxy:</b><codeblock outputclass="language-bourne" id="codeblock_nnw_dgk_54b">server { 
     listen 80; 
     server_name ${your_server_name}; 
     location / { 
@@ -30,10 +32,10 @@
         client_max_body_size 0; 
     } 
 }</codeblock></p><p id="p_onw_dgk_54b">For more information, see: <xref
-              href="https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/"
-              format="html" scope="external"/>.</p><p id="p_pnw_dgk_54b"><b>Sample configuration for Nginx as a reverse
-              proxy with
-            SSL:</b><codeblock outputclass="language-bourne" id="codeblock_qnw_dgk_54b"># Redirects trafic from http to https. 
+                href="https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/"
+                format="html" scope="external"/>.</p><p id="p_pnw_dgk_54b"><b>Sample configuration
+                for Nginx as a reverse proxy with
+              SSL:</b><codeblock outputclass="language-bourne" id="codeblock_qnw_dgk_54b"># Redirects trafic from http to https. 
 server { 
     listen 80 default_server; 
     server_name ${your_server_name}; 
@@ -55,15 +57,55 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  
         client_max_body_size 0; 
     } 
-}</codeblock></p><p id="p_rnw_dgk_54b">There are other SSL configuration parameters that you may want to
-            configure, depending on your needs. It is strongly advised to read more about this at:
-              <xref
-              href="https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/"
-              format="html" scope="external"/>. </p><p id="p_snw_dgk_54b">An online configuration generator can be
-            found here: <xref href="https://mozilla.github.io/server-side-tls/ssl-config-generator/"
-              format="html" scope="external"/>.</p></li>
-        <li id="li_tnw_dgk_54b">Restart Nginx. </li>
-      </ol>
+}</codeblock></p><p id="p_rnw_dgk_54b">There are other SSL configuration parameters
+              that you may want to configure, depending on your needs. It is strongly advised to
+              read more about this at: <xref
+                href="https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/"
+                format="html" scope="external"/>. </p><p id="p_snw_dgk_54b">An online configuration
+              generator can be found here: <xref
+                href="https://mozilla.github.io/server-side-tls/ssl-config-generator/" format="html"
+                scope="external"/>.</p></li>
+          <li id="li_tnw_dgk_54b">Restart Nginx. </li>
+        </ol>
+      </p>
+      <p id="p_af2_khm_spb"><u><b>Using Apache httpd</b></u></p>
+      <p id="p_qbl_phm_spb">
+        <ol id="ol_u1r_mhm_spb">
+          <li id="li_v1r_mhm_spb">[Prerequisite] <term>Apache httpd</term> must be installed and <ph
+              keyref="product"/> must be up and running on
+              <codeph>http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port}</codeph>.</li>
+          <li id="li_w1r_mhm_spb">Configure Apache httpd as a reverse proxy or a reverse proxy with
+              SSL:<p id="p_x1r_mhm_spb"><b>Sample configuration for Apache httpd as a reverse
+                proxy:</b><codeblock outputclass="language-bourne">&lt;VirtualHost *:443>
+        [..............]
+	SSLEngine on
+	SSLCertificateFile      /path/to/cert.pem
+	SSLCertificateChainFile /path/to/cert.pem
+	SSLCertificateKeyFile /etc/ssl/private/privkey.pem
+	ProxyRequests     Off
+	SSLProxyEngine on
+	ProxyPreserveHost On
+	SSLProxyVerify none
+	SSLProxyCheckPeerExpire off
+	SSLProxyCheckPeerName off
+	AllowEncodedSlashes NoDecode
+	&lt;Proxy *>
+			Order deny,allow
+			Allow from all
+	&lt;/Proxy>
+	ProxyPass         /  http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port}/ nocanon
+	ProxyPassReverse  /  http://${your_oxygen_feedback_host}:${your_oxygen_feedback_port}/
+	RequestHeader set X-Forwarded-Proto "https"
+	RequestHeader set X-Forwarded-Port "443"
+&lt;/VirtualHost></codeblock></p><p id="p_y1r_mhm_spb">For more information, see:
+                <xref href="https://httpd.apache.org/docs/current/howto/reverse_proxy.html"
+                format="html" scope="external"/>.</p><p id="p_bbr_mhm_spb">An online configuration
+              generator can be found here: <xref
+                href="https://mozilla.github.io/server-side-tls/ssl-config-generator/" format="html"
+                scope="external"/>.</p></li>
+          <li id="li_cbr_mhm_spb">Restart Apache httpd. </li>
+        </ol>
+      </p>
     </section>
     <section id="section_x4c_zzf_gmb">
       <title>Built-in SSL Support</title>
