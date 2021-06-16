@@ -13,46 +13,56 @@
         <li conkeyref="reusables-dcpp/pt-li3" id="li_icq_cgk_54b"/>
         <li id="li_jcq_cgk_54b">In this folder, create an XSL file (for example, named
             <filepath>merged2htmlExtension.xsl</filepath>) with the following
-          content:<codeblock outputclass="language-xml" id="codeblock_kcq_cgk_54b">  &lt;xsl:template match="text()">
+          content:<codeblock outputclass="language-xml" id="codeblock_kcq_cgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs"
+  version="2.0">
+
+  &lt;xsl:template match="text()">
 
     &lt;xsl:variable name="txt">
-      &lt;xsl:next-match />
+      &lt;xsl:next-match/>
     &lt;/xsl:variable>
 
     &lt;xsl:analyze-string regex="(\w|\-)+" select="$txt">
       &lt;xsl:matching-substring>
         &lt;!-- A word -->
         &lt;xsl:choose>
-          &lt;xsl:when test="contains(.,'-')">          
+          &lt;xsl:when test="contains(., '-')">
             &lt;!-- A compound word -->
-            &lt;code class='compound-word'>&lt;xsl:value-of  select="."/>&lt;/code>
+            &lt;code class="compound-word">
+              &lt;xsl:value-of select="."/>
+            &lt;/code>
           &lt;/xsl:when>
           &lt;xsl:otherwise>
             &lt;!-- A simple word -->
-            &lt;xsl:value-of select="." />
+            &lt;xsl:value-of select="."/>
           &lt;/xsl:otherwise>
         &lt;/xsl:choose>
       &lt;/xsl:matching-substring>
       &lt;xsl:non-matching-substring>
-        &lt;!-- Not a word -->      
-        &lt;xsl:value-of select="." />
+        &lt;!-- Not a word -->
+        &lt;xsl:value-of select="."/>
       &lt;/xsl:non-matching-substring>
     &lt;/xsl:analyze-string>
 
-  &lt;/xsl:template></codeblock></li>
-        <li id="li_lcq_cgk_54b">Open the <xref href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"
-              ><i>template descriptor file</i></xref> associated with your <i>publishing
-            template</i> (the <i>.opt</i> file) and set the XSLT stylesheet created in the previous
-          step with the <codeph>com.oxygenxml.pdf.css.xsl.merged2merged</codeph> XSLT extension
+  &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+        <li id="li_lcq_cgk_54b">Open the <xref
+            href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+              descriptor file</i></xref> associated with your <i>publishing template</i> (the
+            <i>.opt</i> file) and set the XSLT stylesheet created in the previous step with the
+            <codeph>com.oxygenxml.pdf.css.xsl.merged2merged</codeph> XSLT extension
           point:<codeblock outputclass="language-xml" id="codeblock_mcq_cgk_54b">&lt;publishing-template&gt;
-    ...
-    &lt;pdf&gt;
-        ...        
-        &lt;xslt&gt;
-            &lt;extension 
-              id="com.oxygenxml.pdf.css.xsl.merged2merged"
-              file="xslt/merged2mergedExtension.xsl"/&gt;
-        &lt;/xslt&gt;</codeblock></li>
+  ...
+  &lt;pdf&gt;
+    ...        
+    &lt;xslt&gt;
+      &lt;extension 
+        id="com.oxygenxml.pdf.css.xsl.merged2merged"
+        file="xslt/merged2mergedExtension.xsl"/&gt;
+    &lt;/xslt&gt;</codeblock></li>
         <li conkeyref="reusables-dcpp/pt-li6" id="li_ncq_cgk_54b"/>
         <li conkeyref="reusables-dcpp/pt-li7" id="li_ocq_cgk_54b"/>
         <li conkeyref="reusables-dcpp/pt-li8" id="li_pcq_cgk_54b"> </li>
