@@ -125,7 +125,7 @@ RewriteRule ^/oxygen-xml-web-author/?(.*)
             check-out.</li>
           <li id="li_bdt_dgk_54b">Creating the concurrent editing room.</li>
           <li id="li_cdt_dgk_54b">Enabling users to join the room.</li>
-          <li id="li_ddt_dgk_54b">Specifying the Save Strategy </li>
+          <li id="li_ddt_dgk_54b">Specifying the Save Strategy.</li>
           <li id="li_edt_dgk_54b">Closing the room.</li>
         </ul></p>
       <section id="section_evc_zgt_rnb">
@@ -152,27 +152,28 @@ window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
         </ul>
       </section>
       <section id="section_jkr_4ht_rnb">
-        <title>Saving a Concurrently Edited Session</title>
-        <p>When having to save a concurrently edited document, the application uses a so-called
-            <i>save strategy</i> that  can be specified when creating the room by calling
+        <title>Saving a Concurrent Editing Session</title>
+        <p>When saving a concurrently edited document, the application uses a <term>save
+            strategy</term> that can be specified when creating the room by calling
             <codeph>ro.sync.ecss.extensions.api.webapp.ce.RoomFactory.createRoom(AuthorDocumentModel,
             SaveStrategy)</codeph>.</p>
-        <p>The save strategy decides if the application writes to the CMS the document containing
-          edits for each peer individually or if should group all changes and write only once to
-          save all changes made from the last save. Additionally it provides the
-            <codeph>URLConnection</codeph> on whose <codeph>OutputStream</codeph> the changes from
-          an author or from a list of author are written.</p>
-        <p>There are two base classes that shall be extended:<ol id="ol_jt4_v2z_ypb">
-            <li><codeph>ro.sync.ecss.extensions.api.webapp.ce.GroupChangesForSinglePeerStrategy</codeph><p>It
-                facilitates tracking precise authorship of changes, each written revision containing
-                changes by only one author.</p><p>Note that the <codeph>URLConnection
-                  openConnection(URL documentUrl, PeerContext author)</codeph> method has only one
-                peer involved, being both the author and the committer.</p></li>
-            <li><codeph>ro.sync.ecss.extensions.api.webapp.ce.GroupChangesForMultiplePeersStrategy</codeph><p>It
-                facilitates a minimum number of writes to the file server per save.</p><p>Note that
-                the <codeph>URLConnection openConnection(URL documentUrl, PeerContext committer,
-                  List&lt;PeerContext> authors)</codeph> method has a committer and a list of
-                authors, whose changes are grouped together.</p></li>
+        <p>The save strategy specifies what gets written to the CMS. Either the changed document is
+          saved for each peer individually or all changes from the last save are grouped and written
+          to the CMS only once. Additionally, it provides the <codeph>URLConnection</codeph> for the
+            <codeph>OutputStream</codeph> where the changes from an author or from a list of author
+          are written.</p>
+        <p>There are two base classes to be extended:<ol id="ol_jt4_v2z_ypb">
+            <li><codeph>ro.sync.ecss.extensions.api.webapp.ce.GroupChangesForSinglePeerStrategy</codeph>
+              - It facilitates tracking precise authorship of changes, as each written revision
+              contains changes by only one author.<note id="note_tg1_1s1_zpb">The
+                  <codeph>URLConnection openConnection(URL documentUrl, PeerContext author)</codeph>
+                method has only one peer involved, being both the author and the
+              committer.</note></li>
+            <li><codeph>ro.sync.ecss.extensions.api.webapp.ce.GroupChangesForMultiplePeersStrategy</codeph>
+              - It facilitates a minimum number of writes to the file server per save.<note
+                id="note_s3p_cs1_zpb">The <codeph>URLConnection openConnection(URL documentUrl,
+                  PeerContext committer, List&lt;PeerContext> authors)</codeph> method has a
+                committer and a list of authors, whose changes are grouped together.</note></li>
           </ol></p>
       </section>
       <section id="section_wfk_qht_rnb">
