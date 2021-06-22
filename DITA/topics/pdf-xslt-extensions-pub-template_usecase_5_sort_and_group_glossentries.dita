@@ -19,7 +19,8 @@
   exclude-result-prefixes="xs"
   version="2.0">
 
-  &lt;xsl:template match="*[contains(@class, ' glossgroup/glossgroup ')]">
+  &lt;xsl:template match="*[contains(@class, ' glossgroup/glossgroup ')] 
+    | *[contains(@class, ' bookmap/glossarylist ')]">
     &lt;!-- Get the original glossgroup node -->
     &lt;xsl:variable name="result">
       &lt;xsl:next-match/>
@@ -33,20 +34,19 @@
     &lt;/xsl:copy>
   &lt;/xsl:template>
 
-  &lt;xsl:template match="*[contains(@class, ' glossgroup/glossgroup ')]"
+  &lt;xsl:template match="*[contains(@class, ' bookmap/glossarylist ')]"
     mode="sort-and-group">
     &lt;!-- Copy the glossgroup -->
     &lt;xsl:copy>
       &lt;!-- Copy the glossgroup attributes -->
       &lt;xsl:copy-of select="@*"/>
       &lt;!-- Copy all glossgroup children except glossentries -->
-      &lt;xsl:copy-of 
-        select="child::node()[not(contains(@class, ' glossentry/glossentry '))]"/>
+      &lt;xsl:copy-of select="child::node()[not(contains(@class, 
+        ' glossentry/glossentry '))]"/>
       &lt;!-- Group glossentries by glossterm first letter alphabetically -->
-      &lt;xsl:for-each-group
-        select="*[contains(@class, ' glossentry/glossentry ')]"
-        group-by="substring(*[contains(@class, ' glossentry/glossterm ')]
-        /node()/text(), 1, 1)">
+      &lt;xsl:for-each-group select="*[contains(@class, ' glossentry/glossentry ')]" 
+        group-by="substring(normalize-space(string-join(*[contains(@class, 
+        ' glossentry/glossterm ')]//text())), 1, 1)">
         &lt;!-- Sort glossentries by glossterm first letter -->
         &lt;xsl:sort select="current-grouping-key()" data-type="text" order="ascending"/>
         &lt;!-- Add div to display first letter -->
@@ -55,8 +55,8 @@
         &lt;/div>
         &lt;xsl:for-each select="current-group()">
           &lt;!-- Sort glossentries from the same group by glossterm alphabetically -->
-          &lt;xsl:sort select="*[contains(@class, ' glossentry/glossterm ')]
-            /node()/text()" data-type="text" order="ascending"/>
+          &lt;xsl:sort select="normalize-space(string-join(*[contains(@class, 
+            ' glossentry/glossterm ')]//text()))" data-type="text" order="ascending"/>
           &lt;!-- Copy glossentry and its children -->
           &lt;xsl:copy>
             &lt;xsl:copy-of select="@*"/>
