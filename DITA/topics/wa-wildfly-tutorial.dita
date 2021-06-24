@@ -4,9 +4,9 @@
   <title>Deploying Web Author in WildFly</title>
   <body>
     <p id="p_h4q_dgk_54b">The following procedure is an example for a deployment of <ph
-        keyref="webappProduct"/> in WildFly:</p>
+        keyref="webappProduct"/> in <term>WildFly</term>:</p>
     <ol id="ol_i4q_dgk_54b">
-      <li id="li_j4q_dgk_54b">Download WildFly version <i>16.0.0.Final</i> at: <xref
+      <li id="li_j4q_dgk_54b">Download WildFly version <term>16.0.0.Final</term> at: <xref
           href="http://wildfly.org/downloads/" format="html" scope="external"/> (ZIP for Windows /
         TGZ for Linux).</li>
       <li id="li_k4q_dgk_54b">Extract the contents of the downloaded archive into a folder.</li>
@@ -14,17 +14,17 @@
         <filepath>wildfly/bin</filepath>.</li>
       <li id="li_m4q_dgk_54b">Run the <filepath>add-user.bat</filepath> (<filepath>add-user.sh</filepath> in Linux)
         executable from a command line.<ol id="ol_n4q_dgk_54b">
-          <li id="li_o4q_dgk_54b">Create a <i>Management User</i>.</li>
-          <li id="li_p4q_dgk_54b">Create an <i>Application User</i> and when asked <uicontrol>What groups do you want
-              this user to belong to?</uicontrol>, enter:
+          <li id="li_o4q_dgk_54b">Create a <term>Management User</term>.</li>
+          <li id="li_p4q_dgk_54b">Create an <term>Application User</term> and when asked
+              <uicontrol>What groups do you want this user to belong to?</uicontrol>, enter:
             <codeblock outputclass="language-java" id="codeblock_q4q_dgk_54b">[admin]: "admin"</codeblock></li>
         </ol></li>
       <li id="li_r4q_dgk_54b">Run the <filepath>standalone.bat</filepath> (<filepath>standalone.sh</filepath> in Linux)
         executable from a command line and include the <b>-Dee8.preview.mode=true</b> system
         property. For
         example:<codeblock outputclass="language-java" id="codeblock_s4q_dgk_54b">./standalone.sh -Dee8.preview.mode=true</codeblock></li>
-      <li id="li_t4q_dgk_54b">Go to <i>http://localhost:8080</i>, then the <uicontrol>Administration
-        Console</uicontrol>.</li>
+      <li id="li_t4q_dgk_54b">Go to <filepath>http://localhost:8080</filepath>, then the
+          <uicontrol>Administration Console</uicontrol>.</li>
       <li id="li_u4q_dgk_54b">Under <uicontrol>Deployments</uicontrol>, go to <menucascade>
           <uicontrol>Deploy an Application</uicontrol>
           <uicontrol>Start</uicontrol>
@@ -33,18 +33,30 @@
         upload the <b>Web Author</b> WAR file.</li>
     </ol>
     <p id="p_w4q_dgk_54b"><b>Result:</b>
-      <ph keyref="webappProduct"/> is deployed at: <i>localhost:8080</i>.</p>
+      <ph keyref="webappProduct"/> is deployed at: <filepath>localhost:8080</filepath>.</p>
     <p id="p_x4q_dgk_54b">
-      <note type="other" othertype="Additional Information" id="note_y4q_dgk_54b">
-        <p id="p_z4q_dgk_54b">To stop the server, do one of the following:<ul id="ul_apq_dgk_54b">
-            <li id="li_bpq_dgk_54b">Stop it from the <uicontrol>Administration Console</uicontrol>.</li>
-            <li id="li_cpq_dgk_54b">Use the command-line interface to run the
-                <filepath>wildfly\bin\jboss-cli.bat</filepath>
-                (<filepath>wildfly\bin\jboss-cli.sh</filepath> in Linux) executable, then
-              enter:<codeblock outputclass="language-java" id="codeblock_dpq_dgk_54b">[disconnected /] connect
-[standalone@localhost:9990 /] shutdown</codeblock></li>
-          </ul></p>
-      </note>
+      <note type="tip" id="note_y4q_dgk_54b">When a plugin is uploaded in the <xref
+          href="webapp-admin-page.dita"/>, the plugin must be sent to <term>WildFly</term> with HTTP
+        Post and, by default, the maximum file size cannot exceed 10 MB. Thus, <term>WildFly</term>
+        will stop the process for plugins that exceed that limit. As a solution, you can disable the
+        maximum post size limit by setting the <codeph>max-post-size</codeph> parameter to <b>0</b>.
+        Use the command-line interface to run the <filepath>wildfly\bin\jboss-cli.bat</filepath>
+          (<filepath>wildfly\bin\jboss-cli.sh</filepath> in Linux) executable, then enter the
+        following commands:<codeblock outputclass="language-bourne">connect
+/subsystem=undertow/server=default-server/http-listener=default/:write-attribute(name=max-post-size,value=0)</codeblock></note>
     </p>
+    <section id="section_lgg_fmw_1qb">
+      <title>Stopping the Server</title>
+      <p id="p_z4q_dgk_54b">To stop the server, do one of the following:<ul id="ul_apq_dgk_54b">
+          <li id="li_bpq_dgk_54b">Stop it from the <uicontrol>Administration
+            Console</uicontrol>.</li>
+          <li id="li_cpq_dgk_54b">Use the command-line interface to run the
+              <filepath>wildfly\bin\jboss-cli.bat</filepath>
+              (<filepath>wildfly\bin\jboss-cli.sh</filepath> in Linux) executable, then enter the
+            following
+            commands:<codeblock outputclass="language-java" id="codeblock_dpq_dgk_54b">connect
+shutdown</codeblock></li>
+        </ul></p>
+    </section>
   </body>
 </topic>
