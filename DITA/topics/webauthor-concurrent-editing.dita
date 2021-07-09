@@ -17,10 +17,10 @@
       link to other collaborators and then you and your colleagues can edit and review the same
       document simultaneously.</p>
     <p id="p_u2p_dgk_54b">To initiate a shared editing session, use the <uicontrol><image
-          href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"/>Share
-        Session</uicontrol> toolbar button. This opens the first window of the <uicontrol>Share
+      href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"/>Share
+      Session</uicontrol> toolbar button. This opens the first window of the <uicontrol>Share
         Editing Session</uicontrol> dialog box. It provides some information, and after clicking
-        <uicontrol>Share</uicontrol>, the second window of the dialog box is displayed.</p>
+      <uicontrol>Share</uicontrol>, the second window of the dialog box is displayed.</p>
     <p id="p_v2p_dgk_54b">
       <fig id="fig_pv5_5h5_rnb">
         <title>Share Editing Session Dialog Box (Second Window)</title>
@@ -33,8 +33,8 @@
     <p id="p_x2p_dgk_54b"><image href="../img/wa-share-session-editor.png" id="image_qsy_kbh_snb"/></p>
     <p id="p_y2p_dgk_54b">The person who originally shared the session is the only one who can save the document and
       the concurrent editing session continues as long as that person keeps the document
-        open.<note id="note_z2p_dgk_54b">The <uicontrol><image href="../img/wa-share-session-button.png"
-            id="image_pcn_ch5_rnb"/>Share Session</uicontrol> action is only present for some of the
+      open.<note id="note_z2p_dgk_54b">The <uicontrol><image href="../img/wa-share-session-button.png"
+        id="image_pcn_ch5_rnb"/>Share Session</uicontrol> action is only present for some of the
         built-in connectors (Git and WebDAV).</note></p>
     <section id="section_z23_1jt_rnb">
       <title>Important Notes About Concurrent Editing for Users</title>
@@ -45,8 +45,8 @@
           <li id="li_cfp_dgk_54b">The <uicontrol>Mark as Done</uicontrol> and <uicontrol>Reply</uicontrol> actions for
             tracked changes are removed during concurrent editing sessions. </li>
           <li id="li_dfp_dgk_54b">Once a concurrent editing session started, the <uicontrol>Edit Topic
-              Content</uicontrol> option that is usually available from the <uicontrol><image
-                href="../img/DM_DisplayMode_drop.png" id="image_cg2_lt3_rnb"/>DITA Map Display
+            Content</uicontrol> option that is usually available from the <uicontrol><image
+              href="../img/DM_DisplayMode_drop.png" id="image_cg2_lt3_rnb"/>DITA Map Display
               Mode</uicontrol> drop-down menu becomes unavailable. To use this editing mode, you
             have to enable it before starting the concurrent editing session. </li>
           <li id="li_efp_dgk_54b">Changes made prior to the session being shared cannot be undone.</li>
@@ -54,8 +54,6 @@
             or DITA <codeph>conref</codeph>) from other files, only the user that inserted them must
             have permission to open them from the file server. All other users that are part of the
             shared session are able to see them.</li>
-          <li id="li_gfp_dgk_54b">This feature is currently in a BETA stage so it is possible to encounter stability and
-            performance issues that will be solved in future releases.</li>
         </ul>
       </p>
     </section>
@@ -65,14 +63,14 @@
         <ul id="ul_of3_lsf_xnb">
           <li id="li_ifp_dgk_54b">Concurrent editing does not work if <ph keyref="webappProduct"/> is deployed on
             multiple servers behind a <xref href="webapp-loadbalancing.dita">load
-            balancer</xref>.</li>
+              balancer</xref>.</li>
           <li id="li_jfp_dgk_54b">
             <p id="p_kfp_dgk_54b"><ph keyref="webappProduct"/> uses Web Sockets to propagate changes in real time
               between collaborators. If you are using a reverse proxy, some additional configuration
               may be required to enable Web Socket connections to the <codeph>./ws</codeph> endpoint
               of the application.</p>
             <p id="p_lfp_dgk_54b">For example, NGINX requires the following configuration for the
-                <filepath>/oxygen-xml-web-author/ws</filepath>
+              <filepath>/oxygen-xml-web-author/ws</filepath>
               path:<codeblock outputclass="language-javascript" id="codeblock_mfp_dgk_54b">location /oxygen-xml-web-author/ws {
   proxy_http_version 1.1;
       
@@ -107,19 +105,28 @@ RewriteRule ^/oxygen-xml-web-author/?(.*)
  "ws://&lt;internal-host>:8080/oxygen-xml-web-author/$1" [P,L]</codeblock></p>
           </li>
           <li id="li_wfp_dgk_54b">Concurrent editing does not work if an existing plugin registered an
-              <codeph>ro.sync.ecss.extensions.api.AuthorDocumentFilter</codeph> implementation.</li>
+            <codeph>ro.sync.ecss.extensions.api.AuthorDocumentFilter</codeph> implementation.</li>
+          <li id="li_g14_hq2_fqb">Some customizations can cause problems if used in situations with
+            high activity or a large number of simultaneous users. These possible limitations
+            include:<ul id="ul_vyr_mq2_fqb">
+              <li id="li_oxj_sb2_tpb">The <codeph>onChange</codeph> property for the <xref
+                href="https://www.oxygenxml.com/doc/ug-editor/topics/combo-box-editor.html"
+                format="html" scope="external">combo box form control</xref> is not supported in
+                concurrent editing sessions.</li>
+              <li id="li_wyr_mq2_fqb">Inline CSS actions (such as the <codeph>oxy_button</codeph>
+                form control).</li>
+              <li id="li_im1_nq2_fqb">Editable combo boxes on the floating toolbar.</li>
+              <li id="li_yc1_4q2_fqb">Quick fixes that come from XML Schema or DTD.</li>
+            </ul></li>
         </ul>
       </p>
     </section>
   </body>
   <related-links>
-    <linklist>
-      <title>Related Information:</title>
-      <link format="html"
-        href="https://www.oxygenxml.com/doc/ug-waCustom/topics/webauthor-concurrent-editing-api.html"
-        scope="external">
-        <linktext>Integrating Concurrent Editing</linktext>
-      </link>
-    </linklist>
+    <link format="html"
+      href="https://www.oxygenxml.com/doc/ug-waCustom/topics/webauthor-concurrent-editing-api.html"
+      scope="external">
+      <linktext>Integrating Concurrent Editing</linktext>
+    </link>
   </related-links>
 </topic>
