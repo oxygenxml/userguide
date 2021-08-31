@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="wa-force-track-changes">
-  <title>Control Change Tracking State</title>
+  <title>Control the State of Change Tracking</title>
   <prolog>
     <metadata>
       <keywords>
@@ -10,34 +10,53 @@
     </metadata>
   </prolog>
   <body>
-    <p id="p_d1t_dgk_54b">You can control whether or not the <term>Change Tracking</term> feature is enabled when a
-      documented is opened in <ph keyref="webappProduct"/> by using a <b>trackChanges</b> flag set
-      in a <xref href="customizing_plugins.dita#customizing_plugins">plugin</xref>.</p>
-    <p id="p_e1t_dgk_54b">Possible values for the <b>trackChanges</b> flag:<ul id="ul_f1t_dgk_54b">
-        <li id="li_g1t_dgk_54b"><b>default</b> - The status of the <term>Change Tracking</term> feature is determined by
-          the server's global options.</li>
-        <li id="li_h1t_dgk_54b"><b>enabled</b> - The <term>Change Tracking</term> feature is enabled but the user can
-          disable it using the <uicontrol>Toggle Change Tracking</uicontrol> toolbar button.</li>
-        <li id="li_i1t_dgk_54b"><b>forced</b> - The <term>Change Tracking</term> feature is enabled and the user cannot
-          disable it. The user can reject their own changes, but cannot accept or reject changes
-          made by others.</li>
-      </ul></p>
-    <p id="p_j1t_dgk_54b">You can set this flag in your plugin's JavaScript code like
-      this:<codeblock outputclass="language-javascript" id="codeblock_k1t_dgk_54b">goog.events.listen(workspace, 
+    <p id="p_rwl_qjl_mqb">There are several ways to control the state of the <xref
+        href="https://www.oxygenxml.com/doc/versions/23.1.1/ug-waCustom/glossary/track-changes.html"
+        format="html" scope="external"><i>Change Tracking</i> feature</xref>.</p>
+    <section id="section_okr_qjl_mqb">
+      <title>Changing the Change Tracking State in the Administration Page</title>
+      <p id="p_swl_qjl_mqb">You can set its initial state in the <xref
+          href="webapp-admin-page.dita#webapp-admin-page/change-track-initial-state">Administration
+          page</xref> (using the <uicontrol id="change-track-initial-state">Change tracking initial
+          state</uicontrol> option). You can choose between:<ul id="ul_rf3_bjl_mqb">
+          <li id="li_sf3_bjl_mqb"><b>Stored in document</b> - When a document is initially opened in
+            Web author, the change tracking state is set to <b>on</b> if the following processing
+            instruction is found at the end of the document: <codeph>&lt;?oxy_options
+              track_changes="on"?></codeph>.</li>
+          <li id="li_udx_hjl_mqb"><b>Always On</b> - The change tracking state is set to <b>on</b>
+            when a document is opened in Web Author.</li>
+          <li id="li_qkt_kjl_mqb"><b>Always Off</b> - The change tracking state is set to <b>off</b>
+            when a document is opened in Web Author.</li>
+        </ul></p>
+    </section>
+    <section id="section_x2m_tjl_mqb">
+      <title>Changing the Change Tracking State Using a Flag</title>
+      <p id="p_st5_1kl_mqb">You can also use a <b>trackChanges</b> flag to control whether or not
+        the <term>Change Tracking</term> feature is enabled when a documented is opened in <ph
+          keyref="webappProduct"/>. The flag can be set in two possible ways:<ul id="ul_yds_frk_mqb">
+          <li id="li_tt5_1kl_mqb">In an <xref
+              href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch"
+              >embedded link that launches Web Author</xref> so that when a user clicks the
+            constructed link, the documented is opened in Web Author with the <term>Change
+              Tracking</term> feature enabled.</li>
+          <li id="li_ut5_1kl_mqb">In a <xref href="customizing_plugins.dita#customizing_plugins"
+              >plugin</xref>. You can set this flag in your plugin's JavaScript code like
+              this:<codeblock outputclass="language-javascript" id="codeblock_k1t_dgk_54b">goog.events.listen(workspace, 
 sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED, function(e) {
     if(forced_track_changes_condition) {
       e.options.trackChanges = 'forced';
     } else if(track_changes_enabled_condition) {
       e.options.trackChanges = 'enabled';
     } else if(track_changes_default_condition) {
-      e.options.trackChanges = 'enabled';
+      e.options.trackChanges = 'default';
     }
-  }); </codeblock></p>
-    <note type="tip" id="note_l1t_dgk_54b">You can also use this flag in an <xref
-        href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch">embedded
-        link that launches Web Author</xref> so that when a user clicks the constructed link, the
-      documented will be opened in Web Author with the <term>Change Tracking</term> feature
-      enabled.</note>
+  }); </codeblock><p id="p_e1t_dgk_54b">Possible values for the <b>trackChanges</b>
+                flag:<ul conkeyref="reusables-webauthor-customization/ul_bn3_jcf_11b"
+                id="ul_y24_sy2_mqb">
+                <li id="li_z24_sy2_mqb"/>
+              </ul></p></li>
+        </ul></p>
+    </section>
     <section id="section_j5h_53d_4kb">
       <title>Changing the Change Tracking State Programmatically</title>
       <p id="p_m1t_dgk_54b">To change the state of the change tracking feature after the document is loaded, you need
