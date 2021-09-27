@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="xquery-unit-test-xspec">
+    <title>XQuery Unit Test (XSpec)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>XQuery<indexterm>Unit test (XSpec)</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p conkeyref="reusables-editing-documents/xspec-p-1" id="p_qfh_cgk_54b"/>
+    <section id="creating_an_xslt_unit_test">
+      <title>Creating an XQuery Unit Test</title>
+      <p id="p_rfh_cgk_54b">To create a XQuery Unit Test, go to <menucascade>
+          <uicontrol>File</uicontrol>
+          <uicontrol>New</uicontrol>
+          <uicontrol>XQuery Unit Test</uicontrol>
+        </menucascade>. This is simple document template to help you get started.</p>
+    </section>
+    <section id="running_an_xslt_unit_test">
+      <title>Running an XQuery Unit Test</title>
+      <p conkeyref="reusables-editing-documents/xspec-p-2" id="p_sfh_cgk_54b"/>
+    </section>
+    <section id="testing_a_stylesheet">
+      <title>Testing an XQuery file</title>
+      <p id="p_tfh_cgk_54b">An XSpec file contains one or more test scenarios. </p>
+      <p id="p_ufh_cgk_54b"><u><b>Example:</b></u></p>
+      <p id="p_vfh_cgk_54b">Suppose you have this XQuery function that takes a string as its
+        argument. The first character of the string passed to the function is capitalized and
+        concatenated to the rest of the string. Finally, the new string with the first character
+        capitalized is returned to the calling
+        method.<codeblock outputclass="language-xquery" id="codeblock_wfh_cgk_54b">module namespace functx = "http://www.functx.com";
+
+declare function functx:capitalize-first
+($arg as xs:string?) as xs:string? {
+
+concat(upper-case(substring($arg, 1, 1)),
+substring($arg, 2))
+};</codeblock></p>
+      <p id="p_xfh_cgk_54b">The XSpec test invokes the XQuery function and passes the string
+          <codeph>hello</codeph> as a parameter. The expected value that should be returned by the
+        function (the string <codeph>Hello</codeph>) is contained in the <codeph>@select</codeph>
+        attribute of the <codeph>x:expect</codeph>
+        element.<codeblock outputclass="language-xml" id="codeblock_yfh_cgk_54b">&lt;x:scenario label="Calling function capitalize-first">
+  &lt;x:call function="functx:capitalize-first">
+    &lt;x:param select="'hello'"/>
+  &lt;/x:call>
+  
+  &lt;x:expect label="should capitalize the first character of the string" select="'Hello'"/>
+  
+&lt;/x:scenario></codeblock></p>
+      <p id="p_bgh_cgk_54b">For more details about how to write XQuery tests and various samples,
+        see <xref
+          href="https://github.com/xspec/xspec/wiki/Getting-Started-with-XSpec-and-XQuery"
+          format="html" scope="external"/>.</p>
+    </section>
+    </body>
+</topic>
