@@ -3,39 +3,70 @@
 <topic id="dcpp_how_to_rotate_the_contents_from_a_table_cell">
   <title>How to Rotate Content from a Table Cell</title>
   <body>
-    <p id="p_ey5_cgk_54b">There are cases where you want to style the first column as a kind of table header, with
-      vertical text. </p>
-    <p id="p_fy5_cgk_54b">There is an important thing to remember: you can rotate an element from a table cell, but not
-      the cell itself. So, your DITA table cell should contain a <xmlelement>div</xmlelement> or a
-        <xmlelement>p</xmlelement> element that will be rotated. The cell has to be marked somehow
-      so that it can be matched from the CSS. One way is to set an <xmlatt>outputclass</xmlatt>
-      attribute on it, another will be to mark the table and then match the first entries from
-      it.</p>
-    <codeblock outputclass="language-xml" id="codeblock_gy5_cgk_54b">  &lt;row>
-      ...
-      &lt;entry outputclass="rotated">
-            &lt;p>Rotated&lt;/p>
-      &lt;/entry>
-      ...
- &lt;/row></codeblock>
-    <p id="p_hy5_cgk_54b">In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, use the
-      following rule that matches the child of the entry:</p>
-    <codeblock outputclass="language-css" id="codeblock_iy5_cgk_54b">*[class ~= "topic/row"] > *[class ~= "topic/entry"][outputclass ~= "rotated"] {
-  width: 1em; /* This gives the table column its width. It is the height of the rotated elemnet - assuming it contains just one line. */
-  padding-top: 14em; /* Increase this until the entire vertical text fits into the cell. */
-}
-   
-*[outputclass ~= "rotated"] > * {
-        transform: rotate(-90deg) !important;
-        width:1em; /* This also gives the table column its width. */
-        height:1em; /* This is the effective width after rotation. */
-        border: 1pt solid red; /* Just for debug */
-        background-color:yellow; /* Just for debug */
-        hyphens:manual; /* Disable hyphenation, to force the text extend out of the small bounds - the parent rotated entry has enough padding to accomodate it. */
-        padding: 0;
-        margin: 0;
+    <p>In DITA CALS tables you can rotate the content of a cell by setting the
+        <xmlatt>rotate</xmlatt> attribute to <codeph>1</codeph>.</p>
+    <p> In the following example we rotate the <codeph>Sport</codeph>, <codeph>All terrain</codeph>
+      and <codeph>Family</codeph> header cells.</p>
+    <codeblock id="codeblock_pl4_gmb_crb" outputclass="language-xml"> &lt;table frame="all" rowsep="1" colsep="1" id="table_d1p_flb_crb">
+    &lt;title>Car Features&lt;/title>
+    &lt;tgroup cols="4">
+      &lt;colspec colname="c1" colnum="1" colwidth="14*"/>
+      &lt;colspec colname="c2" colnum="2" colwidth="1*" align="center"/>
+      &lt;colspec colname="c3" colnum="3" colwidth="1*" align="center"/>
+      &lt;colspec colname="c4" colnum="4" colwidth="1*" align="center"/>
+      &lt;thead>
+        &lt;row>
+          &lt;entry morerows="1">Car Name&lt;/entry>
+          &lt;entry namest="c2" nameend="c4">Features&lt;/entry>
+        &lt;/row>
+        &lt;row>
+          &lt;entry rotate="1">Sport&lt;/entry>
+          &lt;entry rotate="1">All terrain&lt;/entry>
+          &lt;entry rotate="1">Family&lt;/entry>
+        &lt;/row>
+      &lt;/thead>
+      &lt;tbody>
+        &lt;row>
+          &lt;entry>Tesla Model S&lt;/entry>
+          &lt;entry>X&lt;/entry>
+          &lt;entry/>
+          &lt;entry>X&lt;/entry>
+        &lt;/row>
+...</codeblock>
+    <p>The output will be:</p>
+    <image href="../img/dcpp_how_to_rotate_the_contents_from_a_table_cell.png"
+      id="image_n4j_1gd_crb" placement="break"/>
+    <p>The built-in CSS matches the cells with this attribute and applies the following
+      properties:</p>
+    <codeblock id="codeblock_rxd_slb_crb" outputclass="language-css">*[class~="topic/entry"][rotate='1'] {
+	transform: rotate(270deg);
+
+	/* Avoid wrapping, including hyphenation */
+	white-space:pre;
+	hyphens:manual;
+
+	/* The rotated content will start from the lower side of the cell */
+	vertical-align:bottom;
 }</codeblock>
-    <p id="p_jy5_cgk_54b">The padding and margins are set to zero to clear any space that may come from other rules.
-      The width is required - it will become the height of the cell. </p>
+    <p>To change the vertical alignment of the content, for example to move it to the middle of the
+      cell, use in your customization:</p>
+    <codeblock id="codeblock_idq_fgd_crb" outputclass="language-css">*[class~="topic/entry"][rotate='1'] {
+	vertical-align:middle;
+}</codeblock>
+    <image href="../img/dcpp_how_to_rotate_the_contents_from_a_table_cell_middle.png"
+      id="image_vpn_phd_crb" placement="break"/>
+    <p>To make the text wrap, for instance the "All terrain" could be split on two lines, we need to
+      inhibit the whitespace preservation from the built-in CSS. In this case all spaces will create
+      a line break in the rotated layout. So we add in our customization:</p>
+    <codeblock id="codeblock_a1j_vhd_crb" outputclass="language-css">*[class~="topic/entry"][rotate='1'] {
+	vertical-align:middle;
+       whitespace:normal;
+}</codeblock>
+    <image href="../img/dcpp_how_to_rotate_the_contents_from_a_table_cell_wrap.png"
+      id="image_al5_mkd_crb" placement="break"/>
+    <p>
+      <note id="note_hpp_ykd_crb">The padding and borders set on the table cells are not rotated,
+        only the content of the cell is rotated.</note>
+    </p>
   </body>
 </topic>
