@@ -240,7 +240,7 @@
           <ul id="ul_hk5_gfj_1mb">
             <li id="li_tfs_dgk_54b">All the files will be loaded in the browser in lexicographical order. </li>
             <li id="li_ufs_dgk_54b">JavaScript files located in subfolders of the
-                <filepath>web</filepath> folder will be loaded.</li>
+                <filepath>web</filepath> folder will not be loaded.</li>
             <li id="li_vfs_dgk_54b">If you have a framework extension, both the JavaScript files
               from the base framework and those from the extension will be loaded. To make it
               possible to override JavaScript files inherited from a base framework, if a file in
@@ -252,7 +252,7 @@
                 Script</i></xref>, multiple <codeph>webResources</codeph> can be specified:<ul
                 id="ul_ddn_njc_v4b">
                 <li id="li_edn_njc_v4b">The <codeph>webResources</codeph> will be loaded in the
-                  order they are specified in the <filepath>.framework</filepath> file.</li>
+                  order they are specified in the <filepath>.exf</filepath> file.</li>
                 <li id="li_asn_qjc_v4b">If a folder is specified, all the JavaScript files in that
                   folder will be loaded in lexicographical order.</li>
                 <li id="li_vng_sjc_v4b">If a file is specified (directly or indirectly) multiple
@@ -260,15 +260,17 @@
               </ul></li>
           </ul>
         </note></p>
-      <p id="p_wfs_dgk_54b">The framework's script needs to create an instance of <codeph>sync.ext.Extension</codeph>
-        and register it in the <codeph>sync.ext.Registry.extension</codeph> field. For
+      <p id="p_wfs_dgk_54b">The framework's script needs to create an instance of
+          <codeph>sync.ext.Extension</codeph> and register it in the
+          <codeph>sync.ext.Registry.extension</codeph> field. For
         example:<codeblock outputclass="language-javascript" id="codeblock_xfs_dgk_54b">class MyExtension extends sync.ext.Extension {
-  // your implementation here ...
+  /** @param {sync.api.Editor} editor */
+  editorCreated(editor) {
+    // ... 
+  }
 }
+// Register the extension so that it will be notified when the editor is created.
 sync.ext.Registry.extension = new MyExtension();</codeblock></p>
-      <p id="p_yfs_dgk_54b">When extending a framework, it is recommended to register an
-          <codeph>sync.ext.Extension</codeph> instance that delegates to the
-          <codeph>sync.ext.Extension</codeph> instance registered by the base framework.</p>
       <p id="p_zfs_dgk_54b">These files can contain code that calls the <xref keyref="jscript_api">Web Author
           JavaScript API</xref> to implement custom editing actions. Some possible use cases
           include:<ul id="ul_x5q_s4y_hnb">
@@ -281,16 +283,57 @@ sync.ext.Registry.extension = new MyExtension();</codeblock></p>
           <li id="li_cgs_dgk_54b">Add more views. For more details, see the <xref keyref="jscript_api_customview">JS
               Tutorial: Customizing the Side Views</xref>.</li>
         </ul></p>
-      <p id="p_dgs_dgk_54b">The structure of the JavaScript extension should be the
-          following:<codeblock outputclass="language-javascript" id="codeblock_egs_dgk_54b">MyExtension = function() {}
-MyExtension.prototype.editorCreated = function (editor) {
-  // ... work with the editor...
-};
-// Register the extension so that it will be notified when the editor is created.
-sync.ext.Registry.extension = new MyExtension();</codeblock><note type="tip" id="note_fgs_dgk_54b">Some
-          tutorials are available for other use cases in the <xref keyref="jscript_api">Oxygen XML
-            Web Author Component API Documentation</xref>, in the <uicontrol>Tutorials</uicontrol>
-          section.</note></p>
+      <p id="p_dgs_dgk_54b">
+        <note type="tip" id="note_fgs_dgk_54b">Some tutorials are available for other use cases in
+          the <xref keyref="jscript_api">Oxygen XML Web Author Component API Documentation</xref>,
+          in the <uicontrol>Tutorials</uicontrol> section.</note>
+      </p>
+    </section>
+    <section id="section_bw2_bh2_crb">
+      <title>Adding JavaScript Code to a Framework Extension</title>
+      <p>When adding JavaScript code to a framework extension, you may want to also inherit the
+        customizations made by the base framework using JavaScript code. </p>
+      <p>For example, let's create a DITA extension that removes the action to underline the
+        selected text. Follow these steps:</p>
+      <p>
+        <ol id="ol_twc_c32_crb">
+          <li>Create an EXF file, for example <filepath>my-framework.exf</filepath> with the
+            following
+            content:<codeblock id="codeblock_dpf_232_crb" outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;script 
+    base="DITA" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.oxygenxml.com/ns/framework/extend"
+    xsi:schemaLocation="http://www.oxygenxml.com/ns/framework/extend http://www.oxygenxml.com/ns/framework/extend/frameworkExtensionScript.xsd">
+
+  &lt;name>My DITA extension&lt;/name>
+  &lt;description>My DITA extension&lt;/description>
+  &lt;priority>Normal&lt;/priority>
+
+  &lt;webResources inherit="all">
+    &lt;addEntry path="${frameworkDir}/my-framework.js"/>
+  &lt;/webResources>
+&lt;/script></codeblock></li>
+          <li>Create the <filepath>my-framework.js</filepath> in the same folder with the following
+            content:<codeblock id="codeblock_plz_g32_crb" outputclass="language-javascript">// Use the `sync.ext.ExtensionWrapper` class to wrap the original extension.
+class MyFrameworkExtension extends sync.ext.ExtensionWrapper {
+  constructor(base) {
+    super(base);
+  }
+  
+  filterActions(actionsMap, editingSupport) {
+    super.filterActions(actionsMap, editingSupport);
+    // Remove the "underline" action.
+    actionsMap.delete('underline');
+  }
+}
+
+var originalExtension = sync.ext.Registry.extension;
+sync.ext.Registry.extension = new MyFrameworkExtension(originalExtension);</codeblock></li>
+          <li>Create a zip archive with the folder that contains the two files created above to
+            obtain the framework.</li>
+        </ol>
+      </p>
     </section>
     <section id="section_zfq_dfx_xkb">
       <title>Loading Static Resources from the Framework Directory</title>
