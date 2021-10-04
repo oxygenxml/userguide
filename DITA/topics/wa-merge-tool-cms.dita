@@ -1,70 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="topic_ttp_dkq_crb">
-    <title>Integrating the File Merge Tool with a CMS</title>
-    <body>
-        <section id="id_2">
-            <title>Use-cases</title>
-            <p>CMS-es often keep track of multiple versions of a file. For example, if a new legal
-                requirement has to be addressed in the documentation, all the versions of the file
-                have to be updated. One option is to make the change to the oldest version and merge
-                those changes in the other versions.</p>
-            <p>If a CMS supports review workflows, the copy of the file that is sent for review can
-                be changed in the CMS for other reasons. On the other hand, the review workflow also
-                results in some updates to the file. At the end, these updates need to be merged in
-                the version on the CMS.</p>
-            <p>In other systems, such as Git, different users can edit the same file in parallel.
-                When they finish editing, they have to merge the changes.</p>
-        </section>
-        <section id="id_3">
-            <title>Integration Approach</title>
-            <p>To launch the File Merge Tool, Web Author must be started with the following
-                parameters:</p>
-            <p>
-                <dl id="dl_gjh_qkq_crb">
-                    <dlentry>
-                        <dt>url</dt>
-                        <dd>
-                            <p>The <xref href="oxy-url.dita">OXY-URL</xref> of one of the files to
-                                be merged. It will be loaded in the left part of the merge tool and
-                                will be edited to contained the merged version of the file.</p>
-                        </dd>
-                    </dlentry>
-                    <dlentry>
-                        <dt>diffUrl</dt>
-                        <dd>
-                            <p>The <xref href="oxy-url.dita">OXY-URL</xref> of the other file to be
-                                merged.</p>
-                        </dd>
-                    </dlentry>
-                    <dlentry>
-                        <dt>diffType</dt>
-                        <dd>
-                            <p>Use merge to launch the File Merge Tool.</p>
-                        </dd>
-                    </dlentry>
-                    <dlentry>
-                        <dt>diffBaseUrl</dt>
-                        <dd>
-                            <p>The base file used for the 3-way merge process. Usually a file
-                                version from which the two versios above diverged.</p>
-                        </dd>
-                    </dlentry>
-                </dl>
-            </p>
-            <p>This parameters need to be <xref
-                    href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
-                    >set as URL parameters</xref>. Besides these, there are others that can be used
-                to configure various aspects of the editor.</p>
-            <p>After the user finishes the merge, the merged content will be in the left part. To
-                get the merged content, one can use JavaScript code as below from a plugin:</p>
-            <codeblock id="pre_gm2_nkq_crb" outputclass="language-javascript">/** @type {sync.api.Editor} */
+<topic id="wa-merge-tool-cms">
+  <title>Integrating the File Merge Tool with a CMS</title>
+  <body>
+    <p id="p_qpm_ltj_drb"><ph keyref="product"/> provides a <xref
+        href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-merge-tool.html" format="html"
+        scope="external">file merge tool</xref>. It is a useful feature for cases where multiple
+      users work with the same documents concurrently because it can be used to resolve conflicts
+      when committing changes to a repository. The Web Author Merge tool is offered as an API for
+      CMS integrations.</p>
+    <section id="id_2">
+      <title>Use-cases</title>
+      <ul id="ul_d54_zgc_drb">
+        <li id="li_e54_zgc_drb">A CMS often keeps track of multiple versions of a file. For example,
+          if a new legal requirement has to be addressed in the documentation, all the versions of
+          the file have to be updated. One option is to make the change to the oldest version and
+          merge those changes in the other versions.</li>
+        <li id="li_m4h_1hc_drb">If a CMS supports a review workflow, the copy of the file that is
+          sent for review can be changed in the CMS for other reasons. On the other hand, the review
+          workflow also results in some updates to the file. At the end, these updates need to be
+          merged in the version on the CMS.</li>
+        <li id="li_lmr_1hc_drb">In other systems (such as Git), different users can edit the same
+          file in parallel. When they finish editing, they have to merge the changes.</li>
+      </ul>
+    </section>
+    <section id="id_3">
+      <title>Integration Approach</title>
+      <p>To launch the Merge tool, Web Author must be started with the following parameters:</p>
+      <p>
+        <dl id="dl_gjh_qkq_crb">
+          <dlentry>
+            <dt>url</dt>
+            <dd>
+              <p>The <xref href="oxy-url.dita">OXY-URL</xref> of one of the files to be merged. It
+                will be loaded in the left part of the merge tool and will be edited to contained
+                the merged version of the file.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>diffUrl</dt>
+            <dd>
+              <p>The <xref href="oxy-url.dita">OXY-URL</xref> of the other file to be merged.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>diffType</dt>
+            <dd>
+              <p>Use merge to launch the File Merge Tool.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>diffBaseUrl</dt>
+            <dd>
+              <p>The base file used for the 3-way merge process. Usually a file version where the
+                two versions diverged.</p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p>These parameters need to be <xref
+          href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
+          >set as URL parameters</xref> (there are others that can be used to configure various
+        aspects of the editor).</p>
+      <p>After the user finishes the merge, the merged content will be in the left-side pane. To get
+        the merged content, you can use JavaScript code from a plugin as follows:</p>
+      <codeblock id="pre_gm2_nkq_crb" outputclass="language-javascript">/** @type {sync.api.Editor} */
 var editor = ...;
 editor.getContent((err, content) => {
   if (!err) {
     // Save the content of the editor
   }
 });</codeblock>
-        </section>
-    </body>
+    </section>
+  </body>
+  <related-links>
+    <link href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-merge-tool.html" format="html"
+      scope="external">
+      <linktext>Web Author Merge Tool</linktext>
+    </link>
+  </related-links>
 </topic>
