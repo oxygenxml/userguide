@@ -10,58 +10,94 @@
     </metadata>
   </prolog>
   <body>
-    <p><ph keyref="product"/> includes a file merge tool. It can be activated in several ways: </p>
-    <p>
-      <ul id="ul_edy_xdq_crb">
-        <li>Using the <menucascade>
-            <uicontrol>More... (triple dots)</uicontrol>
-            <uicontrol>Compare with...</uicontrol>
-            <uicontrol>Latest version from repository</uicontrol>
-          </menucascade> action in the toolbar of a regular editor.<ul id="ul_yyc_xdq_crb">
-            <li>This action opens the merge dialog if the editor is not read-only and if the file is
-              not part of a concurrent editing session. Otherwise the <xref
-                href="wa-file-comparison-tool.dita">file comparison tool</xref> is opened.</li>
-            <li>After you close the dialog, the changes you merged in the left file are synchronized
-              to the main editor.</li>
-          </ul></li>
-        <li>When committing a file in a Git repository, if there is a conflict.</li>
-        <li><?oxy_comment_start author="Cristian Talau" timestamp="20211001T064325+0000" comment="Link to this topic: wa-merge-tool-cms.dita ."?>Integrated
-          in a workflow<?oxy_comment_end?>.</li>
-      </ul>
+    <p id="p_qpm_ltj_drb"><ph keyref="product"/> includes a file merge tool. It is a useful feature
+      for cases where multiple users work with the same documents concurrently because it can be
+      used to resolve conflicts when committing changes to a repository. It performs a 3-way
+      comparison to show the differences between the your local version of a document and the most
+      recent version committed to the repository by another user since your last commit.</p>
+    <p id="p_ulw_ppj_drb">
+      <fig id="fig_axy_ppj_drb">
+        <title>Web Author Merge Tool</title>
+        <image href="../img/wa-diff-merge.png"/>
+      </fig>
     </p>
-    <p>The Merge tool presents two files that will be merged. The one on the left is editable and
-      will contain the merged content. Differences between files are highlighted and the user ca
-      navigate among them. If a base file is provided, the tool will perform a
-      <?oxy_comment_start author="Cristian Talau" timestamp="20211001T064821+0000" comment="Maybe we need a section to explain what 3-way diff is. "?>3-way
-      diff algorithm<?oxy_comment_end?>.</p>
-    <p>To merge the changes one can use the following functions:</p>
-    <p>
-      <ul id="ul_yg4_3gq_crb">
-        <li>An action to copy a change or a block of changes from the right file to the left
-          one.</li>
-        <li>An action to copy all changes from the right file to the left one. If a 3-way merge is
-          performed and the editor identified conflicts, the action will copy all non-conflicting
-          changes.</li>
-        <li>Manually editing in the left file, including features like: <ul id="ul_njr_chq_crb">
-            <li>Text editing</li>
-            <li>Inserting new elements using the Content Completion menu (triggered when pressing
-                  <uicontrol><shortcut>Enter</shortcut></uicontrol>).</li>
-            <li>Cut, Copy, and Paste content. These actions can be invoked either by their standard
-              shortcuts or from the contextual menu.</li>
-            <li>A find and replace dialog.</li>
-            <li>Actions to add and remove attributes. </li>
-            <li>Undo and Redo changes.</li>
-          </ul></li>
-      </ul>
-    </p>
-    <p>After making changes in the left file, the new differences between the two files may be
-      created. The visual highlights of these differences ca become out-of-date. By default, the
-      visual highlights are updated automatically when the user makes changes to the document. </p>
-    <p>For large documents, this update can take long and affect the user experience, so the editor
-      can be configured to disable this behavior using the
-        <codeph>&amp;runDiffOnChange=false</codeph> URL parameter. In this case, a
-        <uicontrol>Re-compute Differences</uicontrol> button appears on the toolbar to update the
-      visual highlights.</p>
+    <section id="section_rkj_wtj_drb">
+      <title>Triggering the Merge Tool</title>
+      <p id="p_km3_xtj_drb">The Web Author Merge tool is activated in the following ways:<ul
+          id="ul_yrx_xtj_drb">
+          <li id="li_zrx_xtj_drb">It is triggered when you select <menucascade>
+              <uicontrol>Compare with...</uicontrol>
+              <uicontrol>Latest version from repository</uicontrol>
+            </menucascade> from the <uicontrol><image href="../img/WebappMore18.png"/>More drop-down
+              menu</uicontrol> in the main toolbar.<ul id="ul_asx_xtj_drb">
+              <li id="li_bsx_xtj_drb">This action opens the <uicontrol>Merge</uicontrol> dialog box
+                if the editor is not <term>read-only</term> and if the file is not part of a <xref
+                  href="webauthor-concurrent-editing.dita">concurrent editing session</xref>.
+                Otherwise the <xref href="wa-file-comparison-tool.dita">file comparison tool</xref>
+                is opened.</li>
+              <li id="li_csx_xtj_drb">After you close the dialog box, changes that you merge into
+                the left file (your local version) are synchronized with the main editor.</li>
+            </ul></li>
+          <li id="li_dsx_xtj_drb">When you commit a file to a Git repository and there is a
+            conflict, you are presented with the choice to <uicontrol>Merge and commit</uicontrol>
+            or <uicontrol>Commit to a new branch</uicontrol>. If you choose the <uicontrol>Merge and
+              commit</uicontrol> option, the Merge tool is triggered to help you visualize and
+            resolve the conflict.</li>
+          <li id="li_esx_xtj_drb">In cases were Web Author is integrated in a CMS, it can be
+            triggered based on an <xref
+              href="https://www.oxygenxml.com/doc/ug-waCustom/topics/wa-merge-tool-cms.html"
+              format="html" scope="external">configuration specified by the CMS</xref>.</li>
+        </ul></p>
+    </section>
+    <section id="section_f4h_15j_drb">
+      <title>Using the Merge Tool</title>
+      <p id="p_vyf_b5j_drb">The Merge tool displays two files side-by-side with lines and colored
+        highlights that help you visualize the differences. The file on the left is your local
+        version and the left pane is editable (therefore, differences can be merged to the left
+        pane). The file on the right is the latest version that was committed to the repository by
+        another user and the right pane is not editable. Differences between the files are
+        highlighted and the user can navigate between them using the arrow buttons on the toolbar
+          (<image href="../img/DiffNextBlock16.png" id="image_vrq_3k3_tc"/>, <image
+          href="../img/DiffPreviousBlock16.png" id="image_lbz_hk3_tc"/>, <image
+          href="../img/DiffNext16.png" id="image_lbp_jk3_tc"/>, <image
+          href="../img/DiffPrevious16.png" id="image_vc1_hk3_tc"/>) or clicking on the highlights on
+        the vertical stripe on the right side. If a base file is provided, the tool will perform a
+          <xref href="wa-file-comparison-tool.dita#wa-file-comparison-tool/section_ty1_s3l_kjb"
+          >3-way file comparison</xref>.</p>
+      <p id="p_uzt_b5j_drb">To merge the changes, you can use the following functions:<ul
+          id="ul_yg4_3gq_crb">
+          <li id="li_bd2_c5j_drb">Use the <uicontrol><image href="../img/DiffCopyRightToLeft20.png"
+                id="image_3hq_4k3_tc" placement="inline"/>Copy Change from Right to Left</uicontrol>
+            toolbar button to copy a specific change or block of changes from the right-side file to
+            the left.</li>
+          <li id="li_cd2_c5j_drb">Use the <uicontrol><image
+                href="../img/DiffCopyAllRightToLeft20.png" id="image_svr_pk3_tc" placement="inline"
+              />Copy All Changes from Right to Left</uicontrol> toolbar button to copy all changes
+            from the right-side file to the left. If a 3-way merge is performed and the editor
+            identified conflicts, the action will only copy all <b>non-conflicting</b> changes.</li>
+          <li id="li_dd2_c5j_drb">You can manually edit the content in the left-side with various
+            features that include: <ul id="ul_njr_chq_crb">
+              <li id="li_fd2_c5j_drb">Insert new elements using the Content Completion menu
+                (triggered when pressing <uicontrol><shortcut>Enter</shortcut></uicontrol>).</li>
+              <li id="li_gd2_c5j_drb">Cut, Copy, and Paste content (using the standard editing
+                shortcuts or selecting the actions from the contextual menu).</li>
+              <li id="li_hd2_c5j_drb">Find and replace content by using
+                    <uicontrol><shortcut>Ctrl+F</shortcut></uicontrol> to trigger a
+                  <uicontrol>Find/Replace</uicontrol> dialog box.</li>
+              <li id="li_id2_c5j_drb">Add and remove attributes using actions from the contextual
+                menu. </li>
+              <li id="li_jd2_c5j_drb">Undo and Redo changes using standard shortcuts.</li>
+            </ul></li>
+        </ul></p>
+      <p id="p_tsw_c5j_drb">After making changes in the left-side file, new differences between the
+        two files may be created. The visual highlights of these differences can become out-of-date.
+        By default, the visual highlights are updated automatically when the user makes changes to
+        the document. For large documents, this update can take a long time and affect the user
+        experience, so the editor can be configured to disable this behavior using the
+          <codeph>&amp;runDiffOnChange=false</codeph> URL parameter. In this case, a
+            <uicontrol><image href="../img/DiffPerform20.png"/>Re-compute Differences</uicontrol>
+        button appears on the toolbar to update the visual highlights.</p>
+    </section>
     <section id="section_vvs_vvd_1rb">
       <title>Resources</title>
       <p id="p_nll_dgk_54bc">To see a visual demonstration of the Web Author Merge tool, watch our
@@ -72,4 +108,10 @@
         </object></p>
     </section>
   </body>
+  <related-links>
+    <link href="https://www.oxygenxml.com/doc/ug-waCustom/topics/wa-merge-tool-cms.html"
+      format="html" scope="external">
+      <linktext>Integrating the File Merge Tool with a CMS</linktext>
+    </link>
+  </related-links>
 </topic>
