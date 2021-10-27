@@ -12,154 +12,161 @@
       <title>Default Page</title>
       <p id="p_tmq_cgk_54b">The default page imposes a header that contains the publication title, chapter, and section
         title. They alternate on the left or right side of the page:</p>
-      <codeblock outputclass="language-css" id="codeblock_umq_cgk_54b">    @page :left {
-        @top-left {
-            content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
-            font-size:8pt;
-        }
-    }
+      <codeblock outputclass="language-css" id="codeblock_umq_cgk_54b">@page :left {
+  @top-left {
+    content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+  }
+}
 
-    @page :right{
-        @top-right {
-            content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
-            font-size:8pt;
-        }
-    }</codeblock>
+@page :right{
+  @top-right {
+    content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+  }
+}</codeblock>
     </section>
-    <note type="tip" id="note_vmq_cgk_54b">To override the default rules defined for named pages (such as chapter or table
-      of contents), you need to use more specific page rules that contain the page
-      name:<codeblock outputclass="language-css" id="codeblock_wmq_cgk_54b">   @page :left, table-of-contents:left, chapter:left {
-        @top-left {
-            content: "...";
-        }
-    }
+    <note type="tip" id="note_vmq_cgk_54b">To override the default rules defined for named pages
+      (such as chapter or table of contents), you need to use more specific page rules that contain
+      the page
+      name:<codeblock outputclass="language-css" id="codeblock_wmq_cgk_54b">@page :left, table-of-contents:left, chapter:left {
+  @top-left {
+    content: "...";
+  }
+}
 
-    @page :right, table-of-contents:right, chapter:right{
-        @top-right {
-            content: "...";
-        }
-    }</codeblock></note>
+@page :right, table-of-contents:right, chapter:right{
+  @top-right {
+    content: "...";
+  }
+}</codeblock></note>
     <section id="section_dwb_1sr_5cb">
       <title>Chapter Page</title>
       <p id="p_xmq_cgk_54b">This is inherited from the default page. The chapter page is associated
         to the topics marked as chapters, usually direct children of the map. It clears the header
         from the first page of each chapter. If you need to add other information to the chapter
         headers, make sure you override these rules in your CSS:</p>
-      <codeblock outputclass="language-css" id="codeblock_ymq_cgk_54b">    @page chapter{
-    	/* Currently inherit from the default page.*/
-    }
-    
-    /* No headers on the chapter first page. */
-    @page chapter:first:left{
-    	@top-left {
-    		content: none;
-    	}
-    }
-    @page chapter:first:right{
-    	@top-right {
-    		content: none;
-    	}
-    }</codeblock>
+      <codeblock outputclass="language-css" id="codeblock_ymq_cgk_54b">@page chapter{
+  /* Currently inherit from the default page.*/
+}
+
+/* No headers on the chapter first page. */
+@page chapter:first:left{
+  @top-left {
+    content: none;
+  }
+}
+@page chapter:first:right{
+  @top-right {
+    content: none;
+  }
+}</codeblock>
     </section>
     <section id="section_nz1_dsr_5cb">
       <title>Front Matter and Back Matter page</title>
       <p id="p_zmq_cgk_54b">The bookmap front matter and back matter page. It clears the headers.</p>
-      <codeblock outputclass="language-css" id="codeblock_anq_cgk_54b">   @page matter-page {
-        @top-left-corner    {          content:none }
-        @top-left           {          content:none }
-        @top-center         {          content:none }
-        @top-right          {          content:none }
-        @top-right-corner   {          content:none }
-        @bottom-left-corner {          content:none }
-        @bottom-left        {          content:none }
-        @bottom-center      {          content:none }
-        @bottom-right       {          content:none }
-        @bottom-right-corner{          content:none }
-    }</codeblock>
+      <codeblock outputclass="language-css" id="codeblock_anq_cgk_54b">@page matter-page {
+  @top-left-corner    {          content:none }
+  @top-center         {          content:none }
+  @top-right-corner   {          content:none }
+  @bottom-left-corner {          content:none }
+  @bottom-left        {          content:none }
+  @bottom-center      {          content:none }
+  @bottom-right       {          content:none }
+  @bottom-right-corner{          content:none }
+}
+
+@page matter-page:left {
+  @top-left           {          content: counter(page, lower-roman); }
+}
+
+@page matter-page:right {
+  @top-right          {          content: counter(page, lower-roman); }
+}</codeblock>
     </section>
     <section id="section_t5x_2sr_5cb">
       <title>Blank Pages</title>
       <p id="p_bnq_cgk_54b">The following example clears the header for the blank pages that may be created by a
           <codeph>page-break-before</codeph>, <codeph>page-break-after</codeph>, or by using <xref
           href="dcpp_double_side_pagination.dita">double side pagination</xref>:</p>
-      <codeblock outputclass="language-css" id="codeblock_cnq_cgk_54b">    @page :blank{
-    	@top-left {
-    		content: none;
-    	}
-    	@top-right {
-    		content: none;
-    	}
-    }</codeblock>
+      <codeblock outputclass="language-css" id="codeblock_cnq_cgk_54b">@page :blank{
+  @top-left {
+    content: none;
+  }
+  @top-right {
+    content: none;
+  }
+}</codeblock>
     </section>
     <section id="section_j2p_sss_5cb">
       <title>Index Page</title>
       <p id="p_dnq_cgk_54b">The page that contains the index terms (appears only if there are such items in your
         topics). It uses a lower roman page number in the footer:</p>
-      <codeblock outputclass="language-css" id="codeblock_enq_cgk_54b"> @page index {
-        @top-left-corner    {          content:none }
-        @top-left           {          content:none }
-        @top-center         {          content:none }
-        @top-right          {          content:none }
-        @top-right-corner   {          content:none }
-        @bottom-left-corner {          content:none }
-        @bottom-left        {          content:none }
-        @bottom-center      {          content: counter(page, lower-alpha) }
-        @bottom-right       {          content:none }
-        @bottom-right-corner{          content:none }
- }
- @media oxygen-chemistry {
-        @page index {
-            column-count: 2;
-            column-fill: auto;
-        }
-  }    </codeblock>
+      <codeblock outputclass="language-css" id="codeblock_enq_cgk_54b">@page index {
+  @top-left-corner    {          content:none }
+  @top-left           {          content:none }
+  @top-right          {          content:none }
+  @top-right-corner   {          content:none }
+  @top-center         {          content:none }
+  @bottom-left-corner {          content:none }
+  @bottom-left        {          content:none }
+  @bottom-right       {          content:none }
+  @bottom-right-corner{          content:none }
+  @bottom-center      {
+    content: counter(page, lower-alpha);
+    font-size: 11pt; 
+  }
+}
+
+@media oxygen-chemistry {
+  @page index {
+    column-count: 2;
+    column-fill: auto;
+  }
+}  </codeblock>
       <p id="p_fnq_cgk_54b">When transformed, the page layout is spread on two columns.</p>
     </section>
     <section id="section_j3l_gsr_5cb">
       <title>Large Tables Page</title>
       <p id="p_gnq_cgk_54b">The big tables are placed on a rotated page, with orientation
-        landscape:<codeblock outputclass="language-css" id="codeblock_hnq_cgk_54b">@page landscape-page :right {
-    size: landscape;
+        landscape:<codeblock outputclass="language-css" id="codeblock_hnq_cgk_54b">@page landscape-page:right {
+  size: landscape;
 
-    @top-left {
-        content: none
-    }
-    @top-center {
-        content: none
-    }
-    @top-right {
-        content: none
-    }
+  @top-left {
+    content: none
+  }
+  @top-center {
+    content: none
+  }
+  @top-right {
+    content: none
+  }
 
-    @right-bottom {
-        content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
-        font-size: 8pt;
-        transform: rotate(90);
-        vertical-align: middle;
-        text-align: right;
-    }
+  @right-bottom {
+    content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+    transform: rotate(90deg);
+    vertical-align: middle;
+    text-align: right;
+  }
 }
+  
+@page landscape-page:left {
+  size: landscape;
 
-@page landscape-page :left {
-    size: landscape;
+  @top-left {
+    content: none
+  }
+  @top-center {
+    content: none
+  }
+  @top-right {
+    content: none
+  }
 
-    @top-left {
-        content: none
-    }
-    @top-center {
-        content: none
-    }
-    @top-right {
-        content: none
-    }
-
-    @right-top {
-        content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
-        font-size: 8pt;
-        transform: rotate(90);
-        vertical-align: middle;
-        text-align: left;
-    }
+  @right-top {
+    content: string(maptitle) string(parttitle) string(chaptertitle) string(sectiontitle) " | " counter(page);
+    transform: rotate(90deg);
+    vertical-align: middle;
+    text-align: left;
+  }
 }</codeblock></p>
     </section>
   </body>
