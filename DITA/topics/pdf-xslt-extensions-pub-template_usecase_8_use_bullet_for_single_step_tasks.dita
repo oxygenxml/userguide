@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-pub-template_usecase_8_use_bullet_for_single_step_tasks">
+  <title>How to Use a Bullet for Tasks Containing a Single Step</title>
+  <body>
+    <p>If a DITA Task only contains one <xmlelement>step</xmlelement> element, you probably want it
+      to be rendered like an unordered list (displayed with a bullet instead of a number), like in
+      the following example:<codeblock outputclass="language-xml" id="codeblock_qgq_cgk_54b">...
+&lt;steps>
+   &lt;step>
+        &lt;cmd>My single step&lt;/cmd>
+   &lt;/step>
+&lt;/steps>
+...</codeblock></p>
+    <p>The output will be rendered
+      as:<codeblock outputclass="language-javascript" id="codeblock_tgq_cgk_54b">  1. The step</codeblock>When
+      you could expect
+      this:<codeblock outputclass="language-javascript" id="codeblock_sgq_cgk_54b"> o The step</codeblock></p>
+    <p id="p_cdq_cgk_54b">To add this functionality, use an <i>Oxygen Publishing Template</i> and
+      follow these steps:<ol id="ol_gjr_kq5_njb">
+        <li conkeyref="reusables-dcpp/pt-li1" id="li_ddq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li2" id="li_edq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li3" id="li_fdq_cgk_54b"/>
+        <li id="li_gdq_cgk_54b">In the newly created folder, create an XSL file (for example, named
+            <filepath>merged2html5Extension.xsl</filepath>) with the following
+          content:<codeblock outputclass="language-xml" id="codeblock_hdq_cgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs"
+  version="2.0">
+
+  &lt;xsl:template match="*[contains(@class, ' task/step ')][count(../*[contains
+(@class, ' task/step ')]) = 1]">
+    &lt;xsl:copy>
+      &lt;xsl:copy-of select="@*"/>
+      &lt;xsl:attribute name="outputclass" select="concat(@outputclass, ' single ')"/>
+      &lt;xsl:apply-templates/>
+    &lt;/xsl:copy>       
+  &lt;/xsl:template>
+
+&lt;/xsl:stylesheet></codeblock></li>
+        <li id="li_idq_cgk_54b">Open the <xref
+            href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+              descriptor file</i></xref> associated with your <i>publishing template</i> (the
+            <i>.opt</i> file) and set the XSLT stylesheet created in the previous step with the
+            <codeph>com.oxygenxml.pdf.css.xsl.merged2html5</codeph> XSLT extension
+          point:<codeblock outputclass="language-xml" id="codeblock_jdq_cgk_54b">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...        
+    &lt;xslt&gt;
+      &lt;extension
+        id="com.oxygenxml.pdf.css.xsl.merged2html5"/>
+        file="xslt/merged2html5Extension.xsl"
+    &lt;/xslt&gt;</codeblock></li>
+        <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template
+          directory. In this directory, save a custom CSS file with rules that style the
+            <i>glossary</i> structure. For
+          example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">*[outputclass ~= "single"] {
+  list-style-type:circle !important;
+  margin-left:2em;
+}</codeblock></li>
+        <li id="li_ibq_cgk_54b">Open the <xref
+            href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+              descriptor file</i></xref> associated with your <i>publishing template</i> (the
+            <filepath>.opt</filepath> file) and reference your custom CSS file in the
+            <codeph>resources</codeph>
+          element:<codeblock outputclass="language-xml" id="codeblock_jbq_cgk_54b">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...                
+    &lt;resources&gt;            
+      &lt;css file="css/custom.css"/&gt;
+    &lt;/resources&gt; </codeblock></li>
+        <li conkeyref="reusables-dcpp/pt-li6" id="li_kdq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li7" id="li_ldq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li8" id="li_mdq_cgk_54b"/>
+      </ol></p>
+  </body>
+</topic>
