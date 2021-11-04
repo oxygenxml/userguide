@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_modify_add_new_strings">
+  <title>How to Add New Strings</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"
+            /><indexterm>Add<indexterm>Strings</indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="single-topic-pdf-html5-transformation"
+              /><indexterm>Add<indexterm>Strings</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Add<indexterm>Strings</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_mg4_cgk_54b">To add a new language for generated text, you need to create a DITA-OT
+      extension plugin that uses the <term>dita.xsl.strings</term> extension point. The following
+      example uses Polish, but you can adapt it for any language:</p>
+    <ol id="ol_ng4_cgk_54b">
+      <li id="li_hfq_cgk_54b">In the <filepath><term keyref="glossentry_dita_ot_dir"
+          />\plugins\</filepath> folder, create a folder for this plugin (for example,
+          <filepath>com.oxygenxml.pdf.css.localization</filepath>).</li>
+      <li id="li_ifq_cgk_54b">Create a <b>plugin.xml</b> file (in the folder you created in step 1)
+        that specifies the extension points, your parameter file, and your customization stylesheet.
+        For
+        example:<codeblock outputclass="language-xml" id="codeblock_jfq_cgk_54b">&lt;plugin id="com.oxygenxml.pdf.css.localization">
+  &lt;require plugin="com.oxygenxml.pdf.css"/>
+
+  &lt;feature extension="dita.xsl.strings" file="pdf-extension-strings.xml"/>
+&lt;/plugin></codeblock></li>
+      <li id="li_rg4_cgk_54b">Create a <filepath>pdf-extension-strings.xml</filepath> file with the
+        following content: <itemgroup>
+          <codeblock outputclass="language-xml" id="codeblock_sg4_cgk_54b">&lt;langlist>
+  &lt;lang xml:lang="pl"     filename="strings-pl-pl.xml"/>
+  &lt;lang xml:lang="pl-pl"  filename="strings-pl-pl.xml"/>
+&lt;/langlist></codeblock>
+        </itemgroup></li>
+      <li id="li_tg4_cgk_54b">Copy the strings you want to change from the default files to the
+          <filepath>strings-pl-pl.xml</filepath> file, then replace their values: <itemgroup>
+          <codeblock outputclass="language-xml" id="codeblock_ug4_cgk_54b">&lt;strings xml:lang="pl-PL">
+  &lt;str name="Continued">(ciąg dalszy)&lt;/str>
+&lt;/strings></codeblock>
+          <note id="note_q1v_k4f_mrb" type="warning">Make sure the string <xmlatt>name</xmlatt>
+            attribute remains the same, it is used by the process as a key to retrieve the strings
+            text.</note>
+        </itemgroup></li>
+      <li id="li_mfq_cgk_54b">Use the <xref keyref="ditamap-run-dita-ot-integrator"
+          product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><uicontrol>Run DITA-OT Integrator</uicontrol> transformation scenario</xref><ph
+          product="pdf-css ope"><uicontrol>Run DITA-OT Integrator</uicontrol> transformation
+          scenario</ph> found in the <uicontrol>DITA Map</uicontrol> section in the
+          <uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box.</li>
+      <li id="li_nfq_cgk_54b"> Run the <b><ph keyref="pdf-html5-transformation"/></b> transformation
+        scenario.</li>
+    </ol>
+  </body>
+</topic>
