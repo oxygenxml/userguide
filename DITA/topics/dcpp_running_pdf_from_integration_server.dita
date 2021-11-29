@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_running_pdf_from_integration_server">
+    <title>Running PDF from Integration Server</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/><indexterm>Integration
+              Server<indexterm>Jenkins</indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="single-topic-pdf-html5-transformation"/><indexterm>Integration
+              Server<indexterm>Jenkins</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Integration
+          Server<indexterm>Jenkins</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p id="p_vyv_dgk_54b">PDF output can be automatically generated from a Continuous
+      Integration/Continuous Delivery system, such as <term>Jenkins</term>.</p>
+    <p id="p_xyv_dgk_54b">To integrate PDF output with the Jenkins CI tool, follow these steps:<ol
+        id="ol_yyv_dgk_54b">
+        <li id="li_zyv_dgk_54b">Create a Maven project to incorporate the DITA-OT that already
+          integrates <ph keyref="product"/>.</li>
+        <li id="li_azv_dgk_54b">Go to the root of your Maven project and edit the
+            <filepath>pom.xml</filepath> file to include the following
+          fragment:<codeblock outputclass="language-xml" id="codeblock_bzv_dgk_54b">&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  &lt;modelVersion>4.0.0&lt;/modelVersion>
+  
+  &lt;groupId>com.oxygenxml&lt;/groupId>
+  &lt;artifactId>oxygen-oxygen-pdf-css-generator&lt;/artifactId>
+  &lt;version>1.0&lt;/version>
+  
+  &lt;properties>
+    &lt;!-- The path to Oxygen Publishing Engine -->
+    &lt;dita-ot-dir>/path/to/oxygen-publishing-engine-3.x&lt;/dita-ot-dir>
+    &lt;!-- The path to the DITA map that you want to process. -->
+    &lt;input-file>/path/to/map.ditamap&lt;/input-file>
+    &lt;!-- The path of the output directory. -->
+    &lt;output-dir>/path/to/output/folder&lt;/output-dir>
+    &lt;!-- The path to the PDF publishing template folder (containing the .opt file). -->
+    &lt;publishing-template>/path/to/template/folder&lt;/publishing-template>
+  &lt;/properties>
+  
+  &lt;build>
+    &lt;plugins>
+      &lt;plugin>
+        &lt;groupId>org.codehaus.mojo&lt;/groupId>
+        &lt;artifactId>exec-maven-plugin&lt;/artifactId>
+        &lt;version>1.6.0&lt;/version>
+        &lt;executions>
+          &lt;execution>
+            &lt;id>generate-pdf-css&lt;/id>
+            &lt;phase>generate-sources&lt;/phase>
+            &lt;goals>
+              &lt;goal>exec&lt;/goal>
+            &lt;/goals>
+            &lt;configuration>
+              &lt;executable>${dita-ot-dir}/bin/dita&lt;/executable>
+              &lt;arguments>
+                &lt;argument>--format=pdf-css-html5&lt;/argument>
+                &lt;argument>--input=${input-file}&lt;/argument>
+                &lt;argument>--output=${output-dir}&lt;/argument>
+                &lt;argument>-Dpdf.publishing.template=${publishing-template}&lt;/argument>
+                &lt;argument>-v&lt;/argument>
+              &lt;/arguments>
+            &lt;/configuration>
+          &lt;/execution>
+        &lt;/executions>
+      &lt;/plugin>
+    &lt;/plugins>
+  &lt;/build>
+&lt;/project></codeblock></li>
+        <li id="li_czv_dgk_54b">Go to the Jenkins top page and create a new Jenkins job. Configure
+          this job to suit your particular requirements, such as the build frequency and location of
+          the Maven project.</li>
+      </ol></p>
+  </body>
+</topic>
