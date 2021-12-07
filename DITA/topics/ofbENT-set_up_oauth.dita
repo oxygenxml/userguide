@@ -112,6 +112,47 @@ oauth.generic.client.clientSecret=generic-client-secret</codeblock><note
           <term>Identity Provider</term> (refer to their user manual).<note id="note_g5l_s3k_xpb"
             >This is the endpoint that <ph keyref="product"/> uses to request an access token from
             the custom <term>Identity Provider</term>.</note></li>
+        <li id="li_wns_gyg_prb">
+          <p id="p_o5p_szg_prb">If the custom OAuth Identity Provider supports Open ID Connect, <ph
+            keyref="product"/> can extract information about the current user from the ID token
+            provided by the identify provider's server by setting the
+            <codeph>oauth.generic.userInfo.useIdToken=true</codeph> property (by default it is set
+            to <i>false</i>).</p>
+          <p id="p_bp2_szg_prb">If this property is set to <b>true</b>, <ph keyref="product"/>
+            expects that the <xref
+              href="https://openid.net/specs/openid-connect-core-1_0.html#IDToken" format="html"
+              scope="external">ID Token</xref> is available in the Access Token response under the
+            <codeph>id_token</codeph> key (see <xref
+              href="https://openid.net/specs/openid-connect-core-1_0.html#TokenResponse"
+              format="html" scope="external"/>).</p>
+          <p id="p_in2_5zg_prb">The ID Token is decoded (as it is a JSON Web Token according to the
+            Open ID specification) and the following information about the user is extracted:</p>
+          <ul id="ul_jn2_5zg_prb">
+            <li id="li_kn2_5zg_prb">user's identifier</li>
+            <li id="li_ln2_5zg_prb">user's display name</li>
+            <li id="li_mn2_5zg_prb">user's email address</li>
+          </ul>
+          <p id="p_nn2_5zg_prb">The names of the claims associated with that data can be specified
+            using the properties listed in the next step
+            (<codeph>oauth.generic.userInfo.claims.id</codeph>,
+            <codeph>oauth.generic.userInfo.claims.name</codeph>,
+            <codeph>oauth.generic.userInfo.claims.email</codeph>).</p>
+          <p id="p_dtn_h1h_prb">
+            <note id="note_u1s_h1h_prb" type="other" othertype="Notes">
+              <ul id="ul_lqx_31h_prb">
+                <li id="li_mqx_31h_prb">For the ID Token to be included in the Access Token
+                  Response, most Identity Providers require that the <term>openid</term> scope be
+                  specified in the list of scopes for the Authorization Code Flow. This can be done
+                  using the <codeph>oauth.generic.client.scope</codeph> configuration property. For
+                  example:<codeblock outputclass="language-bourne">oauth.generic.client.scope=email openid</codeblock></li>
+                <li id="li_wzn_q1h_prb">If the <codeph>oauth.generic.userInfo.useIdToken</codeph>
+                  property is set to <b>true</b>, then the value of the
+                  <codeph>oauth.generic.userInfo.uri</codeph> is ignored since a request to the
+                  associated <term>/userinfo</term> endpoint will not be performed.</li>
+              </ul>
+            </note>
+          </p>
+        </li>
         <li id="li_qp3_3gk_xpb">Configure the <term>User Info Endpoint URI</term> by setting the
           <codeph>oauth.generic.userInfo.uri</codeph> property according to your <term>Identity
             Provider</term> (refer to their user manual).<note id="note_hlp_w3k_xpb">
@@ -139,22 +180,23 @@ oauth.generic.client.clientSecret=generic-client-secret</codeblock><note
       </ol>
       <p id="p_kdr_jjk_xpb"><b>Example: <term>Keycloak</term> Sample
         Configuration</b><codeblock outputclass="language-bourne">############################### KEYCLOAK #######################
-### Custom OAuth Provider (other than Google or Facebook) ###
+#### Custom OAuth Provider (other than Google or Facebook) ####
 oauth.generic.enabled=true
-# The OAuth Provider's name (used as label for the associated 'Log in' button)
+## The OAuth Provider's name (used as label for the associated 'Log in' button)
 oauth.generic.name=Keycloak
 oauth.generic.client.clientId={oxygen-feedback-client-id}
 oauth.generic.client.clientSecret={oxygen-feedback-client-secret}
 oauth.generic.client.accessTokenUri={keycloak-server-base-url}/auth/realms/{keycloak-realm}/protocol/openid-connect/token
 oauth.generic.client.userAuthorizationUri={keycloak-server-base-url}/auth/realms/{keycloak-realm}/protocol/openid-connect/auth
 oauth.generic.client.scope=email
-# User Info Properties
-# The URI of the OAuth Provider's '/userinfo' endpoint
+## User Info Properties
+oauth.generic.userInfo.useIdToken=true
+## The URI of the OAuth Provider's '/userinfo' endpoint
 oauth.generic.userInfo.uri={keycloak-server-base-url}/auth/realms/{keycloak-realm}/protocol/openid-connect/userinfo
-# The names of the claims in the JSON returned by the OAuth Provider's '/userinfo' endpoint
+## The names of the claims in the JSON returned by the OAuth Provider's '/userinfo' endpoint
 oauth.generic.userInfo.claims.id=sub
 oauth.generic.userInfo.claims.name=name
-# Mandatory - if an email address could not be obtained for the current user then the authentication process will fail
+## Mandatory - if an email address could not be obtained for the current user then the authentication process will fail
 oauth.generic.userInfo.claims.email=email          </codeblock></p>
       <p id="p_pmm_pjk_xpb">You need to replace all placeholders (<codeph>{xxx-xxx}</codeph>) with
         their appropriate values. For more details about how to configure a client application on a
@@ -212,7 +254,6 @@ oauth.generic.userInfo.claims.email=email</codeblock></p>
     </section>
   </body>
   <related-links>
-    <link href="ofbENT-set_up_basic_auth.dita"/>
     <link href="ofbENT-how_to_configure_LDAP.dita"/>
   </related-links>
 </topic>
