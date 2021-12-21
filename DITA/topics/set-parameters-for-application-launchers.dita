@@ -80,12 +80,49 @@
     </section>
     <section id="setting-a-system-property">
       <title>Setting a system property</title>
-      <p id="p_bls_bgk_54b">To set a system property, edit the application launcher and add a
-        parameter after the <xmlelement>%OXYGEN_JAVA%</xmlelement> token, using the following
-        form:<codeblock outputclass="language-ini" id="codeblock_cls_bgk_54b">-Dproperty.name=value</codeblock></p>
-      <p id="p_dls_bgk_54b">You can also set a system property through a parameter prefixed with
-          <xmlelement>-Doxy</xmlelement> in the command line used to start the
-        application:<codeblock outputclass="language-ini" id="codeblock_els_bgk_54b">oxygen20.1.exe "-Doxyproperty.name=value"</codeblock></p>
+      <p>Depending on the operating system and type of installer you can set a Java system property
+        in multiple ways:<ul id="ul_lyb_cvh_zrb">
+          <li>[Windows/Linux installer] When installing the application on Windows or Linux using
+            the provided installation kit you can create in the installation folder your own <xref
+              href="custom-startup-parameters-file.dita">custom startup parameters file</xref>.</li>
+          <li>[Mac OS installer] In the application installation folder locate the
+              <filepath>Info.plist</filepath> file similarly to <xref
+              href="#set-parameters-for-application-launchers/increasing_the_amount_of_memory_that_uses_on_os_x"
+              >this procedure</xref>. Look for the <uicontrol>VMOptionArray</uicontrol> key and add
+            the system property in a new <xmlelement>string</xmlelement> element from the
+              <xmlelement>array</xmlelement> element. For
+            example:<codeblock id="codeblock_vvz_1wh_zrb" outputclass="language-xml">&lt;key>VMOptionArray&lt;/key>
+&lt;array> 
+  &lt;string>-Dproperty.name=value&lt;/string>
+  ...
+&lt;/array></codeblock></li>
+          <li>[Windows startup scripts] The application also contains startup scripts in the
+            installation folder, named
+              <filepath>oxygen.bat</filepath>/<filepath>author.bat</filepath>/<filepath>developer.bat</filepath>
+            depending on the application type. If you are using such scripts to start the
+            application you can edit them and add a parameter after the
+              <codeph>%OXYGEN_JAVA%</codeph> token, using the following
+            form:<codeblock outputclass="language-ini" id="codeblock_cls_bgk_54b">%OXYGEN_JAVA% -Dproperty.name=value ...</codeblock></li>
+          <li>[Linux/Mac startup scripts] The application also contains startup scripts in the
+            installation folder, named
+              <filepath>oxygen.sh</filepath>/<filepath>author.sh</filepath>/<filepath>developer.sh</filepath>
+            depending on the application type. If you are using such scripts to start the
+            application you can edit them and add a parameter after the <codeph>set --</codeph>
+            command, using the following
+            form:<codeblock outputclass="language-ini" id="codeblock_s44_nwh_zrb">set -- \
+ -Xdock:name="Oxygen XML Editor"\
+ -Xdock:icon="$OXYGEN_HOME/Oxygen XML Editor.app/Contents/Resources/app.icns"\
+ -Dproperty.name=value\
+ "$@"
+fi</codeblock></li>
+        </ul></p>
+      <p id="p_dls_bgk_54b">
+        <note id="note_uxf_cxh_zrb">You can also set a system property through a parameter prefixed
+          with <codeph>-Doxy</codeph> in the command line used to start the
+          application:<codeblock outputclass="language-ini" id="codeblock_els_bgk_54b">oxygen20.1.exe "-Doxyproperty.name=value"</codeblock>but
+          this system property will be set immediately after the application starts and might not be
+          available if it is needed sooner.</note>
+      </p>
       <p id="p_fls_bgk_54b">All system properties are displayed in the <uicontrol>System properties</uicontrol> tab of
         the <uicontrol>About</uicontrol> dialog box.</p>
       <p product="author developer editor" id="p_gls_bgk_54b">To view the list of <ph keyref="product"/> system
