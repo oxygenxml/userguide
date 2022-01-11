@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="using_oxygen_xml_editor_in_a_browser">
+  <title>How to Use <ph keyref="product"/> in a Web Browser (Experimental)</title>
+  <body>
+    <p id="p_zlc_25f_fsb">Since <ph keyref="product"/> is a Java Swing-based application, it is
+      possible for the application to be accessed remotely and used from a web browser (for example.
+      using <xref
+        href="https://jetbrains.github.io/projector-client/mkdocs/latest/ij_user_guide/jetbrains/"
+        format="html" scope="external"><term>JetBrains Projector</term></xref>).</p>
+    <p>The <xref
+        href="https://jetbrains.github.io/projector-client/mkdocs/latest/ij_user_guide/jetbrains/"
+        format="html" scope="external">JetBrains Projector</xref> is a technology for rendering
+      Swing applications over the network and is an interesting way to run and access these apps
+      remotely. Some of its use cases are listed here: <xref
+        href="https://jetbrains.github.io/projector-client/mkdocs/latest/ij_user_guide/jetbrains/#use-cases"
+        format="html" scope="external"/>.</p>
+    <p>To prepare an <ph keyref="product"/> installation on the server side for running in a web
+        browser:<ol id="ul_xp3_4n1_xrb">
+        <li id="li_grz_tvf_fsb">Download an <uicontrol>All</uicontrol> platforms version of the <ph
+            keyref="product"/> installation kit (<filepath>oxygen.tar.gz</filepath>): <xref
+            href="https://www.oxygenxml.com/xml_editor/download_oxygenxml_editor.html?os=Other"
+            format="html" scope="external"/>.</li>
+        <li id="li_hrz_tvf_fsb">Unpack it to the <filepath>oxygen</filepath> folder.</li>
+        <li>Download the <xref href="https://github.com/JetBrains/projector-installer" format="html"
+            scope="external">Jetbrains projector installer</xref> and unzip it in the <ph
+            keyref="product"/> installation folder (the folder path should be something like:
+            <filepath>oxygen/projector-server-1.5.0</filepath>).</li>
+        <li>Download the <xref href="https://github.com/JetBrains/JetBrainsRuntime/releases"
+            format="html" scope="external">Jetbrains Java 11 runtime enviroment</xref> and unpack it
+          to the <filepath>oxygen/jbr</filepath> folder.</li>
+        <li>Create a <filepath>start-projector-oxygen.bat</filepath> script in the
+            <filepath>oxygen</filepath> installation folder so that it adds the JetBrains libraries
+          to the classpath and runs the JetBrains server giving it the name of the main class as a
+          parameter to run it with the
+          contents:<codeblock id="codeblock_zhr_y41_xrb" outputclass="language-bourne">@echo off
+SET CP="%~dp0;%~dp0/classes;%~dp0/lib/oxygen-basic-utilities.jar;%~dp0/lib/oxygen.jar;%~dp0/projector-server-1.5.0/lib/*"
+
+%~dp0\jbr\bin\java.exe %OXYGEN_JAVA_OPTIONS% -Dcom.oxygenxml.app.descriptor=ro.sync.exml.EditorFrameDescriptor -cp %CP% -Dorg.jetbrains.projector.server.classToLaunch=ro.sync.exml.Oxygen org.jetbrains.projector.server.ProjectorLauncher %*</codeblock></li>
+        <li>Run the <filepath>start-projector-oxygen.bat</filepath> script, which will start an HTTP
+          server on port <codeph>8887</codeph> by default.</li>
+        <li>Connect to the <codeph>localhost:8887</codeph> port from the same computer or from
+          another computer using a web browser.</li>
+      </ol></p>
+    <p id="p_wj2_kwf_fsb"><b>Result:</b> You should be able to use <ph keyref="product"/> in a web
+      browser and have full access to the server-side resources.</p>
+  </body>
+</topic>
