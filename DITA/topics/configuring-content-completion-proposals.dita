@@ -208,9 +208,8 @@
         invoked:<codeblock outputclass="language-xml" id="codeblock_dz1_dgk_54b">&lt;xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:saxon="http://saxon.sf.net/"
   exclude-result-prefixes="xs"
-  version="2.0">
+  version="3.0">
   
   &lt;xsl:param name="documentSystemID" as="xs:string">&lt;/xsl:param>
   &lt;xsl:param name="contextElementXPathExpression" as="xs:string">&lt;/xsl:param>
@@ -220,8 +219,9 @@
   &lt;/xsl:template>
   
   &lt;xsl:template match="/">
-   &lt;xsl:variable name="propertyElement" 
-    select="saxon:eval(saxon:expression($contextElementXPathExpression, ./*))"/>
+   &lt;xsl:variable name="propertyElement" as="element()">
+     &lt;xsl:evaluate xpath="$contextElementXPathExpression" context-item="./*"/>
+   &lt;/xsl:variable>
     
    &lt;items>
      &lt;xsl:if test="$propertyElement/@name = 'color'">
