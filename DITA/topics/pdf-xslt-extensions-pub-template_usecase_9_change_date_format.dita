@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-pub-template_usecase_9_change_date_format">
+  <title>How to Change the Critical Dates Format</title>
+  <body>
+    <p>By default, the dates are entered in YYYY-MM-DD format, where YYYY is the year, MM is the
+      number of the month, and DD is the number of the day. You can change it to January 1, 2020 for
+      example.</p>
+    <p id="p_cdq_cgk_54b">To add this functionality, use an <i>Oxygen Publishing Template</i> and
+      follow these steps:<ol id="ol_gjr_kq5_njb">
+        <li conkeyref="reusables-dcpp/pt-li1" id="li_ddq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li2" id="li_edq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li3" id="li_fdq_cgk_54b"/>
+        <li id="li_gdq_cgk_54b">In the newly created folder, create an XSL file (for example, named
+            <filepath>merged2mergedExtension.xsl</filepath>) with the following
+          content:<codeblock outputclass="language-xml" id="codeblock_hdq_cgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs"
+  version="2.0">
+
+  &lt;xsl:template match="
+      *[contains(@class, 'topic/created')]/@date |
+      *[contains(@class, 'topic/revised')]/@modified" mode="copy-meta">
+    &lt;xsl:attribute name="{name()}">
+      &lt;xsl:value-of select="format-date(., '[MNn] [D01], [Y0001]')"/>
+    &lt;/xsl:attribute>
+  &lt;/xsl:template>
+  
+&lt;/xsl:stylesheet></codeblock></li>
+        <li id="li_idq_cgk_54b">Open the <xref
+            href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+              descriptor file</i></xref> associated with your <i>publishing template</i> (the
+            <i>.opt</i> file) and set the XSLT stylesheet created in the previous step with the
+            <codeph>com.oxygenxml.pdf.css.xsl.merged2merged</codeph> XSLT extension
+          point:<codeblock outputclass="language-xml" id="codeblock_jdq_cgk_54b">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...        
+    &lt;xslt&gt;
+      &lt;extension
+        id="com.oxygenxml.pdf.css.xsl.merged2merged"/>
+        file="xslt/merged2mergedExtension.xsl"
+    &lt;/xslt&gt;</codeblock></li>
+        <li conkeyref="reusables-dcpp/pt-li6" id="li_kdq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li7" id="li_ldq_cgk_54b"/>
+        <li conkeyref="reusables-dcpp/pt-li8" id="li_mdq_cgk_54b"/>
+      </ol></p>
+  </body>
+  <related-links>
+    <link href="https://www.oreilly.com/library/view/xslt-2nd-edition/9780596527211/ch04s05.html"
+      format="html" scope="external">
+      <linktext><b>Formatting Dates and Times in XSLT</b></linktext>
+    </link>
+  </related-links>
+</topic>
