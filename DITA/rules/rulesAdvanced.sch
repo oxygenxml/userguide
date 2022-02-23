@@ -564,6 +564,7 @@
         and parent::node()/local-name() != 'i'
         and parent::node()/local-name() != 'codeph'
         and parent::node()/local-name() != 'codeblock'
+        and parent::node()/local-name() != 'foreign'
         and parent::node()/local-name() != 'title'" sqf:fix="replaceWithProKey">
         Should use product key instead!
       </sch:report>
