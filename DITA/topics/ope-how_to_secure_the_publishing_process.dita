@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="ope_how_to_secure_the_publishing_process">
-    <title>How to Secure the Publishing Process</title>
-    <body>
-        <p>In case you are building a publishing service based on the <xref
+<topic id="ope-how_to_secure_the_publishing_process">
+  <title>How to Secure the Publishing Process</title>
+  <body>
+    <p>In case you are building a publishing service based on the <xref
         href="https://www.oxygenxml.com/publishing_engine.html" format="html" scope="external"
           ><b>Oxygen Publishing Engine</b></xref>, there are several questions you should take into
         account:<ul id="ul_pph_5mb_lpb">
@@ -12,26 +12,26 @@
           uploaded by another party?</li>
       </ul>If the data or customization is not fully controlled, you must take some steps to make
       the publishing process as secure as possible.</p>
-		<p>The <xref href="https://www.oxygenxml.com/publishing_engine.html" format="html"
+    <p>The <xref href="https://www.oxygenxml.com/publishing_engine.html" format="html"
         scope="external"><b>Oxygen Publishing Engine</b></xref> is a Java process that invokes an
       ANT script that processes the input documents in stages, up to the final output. When using a
       CSS-based PDF transformation, besides the normal processing, a new Java process is forked (the
       Chemistry process that transforms the merged DITA map into a PDF file). </p>
-		<p>Java has a built-in security mechanism that lets you control the set of accessible resources.
+    <p>Java has a built-in security mechanism that lets you control the set of accessible resources.
       It has command-line options that allow the caller to indicate a <xref
         href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/PolicyFiles.html"
         format="html" scope="external">security policy file</xref>.</p>
-		<p>Because there are two processes, <b>two policy files are needed</b> for securing the publishing
-      process (the <codeph>ope.policy</codeph> file and the <codeph>chemistry.policy</codeph>
-      file):</p>
-		<section id="section_jyn_z5r_4pb">
-			<title>The <term>ope.policy</term> File</title>
-			<p>It is located here: <codeph>${OPE-INSTALL_DIR}/config/ope.policy</codeph>. This can be used as
-        a starting point (a template) for securing just the primary OPE process. You can add more
+    <p>Because there are two processes, <b>two policy files are needed</b> for securing the
+      publishing process (the <codeph>ope.policy</codeph> file and the
+        <codeph>chemistry.policy</codeph> file):</p>
+    <section id="section_jyn_z5r_4pb">
+      <title>The <term>ope.policy</term> File</title>
+      <p>It is located here: <codeph>${OPE-INSTALL_DIR}/config/ope.policy</codeph>. This can be used
+        as a starting point (a template) for securing just the primary OPE process. You can add more
         permissions for other resources. <note id="note_t41_4yr_4pb">When changing this file, it is
           better to save it in another location and change it there. This ensures that you will not
           lose changes when upgrading the <b>Oxygen Publishing Engine</b>.</note></p>
-			<codeblock id="codeblock_wlg_3vr_4pb" outputclass="language-java">....
+      <codeblock id="codeblock_wlg_3vr_4pb" outputclass="language-java">....
 grant {
 
 	/////////////////////////////////////////////////////////////////
@@ -48,9 +48,9 @@ grant {
 	permission java.io.FilePermission "${ope.output.dir}/-", "read, write, delete";
 	
 ....</codeblock>
-			<p>In the snippet above, the variables are system properties that must be specified when starting
-        the primary DITA transformation process.</p>
-			<p>To start the OPE process with the security constraints, you have to use the
+      <p>In the snippet above, the variables are system properties that must be specified when
+        starting the primary DITA transformation process.</p>
+      <p>To start the OPE process with the security constraints, you have to use the
           <codeph>ANT_OPTS</codeph> environment variable to set the Java system properties that
         activate the security mechanism (the <codeph>java.security.manager</codeph> and
           <codeph>java.security.policy</codeph>) that points to either the file specified in the
@@ -68,8 +68,8 @@ ANT_OPTS=-Djava.security.policy="file:/%OPE_INSTALL_DIR%/config/ope.policy" \
 -Dope.publishing.template.dir="test\templates\template" \
 -Djava.io.tmpdir="test\map\temp\pdf-css-html5" \
 -Dcss.processor.path.chemistry="%OPE_INSTALL_DIR%\plugins\com.oxygenxml.pdf.css\lib\oxygen-pdf-chemistry\chemistry.bat" </codeblock></p>
-			<p>
-				<note id="note_thp_5vr_4pb">If you plan to create your own policy file, you can specify the
+      <p>
+        <note id="note_thp_5vr_4pb">If you plan to create your own policy file, you can specify the
           paths directly without needing to pass them as system properties. Take care to quote the
           paths and escape the backslash file separators on Windows. The <uicontrol>"*"</uicontrol>
           operator means all files from the folder, while the <uicontrol>"-"</uicontrol> operator
@@ -77,32 +77,34 @@ ANT_OPTS=-Djava.security.policy="file:/%OPE_INSTALL_DIR%/config/ope.policy" \
           example:<codeblock id="codeblock_ns5_dwr_4pb" outputclass="language-javascript">permission java.io.FilePermission "C:\\folder\\with\\images\\-", "read";</codeblock>Of
           course, you also have the option of using more variables. Make sure you set them in the
             <codeph>ANT_OPTS</codeph> environment variable.</note>
-				<note id="note_trz_14y_4pb">You can control the set of system properties the XSLT processor can
-          read by using the <codeph>ope.allowed.sys.props.for.saxon</codeph> parameter. It accepts a
-          semi-colon (<codeph>;</codeph>) separated list of property names. The built-in default is:
+        <note id="note_trz_14y_4pb">You can control the set of system properties the XSLT processor
+          can read by using the <codeph>ope.allowed.sys.props.for.saxon</codeph> parameter. It
+          accepts a semi-colon (<codeph>;</codeph>) separated list of property names. The built-in
+          default is:
           <codeblock id="codeblock_mn1_g4y_4pb" outputclass="language-bourne">-Dope.allowed.sys.props.for.saxon="file.separator;path.separator;line.separator;OT_VERSION;webhelp.*;user.dir"</codeblock></note>
-			</p>
-			<note id="note_kc2_k4y_4pb" type="tip">It is good practice to specify another temporary directory
-        that will be used by the Java process (the <codeph>java.io.tmpdir</codeph> parameter) to
-        avoid leaving the process to read and write in the system-wide temporary folder. </note>
-		</section>
-		<section id="section_xkq_dvr_4pb">
-			<title>The <term>chemistry.policy</term> File</title>
-			<p>It is located here:
-					<codeph>${OPE_INSTALL_DIR}/plugins/com.oxygenxml.pdf.css/lib/oxygen-pdf-chemistry/config/chemistry.policy</codeph>.
-				This also can be used as it is, or as a template, for securing the Chemistry process
-				that is forked by the OPE.</p>
-			<p>This time, the security policy file can be specified using the
+      </p>
+      <note id="note_kc2_k4y_4pb" type="tip">It is good practice to specify another temporary
+        directory that will be used by the Java process (the <codeph>java.io.tmpdir</codeph>
+        parameter) to avoid leaving the process to read and write in the system-wide temporary
+        folder. </note>
+    </section>
+    <section id="section_xkq_dvr_4pb">
+      <title>The <term>chemistry.policy</term> File</title>
+      <p>It is located here:
+          <codeph>${OPE_INSTALL_DIR}/plugins/com.oxygenxml.pdf.css/lib/oxygen-pdf-chemistry/config/chemistry.policy</codeph>.
+        This also can be used as it is, or as a template, for securing the Chemistry process that is
+        forked by the OPE.</p>
+      <p>This time, the security policy file can be specified using the
           <codeph>chemistry.security.policy</codeph> system property argument. In addition, you need
         to specify a folder where Chemistry will create its temporary files and font cache using the
           <codeph>chemistry.security.workspace</codeph> property:</p>
-			<codeblock id="codeblock_agy_bbs_4pb" outputclass="language-bourne">dita.bat -Dchemistry.security.policy="%OPE_INSTALL_DIR%\plugins\com.oxygenxml.pdf.css\lib\oxygen-pdf-chemistry\config\chemistry.policy \
+      <codeblock id="codeblock_agy_bbs_4pb" outputclass="language-bourne">dita.bat -Dchemistry.security.policy="%OPE_INSTALL_DIR%\plugins\com.oxygenxml.pdf.css\lib\oxygen-pdf-chemistry\config\chemistry.policy \
 -Dchemistry.security.workspace="C:\some\dir\for\chemistry\fonts\cache\and\temp\files"</codeblock>
-			<p>
-				<note id="note_mhb_pbs_4pb">If you plan to change the chemistry policy file, it is better to
+      <p>
+        <note id="note_mhb_pbs_4pb">If you plan to change the chemistry policy file, it is better to
           save it in another location and change it there. This ensures that you will not lose
           changes when upgrading the <b>Oxygen Publishing Engine</b>.</note>
-			</p>
-		</section>
-    </body>
+      </p>
+    </section>
+  </body>
 </topic>
