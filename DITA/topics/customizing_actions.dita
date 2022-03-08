@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="customizing_actions">
+    <title>Customizing  Actions</title>
+    <body>
+    <p>The Open AI actions that are shown in the toolbar panel are described by a default JSON
+      configuration file. You can start from this default configuration and change it to match your
+      needs. </p>
+    <image href="../img/customizing_openai_actions.png" id="image_nnd_ljw_5sb"/>
+    <p>The <uicontrol>Configure Actions</uicontrol> button copies the default configuration file
+      into your project folder (to <filepath>openai-completion-actions.json</filepath> file) and
+      then opens it in the JSON editor. After making changes to this file, remember to press the
+        <uicontrol>Refresh</uicontrol> button in order to reload the actions into the toolbar
+      panel.</p>
+    <p>In this way you can share this configuration with the rest of the team by simply committing
+      this file to your Git repository for instance.</p>
+    <p>Example of an action:</p>
+    <p><codeblock id="codeblock_gnf_dsv_5sb" outputclass="language-json">  {
+    "id": "action.summarize",
+    "type": "replace-selection",
+
+    "title": "Summarize",
+    "description": "Summarize the selected text.",
+    "color": "#FFAAAA",
+
+    "context": "Summarize the following text, by keeping just the core facts:\n\n\n",
+    "prompt-end":"\n\n\n###\n\n\n",
+    "examples": [],
+    "parameters": {
+      "engine": { 
+        "name": "text-davinci-001", 
+        "fine-tune": false
+      },
+      "temperature": 0.7,
+      "max_tokens":1024,
+      "stop":["\n\n\n"]
+    }
+  },</codeblock>The actions can be defined in three ways:<ol id="ol_fjl_vgq_5sb">
+        <li>By specifying natural language instructions, like in the example above.</li>
+        <li>By specifying both natural language instructions, and some prompt-completion examples </li>
+        <li>By specifying a fine tuned model.</li>
+      </ol>The following properties are available:<dl id="dl_vv3_msv_5sb">
+        <dlentry>
+          <dt>id</dt>
+          <dd>The ID of the action, should be an unique value.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>type</dt>
+          <dd>
+            <p>The type of the action. It can be:</p>
+            <p>
+              <dl id="dl_ujp_4sv_5sb">
+                <dlentry>
+                  <dt>replace-selection</dt>
+                  <dd>Replaces the selection with the completion text, as it resulted from the Open
+                    AI API calls.</dd>
+                </dlentry>
+                <dlentry>
+                  <dt>replace-selection-with-fragment</dt>
+                  <dd>Replaces the selection with the completion text, but interpreted as an XML
+                    fragment. If the text contains markup, it will create structure in the
+                    editor.</dd>
+                </dlentry>
+              </dl>
+            </p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>title</dt>
+          <dd>The title of the action, it will be used as a button label in the UI.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>description</dt>
+          <dd>The description of the action, it will be used as a tooltip on the action button.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>color</dt>
+          <dd>The color of the button.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>context</dt>
+          <dd>The natural language instructions that are sent to the Open AI model.  These
+            instructions are concatenated to the selected text from the editor, resulting in a
+            prompt. When designing your prompt please take into account the guidelines from: <xref
+              href="https://beta.openai.com/docs/guides/completion/prompt-design" format="html"
+              scope="external"/>.
+            Examples:<codeblock id="codeblock_ldg_gyv_5sb" outputclass="language-c">"Translate the next text to French:"
+"Summarize this for a second-grade student:"</codeblock></dd>
+        </dlentry>
+        <dlentry>
+          <dt>prompt-end</dt>
+          <dd>Separates the prompt from the completion. It is used when you specify some
+            prompt-completion pairs in the <term>examples</term> array, but also when sending the
+            context and selection as a single prompt. When using a fine tune model, this should be
+            the same token as it was used in the prompt-completion pairs from the JSONL training
+            set.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>examples</dt>
+          <dd>An array containing prompt-completion pairs. Usually just a few examples will suffice.
+            Each of the pairs contains: <p><dl id="dl_z5p_fdw_5sb">
+                <dlentry>
+                  <dt>prompt</dt>
+                  <dd>The prompt example</dd>
+                </dlentry>
+                <dlentry>
+                  <dt>completion</dt>
+                  <dd>The ideal completion the system should return.</dd>
+                </dlentry>
+              </dl>Example:<codeblock id="codeblock_upz_ldw_5sb" outputclass="language-json">{
+  "prompt": "To start the engine, 1 open the door 2 identify the ...",
+   "completion": "&lt;p>To start the engine:&lt;ol>&lt;li>open the door&lt;/li>&lt;li>identify the ..."
+},...</codeblock></p></dd>
+        </dlentry>
+        <dlentry>
+          <dt>parameters</dt>
+          <dd>This holds a set of properties that identify the engine that will be used by the
+            action, and Open AI API parameters:<p>
+              <dl id="dl_h2d_xhw_5sb">
+                <dlentry>
+                  <dt>engine</dt>
+                  <dd>
+                    <p>You identify an engine by its name (ID) and by a boolean indicating if it is
+                      a fine tuned engine or a default one.</p>
+                    <p>
+                      <dl id="dl_wx4_13w_5sb">
+                        <dlentry>
+                          <dt>name</dt>
+                          <dd>The name of the engine. You can use the combo box from the
+                              <uicontrol>Model</uicontrol> pane to access the model names. If you
+                            have fine tuned a model, you will also see it listed in the combo box.
+                            The latest updated models are the first in the list. For creating fine
+                            tunes see <xref href="creating_a_fine_tuned_model.dita"/> and the Open
+                            AI documentation: <xref
+                              href="https://beta.openai.com/docs/guides/fine-tuning" format="html"
+                              scope="external"/>.</dd>
+                        </dlentry>
+                        <dlentry>
+                          <dt>fine-tune</dt>
+                          <dd>A boolean. Set it to <codeph>true</codeph> if the selected engine is a
+                            fine tune.</dd>
+                        </dlentry>
+                      </dl>
+                    </p>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>...other parameters</dt>
+                  <dd>..like <codeph>max_tokens</codeph>, <codeph>stop</codeph>, etc. These are
+                    forwarded directly to the Open AI engine, when the completion request is sent.
+                    For the complete list of them see: <xref
+                      href="https://beta.openai.com/docs/api-reference/completions" format="html"
+                      scope="external"/></dd>
+                </dlentry>
+              </dl>
+            </p></dd>
+        </dlentry>
+      </dl></p>
+  </body>
+</topic>
