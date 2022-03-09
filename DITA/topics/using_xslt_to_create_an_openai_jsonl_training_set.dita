@@ -3,27 +3,27 @@
 <topic id="using_xslt_to_create_an_openai_jsonl_training_set">
     <title>Using XSLT to Create an Open AI Training Set </title>
     <body>
-    <p>Consider you need to fine tune a model to learn to apply markup to your text.</p>
-        <p>To train or fine tune a base model you will need to create a data set in a JSONL format.
-      An Open AI JSONL file contains prompt - completion pairs, each pair on a single
+    <p>Suppose you need to fine tune a model to learn to apply markup to your text.</p>
+        <p>To train or fine tune a base model, you need to create a data set in JSONL format. An
+      Open AI JSONL file contains prompt - completion pairs, each pair on a single
       line.<codeblock id="codeblock_ccy_blv_5sb" outputclass="language-javascript">{"prompt": "&lt;prompt text>", "completion": "&lt;sample of generated text>"}</codeblock></p>
     <p>For more details about this format, see: <xref
         href="https://beta.openai.com/docs/guides/fine-tuning/prepare-training-data" format="html"
-        scope="external"/></p>
-    <p>In the following we will develop an XSLT stylesheet that generates the JSONL file: we create
-      prompt-completion pairs by putting together the plain text with the marked text from each of
-      these elements.<dl id="dl_ofh_dnv_5sb">
+        scope="external"/>.</p>
+    <p>In the following example, an XSLT stylesheet is used to generate the JSONL file.
+      Prompt-completion pairs are created by putting the plain text together with the marked text
+      from each of these elements.<dl id="dl_ofh_dnv_5sb">
         <dlentry>
           <dt>prompt</dt>
-          <dd>pure text without any markup.</dd>
+          <dd>Pure text without any markup.</dd>
         </dlentry>
         <dlentry>
           <dt>completion</dt>
-          <dd>text with serialized markup.</dd>
+          <dd>Text with serialized markup.</dd>
         </dlentry>
       </dl></p>
-    <p>First, we start by defining some constants and then creating the root matching template that
-      scans a folder containing DITA topics.</p>
+    <p>First, some constants are defined and then the root matching template that scans a folder
+      that contains DITA topics is created:</p>
     <codeblock id="codeblock_yl5_qmv_5sb" outputclass="language-xml">
   &lt;!-- Method "text" because we generate JSON -->
   &lt;xsl:output method="text" omit-xml-declaration="yes"/>
@@ -39,9 +39,9 @@
         &lt;xsl:call-template name="process-file"/>
       &lt;/xsl:for-each>
   &lt;/xsl:template></codeblock>
-    <p>Next, we define the template that processes each of the topic files. Only the
+    <p>Next, the template that processes each of the topic files is defined. Only the
         <xmlelement>p</xmlelement> and <xmlelement>li</xmlelement> elements are selected in this
-      example, and for each of them we will generate a prompt-completion pair.</p>
+      example, and for each of them, a prompt-completion pair is generated.</p>
     <codeblock id="codeblock_ir1_vmv_5sb" outputclass="language-xml">&lt;xsl:template name="process-file">
     &lt;xsl:message>Processing &lt;xsl:value-of select="document-uri(.)"/>&lt;/xsl:message>
     &lt;xsl:for-each select=".//*[contains(@class, ' topic/p ') or 
@@ -67,8 +67,8 @@ disable-output-escaping="yes"/>&lt;xsl:value-of
 select="$completion-terminator"/>"}&lt;/xsl:if>
     &lt;/xsl:for-each>
   &lt;/xsl:template></codeblock>
-    <p>Since the format is JSON, we need to cleanup the prompt and completion strings, escaping the
-      quotes and apostrophes. This function is used from the above template.</p>
+    <p>Since the format is JSON, the prompt and completion strings need to be cleaned up by escaping
+      the quotes and apostrophes. This function is used from the above template.</p>
     <codeblock id="codeblock_g5q_tnv_5sb" outputclass="language-xml">  &lt;xsl:function name="oxy:clean">
     &lt;xsl:param name="txt"/>
     &lt;xsl:variable name="apos">'&lt;/xsl:variable>
@@ -82,8 +82,8 @@ select="$completion-terminator"/>"}&lt;/xsl:if>
     &lt;/xsl:variable>
     &lt;xsl:sequence select="$txt"/>
   &lt;/xsl:function></codeblock>
-    <p>Now, to serialize the markup from a paragraph, we match all the inlines of interest and emit
-      the element names and attributes for each of them:</p>
+    <p>Next, to serialize the markup from a paragraph, all the inlines of interest are matched and
+      the element names and attributes are emitted for each of them:</p>
     <codeblock id="codeblock_l3y_krv_5sb" outputclass="language-xml">  &lt;!--
     Match the inline elements and serializes them. 
    -->
@@ -115,8 +115,8 @@ select="$completion-terminator"/>"}&lt;/xsl:if>
     &lt;xsl:value-of select="local-name()"/>
     &lt;xsl:text>&amp;gt;&lt;/xsl:text>    
   &lt;/xsl:template></codeblock>
-    <p>To apply this stylesheet, create an XSLT transformation scenario in <ph keyref="product"/>,
-      you can choose any well formed XML file as input (the stylesheet scans a folder using the
-      collection function, so this input will be in fact ignored) and specify the output file.</p>
+    <p>To apply this stylesheet, create an XSLT transformation scenario in <ph keyref="product"/>.
+      You can choose any well-formed XML file as the input (the stylesheet scans a folder using the
+      collection function, so this input will be ignored) and specify the output file.</p>
     </body>
 </topic>
