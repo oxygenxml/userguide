@@ -528,6 +528,39 @@
           options for replacing the disallowed value with one of those four allowed values (using
           the <codeph>use-for-each</codeph> construct).</p>
       </section>
+      <section id="section_ryl_ydr_vsb">
+        <title>SQF Use Case 5: Impose a Certain Attributes</title>
+        <p><b>Description:</b> The following sample Schematron rule checks the
+            <xmlatt>rowsep</xmlatt>and <xmlatt>colsep</xmlatt> attributes are added on the
+            <xmlelement>table</xmlelement>element and their value is set to 1. The Quick Fix
+          proposes options for adding the attributes in case they are missing or set the correct
+          value .</p>
+        <p><b>Sample
+          Code:</b><codeblock outputclass="language-xml" id="codeblock_wyl_ydr_vsb">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+    &lt;sch:pattern>
+        &lt;sch:rule context="table">
+            &lt;sch:assert test="@rowsep = 1" sqf:fix="addRowsep">The @rowsep should be set to 1&lt;/sch:assert>
+            &lt;sch:assert test="@colsep = 1" sqf:fix="addColsep">The @colsep should be set to 1&lt;/sch:assert>
+            
+            &lt;sqf:fix id="addRowsep">
+                &lt;sqf:description>
+                    &lt;sqf:title>Add @rowsep attribute&lt;/sqf:title>
+                &lt;/sqf:description>
+                &lt;sqf:add node-type="attribute" target="rowsep" select="'1'"/>
+            &lt;/sqf:fix>
+            
+            &lt;sqf:fix id="addColsep">
+                &lt;sqf:description>
+                    &lt;sqf:title>Add @colsep attribute&lt;/sqf:title>
+                &lt;/sqf:description>
+                &lt;sqf:add node-type="attribute" target="colsep" select="'1'"/>
+            &lt;/sqf:fix>
+        &lt;/sch:rule>
+    &lt;/sch:pattern>
+&lt;/sch:schema></codeblock></p>
+      </section>
     </body>
   </topic>
 </topic>
