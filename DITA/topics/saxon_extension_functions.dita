@@ -3,45 +3,42 @@
 <topic id="saxon_extension_functions">
   <title>Using Saxon Integrated Extension Functions</title>
   <body>
-    <p id="p_m3z_bgk_54b">Saxon, the transformation and validation engine used by <ph keyref="product"/>, can be
-      customized by adding custom functions (called <xref
-        href="https://www.saxonica.com/documentation9.5/extensibility/integratedfunctions/"
+    <p id="p_m3z_bgk_54b">Saxon, the transformation and validation engine used by <ph
+        keyref="product"/>, can be customized by adding custom functions (called <xref
+        href="https://www.saxonica.com/html/documentation10/extensibility/integratedfunctions/"
         format="html" scope="external">Integrated Extension Functions</xref>) that can be called
       from XPath.</p>
     <p id="p_n3z_bgk_54b">To define such a function, follow these steps:<ol id="ol_smm_sk2_nfb">
         <li id="li_o3z_bgk_54b">Create a file with a Java class that extends
             <codeph>net.sf.saxon.lib.ExtensionFunctionDefinition</codeph>. Here is an
-          example:<codeblock outputclass="language-java" id="codeblock_p3z_bgk_54b">private static class ShiftLeft extends ExtensionFunctionDefinition {
-  @Override
-  public StructuredQName getFunctionQName() {
-    return new StructuredQName("eg", "http://example.com/saxon-extension", "shift-left");
-  }
-
-
-  @Override
-  public SequenceType[] getArgumentTypes() {
-  	return new SequenceType[] {SequenceType.SINGLE_INTEGER, SequenceType.SINGLE_INTEGER};
-  }
-
-
-  @Override
-  public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-  	return SequenceType.SINGLE_INTEGER;
-  }
-
-
-  @Override
-  public ExtensionFunctionCall makeCallExpression() {
-  	return new ExtensionFunctionCall() {
-	  public SequenceIterator call(SequenceIterator[] arguments, XPathContext context)
-                    throws XPathException {
-  	    long v0 = ((IntegerValue)arguments[0].next()).longValue();
-  		long v1 = ((IntegerValue)arguments[1].next()).longValue();
-  		long result = v0&lt;&lt;v1;
-        return Value.asIterator(Int64Value.makeIntegerValue(result));
-      }
-    };
-  }
+          example:<codeblock outputclass="language-java" id="codeblock_p3z_bgk_54b">public class ShiftLeft extends ExtensionFunctionDefinition {
+    @Override
+    public StructuredQName getFunctionQName() {
+        return new StructuredQName("eg", "http://example.com/saxon-extension", "shift-left");
+    }
+    
+    @Override
+    public SequenceType[] getArgumentTypes() {
+        return new SequenceType[]{SequenceType.SINGLE_INTEGER, SequenceType.SINGLE_INTEGER};
+    }
+    
+    @Override
+    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+        return SequenceType.SINGLE_INTEGER;
+    }
+    
+    @Override
+    public ExtensionFunctionCall makeCallExpression() {
+        return new ExtensionFunctionCall() {
+            @Override
+            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+                long v0 = ((IntegerValue)arguments[0]).longValue();
+                long v1 = ((IntegerValue)arguments[1]).longValue();
+                long result = v0&lt;&lt;v1;
+                return Int64Value.makeIntegerValue(result);
+            }
+        };
+    }
 }</codeblock></li>
         <li id="li_q3z_bgk_54b">Compile the class and add it to a JAR file. </li>
         <li id="li_r3z_bgk_54b">Add a file called <b>net.sf.saxon.lib.ExtensionFunctionDefinition</b> that contains the
