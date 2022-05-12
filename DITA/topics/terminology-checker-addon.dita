@@ -66,182 +66,13 @@
               <uicontrol>New</uicontrol>
             </menucascade> and search for the <i>Terminology File</i> template. Here is an example
             of the structure for this type of
-              file:<codeblock outputclass="language-xml" id="codeblock_ich_dgk_54b">&lt;incorrect-terms lang="en">
+            file:<codeblock outputclass="language-xml" id="codeblock_ich_dgk_54b">&lt;incorrect-terms lang="en">
     &lt;incorrect-term ignorecase="true">
         &lt;match>Oxygen&lt;/match>
         &lt;suggestion>&lt;/suggestion>
         &lt;message>Product name should be inside a tag.&lt;/message>
     &lt;/incorrect-term>
-&lt;/incorrect-terms></codeblock><p>The following elements can be used in the XML
-              rules file:<dl id="dl_pbh_f3s_mtb">
-                <dlentry>
-                  <dt><xmlelement>incorrect-terms</xmlelement></dt>
-                  <dd>This is the root element of the XML rules file.</dd>
-                  <dd><p>You can specify the <xmlatt>lang</xmlatt> attribute on the
-                        <xmlelement>incorrect-terms</xmlelement> root element. When set, the terms
-                      defined in this terminology file are applied when the closest
-                        <xmlatt>xml:lang</xmlatt> attribute of the checked node matches the value
-                      specified. Not setting this attribute means that the incorrect terms are
-                      applied for all nodes. </p><p>If the <xmlatt>xml:lang</xmlatt> attribute is
-                      not defined in your document, the language specified in the <xref
-                        href="preferences-editor-spell-check.dita">Spell Check preferences</xref> is
-                      used.</p><p>
-                      <note id="note_df2_k3s_mtb">If the value of the document's
-                          <xmlatt>xml:lang</xmlatt> attribute is not a superset of the value of the
-                          <xmlatt>lang</xmlatt> attribute for the
-                          <xmlelement>incorrect-terms</xmlelement> element, there will not be a match.<p>
-                          <table frame="all" rowsep="1" colsep="1" id="table_ef2_k3s_mtb">
-                            <title>Language Matching Matrix</title>
-                            <tgroup cols="3">
-                              <colspec colname="c1" colnum="1" colwidth="1*"/>
-                              <colspec colname="c2" colnum="2" colwidth="1*"/>
-                              <colspec colname="c3" colnum="3" colwidth="1*"/>
-                              <tbody>
-                                <row>
-                                  <entry morerows="1" align="center"><xmlatt>lang</xmlatt> value for
-                                      <xmlelement>incorrect-terms</xmlelement> element</entry>
-                                  <entry namest="c2" nameend="c3" align="center"
-                                      ><xmlatt>xml:lang</xmlatt> value</entry>
-                                </row>
-                                <row>
-                                  <entry><b>en</b></entry>
-                                  <entry><b>en_US</b></entry>
-                                </row>
-                                <row>
-                                  <entry><b>en</b></entry>
-                                  <entry>match</entry>
-                                  <entry>match</entry>
-                                </row>
-                                <row>
-                                  <entry><b>en_US</b></entry>
-                                  <entry>not matched</entry>
-                                  <entry>match</entry>
-                                </row>
-                              </tbody>
-                            </tgroup>
-                          </table>
-                        </p></note>
-                    </p>You can specify the <xmlatt>phase</xmlatt> attribute on the
-                      <xmlelement>incorrect-terms</xmlelement> root element. The value of this
-                    attribute is inherited by <xmlelement>incorrect-term</xmlelement> children
-                    nodes. Not setting this attribute means the default phase is used. <p
-                      id="p_pyk_31q_ctb">The allowed values are: <ul id="ul_aqj_b32_vsb">
-                        <li id="li_qyk_31q_ctb"><uicontrol>always</uicontrol> - Incorrect terms are
-                          always presented (default value).</li>
-                        <li id="li_ryk_31q_ctb"><uicontrol>editing</uicontrol> - Incorrect terms are
-                          shown when the document is opened in the <uicontrol>Author</uicontrol>
-                          mode.</li>
-                        <li id="li_syk_31q_ctb"><uicontrol>validation</uicontrol> - Incorrect terms
-                          are shown when the document is checked from a validation scenario.</li>
-                      </ul></p><p id="p_tyk_31q_ctb">For example, set this attribute if you want to
-                      apply the most important rules when validating with the <i>Validate and Check
-                        for Completeness</i> action, while still keeping them applied in the editing
-                      window. </p></dd>
-                </dlentry>
-                <dlentry>
-                  <dt><xmlelement>incorrect-term</xmlelement></dt>
-                  <dd>
-                    <p>Defines ways to match and correct an incorrect term. The
-                        <xmlelement>incorrect-term</xmlelement> element must include a
-                        <xmlelement>match</xmlelement> element.</p>
-                    <p>The <xmlatt>ignorecase</xmlatt> attribute specifies whether or not the match
-                      is case-sensitive.</p>
-                    <p>The <xmlatt>severity</xmlatt> attribute can be set to one of the following
-                      values: <codeph>info</codeph>, <codeph>warning</codeph>, or
-                        <codeph>error</codeph>.
-                      Example:<codeblock outputclass="language-xml" id="codeblock_och_dgk_54b">    &lt;incorrect-term severity="error">
-        &lt;match>he&lt;/match>
-        &lt;message>Pronouns should be avoided.&lt;/message>
-    &lt;/incorrect-term></codeblock></p>
-                    <p>An experimental <xmlatt>part-of-speach</xmlatt> attribute can be set on the
-                        <xmlelement>incorrect-term</xmlelement> element with the value set to a part
-                      of speech tag (for example: <codeph>adjective</codeph>, <codeph>verb</codeph>,
-                      etc.) If set, when scanning for terminology problems, the problem is presented
-                      only if the term's part of speech matches the one specified. The processor
-                      used to identify the part of speech is <term>Apache OpenNLP</term> and this
-                      feature is supported only for the English language. <note
-                        id="note_lwr_jgt_ctb">The results may not be 100% accurate, so you should
-                        double-check them.</note></p>
-                  </dd>
-                </dlentry>
-                <dlentry>
-                  <dt><xmlelement>match</xmlelement></dt>
-                  <dd><p>Specify the text fragment to match. </p>You can specify the
-                      <xmlatt>type</xmlatt> attribute on the <xmlelement>match</xmlelement> element,
-                    with the values <codeph>character</codeph>, <codeph>whole-words</codeph>, or
-                      <codeph>regular-expression</codeph>. The default value is
-                      <codeph>whole-word</codeph>, unless the matched term contains Japanese,
-                    Chinese, or Korean characters because Asian languages often do not use spaces to
-                    separate words.
-                    Example:<codeblock outputclass="language-xml" id="codeblock_mch_dgk_54b">    &lt;incorrect-term>
-        &lt;match type="character">ing&lt;/match>
-        &lt;message>Progressive tense should not be allowed&lt;/message>
-    &lt;/incorrect-term></codeblock></dd>
-                </dlentry>
-                <dlentry>
-                  <dt><xmlelement>suggestion</xmlelement></dt>
-                  <dd>
-                    <p>The <xmlelement>suggestion</xmlelement> element can be left blank or there
-                      can be one or more of them inside the <xmlelement>incorrect-term</xmlelement>
-                      element. It supports regular expressions grouping.</p>
-                    <p>If you want to replace the match with an XML fragment, you can set the
-                        <xmlatt>format</xmlatt> attribute on the <xmlelement>suggestion</xmlelement>
-                      element with the value <codeph>xml</codeph>. For
-                      example:<codeblock outputclass="language-xml" id="codeblock_rch_dgk_54b">   &lt;incorrect-term ignorecase="true">
-        &lt;match type="whole-word">Oxygen XML Editor&lt;/match>
-        &lt;suggestion format="xml">&amp;lt;ph keyref=&amp;quot;oxygen&amp;quot;/>&lt;/suggestion>
-        &lt;message>Replace all occurrences of product with key reference.&lt;/message>
-    &lt;/incorrect-term></codeblock></p>
-                  </dd>
-                </dlentry>
-                <dlentry>
-                  <dt><xmlelement>message</xmlelement></dt>
-                  <dd>The <xmlelement>message</xmlelement> element is optional. If present, its
-                    content is displayed in a tooltip when you hover over a highlight. It supports
-                    regular expressions grouping.</dd>
-                </dlentry>
-                <dlentry>
-                  <dt><xmlelement>link</xmlelement></dt>
-                  <dd>The <xmlelement>link</xmlelement> element is optional. If present, it provides
-                    the source for this rule.
-                    Example:<codeblock outputclass="language-xml" id="codeblock_n44_hrp_lrb">&lt;incorrect-term ignorecase="true">
-  &lt;match type="whole-word">Oxygen XML Editor&lt;/match>
-  &lt;suggestion format="xml">&amp;lt;ph keyref=&amp;quot;oxygen&amp;quot;/>&lt;/suggestion>
-  &lt;link>https://www.oxygenxml.com/doc/ug-editor/topics/terminology-checker.html&lt;/link>
-&lt;/incorrect-term></codeblock></dd>
-                </dlentry>
-                <dlentry>
-                  <dt><xmlelement>xpath-context</xmlelement></dt>
-                  <dd><p>The <xmlelement>xpath-context</xmlelement> element can be used to define
-                      simple XPath expressions that match specific elements. </p>You can specify
-                      <xmlatt>include</xmlatt> and <xmlatt>exclude</xmlatt> attributes. The elements
-                    covered by this simplified XPath will be checked for matches (or the exclusion
-                    of a match). A list of comma-separated XPath values can be used.
-                      Example:<codeblock id="codeblock_stq_qjw_ktb" outputclass="language-xml">&lt;xpath-context include="p, div, codeblock"></codeblock><p>The
-                      following are examples of how simplified XPath expressions might look
-                      like:</p><ul id="ul_x3k_gfw_ktb">
-                      <li><codeph>elementName</codeph></li>
-                      <li><codeph>//elementName</codeph></li>
-                      <li><codeph>/elementName1/elementName2/elementName3</codeph></li>
-                      <li><codeph>//xs:localName</codeph><note id="note_mp4_zfw_ktb">The namespace
-                          prefixes (such as <codeph>xs</codeph>) are treated as part of the element
-                          name without taking its binding to a namespace into account.</note></li>
-                    </ul><p>You can use one or more of the following attribute conditions:</p><note
-                      id="note_ccl_2gw_ktb" type="attention">Default attribute values are not taken
-                      into account.</note><ul id="ul_tpf_r3s_mtb">
-                      <li><codeph>element[@attr]</codeph> - Matches all instances of the specified
-                        element when it includes the specified attribute.</li>
-                      <li><codeph>element[not(@attr)]</codeph> - Matches all instances of the
-                        specified element when it does not include the specified attribute.</li>
-                      <li><codeph>element[@attr = 'value']</codeph> - Matches all instances of the
-                        specified element when it includes the specified attribute with the given
-                        value.</li>
-                      <li><codeph>element[@attr != 'value']</codeph> - Matches all instances of the
-                        specified element when it includes the specified attribute and its value is
-                        different than the one given.</li>
-                    </ul></dd>
-                </dlentry>
-              </dl></p></li>
+&lt;/incorrect-terms></codeblock></li>
           <li id="li_uch_dgk_54b">Go to <menucascade>
               <uicontrol>Options</uicontrol>
               <uicontrol>Preferences</uicontrol>
@@ -262,6 +93,173 @@
           named <filepath>oxygen-term-checker</filepath> in the current project that is open in the
             <uicontrol>Project</uicontrol> view, all the files in that folder will also be loaded by
           the terminology checker.</note></p>
+    </section>
+    <section id="section_gxv_qbz_mtb">
+      <title>Structure of Terminology Rules File</title>
+      <p>The following elements can be used in the terminology rules XML file:<dl
+          id="dl_pbh_f3s_mtb">
+          <dlentry>
+            <dt><xmlelement>incorrect-terms</xmlelement></dt>
+            <dd>This is the root element of the XML rules file.</dd>
+            <dd><p>You can specify the <xmlatt>lang</xmlatt> attribute on the
+                  <xmlelement>incorrect-terms</xmlelement> root element. When set, the terms defined
+                in this terminology file are applied when the closest <xmlatt>xml:lang</xmlatt>
+                attribute of the checked node matches the value specified. Not setting this
+                attribute means that the incorrect terms are applied for all nodes. </p><p>If the
+                  <xmlatt>xml:lang</xmlatt> attribute is not defined in your document, the language
+                specified in the <xref href="preferences-editor-spell-check.dita">Spell Check
+                  preferences</xref> is used.</p><p>
+                <note id="note_df2_k3s_mtb">If the value of the document's <xmlatt>xml:lang</xmlatt>
+                  attribute is not a superset of the value of the <xmlatt>lang</xmlatt> attribute
+                  for the <xmlelement>incorrect-terms</xmlelement> element, there will not be a match.<p>
+                    <table frame="all" rowsep="1" colsep="1" id="table_ef2_k3s_mtb">
+                      <title>Language Matching Matrix</title>
+                      <tgroup cols="3">
+                        <colspec colname="c1" colnum="1" colwidth="1*"/>
+                        <colspec colname="c2" colnum="2" colwidth="1*"/>
+                        <colspec colname="c3" colnum="3" colwidth="1*"/>
+                        <tbody>
+                          <row>
+                            <entry morerows="1" align="center"><xmlatt>lang</xmlatt> value for
+                                <xmlelement>incorrect-terms</xmlelement> element</entry>
+                            <entry namest="c2" nameend="c3" align="center"><xmlatt>xml:lang</xmlatt>
+                              value</entry>
+                          </row>
+                          <row>
+                            <entry><b>en</b></entry>
+                            <entry><b>en_US</b></entry>
+                          </row>
+                          <row>
+                            <entry><b>en</b></entry>
+                            <entry>match</entry>
+                            <entry>match</entry>
+                          </row>
+                          <row>
+                            <entry><b>en_US</b></entry>
+                            <entry>not matched</entry>
+                            <entry>match</entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </table>
+                  </p></note>
+              </p>You can specify the <xmlatt>phase</xmlatt> attribute on the
+                <xmlelement>incorrect-terms</xmlelement> root element. The value of this attribute
+              is inherited by <xmlelement>incorrect-term</xmlelement> children nodes. Not setting
+              this attribute means the default phase is used. <p id="p_pyk_31q_ctb">The allowed
+                values are: <ul id="ul_aqj_b32_vsb">
+                  <li id="li_qyk_31q_ctb"><uicontrol>always</uicontrol> - Incorrect terms are always
+                    presented (default value).</li>
+                  <li id="li_ryk_31q_ctb"><uicontrol>editing</uicontrol> - Incorrect terms are shown
+                    when the document is opened in the <uicontrol>Author</uicontrol> mode.</li>
+                  <li id="li_syk_31q_ctb"><uicontrol>validation</uicontrol> - Incorrect terms are
+                    shown when the document is checked from a validation scenario.</li>
+                </ul></p><p id="p_tyk_31q_ctb">For example, set this attribute if you want to apply
+                the most important rules when validating with the <i>Validate and Check for
+                  Completeness</i> action, while still keeping them applied in the editing window.
+              </p></dd>
+          </dlentry>
+          <dlentry>
+            <dt><xmlelement>incorrect-term</xmlelement></dt>
+            <dd>
+              <p>Defines ways to match and correct an incorrect term. The
+                  <xmlelement>incorrect-term</xmlelement> element must include a
+                  <xmlelement>match</xmlelement> element.</p>
+              <p>The <xmlatt>ignorecase</xmlatt> attribute specifies whether or not the match is
+                case-sensitive.</p>
+              <p>The <xmlatt>severity</xmlatt> attribute can be set to one of the following values:
+                  <codeph>info</codeph>, <codeph>warning</codeph>, or <codeph>error</codeph>.
+                Example:<codeblock outputclass="language-xml" id="codeblock_och_dgk_54b">    &lt;incorrect-term severity="error">
+        &lt;match>he&lt;/match>
+        &lt;message>Pronouns should be avoided.&lt;/message>
+    &lt;/incorrect-term></codeblock></p>
+              <p>An experimental <xmlatt>part-of-speach</xmlatt> attribute can be set on the
+                  <xmlelement>incorrect-term</xmlelement> element with the value set to a part of
+                speech tag (for example: <codeph>adjective</codeph>, <codeph>verb</codeph>, etc.) If
+                set, when scanning for terminology problems, the problem is presented only if the
+                term's part of speech matches the one specified. The processor used to identify the
+                part of speech is <term>Apache OpenNLP</term> and this feature is supported only for
+                the English language. <note id="note_lwr_jgt_ctb">The results may not be 100%
+                  accurate, so you should double-check them.</note></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><xmlelement>match</xmlelement></dt>
+            <dd><p>Specify the text fragment to match. </p>You can specify the <xmlatt>type</xmlatt>
+              attribute on the <xmlelement>match</xmlelement> element, with the values
+                <codeph>character</codeph>, <codeph>whole-words</codeph>, or
+                <codeph>regular-expression</codeph>. The default value is
+                <codeph>whole-word</codeph>, unless the matched term contains Japanese, Chinese, or
+              Korean characters because Asian languages often do not use spaces to separate words.
+              Example:<codeblock outputclass="language-xml" id="codeblock_mch_dgk_54b">    &lt;incorrect-term>
+        &lt;match type="character">ing&lt;/match>
+        &lt;message>Progressive tense should not be allowed&lt;/message>
+    &lt;/incorrect-term></codeblock></dd>
+          </dlentry>
+          <dlentry>
+            <dt><xmlelement>suggestion</xmlelement></dt>
+            <dd>
+              <p>The <xmlelement>suggestion</xmlelement> element can be left blank or there can be
+                one or more of them inside the <xmlelement>incorrect-term</xmlelement> element. It
+                supports regular expressions grouping.</p>
+              <p>If you want to replace the match with an XML fragment, you can set the
+                  <xmlatt>format</xmlatt> attribute on the <xmlelement>suggestion</xmlelement>
+                element with the value <codeph>xml</codeph>. For
+                example:<codeblock outputclass="language-xml" id="codeblock_rch_dgk_54b">   &lt;incorrect-term ignorecase="true">
+        &lt;match type="whole-word">Oxygen XML Editor&lt;/match>
+        &lt;suggestion format="xml">&amp;lt;ph keyref=&amp;quot;oxygen&amp;quot;/>&lt;/suggestion>
+        &lt;message>Replace all occurrences of product with key reference.&lt;/message>
+    &lt;/incorrect-term></codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><xmlelement>message</xmlelement></dt>
+            <dd>The <xmlelement>message</xmlelement> element is optional. If present, its content is
+              displayed in a tooltip when you hover over a highlight. It supports regular
+              expressions grouping.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><xmlelement>link</xmlelement></dt>
+            <dd>The <xmlelement>link</xmlelement> element is optional. If present, it provides the
+              source for this rule.
+              Example:<codeblock outputclass="language-xml" id="codeblock_n44_hrp_lrb">&lt;incorrect-term ignorecase="true">
+  &lt;match type="whole-word">Oxygen XML Editor&lt;/match>
+  &lt;suggestion format="xml">&amp;lt;ph keyref=&amp;quot;oxygen&amp;quot;/>&lt;/suggestion>
+  &lt;link>https://www.oxygenxml.com/doc/ug-editor/topics/terminology-checker.html&lt;/link>
+&lt;/incorrect-term></codeblock></dd>
+          </dlentry>
+          <dlentry>
+            <dt><xmlelement>xpath-context</xmlelement></dt>
+            <dd><p>The <xmlelement>xpath-context</xmlelement> element can be used to define simple
+                XPath expressions that match specific elements. </p>You can specify
+                <xmlatt>include</xmlatt> and <xmlatt>exclude</xmlatt> attributes. The elements
+              covered by this simplified XPath will be checked for matches (or the exclusion of a
+              match). A list of comma-separated XPath values can be used.
+                Example:<codeblock id="codeblock_stq_qjw_ktb" outputclass="language-xml">&lt;xpath-context include="p, div, codeblock"></codeblock><p>The
+                following are examples of how simplified XPath expressions might look like:</p><ul
+                id="ul_x3k_gfw_ktb">
+                <li><codeph>elementName</codeph></li>
+                <li><codeph>//elementName</codeph></li>
+                <li><codeph>/elementName1/elementName2/elementName3</codeph></li>
+                <li><codeph>//xs:localName</codeph><note id="note_mp4_zfw_ktb">The namespace
+                    prefixes (such as <codeph>xs</codeph>) are treated as part of the element name
+                    without taking its binding to a namespace into account.</note></li>
+              </ul><p>You can use one or more of the following attribute conditions:</p><note
+                id="note_ccl_2gw_ktb" type="attention">Default attribute values are not taken into
+                account.</note><ul id="ul_tpf_r3s_mtb">
+                <li><codeph>element[@attr]</codeph> - Matches all instances of the specified element
+                  when it includes the specified attribute.</li>
+                <li><codeph>element[not(@attr)]</codeph> - Matches all instances of the specified
+                  element when it does not include the specified attribute.</li>
+                <li><codeph>element[@attr = 'value']</codeph> - Matches all instances of the
+                  specified element when it includes the specified attribute with the given
+                  value.</li>
+                <li><codeph>element[@attr != 'value']</codeph> - Matches all instances of the
+                  specified element when it includes the specified attribute and its value is
+                  different than the one given.</li>
+              </ul></dd>
+          </dlentry>
+        </dl></p>
     </section>
     <section id="section_ov1_kjc_mnb">
       <title>Using Vale Rules with the Terminology Checker</title>
