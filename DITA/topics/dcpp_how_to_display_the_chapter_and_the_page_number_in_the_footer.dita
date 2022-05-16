@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_display_the_chapter_and_the_page_number_in_the_footer">
+    <title>How to Display the Chapter and the Page Number in the Footer</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Footer<indexterm>Chapter Number</indexterm><indexterm>Page Number</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Footer<indexterm>Chapter Number</indexterm><indexterm>Page Number</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+        <p>It is possible to display the chapter number together with the page number in the footer
+      of each page. For example, a CC-PP (using a 2-digits numbering) display can be done using the
+      following CSS rules:
+      <codeblock id="codeblock_msx_srd_4tb" outputclass="language-css">*[class ~= "map/map"] *[class ~= "topic/topic"][is-part] {
+  string-set: chapternumber "";
+}
+*[class ~= "map/map"] *[class ~= "topic/topic"][is-chapter]:not([is-part]) {
+  string-set: chapternumber counter(chapter, decimal-leading-zero);
+}
+*[class ~= "map/map"] *[class ~= "bookmap/frontmatter"]
+*[class ~= "map/map"] *[class ~= "bookmap/backmatter"]
+*[class ~= "map/map"] *[class ~= "topic/topic"][is-part] ~ *[class ~= "topic/topic"]:not([is-part]) {
+  string-set: chapternumber "";
+}
+...
+@page chapter {
+  @bottom-center {
+    content: string(chapternumber) "-" counter(page, decimal-leading-zero);
+  }
+}</codeblock></p>
+    </body>
+</topic>
