@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-pub-template_usecase_10_how_to_display_glossary_as_a_table">
+    <title>How to Display Glossary as a Table</title>
+    <body>
+    <p>Suppose you want to display the content of your Glossary as a table, to condense the
+      information for one entry on a single line.</p>
+    <note id="note_vlv_md2_4tb" type="remember">Make sure all the glossary is contained into a
+      single <xref href="https://docs.oasis-open.org/dita/v1.2/os/spec/langref/glossgroup.html"
+        format="html" scope="external"><xmlelement>glossgroup</xmlelement></xref> element.</note>
+    <p>To add this functionality, use an <i>Oxygen Publishing Template</i> and follow these
+        steps:<ol id="ol_o1m_xrs_qsb">
+        <li conkeyref="reusables-dcpp/pt-li1"/>
+        <li conkeyref="reusables-dcpp/pt-li2"/>
+        <li conkeyref="reusables-dcpp/pt-li3"/>
+        <li>In the newly created folder, create an XSL file (for example, named
+            <filepath>merged2html5Extension.xsl</filepath>) with the following
+          content:<codeblock outputclass="language-xml" id="codeblock_p1m_xrs_qsb">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dita2html="http://dita-ot.sourceforge.net/ns/200801/dita2html"
+  exclude-result-prefixes="xs dita2html" version="2.0">
+
+  &lt;!-- Create a table that will contain all the glossentries contained in the glossgroup. -->
+  &lt;xsl:template name="gen-topic">
+    &lt;xsl:param name="nestlevel" as="xs:integer">
+      &lt;xsl:choose>
+        &lt;!-- Limit depth for historical reasons, could allow any depth. -->
+        &lt;!-- Previously limit was 5. -->
+        &lt;xsl:when
+          test="count(ancestor::*[contains(@class, ' topic/topic ')]) > 9"
+          >9&lt;/xsl:when>
+        &lt;xsl:otherwise>
+          &lt;xsl:sequence
+            select="count(ancestor::*[contains(@class, ' topic/topic ')])"/>
+        &lt;/xsl:otherwise>
+      &lt;/xsl:choose>
+    &lt;/xsl:param>
+    &lt;xsl:choose>
+      &lt;xsl:when test="parent::dita and not(preceding-sibling::*)">
+        &lt;!-- Do not reset xml:lang if it is already set on &lt;html> -->
+        &lt;!-- Moved outputclass to the body tag -->
+        &lt;!-- Keep ditaval based styling at this point -->
+        &lt;!-- (replace DITA-OT 1.6 and earlier call to gen-style) -->
+        &lt;xsl:apply-templates
+          select="*[contains(@class, ' ditaot-d/ditaval-startprop ')]/@style"
+          mode="add-ditaval-style"/>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;xsl:call-template name="commonattributes">
+          &lt;xsl:with-param name="default-output-class"
+            select="concat('nested', $nestlevel)"/>
+        &lt;/xsl:call-template>
+      &lt;/xsl:otherwise>
+    &lt;/xsl:choose>
+    &lt;xsl:call-template name="gen-toc-id"/>
+    &lt;xsl:call-template name="setidaname"/>
+    &lt;xsl:choose>
+      &lt;xsl:when test="contains(@class, 'glossgroup/glossgroup')">
+        &lt;!-- Custom processing for glossgroup. -->
+        &lt;xsl:apply-templates select="*[contains(@class, 'topic/title')]"/>
+        &lt;table class="- glossgroup/table table">
+          &lt;thead class="- glossgroup/thead thead">
+            &lt;tr class="- glossgroup/row row">
+              &lt;th class="- glossgroup/entry entry">Acronym&lt;/th>
+              &lt;th class="- glossgroup/entry entry">Term&lt;/th>
+              &lt;th class="- glossgroup/entry entry">Full Term&lt;/th>
+              &lt;xsl:if
+                test="exists(//*[contains(@class, 'glossentry/glossdef')])">
+                &lt;th class="- glossgroup/entry entry">Definition&lt;/th>
+              &lt;/xsl:if>
+            &lt;/tr>
+          &lt;/thead>
+          &lt;xsl:apply-templates
+            select="*[contains(@class, 'glossentry/glossentry')]"/>
+        &lt;/table>
+        &lt;xsl:apply-templates select="
+            * except (*[contains(@class, 'topic/title')]
+            | *[contains(@class, 'glossentry/glossentry')])"/>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;!-- Default processing. -->
+        &lt;xsl:apply-templates/>
+      &lt;/xsl:otherwise>
+    &lt;/xsl:choose>
+  &lt;/xsl:template>
+
+  &lt;!-- Create a row for each glossentry. -->
+  &lt;xsl:template
+    match="*[contains(@class, 'glossentry/glossentry')]
+    [parent::*[contains(@class, 'glossgroup/glossgroup')]]">
+    &lt;xsl:variable name="glossentry" as="node()">
+      &lt;xsl:next-match/>
+    &lt;/xsl:variable>
+    &lt;tr>
+      &lt;xsl:copy-of select="$glossentry/@*"/>
+      &lt;xsl:copy-of
+        select="$glossentry/*[contains(@class, 'glossentry/glossAlt')]"/>
+      &lt;xsl:copy-of
+        select="$glossentry/*[contains(@class, 'glossentry/glossterm')]"/>
+      &lt;xsl:copy-of
+        select="$glossentry/*[contains(@class, 'glossentry/glossSurfaceForm')]"/>
+      &lt;xsl:copy-of
+        select="$glossentry/*[contains(@class, 'glossentry/glossdef')]"/>
+      &lt;xsl:copy-of select="
+          $glossentry/* except $glossentry/*[contains(@class, 'glossentry/glossAlt')
+          or contains(@class, 'glossentry/glossterm')
+          or contains(@class, 'glossentry/glossSurfaceForm')
+          or contains(@class, 'glossentry/glossdef')]"/>
+    &lt;/tr>
+  &lt;/xsl:template>
+
+  &lt;!-- Process only glossBody's children nodes. -->
+  &lt;xsl:template
+    match="*[contains(@class, 'glossentry/glossBody')]
+    [ancestor::*[contains(@class, 'glossgroup/glossgroup')]]">
+    &lt;xsl:apply-templates/>
+  &lt;/xsl:template>
+
+  &lt;!-- Create a cell for each glossterm, glossSurfaceForm and glossAlt. -->
+  &lt;xsl:template match="
+      *[contains(@class, 'glossentry/glossterm')]
+      [ancestor::*[contains(@class, 'glossgroup/glossgroup')]] |
+      *[contains(@class, 'glossentry/glossSurfaceForm')]
+      [ancestor::*[contains(@class, 'glossgroup/glossgroup')]] |
+      *[contains(@class, 'glossentry/glossAlt')]
+      [ancestor::*[contains(@class, 'glossgroup/glossgroup')]]">
+    &lt;xsl:variable name="glossContent" as="node()">
+      &lt;xsl:next-match/>
+    &lt;/xsl:variable>
+    &lt;td>
+      &lt;xsl:copy-of select="$glossContent/@*"/>
+      &lt;xsl:copy-of select="normalize-space(string-join($glossContent//text()))"
+      />
+    &lt;/td>
+  &lt;/xsl:template>
+
+  &lt;!-- Create a cell for each glossdef. -->
+  &lt;xsl:template
+    match="*[contains(@class, 'glossentry/glossdef')]
+    [ancestor::*[contains(@class, 'glossgroup/glossgroup')]]">
+    &lt;td>
+      &lt;xsl:call-template name="commonattributes"/>
+      &lt;xsl:apply-templates/>
+    &lt;/td>
+  &lt;/xsl:template>
+
+&lt;/xsl:stylesheet></codeblock></li>
+        <li>Open the <xref href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"
+              ><i>template descriptor file</i></xref> associated with your <i>publishing
+            template</i> (the <i>.opt</i> file) and set the XSLT stylesheet created in the previous
+          step with the <codeph>com.oxygenxml.pdf.css.xsl.merged2html5</codeph> XSLT extension
+          point:<codeblock outputclass="language-xml" id="codeblock_q1m_xrs_qsb">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...        
+    &lt;xslt&gt;
+      &lt;extension
+        id="com.oxygenxml.pdf.css.xsl.merged2html5"/>
+        file="xslt/merged2html5Extension.xsl"
+    &lt;/xslt&gt;</codeblock></li>
+        <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template
+          directory. In this directory, save a custom CSS file with rules that style the
+            <i>glossary</i> structure. For
+            example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">*[class ~= "glossgroup/table"] {
+  width: 100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+*[class ~= "glossgroup/table"] th {
+  background-color: lightgray;
+}
+
+*[class ~= "glossgroup/table"] th,
+*[class ~= "glossgroup/table"] td {
+  border: 1px solid black;
+  padding: 0.3em !important;
+  vertical-align: inherit !important;
+}
+
+/* Remove glossSurfaceForm */
+th:nth-of-type(3),
+*[class ~= "glossentry/glossSurfaceForm"] {
+  display: none;
+}
+
+/* Discard the default glossterm layout */
+*[class ~= "glossentry/glossterm"] {
+  font-size: unset;
+  font-weight: unset;
+}</codeblock><note id="note_hly_wg2_4tb">The <xmlelement>glossSurfaceForm</xmlelement>
+            removal part is optional. It is present as an example of how to fully remove a
+            column.</note></li>
+        <li id="li_ibq_cgk_54b">Open the <xref
+            href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+              descriptor file</i></xref> associated with your <i>publishing template</i> (the
+            <filepath>.opt</filepath> file) and reference your custom CSS file in the
+            <codeph>resources</codeph>
+          element:<codeblock outputclass="language-xml" id="codeblock_jbq_cgk_54b">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...                
+    &lt;resources&gt;            
+      &lt;css file="css/custom.css"/&gt;
+    &lt;/resources&gt; </codeblock></li>
+        <li conkeyref="reusables-dcpp/pt-li6"/>
+        <li conkeyref="reusables-dcpp/pt-li7"/>
+        <li conkeyref="reusables-dcpp/pt-li8"/>
+      </ol></p>
+  </body>
+</topic>
