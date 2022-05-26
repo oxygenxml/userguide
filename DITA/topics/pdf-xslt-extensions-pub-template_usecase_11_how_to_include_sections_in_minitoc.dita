@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-pub-template_usecase_11_how_to_include_sections_in_minitoc">
+  <title>How to Include Sections in Mini TOC</title>
+  <body>
+    <p>By default the MINITOC displays only the child topics of a given chapter topic. To add the
+      possibility to display the child sections too, use an <i>Oxygen Publishing Template</i> and
+      follow these steps:<ol id="ol_o1m_xrs_qsb">
+        <li conkeyref="reusables-dcpp/pt-li1"/>
+        <li conkeyref="reusables-dcpp/pt-li2"/>
+        <li conkeyref="reusables-dcpp/pt-li3"/>
+        <li>In the newly created folder, create an XSL file (for example, named
+            <filepath>merged2mergedExtension.xsl</filepath>) with the following
+          content:<codeblock outputclass="language-xml" id="codeblock_p1m_xrs_qsb">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
+  xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/"
+  xmlns:opentopic-index="http://www.idiominc.com/opentopic/index"
+  xmlns:opentopic="http://www.idiominc.com/opentopic"
+  xmlns:oxy="http://www.oxygenxml.com/extensions/author" xmlns:saxon="http://saxon.sf.net/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all">
+  &lt;xsl:template match="*[contains(@class, ' topic/topic ')]">
+    &lt;xsl:choose>
+      &lt;xsl:when test="
+          ($args.chapter.layout = 'MINITOC' or
+          $args.chapter.layout = 'MINITOC-BOTTOM-LINKS') and
+          oxy:is-chapter(/, oxy:get-topicref-for-topic(/, @id)) and
+          *[contains(@class, ' topic/topic ')]">
+        &lt;!-- Minitoc. -->
+        &lt;xsl:copy>
+          &lt;xsl:apply-templates select="@*"/>
+          &lt;xsl:apply-templates select="*[contains(@class, ' topic/title ')]"/>
+          &lt;xsl:apply-templates select="*[contains(@class, ' topic/prolog ')]"/>
+          &lt;xsl:apply-templates select="*[contains(@class, ' topic/titlealts ')]"/>
+          &lt;div>
+            &lt;xsl:choose>
+              &lt;xsl:when test="$args.chapter.layout = 'MINITOC'">
+                &lt;xsl:attribute name="class">- topic/div chapter/minitoc &lt;/xsl:attribute>
+                &lt;xsl:call-template name="generate-minitoc-links"/>
+                &lt;xsl:call-template name="generate-minitoc-desc"/>
+              &lt;/xsl:when>
+              &lt;xsl:when test="$args.chapter.layout = 'MINITOC-BOTTOM-LINKS'">
+&lt;xsl:attribute name="class">- topic/div chapter/minitoc chapter/minitoc-bottom &lt;/xsl:attribute>
+                &lt;xsl:call-template name="generate-minitoc-desc"/>
+                &lt;xsl:call-template name="generate-minitoc-links"/>
+              &lt;/xsl:when>
+            &lt;/xsl:choose>
+          &lt;/div>
+          &lt;xsl:apply-templates select="*[contains(@class, ' topic/topic ')]"/>
+        &lt;/xsl:copy>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;!-- No minitoc. -->
+        &lt;xsl:next-match/>
+      &lt;/xsl:otherwise>
+    &lt;/xsl:choose>
+  &lt;/xsl:template>
+  &lt;!-- 
+    The chapter topic content. This has the role of describing the chapter.
+  -->
+  &lt;xsl:template name="generate-minitoc-desc">
+    &lt;div class="- topic/div chapter/minitoc-desc ">
+      &lt;xsl:apply-templates select="
+          *[not(contains(@class, ' topic/title ')) and
+          not(contains(@class, ' topic/prolog ')) and
+          not(contains(@class, ' topic/titlealts ')) and
+          not(contains(@class, ' topic/topic ')) and
+          not(contains(@class, ' topic/section '))
+          ]"/>
+    &lt;/div>
+  &lt;/xsl:template>
+  &lt;!-- 
+    Child links.
+  -->
+  &lt;xsl:template name="generate-minitoc-links">
+    &lt;div class="- topic/div chapter/minitoc-links ">
+      &lt;related-links class="- topic/related-links ">
+        &lt;linklist class="- topic/linklist ">
+          &lt;desc class="- topic/desc ">
+            &lt;ph class="- topic/ph chapter/minitoc-label ">
+              &lt;xsl:call-template name="getVariable">
+                &lt;xsl:with-param name="id" select="'Mini Toc'"/>
+              &lt;/xsl:call-template>
+            &lt;/ph>
+          &lt;/desc>
+          &lt;xsl:apply-templates select="
+              *[contains(@class, ' topic/topic ')] |
+              descendant-or-self::*[contains(@class, ' topic/section ')]"
+            mode="in-this-chapter-list"/>
+        &lt;/linklist>
+      &lt;/related-links>
+    &lt;/div>
+  &lt;/xsl:template>
+  &lt;xsl:template match="
+      *[contains(@class, ' topic/topic ')
+      or contains(@class, ' topic/section ')]" mode="in-this-chapter-list">
+    &lt;xsl:variable name="link-type" select="
+        if (contains(@class, ' topic/section ')) then
+          'section'
+        else
+          'topic'"/>
+    &lt;link class="- topic/link " href="#{@id}" type="{$link-type}" role="child">
+      &lt;linktext class="- topic/linktext ">
+        &lt;xsl:value-of select="*[contains(@class, ' topic/title ')]"/>
+      &lt;/linktext>
+    &lt;/link>
+  &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock></li>
+        <li>Open the <xref href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"
+              ><i>template descriptor file</i></xref> associated with your <i>publishing
+            template</i> (the <i>.opt</i> file) and set the XSLT stylesheet created in the previous
+          step with the <codeph>com.oxygenxml.pdf.css.xsl.merged2merged</codeph> XSLT extension
+            point:<codeblock outputclass="language-xml" id="codeblock_q1m_xrs_qsb">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...        
+    &lt;xslt&gt;
+      &lt;extension
+        id="com.oxygenxml.pdf.css.xsl.mergedmerged"/>
+        file="xslt/merged2mergedExtension.xsl"
+    &lt;/xslt&gt;
+    &lt;parameters>
+      &lt;parameter name="args.chapter.layout" value="MINITOC"/>
+    &lt;/parameters></codeblock><note id="note_phf_zbz_qtb">This solution works also
+            with <codeph>args.chapter.layout</codeph> set to
+            <codeph>MINITOC-BOTTOM-LINKS</codeph>.</note></li>
+        <li conkeyref="reusables-dcpp/pt-li6"/>
+        <li conkeyref="reusables-dcpp/pt-li7"/>
+        <li conkeyref="reusables-dcpp/pt-li8"/>
+      </ol></p>
+  </body>
+</topic>
