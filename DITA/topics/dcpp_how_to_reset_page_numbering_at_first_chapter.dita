@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_reset_page_numbering_at_first_chapter">
+  <title>How to Reset Page Numbering at First Chapter</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Numbering<indexterm>Reset page numbering</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Numbering<indexterm>Reset page
+          numbering</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_cyr_cgk_54b">By default, pages are numbered from the start of the publication, but in
+      some cases, you may need to restart the page number at the first chapter of your
+        publication.<note id="note_wyf_ctt_dpb" type="warning">The following sections do not apply
+        for <codeph>args.css.param.numbering="deep-chapter-scope"</codeph> because it already define
+        a specific numbering scheme which resets the page number on each chapter.</note></p>
+    <section id="section_dfn_5st_dpb">
+      <title>Reset Page Numbering in Shallow Context</title>
+      <p>To reset the page counter at the first part/chapter when the
+          <codeph>args.css.param.numbering="shallow"</codeph> parameter value is set, use the
+        following rules in your <xref href="dcpp_the_customization_css.dita">customization
+          CSS</xref>:</p>
+      <codeblock outputclass="language-css" id="codeblock_gyr_cgk_54b">*[class ~= "map/map"] > *:not([class ~= "topic/topic"][is-chapter]) + *[class ~= "topic/topic"][is-chapter] {
+  counter-reset: page 1;
+}
+*[class ~= "map/map"] > *:not([class ~= "topic/topic"][is-part]) + *[class ~= "topic/topic"][is-part] {
+  counter-reset: page 1 chapter;
+}</codeblock>
+    </section>
+    <section id="section_g4v_yst_dpb">
+      <title>Reset Page Numbering in Deep Context</title>
+      <p>To reset the page counter at the first part/chapter when the
+          <codeph>args.css.param.numbering="deep"</codeph> parameter value is set, use the following
+        rules in your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>:</p>
+      <codeblock outputclass="language-css" id="codeblock_iyr_cgk_54b">*[class ~= "map/map"][numbering ^= 'deep'] > *:not([class ~= "topic/topic"][is-chapter]) + *[class ~= "topic/topic"][is-chapter] {
+  counter-reset: page 1 section1;
+}
+*[class ~= "map/map"][numbering ^= 'deep'] > *:not([class ~= "topic/topic"][is-part]) + *[class ~= "topic/topic"][is-part] {
+  counter-reset: page 1 chapter chapter-and-sections;
+}</codeblock>
+    </section>
+    <section id="section_lgq_lvx_ztb">
+      <title>Reset Page Numbering in Deep Chapter Scope No Page Reset Context</title>
+      <p>To reset the page counter at the first part/chapter when the
+          <codeph>args.css.param.numbering="deep-chapter-scope-no-page-reset"</codeph> parameter
+        value is set, use the following rules in your <xref href="dcpp_the_customization_css.dita"
+          >customization CSS</xref>:</p>
+      <codeblock outputclass="language-css" id="codeblock_mgq_lvx_ztb">*[class ~= "map/map"][numbering ^= 'deep'] > *:not([class ~= "topic/topic"][is-chapter]) + *[class ~= "topic/topic"][is-chapter] {
+  counter-reset: page 1 section1 tablecount figcount !important;
+}
+*[class ~= "map/map"][numbering ^= 'deep'] > *:not([class ~= "topic/topic"][is-part]) + *[class ~= "topic/topic"][is-part] {
+  counter-reset: page 1 chapter chapter-and-sections section1 tablecount figcount !important;
+}</codeblock>
+    </section>
+  </body>
+</topic>
