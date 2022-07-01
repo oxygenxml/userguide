@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="scripting_oxygen_validate">
+  <title>Validate</title>
+  <body>
+    <note type="attention" id="note_mkx_dgk_54b"><ph
+        conkeyref="reusables-scripting/ph-scripting-note"/></note>
+    <p id="p_qkx_dgk_54b">The <uicontrol>Validate</uicontrol> script (<codeph>validate.sh</codeph>)
+      can be used to validate a file or a directory and get the validation results in various
+      formats.</p>
+    <section id="section_gbd_tzb_vmb">
+      <title>Arguments for the Transform Script</title>
+      <p id="p_skx_dgk_54b">
+        <codeblock outputclass="language-bourne" id="codeblock_tkx_dgk_54b">sh scripts/validate.sh fileOrDirPath [-s schemaFilePath | -sn scenarioName] [-sf scenariosFilePath] [-if includeFilesFilter] [-ef excludeFilesFilter] [-ed excludeSubdirsFilter] [-rf reportFile] [-rft reportFormat] [-v] [-help | --help | -h | --h]</codeblock>
+      </p>
+      <p id="p_ukx_dgk_54b">
+        <dl id="dl_vkx_dgk_54b">
+          <dlentry id="dlentry_wkx_dgk_54b">
+            <dt>fileOrDirPath</dt>
+            <dd>Mandatory argument that specifies the path of the file or directory to validate (it
+              can also be provided as a URL, but if you are validating directories, the only
+              protocol considered is <filepath>'file://'</filepath>).</dd>
+          </dlentry>
+          <dlentry id="dlentry_xp1_1nx_15b">
+            <dt>-s schemaFilePath</dt>
+            <dd>Optional argument that specifies the file path of the schema to validate against (it
+              can also be provided as a URL).</dd>
+          </dlentry>
+          <dlentry id="dlentry_xkx_dgk_54b">
+            <dt>-sn scenarioName</dt>
+            <dd>Optional argument that specifies the name of the validation scenario to be
+              applied.</dd>
+          </dlentry>
+          <dlentry id="dlentry_ykx_dgk_54b">
+            <dt>-sf scenariosFilePath</dt>
+            <dd>Optional argument that specifies the path of the file that stores the validation
+              scenarios (either an <b>Oxygen</b> scenarios file or an <b>Oxygen</b> project file).
+              It can also be provided as a URL.<note id="note_ksc_hnx_15b" type="other"
+                othertype="Notes">
+                <ul id="ul_rlg_knx_15b">
+                  <li id="li_slg_knx_15b">The file that stores the validation scenarios must have a
+                    similar format to that generated from <b>Oxygen</b> by invoking
+                      <uicontrol>Export Global Validation Scenarios</uicontrol> from the
+                      <uicontrol>Options</uicontrol> menu. This type of <b>Oxygen</b>-generated
+                    scenarios files has a <filepath>.scenarios</filepath> file extension by default
+                    and contains all the necessary information about custom validation scenarios
+                    created in <b>Oxygen</b>.</li>
+                  <li id="li_awm_snx_15b"><b>Oxygen</b> also saves the custom validation scenarios
+                    (as well as the scenario associations made explicitly for the files you work
+                    with) in special formatted <b>Oxygen</b> project files (usually with the
+                      <filepath>.xpr</filepath> file extension). Therefore, by using the arguments
+                    provided through <b>-sn</b> and <b>-sf</b> options, you can apply any scenario
+                    that was previously stored in either a scenarios file or an <b>Oxygen</b>
+                    project file.</li>
+                  <li id="li_csv_xnx_15b">The <b>-s</b> and <b>-sn</b> options are mutually
+                    exclusive. Specifying both in the same command line is not allowed.</li>
+                </ul>
+              </note></dd>
+          </dlentry>
+          <dlentry id="dlentry_bd3_14x_15b">
+            <dt>-if includeFilesFilter</dt>
+            <dd>Use this argument to only validate the files that match the specified pattern (e.g.
+                <codeph>.xml,.json</codeph>). The default value is <codeph>*</codeph>.</dd>
+          </dlentry>
+          <dlentry id="dlentry_y3x_f4x_15b">
+            <dt>-ef excludeFilesFilter</dt>
+            <dd>Excludes the files that match the specified pattern (e.g.
+                <codeph>test.wsdl,draft.xsl</codeph>) from the validation.</dd>
+          </dlentry>
+          <dlentry id="dlentry_nlz_j4x_15b">
+            <dt>-ed excludeSubdirsFilter</dt>
+            <dd>Excludes the sub-directories that match the specified pattern (e.g.
+                <codeph>.svn,_svn,.git</codeph>).</dd>
+          </dlentry>
+          <dlentry id="dlentry_uvn_44x_15b">
+            <dt>-rf reportFile</dt>
+            <dd>Specifies the path for the report file to save the validation results, instead of
+              presenting them in the console. The content of the report file is formatted according
+              to the <uicontrol>-rft</uicontrol> argument. The report file path can also be provided
+              as a URL.</dd>
+          </dlentry>
+          <dlentry id="dlentry_vpj_r4x_15b">
+            <dt>-rft reportFormat</dt>
+            <dd>Specifies the format of the validation report. Possible values:
+              <codeph>txt</codeph>, <codeph>text</codeph>, <codeph>xml</codeph>,
+                <codeph>json</codeph>, <codeph>html</codeph>, <codeph>htm</codeph>. Default values:
+                <codeph>txt</codeph>, <codeph>text</codeph>.</dd>
+          </dlentry>
+          <dlentry id="dlentry_blx_dgk_54b">
+            <dt>-v</dt>
+            <dd>Prints additional information to the console (Verbose mode).</dd>
+          </dlentry>
+          <dlentry id="dlentry_vd4_bpx_15b">
+            <dt>-help | --help | -h | --h </dt>
+            <dd>Displays help text.</dd>
+          </dlentry>
+        </dl>
+        <note id="note_pff_fpx_15b" type="other" othertype="Additional Notes">
+          <ul id="ul_bjy_gpx_15b">
+            <li id="li_cjy_gpx_15b">Avoid activating the Verbose mode (<uicontrol>-v</uicontrol>
+              option) when opting to redirect the console (and the validation report implicitly) to
+              a specific file. That is done using the <uicontrol>></uicontrol> operator instead of
+              the <uicontrol>-rf</uicontrol> option. The additional information provided through
+              verbose mode is also saved to the report file, making it to be reported as invalid
+              when inspected in specialized editors. However, that information is placed at the
+              beginning of the report, as plain text. If removed, the report should become
+              valid.</li>
+            <li id="li_dxx_npx_15b">If the validation uses the <b>Saxon</b> engine and you do not
+              have a commercial license, then the script automatically uses the <b>Saxon Home
+                Edtion</b> distribution that does not require a license. However, if the validation
+              involves specific <b>Saxon Personal / Enterprise Edition</b> advanced features, then
+              the validation report clearly signals that an appropriate <b>Saxon</b> license was not
+              found. Placing a valid <b>Saxon</b> license file in the <filepath>lib</filepath>
+              directory from the <b>Oxygen</b> installation folder solves the problem and the
+              validation operation works as expected.</li>
+          </ul>
+        </note>
+      </p>
+    </section>
+    <section id="section_pnz_pnl_54b">
+      <title>Examples of the Validate Script</title>
+      <p id="p_idr_zxn_wqb">
+        <dl id="dl_whv_zxn_wqb">
+          <dlentry id="dlentry_xhv_zxn_wqb">
+            <dt>Example 1: Validate a File by Applying a Custom Validation Scenario</dt>
+            <dd>
+              <p id="p_fwp_dyn_wqb"
+                ><codeblock outputclass="language-bourne">sh scripts/validate.sh "workspace/xmlFolder/xmlFile.xml" -sn "xmlValScn" -sf "workspace/scn/valScn.scenarios"</codeblock>This
+                command implies validating <filepath>xmlFile.xml</filepath> by applying the
+                validation scenario named <uicontrol>xmlValScn</uicontrol>, described in the
+                  <filepath>valScn.scenarios</filepath> file. If you want to apply more than one
+                validation scenario, you can use the <codeph>-sn scenarioName</codeph> construct
+                multiple times.</p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_vtg_3yn_wqb">
+            <dt>Example 2: Validate a Directory by Applying an Oxygen Default Validation
+              Scenario</dt>
+            <dd>
+              <p id="p_h42_lyn_wqb"
+                ><codeblock outputclass="language-bourne">sh scripts/validate.sh "workspace/DITAFolder" -sn "DITA"</codeblock>A
+                scenario name is provided, but without specifying a scenarios file. This command
+                implies validating all files from <filepath>DITAFolder</filepath> by applying the
+                  <b>Oxygen</b> default validation scenario named <uicontrol>DITA</uicontrol> (in
+                accordance with the association made in the <xref
+                  href="the-document-type-dialog.dita#the-document-type-dialog"><uicontrol>Document
+                    Type Configuration Dialog Box</uicontrol></xref>).</p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_rfg_nyn_wqb">
+            <dt>Example 3: Validate a File by Applying Associated Scenarios Stored in an Oxygen
+              Project File</dt>
+            <dd>
+              <codeblock outputclass="language-bourne">sh scripts/validate.sh "workspace/mainFolder/main.xml" -sf "worksapce/proj/proj-1.xpr"</codeblock>
+              <p id="p_hmz_bzn_wqb">A scenarios file is provided, but without specifying a scenario
+                name. In this case, the argument provided through the <uicontrol>-sf</uicontrol>
+                option is assumed to be an <b>Oxygen</b> project file and it is used to search for
+                validation scenario associations made for the <filepath>main.xml</filepath> file.
+                This command line implies that if validation scenario associations for
+                  <filepath>main.xml</filepath> are found in <filepath>proj-1.xpr</filepath>, then
+                those scenarios are identified and applied. Otherwise, the validation first
+                considers the schema associations declared in <filepath>main.xml</filepath> (if
+                any), or default <b>Oxygen</b> validation scenarios are applied in accordance with
+                the type of the file to validate (e.g. XML in this example).</p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_cz4_pqx_15b">
+            <dt>Example 4: <b>Directory Default Validation and Custom Formatted Report Saved to a
+                Specific Location</b></dt>
+            <dd>
+              <codeblock outputclass="language-bourne">sh scripts/validate.sh ../important/xmlFolder -rft html -rf "../important/reports/validation rep.html"</codeblock>
+              <p id="p_j5c_vqx_15b">No validation scenario name, no scenario file, and no schema
+                provided. This command line involves validating all files from the
+                  <filepath>xmlFolder</filepath>. Each file is validated against the schema(s)
+                internally associated (if any). Otherwise, the default <b>Oxygen</b> validation
+                scenarios for the respective file type are applied. Also, the validation report is
+                formatted in HTML and is saved to the <filepath>validation rep.html</filepath> file
+                at the specified location.</p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p id="p_kzh_l3g_kqb">
+        <fig id="fig_sw1_jfg_kqb">
+          <title>Example of an HTML Validation Report</title>
+          <image href="../img/html-validation-report.png"/>
+        </fig>
+      </p>
+    </section>
+    <section id="section_v54_rr5_ypb">
+      <title>Resources</title>
+      <p id="p_w54_rr5_ypb">For more information about the validation script, see the following:<ul
+          id="ul_bzc_455_ypb">
+          <li id="li_ljr_r55_ypb">Video:
+              <?oxy_comment_start author="Steven" timestamp="20220630T203840-0400" comment="Add link once the video is done."?><b>Validation
+              Files/Directories Using a Command-Line Script</b><?oxy_comment_end?>.</li>
+        </ul></p>
+    </section>
+  </body>
+</topic>
