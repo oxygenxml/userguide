@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="pdf-xslt-extensions-pub-template_usecase_1_styling_codeblocks_with_a_zebra_effect">
-  <title>How to Style Codeblocks with a Zebra Effect</title>
+<topic id="pdf-xslt-extensions-pub-template_usecase_1_add_line_numbering_and_zebra_in_codeblocks">
+  <title>How to Add Line Numbering and Zebra Effect in Codeblocks</title>
   <body>
-    <p id="p_v1q_cgk_54b">Suppose you want your <i>codeblocks</i> to have a particular background
-      color for one line, and another color for the next line. One advantage of this coloring
-      technique is that you can clearly see when text from the <i>codeblock</i> is wrapped.</p>
+    <p id="p_v1q_cgk_54b">One requirement for your <xmlelement>codeblocks</xmlelement> could be to
+      add line numbering and to alternate the background-color on each line. Some advantages of this
+      technique is that you can clearly see when text from the <xmlelement>codeblock</xmlelement> is
+      wrapped and you can easily identify a location inside the code.</p>
     <p id="p_w1q_cgk_54b">This effect can be done by altering the HTML5 output, creating a
         <codeph>div</codeph> for each line from the code block, then styling them.</p>
     <p id="p_x1q_cgk_54b">To add this functionality using an <i>Oxygen Publishing Template</i>,
@@ -24,17 +25,33 @@
   version="2.0">
 
   &lt;xsl:template match="*[contains(@class, ' pr-d/codeblock ')]">
-    &lt;div class="zebra">
+    &lt;xsl:variable name="nm">
+      &lt;xsl:next-match/>
+    &lt;/xsl:variable>
+    &lt;xsl:apply-templates select="$nm" mode="zebra-and-numbering"/>
+  &lt;/xsl:template>
+
+  &lt;xsl:template match="node() | @*" mode="zebra-and-numbering">
+    &lt;xsl:copy>
+      &lt;xsl:apply-templates select="node() | @*" mode="#current"/>
+    &lt;/xsl:copy>
+  &lt;/xsl:template>
+
+  &lt;xsl:template match="*[contains(@class, ' pr-d/codeblock ')]" mode="zebra-and-numbering">
+    &lt;xsl:element name="{name()}">
+      &lt;xsl:copy-of select="@*"/>
+      &lt;xsl:attribute name="class" select="concat(@class, ' zebra')"/>
       &lt;xsl:analyze-string regex="\n" select=".">
         &lt;xsl:matching-substring/>
         &lt;xsl:non-matching-substring>
-          &lt;div>
+          &lt;div class="+ topic/pre pr-d/codeblock-line pre codeblock-line">
             &lt;xsl:value-of select="."/>
           &lt;/div>
         &lt;/xsl:non-matching-substring>
       &lt;/xsl:analyze-string>
-    &lt;/div>
+    &lt;/xsl:element>
   &lt;/xsl:template>
+
 &lt;/xsl:stylesheet></codeblock></li>
       <li id="li_ebq_cgk_54b">Open the <xref
           href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
@@ -52,15 +69,23 @@
     &lt;/xslt&gt;</codeblock></li>
       <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template
         directory. In this directory, save a custom CSS file with rules that style the
-          <i>codeblock</i> structure. For
-        example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">div.zebra {
-  font-family:courier, fixed, monospace;        
-  white-space:pre-wrap;
+          <xmlelement>codeblock</xmlelement> structure. For
+        example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">.zebra {
+  padding: 0;
 }
 
-div.zebra &gt; *:nth-of-type(odd){        
-  background-color: silver;
-}     </codeblock></li>
+.zebra > *:nth-of-type(odd) {
+  background-color: lightgray;
+}
+
+.codeblock:before {
+  counter-reset: codeblock-line-number;
+}
+
+.codeblock-line {
+  counter-increment: codeblock-line-number;
+  content: counter(codeblock-line-number);
+}    </codeblock></li>
       <li id="li_ibq_cgk_54b">Open the <xref
           href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
             descriptor file</i></xref> associated with your <i>publishing template</i> (the
