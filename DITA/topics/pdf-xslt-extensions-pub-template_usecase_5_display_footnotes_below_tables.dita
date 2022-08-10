@@ -14,12 +14,14 @@
             <filepath>merged2mergedExtension.xsl</filepath>) with the following
           content:<codeblock outputclass="language-xml" id="codeblock_hdq_cgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  exclude-result-prefixes="xs"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  exclude-result-prefixes="xs" 
   version="2.0">
 
-  &lt;!-- Match only top level tables (i.e tables that are not nested in other tables),
-    that have footnotes. -->
+  &lt;!--
+    Match only top level tables (i.e tables that are not nested in other tables),
+    that have footnotes.
+  -->
   &lt;xsl:template match="
       *[contains(@class, 'topic/table')]
       [not(ancestor::*[contains(@class, 'topic/table')])]
@@ -27,29 +29,52 @@
     &lt;xsl:next-match>
       &lt;xsl:with-param name="top-level-table" select="." tunnel="yes"/>
     &lt;/xsl:next-match>
-
     &lt;!-- Create a list with all the footnotes from the current table. -->
     &lt;ol class="- topic/ol " outputclass="table-fn-container">
       &lt;xsl:for-each select=".//*[contains(@class, 'topic/fn')]">
-        &lt;li class="- topic/li " id="{generate-id(.)}" outputclass="table-fn">
+        &lt;!-- 
+          Try to preserve the footnote ID, if available, so that the xrefs will have a target.
+        -->
+        &lt;li class="- topic/li " id="{if(@id) then @id else generate-id(.)}"
+          outputclass="table-fn">
           &lt;xsl:apply-templates select="node()"/>
         &lt;/li>
       &lt;/xsl:for-each>
     &lt;/ol>
   &lt;/xsl:template>
 
-  &lt;!-- Match the footnotes in table entries, replace them with a link. -->
-  &lt;xsl:template match="*[contains(@class, 'topic/entry')]//*[contains(@class, 'topic/fn')]">
+  &lt;!-- 
+    The footnotes having an ID must be ignored, they are accessible only 
+    through existing xrefs (xrefs added already in the merged.xml file).
+    
+    The above template already made a copy of these footnotes in the OL element
+    so is not a problem if we do not generate markup for them in the cell.
+  -->
+  &lt;xsl:template 
+    match="*[contains(@class, 'topic/entry')]//*[contains(@class, 'topic/fn')][@id]"/>
+
+  &lt;!-- 
+    These are footnotes without ID. They are also copied in the OL element, 
+    but have no xrefs pointing to them (because have no ID), so we generate xrefs. 
+  -->
+  &lt;xsl:template 
+    match="*[contains(@class, 'topic/entry')]//*[contains(@class, 'topic/fn')][not(@id)]">
     &lt;xsl:param name="top-level-table" tunnel="yes"/>
-    &lt;!-- Determine the footnote number. -->
+
+    &lt;!-- 
+      Determine the footnote number as the index from the table, in normal document order.
+    -->
     &lt;xsl:variable name="fn-number" select="
         index-of($top-level-table//*[contains(@class, 'topic/fn')], .)"/>
+
     &lt;xref type="fn" class="- topic/xref " href="#{generate-id(.)}"
       outputclass="table-fn-call">
-      &lt;xsl:value-of select="$fn-number"/>
+      &lt;!-- Generate an extra &lt;sup>, identical to what DITA-OT generates for other xrefs. -->
+      &lt;sup class="+ topic/ph hi-d/sup ">
+        &lt;xsl:value-of select="$fn-number"/>
+      &lt;/sup>
     &lt;/xref>
   &lt;/xsl:template>
-
 &lt;/xsl:stylesheet></codeblock></li>
         <li id="li_idq_cgk_54b">Open the <xref
             href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
