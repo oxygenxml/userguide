@@ -14,10 +14,11 @@
             <filepath>merged2mergedExtension.xsl</filepath>) with the following
           content:<codeblock outputclass="language-xml" id="codeblock_hdq_cgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-  exclude-result-prefixes="xs" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:opentopic-func="http://www.idiominc.com/opentopic/exsl/function"
+  exclude-result-prefixes="xs opentopic-func" 
   version="2.0">
-
+  
   &lt;!--
     Match only top level tables (i.e tables that are not nested in other tables),
     that contains some footnotes.
@@ -25,25 +26,23 @@
   &lt;xsl:template match="*[contains(@class, 'topic/table')]
     [not(ancestor::*[contains(@class, 'topic/table')])]
     [//*[contains(@class, 'topic/fn')]]">
-    &lt;xsl:next-match/>
+    &lt;xsl:next-match>
+      &lt;xsl:with-param name="top-level-table" select="." tunnel="yes"/>
+    &lt;/xsl:next-match>
     &lt;!-- Create a list with all the footnotes from the current table. -->
     &lt;ol class="- topic/ol " outputclass="table-fn-container">
       &lt;xsl:for-each select=".//*[contains(@class, 'topic/fn')]">
-        &lt;!-- Determine the footnote index in the document order. -->
-        &lt;xsl:variable name="fn-number"
-          select="index-of(ancestor::*[contains(@class, 'map/map')]
-          //*[contains(@class, 'topic/fn')], current())"/>
         &lt;!--
           Try to preserve the footnote ID, if available, so that the xrefs will have a target.
         -->
         &lt;li class="- topic/li " id="{if(@id) then @id else generate-id(.)}"
-          outputclass="table-fn" data-fn-number="{$fn-number}">
+          outputclass="table-fn">
           &lt;xsl:apply-templates select="node()"/>
         &lt;/li>
       &lt;/xsl:for-each>
     &lt;/ol>
   &lt;/xsl:template>
-
+  
   &lt;!-- 
     The footnotes that have an ID must be ignored, they are accessible only 
     through existing xrefs (already present in the merged.xml file).
@@ -53,7 +52,38 @@
   -->
   &lt;xsl:template
     match="*[contains(@class, 'topic/entry')]//*[contains(@class, 'topic/fn')][@id]"/>
-
+  
+  &lt;!--
+    The footnotes with an ID inside table-cells. They are copied in the OL element, but
+    we need to recalculate their indexes if their referred footnote is also in the table.
+  -->
+  &lt;xsl:template match="*[contains(@class, 'topic/xref')][@type='fn']
+    [ancestor::*[contains(@class, 'topic/entry')]]">
+    &lt;xsl:param name="top-level-table" tunnel="yes"/>
+    &lt;xsl:variable name="destination" select="opentopic-func:getDestinationId(@href)"/>
+    &lt;xsl:variable name="fn" select="
+      $top-level-table//*[contains(@class, 'topic/fn')][@id = $destination]"/>
+    &lt;xsl:choose>
+      &lt;xsl:when test="$fn">
+        &lt;!-- There is a reference in the table, recalculate index. -->
+        &lt;xsl:variable name="fn-number" select="
+          index-of($top-level-table//*[contains(@class, 'topic/fn')], $fn)"/>
+        &lt;xsl:copy>
+          &lt;xsl:apply-templates select="@*"/>
+          &lt;xsl:apply-templates select="node() except *[contains(@class, 'hi-d/sup')]"/>
+          &lt;sup>
+            &lt;xsl:apply-templates select="child::*[contains(@class, 'hi-d/sup')]/@*"/>
+            &lt;xsl:value-of select="$fn-number"/>
+          &lt;/sup>
+        &lt;/xsl:copy>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;!-- There is no reference in the table, keep original index. -->
+        &lt;xsl:next-match/>
+      &lt;/xsl:otherwise>
+    &lt;/xsl:choose>
+  &lt;/xsl:template>
+  
   &lt;!-- 
     The footnotes without ID inside table-cells. They are copied in the OL element, but have 
     no xrefs pointing to them (because they have no ID), so xrefs are generated. 
@@ -61,9 +91,9 @@
   &lt;xsl:template
     match="*[contains(@class, 'topic/entry')]//*[contains(@class, 'topic/fn')][not(@id)]">
     &lt;!-- Determine the footnote index in the document order. -->
-    &lt;xsl:variable name="fn-number"
-      select="index-of(ancestor::*[contains(@class, 'map/map')]
-      //*[contains(@class, 'topic/fn')], .)"/>
+    &lt;xsl:param name="top-level-table" tunnel="yes"/>
+    &lt;xsl:variable name="fn-number" select="
+      index-of($top-level-table//*[contains(@class, 'topic/fn')], .)"/>
     &lt;xref type="fn" class="- topic/xref "
       href="#{generate-id(.)}" outputclass="table-fn-call">
       &lt;!-- Generate an extra &lt;sup>, identical to what DITA-OT generates for other xrefs. -->
@@ -72,23 +102,7 @@
       &lt;/sup>
     &lt;/xref>
   &lt;/xsl:template>
-
-  &lt;!--
-    The footnotes outside tables. They are copied at the end of the document.
-    We need to recalculate their indexes, as the tables footnotes are processed elsewhere.
-  -->
-  &lt;xsl:template match="*[contains(@class, 'topic/fn')]
-    [not(ancestor-or-self::*[contains(@class, 'topic/entry')])]">
-    &lt;!-- Determine the footnote index in the document order. -->
-    &lt;xsl:variable name="fn-number"
-      select="index-of(ancestor::*[contains(@class, 'map/map')]
-      //*[contains(@class, 'topic/fn')], current())"/>
-    &lt;xsl:copy>
-      &lt;xsl:apply-templates select="@*"/>
-      &lt;xsl:attribute name="data-fn-number" select="$fn-number"/>
-      &lt;xsl:apply-templates select="node()"/>
-    &lt;/xsl:copy>
-  &lt;/xsl:template>
+  
 &lt;/xsl:stylesheet></codeblock></li>
         <li id="li_idq_cgk_54b">Open the <xref
             href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
@@ -115,15 +129,17 @@
 /* Customize the list containing all the table footnotes. */
 *[outputclass ~= 'table-fn-container'] {
   border-top: 1pt solid black;
+  counter-reset: table-footnote;
 }
 
 /* Customize footnotes display, below the table. */
 *[outputclass ~= 'table-fn'] {
   font-size: smaller;
+  counter-increment: table-footnote;
 }
 *[outputclass ~= 'table-fn']::marker {
   font-size: smaller;
-  content: attr(data-fn-number) ".";
+  content: "(" counter(table-footnote) ")";
 }
 
 /* Customize xrefs pointing to footnotes with IDs. */
@@ -134,14 +150,11 @@
 *[class ~= "topic/table"] *[class ~= "topic/xref"][type = 'fn']:after {
   content: none;
 }
-
-/* Update other footnotes number to keep the document order. */
-*[class ~= "topic/fn"]::footnote-call {
-  content: attr(data-fn-number);
+*[class ~= "topic/table"] *[class ~= "topic/xref"][type = 'fn'] *[class ~= "hi-d/sup"]:before {
+  content: "(";
 }
-
-*[class ~= "topic/fn"]::footnote-marker {
-  content: attr(data-fn-number) ".";
+*[class ~= "topic/table"] *[class ~= "topic/xref"][type = 'fn'] *[class ~= "hi-d/sup"]:after {
+  content: ")";
 }</codeblock></li>
         <li id="li_ibq_cgk_54b">Open the <xref
             href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
