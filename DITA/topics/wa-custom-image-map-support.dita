@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-custom-image-map-support">
+  <title>Implementing Image Map Support in a Custom Framework</title>
+  <body>
+    <p>This topic describes how the rendering and editing of image maps can be implemented in a
+      custom framework. This implementation will require the following:</p>
+    <p>
+      <ul id="ul_sqq_xp2_15b">
+        <li><xref
+            href="https://www.oxygenxml.com/doc/versions/24.1.0/ug-waCustom/topics/webauthor-customize-with-css.html"
+            format="html" scope="external">Write some CSS</xref> to configure the rendering of the
+          image map.</li>
+        <li><xref
+            href="https://www.oxygenxml.com/doc/versions/24.1.0/ug-waCustom/topics/wa-framework-java-extension.html"
+            format="html" scope="external">Write Java classes</xref> to work with the custom image
+          map format.</li>
+        <li><xref
+            href="https://www.oxygenxml.com/doc/versions/24.1.0/ug-waCustom/topics/customizing_frameworks.html#customizing_frameworks__adding_javascript_code_to_a_framework"
+            format="html" scope="external">Write JavaScript code</xref> to enable the web-based
+          image map editor.</li>
+      </ul>
+    </p>
+    <section id="section_zyq_mb2_15b">
+      <title>Rendering Image Maps</title>
+      <p>To render an image map, you can add a form control on the image element. The form control
+        should have the following properties:</p>
+      <p>
+        <ul id="ul_ggs_hc2_15b">
+          <li><codeph>webappRendererClassName</codeph> should be set to
+              <codeph>ro.sync.ecss.webapp.formcontrols.WebappImageMapRenderer</codeph>.</li>
+          <li><codeph>imageUrl</codeph> should be set to the (possibly relative) URL of the
+            image.</li>
+          <li><codeph>imageMapSupportFactory</codeph> should be the name of a Java class in your
+            framework that implements
+              <codeph>ro.sync.ecss.extensions.api.webapp.imagemap.WebappImageMapSupportFactory</codeph>.
+            Its purpose is to decode the shapes from the document markup.</li>
+        </ul>
+      </p>
+    </section>
+    <example id="example_sgb_vc2_15b">
+      <title>Rendering Image Maps for XHTML</title>
+      <codeblock id="codeblock_z45_4b2_15b" outputclass="language-java">img[usemap] {
+  content: oxy_editor(
+    webappRendererClassName, "ro.sync.ecss.webapp.formcontrols.WebappImageMapRenderer"
+    edit, "custom",
+    imageUrl, attr(src),
+    imageMapSupportFactory, "ro.sync.ecss.extensions.xhtml.XHTMLWebappImageMapSupportFactory");
+}</codeblock>
+    </example>
+    <section id="section_pck_nb2_15b">
+      <title>Editing Image Maps</title>
+      <p>To edit an image map, you can instantiate <codeph>sync.api.EditImageMapAction</codeph> and
+        register it in the <codeph>ActionsManager</codeph>. The second parameter of the constructor
+        should be a Java class in your framework that extends
+          <codeph>ro.sync.ecss.extensions.commons.imagemap.operations.UpdateImageMapOperationBase</codeph>.</p>
+    </section>
+    <example id="example_dlj_1n2_15b">
+      <title>Action to Edit Image Maps for XHTML</title>
+      <codeblock id="codeblock_qfq_cd2_15b" outputclass="language-java">editor.getActionsManager().registerAction('edit.image.map',
+  new sync.api.EditImageMapAction(
+    editor.getEditingSupport(),
+    'ro.sync.ecss.extensions.xhtml.XHTMLUpdateImageMapOperation'));</codeblock>
+    </example>
+    <p>This action can be linked to a button form control added to the image map element.</p>
+    <example id="example_qyd_gn2_15b">
+      <title>Button Form Control to Launch the Image Map Editor</title>
+      <codeblock id="codeblock_elw_v12_15b" outputclass="language-java">img[usemap]:after(2){
+  display:block;
+  content:oxy_button(actionID, 'edit.image.map'); 
+}</codeblock>
+    </example>
+  </body>
+</topic>
