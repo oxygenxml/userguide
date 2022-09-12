@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-map-inline-actions">
+  <title>Enabling DITA Map Inline Insertion Actions by Default</title>
+  <body>
+    <p>The <uicontrol><image href="../img/WebappMore18.png"/>More drop-down menu</uicontrol> in the
+      top toolbar includes a <uicontrol>Choose styles</uicontrol> action that opens a dialog box
+      where you can <xref href="WA-styles-menu.dita">select styles to easily change the look of the
+        document</xref> as it appears in the editor. There is an <uicontrol>Inline insertion
+        actions</uicontrol> option listed under <uicontrol>Additional styles</uicontrol> that is for
+      DITA map documents and it adds inline actions that makes it easy to insert new topic
+      references.</p>
+    <p id="p_tg5_hcn_v5b">
+      <fig id="fig_uxw_hcn_v5b">
+        <title>Inline Insertion Action Widget in a DITA Map Document</title>
+        <image href="../img/wa-insertion-actions.png"/>
+      </fig>
+    </p>
+    <p id="p_bbk_ccn_v5b">There are several ways to make this additional style be enabled by default
+      for all users.</p>
+    <section id="section_ux3_htt_h5b">
+      <title>Enable Inline Insertion Actions by Setting Loading Options with a JavaScript
+        Plugin</title>
+      <p>To set this alternate style as enabled for all users, you can create a plugin to set a
+          <xref keyref="jscript_api_workspace_LoadingOptions"><i>LoadingOptions</i> type of
+          definition from the <i>Workspace</i> API</xref>, like this:</p>
+      <codeblock id="codeblock_itp_wmv_f5b" outputclass="language-javascript">goog.events.listen(workspace, sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED, function(e) {
+  if (e.options.url.endsWith('.ditamap')) {
+    // Activate the stylesheet that activates inline insertion actions for DITA Map files
+    e.options['stylesheet-titles'] = 'Basic,+ Inline insertion actions';
+  }
+});</codeblock>
+      <p>
+        <note id="note_khv_g2m_v5b" type="note">Using this method, the style is still present in the
+          alternate styles list and can be deselected by the user, but it will automatically be
+          re-enabled whenever the document is reloaded.</note>
+      </p>
+    </section>
+    <section id="section_n2p_tst_h5b">
+      <title>Enable Inline Insertion Actions Using a Framework Extension Script File</title>
+      <p>To set the alternate style as enabled by default, add the following to your <xref
+          href="https://www.oxygenxml.com/doc/ug-editor/topics/framework-customization-script.html"
+          format="html" scope="external">framework extension script file</xref>
+        (.exf):<codeblock id="codeblock_y4f_wst_h5b" outputclass="language-xml">
+&lt;author>
+  &lt;css>
+    &lt;removeCss path="${framework}/css/webauthor/map-inline-insertion-actions.css"/>
+    &lt;addCss path="${framework(DITA Map)}/css/webauthor/map-inline-insertion-actions.css"/>
+  &lt;/css>
+&lt;/author></codeblock></p>
+      <p id="p_n5c_d1n_v5b">Note that the "DITA Map" inside brackets for the
+          <codeph>$(framework)</codeph> variable specifies the base framework so that it expands to
+        that location rather than the new framework.</p>
+      <p>You can find the full example at <xref
+          href="https://github.com/oxygenxml-incubator/oxygen-sample-frameworks/tree/main/dita-map-extension-enable-alternate-style"
+          format="html" scope="external">oxygen-sample-frameworks</xref>.</p>
+    </section>
+    <section id="section_dsj_lvt_h5b">
+      <title>Enable Inline Insertion Actions in a Framework Extension</title>
+      <p>In a <xref href="customizing_frameworks.dita">custom framework configuration</xref>, go to
+        the <xref href="https://www.oxygenxml.com/doc/ug-editor/topics/the-css-sub-tab.html"
+          format="html" scope="external">CSS tab in the Document Type configuration dialog
+          box</xref> (in a standalone version of <uicontrol>Oxygen XML Editor/Author</uicontrol>),
+        find the <codeph>${framework}/css/webauthor/map-inline-insertion-actions.css</codeph> entry
+        in the table, and change the <b>Alternate</b> column for that CSS file to <b>no</b> and
+        remove the value from the <b>Title</b> column.</p>
+    </section>
+    <section id="section_inf_fwt_h5b">
+      <title>How to Only Enable the Actions for Some Users or a Certain Role</title>
+      <p>To load a custom framework depending on the user's role, you can install the <xref
+          href="https://github.com/oxygenxml/web-author-user-role-plugin/" format="html"
+          scope="external">user role plugin</xref> to use as a starting point.</p>
+      <p>For example, to set the style as enabled only for Subject Matter Experts:<ul
+          id="ul_yzr_td5_h5b">
+          <li>If using a <xref href="#wa-map-inline-actions/section_ux3_htt_h5b">loading options
+              plugin</xref>, add an extra check before setting the loading option (the user role
+            plugin sets the "userRole" loading
+            option):<codeblock id="codeblock_byv_34v_f5b" outputclass="language-javascript">...
+if (e.options.url.endsWith('.ditamap') &amp;&amp; e.options.userRole === 'sme') {
+...</codeblock></li>
+          <li id="li_o41_c2n_v5b">If using a <xref href="#wa-map-inline-actions/section_n2p_tst_h5b"
+              >framework extension script file</xref>, add an <xref
+              href="wa-framework-customization-script-usecases.dita#wa-framework-customization-script-usecases/section_classpath"
+              >association
+            rule</xref>:<codeblock id="codeblock_g34_225_h5b" outputclass="language-xml" xml:space="preserve">&lt;associationRules&gt;
+  &lt;addRule javaRuleClass="com.oxygenxml.webapp.userrole.SmeUserFrameworkMatcher"/&gt;
+&lt;/associationRules&gt;</codeblock></li>
+          <li id="li_q41_c2n_v5b">If using a <xref href="#wa-map-inline-actions/section_dsj_lvt_h5b"
+              >framework extension</xref>, change the <xref
+              href="wa-framework-customization-script-usecases.dita#wa-framework-customization-script-usecases/section_classpath"
+              >association rule</xref>.</li>
+        </ul></p>
+    </section>
+  </body>
+</topic>
