@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="pdf-xslt-extensions-pub-template_usecase_1_add_line_numbering_and_zebra_in_codeblocks">
-  <title>How to Add Line Numbering and Zebra Effect in Codeblocks</title>
+<topic id="pdf-xslt-extensions-pub-template_usecase_2_add_line_numbering_in_codeblocks">
+  <title>How to Add Line Numbering in Codeblocks</title>
   <body>
     <p id="p_v1q_cgk_54b">One requirement for your <xmlelement>codeblock</xmlelement> elements could
       be to add line numbering and to alternate the background color on each line. Some advantages
@@ -17,8 +17,7 @@
       <li conkeyref="reusables-dcpp/pt-li1" id="li_z1q_cgk_54b"/>
       <li conkeyref="reusables-dcpp/pt-li2" id="li_abq_cgk_54b"/>
       <li conkeyref="reusables-dcpp/pt-li3" id="li_bbq_cgk_54b"/>
-      <li id="li_cbq_cgk_54b">In this folder, create an XSL file (for example, named
-          <filepath>merged2html5Extension.xsl</filepath>) with the following
+      <li id="li_cbq_cgk_54b">In this folder, create an XSL file (for example, named <filepath>merged2html5Extension.xsl</filepath>) with the following
         content:<codeblock outputclass="language-xml" id="codeblock_dbq_cgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -29,28 +28,33 @@
     &lt;xsl:variable name="nm">
       &lt;xsl:next-match/>
     &lt;/xsl:variable>
-    &lt;xsl:apply-templates select="$nm" mode="zebra-and-numbering"/>
+    &lt;xsl:apply-templates select="$nm" mode="line-numbering"/>
   &lt;/xsl:template>
 
-  &lt;xsl:template match="node() | @*" mode="zebra-and-numbering">
+  &lt;xsl:template match="node() | @*" mode="line-numbering">
     &lt;xsl:copy>
       &lt;xsl:apply-templates select="node() | @*" mode="#current"/>
     &lt;/xsl:copy>
   &lt;/xsl:template>
 
-  &lt;xsl:template match="*[contains(@class, ' pr-d/codeblock ')]" mode="zebra-and-numbering">
+  &lt;xsl:template match="*[contains(@class, ' pr-d/codeblock ')]" mode="line-numbering">
     &lt;xsl:element name="{name()}">
       &lt;xsl:copy-of select="@*"/>
-      &lt;xsl:attribute name="class" select="concat(@class, ' zebra')"/>
-      &lt;xsl:analyze-string regex="\n" select=".">
-        &lt;xsl:matching-substring/>
-        &lt;xsl:non-matching-substring>
-          &lt;div class="+ topic/pre pr-d/codeblock-line pre codeblock-line">
-            &lt;xsl:value-of select="."/>
-          &lt;/div>
-        &lt;/xsl:non-matching-substring>
-      &lt;/xsl:analyze-string>
+      &lt;span class="+ topic/pre pr-d/codeblock-new-line pre codeblock-new-line"/>
+      &lt;xsl:apply-templates mode="#current"/>
     &lt;/xsl:element>
+  &lt;/xsl:template>
+  
+  &lt;xsl:template match="*[contains(@class, ' pr-d/codeblock ')]//text()" mode="line-numbering">
+    &lt;xsl:analyze-string regex="\n" select=".">
+      &lt;xsl:matching-substring>
+        &lt;xsl:value-of select="."/>
+        &lt;span class="+ topic/pre pr-d/codeblock-new-line pre codeblock-new-line"/>
+      &lt;/xsl:matching-substring>
+      &lt;xsl:non-matching-substring>
+        &lt;xsl:value-of select="."/>
+      &lt;/xsl:non-matching-substring>
+    &lt;/xsl:analyze-string>
   &lt;/xsl:template>
 
 &lt;/xsl:stylesheet></codeblock></li>
@@ -68,25 +72,24 @@
         id="com.oxygenxml.pdf.css.xsl.merged2html5"
         file="xslt/merged2html5Extension.xsl"/&gt;
     &lt;/xslt&gt;</codeblock></li>
-      <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template
-        directory. In this directory, save a custom CSS file with rules that style the
-          <xmlelement>codeblock</xmlelement> structure. For
-        example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">.zebra {
-  padding: 0;
-}
-
-.zebra > *:nth-of-type(odd) {
-  background-color: lightgray;
-}
-
-.codeblock:before {
+      <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template directory. In this directory, save a custom CSS file with rules that style the <xmlelement>codeblock</xmlelement> structure. For
+        example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">.codeblock {
   counter-reset: codeblock-line-number;
+  position: relative;
+  padding-left: 2em;
 }
 
-.codeblock-line {
+.codeblock-new-line {
+  display: block;
+  position: absolute;
+  left: 0;
+}
+
+.codeblock-new-line::before {
+  color: initial;
   counter-increment: codeblock-line-number;
   content: counter(codeblock-line-number);
-}    </codeblock></li>
+}</codeblock></li>
       <li id="li_ibq_cgk_54b">Open the <xref
           href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
             descriptor file</i></xref> associated with your <i>publishing template</i> (the
