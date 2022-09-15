@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="troubleshooting-blank-window">
+  <title>Blank Window is Shown When Starting the App Over an RDP Connection on Linux</title>
+  <troublebody>
+    <condition id="problem">
+      <title>Problem</title>
+      <p id="p_yhk_dgk_54b">When starting <ph keyref="product"/> or its installer on
+          <term>Linux</term>, a blank window is displayed when started over an RDP connection.</p>
+    </condition>
+    <troubleSolution>
+      <cause id="cause">
+        <title>Cause</title>
+        <p id="p_zhk_dgk_54b"><ph keyref="product"/> and its installer are Java Swing apps that
+          require a 24 bit color depth from the X server.</p>
+      </cause>
+      <remedy id="solution">
+        <title>Solution</title>
+        <steps-informal>
+          <p id="p_a3k_dgk_54b">
+            <ol id="ol_c45_s5h_w5b">
+              <li id="li_d45_s5h_w5b">If you are using <i>xrdp</i>, find the
+                  <filepath>/etc/xrdp/xrdp.ini</filepath> file.</li>
+              <li id="li_obf_55h_w5b">Uncomment the <codeph>xserverbpp=24</codeph> line.</li>
+              <li id="li_nxc_w5h_w5b">Save your files and close all the apps (the subsequent step
+                will terminate your remote session so you could lose your progress if you do not
+                save your files first).</li>
+              <li id="li_apm_z5h_w5b">Restart the <i>xrdp</i>
+                service:<codeblock outputclass="language-bourne">sudo systemctl restart xrdp.service</codeblock></li>
+            </ol>
+            <note id="note_sd3_dvh_w5b">Alternatively, you can try setting
+                <codeph>max_bpp=24</codeph> in the same <filepath>/etc/xrdp/xrdp.ini</filepath>
+              file.</note>
+          </p>
+        </steps-informal>
+      </remedy>
+    </troubleSolution>
+  </troublebody>
+</troubleshooting>
