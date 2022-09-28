@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-create-framework-from-scratch.dita">
+    <title>How to create a framework from scratch</title>
+    <body>
+        <p>If you have a custom XML vocabulary that is not supported out-of-the-box by <ph
+                keyref="product"/> and is not a DITA specialization, you have to create a <xref
+                keyref="glossentry_framework">framework</xref> from scratch.</p>
+        <p>In this tutorial, we assume you have:</p>
+        <p>
+            <ul id="ul_jgp_45w_z5b">
+                <li>the schema files that define your XML vocabulary. They can be any in of the
+                    supported schema languages: DTDs, XML schemas, RelaxNG, etc.</li>
+                <li>template files</li>
+            </ul>
+        </p>
+        <p>To create a framework, follow these steps:</p>
+        <p>
+            <ol id="ol_ntl_q1d_jtb">
+                <li>Install Oxygen XML Web Author - download the <xref
+                        href="https://www.oxygenxml.com/xml_web_author/download_oxygenxml_web_author.html?os=All"
+                        format="html" scope="external"><b>All Platforms</b></xref> kit from our
+                    website, and request a trial license from the installation wizard.</li>
+                <li>You should create a framework to customize Web Author for your framework.<ol
+                        id="ol_bdd_t1d_jtb">
+                        <li>Create an empty folder <filepath>MyFramework</filepath></li>
+                        <li>Create an EXF file (<filepath>my-framework.exf</filepath>) based on the
+                            following
+                            template:<codeblock id="codeblock_yqq_hvw_z5b" outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;script xmlns="http://www.oxygenxml.com/ns/framework/extend"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.oxygenxml.com/ns/framework/extend http://www.oxygenxml.com/ns/framework/extend/frameworkExtensionScript.xsd">
+  &lt;name>My Framework&lt;/name>
+  &lt;description/>
+  &lt;priority>High&lt;/priority>
+
+  &lt;associationRules>
+    &lt;addRule namespace="*" rootElementLocalName="*" fileName="*" publicID="*" javaRuleClass=""
+    attributeLocalName="*" attributeNamespace="*" attributeValue="*"/>
+  &lt;/associationRules>
+
+  &lt;documentTemplates>
+    &lt;addEntry path="${frameworkDir}/templates"/>
+  &lt;/documentTemplates>
+
+  &lt;classpath>
+    &lt;addEntry path="${framework}/resources"/>
+  &lt;/classpath>
+
+  &lt;xmlCatalogs>
+    &lt;addEntry path="${framework}/catalog.xml"/>
+  &lt;/xmlCatalogs>
+
+  &lt;author>
+    &lt;css>
+      &lt;addCss path="${framework}/css/main.css"/>
+    &lt;/css>
+  &lt;/author>
+&lt;/script></codeblock></li>
+                    </ol></li>
+                <li>Implement the association rule - to detect which documents should match this
+                    framework. You can use your root element, or leave the default so that your
+                    customization will be applied for any XML document.</li>
+                <li>Create a <filepath>templates</filepath> folder with template files (e.g. XML
+                    documents with only the required structure)</li>
+                <li>Add your schemas <ol id="ol_ufw_nbd_jtb">
+                        <li>Save them in a sub-folder (let's say it is called
+                                <filepath>schemas</filepath>)</li>
+                        <li>Create a <filepath>catalog.xml</filepath> file in the root directory of
+                            the framework. This catalog file maps the schemas to the actual file in
+                            the framework folder where the schema is
+                            saved.<codeblock id="codeblock_ow1_2cd_jtb" outputclass="language-xml">&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  &lt;uriSuffix uriSuffix="[schema-file-name].xsd" uri="./schemas/&lt;schema-file-name>.xsd"/>
+&lt;/catalog></codeblock>where you replace
+                                <codeph>[schema-file-name]</codeph> with the file name of your
+                            schema.</li>
+                    </ol></li>
+                <li>Customize the rendering of the document<ol id="ol_syv_qcd_jtb">
+                        <li>Create a <filepath>css/main.css</filepath> file</li>
+                        <li>Add some styles inside it. You can start
+                            with<codeblock id="codeblock_fsj_4dd_jtb" outputclass="language-css">* {
+  display: block;
+}
+
+/** Display the element name before each element. This rule is useful only for development. */
+*:before(1001) {
+  content: oxy_name() " ";
+  font-size: 0.75rem;
+  font-family: monospace;
+  background-color: lightgray;
+}</codeblock></li>
+                    </ol></li>
+                <li>Test your framework<ol id="ol_ac2_m2d_jtb">
+                        <li>Create a ZIP archive of the <filepath>MyFramework</filepath> framework
+                            and upload it in Web Author's <uicontrol>Administration
+                            Page</uicontrol>.</li>
+                        <li>Create a new file based on your template and open it.</li>
+                        <li>The framework is saved in a folder called
+                                <filepath>tomcat/work/Catalina/localhost/oxygen-xml-web-author/frameworks</filepath>
+                            in the Web Author folder. You can make
+                                <?oxy_comment_start author="Cristian Talau" timestamp="20220928T071748+0000" comment="@&quot;Steven Higgs&quot;, not sure if the correct linking format. The other links should be checked as well."?><xref
+                                href="https://www.oxygenxml.com/doc/versions/24.1/ug-editor/topics/dg-css-support-in-author.html"
+                                format="html" scope="external">CSS changes</xref><?oxy_comment_end?>
+                            in this folder and refresh the browser until you are happy with the
+                            rendering.</li>
+                    </ol></li>
+                <li>Next steps:<ol id="ol_aw2_d2d_jtb">
+                        <li><xref
+                                href="https://www.oxygenxml.com/doc/versions/24.1/ug-editor/topics/framework-customization-script-usecases.html#framework-customization-script-usecases__section_qzt_5ry_jnb"
+                                format="html" scope="external">Add actions on the toolbar and in the
+                                context menu</xref></li>
+                        <li>Add inline <xref
+                                href="https://www.oxygenxml.com/doc/versions/24.1/ug-editor/topics/form-controls.html"
+                                format="html" scope="external">form controls</xref>.</li>
+                    </ol></li>
+            </ol>
+        </p>
+    </body>
+</topic>
+
