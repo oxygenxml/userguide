@@ -2,13 +2,26 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="wa-merge-tool-cms">
   <title>Integrating the File Merge Tool with a CMS</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>diff</indexterm>
+        <indexterm>diffType</indexterm>
+        <indexterm>diffBaseUrl</indexterm>
+        <indexterm>merge</indexterm>
+        <indexterm>compare</indexterm>
+        <indexterm>combine</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
     <p id="p_qpm_ltj_drb"><ph keyref="product"/> provides a <xref
-        href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-merge-tool.html" format="html"
-        scope="external">file merge tool</xref>. It is a useful feature for cases where multiple
-      users work with the same documents concurrently because it can be used to resolve conflicts
-      when committing changes to a repository. The Web Author Merge tool is offered as an API for
-      CMS integrations.</p>
+      href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-merge-tool.html" format="html"
+      scope="external">file merge tool</xref> that is offered as an API for CMS integrations.</p>
+    <p>The Merge Tool is a useful feature for cases where multiple users work with the same file in
+      parallel because it can be used to resolve conflicts when committing changes to a repository.
+      Also it can be used to compare current unsaved changes with the document stored in the
+      CMS.</p>
     <section id="id_2">
       <title>Use-cases</title>
       <ul id="ul_d54_zgc_drb">
@@ -26,15 +39,16 @@
     </section>
     <section id="id_3">
       <title>Integration Approach</title>
-      <p>To launch the Merge tool, Web Author must be started with the following parameters:</p>
+      <p>To launch the Web Author Merge tool, it must be started with the following URL
+        parameters:</p>
       <p>
         <dl id="dl_gjh_qkq_crb">
           <dlentry>
             <dt>url</dt>
             <dd>
-              <p>The <xref href="oxy-url.dita">OXY-URL</xref> of one of the files to be merged. It
-                will be loaded in the left part of the merge tool and will be edited to contained
-                the merged version of the file.</p>
+              <p>The <xref href="oxy-url.dita">OXY-URL</xref> of one of the files to be merged. This
+                is the merge target. It will be loaded in the left part of the merge tool, will be
+                editable and will contain the merged version of the file.</p>
             </dd>
           </dlentry>
           <dlentry>
@@ -46,22 +60,29 @@
           <dlentry>
             <dt>diffType</dt>
             <dd>
-              <p>Use merge to launch the File Merge Tool.</p>
+              <p>Use <codeph>merge</codeph> for the value to allow merging. If this parameter is not
+                specified, the left editor won't be editable, thus the tool will work as a read-only
+                diff tool.</p>
             </dd>
           </dlentry>
           <dlentry>
             <dt>diffBaseUrl</dt>
             <dd>
-              <p>The base file used for the 3-way merge process. Usually a file version where the
-                two versions diverged.</p>
+              <p>The <xref href="oxy-url.dita">OXY-URL</xref> of the base file used for the 3-way
+                merge process. Usually, a file version where the two versions diverged (the common
+                ancestor). If this parameter is not specified, the tool will perform a 2-way diff
+                and will not be able to detect conflicts.</p>
             </dd>
           </dlentry>
         </dl>
       </p>
-      <p>These parameters need to be <xref
-          href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
-          >set as URL parameters</xref> (there are others that can be used to configure various
-        aspects of the editor).</p>
+      <p>Keep in mind that the above parameters have to be <xref
+        href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
+        >set as URL parameters</xref> and note that there are others that can be used to configure
+        various aspects of the editor.</p>
+      <p>One example of a merge URL can be found on our public demo, by opening the <xref
+        href="https://www.oxygenxml.com/oxygen-xml-web-author/app/oxygen.html?url=webdav-https%3A%2F%2Fwww.oxygenxml.com%2Foxygen-xml-web-author%2Fplugins-dispatcher%2Fwebdav-server%2Fdiff%2Fchess%2FChess.dita&amp;diffUrl=webdav-https%3A%2F%2Fwww.oxygenxml.com%2Foxygen-xml-web-author%2Fplugins-dispatcher%2Fwebdav-server%2Fdiff%2Fchess%2FChess_repo.dita&amp;diffBaseUrl=webdav-https%3A%2F%2Fwww.oxygenxml.com%2Foxygen-xml-web-author%2Fplugins-dispatcher%2Fwebdav-server%2Fdiff%2Fchess%2FChess_base.dita&amp;diffType=merge&amp;leftEditorLabel=Your%20version&amp;rightEditorLabel=Latest%20version"
+        format="html" scope="external">Compare Files</xref> sample.</p>
       <p>After the user finishes the merge, the merged content will be in the left-side pane. To get
         the merged content, you can use JavaScript code from a plugin as follows:</p>
       <codeblock id="pre_gm2_nkq_crb" outputclass="language-javascript">/** @type {sync.api.Editor} */
