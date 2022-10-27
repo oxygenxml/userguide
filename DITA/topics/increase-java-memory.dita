@@ -5,10 +5,10 @@
   <prolog>
     <metadata>
       <keywords>
+        <indexterm>OutOfMemory</indexterm>
         <indexterm>Out of memory</indexterm>
-        <indexterm>Increase memory</indexterm>
         <indexterm>Memory issues</indexterm>
-        <indexterm>OutOfMemoryError</indexterm>
+        <indexterm>Increase memory</indexterm>
       </keywords>
     </metadata>
   </prolog>
@@ -16,6 +16,13 @@
     <p id="p_lvp_cgk_54b">If you are working with a large project with extensive metadata or key references, you may
       need to increase the amount of memory that is allocated to the Java process that performs the
       publishing.</p>
+    <p id="p_svp_cgk_54b">There can be two situations where an out of memory error can be
+        triggered:<ul id="ol_v14_wyy_tjb">
+        <li id="li_tvp_cgk_54b">From the DITA-OT basic processing (the preparation of the merged
+          HTML document).</li>
+        <li id="li_uvp_cgk_54b">From the Chemistry PDF CSS processor (the transformation of the
+          merged HTML document to PDF).</li>
+      </ul></p>
     <section id="section_l45_3jd_bhb">
       <title>When the Transformation is Started from Oxygen</title>
       <p id="p_mvp_cgk_54b">To alter the memory allocation setting from the transformation scenario, follow these
@@ -23,6 +30,7 @@
           <li id="li_nvp_cgk_54b">Open the <uicontrol>Configure Transformation Scenario(s)</uicontrol> dialog box.</li>
           <li id="li_ovp_cgk_54b">Select your transformation scenario, then click <uicontrol>Edit</uicontrol>.</li>
           <li id="li_pvp_cgk_54b">Go to the <uicontrol>Advanced</uicontrol> tab.</li>
+          <li>Uncheck the <uicontrol>Prefer using the "dita" command</uicontrol> option</li>
           <li id="li_qvp_cgk_54b">Locate the <uicontrol>JVM Arguments</uicontrol> and increase the default value. For
             instance, to set 2 gigabytes as the maximum amount of memory, you can use:
               <codeph>-Xmx2g</codeph>. If you do not specify the <b>-Xmx</b> value in this field, by
@@ -33,26 +41,23 @@
     </section>
     <section id="section_dgk_kjd_bhb">
       <title>When the Transformation is Started from the Command Line</title>
-			<p id="p_svp_cgk_54b">There can be two situations where an out of memory error can be triggered:</p>
-			<ul id="ol_v14_wyy_tjb">
-        <li id="li_tvp_cgk_54b">From the DITA-OT basic processing (the preparation of the merged XML document).</li>
-        <li id="li_uvp_cgk_54b">From the Chemistry PDF CSS processor (the transformation of the merged XML document to
-          PDF).</li>
+      <ul id="ul_atm_3hf_hvb">
+        <li><b>If the DITA-OT process fails with Out Of Memory Error:</b> you can change the value
+          of the <codeph>ANT_OPTS</codeph> environment variable from a command line for a specific
+              session.<p><b>Example:</b> To increase the JVM memory allocation to 1024 MB for a
+            specific session, issue the following command from a command prompt (depending on your
+            operating system):<ul id="ul_lpr_ljd_bhb">
+              <li id="li_xvp_cgk_54b"
+                ><b>Windows</b><codeblock outputclass="language-java" id="codeblock_yvp_cgk_54b">set ANT_OPTS=%ANT_OPTS% -Xmx1024M</codeblock></li>
+              <li id="li_zvp_cgk_54b"
+                ><b>Linux/macOS</b><codeblock outputclass="language-java" id="codeblock_awp_cgk_54b">export ANT_OPTS="$ANT_OPTS -Xmx1024M"</codeblock></li>
+            </ul><note type="tip" id="note_bwp_cgk_54b">To persistently change the memory
+              allocation, change the value allocated to the <codeph>ANT_OPTS</codeph> environment
+              variable on your system.</note></p></li>
+        <li><b>If the Chemistry PDF CSS processor fails with an Out Of Memory Error:</b> try adding
+          the <codeph>baseJVMArgLine</codeph> parameter to the DITA-OT command line. For
+          example:<codeblock outputclass="language-java" id="codeblock_dwp_cgk_54b">-DbaseJVMArgLine=-Xmx2048m</codeblock></li>
       </ul>
-      <p id="p_vvp_cgk_54b">To solve both of them, you can change the value of the <codeph>ANT_OPTS</codeph>
-        environment variable from a command line for a specific session.</p>
-      <p id="p_wvp_cgk_54b"><b>Example:</b> To increase the JVM memory allocation to 1024 MB for a specific session,
-        issue the following command from a command prompt (depending on your operating system):<ul
-          id="ul_lpr_ljd_bhb">
-          <li id="li_xvp_cgk_54b"><b>Windows</b><codeblock outputclass="language-java" id="codeblock_yvp_cgk_54b">set ANT_OPTS=%ANT_OPTS% -Xmx1024M</codeblock></li>
-          <li id="li_zvp_cgk_54b"
-            ><b>Linux/macOS</b><codeblock outputclass="language-java" id="codeblock_awp_cgk_54b">export ANT_OPTS="$ANT_OPTS -Xmx1024M"</codeblock></li>
-        </ul></p>
-      <note type="tip" id="note_bwp_cgk_54b">To persistently change the memory allocation, change the value allocated to
-        the <codeph>ANT_OPTS</codeph> environment variable on your system.</note>
-			<p id="p_cwp_cgk_54b">If the Chemistry PDF CSS processor fails with an <b>Out Of Memory Error</b>, try adding the
-          <codeph>baseJVMArgLine</codeph> parameter to the DITA-OT command line. For
-        example:<codeblock outputclass="language-java" id="codeblock_dwp_cgk_54b">-DbaseJVMArgLine=-Xmx984m</codeblock></p>
     </section>
   </body>
 </topic>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_customize_rows_columns_and_cells">
+    <title>How to Customize Rows, Columns and Cells</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Tables<indexterm>Customize<indexterm>Rows</indexterm></indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Tables<indexterm>Customize<indexterm>Columns</indexterm></indexterm></indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Tables<indexterm>Customize<indexterm>Cells</indexterm></indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope"
+            >Tables<indexterm>Customize<indexterm>Rows</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope"
+          >Tables<indexterm>Customize<indexterm>Columns</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope"
+          >Tables<indexterm>Customize<indexterm>Cells</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <section id="section_psy_c1t_hvb">
+      <title>Common Use-Cases</title>
+      <p>Here are some common table use-cases and the CSS selectors for customizing them. These
+        example uses the <codeph>background-color</codeph> CSS property but any CSS property can be
+        used (border, margin, padding, etc.).<ul id="ul_pfn_d1t_hvb">
+          <li>Select all non-header
+            cells:<codeblock id="codeblock_t1j_tys_hvb" outputclass="language-css">*[class ~= "topic/tbody"] *[class ~= "topic/entry"] {
+  background-color: lightgray;
+}</codeblock></li>
+          <li>Select some table rows (using <codeph>:nth-of-type()</codeph>
+            pseudo-class):<codeblock id="codeblock_cyr_1zs_hvb" outputclass="language-css">/* Select all even rows. */
+*[class ~= "topic/tbody"] *[class ~= "topic/row"]:nth-of-type(even) {
+  background-color: lightgray;
+}
+/* Select the fourth row. */
+*[class ~= "topic/tbody"] *[class ~= "topic/row"]:nth-of-type(4) {
+  background-color: yellow;
+}</codeblock></li>
+          <li>Select specific table columns (using <codeph>:nth-of-type()</codeph>
+            pseudo-class):<codeblock outputclass="language-css" id="codeblock_ryw_3zs_hvb">/* Select all odd columns. */
+*[class ~= "topic/tbody"] *[class ~= "topic/entry"]:nth-of-type(odd) {
+  background-color: lightgray;
+}
+/* Select the second column. */
+*[class ~= "topic/tbody"] *[class ~= "topic/entry"]:nth-of-type(2) {
+  background-color: yellow;
+}</codeblock></li>
+        </ul></p>
+    </section>
+    <section id="section_ir3_21t_hvb">
+      <title>Applying Properties to Specific Elements</title>
+      <p>If you need to apply some properties to specific elements, you can use the DITA
+          <xmlatt>outputclass</xmlatt>
+        attribute:<codeblock id="codeblock_qr2_j1t_hvb" outputclass="language-xml">&lt;table frame="none">
+    &lt;title>Flowers&lt;/title>
+    &lt;tgroup cols="3">
+        &lt;colspec colname="c1" colnum="1" colwidth="171pt"/>
+        &lt;colspec colname="c2" colnum="2" colwidth="99pt"/>
+        &lt;colspec colname="c3" colnum="3" colwidth="150pt"/>
+        &lt;thead>
+            &lt;row>
+                &lt;entry>Flower&lt;/entry>
+                &lt;entry>Type&lt;/entry>
+                &lt;entry>Soil&lt;/entry>
+            &lt;/row>
+        &lt;/thead>
+        &lt;tbody>
+            &lt;row>
+                &lt;entry>Chrysanthemum&lt;/entry>
+                &lt;entry outputclass="colored">perennial&lt;/entry>
+                &lt;entry>well drained&lt;/entry>
+            &lt;/row>
+            &lt;row>
+                &lt;entry>Gardenia&lt;/entry>
+                &lt;entry>perennial&lt;/entry>
+                &lt;entry>acidic&lt;/entry>
+            &lt;/row>
+            &lt;row outputclass="colored">
+                &lt;entry>Gerbera&lt;/entry>
+                &lt;entry>annual&lt;/entry>
+                &lt;entry>sandy, well-drained&lt;/entry>
+            &lt;/row>
+        &lt;/tbody>
+    &lt;/tgroup>
+&lt;/table></codeblock>In this case, the selector will be based on this
+          <codeph>outputclass</codeph>:<codeblock id="codeblock_x5r_k1t_hvb" outputclass="language-css">*[class ~= "topic/table"] *[outputclass ~= "colored"] {
+  background-color: yellow;
+}</codeblock></p>
+    </section>
+    </body>
+</topic>
