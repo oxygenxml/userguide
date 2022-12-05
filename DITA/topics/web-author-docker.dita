@@ -5,35 +5,9 @@
   <body>
     <p>It is a common practice to use Docker containers to deploy <ph keyref="product"/>. This topic
       contains some advice on how to create a custom Docker image.</p>
-    <p>Here is an sample of a Docker file that you can use as an
-      example:<codeblock id="codeblock_mpl_fwp_55b" outputclass="language-bourne">FROM tomcat:9.0.65-jre11-temurin-focal
-
-# If behind a proxy, make sure you configure Docker
-# https://docs.docker.com/network/proxy/
-
-# Make sure to update and also install wget
-RUN apt-get update &amp;&amp; apt-get -y install wget
-
-# Now download the web author war
-RUN wget https://www.oxygenxml.com/InstData/WebAuthor/war/oxygenxml-web-author.war
-
-RUN mv oxygenxml-web-author.war /usr/local/tomcat/webapps/
-
-# Expose the Tomcat port
-EXPOSE 8080 
-# Expose the logs
-VOLUME /usr/local/tomcat/logs/
-VOLUME /usr/local/tomcat/work/Catalina/localhost/oxygenxml-web-author</codeblock>To build the
-      Docker image,
-      use:<codeblock id="codeblock_dlw_s1q_55b" outputclass="language-bourne">docker build -t web-author .</codeblock></p>
-    <p>Before starting a container from this image, make sure you create volumes for the data
-      directory and
-      logs:<codeblock id="codeblock_ozr_k1q_55b" outputclass="language-bourne">docker volume create web-author-logs
-docker volume create web-author-data</codeblock></p>
-    <p>Then, start it with this
-      command:<codeblock id="codeblock_g4s_41q_55b" outputclass="language-bourne">docker run -p 8080:8080 --mount source=web-author-data,target=/usr/local/tomcat/work/Catalina/localhost/oxygenxml-web-author --mount source=web-author-logs,target=/usr/local/tomcat/logs  web-author</codeblock></p>
-    <p><ph keyref="product"/> will be available at the following address
-        <codeph>http://&lt;docker-host>:8080/oxygenxml-web-author/</codeph>. </p>
+    <p id="p_usv_d4v_svb">For some sample Docker configurations, see the following public GitHub
+      repository: <xref href="https://github.com/oxygenxml/web-author-docker" format="html"
+        scope="external"/>.</p>
     <section id="section_gnv_qhs_xrb">
       <title>HTTP Configuration</title>
       <p>The HTTP/HTTPS ports of the container must be exposed.</p>
