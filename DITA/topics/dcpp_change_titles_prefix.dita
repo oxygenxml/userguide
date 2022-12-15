@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_change_titles_prefix">
+  <title>How to Change Chapters Title Prefix</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Titles<indexterm>Change prefix</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Titles<indexterm>Change prefix</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="section_tdl_xrv_bvb">
+      <title>Changing Prefixes in Shallow Numbering</title>
+      <p>In shallow numbering (default), to replace the "Chapter N." prefix, use the following rules
+        in your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>:</p>
+      <codeblock id="codeblock_ktt_csv_bvb" outputclass="language-css">*[class ~= "map/topicref"][is-chapter]:not([is-part]) > *[class ~= "map/topicmeta"] > *[class ~= "topic/navtitle"]:before{
+  content: "Module " counter(toc-chapter, decimal-leading-zero) " - ";
+}
+*[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"]:before {
+  content: "Module " counter(chapter, decimal-leading-zero) "\A";
+}</codeblock>
+    </section>
+    <section id="section_tv3_ksv_bvb">
+      <title>Changing Prefixes in Deep Numbering</title>
+      <p>In deep numbering, to replace the "N." prefix, use the following rules in your <xref
+          href="dcpp_the_customization_css.dita">customization CSS</xref>:</p>
+      <codeblock id="codeblock_i2c_lsv_bvb" outputclass="language-css">*[class ~= "map/map"][numbering ^= 'deep'] *[class ~= "topic/topic"][is-chapter]:not([is-part]) > *[class ~= "topic/title"]:before,
+*[class ~= "map/map"][numbering ^= 'deep'] *[class ~= "topic/topic"][is-chapter]:not([is-part]) *[class ~= "topic/topic"] > *[class ~= "topic/title"]:before {
+  content: counters(chapter-and-sections, ".") "\A";
+}</codeblock>
+    </section>
+  </body>
+</topic>
