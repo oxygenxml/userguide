@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="topic_rfj_mpz_vvb">
-    <title>Writing Java Unit Tests for Framework Customization</title>
-    <body>
-        <p>Test-driven development enables great development speed because you can test changes
-            without having to restart Oxygen XML Editor or Oxygen XML Web Author.</p>
-        <p>Another great advantage is that multiple developers can work on the project without fear
-            of breaking everything after each commit, that's because regressions shall be caught by
-            the unit tests.</p>
-        <p>You can see how to write unit tests for an Oxygen Framework from our <xref
-                href="https://github.com/oxygenxml-incubator/oxygen-sample-frameworks/tree/main/sample-java-unit-test"
-                format="html" scope="external">sample project</xref> that has a test that load a
-            sample framework, create an <xref
-                href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/AuthorDocumentModel.html"
-                format="html" scope="external">AuthorDocumentModel</xref> from a sample document,
-            and asserts its styles that are configured in the framework.</p>
-        <p>The full recipe to write unit tests, the recipe that the above-mentioned sample test
-            project used is:<ol id="ol_ij3_qqz_vvb">
-                <li>add Oxygen SDK to the classpath and logback-classic, in our case they are added
-                    using Maven
-                    dependencies:<codeblock id="codeblock_nfq_tqz_vvb" outputclass="language-xml">&lt;dependency>
+<topic id="wa-unit-test-framework">
+  <title>Writing Java Unit Tests for a Framework Customization</title>
+  <body>
+    <p>Test-driven development enables great development speed because you can test changes without
+      having to restart <b>Oxygen XML Editor</b> or <b>Oxygen XML Web Author</b>.</p>
+    <p>Another great advantage is that multiple developers can work on the project without fear of
+      breaking things after each commit, because regressions are caught by the unit tests.</p>
+    <p>You can see how to write unit tests for an <term>Oxygen Framework</term> from our <xref
+        href="https://github.com/oxygenxml-incubator/oxygen-sample-frameworks/tree/main/sample-java-unit-test"
+        format="html" scope="external">sample project</xref> that has a test that loads a sample
+      framework, creates an <xref
+        href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/AuthorDocumentModel.html"
+        format="html" scope="external">AuthorDocumentModel</xref> from a sample document, and
+      asserts its styles that are configured in the framework.</p>
+    <p>To write unit tests for a framework customization, follow this procedure (this same procedure
+      was used for the sample project mentioned above):<ol id="ol_ij3_qqz_vvb">
+        <li>Add <b>Oxygen SDK</b> to the classpath and <i>logback-classic</i> (in our sample, they
+          are added using Maven
+          dependencies):<codeblock id="codeblock_nfq_tqz_vvb" outputclass="language-xml">&lt;dependency>
   &lt;groupId>com.oxygenxml&lt;/groupId>
   &lt;artifactId>oxygen-sdk&lt;/artifactId>
   &lt;version>${oxygen.version}&lt;/version>
@@ -31,19 +30,17 @@
   &lt;version>1.2.10&lt;/version>
   &lt;scope>provided&lt;/scope>
 &lt;/dependency></codeblock></li>
-                <li>before running any test initialize Oxygen classes by running
-                        <codeph>MockAuthorDocumentFactory.initForTest()</codeph> and specify the
-                    location of the framework by specifying the
-                        "<codeph>additional.frameworks.directories</codeph>" Oxygen
-                    Option:<codeblock id="codeblock_rbz_zqz_vvb" outputclass="language-java">Options.getInstance().setStringArrayProperty(
+        <li>Before running a test, initialize <b>Oxygen</b> classes by running
+            <codeph>MockAuthorDocumentFactory.initForTest()</codeph> and specify the location of the
+          framework by specifying the "<codeph>additional.frameworks.directories</codeph>"
+          option:<codeblock id="codeblock_rbz_zqz_vvb" outputclass="language-java">Options.getInstance().setStringArrayProperty(
     "additional.frameworks.directories",
     new String[] {sampleFrameworkDir.getAbsolutePath()});</codeblock></li>
-                <li>in your test load the <codeph>AuthorDocumentModel</codeph> using
-                        <codeph>MockAuthorDocumentFactory.create(testFile)</codeph></li>
-                <li>Use the above-created <codeph>AuthorDocumentModel</codeph> object to access and
-                    assert classes in the <xref
-                        href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/" format="html"
-                        scope="external">Oxygen SDK</xref>.</li>
-            </ol></p>
-    </body>
+        <li>In your test, load the <codeph>AuthorDocumentModel</codeph> using
+            <codeph>MockAuthorDocumentFactory.create(testFile)</codeph>.</li>
+        <li>Use that <codeph>AuthorDocumentModel</codeph> object to access and assert classes in the
+            <xref href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/" format="html"
+            scope="external">Oxygen SDK</xref>.</li>
+      </ol></p>
+  </body>
 </topic>
