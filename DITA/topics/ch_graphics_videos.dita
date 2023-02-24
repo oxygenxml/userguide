@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_graphics_videos">
+    <title>Videos</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Graphics<indexterm>Videos</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_yjv_dgk_54b">This topic contains information about how you can reference videos from
+      your HTML or XML documents.</p>
+    <p id="p_zjv_dgk_54b">For HTML, the <xmlelement>video</xmlelement> tag can be used without any
+      other styling in your CSS
+        files:<codeblock outputclass="language-xml" id="codeblock_akv_dgk_54b">...
+&lt;video data="path/to/video.mp4" format="mp4" width="480" height="270">
+    &lt;source src="path/to/video.mp4"/>
+&lt;/video>
+...</codeblock><note id="note_scp_wlq_pwb">
+        <ul id="ul_twj_qmq_pwb">
+          <li>Prefer using absolute paths for <xmlatt>data</xmlatt> and <xmlatt>src</xmlatt> values
+            like <codeph>src="file:/C:/absolute/path/to/video.mp4"</codeph>.</li>
+          <li>Both <xmlatt>width</xmlatt> and <xmlatt>height</xmlatt> attributes are optional, if
+            they are not set the video size will be extracted from its properties.</li>
+        </ul>
+      </note></p>
+    <p id="p_bkv_dgk_54b">For XML, you must add CSS rules that pick up the content of an attribute
+      and uses it as a source for the
+      video:<codeblock outputclass="language-xml" id="codeblock_ckv_dgk_54b">...
+&lt;para&gt;Like shown in this video: &lt;video src="files/earth.mp4"/>.&lt;/para&gt;
+...</codeblock>For example, the CSS rules may look like
+        following:<codeblock id="codeblock_slf_4mq_pwb" outputclass="language-css">video {
+  display: inline;
+}
+video[src] {
+  content: attr(src, url);
+}</codeblock><note id="note_acf_wmq_pwb">It is important to use the <codeph>url</codeph>
+        keyword when retrieving the attribute value. It signals that the value is a pointer to an
+        external image.</note></p>
+    <p>If your XML contains additional attributes like <xmlatt>width</xmlatt> or
+        <xmlatt>height</xmlatt>, you can complete the
+      CSS:<codeblock id="codeblock_ecd_cnq_pwb" outputclass="language-css">video[width] {
+  width: attr(width, length);
+}
+video[height] {
+  height: attr(height, length);
+}</codeblock></p>
+    <section id="section_ask_hnq_pwb">
+      <title>Customize Video Cover Placeholder</title>
+      <p>By default a placeholder is displayed in-place of the video, this placeholder when clicked
+        will launch the video.</p>
+      <p>It is possible to change this placeholder by a custom one by using the <xref
+          href="ch_css_extensions.dita#ch_css_extensions/row_xsk_5nq_pwb"
+            ><codeph>-oxy-video-cover</codeph></xref>
+        property:<codeblock id="codeblock_yb1_3nq_pwb" outputclass="language-css">video {
+  -oxy-video-cover: url("files/cover.png");
+}</codeblock></p>
+    </section>
+  </body>
+</topic>
