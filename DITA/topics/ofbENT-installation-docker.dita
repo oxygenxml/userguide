@@ -107,21 +107,19 @@
       </section>
       <section id="section_ny5_tlz_mmb">
         <title>3. Create Installation Directory</title>
-        <p id="p_s2w_dgk_54b">Create an installation directory (subsequently referred to as
-            <codeph>OXYGEN_FEEDBACK_INSTALL_DIR</codeph>) and unzip the downloaded kit to this new
-          directory. The application files are stored in this directory.</p>
-        <p id="p_t2w_dgk_54b">Sample code to create the install
-          directory:<codeblock outputclass="language-bourne" id="codeblock_u2w_dgk_54b">export OXYGEN_FEEDBACK_INSTALL_DIR=/home/feedback/oxygen-feedback
-sudo mkdir $OXYGEN_FEEDBACK_INSTALL_DIR
-sudo chown feedback: $OXYGEN_FEEDBACK_INSTALL_DIR</codeblock></p>
+        <p id="p_s2w_dgk_54b">Create a directory and unzip the downloaded kit to this new directory.
+          The application files are stored in this directory.</p>
+        <p id="p_t2w_dgk_54b">Sample code to create the
+          directory:<codeblock outputclass="language-bourne" id="codeblock_u2w_dgk_54b">sudo mkdir /home/feedback/oxygen-feedback
+sudo chown feedback: /home/feedback/oxygen-feedback</codeblock></p>
         <p id="p_v2w_dgk_54b">Sample code to extract the archive
-          content:<codeblock outputclass="language-bourne" id="codeblock_w2w_dgk_54b">cd $OXYGEN_FEEDBACK_INSTALL_DIR
+          content:<codeblock outputclass="language-bourne" id="codeblock_w2w_dgk_54b">cd /home/feedback/oxygen-feedback
 # Copy the downloaded archive here
 unzip oxygen-feedback-enterprise.zip</codeblock></p>
         <p id="p_x2w_dgk_54b"><b>Step Result:</b> A new directory (for example, named
             <filepath>oxygen-feedback-3.0</filepath>) is created with the extracted archive's
-          content, so the path becomes
-            <filepath>[OXYGEN_FEEDBACK_INSTALL_DIR]/oxygen-feedback-3.0</filepath>.</p>
+          content. This directory will be subsequently referred to as OXYGEN_FEEDBACK_INSTALL_DIR:
+          <codeblock id="codeblock_kj4_xdl_5wb" outputclass="language-bourne">export OXYGEN_FEEDBACK_INSTALL_DIR=/home/feedback/oxygen-feedback/oxygen-feedback-3.0</codeblock></p>
       </section>
       <section id="section_jlx_ylz_mmb">
         <title>4. Load Docker Images</title>
@@ -131,19 +129,19 @@ unzip oxygen-feedback-enterprise.zip</codeblock></p>
             <li id="li_w2y_fby_twb"><b>Oxygen Text Search Service</b></li>
           </ul></p>
         <p id="p_wx2_hby_twb">Run <filepath>load-docker-images.sh</filepath> (e.g.
-            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-3.0/docker-images/load-docker-images.sh</filepath>)
+            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/docker-images/load-docker-images.sh</filepath>)
           to load the <b>Oxygen Feedback Service</b> and <b>Oxygen Text Search Service</b> docker
           images in your local
-          environment.<codeblock outputclass="language-bourne">cd $OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-3.0/docker-images
+          environment.<codeblock outputclass="language-bourne">cd $OXYGEN_FEEDBACK_INSTALL_DIR/docker-images
 sh load-docker-images.sh</codeblock></p>
       </section>
       <section id="section_axp_cmz_mmb">
         <title>5. Set Up License</title>
         <p id="p_hfw_dgk_54b">Set up the license for Feedback Enterprise:<ol id="ol_hkh_4by_twb">
             <li id="li_ikh_4by_twb">Go to
-                <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-3.0/oxygen-feedback-home</filepath>
-              and create a new file named
-              <i>licensekey.txt</i>.<codeblock outputclass="language-bourne">cd $OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-3.0/oxygen-feedback-home
+                <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home</filepath> and create a
+              new file named
+              <i>licensekey.txt</i>.<codeblock outputclass="language-bourne">cd $OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home
 touch licensekey.txt</codeblock></li>
             <li id="li_mdv_sby_twb">Copy and paste your license key inside the
                 <filepath>licensekey.txt</filepath> file using a text editor or
@@ -155,8 +153,8 @@ touch licensekey.txt</codeblock></li>
       <section id="section_mdf_gmz_mmb">
         <title>6. Configure Oxygen Feedback</title>
         <p id="p_kfw_dgk_54b">To configure <ph keyref="product"/>, edit the configuration files from
-            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-3.0/oxygen-feedback-home/config</filepath>.
-          The available configuration properties are described in the procedures linked below:<ul
+            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home/config</filepath>. The
+          available configuration properties are described in the procedures linked below:<ul
             id="ul_ry2_kdy_twb">
             <li id="li_sy2_kdy_twb"><xref href="ofbENT-database-setup.dita">How to Set Up the
                 Database</xref></li>
@@ -183,8 +181,8 @@ touch licensekey.txt</codeblock></li>
       <section id="set_up_license">
         <title>7. Configure <filepath>docker-compose.yml</filepath></title>
         <p id="p_vv4_t2y_twb">Edit the
-            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-3.0/docker-compose.yml</filepath>
-          file to configure the docker containers for following services:<ul id="ul_wv4_t2y_twb">
+            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/docker-compose.yml</filepath> file to configure
+          the docker containers for following services:<ul id="ul_wv4_t2y_twb">
             <li id="li_xv4_t2y_twb"><b>Oxygen Feedback Service</b></li>
             <li id="li_yv4_t2y_twb"><b>Oxygen Text Search Service</b></li>
           </ul><codeblock outputclass="language-bourne">version: '3'
@@ -263,9 +261,8 @@ services:
         <title>8. Configure OTSS Connection</title>
         <p id="p_cmq_4s2_5wb">The connection to the <b>Oxygen Text Search Service</b> can be
           configured in the
-            <filepath>oxygen-feedback/config/feedback-text-search.properties</filepath>
-          file:<codeblock outputclass="language-bourne">oxygen-feedback/config/feedback-text-search.properties
-###################################################################
+            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home/config/feedback-text-search.properties</filepath>
+          file:<codeblock outputclass="language-bourne">###################################################################
 # Stores the configuration properties for the Text Search support #
 ###################################################################
 
@@ -282,7 +279,7 @@ feedback.text.search.indexingIgnoredElements=div.ignore,nav.wh_tools,footer,head
             <li id="li_p1t_ys2_5wb">Whether the OTSS connection is enabled or disabled. </li>
             <li id="li_myp_zs2_5wb">The URL of the OTSS instance.<note id="note_bjc_zwj_5wb"> The
                 Oxygen Feedback and OTSS containers are configured in the same Docker Compose file
-                which means they will be connected to the same Docker network. Each container is
+                which means they will join the same Docker network at start-up. Each container is
                 both reachable by other containers on that network, and discoverable by them at a
                 host name identical to the container name.</note><note id="note_mqz_g1k_5wb">If the
                 Oxygen Feedback instance is configured to use an HTTP Proxy, the host name of the
@@ -296,7 +293,7 @@ feedback.text.search.indexingIgnoredElements=div.ignore,nav.wh_tools,footer,head
         <title>9. Start the Containers</title>
         <p id="p_ufw_dgk_54b">To start <ph keyref="product"/>, you must create and start the docker
           containers using the docker images loaded in the previous
-          steps.<codeblock outputclass="language-bourne" id="codeblock_zfw_dgk_54b">cd $OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-3.0
+          steps.<codeblock outputclass="language-bourne" id="codeblock_zfw_dgk_54b">cd $OXYGEN_FEEDBACK_INSTALL_DIR
 docker-compose up -d</codeblock></p>
       </section>
     </body>
