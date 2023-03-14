@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ofbENT-database-setup-otss">
+  <title>How to Set Up the Database for Oxygen Text Search Service</title>
+  <body>
+    <p id="p_gjw_dgk_54b">Supported databases:<ul id="ul_rrt_djm_dmb">
+      <li id="li_ijw_dgk_54b">PostgreSQL 11</li>
+      <li id="li_jjw_dgk_54b">PostgreSQL 12</li>
+    </ul></p>
+    <p>To connect <b>Oxygen Text Search Service</b> to the PostgreSQL database, follow these
+      steps:</p>
+    <ol id="ol_ugf_skt_5wb">
+      <li>Create a database user that will be used by <ph>Oxygen Text Search Service</ph> to connect
+        to the database. For example,
+          feedback_db_user:<pre id="pre_vgf_skt_5wb">CREATE USER feedback_db_user WITH PASSWORD 'password';</pre><p>For
+          more details, see: <xref href="https://www.postgresql.org/docs/12/sql-createuser.html"
+            format="html" scope="external"
+            >https://www.postgresql.org/docs/12/sql-createuser.html</xref>.</p></li>
+      <li>Create the database where <ph>Oxygen Text Search Service</ph> will store its data. For
+        example, <codeph>otss_db</codeph>:
+          <pre id="pre_wgf_skt_5wb">CREATE DATABASE otss_db ENCODING='UTF8' LC_COLLATE='C' LC_CTYPE='C' TEMPLATE='template0';</pre><p>The
+          database must have the encoding set of UTF8. For more details, see: <xref
+            href="https://www.postgresql.org/docs/12/sql-createdatabase.html" format="html"
+            scope="external"
+        >https://www.postgresql.org/docs/12/sql-createdatabase.html</xref>.</p></li>
+      <li>The user needs to have permission to connect to the database, create and populate the
+        tables, etc. You can provide these permissions with the following command:
+          <pre id="pre_xgf_skt_5wb">GRANT ALL PRIVILEGES ON DATABASE otss_db TO feedback_db_user;</pre><p>For
+          more details, see: <xref href="https://www.postgresql.org/docs/12/sql-grant.html"
+            format="html" scope="external"
+          >https://www.postgresql.org/docs/12/sql-grant.html</xref>.</p></li>
+      <li>Configure <ph>Oxygen Text Search Service</ph> to connect to the database: <ol
+          id="ol_ygf_skt_5wb">
+          <li>Edit the <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/docker-compose.yml</filepath>
+            file.</li>
+          <li>Configure <ph>Oxygen Text Search Service</ph> with the following environment
+            variables:<codeblock id="codeblock_v2x_tmt_5wb" outputclass="language-yml">  text-search-service:
+    # [...]
+    environment:
+      - spring.datasource.url=jdbc:postgresql://localhost:5432/otss_db
+      - spring.datasource.username=feedback_db_user
+      - spring.datasource.password=password</codeblock></li>
+        </ol></li>
+    </ol>
+    
+  </body>
+</topic>
