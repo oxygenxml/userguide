@@ -22,18 +22,31 @@
       <title>Configure Session <term>Stickiness</term></title>
       <p id="p_ag1_nhs_1qb">Every <ph keyref="webappProduct"/> server keeps the state of the edited
         documents in memory for performance reasons. This implies that every user should connect to
-        the same back end server for the duration of an editing session. To achieve this result in a
-          <term>load-balanced</term> setting, you should enable <b>session
-          <term>stickiness</term></b>.<note id="note_bg1_nhs_1qb">
+        the same back-end server for the duration of an editing session. To achieve this result in a
+        <term>load-balanced</term> setting, you should enable <b>session
+          <term>stickiness</term></b>.</p>
+      <p>If your reverse proxy just allows basic routing based on a cookie, you might consider
+        creating a plugin for each Web Author server that implements a
+        <codeph>com.oxygenxml.ServletFilterExtension</codeph> extension that sets a particular
+        cookie (e.g. a cookie with a name like "wa-server-route" and with values like "wa1", "wa2",
+        etc.) for every request that reaches each Web Author server. In addition, you have to define
+        the routing rules in your reverse proxy that routes each request based on the cookie set by
+        that plugin. A generic sample plugin that defines a <codeph>ServletFilterExtension</codeph>
+        can be found <xref
+          href="https://github.com/oxygenxml/web-author-sample-plugins/tree/master/web-author-filter-extension"
+          format="html" scope="external">here</xref>.</p>
+      <p>
+        <note id="note_bg1_nhs_1qb">
           <p id="p_cg1_nhs_1qb">By default, Web Author uses the JSESSIONID cookie to track the
             active sessions. Some load-balancers implement session <term>stickiness</term> by
-            modifying the JSESSIONID session cookie, which might break the <b>Web Author's</b>
-            session tracking mechanism. </p>
-          <p id="p_dg1_nhs_1qb">In this case, you will have to change the name of the cookie <ph
-              keyref="webappProduct"/> uses to track sessions by changing the
-              <filepath>WEB-INF/shiro.ini</filepath> configuration file to
-            add:<codeblock outputclass="language-ini">sessionManager.sessionIdCookie.name = NAME</codeblock></p>
-        </note></p>
+            modifying the JSESSIONID session cookie, which might break the Web Author's session
+            tracking mechanism. </p>
+          <p id="p_dg1_nhs_1qb">In this case, you will need to change the name of the cookie <ph
+            keyref="webappProduct"/> uses to track sessions by changing the
+            <filepath>WEB-INF/shiro.ini</filepath> configuration file to
+            add:<codeblock outputclass="language-ini" id="codeblock_hzj_2zy_5wb">sessionManager.sessionIdCookie.name = NAME</codeblock></p>
+        </note>
+      </p>
     </section>
     <section id="section_s1s_32b_n5">
       <title>Configure Server Health Checks</title>
@@ -85,9 +98,5 @@
   </body>
   <related-links>
     <link href="Redundancy-Deployment-for-Web-Author.dita"/>
-    <link href="https://github.com/oxygenxml/web-author-docker/tree/master/load-balancer"
-      format="html" scope="external">
-      <linktext>Multiple Web Author Instances with a Load Balancer</linktext>
-    </link>
   </related-links>
 </topic>
