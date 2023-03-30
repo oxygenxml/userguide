@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="using_xslt_to_create_an_openai_jsonl_training_set">
+    <title>Using XSLT to Create an Open AI Training Set </title>
+    <body>
+    <p>Suppose you need to fine tune a model to learn to apply markup to your text.</p>
+        <p>To train or fine tune a base model, you need to create a data set in JSONL format. An
+      Open AI JSONL file contains prompt - completion pairs, each pair on a single
+      line.<codeblock id="codeblock_ccy_blv_5sb" outputclass="language-javascript">{"prompt": "&lt;prompt text>", "completion": "&lt;sample of generated text>"}</codeblock></p>
+    <p>For more details about this format, see: <xref
+        href="https://beta.openai.com/docs/guides/fine-tuning/prepare-training-data" format="html"
+        scope="external"/>.</p>
+    <p>In the following example, an XSLT stylesheet is used to generate the JSONL file.
+      Prompt-completion pairs are created by putting the plain text together with the marked text
+      from each of these elements.<dl id="dl_ofh_dnv_5sb">
+        <dlentry>
+          <dt>prompt</dt>
+          <dd>Pure text without any markup.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>completion</dt>
+          <dd>Text with serialized markup.</dd>
+        </dlentry>
+      </dl></p>
+    <p>First, some constants are defined and then the root matching template that scans a folder
+      that contains DITA topics is created:</p>
+    <codeblock id="codeblock_yl5_qmv_5sb" outputclass="language-xml">
+  &lt;!-- Method "text" because we generate JSON -->
+  &lt;xsl:output method="text" omit-xml-declaration="yes"/>
+  
+  &lt;!-- Paragraphs that are smaller than this limit are processed. -->
+  &lt;xsl:variable name="limit" select="500"/>
+  &lt;!-- Open AI recommends adding terminators to the prompt and completion -->
+  &lt;xsl:variable name="prompt-terminator" select="' ### '"/>
+  &lt;xsl:variable name="completion-terminator" select="'$$$'"/>  
+
+  &lt;xsl:template match="/">
+      &lt;xsl:for-each select="collection('file:/C:/path-to-topics-folder')">
+        &lt;xsl:call-template name="process-file"/>
+      &lt;/xsl:for-each>
+  &lt;/xsl:template></codeblock>
+    <p>Next, the template that processes each of the topic files is defined. Only the
+        <xmlelement>p</xmlelement> and <xmlelement>li</xmlelement> elements are selected in this
+      example, and for each of them, a prompt-completion pair is generated.</p>
+    <codeblock id="codeblock_ir1_vmv_5sb" outputclass="language-xml">&lt;xsl:template name="process-file">
+    &lt;xsl:message>Processing &lt;xsl:value-of select="document-uri(.)"/>&lt;/xsl:message>
+    &lt;xsl:for-each select=".//*[contains(@class, ' topic/p ') or 
+                               contains(@class, ' topic/li ')]">      
+      &lt;xsl:variable name="text" select="oxy:clean(.)"/>
+      
+      &lt;xsl:variable name="text-with-markup">
+        &lt;xsl:apply-templates mode="serialize-markup"/>
+      &lt;/xsl:variable>           
+      &lt;xsl:variable name="text-with-markup" select="oxy:clean($text-with-markup)"/>
+      
+      &lt;xsl:if test="string-length($text)&amp;lt;$limit and 
+                    string-length($text-with-markup)&amp;lt;$limit and
+                    string-length($text)>0 and
+                    string-length($text-with-markup)>0 and 
+                    string-length($text) != string-length($text-with-markup) 
+                    " xml:space="preserve">
+{"prompt":"&lt;xsl:value-of select="$text" 
+disable-output-escaping="yes"/>&lt;xsl:value-of 
+select="$prompt-terminator"/>", "completion":" &lt;xsl:value-of 
+select="$text-with-markup" 
+disable-output-escaping="yes"/>&lt;xsl:value-of 
+select="$completion-terminator"/>"}&lt;/xsl:if>
+    &lt;/xsl:for-each>
+  &lt;/xsl:template></codeblock>
+    <p>Since the format is JSON, the prompt and completion strings need to be cleaned up by escaping
+      the quotes and apostrophes. This function is used from the above template.</p>
+    <codeblock id="codeblock_g5q_tnv_5sb" outputclass="language-xml">  &lt;xsl:function name="oxy:clean">
+    &lt;xsl:param name="txt"/>
+    &lt;xsl:variable name="apos">'&lt;/xsl:variable>
+    &lt;xsl:variable name="quot">"&lt;/xsl:variable>
+    
+    &lt;xsl:variable name="txt">        
+      &lt;xsl:value-of select="replace(normalize-space($txt), $quot, $apos)"/>
+    &lt;/xsl:variable>
+    &lt;xsl:variable name="txt">        
+      &lt;xsl:value-of select="replace($txt,'\\', '\\\\')"/>
+    &lt;/xsl:variable>
+    &lt;xsl:sequence select="$txt"/>
+  &lt;/xsl:function></codeblock>
+    <p>Next, to serialize the markup from a paragraph, all the inlines of interest are matched and
+      the element names and attributes are emitted for each of them:</p>
+    <codeblock id="codeblock_l3y_krv_5sb" outputclass="language-xml">  &lt;!--
+    Match the inline elements and serializes them. 
+   -->
+  &lt;xsl:template match="*[
+      contains(@class, ' ui-d/uicontrol ') or 
+      contains(@class, ' ui-d/menucascade ') or
+      contains(@class, ' ui-d/shortcut ') or
+      contains(@class, ' topic/i ') or      
+      contains(@class, ' topic/b ') or      
+      contains(@class, ' sw-d/filepath ') or
+      contains(@class, ' pr-d/codeph ') or
+      contains(@class, ' pr-d/codeblock ')
+      ]" mode="serialize-markup" >
+    &lt;!-- Only non empty elements. -->
+    &lt;xsl:text>&amp;lt;&lt;/xsl:text>
+    &lt;xsl:value-of select="local-name()"/>
+    &lt;xsl:for-each select="@*">
+      &lt;xsl:if test="local-name() != 'class' and local-name() != 'id'">
+        &lt;xsl:text> &lt;/xsl:text>
+        &lt;xsl:value-of select="local-name()"/>
+        &lt;xsl:text>='&lt;/xsl:text>
+        &lt;xsl:value-of select="."/>
+        &lt;xsl:text>'&lt;/xsl:text>    
+      &lt;/xsl:if>
+    &lt;/xsl:for-each>
+    &lt;xsl:text>&amp;gt;&lt;/xsl:text>
+    &lt;xsl:apply-templates mode="serialize-markup"/>
+    &lt;xsl:text>&amp;lt;/&lt;/xsl:text>    
+    &lt;xsl:value-of select="local-name()"/>
+    &lt;xsl:text>&amp;gt;&lt;/xsl:text>    
+  &lt;/xsl:template></codeblock>
+    <p>To apply this stylesheet, create an XSLT transformation scenario in <ph keyref="product"/>.
+      You can choose any well-formed XML file as the input (the stylesheet scans a folder using the
+      collection function, so this input will be ignored) and specify the output file.</p>
+    </body>
+</topic>
