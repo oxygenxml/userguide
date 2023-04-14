@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="urn:oasis:names:tc:dita:rng:topic.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<topic id="dcpp_how_to_make_visible_information_from_topic_prologue_revision_history">
+    <title>How to Make Visible Information From the Topic Prologue - Revision History</title>
+    <shortdesc>You will find out how to present metadata information that is normally hidden in the
+    published output. In our example this will be the revision history list.</shortdesc>
+    <body>
+    <codeblock id="codeblock_opm_vkh_dxb" outputclass="language-xml">&lt;task id="task_3ml_qm3_rf">
+    &lt;title>Removing the battery&lt;/title>
+    &lt;shortdesc/>
+    &lt;prolog>
+        &lt;change-historylist>
+            &lt;change-item>
+                &lt;change-revisionid>abd3&lt;/change-revisionid>
+                &lt;change-completed>Build no 1.&lt;/change-completed>
+            &lt;/change-item>
+            &lt;change-item>
+                &lt;change-revisionid>bc72&lt;/change-revisionid>
+                &lt;change-completed>Build no 2.&lt;/change-completed>
+            &lt;/change-item>
+        &lt;/change-historylist>
+....</codeblock>
+    <p>By default the prologue element is hidden (display:none), and has several properties that
+      make it collapse even if the display property is changed.<ul id="ul_a5v_pkh_dxb">
+        <li>it has a transparent color</li>
+        <li>the font has size zero</li>
+        <li>widht and heights are zero.</li>
+      </ul>So let's start by resetting the prolog properties, but only for prologues that contains a
+      history list. The others will be kept
+      hidden.<codeblock id="codeblock_dk2_mkh_dxb" outputclass="language-css">*[class~="topic/prolog"]:has(*[class~="relmgmt-d/change-historylist"] ){
+    display:block;
+    color:inherit;
+    font-size:1rem;
+    width:auto;
+    height:auto;
+}
+</codeblock>The <xmlelement>change-item</xmlelement>,
+        <xmlelement>change-revisionid</xmlelement> and <xmlelement>change-completed</xmlelement>,
+      like the descendents of  the <xmlelement>change-historylist</xmlelement> are specializations
+      of the <codeph>topic/data</codeph> element, and are also hidden in the output, so you need to
+      make them visible. In the following selector you can add more classes, depending on what
+      elements you want to be visible.
+      <codeblock outputclass="language-css" id="codeblock_ghd_ykh_dxb">*[class~="relmgmt-d/change-item"],
+*[class~="relmgmt-d/change-revisionid"],
+*[class~="relmgmt-d/change-completed"] {
+    display:block;   
+}</codeblock>Now some styling for the entire
+      list:<codeblock outputclass="language-css" id="codeblock_wcs_2lh_dxb">*[class~="relmgmt-d/change-historylist"] {
+    font-size:1rem;
+    border: 3pt solid silver;
+    padding: 0.5em;
+}
+*[class~="relmgmt-d/change-historylist"]:before {
+    content: "Revision History:";
+    font-weight:bold;
+}
+</codeblock>And  the child
+      elements:<codeblock outputclass="language-css" id="codeblock_ff4_3lh_dxb">/* Example of styling some of the descendends of the history list. */
+*[class~="relmgmt-d/change-item"] {
+    margin:1em;
+}
+*[class~="relmgmt-d/change-revisionid"]:before {
+    content: "Revision ID: " !important;
+    font-weight:bold;
+}
+*[class~="relmgmt-d/change-completed"]:before {
+    content: "Completed: "  !important;
+    font-weight:bold;
+}</codeblock></p>
+    <p>In the output the history list is now visible:</p>
+    <image
+      href="../img/dcpp_how_to_make_visible_information_from_topic_prologue_revision_history.png"
+      id="image_dz4_nlh_dxb"/>
+  </body>
+</topic>
