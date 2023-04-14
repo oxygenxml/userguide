@@ -22,18 +22,20 @@
             <uicontrol>File</uicontrol>
             <uicontrol>Import/Convert</uicontrol>
           </menucascade>.</li>
-        <li id="li_atg_dgk_54b"><uicontrol>Import</uicontrol> submenu located in the <uicontrol>Append
-          child</uicontrol>, <uicontrol>Insert Before</uicontrol>, and <uicontrol>Insert
-            After</uicontrol> submenus from the contextual menu of the <uicontrol>DITA Maps
-            Manager</uicontrol> view.</li>
+        <li id="li_atg_dgk_54b"><uicontrol>Import</uicontrol> submenu located in the
+            <uicontrol>Append child</uicontrol>, <uicontrol>Insert Before</uicontrol>, and
+            <uicontrol>Insert After</uicontrol> submenus from the contextual menu of the
+            <uicontrol>DITA Maps Manager</uicontrol> view when the opened DITA map is a local
+          file.</li>
       </ul>
     </p>
     <p id="p_btg_dgk_54b">The first time you invoke any of these actions, <ph keyref="product"/>
       will ask you if you want to install it and offer a wizard to help with the installation
-      process. Once installed, you need to restart <ph keyref="product"/> and those same actions
-      will then contain the list of available conversions. Selecting an action from the submenu will
-      open a dialog box where you can configure the options for the corresponding conversion. You
-      can batch convert between the following formats:<ul id="ul_vjp_pmr_flb">
+      process. </p>
+    <p>Once installed, you need to restart <ph keyref="product"/> and those same actions will then
+      contain the list of available conversions. Selecting an action from the submenu will open a
+      dialog box where you can configure the options for the corresponding conversion. You can batch
+      convert between the following formats:<ul id="ul_vjp_pmr_flb">
         <li id="li_ctg_dgk_54b">HTML to XHTML</li>
         <li id="li_dtg_dgk_54b">HTML to DITA</li>
         <li id="li_ktg_dgk_54b">HTML to DocBook4</li>
@@ -58,6 +60,8 @@
         <li id="li_htg_dgk_54b">XML to JSON</li>
         <li id="li_itg_dgk_54b">JSON to YAML</li>
         <li id="li_jtg_dgk_54b">YAML to JSON</li>
+        <li>YAML to XML</li>
+        <li>XML to YAML</li>
       </ul></p>
     <p id="p_ttg_dgk_54b">When actions are invoked from the contextual menu of the <uicontrol>DITA Maps
         Manager</uicontrol> view, the resulting documents from the conversion are automatically
@@ -105,19 +109,6 @@
         menu and in the contextual menu. This submenu will contain a list of the various types of
         available conversions. Selecting one of the types of conversions will open a dialog box
         where you can configure options for the conversion.</p>
-      <p id="p_yj3_gvc_vpb">The add-on can also be installed using the following alternative
-        installation procedure:</p>
-      <ol id="ol_zj3_gvc_vpb">
-        <li id="li_ak3_gvc_vpb">Go to <xref
-            href="https://www.oxygenxml.com/InstData/Addons/default/com/oxygenxml/oxygen-batch-converter-addon/"
-            format="html" scope="external"/>, open the latest version's directory and download the
-            <filepath>oxygen-batch-converter-addon-{version}-plugin.jar</filepath> file.</li>
-        <li id="li_bk3_gvc_vpb">Unzip it inside <filepath>{oXygenInstallDir}/plugins</filepath>.
-          Make sure you don't create any intermediate folders. After unzipping the archive, the file
-          system should look like this:
-            <filepath>{oXygenInstallDir}/plugins/oxygen-batch-converter-addon-x.y.z</filepath>, and
-          inside this folder, there should be a <filepath>plugin.xml</filepath> file.</li>
-      </ol>
     </section>
     <section id="section_ow5_vw4_3rb">
       <title>Configuration</title>
@@ -130,7 +121,7 @@
         </menucascade>) or in the conversion dialog box.</p>
       <p>
         <dl id="dl_ayf_42j_jrb">
-          <dlentry>
+          <dlentry id="wordStylesMapping">
             <dt>Conversions from Word (Word Styles Mapping)</dt>
             <dd>
               <p>The conversions from MS Word work best if you only use the MS Word styles to
@@ -146,7 +137,7 @@
                 configuration. Those that are not set will be converted into simple paragraphs. </p>
               <p>The styles mapping configuration is inherited between styles. If you use a custom
                 style that is based on a default style, the default style mapping configuration will
-                be inherited and used for the custom style too. The mapping from the base style is
+                be inherited and also used for the custom style. The mapping from the base style is
                 not inherited if the custom style has a mapping defined in the Word styles mapping
                 configuration.</p>
               <p>To define a mapping in the <uicontrol>Word Styles Mapping</uicontrol> table, you
@@ -168,7 +159,7 @@
                 </simpletable>
               </p>
               <p>The resulting 'h1' element will be transformed into the corresponding element when
-                converting to DITA, DocBook 4, and DocBook 5. </p>
+                converting to DITA, DocBook 4, and DocBook 5.</p>
               <p>The <uicontrol>Word styles mapping</uicontrol> table contains the following
                 columns:</p>
               <p>
@@ -228,12 +219,28 @@
                           </strow>
                         </simpletable>
                       </p>
-                      <p>When the converter finds consecutive Word paragraphs with the style name
+                      <p>When the converter finds consecutive Word paragraphs with the style named
                           <codeph>Heading 1</codeph>, these will be converted into a single
-                          <codeph>h1</codeph>element that contains the text appended from all of the
-                        Word paragraphs.</p>
+                          <codeph>h1</codeph> element that contains the text appended from all of
+                        the Word paragraphs.</p>
                       <p>If <codeph>h1:fresh</codeph> is set in the last column, the converter will
                         create separate <codeph>h1</codeph> elements.</p>
+                      <p>The <codeph>:separator('<i>separator_string</i>')</codeph> syntax can be
+                        used to specify a separator between paragraphs that are merged when
+                          <codeph>:fresh</codeph> syntax is not specified.</p>
+                      <p>For example, if the following configuration is set:<simpletable frame="all"
+                          relcolwidth="1* 1* 1*" id="simpletable_sp5_s1p_fwb">
+                          <strow>
+                            <stentry>p</stentry>
+                            <stentry>Code Block</stentry>
+                            <stentry>pre:separator('\n')</stentry>
+                          </strow>
+                        </simpletable></p>
+                      <p>when the converter finds multiple consecutive paragraphs styled with the
+                          <codeph>Code Block</codeph> style, it will merge them into a single
+                          <xmlelement>pre</xmlelement> HTML element and the "\n" (new line)
+                        separator will be used between merged text.</p>
+                     
                       <p>To ignore elements, the '!' character can be added in the <uicontrol>HTML
                           elements</uicontrol> column.</p>
                     </dd>
@@ -256,7 +263,7 @@
               </p>
             </dd>
           </dlentry>
-          <dlentry>
+          <dlentry id="maximumHeadingLevelForCreatingTopics">
             <dt>Maximum Heading Level for Creating Topics</dt>
             <dd>The <uicontrol>Maximum heading level for creating topics</uicontrol> option from the
                 <uicontrol>Batch Documents Converter</uicontrol> preferences page allows you to set
@@ -274,7 +281,7 @@
           <dlentry>
             <dt>Word to DITA</dt>
             <dd>
-              <p>The <uicontrol>Create DITA maps from Word documents containing multiple
+              <p>The <uicontrol id="createDitaMapFromWordOption">Create DITA maps from Word documents containing multiple
                   headings</uicontrol> option from the conversion dialog box allows you to decide
                 whether the output will be a DITA map or a DITA topic. When this option is selected,
                 the sections from your Word document marked by titles or headings will be separated
@@ -356,32 +363,83 @@
           <dlentry>
             <dt>OpenAPI to DITA</dt>
             <dd>The <uicontrol>OpenAPI to DITA</uicontrol> conversion can be used to convert JSON or
-              YAML files that use and conform to the OpenAPI specification into DITA documents. It
-              supports versions 2.0, 3.0 and 3.1 of OAS. The <uicontrol>Create DITA maps from
-                OpenAPI documents</uicontrol> option from the conversion dialog box allows you to
-              decide whether the output will be a DITA map or a DITA topic. When this option is
-              selected, the converter will create separate DITA topics for the introduction
-              (including OAS 'Info', 'Server', 'Security Requirement' and 'External Documentation'
-              objects), 'Tag', 'Operation', 'Callback', and 'Components' objects. These topics will
-              be referenced in a DITA map. When this option is not selected, the output will be a
-              single topic with nested topics.</dd>
+              YAML files that use and conform to the OpenAPI specification (versions 2.0, 3.0, or
+              3.1) into DITA documents. The <uicontrol>Create DITA maps from OpenAPI
+                documents</uicontrol> option from the conversion dialog box allows you to decide
+              whether the output will be a DITA map or a DITA topic. When this option is selected,
+              the converter will create separate DITA topics for the introduction (including OAS
+              'Info', 'Server', 'Security Requirement' and 'External Documentation' objects), 'Tag',
+              'Operation', 'Callback', and 'Components' objects. These topics will be referenced in
+              a DITA map. When this option is not selected, the output will be a single topic with
+              nested topics.</dd>
           </dlentry>
         </dl>
       </p>
+    </section>
+    <section id="section_lqr_1hh_dvb">
+      <title>Word to DITA Conversion Notes</title>
+      <p id="p_mqr_1hh_dvb">The following are some notes about the Word to DITA conversion:<ul
+          id="ul_nqr_1hh_dvb">
+          <li id="li_oqr_1hh_dvb">Paragraphs styled with default Word heading styles (or with custom
+            styles based on default Word heading styles) are handled as topics or sections in the
+            converted DITA output.</li>
+          <li id="li_pqr_1hh_dvb">You can choose whether the converted output is a DITA map with
+            referenced topics or a single DITA topic. See the <xref
+              href="#batch-converter-addon/createDitaMapFromWordOption">Create DITA maps from Word
+              documents containing multiple headings</xref> option.</li>
+          <li id="li_qqr_1hh_dvb">You can choose the level of headings that are converted as topics
+            or sections. See the <xref
+              href="#batch-converter-addon/maximumHeadingLevelForCreatingTopics"/> option.</li>
+          <li id="li_rqr_1hh_dvb">You can customize the conversion by adding mappings from your own
+            Word styles to HTML elements. The configured HTML element is converted to the proper
+            DITA element. The <xmlatt>class</xmlatt> attribute is transformed to the DITA
+              <xmlatt>outputclass</xmlatt> attribute. See the <xref
+              href="#batch-converter-addon/wordStylesMapping"/> section. </li>
+          <li id="li_sqr_1hh_dvb">Ordered and unordered lists are converted to DITA and the list
+            level is preserved. </li>
+          <li id="li_tqr_1hh_dvb">Bold, italic, underline, strikethrough, superscript, and subscript
+            styles are converted to the corresponding DITA elements. </li>
+          <li id="li_uqr_1hh_dvb">The formatting of table properties (such as borders) is currently
+            ignored, but the formatting of the text inside the table is treated the same as in the
+            rest of the document. Only the header row formatting is taken into account when
+            converting tables to DITA. </li>
+          <li id="li_vqr_1hh_dvb">Footnotes and endnotes are converted. </li>
+          <li id="li_wqr_1hh_dvb">Images embedded in Word documents are saved to separate files and
+            referenced in the generated DITA topics. </li>
+          <li id="li_xqr_1hh_dvb">Links (cross-references and external links) are converted. </li>
+          <li id="li_yqr_1hh_dvb">Line breaks and taken into account. </li>
+          <li id="li_zqr_1hh_dvb">Mathematical equations in Word documents are automatically
+            converted to MathML equations if they are in <b>Office Math Markup Language</b> (OMML)
+            format. If the mathematical equations are in <b>Microsoft Equation Editor </b>format,
+            they first need to be converted to the newer <b>OMML</b> format.</li>
+          <li id="li_arr_1hh_dvb">Symbols are converted.</li>
+          <li id="li_brr_1hh_dvb">Index entries are converted.</li>
+          <li id="li_crr_1hh_dvb">The Table of Contents is ignored in the DITA result.</li>
+        </ul></p>
     </section>
     <section id="section_x2n_vhh_vrb">
       <title>Resources</title>
       <p id="p_orm_dgk_54b">For more information about the Batch Converter add-on, as well as
         details regarding other popular add-ons that extend the functionality of <ph
-          keyref="product"/>, watch the following webinars/presentations:<ul id="ul_kgv_tx1_jsb">
+          keyref="product"/>, see the following resources:<ul id="ul_kgv_tx1_jsb">
+          <li id="li_bxq_mkp_dvb"><xref href="https://www.youtube.com/watch?v=mzmnOBzJ5Uk"
+              format="html" scope="external">Video: <b>Integrating REST-API Content into DITA
+                Documentation in Oxygen</b></xref></li>
+          <li id="li_o5v_s2n_rvb"><xref
+              href="https://blog.oxygenxml.com/topics/migrating_word_to_dita_bdc/migrating_word_to_dita_using_batch_documents_converter.html"
+              format="html" scope="external">Blog post: <b>Migrating MS Word to DITA Using the Batch
+                Documents Converter</b></xref></li>
           <li id="li_kld_zx1_jsb"><xref
               href="https://www.oxygenxml.com/events/2021/webinar_working_with_dita_in_oxygen_migrating_to_dita_and_refactoring.html"
-              format="html" scope="external">Webinar: Working with DITA in Oxygen - Migrating to
-              DITA and Refactoring </xref></li>
+              format="html" scope="external">Webinar: <b>Working with DITA in Oxygen - Migrating to
+                DITA and Refactoring</b></xref></li>
+          <li id="li_bxq_mkp_dvc"><xref href="https://www.youtube.com/watch?v=JiQVFT-5Clo"
+              format="html" scope="external">Webinar: <b>Integrating Various Document Formats
+                (OpenAPI, Word, Markdown, HTML, Excel) into DITA Documentation</b></xref></li>
           <li id="li_gfb_xx1_jsb"><xref
               href="https://www.oxygenxml.com/events/2020/webinar_extending_the_functionality_of_Oxygen_using_add_ons.html"
-              format="html" scope="external">Webinar: Extending the Functionality of Oxygen Using
-              Add-ons</xref></li>
+              format="html" scope="external">Webinar: <b>Extending the Functionality of Oxygen Using
+                Add-ons</b></xref></li>
         </ul></p>
     </section>
   </body>

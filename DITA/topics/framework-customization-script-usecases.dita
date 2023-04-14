@@ -76,9 +76,10 @@
     &lt;addEntry path="${framework}/resources_2x" position="before"/>
     
     &lt;removeEntry path="${baseFramework}/refactoring/"/>
-  &lt;/classpath></codeblock><note id="note_x2v_fxc_v4b">When removing entries with
-          framework editor variables, take into consideration how they were added in the base
-          framework. <ul id="ul_y2v_fxc_v4b">
+  &lt;/classpath></codeblock><note
+          conkeyref="reusables-author-mode-customization/note_relative_paths" id="note_qkc_xzw_dwb"
+          /><note id="note_x2v_fxc_v4b">When removing entries with framework editor variables, take
+          into consideration how they were added in the base framework. <ul id="ul_y2v_fxc_v4b">
             <li>An entry present in the base framework with the path
                 <filepath>${framework}/file</filepath> can be removed using an identical path or by
               using the <term>${baseFramework}</term> variable:
@@ -98,6 +99,14 @@
         objects between one
         another.<codeblock outputclass="language-xml" id="codeblock_vy5_qbn_tsb">&lt;classpath parentClassLoaderID="com.oxygenxml.git.plugin"/></codeblock></p>
     </section>
+    <section id="section_xqk_h1f_twb">
+      <title>Setting a Default Schema</title>
+      <p id="p_f21_2jf_twb">You can specify a default schema for <ph keyref="product"/> to use if an
+        XML document does not contain a schema declaration and no default validation scenario is
+        associated with it.</p>
+      <p id="p_g21_2jf_twb"><b><u>Example: Setting a Default XML Schema Relative to the Script
+            Location</u></b><codeblock outputclass="language-xml" id="codeblock_yqk_h1f_twb">&lt;defaultSchema schemaType="xmlschema" href="xsd/my-schema.xsd"/></codeblock></p>
+    </section>
     <section id="section_cv1_ztm_knb">
       <title>Changing XML Catalogs</title>
       <p id="p_fyz_cgk_54b">For cases where you need to reference the location of a schema file from a remote web
@@ -115,6 +124,8 @@
   
   &lt;removeEntry path="${baseFramework}/oldCatalog.xml"/>
 &lt;/xmlCatalogs></codeblock></p>
+      <note conkeyref="reusables-author-mode-customization/note_relative_paths"
+        id="note_u44_wzw_dwb"/>
     </section>
     <section id="section_fdb_2xm_knb">
       <title>Changing the Document Templates</title>
@@ -122,14 +133,16 @@
         base framework.</p>
       <p id="p_jyz_cgk_54b"><b><u>Example: Customizing and Extending the XML Catalogs Inherited From
             the Base
-        Framework</u></b><codeblock outputclass="language-xml" id="codeblock_kyz_cgk_54b">&lt;documentTemplates inherit="all">
+          Framework</u></b><codeblock outputclass="language-xml" id="codeblock_kyz_cgk_54b">&lt;documentTemplates inherit="all">
   &lt;!-- Contribute this resource before the ones inherited from the base framework
     to make them appear first in the list.
     -->
   &lt;addEntry path="${framework}/newTemplates" position="before"/>
   
   &lt;removeEntry path="${baseFramework}/oldTemplates"/>
-&lt;/documentTemplates></codeblock></p>
+&lt;/documentTemplates></codeblock><note
+          conkeyref="reusables-author-mode-customization/note_relative_paths" id="note_cgc_wzw_dwb"
+        /></p>
     </section>
     <section id="section_u4j_5xm_knb">
       <title>Adding New Transformation Scenarios and Removing Existing Ones</title>
@@ -203,6 +216,51 @@
   color:#FF1493;
 }</codeblock></p>
     </section>
+    <section id="section_hlr_c2c_45b">
+      <title>Control How CSS Styles are Handled in the Author mode</title>
+      <p id="p_ilr_c2c_45b">The <uicontrol>Author</uicontrol> mode layout is driven by CSS rules.
+        You can configure how CSS styles are handled in the framework by using the following
+        attributes in the script file:</p>
+      <p id="p_ycf_bfc_45b">
+        <dl id="dl_ikj_bfc_45b">
+          <dlentry id="dlentry_jkj_bfc_45b">
+            <dt><uicontrol>selectMultipleAlternateCSS</uicontrol></dt>
+            <dd>
+              <p id="p_y5s_hfc_45b">If set to <i>true</i>, any number of alternate CSS files can be
+                activated and they will be applied like layers. If set to false, the alternate
+                styles are treated like a main CSS style and only one can be selected at a time.</p>
+              <p id="p_whn_3fc_45b"><b><u>Example: Using the selectMultipleAlternateCSS Attribute in
+                    the
+                Script</u></b><codeblock outputclass="language-xml">&lt;css selectMultipleAlternateCSS="true"/></codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_u2t_5fc_45b">
+            <dt><uicontrol>mergeDocumentCSS</uicontrol></dt>
+            <dd>
+              <p id="p_v2t_5fc_45b">Controls how CSS files are handled if there are CSS styles
+                specified in the document. If set to true, they will be merged with the CSS files
+                from the framework. If set to false, they will be ignored.</p>
+              <p id="p_w2t_5fc_45b"><b><u>Example: Using the mergeDocumentCSS Attribute in the
+                    Script</u></b><codeblock outputclass="language-xml">&lt;css mergeDocument="true"/></codeblock></p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p><b><u>Example: Changing the styling in the author mode</u></b></p>
+      <p>We add a new CSS located in the new framework directory and we remove a CSS contributed by
+        the base framework.</p>
+      <p>
+        <codeblock outputclass="language-xml" id="codeblock_dk3_kzv_dwb">  &lt;author>
+    &lt;css>
+      &lt;addCss path="css/style.css" />
+      
+      &lt;removeCss path="${baseFramework}/resources/css/base.css"/>
+    &lt;/css>
+  &lt;/author></codeblock>
+      </p>
+      <note conkeyref="reusables-author-mode-customization/note_relative_paths"
+        id="note_i2k_vzw_dwb"/>
+    </section>
     <section id="section_qzt_5ry_jnb">
       <title>Defining Author Actions for the New Framework</title>
       <p id="p_hzz_cgk_54b">Create <xref href="dg-create-custom-actions.dita#dg-create-custom-actions/section_2"
@@ -230,6 +288,21 @@
             action</xref> with the same ID as one of the actions specified in a
             <xmlelement>removeAction</xmlelement> element, the action will not be removed from the
           GUI elements (menus, toolbars, content completion window).</note></p>
+    </section>
+    <section id="section_slg_m2h_g5b">
+      <title>Replacing Author Actions from the Base Framework</title>
+      <p>Suppose that the base framework configuration defines some <xref
+        href="dg-create-custom-actions.dita">author actions</xref> that are added in <xref
+          href="the-menu-sub-tab.dita">the main menu</xref>, <xref
+            href="the-contextual-menu-sub-tab.dita">contextual menu</xref>, <xref
+              href="the-toolbar-tab.dita">toolbar</xref>, or <xref
+                href="the-content-completion-tab.dita">content completion window</xref>. If you want to
+        keep one of these actions in all the GUI elements, but to perform differently in the new
+        framework, just create an <xref
+          href="dg-create-custom-actions.dita#dg-create-custom-actions/section_2">external author
+          action</xref> with the same ID as the action to replace and save it in the <xref
+            href="dg-create-custom-actions.dita#dg-create-custom-actions/section_ht2_3jg_jlb">specific
+            subdirectory within your new framework directory</xref>.</p>
     </section>
     <section id="section_b3l_yb2_knb">
       <title>Author Toolbar Configuration</title>
@@ -403,5 +476,9 @@
     &lt;addEntry path="test.jar"/>
 &lt;/classpath></codeblock></p>
     </section>
+    <p id="p_pmn_tmr_dwb">
+      <note conkeyref="reusables-author-mode-customization/note_relative_paths"
+        id="note_ghh_qzw_dwb"/>
+    </p>
   </body>
 </topic>

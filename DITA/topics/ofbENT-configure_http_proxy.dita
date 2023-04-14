@@ -3,30 +3,77 @@
 <topic id="ofbENT-configure_http_proxy">
   <title>How to Configure an HTTP Proxy</title>
   <body>
-    <ol id="ol_oc2_nzf_lmb">
-      <li id="li_bkw_dgk_54b">Define proxy values:<ol id="ol_s2m_czf_lmb">
-          <li id="li_ckw_dgk_54b">Edit the <filepath>config/feedback-server.properties</filepath> file.</li>
-          <li id="li_dkw_dgk_54b">Set the following
-            values:<codeblock outputclass="language-bourne" id="codeblock_ekw_dgk_54b"># The hostname of the HTTP proxy server
-http.proxyHost
+    <p id="p_clq_4fr_hwb">To configure an HTTP Proxy for the <b>Oxygen Feedback</b> or <b>Oxygen
+        Text Search Service</b> instances, use the appropriate procedure below:</p>
+    <p>
+      <dl id="dl_j4h_15n_5wb">
+        <dlentry id="dlentry_k4h_15n_5wb">
+          <dt>Oxygen Feedback</dt>
+          <dd>
+            <ol id="ol_s2m_czf_lmb">
+              <li id="li_ckw_dgk_54b">Edit the
+                  <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home/config/feedback-server.properties</filepath>
+                file.</li>
+              <li id="li_dkw_dgk_54b">Set the following
+                values:<codeblock outputclass="language-bourne" id="codeblock_ekw_dgk_54b"># The hostname of the HTTP proxy server (without protocol and port number)
+# Example: proxy.example.net
+http.proxyHost=
+
 # The port number of the HTTP proxy server, property is optional and defaults to 80 if not provided
-http.proxyPort
-# Set HTTP proxy, by default true
-http.proxySet=true
-# The hostname of the HTTPS proxy server
-https.proxyHost
+http.proxyPort=
+
+# A list of hosts that should be reached directly, bypassing the proxy. 
+# This is a list of patterns separated by '|'. The patterns may start or end with a '*' for wildcards. 
+# Any host matching one of these patterns will be reached through a direct connection instead of through a proxy.
+# Example: ”localhost|host.example.com”
+http.nonProxyHosts
+
+# The hostname of the HTTPS proxy server (without protocol and port number)
+# Example: proxy.example.net
+https.proxyHost=
+
 # The port number of the HTTPS proxy server
-https.proxyPort
-# Set HTTPS proxy, by default true
-https.proxySet=true
+# https.proxyPort=
+
 # The hostname of the SOCKS proxy server
-socksProxyHost
+# socksProxyHost=
+
 # The port number of the SOCKS proxy server
-socksProxyPort</codeblock></li>
-        </ol></li>
-      <li id="li_fkw_dgk_54b">Pass the proxy value using JVM
-          arguments:<p id="p_gkw_dgk_54b">Example:<codeblock outputclass="language-bourne" id="codeblock_hkw_dgk_54b">./bin/start.sh -Dhttp.proxyHost=&lt;http-host> -Dhttp.proxyPort=&lt;http-port> -Dhttp.proxySet=true -Dhttps.proxyHost=&lt;https-host> -Dhttps.proxyPort=&lt;https-port> -Dhttps.proxySet=true</codeblock></p><p id="p_ikw_dgk_54b">You
-          would use <b>start.sh</b> for Linux or <b>start.bat</b> for Windows.</p></li>
-    </ol>
+# socksProxyPort=</codeblock></li>
+            </ol>
+          </dd>
+        </dlentry>
+        <dlentry id="dlentry_i24_b5n_5wb">
+          <dt>Oxygen Text Search Service</dt>
+          <dd>
+            <ol id="ol_uzj_c5n_5wb">
+              <li id="li_vzj_c5n_5wb">Edit the
+                  <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/docker-compose.yml</filepath> file.</li>
+              <li id="li_wzj_c5n_5wb">Configure the following environment variables for the
+                  <b>Oxygen Text Search Service</b> container:<ul id="ul_rdg_yhl_5wb">
+                  <li id="li_xzj_c5n_5wb"><codeph>http.proxyHost</codeph> - The host name of the
+                    HTTP proxy server, without protocol and port number (e.g.
+                      <codeph>proxy.example.net</codeph>).</li>
+                  <li id="li_yzj_c5n_5wb"><codeph>http.proxyPort</codeph> - The port number of the
+                    HTTP proxy server (this environment variable is optional and defaults to
+                      <codeph>80</codeph> if not provided).</li>
+                  <li id="li_zzj_c5n_5wb"><codeph>https.proxyHost</codeph> - The host name of the
+                    HTTPS proxy server, without protocol and port number (e.g.
+                      <codeph>proxy.example.net</codeph>).</li>
+                  <li id="li_a1k_c5n_5wb"><codeph>https.proxyPort</codeph> - The port number of the
+                    HTTPS proxy server (this environment variable is optional and defaults to
+                      <codeph>443</codeph> if not provided).</li>
+                  <li id="li_b1k_c5n_5wb"><codeph>http.nonProxyHosts</codeph> - A list of hosts that
+                    should be reached directly, bypassing the proxy. This is a list of patterns
+                    separated by <codeph>|</codeph>. The patterns may start or end with a
+                      <codeph>*</codeph> for wildcards. Any host matching one of these patterns will
+                    be reached through a direct connection instead of through a proxy (e.g.
+                      <codeph>localhost|host.example.com</codeph>).</li>
+                </ul></li>
+            </ol>
+          </dd>
+        </dlentry>
+      </dl>
+    </p>
   </body>
 </topic>

@@ -48,12 +48,12 @@ oauth.google.client.clientSecret=google-client-secret</codeblock><note id="note_
                   href="https://developers.facebook.com/" format="html" scope="external"/>).</li>
               <li id="li_nlw_dgk_54b">Add the <codeph>oauth.facebook.client.clientId</codeph> and
                   <codeph>oauth.facebook.client.clientSecret</codeph> properties in the
-                  <filepath>config/feedback-oauth.properties</filepath>
+                  <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home/config/feedback-oauth.properties</filepath>
                   file:<codeblock outputclass="language-bourne" id="codeblock_olw_dgk_54b">#### FACEBOOK ####
 oauth.facebook.client.clientId=facebook-client-id
-oauth.facebook.client.clientSecret=facebook-client-secret</codeblock><note id="note_plw_dgk_54b">You
-                  need to substitute your <i>client ID</i> and <i>client secret</i> for the
-                  placeholder text shown in the example above.</note></li>
+oauth.facebook.client.clientSecret=facebook-client-secret</codeblock><note
+                  id="note_plw_dgk_54b">You need to substitute your <i>client ID</i> and <i>client
+                    secret</i> for the placeholder text shown in the example above.</note></li>
             </ol></li>
           <li id="li_qlw_dgk_54b">Set the redirect URI:<ol id="ol_dbj_wcg_lmb">
               <li id="li_rlw_dgk_54b">In the <xref href="https://developers.facebook.com/apps" format="html"
@@ -74,7 +74,8 @@ oauth.facebook.client.clientSecret=facebook-client-secret</codeblock><note id="n
       <p id="p_jp3_3gk_xpb">To add <term>Log in</term> support for a custom <term>OAuth Identity
           Provider</term>, you need to configure the associated properties
           (<codeph>oauth.generic.*</codeph>) in the
-          <filepath>config/feedback-oauth.properties</filepath> file as follows:</p>
+          <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home/config/feedback-oauth.properties</filepath>
+        file as follows:</p>
       <ol id="ol_zc3_kzr_5pb">
         <li id="li_kp3_3gk_xpb">Enable the custom OAuth provider by setting the
             <codeph>oauth.generic.enabled</codeph> property to <uicontrol>true</uicontrol>.</li>
@@ -106,7 +107,7 @@ oauth.generic.client.clientSecret=generic-client-secret</codeblock><note
           setting the <codeph>oauth.generic.client.userAuthorizationUri</codeph> property according
           to your <term>Identity Provider</term> (refer to their user manual).<note
             id="note_og1_k3k_xpb">The <term>Authorization URI</term> is the URI that the user is to
-            be redirected to for <ph keyref="product"/>to be granted authorization.</note></li>
+            be redirected to for <ph keyref="product"/> to be granted authorization.</note></li>
         <li id="li_op3_3gk_xpb">Configure the <term>Access Token Endpoint URI</term> by setting the
             <codeph>oauth.generic.client.accessTokenUri</codeph> property according to your
             <term>Identity Provider</term> (refer to their user manual).<note id="note_g5l_s3k_xpb"
@@ -223,7 +224,7 @@ oauth.generic.userInfo.claims.name=name
 # Mandatory - if an email address could not be obtained for the current user then the authentication process will fail
 oauth.generic.userInfo.claims.email=email</codeblock></p>
       <p id="p_wjx_xjk_xpb">You need to replace all placeholders (<codeph>{xxx-xxx}</codeph>) with
-        their appropriate values. For more details about how to configure a client application to
+        their appropriate values. For more details about how to configure a client application for
         Okta, see <xref href="https://developer.okta.com/docs/guides/implement-auth-code/setup-app/"
           format="html" scope="external"/>.</p>
       <p id="p_pwx_ljk_xpb"><b>Example: <term>Gitlab</term> Sample
@@ -246,11 +247,40 @@ oauth.generic.userInfo.claims.name=name
 # Mandatory - if an email address could not be obtained for the current user then the authentication process will fail
 oauth.generic.userInfo.claims.email=email</codeblock></p>
       <p id="p_gvc_ckk_xpb">You need to replace all placeholders (<codeph>{xxx-xxx}</codeph>) with
-        their appropriate values. For more details about how to configure a client application to
+        their appropriate values. For more details about how to configure a client application for
         GitLab, see <xref href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
           format="html" scope="external"/>.<note id="note_s5t_r1l_vpb" type="important">For a user
           to be able to authenticate, they must have a <term>Public email</term> configured in their
           user profile settings.</note></p>
+      <p id="p_scq_2sx_twb"><b>Example: <term>GitHub</term> Sample
+        Configuration</b><codeblock outputclass="language-bourne">############################### GitHub ############################
+### Custom OAuth Provider (other than Google or Facebook) ###
+oauth.generic.enabled=true
+# The OAuth Provider's name (used as label for the associated 'Log in' button)
+oauth.generic.name=Github
+oauth.generic.client.clientId={oxygen-feedback-client-id}
+oauth.generic.client.clientSecret={oxygen-feedback-client-secret} 
+oauth.generic.client.accessTokenUri=https://github.com/login/oauth/access_token
+oauth.generic.client.userAuthorizationUri=https://github.com/login/oauth/authorize
+oauth.generic.client.scope=openid
+# User Info Properties
+# The URI of the OAuth Provider's '/user' endpoint
+oauth.generic.userInfo.uri=https://api.github.com/user
+# The names of the claims in the ID Token or in the JSON returned by the OAuth Provider's '/user' endpoint
+oauth.generic.userInfo.claims.id=id
+oauth.generic.userInfo.claims.name=name
+# Mandatory - if an email address could not be obtained for the current user then the authentication process will fail
+oauth.generic.userInfo.claims.email=email</codeblock></p>
+      <p id="p_adq_2sx_twb">You need to replace all placeholders (<codeph>{xxx-xxx}</codeph>) with
+        their appropriate values.</p>
+      <p id="p_uwl_3sx_twb">For more details about how to create a client application on GitHub, see
+          <xref
+          href="https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app"
+          format="html" scope="external"/>.</p>
+      <p id="p_jbw_hsx_twb">For more details about how to configure a client application for GitHub,
+        see <xref
+          href="https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps"
+          format="html" scope="external"/>.</p>
     </section>
   </body>
   <related-links>

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ofbENT-installation-docker">
+  <title><ph keyref="product"/> Installation</title>
+  <topic id="topic_jcl_4zx_twb">
+    <title>Oxygen Feedback Docker Images</title>
+    <body>
+      <p id="p_qfw_xyx_twb">The <ph keyref="product"/> distribution contains two docker images that
+        run the following services, each in its own container:</p>
+      <ul id="ul_rfw_xyx_twb">
+        <li id="li_sfw_xyx_twb"><b>Oxygen Feedback Service</b></li>
+        <li id="li_tfw_xyx_twb"><b>Oxygen Text Search Service</b></li>
+      </ul>
+      <p id="p_ufw_xyx_twb">The Docker images do not include an email server or database server. The
+        recommended solution is to configure these services to run in separate containers. For more
+        information see <xref href="ofbENT-database-setup-feedback.dita"/>, <xref href="ofbENT-database-setup-feedback.dita"/>
+        and <xref href="ofbENT-how-to-set-email-notifications.dita"/>.</p>
+      <section id="section_iwh_rzx_twb">
+        <title>Prerequisite</title>
+        <p id="p_jwh_rzx_twb">Docker is required. For installation instructions, see the <xref
+            href="https://docs.docker.com/get-docker/" format="html" scope="external">official
+            Docker installation documentation</xref>.</p>
+      </section>
+      <section id="section_p11_x5n_5wb">
+        <title>Other Requirements</title>
+        <p id="p_pdw_dgk_54b">
+          <dl id="dl_qdw_dgk_54b">
+            <dlentry id="dlentry_rdw_dgk_54b">
+              <dt>Operating System</dt>
+              <dd>
+                <ul id="ul_rk2_c3g_smb">
+                  <li id="li_sdw_dgk_54b">Ubuntu 18 is recommended since it has been thoroughly
+                    tested </li>
+                </ul>
+              </dd>
+            </dlentry>
+            <dlentry id="dlentry_vdw_dgk_54b">
+              <dt>Database</dt>
+              <dd>
+                <ul id="ul_xdm_t2f_lmb">
+                  <li id="li_wdw_dgk_54b">PostgreSQL 11, 12</li>
+                  <li id="li_xdw_dgk_54b">MySQL 8.0</li>
+                </ul>
+              </dd>
+            </dlentry>
+            <dlentry id="dlentry_ydw_dgk_54b">
+              <dt>CPU</dt>
+              <dd>
+                <ul id="ul_fnd_b3g_smb">
+                  <li id="li_zdw_dgk_54b">2 virtual cores</li>
+                </ul>
+              </dd>
+            </dlentry>
+            <dlentry id="dlentry_a2w_dgk_54b">
+              <dt>Memory</dt>
+              <dd>
+                <ul id="ul_u5l_13g_smb">
+                  <li id="li_b2w_dgk_54b">2 GB RAM</li>
+                </ul>
+              </dd>
+            </dlentry>
+            <dlentry id="dlentry_c2w_dgk_54b">
+              <dt>Storage</dt>
+              <dd>
+                <ul id="ul_cd5_zhg_smb">
+                  <li id="li_d2w_dgk_54b">20 GB disk storage</li>
+                </ul>
+              </dd>
+            </dlentry>
+            <dlentry id="dlentry_e2w_dgk_54b">
+              <dt>Browser</dt>
+              <dd>
+                <ul id="ul_cts_cgf_lmb">
+                  <li id="li_f2w_dgk_54b">Google Chrome 78.0 [recommended for optimal performance
+                    and user experience]</li>
+                  <li id="li_g2w_dgk_54b">Mozilla Firefox 70.0</li>
+                  <li id="li_i2w_dgk_54b">Microsoft Edge 44</li>
+                  <li id="li_j2w_dgk_54b">macOS Safari 13</li>
+                  <li id="li_k2w_dgk_54b">Chrome for Android 78.0 [mobile devices]</li>
+                  <li id="li_l2w_dgk_54b">Safari Mobile iOS 13 [mobile devices]</li>
+                </ul>
+                <note type="tip" id="note_m2w_dgk_54b">For more details, see: <xref
+                    href="ofb-browser-compatibility.dita"/>.</note>
+              </dd>
+            </dlentry>
+          </dl>
+        </p>
+      </section>
+      <section id="section_iyx_wzx_twb">
+        <title>Volumes</title>
+        <p id="p_v45_xzx_twb">The <b>Oxygen Feedback Service</b> and <b>Oxygen Text Search
+            Service</b> containers use host-mounted volumes to store persistent data:</p>
+        <table id="table_x45_xzx_twb">
+          <title>Oxygen Feedback Service</title>
+          <tgroup cols="3">
+            <colspec colnum="1" colname="col1"/>
+            <colspec colnum="2" colname="col2"/>
+            <colspec colnum="3" colname="col3"/>
+            <thead>
+              <row>
+                <entry>Host path</entry>
+                <entry>Container path</entry>
+                <entry>Details</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><filepath>./oxygen-feedback-home</filepath></entry>
+                <entry><filepath>/oxygen-feedback-home/</filepath></entry>
+                <entry><b>Oxygen Feedback</b> configuration files and data.</entry>
+              </row>
+              <row>
+                <entry><filepath>./logs</filepath></entry>
+                <entry><filepath>/oxygen-feedback-enterprise/logs</filepath></entry>
+                <entry>Log files.</entry>
+              </row>
+              <row>
+                <entry><filepath>./lib/mysql-connector-java.jar</filepath></entry>
+                <entry><filepath>/oxygen-feedback-enterprise/lib/mysql-connector-java.jar</filepath></entry>
+                <entry>The MySQL JDBC driver (if you are using a MySQL DB instance for Oxygen
+                  Feedback).</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        <table id="table_z45_xzx_twb">
+          <title>Oxygen Text Search Service</title>
+          <tgroup cols="3">
+            <colspec colnum="1" colname="col1"/>
+            <colspec colnum="2" colname="col2"/>
+            <colspec colnum="3" colname="col3"/>
+            <thead>
+              <row>
+                <entry>Host path</entry>
+                <entry>Container path</entry>
+                <entry>Details</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><filepath>./workspace</filepath></entry>
+                <entry><filepath>/oxygen-text-search-service/workspace/</filepath></entry>
+                <entry><b>Oxygen Text Search Service</b> workspace.</entry>
+              </row>
+              <row>
+                <entry><filepath>./logs</filepath></entry>
+                <entry><filepath>/oxygen-text-search-service/logs</filepath></entry>
+                <entry>Log files.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </section>
+    </body>
+  </topic>
+  <topic id="fb-install-steps-docker">
+    <title>Installation</title>
+    <body>
+      <section id="section_lzw_rlz_mmb">
+        <title>1. Download Kit</title>
+        <p id="p_o2w_dgk_54b">Download the <xref
+            href="http://oxygenxml.com/oxygen_feedback_enterprise/download.html" format="html"
+            scope="external"><b>Oxygen Feedback Enterprise</b> installation kit</xref>.</p>
+      </section>
+      <section id="section_bnt_t2g_smb">
+        <title>2. Create the Feedback User </title>
+        <p id="p_p2w_dgk_54b">Sample code:</p>
+        <p id="p_q2w_dgk_54b">
+          <codeblock outputclass="language-bourne" id="codeblock_r2w_dgk_54b">useradd feedback</codeblock>
+        </p>
+      </section>
+      <section id="section_ny5_tlz_mmb">
+        <title>3. Create Installation Directory</title>
+        <p id="p_s2w_dgk_54b">Create a directory and unzip the downloaded kit to this new directory.
+          The application files are stored in this directory.</p>
+        <p id="p_t2w_dgk_54b">Sample code to create the
+          directory:<codeblock outputclass="language-bourne" id="codeblock_u2w_dgk_54b">sudo mkdir /home/feedback/oxygen-feedback
+sudo chown feedback: /home/feedback/oxygen-feedback</codeblock></p>
+        <p id="p_v2w_dgk_54b">Sample code to extract the archive
+          content:<codeblock outputclass="language-bourne" id="codeblock_w2w_dgk_54b">cd /home/feedback/oxygen-feedback
+# Copy the downloaded archive here
+unzip oxygen-feedback-enterprise.zip</codeblock></p>
+        <p id="p_x2w_dgk_54b"><b>Step Result:</b> A new directory (for example, named
+            <filepath>oxygen-feedback-3.0</filepath>) is created with the extracted archive's
+          content. This directory will be subsequently referred to as
+            <i>OXYGEN_FEEDBACK_INSTALL_DIR</i>:
+          <codeblock id="codeblock_kj4_xdl_5wb" outputclass="language-bourne">export OXYGEN_FEEDBACK_INSTALL_DIR=/home/feedback/oxygen-feedback/oxygen-feedback-3.0</codeblock></p>
+      </section>
+      <section id="section_jlx_ylz_mmb">
+        <title>4. Load Docker Images</title>
+        <p id="p_y2w_dgk_54b">The <ph keyref="product"/> distribution contains two docker images
+          running the following services each in its own container:<ul id="ul_u2y_fby_twb">
+            <li id="li_v2y_fby_twb"><b>Oxygen Feedback Service</b></li>
+            <li id="li_w2y_fby_twb"><b>Oxygen Text Search Service</b></li>
+          </ul></p>
+        <p id="p_wx2_hby_twb">Run <filepath>load-docker-images.sh</filepath> (e.g.
+            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/docker-images/load-docker-images.sh</filepath>)
+          to load the <b>Oxygen Feedback Service</b> and <b>Oxygen Text Search Service</b> docker
+          images in your local
+          environment.<codeblock outputclass="language-bourne">cd $OXYGEN_FEEDBACK_INSTALL_DIR/docker-images
+sh load-docker-images.sh</codeblock></p>
+      </section>
+      <section id="section_axp_cmz_mmb">
+        <title>5. Set Up License</title>
+        <p id="p_hfw_dgk_54b">Set up the license for Feedback Enterprise:<ol id="ol_hkh_4by_twb">
+            <li id="li_ikh_4by_twb">Go to
+                <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home</filepath> and create a
+              new file named
+              <i>licensekey.txt</i>.<codeblock outputclass="language-bourne">cd $OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home
+touch licensekey.txt</codeblock></li>
+            <li id="li_mdv_sby_twb">Copy and paste your license key inside the
+                <filepath>licensekey.txt</filepath> file using a text editor or
+              use:<codeblock outputclass="language-bourne">cat >> licensekey.txt
+# Paste license
+# Press CTRL-D</codeblock></li>
+          </ol></p>
+      </section>
+      <section id="section_mdf_gmz_mmb">
+        <title>6. Configure Oxygen Feedback</title>
+        <p id="p_kfw_dgk_54b">To configure <ph keyref="product"/>, edit the configuration files from
+            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/oxygen-feedback-home/config</filepath>. The
+          available configuration properties are described in the procedures linked below:<ul
+            id="ul_ry2_kdy_twb">
+            <li id="li_sy2_kdy_twb"><xref href="ofbENT-database-setup-feedback.dita">How to Set Up the
+                Database</xref></li>
+            <li id="li_gfs_ldy_twb"><xref href="ofbENT-how-to-set-application-properties.dita">Set
+                Up Application Properties</xref></li>
+            <li id="li_bww_ldy_twb"><xref href="ofbENT-how-to-set-email-notifications.dita">Set Up
+                Email Notifications</xref></li>
+            <li id="li_gbr_1zn_5wb"><xref href="ofbENT-how-to-configure-OTSS.dita">How to Configure
+                Connection to Oxygen Text Search Service</xref></li>
+            <li id="li_tnc_mdy_twb">[Optional] <xref href="ofbENT-configure_http_proxy.dita">How to
+                Configure an HTTP Proxy</xref></li>
+            <li id="li_vhg_mdy_twb">[Optional] <xref href="ofbENT-how_to_configure_LDAP.dita">How to
+                Set up LDAP Authentication</xref></li>
+            <li id="li_wtk_mdy_twb">[Optional] <xref href="ofbENT-set_up_oauth.dita">How to Set up
+                OAuth Authentication</xref></li>
+            <li id="li_n3r_mdy_twb">[Optional] <xref href="ofbENT-google-recaptcha.dita">How to
+                Enable Google reCAPTCHA</xref></li>
+            <li id="li_qmv_mdy_twb">[Optional] <xref href="ofbENT-gzip-compression.dita">How to
+                Enable GZIP Compression in Oxygen Feedback</xref></li>
+            <li id="li_hz1_ndy_twb">[Optional] <xref href="ofbENT-https-procedure.dita">How to Run
+                Oxygen Feedback Over HTTPS</xref></li>
+          </ul></p>
+      </section>
+      <section id="set_up_license">
+        <title>7. Configure <filepath>docker-compose.yml</filepath></title>
+        <p id="p_vv4_t2y_twb">Edit the
+            <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/docker-compose.yml</filepath> file to configure
+          the docker containers for following services:<ul id="ul_wv4_t2y_twb">
+            <li id="li_xv4_t2y_twb"><b>Oxygen Feedback Service</b></li>
+            <li id="li_yv4_t2y_twb"><b>Oxygen Text Search Service</b></li>
+          </ul><codeblock outputclass="language-bourne">version: '3'
+services:
+  feedback-service:
+    image: oxygenxml/oxygen-feedback-enterprise:3.0
+    container_name: oxygen-feedback-enterprise
+    volumes:
+      # Home Dir
+      - type: bind
+        source: ./oxygen-feedback-home
+        target: /oxygen-feedback-home
+      - type: bind
+        source: ./logs
+        target: /oxygen-feedback-enterprise/logs
+      # Only if Oxygen Feedback is connected to a MySQL DB 
+      - type: bind
+        source: ./lib/mysql-connector-java.jar
+        target: /oxygen-feedback-enterprise/lib/mysql-connector-java.jar
+    ports:
+      - "8081:8080"
+      - "8443:8443"
+    depends_on:
+      - text-search-service
+  text-search-service:
+    image: oxygenxml/oxygen-text-search-service:1.1
+    container_name: oxygen-text-search-service
+    ports:
+      - "8888:8888"
+    environment:
+      - server.port=8888
+      - spring.datasource.url=
+      - spring.datasource.username=
+      - spring.datasource.password=
+      - http.proxyHost=
+      - http.proxyPort=
+      - https.proxyHost=
+      - https.proxyPort=
+    volumes:
+      - type: bind
+        source: ./workspace
+        target: /oxygen-text-search-service/workspace/
+      - type: bind
+        source: ./logs
+        target: /oxygen-text-search-service/logs/</codeblock></p>
+        <p id="p_jsq_z2y_twb"><b>Oxygen Text Search Service</b> environment variables:</p>
+        <ul id="ul_ksq_z2y_twb">
+          <li id="li_lsq_z2y_twb">Database configuration - see <xref
+              href="ofbENT-database-setup-otss.dita"/>:<ul id="ul_msq_z2y_twb">
+              <li id="li_nsq_z2y_twb">
+                <p id="p_osq_z2y_twb"><b>spring.datasource.url</b> - The URL of the <b>Oxygen Text
+                    Search Service</b> database that has the following format:
+                    <codeph>jdbc:postgresql://&lt;hostname>:&lt;port>/&lt;database></codeph></p>
+                <p id="p_psq_z2y_twb">For example:
+                    <codeph>jdbc:postgresql://localhost:5432/otss</codeph><note
+                    id="note_tm4_gfy_twb"><b>Oxygen Text Search Service</b> only supports PostgreSQL
+                    databases.</note></p>
+              </li>
+              <li id="li_rsq_z2y_twb"><b>spring.datasource.username</b> - The username used to
+                access the database.</li>
+              <li id="li_ssq_z2y_twb"><b>spring.datasource.password</b> - The password used to
+                access the database.</li>
+            </ul></li>
+          <li id="li_tsq_z2y_twb">HTTP Proxy configuration - see <xref
+              href="ofbENT-configure_http_proxy.dita#ofbENT-configure_http_proxy/dlentry_i24_b5n_5wb"
+            >How to Configure an HTTP Proxy for Oxygen Text Search Service</xref>:<ul id="ul_usq_z2y_twb">
+              <li id="li_vsq_z2y_twb"><b>http.proxyHost</b> - The hostname of the HTTP proxy
+                server.</li>
+              <li id="li_wsq_z2y_twb"><b>http.proxyPort</b> - The port number of the HTTP proxy
+                server.</li>
+              <li id="li_xsq_z2y_twb"><b>https.proxyHost</b> - The hostname of the HTTPS proxy
+                server.</li>
+              <li id="li_ysq_z2y_twb"><b>https.proxyPort</b> - The port number of the HTTPS proxy
+                server</li>
+            </ul></li>
+        </ul>
+      </section>
+      <section id="section_fh1_nmz_mmb">
+        <title>8. Start the Containers</title>
+        <p id="p_ufw_dgk_54b">To start <ph keyref="product"/>, you must create and start the docker
+          containers using the docker images loaded in the previous
+          steps.<codeblock outputclass="language-bourne" id="codeblock_zfw_dgk_54b">cd $OXYGEN_FEEDBACK_INSTALL_DIR
+docker-compose up -d</codeblock></p>
+      </section>
+    </body>
+    <related-links>
+      <link href="ofbENT-database-setup-feedback.dita"/>
+      <link href="ofbENT-database-setup-otss.dita"/>
+      <link href="ofbENT-how-to-set-application-properties.dita"/>
+      <link href="ofbENT-how-to-set-email-notifications.dita"/>
+      <link href="ofbENT-how-to-configure-OTSS.dita"/>
+      <link href="ofbENT-configure_http_proxy.dita"/>
+      <link href="ofbENT-how_to_configure_LDAP.dita"/>
+      <link href="ofbENT-set_up_oauth.dita"/>
+      <link href="ofbENT-google-recaptcha.dita"/>
+      <link href="ofbENT-gzip-compression.dita"/>
+      <link href="ofbENT-https-procedure.dita"/>
+      <link href="ofbENT-access_instance_logs.dita"/>
+      <link href="ofb-installing-feeback.dita"/>
+    </related-links>
+  </topic>
+</topic>
