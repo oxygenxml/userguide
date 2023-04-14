@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="whr_how_to_replace_webhelp_search_engine">
+    <title>How to Replace WebHelp Search Engine</title>
+    <body>
+        <p>It is possible to replace the internal search engine that is used by <b>Oxygen XML
+        WebHelp</b> by using a custom JavaScript file. To replace WebHelp's internal search engine,
+      follow this procedure:</p>
+        <ol id="ol_ebs_hhn_1vb">
+            <li>If you have not already created a Publishing Template, see <xref
+          href="whr-create-publishing-template.dita">How to Create a Publishing
+        Template</xref>.</li>
+            <li>Create the following items in the folder that contains your publishing descriptor
+                file (the <b>.opt</b> file):<ul id="ul_fbs_hhn_1vb">
+                    <li>A folder named <filepath>js</filepath>.</li>
+                    <li>A folder named <filepath>fragments</filepath>.</li>
+                </ul></li>
+            <li>In the <filepath>js</filepath> folder, create a file named
+          <filepath>search-engine.js</filepath>.</li>
+            <li>As a starting point, you can copy the following content to the
+          <filepath>search-engine.js</filepath>
+          file:<codeblock id="pre_gbs_hhn_1vb" outputclass="language-javascript">/**
+ * Object that implements the methods required by WebHelp to run a search engine.
+ */
+function CustomSearchEngine() {
+     
+  /**
+   * Method required to run the search engine in webhelp. Handler when the users 
+   * executes the query in the search page. 
+   * 
+   * @param {String} query            The search input string from the user.
+   * @param {Function} successHandler Needs to be called if the search operation is executed
+   *                                  successfully. The parameter needs to have the type of 
+   *                                  WebHelpAPI.SearchResult
+   * @param {Function} errorHandler   Needs to be called if the search operation fails to
+   *                                  execute successfully. It needs to have the type 
+   *                                  of String. 
+   */
+  this.performSearchOperation = function(query, successHandler, errorHandler) {
+      // implement search engine
+      // const searchRestult = externalSearchEngine(query);
+
+      // convert the result to WebHelpApi.SearchResult
+      // const formattedResult = convert(searchRestult);
+
+      // call successHanlder with the converted result.
+      // successHandler(formattedResult)  
+  }
+
+  /**
+   * Method required to run the search engine in webhelp. Handler when the 
+   * page is changed in the search page.
+   * 
+   * @param {Integer} pageToShow      The page to be dispalyed.
+   * @param {Integer} maxItemsPerPage The maximum # of items that can be displayed on a page.
+   * @param {String} query            The search input string from the user.
+   * @param {Function} successHandler Needs to be called if the search operation is executed
+   *                                  successfully. The parameter needs to have the type of
+   *                                  WebHelpAPI.SearchResult 
+   * @param {Function} errorHandler   Needs to be called if the search operation fails to
+   *                                  execute successfully. It needs to have the type 
+   *                                  of String.  
+   */
+  this.onPageChangedHandler = function(pageToShow, maxItemsPerPage, query, successHandler, 
+errorHandler) {
+      // implement search engine
+      // const searchRestult = externalSearchEngine(pageToShot, maxItemsPerPage, query);
+
+      // convert the result to WebHelpApi.SearchResult
+      // const formattedResult = convert(searchRestult);
+
+      // call successHanlder with the converted result.
+      // successHandler(formattedResult)  
+  }
+}
+
+// Set the Search Engine to WebHelp
+WebHelpAPI.setCustomSearchEngine(new CustomSearchEngine());</codeblock><note
+          id="note_jsw_253_bvb">See the <xref
+            href="#whr_how_to_replace_webhelp_search_engine/section_rsg_vn3_bvb">API Search Objects
+            section</xref> for details on how to convert your custom search engine results to
+            <codeph>WebHelpAPI.SearchResult</codeph>.</note></li>
+            <li>Implement your search engine.</li>
+            <li>In the <filepath>fragments</filepath> folder, create a file named
+          <filepath>search-engine-script-fragment.xml</filepath>.</li>
+            <li>In the <filepath>search-engine-script-fragment.xml</filepath> file, define the
+        scripts that are required for your search engine to run. For
+        example:<codeblock id="pre_hbs_hhn_1vb" outputclass="language-xml">&lt;div>
+    &lt;script src="${oxygen-webhelp-template-dir}/js/search-engine.js">&lt;/script>
+&lt;/div></codeblock></li>
+            <li>Copy the <filepath>js</filepath> folder to the output folder during the
+        transformation process. For this, open the <filepath>.opt</filepath> file and add the
+        following content in the <xmlelement>resources</xmlelement> section (see <xref
+          href="whr_publishing_template_contents.dita#template_resources">Template Resources</xref>
+        for more
+        details):<codeblock id="pre_ibs_hhn_1vb" outputclass="language-xml">&lt;fileset>
+  &lt;include name="js/**"/>
+&lt;/fileset></codeblock></li>
+            <li>Set the transformation parameters needed to enable the search filter. For this, open
+        the <filepath>.opt</filepath> file and add the following content inside the
+          <xmlelement>webhelp</xmlelement>
+        element:<codeblock id="pre_jbs_hhn_1vb" outputclass="language-xml">&lt;html-fragments>
+  &lt;fragment file="fragments/search-engine-script-fragment.xml" 
+      placeholder="webhelp.fragment.head.search.page"/>
+&lt;/html-fragments></codeblock></li>
+        </ol>
+        <section id="section_rsg_vn3_bvb">
+            <title>API  Search Objects</title>
+            <p>To replace the WebHelp Search Engine, you will need to convert your custom search
+        result into WebHelp API Objects that WebHelp will use to render your search result on the
+        search page. To convert your custom search result, you will have to create the following
+          objects:<ol id="ol_twx_rbj_bvb">
+          <li><i>WebHelpAPI.SearchMeta</i> is a JavaScript object used to hold additional
+            information for the search result. To create such an object, the following fields are
+              required:<ul id="ul_vr1_wr3_bvb">
+              <li><uicontrol>String: searchEngineName</uicontrol> - The name of the search engine
+                used to retrieve the search result. </li>
+              <li><uicontrol>Integer: totalSearchItems</uicontrol> - The total number of search
+                items the search engine returned. </li>
+              <li><uicontrol>Integer: currentPage</uicontrol> - The current page to display. </li>
+              <li><uicontrol>Integer: maxItemsPerPage</uicontrol> - The maximum number of items that
+                can be displayed on a page. </li>
+              <li><uicontrol>Integer: totalPages</uicontrol> - The number of total pages for the
+                search result. </li>
+              <li><uicontrol>String: originalSearchExpression</uicontrol> - The query string the
+                user typed in the search input field.</li>
+            </ul><codeblock id="codeblock_j3l_hs3_bvb" outputclass="language-javascript">conse searchMeta = new WebHelpAPI.SearchMeta(searchEngineName, totalSearchItems, currentPage, 
+maxItemsPerPage, totalPages, origianlSearchExpresion);</codeblock></li>
+          <li><i>WebHelpAPI.SearchDocument</i> is a JavaScript object used to hold the search result
+            for a single topic/HTML page. To create such an object, the following fields are
+              required:<ul id="ul_chq_dt3_bvb">
+              <li><uicontrol>String: linkLocation</uicontrol> - The URL to the topic. </li>
+              <li><uicontrol>String: title</uicontrol> - The topic title. </li>
+              <li><uicontrol>String: shortDescription</uicontrol> - The topic short
+                description.</li>
+            </ul><codeblock id="codeblock_xwp_ht3_bvb" outputclass="language-javascript">const searchDocument = new WebHelpAPI.SearchDocument(linkLocation, title, shortDescription);</codeblock></li>
+          <li><i>WebHelpAPI.SearchResult</i> is a JavaScript object used to display the search
+            results in the search page. To create such an object, the following fields are
+              required:<ul id="ul_mwf_zcj_bvb">
+              <li><uicontrol>WebHelpAPI.SearchMeta: searchMeta</uicontrol> - Contains additional
+                information for the search result.</li>
+              <li><uicontrol>Array[WebHelpAPI.SearchDocument]: documents</uicontrol> - An array with
+                the matching documents (HTML pages) for the search result.</li>
+            </ul><codeblock id="codeblock_nwf_zcj_bvb" outputclass="language-javascript">conse searchMeta = new WebHelpAPI.SearchMeta(searchEngineName, totalSearchItems, currentPage, 
+maxItemsPerPage, totalPages, origianlSearchExpresion);
+const searchDocument = new WebHelpAPI.SearchDocument(linkLocation, title, shortDescription);
+const documents = [searchDocument]; // An array with one element.
+const searchResult = new WebHelpAPI.SearchResult(searchMeta, documents);</codeblock></li>
+        </ol></p>
+        </section>
+    </body>
+</topic>

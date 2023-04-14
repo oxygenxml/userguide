@@ -30,14 +30,14 @@
           schema root, then <xref
             href="https://tools.ietf.org/html/draft-handrews-json-schema-validation-01"
             format="html" scope="external">Draft 7</xref> will be used.</li>
-        <li id="li_qgg_cgk_54b">If there is a <b>"$schema": "<b>http://json-schema.org/draft/2019-09/schema</b>"</b>
-          property in the schema root, then a <xref
-            href="https://tools.ietf.org/html/draft-handrews-json-schema-validation-01"
-            format="html" scope="external">Draft 7</xref> compatibility mode will be used.</li>
+        <li id="li_qgg_cgk_54b">If there is a <b>"$schema":
+              "<b>http://json-schema.org/draft/2019-09/schema</b>"</b> property in the schema root,
+          then <xref href="https://json-schema.org/draft/2019-09/json-schema-validation.html"
+            format="html" scope="external">Draft 2019-09</xref> will be used.</li>
         <li id="li_gxp_t2t_drb">If there is a <b>"$schema":
               "<b>http://json-schema.org/draft/2020-12/schema</b>"</b> property in the schema root,
-          then a <xref href="https://tools.ietf.org/html/draft-handrews-json-schema-validation-01"
-            format="html" scope="external">Draft 7</xref> compatibility mode will be used.</li>
+          then <xref href="https://json-schema.org/draft/2020-12/json-schema-validation.html"
+            format="html" scope="external">Draft 2020-12</xref> will be used.</li>
         <li id="li_rgg_cgk_54b">If there is a <b>"$schema"</b> property in the schema root, but with
           a different draft value, then an error will be displayed (<i>"could not determine
             version"</i>).</li>
@@ -51,6 +51,27 @@
     <p id="p_ugg_cgk_54b">For information about how to associate a JSON Schema for the purposes of
       validation, see <xref href="json-associate-schema-validation-scenario.dita"/>.</p>
     <p id="p_bgg_cgk_54b">For information about using a JSON Schema to validate documents, see <xref
-        href="json-validating-documents-against-schema.dita"/>.</p>
+        href="json-validating-documents-against-schema.dita"/>. </p>
+    <section id="section_n4d_llf_y5b">
+      <title>Draft 2019-09 and Draft 2020-12 Validator Limitations</title>
+    </section>
+    <p>The JSON Schema Validator handles all the newly introduced keywords in Draft 2019-09 and
+      Draft 2020-12 specifications. However, there are still some limitations:<ol
+        id="ol_rdf_2lf_y5b">
+        <li>The keywords <b>"$recursiveRef"</b> and <b>"$recursiveAnchor"</b> (Draft 2019-09) are
+          not supported. This is also indicated by a validation warning.</li>
+        <li>The keyword <b>"$dynamicRef"</b> has the same functionality as <b>"$ref"</b>, and
+            <b>"$dynamicAnchor"</b> (Draft 2020-12) is not supported. This is also indicated by a
+          validation warning.</li>
+        <li>The keywords <b>"unevaluatedProperties"</b> / <b>"unevaluatedItems"</b> can "see
+          through" the subschemas of adjacent keywords <b>"if", "then", "else",</b> but do not know
+          about successfully validated <i>properties</i> / <i>items</i>. This means that all the
+            <i>properties</i> / <i>items</i> defined by those subschemas are considered
+          evaluated.</li>
+        <li>The keywords <b>"unevaluatedProperties"</b> / <b>"unevaluatedItems"</b> can "see
+          through" the nested subschemas of adjacent keywords <b>"oneOf", "anyOf", "allOf"</b>, but
+          all the <i>properties</i> / <i>items</i> defined by those subschemas are considered
+          evaluated, regardless of other nested restrictions.</li>
+      </ol></p>
   </body>
 </topic>

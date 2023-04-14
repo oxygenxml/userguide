@@ -29,11 +29,17 @@
             </entry>
           </row>
           <row>
-            <entry morerows="6"/>
+            <entry morerows="7"/>
             <entry dir="ltr"><uicontrol>$ref</uicontrol></entry>
             <entry dir="ltr">An instance is valid against this keyword if it is valid against the
               schema that points to the location indicated in its value. The value must be a string
-              representing a URI, URI reference, URI template, or JSON pointer.</entry>
+              representing a URI, URI reference, URI template, or JSON pointer.<note
+                id="note_i15_rtb_15b"> A <i>draft 2019-09</i> or <i>draft 2020-12</i> schema that
+                contains a <codeph>$ref</codeph> in conjunction with other type-specific keywords
+                (such as <i>properties</i> or <i>items</i>) is processed as a combined schema, under
+                the <i>allOf</i> criterion. This means that for an instance to be valid, it has to
+                validate against both the referenced schema and the schema defined in-place by those
+                keywords.</note></entry>
           </row>
           <row>
             <entry dir="ltr"><uicontrol>$id</uicontrol></entry>
@@ -67,6 +73,11 @@
             <entry dir="ltr">Used to mark specific properties as <i>write-only</i>.</entry>
           </row>
           <row>
+            <entry><uicontrol>deprecated</uicontrol></entry>
+            <entry>Used to indicate that the instance value is deprecated and should not be used
+              since it might be removed in the future.</entry>
+          </row>
+          <row>
             <entry dir="ltr" rowsep="0">Object Properties</entry>
             <entry dir="ltr"><uicontrol>additionalProperties</uicontrol></entry>
             <entry>
@@ -97,10 +108,10 @@
             </entry>
           </row>
           <row>
-            <entry morerows="5"/>
-            <entry dir="ltr"><uicontrol>dependencies</uicontrol></entry>
-            <entry dir="ltr">An object is valid against this keyword if it meets all dependencies
-              specified by its value.</entry>
+            <entry morerows="8"/>
+            <entry dir="ltr"><uicontrol>unevaluatedProperties</uicontrol></entry>
+            <entry dir="ltr">Similar to the <uicontrol>additionalProperties</uicontrol> keyword
+              except that this one can recognize properties that declared in subschemas.</entry>
           </row>
           <row>
             <entry dir="ltr"><uicontrol>maxProperties</uicontrol></entry>
@@ -136,17 +147,54 @@
               that represent property names.</entry>
           </row>
           <row>
+            <entry><uicontrol>dependencies</uicontrol></entry>
+            <entry>An object is valid against this keyword if it meets all dependencies specified by
+              its value.<note id="note_wf3_nwr_r5b">For <i>draft 2019-09</i> and <i>draft
+                  2020-12</i> schemas, you should use the <uicontrol>dependentRequired</uicontrol>
+                and <uicontrol>dependentSchemas</uicontrol> keywords instead.</note></entry>
+          </row>
+          <row>
+            <entry><uicontrol>dependentRequired</uicontrol></entry>
+            <entry>An object is valid against this keyword if it meets all dependencies specified by
+              its value. The value must be an object where property values must be arrays of strings
+              representing property names, and the object must contain all property names.</entry>
+          </row>
+          <row>
+            <entry><uicontrol>dependentSchemas</uicontrol></entry>
+            <entry>An object is valid against this keyword if it meets all dependencies specified by
+              its value. The value must be an object where property values must be objects
+              representing valid JSON schemas, and the whole object must match the entire
+              schema.</entry>
+          </row>
+          <row>
             <entry dir="ltr" rowsep="0">Array Properties</entry>
             <entry dir="ltr"><uicontrol>additionalItems</uicontrol></entry>
             <entry dir="ltr">An array is valid against this keyword if all <i>unchecked</i> items
               are valid against the schema defined by its value.</entry>
           </row>
           <row>
-            <entry morerows="4"/>
-            <entry dir="ltr"><uicontrol>contains</uicontrol></entry>
-            <entry dir="ltr">An array is valid against this keyword if at least one item is valid
-              against the schema defined by its value. The value must be a valid JSON schema (object
-              or boolean).</entry>
+            <entry morerows="8"/>
+            <entry dir="ltr"><uicontrol>unevaluatedItems</uicontrol></entry>
+            <entry dir="ltr">An array is valid against this keyword if the value is a valid JSON
+              schema that will be applied to all array items that were not evaluated by other
+              keywords for items (<codeph>prefixItems</codeph>, <codeph>items</codeph>,
+                <codeph>contains</codeph>).</entry>
+          </row>
+          <row>
+            <entry><uicontrol>contains</uicontrol></entry>
+            <entry>An array is valid against this keyword if at least one item is valid against the
+              schema defined by its value. The value must be a valid JSON schema (object or
+              boolean).</entry>
+          </row>
+          <row>
+            <entry><uicontrol>maxContains</uicontrol></entry>
+            <entry>An array is valid against this keyword if the number of <i>contains</i> is lower
+              than or equal to its value. The value must be a non-negative integer.</entry>
+          </row>
+          <row>
+            <entry><uicontrol>minContains</uicontrol></entry>
+            <entry>An array is valid against this keyword if the number of <i>contains</i> is
+              greater than or equal to its value. The value must be a non-negative integer.</entry>
           </row>
           <row>
             <entry dir="ltr"><uicontrol>items</uicontrol></entry>
@@ -181,6 +229,13 @@
             <entry dir="ltr">An array is valid against this keyword if the number of items it
               contains is greater than or equal to its value. The value must be a non-negative
               integer.</entry>
+          </row>
+          <row>
+            <entry><uicontrol>prefixItems</uicontrol></entry>
+            <entry>An array is valid against this keyword if each item is a schema that corresponds
+              to each index of the document’s array (where the first element validates the first
+              element of the input array, the second element validates the second element of the
+              input array, and so on).</entry>
           </row>
           <row>
             <entry dir="ltr"><uicontrol>uniqueItems</uicontrol></entry>

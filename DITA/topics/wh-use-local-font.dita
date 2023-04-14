@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wh-use-local-font">
+  <title>How to Use a Local Font in WebHelp Responsive Output</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Responsive<indexterm>Local fonts</indexterm></indexterm>
+        <indexterm product="webhelp">Local fonts</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_kt4_cgk_54b">It is possible to use a local fonts in WebHelp Responsive output by
+      copying the local font file to the output directory through a Publishing Template and
+      referencing the font files using <xmlatt>font-face</xmlatt> rules within a custom CSS.</p>
+    <p id="p_ecn_5tv_l5b">
+      <fig id="fig_lgr_5tv_l5b">
+        <title>Referencing Local Fonts in a Publishing Template</title>
+        <image href="../img/wh-local-fonts.png"/>
+      </fig>
+    </p>
+    <p id="p_ot4_cgk_54b">To use a local font in your WebHelp Responsive output, follow these steps:
+        <ol id="ol_pt4_cgk_54b">
+        <li id="li_qt4_cgk_54b">If you have not already created a Publishing Template, see <xref
+            href="whr-create-publishing-template.dita">How to Create a Publishing
+          Template</xref>.</li>
+        <li id="li_rt4_cgk_54b">Add the local font files to the <filepath>fonts</filepath> folder
+          within your Publishing Template directory structure. For
+          example:<codeblock outputclass="language-bourne">fonts/roboto-mono/RobotoMono-Italic-VariableFont_wght.ttf
+fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf</codeblock></li>
+        <li id="li_wt4_cgk_54b">Configure WebHelp Responsive to copy the font file to the output
+          directory. Define a <xmlelement>fileset</xmlelement> that matches the location of the font
+          files in the <xmlelement>resources</xmlelement> section of your Publishing Template's
+          descriptor file.<codeblock outputclass="language-xml">&lt;resources>
+  &lt;!-- Copy ttf font files to the output directory. -->
+  &lt;fileset>
+     &lt;include name="fonts/**/*.ttf"/>
+  &lt;/fileset>
+&lt;/resources></codeblock>All the files matched by this fileset will be copied to the
+          output directory. The additional resources will be copied in the following subfolder of
+          the output
+          directory:<codeblock outputclass="language-bourne">{OUTPUT-DIR}/oxygen-webhelp/template/</codeblock></li>
+        <li id="li_zt4_cgk_54b">Create a custom CSS file in your Publishing Template
+          directory.<codeblock outputclass="language-bourne">css/custom-font.css</codeblock></li>
+        <li id="li_a54_cgk_54b">Reference the CSS file in the <xmlelement>resources</xmlelement>
+          section of the Publishing Template's descriptor file. This means that the CSS file will be
+          referenced in each HTML page within the WebHelp Responsive output.<itemgroup>
+            <codeblock outputclass="language-xml">&lt;resources>
+  &lt;css file="css/custom-font.css"/>
+  &lt;!-- ... -->
+&lt;/resources></codeblock>
+          </itemgroup></li>
+        <li id="li_e54_cgk_54b">Add <xmlatt>font-face</xmlatt> definitions that reference the font
+          files in your custom CSS file. The font files can be referenced using relative URLs since
+          the CSS and the font files included in the Publishing Template package will be copied
+          together in the output folder.<codeblock outputclass="language-css">@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  src: url('../fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: italic;
+  src: url('../fonts/roboto-mono/RobotoMono-Italic-VariableFont_wght.ttf') format('truetype');
+}</codeblock></li>
+        <li id="li_g54_cgk_54b">Add a CSS rule that applies the custom font on all elements.<itemgroup>
+            <codeblock outputclass="language-css" id="codeblock_h54_cgk_54b">body {
+  font-family: 'Roboto Mono', sans-serif;
+}</codeblock>
+          </itemgroup></li>
+        <li id="li_m54_cgk_54b">Run the transformation with the publishing template selected. </li>
+      </ol></p>
+    <p id="p_fvq_rvv_l5b">
+      <fig id="fig_cqy_rvv_l5b">
+        <title>Output Example</title>
+        <image href="../img/wh-output-sample.png"/>
+      </fig>
+    </p>
+  </body>
+</topic>

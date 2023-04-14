@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_show_only_changebars_on_tracked_changes">
+    <title>How to Show Only Change Bars on Tracked Changes</title>
+    <body>
+    <p id="p_i2x_3fz_vqb">It is possible to only display the change bars for tracked changes
+      (inserted or deleted content) in the PDF document while hiding the other styling for the
+      tracked changes. This is helpful if you want to see the document in a final version while
+      still seeing change bars where content was inserted or deleted.</p>
+        <p>To achieve this, follow these steps:<ol id="ol_tz4_fgz_vqb">
+        <li id="li_uz4_fgz_vqb">Set the <b>show.changes.and.comments</b> parameter to
+            <codeph>yes</codeph> and the <b>show.changes.and.comments.as.pdf.sticky.notes</b>
+          parameter to <codeph>no</codeph>.<p id="p_mf5_kgz_vqb"><b>Step Result:</b> The first
+            parameter causes tracked changes to be visible in your document and styled (e.g.
+            insertions are blue and underlined, while deletions are red with a strike-through).
+            Changing the second parameter to <codeph>no</codeph> causes the tracked changes to be
+            displayed as a footnote instead of a PDF annotation.</p></li>
+        <li id="li_f5y_yhz_vqb">Hide the footnotes by adding the following in your <xref
+            href="dcpp_the_customization_css.dita">customization
+          CSS</xref>:<codeblock id="codeblock_txv_pk4_5qb" outputclass="language-css">.oxy-attributes,
+.oxy-comment,
+.oxy-delete,
+.oxy-insert {
+  float: initial;
+  display: none;
+}</codeblock></li>
+        <li id="li_nn5_c3z_vqb">Remove the change range markers (the <b>{</b> and <b>}</b>
+          symbols):<codeblock outputclass="language-css" id="codeblock_yqj_wk4_5qb">.oxy-range-start:before,
+.oxy-range-end:before {
+  content:none;
+}</codeblock></li>
+        <li id="li_by1_g3z_vqb">Remove the styling for the insertions and
+          deletions:<codeblock outputclass="language-css" id="codeblock_rcq_yk4_5qb">.oxy-insert-hl{
+  color:unset;
+  text-decoration:none;
+}
+.oxy-delete-hl {
+  content: "\200b";
+  text-decoration:none;
+}
+.oxy-comment-hl{
+  background-color:unset;
+}
+.oxy-color-hl[color]{
+  background-color:unset;
+}</codeblock></li>
+        <li id="li_dd4_h3z_vqb"><b>[Optional]</b> You can improve the visibility of the change bars
+          with this
+          construct:<codeblock outputclass="language-css" id="codeblock_clt_zk4_5qb">.oxy-range-start[is-changebar]:before(100) {
+  -oxy-changebar-color: red;
+  -oxy-changebar-width: 3pt;
+}</codeblock></li>
+      </ol></p>
+    </body>
+</topic>

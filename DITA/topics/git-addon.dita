@@ -37,7 +37,12 @@
             </menucascade> to open an add-on selection dialog box. Enter or paste
               <b>https://www.oxygenxml.com/InstData/Addons/default/updateSite.xml</b> in the
               <uicontrol>Show add-ons from</uicontrol> field or select it from the drop-down
-            menu.</li>
+              menu.<note id="note_manual_installation">If you have issues connecting to the default
+              update site, you can <xref format="html" scope="external"
+                href="https://www.oxygenxml.com/php/download-addon.php?updateSite=https://www.oxygenxml.com/InstData/Addons/default/updateSite.xml&amp;oxygenAddonId=com.oxygenxml.git"
+                >download the add-on package</xref>, unzip it, then use the <uicontrol>Browse for
+                local files</uicontrol> action in the <uicontrol>Install new add-ons</uicontrol>
+              dialog box to locate the downloaded <filepath>addon.xml</filepath> file.</note></li>
           <li id="li_jyg_dgk_54b">Select the <b>Git Client</b> add-on and click
               <uicontrol>Next</uicontrol>.</li>
           <li id="li_kyg_dgk_54b">Read the end-user license agreement. Then select the <uicontrol>I
@@ -50,8 +55,8 @@
           <uicontrol>Window</uicontrol>
           <uicontrol>Show View</uicontrol>
         </menucascade> menu (or select <uicontrol>Git Client</uicontrol> from the
-          <uicontrol>Tools</uicontrol> menu). This view acts as a basic Git client integrated
-        directly in <ph keyref="product"/>, and it provides support for committing changes to a Git
+          <uicontrol>Tools</uicontrol> menu). This view acts as a Git client integrated directly in
+          <ph keyref="product"/>, and it provides support for committing changes to a Git
         repository, comparing and merging changes, resolving conflicts, and other Git commands. A
           <uicontrol>Git</uicontrol> menu is also contributed in the main menu bar that includes
         various Git actions.</p>
@@ -137,12 +142,12 @@
                   <dlentry id="dlentry_ofg_fr5_nsb">
                     <dt><uicontrol>Pull (merge)</uicontrol></dt>
                     <dd>Pulls the latest changes from the remote repository and combines them with
-                      your local unpublished changes. </dd>
+                      your local unpublished changes by creating one new merge commit.</dd>
                   </dlentry>
                   <dlentry id="dlentry_lzh_fr5_nsb">
                     <dt><uicontrol>Pull (rebase)</uicontrol></dt>
-                    <dd>Pulls the latest changes from the remote repository and combines them with
-                      your local unpublished changes.</dd>
+                    <dd>Pulls the latest changes from the remote repository, rewrites their commits,
+                      and reapplies them on top of your local unpublished changes.</dd>
                   </dlentry>
                   <dlentry id="dlentry_gfj_fr5_nsb">
                     <dt><uicontrol><image href="../img/Branch18.png"/>Show branches</uicontrol></dt>
@@ -151,7 +156,9 @@
                   </dlentry>
                   <dlentry id="dlentry_pfk_fr5_nsb">
                     <dt><uicontrol><image href="../img/Tags18.png"/>Show tags</uicontrol></dt>
-                    <dd>Opens a dialog box that lists all the tags.</dd>
+                    <dd>Opens a dialog box that lists all the tags. You can delete tags, checkout a
+                      certain tag, or push a tag that is only present in the local branch to the
+                      remote. </dd>
                   </dlentry>
                   <dlentry id="dlentry_ihl_fr5_nsb">
                     <dt><uicontrol><image href="../img/History18.png"/>Show history</uicontrol></dt>
@@ -289,10 +296,11 @@
           <li id="li_hgp_p3y_kpb"><b>Checkout branch</b> - A specific branch of the repository that
             is being cloned. The default branch will be cloned if another one is not specified.</li>
           <li id="li_igp_p3y_kpb"><b>Destination path</b> - The local path where the repository will
-            be cloned.</li>
+            be cloned. When you enter a URL of a repository, it will be proposed to automatically
+            save it in a folder with the same name. </li>
         </ul></p>
       <p id="p_jgp_p3y_kpb">After cloning a repository, it will automatically be set as the current
-        working copy.</p>
+        working copy. </p>
     </section>
     <section id="section_chl_2lp_xqb">
       <title>Making an Oxygen Project a Git Repository</title>
@@ -305,8 +313,24 @@
     </section>
     <section id="section_ek1_s3y_kpb">
       <title>Authentication</title>
-      <p id="p_phs_2ky_kpb">The <i>Git Client</i> supports both <b>HTTPS</b> and <b>SSH</b>
-        connections to GitHub, GitLab, Bitbucket, and more.</p>
+      <p id="p_phs_2ky_kpb">The <i>Git Client</i> supports <b>HTTPS</b> and <b>SSH</b> connections
+        to GitHub, GitLab, Bitbucket, and more. It also includes support for
+          <codeph>ssh-agent</codeph> forwarding.</p>
+      <p>
+        <note type="other" othertype="Note" id="note_glm_zkd_pvb"> For SSH connections, you can use
+          the SSH agent to use the SSH keys already stored on it. To enable support for SSH agent
+          access, go to <menucascade>
+            <uicontrol>Git(Menu)</uicontrol>
+            <uicontrol>Settings</uicontrol>
+            <uicontrol>Preferences</uicontrol>
+            <uicontrol>SSH Connections</uicontrol>
+          </menucascade> (or <menucascade>
+            <uicontrol>Git Staging View</uicontrol>
+            <uicontrol>Ellipsis menu</uicontrol>
+            <uicontrol>Preferences</uicontrol>
+            <uicontrol>SSH Connections</uicontrol>
+          </menucascade>) and select the <b>Use SSH Agent</b> option. </note>
+      </p>
       <p id="p_qhs_2ky_kpb">To access the remote repository, you need to provide your authentication
         details (if not using unprotected SSH keys). If no such information is found in the add-on's
         settings, you will be prompted for them.</p>
@@ -369,10 +393,11 @@
           href="#git-addon/section_hjy_kmy_kpb" format="dita"><uicontrol>History
           view</uicontrol></xref> contextual menu. In the <term>Ellipsis (three vertical
           dots)</term> menu on the right side of the <uicontrol>Git Staging</uicontrol> view's
-        toolbar, there is a <uicontrol>Show tags</uicontrol> action that lists all the tags. For
-        tags present only in the local branch, you can choose to delete them or to push them to the
-        remote repository. The <uicontrol>Show tags</uicontrol> action is also available in the
-          <uicontrol>Git</uicontrol> menu from the main menu bar.</p>
+        toolbar, there is a <uicontrol>Show tags</uicontrol> action that lists all the tags. Both
+        local and already pushed tags can be deleted from this dialog box. For tags present only in
+        the local branch, you can choose to push them to the remote repository. The <uicontrol>Show
+          tags</uicontrol> action is also available in the <uicontrol>Git</uicontrol> menu from the
+        main menu bar.</p>
     </section>
     <section id="section_wff_5ly_kpb">
       <title>Working with Submodules</title>
@@ -661,9 +686,13 @@
           <uicontrol>Preferences</uicontrol>
           <uicontrol>Plugins</uicontrol>
           <uicontrol>Git Client</uicontrol>
-        </menucascade> or click the <b>Settings</b> button from the toolbar of the <uicontrol>Git
-          Staging</uicontrol> view and select <uicontrol>Preferences</uicontrol>. This preferences
-        page includes the following options:</p>
+        </menucascade> or <menucascade>
+          <uicontrol>Git(Menu)</uicontrol>
+          <uicontrol>Settings</uicontrol>
+          <uicontrol>Preferences</uicontrol>
+        </menucascade> or click the <b>Ellipsis menu</b> button from the toolbar of the
+          <uicontrol>Git Staging</uicontrol> view and select <uicontrol>Preferences</uicontrol>.
+        This preferences page includes the following options:</p>
       <ul id="ul_xjr_pqy_kpb">
         <li id="li_yjr_pqy_kpb">
           <p id="p_zjr_pqy_kpb"><uicontrol>When detecting a Git repository inside a newly opened
@@ -690,23 +719,67 @@
             updated using the <i>Pull</i> operation, all sub-modules are updated as well. This
             option is selected by default.</p>
         </li>
+        <li id="li_okr_pqy_kpb"><uicontrol>Detect and open Oxygen projects (.xpr) from opened
+            working copies</uicontrol> - If this option is selected (by default, it is not selected)
+          and a working copy that contains one or more project files (<filepath>.xpr</filepath>) is
+          opened: <ul id="ul_ocz_ldd_45b">
+            <li>If one <filepath>.xpr</filepath> file is found, it will be opened
+              automatically.</li>
+            <li>If more than one <filepath>.xpr</filepath> files are found and none of them are
+              opened, a dialog box will appear where the <filepath>.xpr</filepath> can be
+              selected.</li>
+          </ul></li>
         <li id="li_jkr_pqy_kpb">
-          <p id="p_jkr_pqy_kpb"><uicontrol>Validate each file before commiting</uicontrol> - When this option is
-          selected, each file to be committed will be validated individually. There must be no
-          unstaged files, as these may affect the validation process. If validation problems are
-          detected, then the commit operation will be stopped,  a dialog to show this will appear
-          and the problems can be viewed in the "Git pre-commit validation" tab from the "Results"
-          area. If the option <uicontrol>Reject commit when validation problems occur</uicontrol> is
-          checked, then the dialog that informs about finding validation issues will have two
-          buttons: <uicontrol>Commit anyway</uicontrol> and <uicontrol>Cancel</uicontrol>, otherwise
-          only <uicontrol>Cancel</uicontrol>. The <uicontrol>Commit anyway</uicontrol> button allows
-            the commit operation to be completed even if validation issues have been found.</p></li>
+          <p id="p_jkr_pqy_kpb"><uicontrol>Validate each file before commiting</uicontrol> - When
+            this option is selected, each file to be committed will be validated individually. If
+            validation problems are detected, the commit operation will be stopped and a dialog box
+            will appear informing you that the problems can be viewed in the "Results" area (in the
+            "Git pre-commit validation" tab). If the <uicontrol>Reject commit when validation
+              problems occur</uicontrol> option is selected (the default state), the dialog box will
+            include a <uicontrol>Commit anyway</uicontrol> button that allows the commit operation
+            to be completed even if validation issues have been found.</p></li>
+        <li id="li_kkr_pqy_kpb">
+          <p id="p_kkr_pqy_kpb"><uicontrol>Validate all files from the project's "Main Files" folder
+              before pushing</uicontrol> - When this option is selected, the files in the "Main
+            Files" folder will be validated.</p>
+          <p id="p_mnv_qm4_wtb">The following are required for this option to function properly:<ul
+              id="ul_tqg_5l4_wtb">
+              <li id="li_ltj_km4_wtb"><xref href="enabling-the-main-files-support.dita"><b>Main
+                    Files</b> support must be enabled</xref> and the files must be properly inserted
+                in the "Main Files" folder.</li>
+              <li id="li_pyn_km4_wtb">It is mandatory that a <xref href="validation-scenario.dita"
+                  >validation scenario</xref> be configured because the validation will be based on
+                it.</li>
+              <li id="li_uqg_5l4_wtb">The current repository must be the same as the project loaded
+                in the <b>Project View</b> and there must be no uncommitted changes (if detected, a
+                dialog box will appear offering the option to make a stash be applied after the
+                project validation).</li>
+            </ul></p>
+          <p id="p_dpn_bn4_wtb">If validation problems are detected, the push operation will be
+            stopped and a dialog box will appear informing you that the problems can be viewed in
+            the "Results" area (in the "Git pre-push validation" tab). If the <uicontrol>Reject push
+              when validation problems occur</uicontrol> option is selected (the default state), the
+            dialog box will include a <uicontrol>Push anyway</uicontrol> button that allows the push
+            operation to be completed even if validation issues are detected.</p></li>
         <li id="li_twy_sm4_drb"><uicontrol>Global Options/Project Options</uicontrol> - If you
           select <uicontrol>Project Options</uicontrol>, the settings are stored in the project file
             (<filepath>.xpr</filepath>) that can easily be <xref
             href="sharing-possibilities.dita#sharing-possibilities/share_settings_through_a_project_file"
             >shared with other users</xref>.</li>
       </ul>
+      <p> Under the preferences page, there is the "SSH Connections" page, which includes the
+        following options: <ul id="ul_xjr_pqy_yut">
+          <li id="li_yjr_pqy_pop">
+            <p id="p_zjr_pqy_iuo"><uicontrol>Use SSH agent</uicontrol> - when this option is
+              selected, the selected SSH agent support is used to benefit from the SSH keys already
+              stored in it. On <b>Linux</b>, <b>OS X</b>, and <b>BSD</b>, the only agent
+              communication mechanism supported is the usual communication via a Unix domain socket.
+              On Windows you can choose between:<ul id="ul_akr_pqy_yut">
+                <li id="li_bkr_pqy_kbr"><uicontrol>Pageant</uicontrol></li>
+                <li id="li_ckr_pqy_oio"><uicontrol>Win 32 Open SSH</uicontrol>(default value)</li>
+              </ul></p>
+          </li>
+        </ul></p>
     </section>
     <section id="section_az5_pqy_kpb">
       <title>Editor Variables</title>

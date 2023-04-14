@@ -17,15 +17,30 @@
     <p id="p_xlq_cgk_54b">You can use the content extracted from the document using the <codeph>oxy_xpath</codeph>
       function in your pseudo-elements (<codeph>:before</codeph>, <codeph>:after</codeph>) or in
         <codeph>string-set</codeph> variables. </p>
-    <p id="p_ylq_cgk_54b">For example, the following XPath finds the publication author, set in the DITA map: </p>
+    <p id="p_ylq_cgk_54b">For example, the following XPath finds the publication author that is set
+      in the DITA Map and displays it in the bottom-left part of the cover page:</p>
     <codeblock outputclass="language-xml" id="codeblock_zlq_cgk_54b">&lt;map>
   &lt;title>The Art of Bike Repair&lt;/title>
   &lt;topicmeta>
     &lt;author>John Doe&lt;/author>
   &lt;/topicmeta>
 ...</codeblock>
+    <codeblock id="codeblock_ccy_54t_m5b" outputclass="language-xml">&lt;div class="- front-page/front-page front-page">
+  &lt;div class="- map/topicmeta topicmeta">
+    &lt;div class="- topic/author author">John Doe&lt;/div>
+  &lt;/div>
+  &lt;div class="- front-page/front-page-title front-page-title">
+    &lt;div class="- topic/title title">The Art of Bike Repair&lt;/div>
+  &lt;/div>
+&lt;/div></codeblock>
     <codeblock outputclass="language-css" id="codeblock_amq_cgk_54b">:root {
-    string-set: author oxy_xpath('//*[contains(@class, "front-page/front-page")]/*[contains(@class, "map/topicmeta")]/*[contains(@class, "topic/author")]/text()');
+  string-set: author oxy_xpath('//*[contains(@class, "front-page/front-page")]/*[contains(@class, "map/topicmeta")]/*[contains(@class, "topic/author")]/text()');
+}
+
+@page front-page {
+  @bottom-left {
+    content: "Created by " string(author);
+  }
 }</codeblock>
     <p id="p_bmq_cgk_54b">To debug an XPath expression:</p>
     <ol id="ol_jhx_fdz_g2b">

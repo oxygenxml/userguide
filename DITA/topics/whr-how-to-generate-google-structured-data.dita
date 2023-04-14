@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="whr-how-to-generate-google-structured-data">
+    <title>How to Generate Google Structured Data</title>
+    <body>
+        <p>It is possible to generate Google Structured Data (<codeph>&lt;script></codeph> elements
+      that contain a JSON-LD object) in the DITA WebHelp Responsive output. Google uses this JSON-LD
+      object to better understand the contents of the page and display special search results in a
+      Google Search.<note id="note_grm_wfy_x5b" type="tip">For more details, see <xref
+          href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data"
+          format="html" scope="external">Google Search Central: Understand how structured data
+          works</xref>.</note></p>
+        <p>To generate Google Structured Data in WebHelp output, use the following transformation
+        parameter:<dl id="dl_efz_chy_x5b">
+        <dlentry>
+          <dt>google.structured.data</dt>
+          <dd>Specifies whether or not Google Structured Data will be generated in the output. If
+            set to <b>yes</b>, the transformation automatically generates Google Structured Data for
+              <b>Questions and Answers</b> topics, DITA Task topics, and from
+              <codeph>&lt;data></codeph> elements found inside a topic that has the
+              <codeph>@name="oxy:question"</codeph> construct. If set to <b>no</b> (default value),
+            the transformation will not generate Google Structured Data. </dd>
+        </dlentry>
+      </dl></p>
+        <section id="section_lzq_mry_x5b">
+            <title>Generating Google Structured Data for DITA Tasks Topics</title>
+            <p>When Google Structured Data is enabled, the DITA Task <codeph>&lt;title></codeph>,
+          <codeph>&lt;shordesc></codeph>, and <codeph>&lt;step></codeph> elements are mapped to
+          the<xref
+          href="https://developers.google.com/search/docs/appearance/structured-data/how-to"
+          format="html" scope="external"> HowTo</xref> JSON-LD object. For example, the following
+        DITA Task
+        topic:<codeblock id="codeblock_knq_pty_x5b" outputclass="language-xml">&lt;task id="task_id">
+  &lt;title>My task&lt;/title>
+  &lt;shortdesc>Task description&lt;/shortdesc>
+  &lt;steps>
+    &lt;step>
+      &lt;cmd>Step 1 content.&lt;/cmd>
+    &lt;/step>
+    &lt;step>
+      &lt;cmd>Step 2 content.&lt;/cmd>
+    &lt;/step>
+  &lt;/steps>
+&lt;/task></codeblock></p>
+            <p>will generate the following structure in the
+        output:<codeblock id="codeblock_rsw_tty_x5b" outputclass="language-json">&lt;script type="application/ld+json" id="jsonld-howto">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "My task",
+    "description": "Task description",
+    "supply": [],
+    "tool": [],
+    "step":[			
+      {
+        "@type": "HowToStep",
+ 	"text": "&lt;span class=\"topic/ph task/cmd ph cmd\">Step 1 content.&lt;/span>"
+      }
+      ,
+      {
+        "@type": "HowToStep",
+ 	"text": "&lt;span class=\"topic/ph task/cmd ph cmd\">Step 2 content.&lt;/span>"
+      }
+    ]
+  }	
+&lt;/script></codeblock></p>
+        </section>
+        <section id="section_qz1_5cz_x5b">
+            <title>Generating for Questions and Answers Topics</title>
+            <p>When Google Structured Data is enabled, the QA topic <codeph>&lt;qagroup></codeph>
+        elements are mapped to the <xref
+          href="https://developers.google.com/search/docs/appearance/structured-data/faqpage"
+          format="html" scope="external">FAQPage</xref> JSON-LD object. For example, the following
+        QA
+        topic:<codeblock id="codeblock_twk_n2z_x5b" outputclass="language-xml">&lt;qatopic id="qa_id">
+  &lt;title>Faq Page 1&lt;/title>
+  &lt;qabody>
+    &lt;qagroup>
+      &lt;question>What is a car engine?&lt;/question>
+      &lt;answer>The car engine is a device that uses fuel to create mechanical power that can
+              turn the car's wheels.&lt;/answer>
+    &lt;/qagroup>
+  &lt;/qabody>
+&lt;/qatopic></codeblock></p>
+            <p>will generate the following structure in the
+        output:<codeblock id="codeblock_ymk_1fz_x5b" outputclass="language-json">&lt;script type="application/ld+json" id="jsonld-faq">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [				
+      {
+        "@type": "Question",
+        "name": "What is a car engine?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "&lt;div class=\"- topic/div qatopic/answer div answer\">The car engine is a 
+device that uses fuel to create mechanical power that can turn the car's wheels.&lt;/div>"
+        }
+      }
+    ]
+  }
+&lt;/script></codeblock></p>
+        </section>
+        <section id="section_w1g_fgz_x5b">
+            <title>Generating from <codeph>data</codeph> elements found inside a topic</title>
+            <p>When Google Structured Data is enabled, the WebHelp Responsive transformation will
+        map the <codeph>&lt;data></codeph> elements found inside a topic to a <xref
+          href="https://developers.google.com/search/docs/appearance/structured-data/faqpage"
+          format="html" scope="external">FAQPage</xref> JSON-LD object. There are 2 different use
+        cases depending on where the <codeph>&lt;data></codeph> element is found in the document:<ul
+          id="ol_ur3_z3z_x5b">
+          <li>In the <codeph>&lt;prolog></codeph> element. For example, this
+              content:<codeblock id="codeblock_gws_4rz_x5b" outputclass="language-xml">&lt;concept id="lawnmowerconcept">
+  &lt;title>Lawnmower&lt;/title>
+  &lt;shortdesc>The lawnmower is a machine used to cut grass in the yard.&lt;/shortdesc>
+  &lt;prolog>
+    &lt;metadata>
+      &lt;data name="oxy:question">What tools are necessary to cut the grass?&lt;/data>
+    &lt;/metadata>
+  &lt;/prolog>
+  &lt;conbody>
+    &lt;p>Lawnmowers can be electric, gas-powered, or manual.&lt;/p>
+  &lt;/conbody>
+&lt;/concept></codeblock><p>will generate the following structure in the
+              output:<codeblock id="codeblock_kbz_1sz_x5b" outputclass="language-json">&lt;script type="application/ld+json" id="jsonld-faq">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What tools are necessary to cut the grass?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "&lt;div class=\"- topic/body concept/conbody body conbody\">
+                     &lt;p class=\"- topic/shortdesc shortdesc\">The lawnmower is a machine 
+used to cut grass in the yard.&lt;/p> &lt;p class=\"- topic/p p\">Lawnmowers can be electric, 
+gas-powered, or manual.&lt;/p> &lt;/div>"
+        }
+      }
+    ]
+  }
+&lt;/script>  </codeblock></p><note id="note_m1w_nsz_x5b" type="important">The answer
+              represents the HTML result of the entire content inside the topic.</note></li>
+          <li>Inside the topic body elements. For example,
+              content:<codeblock id="codeblock_wjs_dtz_x5b" outputclass="language-xml">&lt;topic id="concept-id">
+  &lt;title>Morning&lt;/title>
+  &lt;shortdesc>In the morning we have breakfast.&lt;/shortdesc>
+  &lt;body>
+    &lt;ul>
+      &lt;data name="oxy:question">What do people drink in the morning?&lt;/data>
+      &lt;li>Tea&lt;/li>
+      &lt;li>Milk&lt;/li>
+    &lt;/ul>
+  &lt;/body>
+&lt;/topic></codeblock><p>will generate the following structure in the
+                output:<codeblock id="codeblock_xn2_s5z_x5b" outputclass="language-json">&lt;script type="application/ld+json" id="jsonld-faq">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What do people drink in the morning?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "&lt;div class=\"- topic/body body\">&lt;ul class=\"- topic/ul ul\">&lt;/ul> 
+&lt;li class=\"- topic/li li\">Tea&lt;/li> &lt;li class=\"- topic/li li\">Milk&lt;/li> &lt;/div>"
+        }
+      }
+    ]
+  }
+&lt;/script>  </codeblock><note id="note_pcj_dvz_x5b" type="important">The answer
+                represents the HTML result of the entire block where the <codeph>&lt;data></codeph>
+                element is located inside.</note></p></li>
+        </ul></p>
+        </section>
+    </body>
+</topic>

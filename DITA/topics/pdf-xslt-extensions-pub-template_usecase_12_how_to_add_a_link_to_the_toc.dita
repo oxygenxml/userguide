@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-pub-template_usecase_12_how_to_add_a_link_to_the_toc">
+  <title>How to Add a Link to the TOC</title>
+  <body>
+    <p>For making the navigation easier in the PDF, you may want to add a link that sends the reader
+      back to the table of contents. To add this link, use an <i>Oxygen Publishing Template</i> and
+      follow these steps:<ol id="ol_o1m_xrs_qsb">
+        <li conkeyref="reusables-dcpp/pt-li1"/>
+        <li conkeyref="reusables-dcpp/pt-li2"/>
+        <li conkeyref="reusables-dcpp/pt-li3"/>
+        <li>In the newly created folder, create an XSL file (for example, named
+            <filepath>merged2html5Extension.xsl</filepath>) with the following
+          content:<codeblock outputclass="language-xml" id="codeblock_p1m_xrs_qsb">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs"
+  version="2.0">
+  
+  &lt;!-- Add an anchor after the TOC title. -->
+  &lt;xsl:template match="*[contains(@class, 'toc/title')]" mode="div-it">
+    &lt;div>
+      &lt;xsl:attribute name="class" select="'- toc/anchor anchor'"/>
+      &lt;xsl:attribute name="id" select="'toc-anchor'"/>
+    &lt;/div>
+    &lt;xsl:next-match/>
+  &lt;/xsl:template>
+  
+&lt;/xsl:stylesheet></codeblock></li>
+        <li>Open the <xref href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"
+              ><i>template descriptor file</i></xref> associated with your <i>publishing
+            template</i> (the <i>.opt</i> file) and set the XSLT stylesheet created in the previous
+          step with the <codeph>com.oxygenxml.pdf.css.xsl.merged2html5</codeph> XSLT extension
+          point:<codeblock outputclass="language-xml" id="codeblock_q1m_xrs_qsb">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...        
+    &lt;xslt&gt;
+      &lt;extension
+        id="com.oxygenxml.pdf.css.xsl.merged2html5"/>
+        file="xslt/merged2html5Extension.xsl"
+    &lt;/xslt&gt;</codeblock></li>
+        <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template
+          directory. In this directory, save a custom CSS file with rules that style the
+            <i>glossary</i> structure. For
+          example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">@page chapter:first:left:right {
+  @top-right {
+    content: "Back to Table of Contents";
+    -oxy-link: "#toc-anchor";
+    color: #337ab7;
+  }
+}
+@page chapter:left:right {
+  @top-right {
+    content: "Back to Table of Contents";
+    -oxy-link: "#toc-anchor";
+    color: #337ab7;
+  }
+}</codeblock></li>
+        <li id="li_ibq_cgk_54b">Open the <xref
+            href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+              descriptor file</i></xref> associated with your <i>publishing template</i> (the
+            <filepath>.opt</filepath> file) and reference your custom CSS file in the
+            <codeph>resources</codeph>
+          element:<codeblock outputclass="language-xml" id="codeblock_jbq_cgk_54b">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...                
+    &lt;resources&gt;            
+      &lt;css file="css/custom.css"/&gt;
+    &lt;/resources&gt; </codeblock></li>
+        <li conkeyref="reusables-dcpp/pt-li6"/>
+        <li conkeyref="reusables-dcpp/pt-li7"/>
+        <li conkeyref="reusables-dcpp/pt-li8"/>
+      </ol></p>
+  </body>
+</topic>
