@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="how_to_use_jquery_in_webhelp_responsive_output">
+    <title>How to Use JQuery in WebHelp Responsive Output</title>
+    <body>
+        <p>The JQuery library that comes bundled with WebHelp is accessible in the browser's global
+            context so that developers have access to use it.</p>
+        <p>To use the JQuery library in your WebHelp Responsive output, follow these steps:<ol
+                id="ol_x1q_zc5_cxb">
+                <li>If you have not already created a Publishing Template, see <xref
+            href="https://www.oxygenxml.com/doc/versions/25.1/ug-webhelp-responsive/topics/whr-create-publishing-template.html"
+            format="html" scope="external">How to Create a Publishing Template</xref>.</li>
+                <li>Create the following items in the folder that contains your publishing
+          template's descriptor file (the <filepath>.opt</filepath> file):<ul id="ul_lwq_cd5_cxb">
+            <li>A folder named <b>js</b></li>
+            <li>A folder named <b>fragments</b></li>
+          </ul></li>
+                <li>In the <b>js</b> folder, create a file named
+          <filepath>custom.js</filepath>.</li>
+                <li>As a starting point, you can copy the following content to the
+            <filepath>custom.js</filepath>
+          file:<codeblock id="codeblock_b1y_3d5_cxb" outputclass="language-javascript">$(document).ready(function () {
+    // Your JQuery code.
+});</codeblock></li>
+                <li>In the <b>fragments</b> folder, create a file named
+            <filepath>jquery-scripts.html</filepath> with the following
+            content:<codeblock id="codeblock_bpx_vd5_cxb" outputclass="language-xml">&lt;html>
+    &lt;script src="${oxygen-webhelp-template-dir}/js/custom.js" defer="defer">&lt;/script>
+&lt;/html></codeblock><note type="important" id="note_gx1_125_cxb">Make sure that the
+              <xmlatt>defer</xmlatt> attribute is present on the <xmlelement>script</xmlelement>
+            element.</note></li>
+                <li>Copy the <b>js</b> folder to the output folder during the transformation
+          process. For this, open the <filepath>.opt</filepath> file and add the following content
+          in the <xmlelement>resources</xmlelement> section (see <xref
+            href="https://www.oxygenxml.com/doc/versions/25.1/ug-webhelp-responsive/topics/whr_publishing_template_contents.html#template_resources"
+            format="html" scope="external">Template Resources</xref> for more
+          details):<codeblock id="codeblock_wgf_h25_cxb" outputclass="language-xml">&lt;fileset>
+    ...
+    &lt;include name="js/**"/>
+    ...
+&lt;/fileset></codeblock></li>
+                <li>Include the <filepath>jquery-scripts.html</filepath> file in your WebHelp
+          Responsive output by opening the <filepath>.opt</filepath> file and add the following
+          content inside the <xmlelement>webhelp</xmlelement>
+          element:<codeblock id="codeblock_u3h_r25_cxb" outputclass="language-xml">&lt;html-fragments>
+  &lt;fragment file="jquery-scripts.html" placeholder="webhelp.fragment.head"/>
+&lt;/html-fragments></codeblock></li>
+                <li>Run the transformation with your publishing template selected.</li>
+            </ol></p>
+    </body>
+</topic>
