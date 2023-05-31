@@ -230,5 +230,85 @@
         the <uicontrol>AI Positron Chat</uicontrol> view that can be used to solve the problem.</p>
       <p><image href="../img/ai-quick-fix.png" id="image_yxd_trm_4xb"/></p>
     </section>
+    <section id="section_j1x_jk3_qxb">
+      <title>Custom Schematron Validation Rules</title>
+      <p id="p_k1x_jk3_qxb">The add-on contributes two XPath extension functions that can be used
+        from custom Schematron schemas to rephrase content or to perform validation checks on
+        existing content:</p>
+      <p id="p_adr_nl3_qxb">
+        <dl id="dl_kbv_nl3_qxb">
+          <dlentry id="dlentry_lbv_nl3_qxb">
+            <dt><codeph>ai:transform-content(instruction, content)</codeph></dt>
+            <dd>
+              <p id="p_fxy_5l3_qxb">Use this function from namespace
+                  <i>http://www.oxygenxml.com/ai/function</i> to automatically transform content
+                using AI.</p>
+              <p id="p_erd_vl3_qxb">The function has two string parameters:<ul id="ul_pjk_wl3_qxb">
+                  <li id="li_qjk_wl3_qxb"><codeph>instruction</codeph> - The OpenAI instruction to
+                    be performed on the content.</li>
+                  <li id="li_xwh_yl3_qxb"><codeph>content</codeph> - The content to be
+                    transformed.</li>
+                </ul></p>
+              <p id="p_cps_zl3_qxb">It returns a string that represents the transformed content.</p>
+              <p id="p_l1x_jk3_qxb">Here is an example of a custom Schematron schema that uses the
+                  <codeph>transform-content</codeph> function to correct the number of words used in
+                a short
+                description:<codeblock outputclass="language-xml">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt3"
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+    &lt;sch:ns uri="http://www.oxygenxml.com/ai/function" prefix="ai"/>
+    &lt;sch:pattern>
+        &lt;sch:rule context="shortdesc">
+            &lt;sch:report test="count(tokenize(.,'\s+')) > 10" sqf:fix="rephrase">
+      The phrase must contain less than 10 words.&lt;/sch:report>
+            &lt;sqf:fix id="rephrase">
+                &lt;sqf:description>
+                    &lt;sqf:title>Rephrase phrase to be less that 10 words&lt;/sqf:title>
+                &lt;/sqf:description>
+                &lt;sqf:replace match="text()" select="ai:transform-content(
+                'Reformulate phrase to be less that 10 words', .)">&lt;/sqf:replace>
+            &lt;/sqf:fix>
+        &lt;/sch:rule>
+    &lt;/sch:pattern>
+&lt;/sch:schema> </codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_bln_dm3_qxb">
+            <dt><codeph>ai:verify-content(instruction, content)</codeph></dt>
+            <dd>
+              <p id="p_er3_fm3_qxb">Use this function from namespace
+                  <i>http://www.oxygenxml.com/ai/function</i> to automatically validate content
+                using AI.</p>
+              <p id="p_v1b_mm3_qxb">The function has two string parameters:<ul id="ul_w1b_mm3_qxb">
+                  <li id="li_x1b_mm3_qxb"><codeph>instruction</codeph> - The OpenAI instruction to
+                    be performed on the content.</li>
+                  <li id="li_y1b_mm3_qxb"><codeph>content</codeph> - The content to be
+                    validation.</li>
+                </ul></p>
+              <p id="p_mmt_nm3_qxb">It returns a boolean value that represents the result of the
+                validation.</p>
+              <p id="p_sh5_pm3_qxb">Here is an example of a custom Schematron schema that uses the
+                  <codeph>verify-content</codeph> function to check a short description for
+                instances of a passive
+                voice:<codeblock outputclass="language-xml">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt3"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+  &lt;sch:ns uri="http://www.oxygenxml.com/ai/function" prefix="ai"/>    
+  &lt;sch:pattern>
+    &lt;sch:rule context="shortdesc">
+      &lt;sch:report test="ai:verify-content('Does the following content has passive voice?', .)"
+            sqf:fix="rephrase">The phrase uses passive voice.&lt;/sch:report>
+      &lt;sqf:fix id="rephrase">
+         &lt;sqf:description>&lt;sqf:title>Rephrase text to be active voice&lt;/sqf:title>
+&lt;/sqf:description>
+         &lt;sqf:replace match="text()"
+                select="ai:transform-content('Rephrase text to be active voice', .)"/>
+         &lt;/sqf:fix>
+      &lt;/sch:rule>
+  &lt;/sch:pattern>
+&lt;/sch:schema> </codeblock></p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
   </body>
 </topic>
