@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="pdf-xslt-extensions-pub-template_usecase_13_how_to_repeat_notes_titles_after_a_page_break">
+    <title>How to Repeat Notes Titles after a Page Break</title>
+  <body>
+    <p>For making the navigation easier in the PDF, you may want to add a link that sends the reader
+      back to the table of contents. To add this link, use an <i>Oxygen Publishing Template</i> and
+      follow these steps:<ol id="ol_o1m_xrs_qsb">
+        <li conkeyref="reusables-dcpp/pt-li1"/>
+        <li conkeyref="reusables-dcpp/pt-li2"/>
+        <li conkeyref="reusables-dcpp/pt-li3"/>
+        <li>In the newly created folder, create an XSL file (for example, named
+            <filepath>merged2html5Extension.xsl</filepath>) with the following
+          content:<codeblock outputclass="language-xml" id="codeblock_p1m_xrs_qsb">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs"
+  version="2.0">
+  
+  &lt;!-- Display notes titles and content in table cells. -->
+  &lt;xsl:template match="*" mode="process.note.common-processing">
+    &lt;xsl:param name="type" select="@type"/>
+    &lt;xsl:param name="title">
+      &lt;xsl:call-template name="getVariable">
+        &lt;xsl:with-param name="id" select="concat(upper-case(substring($type, 1, 1)), substring($type, 2))"/>
+      &lt;/xsl:call-template>
+    &lt;/xsl:param>
+    &lt;table>
+      &lt;xsl:call-template name="commonattributes">
+        &lt;xsl:with-param name="default-output-class" select="string-join(($type, concat('note_', $type)), ' ')"/>
+      &lt;/xsl:call-template>
+      &lt;xsl:call-template name="setidaname"/>
+      &lt;!-- Normal flags go before the generated title; revision flags only go on the content. -->
+      &lt;xsl:apply-templates select="*[contains(@class, ' ditaot-d/ditaval-startprop ')]/prop" mode="ditaval-outputflag"/>
+      &lt;thead>
+        &lt;tr>
+          &lt;th class="note__title">
+            &lt;xsl:copy-of select="$title"/>
+            &lt;xsl:call-template name="getVariable">
+              &lt;xsl:with-param name="id" select="'ColonSymbol'"/>
+            &lt;/xsl:call-template>
+          &lt;/th>
+        &lt;/tr>
+      &lt;/thead>
+      &lt;tbody>
+        &lt;tr>
+          &lt;td>
+            &lt;xsl:text> &lt;/xsl:text>
+            &lt;xsl:apply-templates select="*[contains(@class, ' ditaot-d/ditaval-startprop ')]/revprop" mode="ditaval-outputflag"/>
+            &lt;xsl:apply-templates/>
+            &lt;!-- Normal end flags and revision end flags both go out after the content. -->
+            &lt;xsl:apply-templates select="*[contains(@class, ' ditaot-d/ditaval-endprop ')]" mode="out-of-line"/>
+          &lt;/td>
+        &lt;/tr>
+      &lt;/tbody>
+    &lt;/table>
+  &lt;/xsl:template>
+  
+&lt;/xsl:stylesheet></codeblock></li>
+        <li>Open the <xref href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"
+              ><i>template descriptor file</i></xref> associated with your <i>publishing
+            template</i> (the <i>.opt</i> file) and set the XSLT stylesheet created in the previous
+          step with the <codeph>com.oxygenxml.pdf.css.xsl.merged2html5</codeph> XSLT extension
+          point:<codeblock outputclass="language-xml" id="codeblock_q1m_xrs_qsb">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...        
+    &lt;xslt&gt;
+      &lt;extension
+        id="com.oxygenxml.pdf.css.xsl.merged2html5"/>
+        file="xslt/merged2html5Extension.xsl"
+    &lt;/xslt&gt;</codeblock></li>
+        <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template
+          directory. In this directory, save a custom CSS file with rules that style the
+            <i>glossary</i> structure. For
+          example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">table.note th,
+table.note td {
+  text-align: left;
+  padding: .75em .5em .75em 3em;
+}
+
+table.note {
+  background-repeat: no-repeat;
+  background-image: url("../img/note.svg");
+  background-position: .5em .5em;
+  border: 1px solid;
+}
+
+table.note.note_other { background-image: none; }
+table.warning { background-image: url("../img/warning.svg"); }
+table.caution { background-image: url("../img/caution.svg"); }
+table.trouble { background-image: url("../img/troubleshooting.svg"); }
+table.important { background-image: url("../img/important.svg"); }
+table.attention { background-image: url("../img/attention.svg"); }
+table.notice { background-image: url("../img/notice.svg"); }
+table.remember { background-image: url("../img/remember.svg"); }
+table.fastpath { background-image: url("../img/fastpath.svg"); }
+table.restriction { background-image: url("../img/restriction.svg"); }
+table.danger { background-image: url("../img/danger.svg"); }
+table.tip { background-image: url("../img/tip.svg"); }
+
+table.note {
+  background-color: rgba(0, 120, 160, 0.09);
+  border-color: #0078A0;
+}
+table.note_danger,
+table.note_caution {
+  background-color: rgba(255, 202, 45, 0.1);
+  border-color: #606060;
+}
+table.note_warning,
+table.note_attention,
+table.note_important {
+  background-color: rgba(255, 202, 45, 0.1);
+  border-color: #FFCA2D;
+}
+table.note_restriction {
+  background-color: rgba(255, 226, 225, 0.32);
+  border-color: #FF342D;
+}</codeblock></li>
+        <li id="li_ibq_cgk_54b">Open the <xref
+            href="pdf_publishing_template_contents.dita#template_descritpor_file_pdf"><i>template
+              descriptor file</i></xref> associated with your <i>publishing template</i> (the
+            <filepath>.opt</filepath> file) and reference your custom CSS file in the
+            <codeph>resources</codeph>
+          element:<codeblock outputclass="language-xml" id="codeblock_jbq_cgk_54b">&lt;publishing-template&gt;
+  ...
+  &lt;pdf&gt;
+    ...                
+    &lt;resources&gt;            
+      &lt;css file="css/custom.css"/&gt;
+    &lt;/resources&gt; </codeblock></li>
+        <li conkeyref="reusables-dcpp/pt-li6"/>
+        <li conkeyref="reusables-dcpp/pt-li7"/>
+        <li conkeyref="reusables-dcpp/pt-li8"/>
+      </ol></p>
+  </body>
+</topic>
