@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_use_xpath_expressions_in_css">
+  <title>How to Use XPath Expressions in CSS</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/>
+          <indexterm>Debugging<indexterm>XPath
+                Expressions<indexterm>Write</indexterm><indexterm>Debug</indexterm></indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Debugging<indexterm>XPath
+              Expressions<indexterm>Write</indexterm><indexterm>Debug</indexterm></indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="section_j55_nkk_2yb">
+      <title>How to Write XPath Expressions</title>
+      <p>In order to use XPath expressions in CSS, you need to use the <codeph>oxy_xpath()</codeph>
+        function. These XPath expressions are used to  extract the content from the HTML merged DITA
+        Map document.</p>
+      <p id="p_flq_cgk_54b">The following example shows how to display the product name
+        meta-information before the front page
+        title:<codeblock outputclass="language-css" id="codeblock_glq_cgk_54b">*[class~="front-page/front-page-title"]:before {
+    text-align: left;
+    content: oxy_xpath("(//*[contains(@class, 'topic/prodname')]/text())[1]");
+    display:block;
+}</codeblock></p>
+      <note id="note_r5c_4pk_2yb" type="important">Do not use the DITA element names directly. You
+        must use the DITA <xmlatt>class</xmlatt> attribute instead, as these attributes are
+        propagated to the html elements while the element names can be lost. By using the class
+        selectors, you also cover DITA specializations.</note>
+      <note id="note_kcn_gqk_2yb">Use the "[1]" XPath predicate to select the first value from the
+        document. Don't forget the parenthesis between the node to be selected.<p>For example:
+            <codeph>oxy_xpath("(//*[contains(@class,
+          'topic/prodname')]/text())[1]")</codeph>.</p><p>The meta-information might be copied
+          multiple times in the output, inherited by the <xmlelement>topicref</xmlelement> elements,
+          so you can get many more values than expected.</p></note>
+      <note id="note_sgh_3qk_2yb" type="note">
+        <ul id="ul_pcm_srk_2yb">
+          <li>You can call the <codeph>oxy_xpath()</codeph> function in <codeph>string-set</codeph>
+            property.</li>
+          <li>You can use content extracted using the <codeph>oxy_xpath()</codeph> function in both
+            pseudo-elements and @page at-rules.</li>
+          <li>Don't use strings as values for pseudo-elements content as they are not supported in
+            them. </li>
+        </ul>
+      </note>
+    </section>
+    <section id="section_pxn_3kk_2yb">
+      <title>How to Debug XPath Expressions</title>
+      <p id="p_ylq_cgk_54b">For example if your instructions are the following: you need to display
+        the publication author in the bottom-left part of the cover page.</p>
+      <p>The ditamap content is the
+        following:<codeblock outputclass="language-xml" id="codeblock_zlq_cgk_54b">&lt;map>
+  &lt;title>The Art of Bike Repair&lt;/title>
+  &lt;topicmeta>
+    &lt;author>John Doe&lt;/author>
+  &lt;/topicmeta>
+  ...
+&lt;/map></codeblock></p>
+      <p id="p_bmq_cgk_54b">To debug an XPath expression:<ol id="ol_jhx_fdz_g2b">
+          <li id="li_cmq_cgk_54b">Read the <xref
+              href="dcpp_how_to_use_xpath_expressions_in_css.dita">XPath Expressions
+              Guidelines</xref>.</li>
+          <li id="li_dmq_cgk_54b">Launch the transformation of the ditamap using your customization
+            CSS.</li>
+          <li id="li_fmq_cgk_54b">Open the <filepath>[MAP_NAME].merged.html</filepath> file (from
+            the output folder) in <b>Oxygen XML Editor/Author</b>. You will find this inside the
+            HTML:<codeblock id="codeblock_ccy_54t_m5b" outputclass="language-xml">&lt;div class="- front-page/front-page front-page">
+  &lt;div class="- map/topicmeta topicmeta">
+    &lt;div class="- topic/author author">John Doe&lt;/div>
+  &lt;/div>
+  &lt;div class="- front-page/front-page-title front-page-title">
+    &lt;div class="- topic/title title">The Art of Bike Repair&lt;/div>
+  &lt;/div>
+&lt;/div></codeblock></li>
+          <li id="li_gmq_cgk_54b">Activate the <xref
+              href="https://www.oxygenxml.com/doc/ug-editor/topics/xpath-builder-view.html"
+              format="html" scope="external"><b>XPath Builder</b> view</xref> (<menucascade>
+              <uicontrol>Window</uicontrol>
+              <uicontrol>Show View</uicontrol>
+              <uicontrol>XPath/XQuery Builder</uicontrol>
+            </menucascade>).</li>
+          <li id="li_hmq_cgk_54b">Paste your XPath expression (for our example
+              <codeph>//*[contains(@class, "front-page/front-page")]/*[contains(@class,
+              "map/topicmeta")]/*[contains(@class, "topic/author")]/text()</codeph>) and click the
+                <uicontrol><image href="../img/ApplyStyleSheet16.png" id="image_hwb_mkk_2yb"
+              />Execute XPath</uicontrol> button. Check if it returns the expected results.</li>
+          <li>Copy the expression in your customization CSS and define the rules that will use it,
+            in our example we will
+              have:<codeblock outputclass="language-css" id="codeblock_sg2_psk_2yb">:root {
+  string-set: author oxy_xpath('//*[contains(@class, "front-page/front-page")]\
+  /*[contains(@class, "map/topicmeta")]/*[contains(@class, "topic/author")]/text()');
+}
+
+@page front-page {
+  @bottom-left {
+    content: "Created by " string(author);
+  }
+}</codeblock><note id="note_kf4_15k_2yb">The "\" character used in expression allows
+              the multi-line display without breaking the query.</note></li>
+          <li>Run again the transformation, you will obtain the desired output.</li>
+        </ol><note id="note_dyt_g5k_2yb">The XPath builder has a function that allows it to display
+          the document path of the current element from the editor (<menucascade>
+            <uicontrol><image href="../img/Settings16.png" id="image_b1q_mkk_2yb"/>Settings
+              drop-down menu</uicontrol>
+            <uicontrol><image href="../img/CaretUpdateOff16.png" id="image_c1q_mkk_2yb"/>Update on
+              cursor move</uicontrol>
+          </menucascade>). Alternatively, you can right-click the element in the merged document and
+          select the <uicontrol>Copy XPath</uicontrol> action, then paste it in the XPath
+          builder.</note></p>
+    </section>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link format="html"
+        href="https://www.oxygenxml.com/doc/ug-editor/topics/xpath-builder-view.html"
+        scope="external">
+        <linktext>XPath Builder Documentation</linktext>
+      </link>
+      <link format="html" href="https://www.w3schools.com/xml/xpath_examples.asp" scope="external">
+        <linktext>XPath Examples (w3schools.com)</linktext>
+      </link>
+    </linklist>
+  </related-links>
+</topic>
