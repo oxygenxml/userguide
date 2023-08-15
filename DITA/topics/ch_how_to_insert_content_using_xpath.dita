@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ch_how_to_insert_content_using_xpath">
+    <title>How To Insert Content using XPath in the Cover Page</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Insert Content XPath</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+    <p id="p_otv_dgk_54b"><ph keyref="product"/> provides the possibility to use XPath templates in
+      SVG images. These templates, if they contain valid expressions, will be evaluated and their
+      result displayed in the image. The templates format is <codeph>${expression}</codeph>.</p>
+    <p>Let's illustrate with an example:<ol id="ol_dds_1wr_lyb">
+        <li>The following HTML file should be printed with a cover
+          page:<codeblock id="codeblock_o54_y5r_lyb" outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE html>
+&lt;html xmlns="http://www.w3.org/1999/xhtml">
+    &lt;head>
+        &lt;title>How to Dynamically add Content to SVG&lt;/title>
+        &lt;link rel="stylesheet" href="styles.css"/>
+        &lt;meta name="author" content="John Doe"/>
+        &lt;meta name="version" content="1.1"/>
+        &lt;meta name="copyright" content="© Oxygen PDF Chemistry. For demonstration purpose."/>
+    &lt;/head>
+    &lt;body>
+        ...
+    &lt;/body>
+&lt;/html></codeblock></li>
+        <li>The cover page should display <xmlelement>meta</xmlelement> nodes information and the
+          main title. Both author and version will be displayed in rectangles shapes prefixed with
+          the displayed information ("Author:" and
+            "Version"):<codeblock id="codeblock_o4b_nvr_lyb" outputclass="language-xml">&lt;svg width="8.5in" height="11in" xmlns="http://www.w3.org/2000/svg">
+  &lt;g>
+    &lt;rect height="39" width="180" y="40" x="579" stroke="#000" fill="#fff"/>
+    &lt;rect height="39" width="180" y="79" x="579" stroke="#000" fill="#fff"/>
+    &lt;text font-size="8" stroke-width="0" y="52" x="582" stroke="#000" fill="#000000"
+      >Author:&lt;/text>
+    &lt;text font-size="16" stroke-width="0" y="66" x="643" stroke="#000" fill="#000000"
+      >${//meta[@name='author']/@content}&lt;/text>
+    &lt;text font-size="8" stroke-width="0" y="91" x="582" stroke="#000" fill="#000000"
+      >Version:&lt;/text>
+    &lt;text font-size="16" stroke-width="0" y="104" x="659" stroke="#000" fill="#000000"
+      >${//meta[@name='version']/@content}&lt;/text>
+    &lt;text font-size="30" stroke-width="0" y="252" x="123" stroke="#000" fill="#000000"
+      >${//head/title}&lt;/text>
+    &lt;text font-size="12" stroke-width="0" y="993.40002" x="266" stroke="#000" fill="#000000"
+      >${//meta[@name='copyright']/@content}&lt;/text>
+  &lt;/g>
+&lt;/svg></codeblock><note id="note_nkn_dxr_lyb">
+            <ul id="ul_ixf_3xr_lyb">
+              <li>The templates aren't expanded if the SVG is opened in Author mode.</li>
+              <li>The templates can be tested (without <codeph>${}</codeph>) using XPath/XQuery
+                Builder view.</li>
+            </ul>
+          </note></li>
+        <li>The CSS stylesheet should declare a synthetic page before the HTML document to be
+          printed and display the SVG cover image on this new
+          page:<codeblock id="codeblock_tj4_zwr_lyb" outputclass="language-css">@page cover-page {
+  background-image: url('cover.svg');
+  background-repeat: no-repeat;
+}
+
+html::before {
+  content: " ";
+  page: cover-page;
+}</codeblock></li>
+        <li>After the transformation the final document cover will be:<image placement="break"
+            href="../img/ch_svg_xpath.png" id="image_hvk_jyr_lyb"/></li>
+      </ol></p>
+  </body>
+</topic>
