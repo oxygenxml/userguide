@@ -35,23 +35,31 @@
           <li>The cover image (for example, named <filepath>cover.template.svg</filepath>) should
             display <xmlelement>meta</xmlelement> nodes information and the main title. Both the
               <i>author</i> and <i>version</i> will be displayed in rectangular shapes prefixed with
-            the displayed information ("Author:" and
-              "Version"):<codeblock id="codeblock_o4b_nvr_lyb" outputclass="language-xml">&lt;svg width="8.5in" height="11in" xmlns="http://www.w3.org/2000/svg">
+            the displayed information ("Author:" and "Version"), while the title is positioned in
+            the middle of the page, at some absolute
+              coordinates.<codeblock id="codeblock_o4b_nvr_lyb" outputclass="language-xml">&lt;svg width="8.5in" height="11in" xmlns="http://www.w3.org/2000/svg">
   &lt;g>
     &lt;rect height="39" width="180" y="40" x="579" stroke="#000" fill="#fff"/>
     &lt;rect height="39" width="180" y="79" x="579" stroke="#000" fill="#fff"/>
+
+
     &lt;text font-size="8" stroke-width="0" y="52" x="582" stroke="#000" fill="#000000"
-      >Author:&lt;/text>
+      ><b>Author:</b>&lt;/text>
     &lt;text font-size="16" stroke-width="0" y="66" x="643" stroke="#000" fill="#000000"
       >${//meta[@name='author']/@content}&lt;/text>
+
+
     &lt;text font-size="8" stroke-width="0" y="91" x="582" stroke="#000" fill="#000000"
-      >Version:&lt;/text>
+      ><b>Version:</b>&lt;/text>
     &lt;text font-size="16" stroke-width="0" y="104" x="659" stroke="#000" fill="#000000"
       >${//meta[@name='version']/@content}&lt;/text>
+
+
     &lt;text font-size="30" stroke-width="0" y="252" x="123" stroke="#000" fill="#000000"
       >${//head/title}&lt;/text>
     &lt;text font-size="12" stroke-width="0" y="993.40002" x="266" stroke="#000" fill="#000000"
       >${//meta[@name='copyright']/@content}&lt;/text>
+
   &lt;/g>
 &lt;/svg></codeblock><note id="note_nkn_dxr_lyb" type="other" othertype="Notes">
               <ul id="ul_ixf_3xr_lyb">
@@ -60,10 +68,27 @@
                 <li>XPath expressions can be tested (without <codeph>${}</codeph>) using the
                   XPath/XQuery Builder view.</li>
               </ul>
-            </note></li>
+            </note><note id="note_c5b_dg2_4yb" type="important">Usually you get the SVG image from a
+              graphical designer. Please make sure that the text from the image was not converted to
+              glyph shapes, and is rendered using the <xmlelement>text</xmlelement> element.
+              </note><note type="important" id="note_ny1_zh2_4yb">The SVG
+                <xmlelement>text</xmlelement> element does not wrap the text if it overflows the
+              image viewport! If you have a longer text that needs to be rendered, you might
+              consider using multiple <xmlelement>text</xmlelement> elements and more evolved XPath
+              expressions (for example using <codeph>substring</codeph> function) in order to place
+              the text on multiple lines.</note><note type="tip" id="note_drj_1h2_4yb">You can ask
+              the designer to fill the image with some placeholders that you can later find and
+              replace with your XPath expressions. In the above SVG, the designer could place the
+              text <codeph>Here comes the version</codeph>, that you replace with
+                <codeph>${//meta[@name='version']/@content}</codeph>:
+              <codeblock id="codeblock_qcl_vg2_4yb" outputclass="language-xml">    &lt;text font-size="8" stroke-width="0" y="91" x="582" stroke="#000" fill="#000000"
+      >Version:&lt;/text>
+    &lt;text font-size="16" stroke-width="0" y="104" x="659" stroke="#000" fill="#000000"
+      >Here comes the version&lt;/text>
+</codeblock></note></li>
           <li>The CSS stylesheet should declare a synthetic page to be printed before the HTML
             document and display the SVG cover image on this new
-            page:<codeblock id="codeblock_tj4_zwr_lyb" outputclass="language-css">@page cover-page {
+              page:<codeblock id="codeblock_tj4_zwr_lyb" outputclass="language-css">@page cover-page {
   background-image: url('cover.template.svg');
   background-repeat: no-repeat;
 }
@@ -71,7 +96,9 @@
 html::before {
   content: " ";
   page: cover-page;
-}</codeblock></li>
+}</codeblock><p>You can even use a sequence of synthetic pages, using
+                <codeph>before(2)</codeph>, <codeph>before(3)</codeph>, etc.. and multiple
+                <codeph>@page</codeph> definitions, for each of the before elements.</p></li>
           <li>After the transformation, the final document cover will look like this:<image
               placement="break" href="../img/ch_svg_xpath.png" id="image_hvk_jyr_lyb"/></li>
         </ol></p>
