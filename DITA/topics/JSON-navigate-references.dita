@@ -11,10 +11,97 @@
     </metadata>
   </prolog>
   <body>
-    <p id="p_xkf_cgk_54b">When editing JSON documents (or JSON Schema), you can easily navigate <term>JSON
-        Pointer</term> references and hyperlinks by using the <uicontrol><shortcut>CTRL +
-          Click</shortcut></uicontrol> shortcut. Holding the
-        <uicontrol><shortcut>CTRL</shortcut></uicontrol> key while hovering over a <term>JSON
+    <p id="p_xkf_cgk_54b">When editing JSON documents (or JSON Schema), you can easily navigate
+          <term><xref
+          href="https://json-schema.org/understanding-json-schema/structuring.html#json-pointer"
+          format="html" scope="external">JSON Pointer</xref></term> references and hyperlinks by
+      using the <uicontrol><shortcut>CTRL + Click</shortcut></uicontrol> shortcut. Holding the
+          <uicontrol><shortcut>CTRL</shortcut></uicontrol> key while hovering over a <term>JSON
         Pointer</term> references or hyperlink will change the reference to a clickable link.</p>
+    <section id="section_wtb_pmq_pyb">
+      <title>JSON Schema references</title>
+      <p>Referencing allows you to create modular, maintainable, and reusable schemas. It is
+        particularly useful when you have multiple instances of a similar structure in your data and
+        want to enforce consistency in validation rules.</p>
+      <p>A schema can reference another schema using the <codeph>$ref</codeph> (or
+          <codeph>$dynamicRef</codeph>)  keyword. Its value is a URI-reference that is resolved
+        against the schema’s <xref
+          href="https://json-schema.org/understanding-json-schema/structuring.html#base-uri"
+          format="html" scope="external">Base URI</xref>. When evaluating a <codeph>$ref</codeph>,
+        an implementation uses the resolved identifier to retrieve the referenced schema and applies
+        that schema to the instance. Find more details about structuring JSON schemas in <xref
+          href="https://json-schema.org/understanding-json-schema/structuring.html" format="html"
+          scope="external">this article</xref>.</p>
+      <ol id="ol_nss_vmq_pyb">
+        <li><b>Defining Reusable Schemas</b>: You can define reusable schema components using the
+            <codeph>definitions</codeph> (or <codeph>$defs</codeph> for latest drafts) keyword.
+          These definitions act as named schemas that you can refer to using <codeph>$ref</codeph>
+          (or <codeph>$dynamicRef</codeph>). <pre id="pre_uss_vmq_pyb"><codeph>{
+  "$defs": {
+    "person": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "age": { "type": "integer" }
+      }
+    }
+  }
+}</codeph>
+(my_schema.json)</pre></li>
+        <li><b>Referencing a Schema</b>: To reference a schema defined in a definitions block, you
+          use the <codeph>$ref</codeph> keyword followed by the JSON Pointer of the
+            definition.<pre id="pre_yss_vmq_pyb"><codeph>{
+  ...
+  "type": "object",
+  "properties": {
+    "person1": { "$ref": "#/$defs/person" },
+    "person2": { "$ref": "#/$defs/person" }
+  }
+}</codeph></pre><p>In this example, both <codeph>"person1"</codeph> and
+              <codeph>"person2"</codeph> properties refer to the <codeph>"person"</codeph> schema
+            defined in <codeph>$defs</codeph>.</p></li>
+        <li><b>External References</b>: You can also reference schemas from external files using
+          their URI. This can be useful when you have multiple schema
+            files.<pre id="pre_ets_vmq_pyb"><codeph>{
+  "$ref": "my_schema.json#/$defs/person"
+}</codeph></pre><p>Here, the schema at the specified URI is being referenced. You can
+            also use <codeph>$id</codeph> to uniquely identify a schema resource and then reference
+            it from another file using the same mechanism. Let's set a custom id for the
+              <codeph>"person"</codeph> schema.<pre id="pre_kcl_2cr_pyb"><codeph>{
+  "$defs": {
+    "person": {
+      "$id": "#person_info"
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "age": { "type": "integer" }
+      }
+    }
+  }
+}</codeph></pre></p><p>You can now reference this definition by its $id, not by its
+            JSON Pointer:<pre id="pre_pbf_ncr_pyb"><codeph>{
+  "$ref": "my_schema.json/#person_info"
+}</codeph></pre></p><p>Note that Oxygen allows <codeph>$id</codeph> only as an URI
+            fragment, not as a relative pointer.</p></li>
+        <li><b>Combining References with Other Keywords</b>: You can use <codeph>$ref</codeph> in
+          combination with other keywords. For instance, you might reference a schema within the
+            <codeph>items</codeph> keyword to define an array of a specific
+            type.<pre id="pre_ogx_p1r_pyb"><codeph>{
+  ...
+  "type": "array",
+  "items": { "$ref": "#/$defs/person" }
+}</codeph></pre><p>Starting with latest drafts, you can use <codeph>$ref </codeph>in
+            conjunction with other type-specific keywords, for stricter validation. For example, the
+            previous schema can be modified to not allow extraneous properties for a "person"
+            object.<pre id="pre_hsq_t1r_pyb"><codeph>{
+  ...
+  "type": "array",
+  "items": { 
+      "$ref": "#/$defs/person",
+      "additionalProperties": false
+  }
+}</codeph></pre></p></li>
+      </ol>
+    </section>
   </body>
 </topic>
