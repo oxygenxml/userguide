@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wh-faceted-search">
+  <title>How to Configure Faceted Search in WebHelp Output</title>
+    
+  <body>
+    
+    <p>Faceted search is a powerful tool that allows users to refine search results by selecting filters or facets. Facets are predefined categories that are associated with search results. By selecting one or more facets, users can narrow down their search results to a specific category or set of categories.</p>
+   
+  </body>
+  <topic id="configure_oxygen_feedback_as_search_engine">
+    <title>Configure Oxygen Feedback as a search engine</title>
+    <body><p>To enable faceted search, you need to have a search engine that supports faceted search.
+      The Oxygen Feedback search engine implements faceted search and can be easily configured as
+      a search engine for WebHelp.</p>
+      <note>The default search engine that comes embedded in the WebHelp Responsive output does not
+        support faceted search.</note></body>
+  </topic>
+  <topic id="define_facets_using_subject_scheme_map">
+    <title>Define facets using DITA subject scheme map</title>
+    <body><p>Subject scheme maps can be used to define controlled values and subject definitions.
+      Subject definitions are classifications and sub-classifications that compose a tree. Subject
+      definitions provide semantics that can be used in conjunction with taxonomies and
+      ontologies.</p>
+    <p>The <codeph>&lt;subjectdef></codeph> element is used to define both a subject category and
+      a list of controlled values. The parent <codeph>&lt;subjectdef></codeph> element defines the
+      category, and the children <codeph>&lt;subjectdef></codeph> elements define the controlled
+      values.</p>
+    <p>The following example defines the "Operating system" category, with "Linux" and "Windows"
+      sub-categories. The controled values(facet values) are: "RedHat Linux", "SuSE Linux",
+      "Windows 7" and "Windows 10".</p>
+    <codeblock outputclass="language-xml">&lt;subjectScheme>
+  &lt;subjectdef keys="os" navtitle="Operating system">
+    &lt;subjectdef keys="linux" navtitle="Linux">
+      &lt;subjectdef keys="redhat" navtitle="RedHat Linux"/>
+      &lt;subjectdef keys="suse" navtitle="SuSE Linux"/>
+    &lt;/subjectdef>
+    &lt;subjectdef keys="windows" navtitle="Windows">
+      &lt;subjectdef keys="win7" navtitle="Windows 7"/>
+      &lt;subjectdef keys="win10" navtitle="Windows 10"/>
+    &lt;/subjectdef>    
+  &lt;/subjectdef>
+&lt;/subjectScheme></codeblock></body>
+    <related-links>
+      <link
+        href="https://www.oxygenxml.com/dita/1.3/specs/archSpec/base/subject-scheme-maps-and-usage.html"
+        format="html" scope="external">
+        <linktext><b>Subject scheme maps and their usage</b></linktext>
+      </link>
+    </related-links>
+  </topic>
+  <topic id="associate_facets_with_topics_using_a_dita_classif">
+    <title>Associate faceted values with a topic using a DITA classification map</title>
+    <body><p>The classification domain provides elements that enable map authors to indicate information
+      about the subject matter of DITA topics. The subjects are defined in subjectScheme maps, and
+      the map authors reference the subjects using the <codeph>@keyref</codeph> attribute.</p>
+    <p>The following example show you how to associate a facet value with a topic:</p>
+    <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Classification Map//EN" "classifyMap.dtd">
+&lt;map>
+    &lt;title>Classification map&lt;/title>
+    &lt;topicref href="how-to-install-on-suse.dita">
+      &lt;topicsubject keyref="linux">
+        &lt;subjectref keyref="suse"/>
+      &lt;/topicsubject>
+    &lt;/topicref>
+  
+    &lt;topicref href="how-to-install-win7.dita">
+      &lt;topicsubject keyref="windows">
+        &lt;subjectref keyref="win7"/>
+      &lt;/topicsubject>
+    &lt;/topicref>
+&lt;/map></codeblock>
+    <p>The facet information cascades to child <codeph>&lt;topicref></codeph> elements.</p></body>
+    <related-links>
+      <link href="https://www.oxygenxml.com/dita/1.3/specs/archSpec/base/classification-maps.html"
+        format="html" scope="external">
+        <linktext><b>Classification maps</b></linktext>
+      </link>
+    </related-links>
+  </topic>
+  <topic id="refine_the_search_result_by_using_facets_in_searc">
+    <title>Refine the search result by using facets in search page</title>
+    <body><p>The configured facets are displayed in the search page allowing you to narrow down the
+      results.</p>
+    <p>When a user selects a facet, the search results are updated to include only the topics that
+      match the selected facets. If multiple facet values are selected from the same
+      category/facet, the search results display all topics with at least one facet. On the other
+      hand, if multiple facet values from distinct facets are selected, the search results display
+      all topics with all selected facet values.</p></body>
+  </topic>
+</topic>
