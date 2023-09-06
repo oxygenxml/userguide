@@ -15,12 +15,174 @@
     <body>
         <p>It is possible to use XPath expressions inside SVG templates to insert dynamic text when
       creating PDF using <ph keyref="pdf-html5-transformation"/> scenario.</p>
-    <p>For example, to create a cover page containing information about the author(s), the version,
-      etc. of the document.<ol id="ol_etc_w2n_4yb">
-        <li>TODO</li>
-      </ol></p>
+    <section id="section_drj_ljw_ryb">
+      <title>Using SVG Template as a Cover Page</title>
+      <p>A common use-case is when you want to create a custom cover page and this cover should
+        display metadata information (like the author, some dates and the copyright):<ol
+          id="ol_etc_w2n_4yb">
+          <li>In the source <xmlelement>bookmap</xmlelement> the different metadata are inserted
+            under the <xmlelement>bookmeta</xmlelement>
+            element:<codeblock id="codeblock_evc_kjw_ryb" outputclass="language-xml">&lt;bookmap id="taskbook">
+    &lt;booktitle>
+        &lt;booklibrary>Retro Tools&lt;/booklibrary>
+        &lt;mainbooktitle>Product tasks&lt;/mainbooktitle>
+        &lt;booktitlealt>Tasks and what they can do&lt;/booktitlealt>
+    &lt;/booktitle>
+    &lt;bookmeta>        
+        &lt;author>Howe Tuduit&lt;/author>
+        &lt;critdates>
+            &lt;created date="2015-01-01"/>
+            &lt;revised modified="2016-04-03"/>
+            &lt;revised modified="2016-03-05"/>
+        &lt;/critdates>
+        ...
+        &lt;bookrights>
+            &lt;copyrfirst>
+                &lt;year>2004&lt;/year>
+            &lt;/copyrfirst>
+            &lt;copyrlast>
+                &lt;year>2007&lt;/year>
+            &lt;/copyrlast>
+            &lt;bookowner>
+                &lt;organization>Retro Tools, Inc.&lt;/organization>
+            &lt;/bookowner>
+        &lt;/bookrights>
+    &lt;/bookmeta>
+    ...</codeblock></li>
+          <li>The corresponding <codeph>merged.html</codeph> file will have the following
+            content:<codeblock id="codeblock_jrr_zjw_ryb" outputclass="language-xml">...
+&lt;div class="- front-page/front-page front-page">
+  &lt;div class="- map/topicmeta bookmap/bookmeta topicmeta bookmeta">
+    &lt;div class="- topic/author author">Howe Tuduit&lt;/div>
+    &lt;div class="- topic/critdates critdates">
+      &lt;div date="2015-01-01" class="- topic/created created">&lt;/div>
+      &lt;div modified="2016-04-03" class="- topic/revised revised">&lt;/div>
+      &lt;div modified="2016-03-05" class="- topic/revised revised">&lt;/div>
+    &lt;/div>
+    ...
+    &lt;div class="- topic/data bookmap/bookrights data bookrights">
+      &lt;div class="- topic/data bookmap/copyrfirst data copyrfirst">
+        &lt;div class="- topic/ph bookmap/year ph year">2004&lt;/div>
+      &lt;/div>
+      &lt;div class="- topic/data bookmap/copyrlast data copyrlast">
+        &lt;div class="- topic/ph bookmap/year ph year">2007&lt;/div>
+      &lt;/div>
+      &lt;div class="- topic/data bookmap/bookowner data bookowner">
+        &lt;div class="- topic/data bookmap/organization data organization">Retro Tools,
+          Inc.&lt;/div>
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+  &lt;div class="- front-page/front-page-title front-page-title">
+    &lt;div class="- topic/title bookmap/booktitle title booktitle">
+      &lt;span class="- topic/ph bookmap/booklibrary ph booklibrary">Retro Tools&lt;/span>
+      &lt;span class="- topic/ph bookmap/mainbooktitle ph mainbooktitle">Product
+        tasks&lt;/span>
+      &lt;span class="- topic/ph bookmap/booktitlealt ph booktitlealt">Tasks and what they
+        can do&lt;/span>
+    &lt;/div>
+  &lt;/div>
+&lt;/div>
+...</codeblock></li>
+          <li>The cover image (for example, named <filepath>cover.template.svg</filepath>) should
+            display <xmlelement>bookmeta</xmlelement> node information (author, creation date and
+            copyright information) and the <xmlelement>mainbooktitle</xmlelement> will be displayed
+              rotated.<codeblock id="codeblock_o4b_nvr_lyb" outputclass="language-xml">&lt;svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  viewBox="0 0 612 792" style="enable-background:new 0 0 612 792;" xml:space="preserve">
+&lt;style type="text/css">
+  .st0{fill:url(#SVGID_1_);}
+  .st1{opacity:0.31;fill:#FFFFFF;enable-background:new    ;}
+  .st2{fill:#FFFFFF;}
+  .st3{fill:#F04C3E;}
+  .st4{fill:none;stroke:#FFFFFF;stroke-width:0.3685;stroke-miterlimit:2.6131;}
+  .st5{font-family:'Arial';}
+  .st6{font-size:24.3422px;}
+  .st7{font-size:10px;}
+  .st8{font-size:63.3422px;font-weight:bold;}
+  .st9{fill:#F04C3E;stroke:#000000;stroke-miterlimit:10;}
+&lt;/style>
+&lt;linearGradient id="SVGID_1_" x1="305.6" y1="799.9393" x2="305.6" y2="8.9393"
+  gradientUnits="userSpaceOnUse">
+  &lt;stop  offset="1.848748e-02" style="stop-color:#2F639F"/>
+  &lt;stop  offset="1" style="stop-color:#1C3E72"/>
+&lt;/linearGradient>
+&lt;rect x="0.1" y="0.1" class="st0" width="611" height="791"/>
+&lt;path class="st1" d="M143.4,700.5l381.3-381.3c35.2-35.2,35.2-92.3,
+  0-127.5L332.1-0.9H0.1v685.6l15.8,15.8C51.1,735.7,108.2,735.7,143.4,700.5z"/>
+&lt;path class="st2" d="M1.5,617.6c29.2,22.6,71.4,20.5,98.2-6.3l315.2-315.2c29.1-29.1,
+  29.1-76.3,0-105.4L224.8,0.5H1.5V617.6z"/>
+&lt;text transform="matrix(1 0 0 1 419.998 615.9277)" class="st2 st5 st6">
+  ${//*[contains(@class, 'bookmap/bookmeta')]/*[contains(@class, 'topic/author')]}
+&lt;/text>
+&lt;text transform="matrix(1 0 0 1 419.998 660.9277)" class="st2 st5 st6">
+  ${//*[contains(@class, 'bookmap/bookmeta')]//*[contains(@class, 'topic/created')]/@date}
+&lt;/text>
+&lt;text transform="matrix(1 0 0 1 471.998 749.9277)" class="st2 st5 st7">©
+  ${
+    concat(//*[contains(@class, 'bookmap/bookmeta')]/*[contains(@class, 'bookmap/bookrights')]
+    //*[contains(@class, 'bookmap/organization')], ' ',
+    //*[contains(@class, 'bookmap/bookmeta')]/*[contains(@class, 'bookmap/bookrights')]
+    /*[contains(@class, 'bookmap/copyrlast')]/*[contains(@class, 'bookmap/year')])
+  }
+&lt;/text>
+&lt;text transform="matrix(0.7071 -0.7071 0.7071 0.7071 88.1369 568.6693)" class="st9 st5 st8">
+  ${
+    //*[contains(@class, 'front-page/front-page-title')]
+    //*[contains(@class, 'bookmap/mainbooktitle')]
+  }
+&lt;/text>
+&lt;/svg></codeblock><note id="note_nkn_dxr_lyb" type="other" othertype="Notes">
+              <ul id="ul_ixf_3xr_lyb">
+                <li>XPath expressions are not expanded if the SVG template is open in
+                    <uicontrol>Author</uicontrol> mode.</li>
+                <li>XPath expressions can be tested (without <codeph>${}</codeph>) using the
+                  XPath/XQuery Builder view.</li>
+              </ul>
+            </note><note id="note_c5b_dg2_4yb" type="important">
+              <ul id="ul_i13_psl_4yb">
+                <li>If you received the SVG image from someone (e.g. a graphics designer), make sure
+                  that the text from the image was not converted to glyph shapes and that it is
+                  rendered using the <xmlelement>text</xmlelement> element.</li>
+                <li>The SVG <xmlelement>text</xmlelement> element does not wrap the text if it
+                  overflows the image. If you have longer text that needs to be rendered, you might
+                  consider using multiple <xmlelement>text</xmlelement> elements and more evolved
+                  XPath expressions (for example, using the <codeph>substring()</codeph> function)
+                  to place the text on multiple lines.</li>
+              </ul>
+            </note><note type="tip" id="note_drj_1h2_4yb">You can ask a designer to fill the image
+              with some placeholders that you can later find and replace with your XPath
+              expressions. In the above SVG, the designer could place the text <codeph>Here comes
+                the author</codeph>, that you replace with <codeph>${//*[contains(@class,
+                'bookmap/bookmeta')]/*[contains(@class, 'topic/author')]}</codeph>:
+              <codeblock id="codeblock_qcl_vg2_4yb" outputclass="language-xml">&lt;text transform="matrix(1 0 0 1 419.998 615.9277)" class="st2 st5 st6">
+  Here comes the author
+&lt;/text></codeblock></note></li>
+          <li>The CSS stylesheet should declare the template file as <xref
+              href="dcpp_how_to_change_the_cover_image.dita">background-image for the cover</xref>,
+            also we will hide the <xmlelement>mainbooktitle</xmlelement> and its bookmark (as it is
+            displayed in the
+            template):<codeblock id="codeblock_tj4_zwr_lyb" outputclass="language-css">@page front-page {
+  background-image: url("cover.template.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+*[class ~= "bookmap/booktitle"] {
+  display: none;
+}
+*[class ~= "front-page/front-page-title"]
+> *[class ~= "bookmap/booktitle"]
+> *[class ~= "bookmap/mainbooktitle"] {
+  bookmark-level: 0;
+}</codeblock></li>
+          <li>After the transformation, the final document cover will look like this:<image
+              placement="break" href="../img/dcpp_svg_xpath.png" id="image_hvk_jyr_lyb"/></li>
+        </ol></p>
+    </section>
     </body>
   <related-links>
     <link href="dcpp_how_to_use_xpath_expressions_in_css.dita"/>
+    <link href="ch_graphics_svg_templates.dita"/>
   </related-links>
 </topic>
