@@ -54,28 +54,28 @@ public class TableColumnWidthProvider
             <xmlelement>table</xmlelement> element.</cmd>
         <info>
           <codeblock outputclass="language-java" id="codeblock_njb_dgk_54b">public void init(AuthorElement tableElement) {
-	this.tableElement = tableElement;
- AuthorElement[] colChildren = tableElement.getElementsByLocalName("customcol");
-    if (colChildren != null &amp;&amp; colChildren.length &gt; 0) {
-	for (int i = 0; i &lt; colChildren.length; i++) {
-	  AuthorElement colChild = colChildren[i];
-	    if (i == 0) {
-		colsStartOffset = colChild.getStartOffset();
-	} 
-	    if (i == colChildren.length - 1) {
-		colsEndOffset = colChild.getEndOffset();
-	}
-	    // Determine the 'width' for this col.
-	    AttrValue colWidthAttribute = colChild.getAttribute("width");
-	    String colWidth = null;
-	    if (colWidthAttribute != null) {
-	      colWidth = colWidthAttribute.getValue();
-           // Add WidthRepresentation objects for the columns this 'customcol'
-	    //  specification spans over.
-		colWidthSpecs.add(new WidthRepresentation(colWidth, true));
-	}
-     }
-   }
+  this.tableElement = tableElement;
+  AuthorElement[] colChildren = tableElement.getElementsByLocalName("customcol");
+  if (colChildren != null &amp;&amp; colChildren.length &gt; 0) {
+    for (int i = 0; i &lt; colChildren.length; i++) {
+      AuthorElement colChild = colChildren[i];
+      if (i == 0) {
+        colsStartOffset = colChild.getStartOffset();
+      } 
+      if (i == colChildren.length - 1) {
+        colsEndOffset = colChild.getEndOffset();
+      }
+      // Determine the 'width' for this col.
+      AttrValue colWidthAttribute = colChild.getAttribute("width");
+      String colWidth = null;
+      if (colWidthAttribute != null) {
+        colWidth = colWidthAttribute.getValue();
+        // Add WidthRepresentation objects for the columns this 'customcol'
+        //  specification spans over.
+        colWidthSpecs.add(new WidthRepresentation(colWidth, true));
+      }
+    }
+  }
 }</codeblock>
         </info>
       </step>
@@ -110,33 +110,33 @@ public class TableColumnWidthProvider
           value of the <b>width</b> attribute. The methods must return <codeph>null</codeph> for the
           tables / cells that do not have a specified width.</cmd>
         <info>
-          <codeblock outputclass="language-java" id="codeblock_qjb_dgk_54b">	public WidthRepresentation getTableWidth(String tableCellsTagName) {
-		WidthRepresentation toReturn = null;
-		if (tableElement != null &amp;&amp; "td".equals(tableCellsTagName)) {
-			AttrValue widthAttr = tableElement.getAttribute("width");
-			if (widthAttr != null) {
-				String width = widthAttr.getValue();
-				if (width != null) {
-					toReturn = new WidthRepresentation(width, true);
-				}
-			}
-		}
-		return toReturn;
-	}</codeblock>
-          <codeblock outputclass="language-java" id="codeblock_rjb_dgk_54b">        public List&lt;WidthRepresentation&gt; 
+          <codeblock outputclass="language-java" id="codeblock_qjb_dgk_54b">public WidthRepresentation getTableWidth(String tableCellsTagName) {
+  WidthRepresentation toReturn = null;
+  if (tableElement != null &amp;&amp; "td".equals(tableCellsTagName)) {
+  AttrValue widthAttr = tableElement.getAttribute("width");
+    if (widthAttr != null) {
+      String width = widthAttr.getValue();
+      if (width != null) {
+        toReturn = new WidthRepresentation(width, true);
+      }
+    }
+  }
+  return toReturn;
+}</codeblock>
+          <codeblock outputclass="language-java" id="codeblock_rjb_dgk_54b">public List&lt;WidthRepresentation&gt; 
 getCellWidth(AuthorElement cellElement, int colNumberStart,
-			int colSpan) {
-		List&lt;WidthRepresentation&gt; toReturn = null;
-		int size = colWidthSpecs.size();
-		if (size &gt;= colNumberStart &amp;&amp; size &gt;= colNumberStart + colSpan) {
-			toReturn = new ArrayList&lt;WidthRepresentation&gt;(colSpan);
-			for (int i = colNumberStart; i &lt; colNumberStart + colSpan; i ++) {
-				// Add the column widths
-				toReturn.add(colWidthSpecs.get(i));
-			}
-		}
-		return toReturn;
-	}</codeblock>
+  int colSpan) {
+  List&lt;WidthRepresentation&gt; toReturn = null;
+  int size = colWidthSpecs.size();
+  if (size &gt;= colNumberStart &amp;&amp; size &gt;= colNumberStart + colSpan) {
+    toReturn = new ArrayList&lt;WidthRepresentation&gt;(colSpan);
+    for (int i = colNumberStart; i &lt; colNumberStart + colSpan; i ++) {
+      // Add the column widths
+      toReturn.add(colWidthSpecs.get(i));
+    }
+  }
+  return toReturn;
+}</codeblock>
         </info>
       </step>
       <step>
@@ -144,67 +144,64 @@ getCellWidth(AuthorElement cellElement, int colNumberStart,
             <term>commitColumnWidthModifications</term> are used to commit changes made to the width
           of the table or its columns when using the mouse drag gestures.</cmd>
         <info>
-          <codeblock outputclass="language-java" id="codeblock_sjb_dgk_54b">	public void commitTableWidthModification
+          <codeblock outputclass="language-java" id="codeblock_sjb_dgk_54b">public void commitTableWidthModification
 (AuthorDocumentController authorDocumentController,
-	int newTableWidth, String tableCellsTagName) throws AuthorOperationException {
-	if ("td".equals(tableCellsTagName)) {
-		if (newTableWidth &gt; 0) {
-			if (tableElement != null) {
-				String newWidth = String.valueOf(newTableWidth);
-
-				authorDocumentController.setAttribute(
-						"width",
-						new AttrValue(newWidth),
-						tableElement);
-			} else {
-	throw new AuthorOperationException("Cannot find the table element.");
-				}
-			}
-		}
-	}</codeblock>
+  int newTableWidth, String tableCellsTagName) throws AuthorOperationException {
+  if ("td".equals(tableCellsTagName)) {
+    if (newTableWidth &gt; 0) {
+      if (tableElement != null) {
+        String newWidth = String.valueOf(newTableWidth);
+        authorDocumentController.setAttribute("width", new AttrValue(newWidth),
+                                              tableElement);
+      } else {
+        throw new AuthorOperationException("Cannot find the table element.");
+      }
+    }
+  }
+}</codeblock>
           <codeblock outputclass="language-java" id="codeblock_tjb_dgk_54b">public void commitColumnWidthModifications
- (AuthorDocumentController authorDocumentController,
-			WidthRepresentation[] colWidths, String tableCellsTagName)
- throws AuthorOperationException {
-   if ("td".equals(tableCellsTagName)) {
-     if (colWidths != null &amp;&amp; tableElement != null) {
-	if (colsStartOffset &gt;= 0 &amp;&amp; colsEndOffset &gt;= 0 
+  (AuthorDocumentController authorDocumentController,
+  WidthRepresentation[] colWidths, String tableCellsTagName)
+  throws AuthorOperationException {
+  if ("td".equals(tableCellsTagName)) {
+    if (colWidths != null &amp;&amp; tableElement != null) {
+      if (colsStartOffset &gt;= 0 &amp;&amp; colsEndOffset &gt;= 0 
 &amp;&amp; colsStartOffset &lt; colsEndOffset) {
-		authorDocumentController.delete(colsStartOffset,
-				colsEndOffset);
-		}
-		String xmlFragment = createXMLFragment(colWidths);
-			int offset = -1;
-		AuthorElement[] header = tableElement.getElementsByLocalName("header");
-			if (header != null &amp;&amp; header.length &gt; 0) {
-				// Insert the cols elements before the 'header' element 
-				offset = header[0].getStartOffset();
-			}
-			if (offset == -1) {
-  throw new AuthorOperationException("No valid offset to insert column width");
-				}
-				authorDocumentController.insertXMLFragment(xmlFragment, offset);
-			}
-		}
-	}
+        authorDocumentController.delete(colsStartOffset, colsEndOffset);
+      }
+      String xmlFragment = createXMLFragment(colWidths);
+      int offset = -1;
+      AuthorElement[] header = tableElement.getElementsByLocalName("header");
+      if (header != null &amp;&amp; header.length &gt; 0) {
+        // Insert the cols elements before the 'header' element 
+        offset = header[0].getStartOffset();
+      }
+      if (offset == -1) {
+        throw new AuthorOperationException(
+          "No valid offset to insert column width");
+      }
+      authorDocumentController.insertXMLFragment(xmlFragment, offset);
+    }
+  }
+}
 
-	private String createXMLFragment(WidthRepresentation[] widthRepresentations) {
-		StringBuffer fragment = new StringBuffer();
-		String ns = tableElement.getNamespace();
-		for (int i = 0; i &lt; widthRepresentations.length; i++) {
-			WidthRepresentation width = widthRepresentations[i];
-			fragment.append("&lt;customcol");
-			String strRepresentation = width.getWidthRepresentation();
-			if (strRepresentation != null) {
-				fragment.append(" width=\"" + width.getWidthRepresentation() + "\"");
-			}
-			if (ns != null &amp;&amp; ns.length() &gt; 0) {
-				fragment.append(" xmlns=\"" + ns + "\"");
-			}
-			fragment.append("/&gt;");
-		}
-		return fragment.toString();
-	}</codeblock>
+private String createXMLFragment(WidthRepresentation[] widthRepresentations) {
+  StringBuffer fragment = new StringBuffer();
+  String ns = tableElement.getNamespace();
+  for (int i = 0; i &lt; widthRepresentations.length; i++) {
+    WidthRepresentation width = widthRepresentations[i];
+    fragment.append("&lt;customcol");
+    String strRepresentation = width.getWidthRepresentation();
+    if (strRepresentation != null) {
+      fragment.append(" width=\"" + width.getWidthRepresentation() + "\"");
+    }
+    if (ns != null &amp;&amp; ns.length() &gt; 0) {
+      fragment.append(" xmlns=\"" + ns + "\"");
+    }
+    fragment.append("/&gt;");
+  }
+  return fragment.toString();
+}</codeblock>
         </info>
       </step>
       <step>
@@ -212,18 +209,17 @@ getCellWidth(AuthorElement cellElement, int colNumberStart,
           specifications the table column width provider support. In our case all types of
           specifications are allowed:</cmd>
         <info>
-          <codeblock outputclass="language-java" id="codeblock_ujb_dgk_54b">
-	public boolean isAcceptingFixedColumnWidths(String tableCellsTagName) {
-		return true;
-	}
+          <codeblock outputclass="language-java" id="codeblock_ujb_dgk_54b">public boolean isAcceptingFixedColumnWidths(String tableCellsTagName) {
+  return true;
+}
 
-	public boolean isAcceptingPercentageColumnWidths(String tableCellsTagName) {
-		return true;
-	}
+public boolean isAcceptingPercentageColumnWidths(String tableCellsTagName) {
+  return true;
+}
 
-	public boolean isAcceptingProportionalColumnWidths(String tableCellsTagName) {
-		return true;
-	}</codeblock>
+public boolean isAcceptingProportionalColumnWidths(String tableCellsTagName) {
+  return true;
+}</codeblock>
         </info>
         <info>
           <note conkeyref="reusable_notes_java-files/sdf_project" id="note_vjb_dgk_54b"/>

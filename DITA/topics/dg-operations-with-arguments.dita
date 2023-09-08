@@ -54,30 +54,30 @@ private static final String ARG_CONNECTION ="connection";</codeblock>
         <info>
           <p id="p_bqb_dgk_54b">
             <codeblock outputclass="language-java" id="codeblock_cqb_dgk_54b">public ArgumentDescriptor[] getArguments() {
-		ArgumentDescriptor args[] = new ArgumentDescriptor[] {
-				new ArgumentDescriptor(
-						ARG_JDBC_DRIVER,
-						ArgumentDescriptor.TYPE_STRING,
-						"The name of the Java class that is the JDBC driver."),
-				new ArgumentDescriptor(
-						ARG_CONNECTION,
-						ArgumentDescriptor.TYPE_STRING,
-						"The database URL connection string."),
-				new ArgumentDescriptor(
-						ARG_USER,
-						ArgumentDescriptor.TYPE_STRING,
-						"The name of the database user."),
-				new ArgumentDescriptor(
-						ARG_PASSWORD,
-						ArgumentDescriptor.TYPE_STRING,
-						"The database password."),
-				new ArgumentDescriptor(
-						ARG_SQL,
-						ArgumentDescriptor.TYPE_STRING,
-						"The SQL statement to be executed.")
-		};
-		return args;
-	}</codeblock>
+  ArgumentDescriptor args[] = new ArgumentDescriptor[] {
+    new ArgumentDescriptor(
+      ARG_JDBC_DRIVER,
+      ArgumentDescriptor.TYPE_STRING,
+      "The name of the Java class that is the JDBC driver."),
+    new ArgumentDescriptor(
+      ARG_CONNECTION,
+      ArgumentDescriptor.TYPE_STRING,
+      "The database URL connection string."),
+    new ArgumentDescriptor(
+      ARG_USER,
+      ArgumentDescriptor.TYPE_STRING,
+      "The name of the database user."),
+    new ArgumentDescriptor(
+      ARG_PASSWORD,
+      ArgumentDescriptor.TYPE_STRING,
+      "The database password."),
+   new ArgumentDescriptor(
+     ARG_SQL,
+     ArgumentDescriptor.TYPE_STRING,
+     "The SQL statement to be executed.")
+  };
+  return args;
+}</codeblock>
           </p>
           <p id="p_dqb_dgk_54b">These names, types and descriptions will be listed in the
               <uicontrol>Arguments</uicontrol> table when the operation is configured.</p>
@@ -90,36 +90,29 @@ private static final String ARG_CONNECTION ="connection";</codeblock>
           position.</cmd>
         <info>
           <codeblock outputclass="language-java" id="codeblock_eqb_dgk_54b">public void doOperation(AuthorAccess authorAccess, ArgumentsMap map)
-			throws IllegalArgumentException, AuthorOperationException {
-		
-		// Collects the arguments.
-		String jdbcDriver = 
-			(String)map.getArgumentValue(ARG_JDBC_DRIVER);
-		String connection = 
-			(String)map.getArgumentValue(ARG_CONNECTION);
-		String user = 
-			(String)map.getArgumentValue(ARG_USER);
-		String password = 
-			(String)map.getArgumentValue(ARG_PASSWORD);
-		String sql = 
-			(String)map.getArgumentValue(ARG_SQL);
+  throws IllegalArgumentException, AuthorOperationException {
 
-		int caretPosition = authorAccess.getCaretOffset();
-		try {
-			authorAccess.getDocumentController().insertXMLFragment(
-					getFragment(jdbcDriver, connection, user, password, sql), 
-					caretPosition);
-		} catch (SQLException e) {
-			throw new AuthorOperationException(
-					"The operation failed due to the following database error: " 
-     + e.getMessage(), e);
-		} catch (ClassNotFoundException e) {
-			throw new AuthorOperationException(
-					"The JDBC database driver was not found. Tried to load ' " 
-     + jdbcDriver + "'", e);
-		}
-	}
-</codeblock>
+  // Collects the arguments.
+  String jdbcDriver = (String)map.getArgumentValue(ARG_JDBC_DRIVER);
+  String connection = (String)map.getArgumentValue(ARG_CONNECTION);
+  String user = (String)map.getArgumentValue(ARG_USER);
+  String password = (String)map.getArgumentValue(ARG_PASSWORD);
+  String sql = (String)map.getArgumentValue(ARG_SQL);
+
+  int caretPosition = authorAccess.getCaretOffset();
+  try {
+    authorAccess.getDocumentController().insertXMLFragment(
+      getFragment(jdbcDriver, connection, user, password, sql), caretPosition);
+  } catch (SQLException e) {
+    throw new AuthorOperationException(
+      "The operation failed due to the following database error: " 
+      + e.getMessage(), e);
+  } catch (ClassNotFoundException e) {
+    throw new AuthorOperationException(
+      "The JDBC database driver was not found. Tried to load ' " 
+      + jdbcDriver + "'", e);
+  }
+}</codeblock>
         </info>
       </step>
       <step>
@@ -131,15 +124,9 @@ private static final String ARG_CONNECTION ="connection";</codeblock>
           are replaced with the '&amp;lt;' and '&amp;amp;' character entities to ensure that the
           fragment is well-formed.</cmd>
         <info>
-          <codeblock outputclass="language-java" id="codeblock_fqb_dgk_54b">private String getFragment(
-		String jdbcDriver, 
-		String connectionURL, 
-		String user, 
-		String password, 
-		String sql) throws 
-			SQLException, 
-			ClassNotFoundException {		
-		
+          <codeblock outputclass="language-java" id="codeblock_fqb_dgk_54b">private String getFragment(String jdbcDriver, String connectionURL, String user,
+  String password, String sql) throws SQLException, ClassNotFoundException {
+
       Properties pr = new Properties();
       pr.put("characterEncoding", "UTF8");
       pr.put("useUnicode", "TRUE");
@@ -149,12 +136,9 @@ private static final String ARG_CONNECTION ="connection";</codeblock>
       // Loads the database driver.
       Class.forName(jdbcDriver);        
       // Opens the connection
-      Connection connection = 
-        	DriverManager.getConnection(connectionURL, pr);
-      java.sql.Statement statement = 
-        	connection.createStatement();
-      ResultSet resultSet = 
-        	statement.executeQuery(sql);
+      Connection connection = DriverManager.getConnection(connectionURL, pr);
+      java.sql.Statement statement = connection.createStatement();
+      ResultSet resultSet = statement.executeQuery(sql);
         
       StringBuffer fragmentBuffer = new StringBuffer();
       fragmentBuffer.append(
@@ -169,8 +153,7 @@ private static final String ARG_CONNECTION ="connection";</codeblock>
       int columnCount = metaData.getColumnCount();
       for (int i = 1; i &lt;= columnCount; i++) {
           fragmentBuffer.append("&lt;td&gt;");
-          fragmentBuffer.append(
-          		xmlEscape(metaData.getColumnName(i)));
+          fragmentBuffer.append(xmlEscape(metaData.getColumnName(i)));
           fragmentBuffer.append("&lt;/td&gt;");
       }
       fragmentBuffer.append("&lt;/header&gt;");
@@ -182,8 +165,7 @@ private static final String ARG_CONNECTION ="connection";</codeblock>
           fragmentBuffer.append("&lt;tr&gt;");
           for (int i = 1; i &lt;= columnCount; i++) {
               fragmentBuffer.append("&lt;td&gt;");
-              fragmentBuffer.append(
-              		xmlEscape(resultSet.getObject(i)));
+              fragmentBuffer.append(xmlEscape(resultSet.getObject(i)));
               fragmentBuffer.append("&lt;/td&gt;");
           }
           fragmentBuffer.append("&lt;/tr&gt;");
