@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webauthor-faq-customizations">
+  <title>FAQ for Customizations</title>
+  <body>
+    <p>This topic contains some frequently asked questions about Web Author customizations.</p>
+    <section id="section_hhp_ckk_gyb">
+      <title>How can I prevent consecutive spaces from being inserted in documents?</title>
+      <ol id="ol_t2t_mkk_gyb">
+        <li>Create a plugin that implements the <xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentFilter.html"
+            format="html" scope="external"><codeph>AuthorDocumentFilter</codeph></xref> class. It
+          filters consecutive spaces from being inserted in the document. The filter should override
+          all methods from <codeph>AuthorDocumentFilter</codeph> that intercept content
+          changes.</li>
+        <li>Install the custom filter on all documents by implementing a <xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/access/WebappEditingSessionLifecycleListener.html"
+            format="html" scope="external"
+            ><codeph>WebappEditingSessionLifecycleListener</codeph></xref> that can be installed via
+          a <xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/plugin/workspace/WorkspaceAccessPluginExtension.html"
+            format="html" scope="external"><codeph>WorkspaceAccessPluginExtension</codeph></xref>
+          ("WorkspaceAccess" extension in the <filepath>plugin.xml</filepath>
+          file):<codeblock id="codeblock_egb_xkk_gyb" outputclass="language-bourne">public class CustomFilterInstaller implements WorkspaceAccessPluginExtension {
+  @Override
+  public void applicationStarted(StandalonePluginWorkspace pluginWorkspaceAccess) {
+    WebappPluginWorkspace pluginWorkspace = (WebappPluginWorkspace)PluginWorkspaceProvider.getPluginWorkspace();
+      pluginWorkspace.addEditingSessionLifecycleListener(new WebappEditingSessionLifecycleListener() {
+        @Override
+        public void editingSessionStarted(String sessionId, AuthorDocumentModel documentModel) {
+          documentModel.getAuthorDocumentController().setDocumentFilter(new CustomAuthorDocumentFilter(documentModel));
+        }
+      });</codeblock></li>
+      </ol>
+      <note id="note_xd2_kmk_gyb">When instantiating the <codeph>AuthorDocumentFilter</codeph>, the
+          <codeph>AuthorDocumentModel</codeph> object is passed because the filter needs it to check
+        for duplicate spaces.</note>
+    </section>
+    <section id="section_rtn_jcs_jyb">
+      <title>How can I customize the inserted table fragment for a DITA framework extension?</title>
+      <p>See the <xref
+          href="https://github.com/oxygenxml-incubator/oxygen-sample-frameworks/tree/main/dita-extension-replace-insert-table-action"
+          format="html" scope="external">dita-extension-replace-insert-table-action</xref> sample
+        project that uses a Framework Extension Script (EXF) to extend the built-in DITA framework
+        to replace the default <uicontrol>Insert Table</uicontrol> action with another action that
+        uses an <codeph>InsertFragmentOperation</codeph> to insert a CALS table element that has
+          <xmlatt>frame</xmlatt>, <xmlatt>colsep</xmlatt>, and <xmlatt>rowsep</xmlatt> attributes
+        already set.</p>
+    </section>
+  </body>
+</topic>
