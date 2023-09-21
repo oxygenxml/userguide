@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="concurrent-editing-two-servers-setup">
+  <title>Using Shared Editing Sessions on Two Web Author Servers</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Shared editing session on 2 servers</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="section_adj_cjr_vyb">
+      <title>How to Configure Two Web Author Servers for Shared Editing Sessions</title>
+      <p id="p_iwr_djr_vyb">To configure two Web Author servers for shared editing sessions, follow
+        these steps:<ol id="ol_zpr_zvm_qyb">
+          <li id="li_jwr_djr_vyb">Install two Web Author kits in different locations following the
+              <xref href="webapp-initial-installation.dita">usual installation steps</xref>.</li>
+          <li id="li_kwr_djr_vyb">For the second server, change the ports listed in the
+              <filepath>tomcat/conf/server.xml</filepath> file to use different ports than the first
+            server. To do this, change the following lines in
+              <filepath>tomcat/conf/server.xml</filepath>:<codeblock id="codeblock_qsc_nym_qyb" outputclass="language-xml">&lt;Server port="8005" shutdown="SHUTDOWN"></codeblock><codeblock id="codeblock_dzw_mym_qyb" outputclass="language-xml">&lt;Connector port="8080" protocol="HTTP/1.1"
+    connectionTimeout="20000"/></codeblock><codeblock id="codeblock_fyf_lym_qyb" outputclass="language-xml"> &lt;Connector port="8443" protocol="HTTP/1.1"
+     connectionTimeout="20000"
+     scheme="https"
+     secured="true"
+     SSLEnabled="true"></codeblock></li>
+          <li id="li_lwr_djr_vyb">Update the license server URL for the second server in the <xref
+              href="webapp-admin-page.dita">Administration page</xref>. From the Administration
+            page, select the <uicontrol>License</uicontrol> tab, change the port number for the
+            server URL to the one you configured in
+            <filepath>tomcat/conf/server.xml</filepath>.</li>
+          <li id="li_mwr_djr_vyb">For both Web Author servers, set the
+              <codeph>otherServerUrl</codeph> system property that is used for communicating between
+            the two servers. Follow the <xref href="webauthor-set-system-property.dita">instructions
+              on how to set a system property</xref> depending on the type of installer you used and
+            add the following
+            line:<codeblock id="codeblock_erc_qyg_ryb" outputclass="language-bourne">-DotherServerUrl="[the URL of the other Web Author server you configured]"</codeblock></li>
+          <li id="li_nwr_djr_vyb">For both Web Author servers, configure the
+              <codeph>ce.multiserver.password</codeph> option that is used for HTTP Basic
+            Authentication by following the <xref href="customizing-options.dita">instructions for
+              configuring options</xref>. The servers should use the same password. In the
+              <filepath>options.xml</filepath> file, add the following
+            lines:<codeblock id="codeblock_qmv_fnl_vyb" outputclass="language-xml">&lt;entry>
+  &lt;String>ce.multiserver.password&lt;/String>
+  &lt;String>[the password]&lt;/String>
+&lt;/entry></codeblock></li>
+        </ol></p>
+    </section>
+    <section id="section_qfx_djr_vyb">
+      <title>How to Join a Shared Editing Session Using Two Web Author Servers</title>
+      <p id="p_phj_hjr_vyb">To join a shared editing session from both Web Author servers:<ol
+          id="ol_snp_bmg_ryb">
+          <li id="li_qhj_hjr_vyb">Start the two Web Author servers.</li>
+          <li id="li_rhj_hjr_vyb">Create or open a document from the first Web Author instance.
+            Initiate a <xref
+              href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webauthor-concurrent-editing.html"
+              format="html" scope="external">shared editing session</xref> normally using the
+              <uicontrol>Share Session</uicontrol> toolbar button. Copy the link from the
+              <uicontrol>Share Editing Session</uicontrol> dialog box and click
+              <uicontrol>Share</uicontrol>.</li>
+          <li id="li_shj_hjr_vyb">To join the shared editing session from the second Web Author
+            server, modify the port number from the copied link to the one you configured for the
+            second server.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
