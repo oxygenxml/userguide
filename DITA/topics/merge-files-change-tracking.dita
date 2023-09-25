@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="merge-files-change-tracking">
+  <title>Merge Files with Change Tracking Highlights</title>
+  <body>
+    <note conkeyref="reusables-scripting/note-scripting-license" id="note_zmx_dgk_54b"/>
+    <p id="p_anx_dgk_54b">The <uicontrol>Merge Files with Change Tracking Highlights</uicontrol>
+      script (<codeph>mergeFilesTrackChanges.sh</codeph>, found in the <filepath>scripts</filepath>
+      subfolder inside <b>Oxygen's</b> installation directory) can be used to merge 2 XML files
+      (based on a 2-way comparison). The <uicontrol>Author</uicontrol> mode comparison results are
+      saved as documents with highlighted tracked changes that can later be reviewed and accepted or
+        rejected.<note id="note_bcw_t2f_xyb" type="notice"> This script is intended to be used for
+        merging XML documents (<ph keyref="product"/> creates change tracking markers only for XML
+        file types. Using this script for document types other than XML, or for documents that are
+        not XML well-formed, causes document parsing errors and the merge operation
+      fails.</note></p>
+    <section id="section_gbd_tzb_vmb">
+      <title>Arguments for the Merge Files with Change Tracking Highlights Script</title>
+      <p id="p_tnx_dgk_54b">
+        <codeblock outputclass="language-bourne" id="codeblock_unx_dgk_54b">sh mergeFilesTrackChanges.sh pathOfBaseFile pathOfFileToMergeWith [[pathOfOutFile] [-nb noBackupOfBaseFile]] [-help | --help | -h | --h]</codeblock>
+      </p>
+      <p id="p_vnx_dgk_54b">
+        <dl id="dl_wnx_dgk_54b">
+          <dlentry id="dlentry_xnx_dgk_54b">
+            <dt>pathOfBaseFile</dt>
+            <dd>Mandatory argument that specifies the path of the base file (it can also be provided
+              as a URL).</dd>
+          </dlentry>
+          <dlentry id="dlentry_l2b_gpl_54b">
+            <dt>pathOfFileToMergeWith</dt>
+            <dd>Mandatory argument that specifies the file to merge with (it can also be provided as
+              a URL).</dd>
+          </dlentry>
+          <dlentry id="dlentry_x2j_5ck_dpb">
+            <dt>pathOfOutFile</dt>
+            <dd>Optional argument that specifies the path of the file where the merge operation
+              results are saved to (it can also be provided as a URL). If present, it must appear
+              immediately after the first two mandatory arguments. If absent, the merge results are
+              saved to the base file, by overwriting it. You cannot choose the same file specified
+              as the file to merge with as the output file, the merge process is aborted in this
+              case. Also, if the output is a remote resource, its entire parent directory structure
+              must already exist. Otherwise, an I/O exception is thrown and the merge results cannot
+              be saved.</dd>
+          </dlentry>
+          <dlentry id="dlentry_zcl_bgk_dpb">
+            <dt>-nb noBackupOfBaseFile</dt>
+            <dd>
+              <p id="p_chc_bhf_xyb">Set to <b>true</b> if you do not want a backup copy of the base
+                file on the hard disk. There are 2 situations when a backup of the base file is
+                performed automatically and the backup operation must succeed to proceed with the
+                merge (otherwise, the merge process is aborted). If the output file is not specified
+                (i.e. the <codeph>pathOfOutFile</codeph> argument is not present) or the specified
+                output file is the base file itself.</p>
+              <p id="p_vcs_1hf_xyb">The backup copy will have the same parent directory as the base
+                directory and its name will be the name of the base file suffixed by ".OXY.BAK". The
+                default value is <b>false</b>, which means that for either of the 2 previously
+                mentioned situations, a backup copy of the base file will be kept on the hard
+                  disk.<note id="note_szp_fhf_xyb">The backup copy can be deleted only if the base
+                  file and, implicitly, its backup copy are local resources (not remote).</note></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_c4x_dgk_54b">
+            <dt>-help | --help | -h | --h</dt>
+            <dd>Displays help text.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <note id="note_p2r_k4l_54b" othertype="">For boolean arguments, it is not necessary to provide
+        the "true" value. Their presence in the argument list is equivalent to setting their value
+        to "true" (and their absence from the argument list is equivalent to setting their value to
+        "false"). However, constructs of the form <codeph>bool_option true|false</codeph> are
+        accepted and interpreted accordingly</note>
+    </section>
+    <section id="section_pnz_pnl_54b">
+      <title>Examples of Compare Files Script</title>
+      <p id="p_idr_zxn_wqb">
+        <dl id="dl_whv_zxn_wqb">
+          <dlentry id="dlentry_xhv_zxn_wqb">
+            <dt>Example 1: Compare Files and View Results in XML Format</dt>
+            <dd>
+              <p id="p_fwp_dyn_wqb">The following command results in merging <codeph>file1</codeph>
+                and <codeph>file2</codeph> into <codeph>outfile</codeph> with changes
+                highlighted:<codeblock outputclass="language-bourne">sh scripts/mergeFilesTrackChanges.sh file1 file2 outfile</codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_vtg_3yn_wqb">
+            <dt>Example 2: Compare Files with Line by Line Algorithm</dt>
+            <dd>
+              <p id="p_h42_lyn_wqb">The following command results in merging <codeph>file1</codeph>
+                and <codeph>file2</codeph> by overwriting <codeph>file1</codeph>. However, the
+                  <codeph>file1</codeph> is backed up
+                first:<codeblock outputclass="language-bourne">sh scripts/mergeFilesTrackChanges.sh file1 file2</codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_rfg_nyn_wqb">
+            <dt>Example 3: Compare Files and Generate Comparison Report</dt>
+            <dd>
+              <p id="p_hmz_bzn_wqb">The following command results in merging <codeph>file1</codeph>
+                and <codeph>file2</codeph> by overwriting <codeph>file1</codeph>. Although
+                  <codeph>file1</codeph> is initially backed up, the backup is eventually
+                removed:<codeblock outputclass="language-bourne">sh scripts/mergeFilesTrackChanges.sh file1 file2 -nb</codeblock></p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+  </body>
+</topic>
