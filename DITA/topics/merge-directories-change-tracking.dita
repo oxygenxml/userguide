@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="merge-directories-change-tracking">
+  <title>Merge Directories with Change Tracking Highlights</title>
+  <body>
+    <note conkeyref="reusables-scripting/note-scripting-license" id="note_zmx_dgk_54b"/>
+    <p id="p_anx_dgk_54b">The <uicontrol>Merge Directories with Change Tracking
+        Highlights</uicontrol> script (<codeph>mergeDirsTrackChanges.sh</codeph>, found in the
+        <filepath>scripts</filepath> subfolder inside <b>Oxygen's</b> installation directory) can be
+      used to merge 2 directories (based on a 2-way comparison). All pairs of modified XML files
+      involved in the process are merged by saving the <uicontrol>Author</uicontrol> mode comparison
+      results as documents with highlighted tracked changes that can be later reviewed and accepted
+      or rejected.</p>
+    <section id="section_gbd_tzb_vmb">
+      <title>Arguments for the Merge Directories with Change Tracking Highlights Script</title>
+      <p id="p_tnx_dgk_54b">
+        <codeblock outputclass="language-bourne" id="codeblock_unx_dgk_54b">sh mergeDirsTrackChanges.sh pathOfBaseDir pathOfDirToMergeWith [[pathOfOutDir] [-nb noBackupOfBaseDir] [-nu noUpdateOfModifNonXMLFiles] [-na noAddingFilesOnlyPresentInDirToMergeWith] [-nd noDeletionOfFilesOnlyPresentInBaseDir] [-cm createChangeTrackingMarkersForAddedXMLFiles]] [-help | --help | -h | --h]</codeblock>
+      </p>
+      <p id="p_vnx_dgk_54b">
+        <dl id="dl_wnx_dgk_54b">
+          <dlentry id="dlentry_xnx_dgk_54b">
+            <dt>pathOfBaseDir</dt>
+            <dd>Mandatory argument that specifies the path of the base directory (it can also be
+              provided as a URL using <codeph>file://</codeph> protocol).</dd>
+          </dlentry>
+          <dlentry id="dlentry_l2b_gpl_54b">
+            <dt>pathOfDirToMergeWith</dt>
+            <dd>Mandatory argument that specifies the path of the directory to merge with (it can
+              also be provided as a URL using <codeph>file://</codeph> protocol).</dd>
+          </dlentry>
+          <dlentry id="dlentry_x2j_5ck_dpb">
+            <dt>pathOfOutDir</dt>
+            <dd>Optional argument that specifies the path of the directory where the merge operation
+              results are saved to (it can also be provided as a URL using <codeph>file://</codeph>
+              protocol). If present, it must appear immediately after the first two mandatory
+              arguments. If absent, the merge results are saved to the base directory, by
+              overwriting it. You cannot choose the same directory specified as the output directory
+              (the merge process is aborted in this case).</dd>
+          </dlentry>
+          <dlentry id="dlentry_zcl_bgk_dpb">
+            <dt>-nb noBackupOfBaseDir</dt>
+            <dd>
+              <p id="p_chc_bhf_xyb">Set to <b>true</b> if you do not want a backup copy of the base
+                directory on the hard disk. There are 2 situations when a backup of the base
+                directory is performed automatically and the backup operation must succeed to
+                proceed with the merge. Otherwise, the merge process is aborted if the output
+                directory is not specified (i.e. the <codeph>pathOfOutDir</codeph> argument is not
+                present) or the specified output directory is the base directory itself.</p>
+              <p id="p_vcs_1hf_xyb">The backup copy will have the same parent directory as the base
+                directory and its name will be the name of the base directory suffixed by
+                ".OXY.BAK". The default value is <b>false</b>, which means that for either of the 2
+                previously mentioned situations, a backup copy of the base directory will be kept on
+                the hard disk.</p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_jlx_gy3_xyb">
+            <dt>-nu noUpdateOfModifNonXMLFiles</dt>
+            <dd>Set to <b>true</b> if you want to keep the non-XML files at their versions from the
+              base directory. The default value <b>false</b>, which means that all files in the
+              output directory that are copies of non-XML files in the base directory will be
+              replaced by their corresponding files in the directory to merge with.</dd>
+          </dlentry>
+          <dlentry id="dlentry_fpt_4y3_xyb">
+            <dt>-na noAddingFilesOnlyPresentInDirToMergeWith</dt>
+            <dd>Set to <b>true</b> if you want to skip adding the files that are only present in the
+              directory to merge with to the output directory as well. The default value is
+                <b>false</b>, which means that all files that are only present in the directory to
+              merge with are also added to the output directory.</dd>
+          </dlentry>
+          <dlentry id="dlentry_gbw_qy3_xyb">
+            <dt>-nd noDeletionOfFilesOnlyPresentInBaseDir</dt>
+            <dd>Set to <b>true</b> if you want to preserve the files that are only present in the
+              base directory. The default value is <b>false</b>, which means that all files that are
+              only present in the base directory and initially copied to the output directory are
+              deleted.</dd>
+          </dlentry>
+          <dlentry id="dlentry_cyy_ry3_xyb">
+            <dt>-cm createChangeTrackingMarkersForAddedXMLFiles</dt>
+            <dd>Set to <b>true</b> if you want to create change tracking markers for the XML files
+              only present in the directory to merge with (that will be added to the output
+              directory). Although these files have no counterparts in the base directory, change
+              tracking markers of the type "entire content added/inserted" will be created. The
+              option is not necessarily intended for the merge process itself, but it might prove a
+              useful addition when you want to apply various <term>Oxygen</term> transformation
+              scenarios to the resulting output directory. For example, if you merge 2 versions of a
+              DITA project and then want a PDF to highlight the changes between those versions, you
+              can apply a transformation on the resulting <filepath>ditamap</filepath> file. The
+                <codeph>-am</codeph> option presents the new DITA files as "added content" in the
+              resulting PDF. Note that the option is only considered if the <codeph>-na</codeph>
+              argument is absent or is explicitly set to <b>false</b> (default value).</dd>
+          </dlentry>
+          <dlentry id="dlentry_c4x_dgk_54b">
+            <dt>-help | --help | -h | --h</dt>
+            <dd>Displays help text.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <note id="note_p2r_k4l_54b" othertype="Notes" type="other">
+        <ul id="ul_xtb_wy3_xyb">
+          <li id="li_ytb_wy3_xyb">The merge process has a preliminary phase where the entire
+            structure and content of the base directory is copied to the output directory.</li>
+          <li id="li_aqs_xy3_xyb">For boolean arguments, it is not necessary to provide the "true"
+            value. Their presence in the argument list is equivalent to setting their value to
+            "true" (and their absence from the argument list is equivalent to setting their value to
+            "false"). However, constructs of the form <codeph>bool_option true|false</codeph> are
+            accepted and interpreted accordingly.</li>
+          <li id="li_b51_1z3_xyb">Once the merge operation is complete, a report file is created and
+            saved in the output directory (in a separate subdirectory named
+            ".__OXY__MERGE__REPORT"). Loading the report file in <ph keyref="product"/> provides
+            additional functionality. Aside from the fact that the report provides an overview of
+            the merge process, it also provides links to all the files in the resulting output
+            directory. You can use the respective links to load the XML files in the editor, then
+            switch to <uicontrol>Author</uicontrol> mode to review the tracked changes and accept or
+            reject them.</li>
+        </ul>
+      </note>
+    </section>
+    <section id="section_pnz_pnl_54b">
+      <title>Examples of Compare Directories Script</title>
+      <p id="p_idr_zxn_wqb">
+        <dl id="dl_whv_zxn_wqb">
+          <dlentry id="dlentry_xhv_zxn_wqb">
+            <dt>Example 1: Compare Directories Without Updating non-XML Files</dt>
+            <dd>
+              <p id="p_fwp_dyn_wqb">The following command results in merging <codeph>dir1</codeph>
+                and <codeph>dir2</codeph> into <codeph>outdir</codeph>, but without updating the
+                non-XML files in <codeph>dir1</codeph> detected with changes to their version in
+                  <codeph>dir2</codeph>:<codeblock outputclass="language-bourne">sh scripts/mergeDirsTrackChanges.sh dir1 dir2 outdir -nu</codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_vtg_3yn_wqb">
+            <dt>Example 2: Compare Two Directories and Overwrite the First One</dt>
+            <dd>
+              <p id="p_h42_lyn_wqb">The following command results in merging <codeph>dir1</codeph>
+                and <codeph>dir2</codeph> by overwriting <codeph>dir1</codeph>. However, the
+                  <codeph>dir1</codeph> is backed up
+                first:<codeblock outputclass="language-bourne">sh scripts/mergeDirsTrackChanges.sh dir1 dir2</codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_rfg_nyn_wqb">
+            <dt>Example 3: Compare Directories and Create Change Tracking Markers</dt>
+            <dd>
+              <p id="p_hmz_bzn_wqb">The following command results in merging <codeph>dir1</codeph>
+                and <codeph>dir2</codeph> into <codeph>outdir</codeph> and creating change tracking
+                markers (of the type "entire content added/inserted") for all XML files that are
+                only present in <codeph>dir2</codeph> (to be added to the
+                <codeph>outdir</codeph>):<codeblock outputclass="language-bourne">sh scripts/mergeDirsTrackChanges.sh dir1 dir2 outdir -cm</codeblock></p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p id="p_xgb_tls_nyb">
+        <fig id="fig_df3_tls_nyb">
+          <title>Example of a Merged File with Change Tracking Markers Opened in Author Mode</title>
+          <image href="../img/merge-dirs-change-track-report-result.png"/>
+        </fig>
+      </p>
+    </section>
+  </body>
+</topic>
