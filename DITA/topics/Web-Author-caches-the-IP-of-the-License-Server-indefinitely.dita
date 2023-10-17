@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA 1.3 Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="Web-Author-caches-the-IP-of-the-License-Server-indefinitely">
+  <title>Web Author Caches the IP of the License Server Indefinitely</title>
+  <troublebody>
+    <condition id="problem">
+      <title>Problem</title>
+      <p>A license server connection issue is encountered in <ph keyref="webappProduct"/> when the
+        IP address of the License Server changes.</p>
+    </condition>
+    <troubleSolution>
+      <cause id="cause">
+        <title>Cause</title>
+        <p>When security is enabled in <ph keyref="webappProduct"/>, mapping from the DNS name of an
+          external server (for example, the License Server) to its IP address are cached
+          indefinitely. If the server is set up to have a dynamic IP address, <ph
+            keyref="webappProduct"/> might attempt to use an outdated IP address, resulting in a
+          failed connection.</p>
+      </cause>
+      <remedy id="solution">
+        <title>Solution</title>
+        <steps-informal>
+          <p>To adjust the TTL (time to live) for DNS caching in Java, follow these steps:<ol
+              id="ul_j5x_nx3_yyb">
+              <li>Open the <codeph>&lt;JAVA_HOME>/conf/security/java.security</codeph> file in a
+                text editor.</li>
+              <li>Locate the line that starts with <codeph>networkaddress.cache.ttl</codeph>.</li>
+              <li>Change the line to <codeph>networkaddress.cache.ttl=60</codeph>.</li>
+              <li>Save and close the file.</li>
+              <li>Restart <ph keyref="webappProduct"/> for the changes to take effect.</li>
+            </ol></p>
+        </steps-informal>
+      </remedy>
+    </troubleSolution>
+  </troublebody>
+</troubleshooting>
