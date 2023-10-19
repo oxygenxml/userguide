@@ -231,7 +231,7 @@
   
   <sch:pattern>
     <!-- Report cases when the lines in a codeblock exceeds 95 characters -->
-    <sch:rule context="*[contains(@class, ' pr-d/codeblock ') and not(@outputclass='language-css') and not(@outputclass='language-bourne')]" role="warn">
+    <sch:rule context="*[contains(@class, ' pr-d/codeblock ') and not(@outputclass='language-css') and not(@outputclass='language-java') and not(@outputclass='language-bourne')]" role="warn">
       <sch:let name="offendingLines" value="oxyF:lineLengthCheck(string(), 95)"/>
       <sch:report test="string-length($offendingLines) > 0">
         Lines (<sch:value-of select="$offendingLines"/>) in codeblocks should not exceed 95 characters. </sch:report>
