@@ -6,47 +6,34 @@
   <body>
     <p>You may want to add additional highlighters in your <xmlelement>codeblock</xmlelement>
       elements (for example, to highlight method names or arguments). To add this functionality, use
-      an <i>Oxygen Publishing Template</i> and follow these steps:<note id="note_g2d_gjv_mzb"
-        type="tip">It is recommended to use an external <b>Oxygen Publishing Engine</b> for this
-        customization as you may need to share this configuration with your teammates or to make it
-        evolve over time (using a version control system).</note><ol id="ol_o1m_xrs_qsb">
-        <li>Edit the <filepath><term keyref="glossentry_dita_ot_dir"
-            />\plugins\com.oxygenxml.highlight\highlighters\xslthl-config.xml</filepath> to add the
-          custom highlighter. For
-          example:<codeblock id="codeblock_ctl_j3v_mzb" outputclass="language-xml">&lt;highlighter id="java" file="java-hl-custom.xml"/></codeblock></li>
-        <li>Create the <filepath><term keyref="glossentry_dita_ot_dir"
-            />\plugins\com.oxygenxml.highlight\highlighters\java-hl-custom.xml</filepath> file and
-          add the custom highlighter in
-            it:<codeblock id="codeblock_x3n_bjv_mzb" outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;highlighters>
-  &lt;highlighter type="regex">
-    &lt;pattern>\([\w\s,]+\)&lt;/pattern>
-    &lt;style>arguments&lt;/style>
-  &lt;/highlighter>
-&lt;/highlighters></codeblock><note id="note_gy5_skv_mzb">You can find more details
-            about how to create highlighters in the <xref
-              href="https://sourceforge.net/p/xslthl/wiki/Home/" format="html" scope="external">XSLT
-              syntax highlighting Wiki</xref>.</note></li>
+      an <i>Oxygen Publishing Template</i> and follow these steps:<ol id="ol_o1m_xrs_qsb">
         <li conkeyref="reusables-dcpp/pt-li1" id="li_jfx_hqd_5xb"/>
         <li conkeyref="reusables-dcpp/pt-li2" id="li_kfx_hqd_5xb"/>
         <li conkeyref="reusables-dcpp/pt-li3" id="li_lfx_hqd_5xb"/>
         <li id="li_mfx_hqd_5xb">In the newly created folder, create an XSL file (for example, named
             <filepath>merged2html5Extension.xsl</filepath>) with a custom template matching the
-          highlighter
-          style:<codeblock outputclass="language-xml" id="codeblock_p1m_xrs_qsb">&lt;?xml version="1.0" encoding="UTF-8"?>
+          codeblock for a given language (based on the
+          <xmlatt>outputclass</xmlatt>):<codeblock outputclass="language-xml" id="codeblock_p1m_xrs_qsb">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:xslthl="http://xslthl.sf.net"
-  exclude-result-prefixes="xs xslthl"
+  exclude-result-prefixes="xs"
   version="2.0">
 
-  &lt;xsl:template match="xslthl:arguments" mode="xslthl">
-    &lt;span>
-      &lt;xsl:attribute name="class">
-        &lt;xsl:value-of select="concat('hl-', local-name(.))"/>
-      &lt;/xsl:attribute>
-      &lt;xsl:apply-templates mode="xslthl"/>
-    &lt;/span>
+  &lt;xsl:template match="*[contains(@class, 'pr-d/codeblock')]
+    [@outputclass='language-python']/text()">
+    &lt;xsl:analyze-string select="." regex="\(([\w,\s]+)\):">
+      &lt;xsl:matching-substring>
+        &lt;xsl:text>(&lt;/xsl:text>
+        &lt;span>
+          &lt;xsl:attribute name="class" select="'hl-arguments'"/>
+          &lt;xsl:value-of select="regex-group(1)"/>
+        &lt;/span>
+        &lt;xsl:text>):&lt;/xsl:text>
+      &lt;/xsl:matching-substring>
+      &lt;xsl:non-matching-substring>
+        &lt;xsl:next-match/>
+      &lt;/xsl:non-matching-substring>
+    &lt;/xsl:analyze-string>
   &lt;/xsl:template>
 
 &lt;/xsl:stylesheet></codeblock></li>
@@ -65,8 +52,8 @@
         file="xslt/merged2html5Extension.xsl"/>
     &lt;/xslt&gt;</codeblock></li>
         <li id="li_gbq_cgk_54b">Create a <filepath>css</filepath> folder in the publishing template
-          directory. In this directory, save a custom CSS file with rules that style the
-          highlighter. For
+          directory. In this directory, save a custom CSS file with rules that style the highlight
+          span. For
           example:<codeblock outputclass="language-css" id="codeblock_hbq_cgk_54b">.hl-arguments {
   color: orange;
 }</codeblock></li>
