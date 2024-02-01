@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-oidc-auth">
+  <title>Single Sign On in Content Fusion Enterprise</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>OpenID Connect authentication</indexterm>
+        <indexterm>Microsoft Entra ID</indexterm>
+        <indexterm>Okta</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_yk5_dgk_54b"><ph keyref="cfEnterprise"/> supports Single Sign On by configuring a
+      provider that supports the <b>OpenID Connect</b> protocol such as Microsoft Entra ID or Okta.
+      To enable Single Sign On:<ol id="ul_q5l_zsv_m2b">
+        <li id="li_zk5_dgk_54b">Define a new application in the administration interface of your
+          OpenID Connect provider to represent your <ph keyref="cfEnterprise"/> deployment:<ol
+            id="ol_xwl_cw1_h1c">
+            <li>When you are asked for a redirect URI, use the following value:
+                <codeph>https://&lt;content-fusion-address>/api/oauthc/oidcId/callback</codeph>
+              where you replace <codeph>&lt;content-fusion-address></codeph> with the actual address
+              of your server.</li>
+            <li>After you define the application, you need to note the <b>Client ID</b> (or
+                <b>Application ID</b> in some cases) and <b>Client Secret</b> that will be generated
+              for you.</li>
+          </ol></li>
+        <li id="li_gl5_dgk_54b">On the machine where Content Fusion is installed, you need to add
+          multiple lines to the <filepath>/fusion/data/config/api/api.properties</filepath> file, as
+            follows:<ol id="ol_ac3_1x1_h1c">
+            <li>One line for the name of the OpenID Connect provider, it will be displayed to the
+              users on a button as <uicontrol>Continue with
+              &lt;provider-name></uicontrol>:<pre id="pre_htp_5w1_h1c">oidc.provider_name=&lt;provider-name></pre></li>
+            <li>Three lines that identify the server that is the OpenID Connect provider for the
+              following properties: <codeph>oidc.authorization_endpoint</codeph>,
+                <codeph>oidc.token_endpoint</codeph>, and <codeph>oidc.userinfo_endpoint</codeph>.
+              For example:<ol id="ol_fp5_kx1_h1c">
+                <li>For the Okta provider, replace the <codeph>&lt;okta-subdomain></codeph> in the
+                  configuration snippet
+                  below:<codeblock id="codeblock_tyv_lx1_h1c" outputclass="language-ini">oidc.authorization_endpoint=https://&lt;okta-subdomain>.okta.com/oauth2/default/v1/authorize
+oidc.token_endpoint=https://&lt;okta-subdomain>.okta.com/oauth2/default/v1/token
+oidc.userinfo_endpoint=https://&lt;okta-subdomain>.okta.com/oauth2/default/v1/userinfo</codeblock></li>
+                <li>For Microsoft Entra ID, replace <codeph>&lt;app-id></codeph> with the
+                    <b>Application ID</b> that was generated for you during the first
+                  step:<codeblock id="codeblock_zg4_vx1_h1c" outputclass="language-ini">oidc.token_endpoint=https://login.microsoftonline.com/&lt;app-id>/oauth2/v2.0/token
+oidc.userinfo_endpoint=https://graph.microsoft.com/oidc/userinfo
+oidc.authorization_endpoint=https://login.microsoftonline.com/&lt;app-id>/oauth2/v2.0/authorize</codeblock></li>
+              </ol></li>
+            <li>Two lines that identify the application you created during the first
+              step:<codeblock id="codeblock_s1k_4y1_h1c" outputclass="language-ini">oidc.client_id=&lt;client-id>
+oidc.client_secret=&lt;client-secret></codeblock></li>
+          </ol></li>
+        <li id="li_il5_dgk_54b">Restart the Content Fusion
+          machine.<codeblock outputclass="language-javascript" id="codeblock_jl5_dgk_54b">sudo bash /fusion/admin/stop-content-fusion.sh
+sudo bash /fusion/admin/start-content-fusion.sh</codeblock></li>
+      </ol></p>
+    <p id="p_kl5_dgk_54b"><b>Result:</b> Users will now have the option to log on to Content Fusion
+      using the OpenID Connect provider.</p>
+  </body>
+  <related-links>
+    <linklist>
+      <title>Related Information:</title>
+      <link href="cf-google-auth.dita"/>
+    </linklist>
+  </related-links>
+</topic>
