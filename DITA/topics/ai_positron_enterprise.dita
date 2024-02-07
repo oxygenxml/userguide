@@ -101,9 +101,44 @@
               specify a model.</dd>
           </dlentry>
           <dlentry>
+            <dt>Enable text moderation</dt>
+            <dd>This setting applies moderation (checks whether content complies with OpenAI's usage
+              policies) to both the input text sent to the AI service and the response received from
+              the AI service. It is enabled by default.<note id="note_ohy_4vn_h1c" type="tip">
+                <p>By default, when executing an action using the <b>OpenAI</b> connector, three
+                  requests are made: </p>
+                <ul id="ul_rg1_pvn_h1c">
+                  <li>A moderation on input content request to <xref
+                      href="https://platform.openai.com/docs/guides/moderation/quickstart"
+                      format="html" scope="external"
+                        ><codeph>configured_web_address/v1/moderations</codeph></xref>.</li>
+                  <li>A completion request to <xref
+                      href="https://platform.openai.com/docs/guides/text-generation" format="html"
+                      scope="external"
+                      ><codeph>configured_web_address/v1/chat/completions</codeph></xref>.</li>
+                  <li>
+                    <p>A moderation on content returned by AI to <xref
+                        href="https://platform.openai.com/docs/guides/moderation/quickstart"
+                        format="html" scope="external"
+                          ><codeph>configured_web_address/v1/moderations</codeph></xref>.</p>
+                    <p> If your AI service does not require moderation (for example, moderation is
+                      already made by chat/completions endpoint) you can disable it by unchecking
+                      this checkbox.</p>
+                  </li>
+                </ul>
+              </note></dd>
+          </dlentry>
+          <dlentry>
             <dt>Extra Headers</dt>
             <dd>Extra name/value parameters to set in the headers that are specific for the AI
-              requests.</dd>
+                requests.<note id="note_edk_3wn_h1c" type="tip">If the service uses <b>Bearer
+                  Authentication</b>, you can specify the key in the <b>Key</b> text field. If
+                another authentication method is used, the <b>Key</b> field can be left empty, and
+                the <b>Extra Headers</b> table can be used to set the authentication info on the
+                request header. Note that editor variables can be used in this field and you can set
+                your key in editor variables and specify the value in this table like this:
+                  <codeph>${env(AI_SERVICE_KEY)}</codeph> to access pre-set values of environmental
+                variables.</note></dd>
           </dlentry>
         </dl></p>
       <p id="p_rvw_jym_21c"><u><b>Microsoft Azure OpenAI:</b></u></p>
@@ -135,6 +170,37 @@
       <note id="note_lkp_hlq_g1c">You can use <xref href="editor-variables.dita">editor
           variables</xref> such as <codeph>${env(ENV_NAME)}</codeph> in all configuration and header
         parameter values.</note>
+      <note id="note_a2k_3xn_h1c" type="trouble">In case the add-on fails to connect with the custom
+        settings, it might be useful to enable debug logging in the application to see what requests
+        and responses are made to/from the AI server. You can enable <xref
+          href="problem-report-submitted-on-technical-support-form.dita">debug logging</xref> in the
+        application by adding a <filepath>logback.xml</filepath> file in the application
+        installation folder. A minimal <codeph>logback.xml</codeph> configuration XML file content
+        to enable logging only for the AI Positron add-on's connections would look like
+        this:<codeblock id="codeblock_scr_vxn_h1c" outputclass="language-xml">&lt;configuration>
+  &lt;appender name="R2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>${user.home}/Desktop/oxygenLog/oxygen.log&lt;/file>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      &lt;fileNamePattern>${user.home}/Desktop/oxygenLog/oxygen%i.log.gz&lt;/fileNamePattern>
+      &lt;minIndex>1&lt;/minIndex>
+      &lt;maxIndex>20&lt;/maxIndex>
+    &lt;/rollingPolicy>
+    &lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      &lt;maxFileSize>12MB&lt;/maxFileSize>
+    &lt;/triggeringPolicy>
+    &lt;encoder>
+      &lt;pattern>%r %marker %p [ %t ] %c - %m%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  &lt;logger name="com.oxygenxml.positron.connector.openai" level="debug"/>
+  &lt;logger name="com.oxygenxml.positron.core" level="debug"/>
+  &lt;root level="error">
+    &lt;appender-ref ref="R2"/>
+  &lt;/root>
+&lt;/configuration></codeblock>The logging information will be copied in the
+          <filepath>Desktop/oxygenLog</filepath> folder once the application is started. To avoid
+        performance problems, the <codeph>logback.xml</codeph> file must be deleted once the logging
+        has been obtained.</note>
     </section>
   </body>
 </topic>
