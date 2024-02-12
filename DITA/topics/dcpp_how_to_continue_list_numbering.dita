@@ -15,6 +15,32 @@
 &lt;ol outputclass="continue">
   &lt;li>Third Item&lt;/li>
 &lt;/ol></codeblock></p>
+    <p>Then set the following content inside your CSS customization:</p>
+    <codeblock id="codeblock_qq1_kth_k1c" outputclass="language-css">*[class ~= "topic/ol"] {
+    counter-reset: item-count;
+}
+
+*[class ~= "topic/ol"][outputclass ~= "continue"] {
+    counter-reset: none;
+}
+
+/* Add counter marker for each list level */
+*[class ~= "topic/ol"] > *[class ~= "topic/li"]::marker {
+    counter-increment: item-count;
+    content: counter(item-count, decimal) ". ";
+}
+*[class ~= "topic/ol"][type=a] > *[class ~= "topic/li"]::marker{
+    content: counter(item-count, lower-alpha) ". "; 
+}
+*[class ~= "topic/ol"][type=A] > *[class ~= "topic/li"]::marker{
+    content: counter(item-count, upper-alpha) ". "; 
+}
+*[class ~= "topic/ol"][type=i] > *[class ~= "topic/li"]::marker{
+    content: counter(item-count, lower-roman) ". "; 
+}
+*[class ~= "topic/ol"][type=I] > *[class ~= "topic/li"]::marker{
+    content: counter(item-count, upper-roman) ". "; 
+}</codeblock>
     <p>It is possible to start the numbering of another ordered list by specifying an
         <xmlatt>outputclass="start-*"</xmlatt> attribute ("*" represents the number that will be the
       counter for the start of the list).</p>
@@ -41,5 +67,9 @@
     &lt;/tbody>
   &lt;/tgroup>
 &lt;/table></codeblock>
+    <p>To implement this functionality, you must add the new rule into the CSS mentioned above.</p>
+    <codeblock id="codeblock_hyh_1vh_k1c" outputclass="language-css">*[class ~= "topic/ol"][outputclass *= "start-"] {
+    counter-reset: item-count oxy_xpath("xs:integer(substring-after(@class, 'start-')) - 1");
+}</codeblock>
   </body>
 </topic>
