@@ -37,6 +37,7 @@
         -->
         &lt;li class="- topic/li " id="{if(@id) then @id else generate-id(.)}"
           outputclass="table-fn">
+          &lt;xsl:copy-of select="@callout"/>
           &lt;xsl:apply-templates select="node()"/>
         &lt;/li>
       &lt;/xsl:for-each>
@@ -70,9 +71,10 @@
           index-of($top-level-table//*[contains(@class, 'topic/fn')], $fn)"/>
         &lt;xsl:copy>
           &lt;xsl:apply-templates select="@*"/>
+          &lt;xsl:apply-templates select="$fn/@callout"/>
           &lt;xsl:apply-templates select="node()
             except (text(), *[contains(@class, 'hi-d/sup')])"/>
-          &lt;sup>
+          &lt;sup class="+ topic/ph hi-d/sup ">
             &lt;xsl:apply-templates select="child::*[contains(@class, 'hi-d/sup')]/@*"/>
             &lt;xsl:value-of select="$fn-number"/>
           &lt;/sup>
@@ -97,6 +99,7 @@
       index-of($top-level-table//*[contains(@class, 'topic/fn')], .)"/>
     &lt;xref type="fn" class="- topic/xref "
       href="#{generate-id(.)}" outputclass="table-fn-call">
+      &lt;xsl:copy-of select="@callout"/>
       &lt;!-- Generate an extra &lt;sup>, identical to what DITA-OT generates for other xrefs. -->
       &lt;sup class="+ topic/ph hi-d/sup ">
         &lt;xsl:value-of select="$fn-number"/>
@@ -126,6 +129,9 @@
 *[outputclass ~= 'table-fn-call'] {
   line-height: none;
 }
+*[class ~= "topic/table"] *[class ~= "topic/xref"][type = 'fn'][callout] *[class ~= "hi-d/sup"] {
+  content: oxy_xpath("ancestor::*[contains(@class, 'topic/xref')]/@callout");
+}
 
 /* Customize the list containing all the table footnotes. */
 *[outputclass ~= 'table-fn-container'] {
@@ -142,8 +148,11 @@
   font-size: smaller;
   content: "(" counter(table-footnote) ")";
 }
+*[outputclass ~= 'table-fn'][callout]::marker {
+  content: "(" attr(callout) ")";
+}
 
-/* Customize xrefs pointing to footnotes with IDs. */
+/* Customize xrefs pointing to footnotes, inside the table. */
 *[class ~= "topic/table"] *[class ~= "topic/xref"][type = 'fn'] {
   color: unset;
   text-decoration: none;
