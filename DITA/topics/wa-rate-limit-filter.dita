@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-rate-limit-filter">
+  <title>How to Enable the Rate Limit Filter</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Rate limit filter</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_nqr_dgk_54b">According to the <xref
+        href="https://nightlies.apache.org/tomcat/tomcat-9.0.x/docs/config/filter.html#Rate_Limit_Filter"
+        format="html" scope="external">Apache Tomcat Documentation</xref>, the <b>Rate Limit
+        Filter</b> can help mitigate Denial of Service (DoS) and Brute Force attacks by limiting the
+      number of a requests that are allowed from a single IP address within a time window (e.g. 300
+      Requests per 60 seconds). This topic explains how to enable the <b>Rate Limit Filter</b>.</p>
+    <p id="p_dw4_kkz_t1c">
+      <note id="note_sks_kkz_t1c" type="caution">If Tomcat is behind a reverse proxy then you must
+        make sure that the Rate Limit Filter sees the client IP address. For example, if you are
+        using the <xref
+          href="https://nightlies.apache.org/tomcat/tomcat-9.0.x/docs/config/filter.html#Remote_IP_Filter"
+          format="html" scope="external">Remote IP Filter</xref>, then the filter mapping for the
+        Rate Limit Filter must come <i>after</i> the mapping of the Remote IP Filter to ensure that
+        each request has its IP address resolved before the Rate Limit Filter is applied. Failure to
+        do so will count requests from different IPs in the same bucket and will result in a
+        self-inflicted DoS attack.</note>
+    </p>
+    <p id="p_txp_pkz_t1c">To enable the Rate Limit Filter:</p>
+    <p id="p_dmh_rkz_t1c">
+      <ol id="ol_lkz_rkz_t1c">
+        <li id="li_mkz_rkz_t1c">Locate the <filepath>web.xml</filepath> file that is used by the
+          Tomcat server.</li>
+        <li id="li_fqn_tkz_t1c">
+          <p id="p_uvc_bmz_t1c">Define the <b>Rate Limit Filter</b>:</p>
+          <p id="p_rxt_flz_t1c">You need to define the filter within the
+              <filepath>web.xml</filepath> file. This involves specifying the filter name, the
+            filter class, and any initialization parameters such as the allowed number of requests
+            and the time period for these requests.</p>
+          <p id="p_skc_3lz_t1c">The <b>Rate Limit Filter</b> supports the following initialization
+            parameters (from the <xref
+              href="https://nightlies.apache.org/tomcat/tomcat-9.0.x/docs/config/filter.html#Rate_Limit_Filter"
+              format="html" scope="external">Apache Tomcat Documentation</xref>):</p>
+          <p id="p_zbf_nlz_t1c">
+            <table frame="all" rowsep="1" colsep="1" id="table_imh_rkz_t1c">
+              <tgroup cols="2">
+                <colspec colnum="1" colname="col1"/>
+                <colspec colnum="2" colname="col2"/>
+                <thead>
+                  <row>
+                    <entry><b>Attribute</b></entry>
+                    <entry><b>Description</b></entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>bucketDuration</entry>
+                    <entry>The number of seconds in a time bucket. Default is <b>60</b>.</entry>
+                  </row>
+                  <row>
+                    <entry>bucketRequests</entry>
+                    <entry>The number of requests that are allowed in a time bucket. Default is
+                        <b>300</b>.</entry>
+                  </row>
+                  <row>
+                    <entry>enforce</entry>
+                    <entry>Set to <i>false</i> to allow requests through even when they exceed the
+                      maximum allowed per time window. Your application code can still inspect the
+                      Request Attribute
+                        <codeph>org.apache.catalina.filters.RateLimitFilter.Count</codeph> to
+                      retrieve the number of Requests made from that IP within the time window.
+                      Default is <b>true</b>.</entry>
+                  </row>
+                  <row>
+                    <entry>statusCode</entry>
+                    <entry>The status code to return when a request is dropped. Default is
+                        <b>429</b>.</entry>
+                  </row>
+                  <row>
+                    <entry>statusMessage</entry>
+                    <entry>The status message to return when a request is dropped. Default is <b>Too
+                        many requests</b>.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+          </p>
+          <p id="p_jmh_rkz_t1c">Code
+            example:<codeblock outputclass="language-xml">&lt;!-- web.xml -->  
+
+    &lt;filter>
+       &lt;filter-name>RateLimitFilter Global&lt;/filter-name>
+       &lt;filter-class > org.apache.catalina.filters.RateLimitFilter&lt;/filter-class >
+       &lt;init-param>
+            &lt;param-name>bucketRequests&lt;/param-name>
+            &lt;param-value>100&lt;/param-value>
+        &lt;/init-param>
+	&lt;init-param>
+            &lt;param-name>bucketDuration&lt;/param-name>
+            &lt;param-value>60&lt;/param-value>
+	&lt;/init-param>
+    &lt;/filter></codeblock></p>
+        </li>
+        <li id="li_lym_ylz_t1c">
+          <p id="p_vmp_1mz_t1c">Map the filter to URL patterns:</p>
+          <p id="p_rlm_cmz_t1c">You need to map the filter to specific URL patterns within your
+            application. This determines which requests are subjected to rate limiting.</p>
+          <p id="p_nj3_dmz_t1c">Code
+            example:<codeblock outputclass="language-xml">&lt;!-- web.xml -->
+
+    &lt;filter-mapping>
+	&lt;filter-name>RateLimitFilter Global&lt;/filter-name>
+	&lt;url-pattern>*&lt;/url-pattern>
+    &lt;/filter-mapping></codeblock></p>
+        </li>
+        <li id="li_h4b_fmz_t1c">Deploy/Restart the Tomcat server.</li>
+      </ol>
+    </p>
+  </body>
+</topic>
