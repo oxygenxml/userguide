@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="ope-how_to_use_oxygen_publishing_engine_from_a_docker_container">
+  <title>How to Use Oxygen Publishing Engine from a Docker Container</title>
+  <shortdesc>This topic explains how to create, build and use <ph keyref="product"/> with Docker. It
+    has been made for Mac or Linux system.</shortdesc>
+  <taskbody>
+    <context id="context_x1j_zdr_51c">
+      <p>To create and use the <ph keyref="product"/> Docker image, follow these steps:</p>
+    </context><steps id="ol_zvf_kdr_51c">
+      <step>
+        <cmd>Download and install Docker.</cmd>
+      </step>
+      <step>
+        <cmd>Create an <filepath>ope-docker</filepath> directory and open it.</cmd>
+      </step>
+      <step>
+        <cmd>Create a <filepath>Dockerfile</filepath> file inside the folder with the following
+          content:</cmd>
+        <info>
+          <codeblock id="codeblock_mqr_kdr_51c" outputclass="language-bourne">FROM eclipse-temurin:17-jre
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+LABEL "maintainer"="Syncro Soft (Oxygen XML)"
+LABEL "org.opencontainers.image.authors"="https://www.oxygenxml.com"
+LABEL "org.opencontainers.image.documentation"="https://www.oxygenxml.com/doc/ug-ope/"
+LABEL "org.opencontainers.image.vendor"="Syncro Soft (Oxygen XML)"
+LABEL "org.opencontainers.image.licenses"="Oxygen XML License"
+LABEL "org.opencontainers.image.title"="Oxygen Publishing Engine"
+LABEL "org.opencontainers.image.description"="Oxygen Publishing Engine (based on DITA OT) for content authored in the Darwin Information Typing Architecture."
+LABEL "org.opencontainers.image.source"="https://www.oxygenxml.com/publishing_engine.html"
+
+RUN export DEBIAN_FRONTEND=noninteractive
+# Install unzip utility
+RUN apt-get update -q
+RUN apt-get install -qy --no-install-recommends -y unzip
+# Remove cache left by apt-get
+RUN rm -rf /var/lib/apt/lists/*
+
+# Download oxygen publishing engine and copy it to the /opt/app/ folder
+RUN curl -sLo /tmp/ope.zip https://www.oxygenxml.com/InstData/PublishingEngine/oxygen-publishing-engine.zip
+RUN unzip -qq /tmp/ope.zip -d /tmp/
+RUN mv /tmp/oxygen-publishing-engine /tmp/ope
+RUN rm /tmp/ope.zip
+RUN mkdir -p /opt/app
+RUN mv /tmp/ope /opt/app/
+RUN chmod 755 /opt/app/ope/bin/dita
+
+# Create the script which creates the license key on disk 
+# before running the transformation and then invokes the dita script
+RUN echo "#! /bin/sh" >> /opt/app/ope/bin/setup
+# Create a license key file from the env variable, run the "dita" script and then remove license file at the end.
+RUN echo "echo \"\$LICENSE_KEY\" > /opt/app/ope/licensekey.txt" >> /opt/app/ope/bin/setup
+RUN echo "/opt/app/ope/bin/dita \$@" >> /opt/app/ope/bin/setup
+RUN chmod 755 /opt/app/ope/bin/setup
+RUN chmod +x /opt/app/ope/bin/setup
+
+# Create a particular user under which to run the build.
+RUN useradd -ms /bin/bash ope
+RUN chown -R ope:ope /opt/app/ope
+USER ope
+
+# Set env variables and define the entry point.
+ENV OPE_HOME=/opt/app/ope
+ENV PATH=${PATH}:${OPE_HOME}/bin
+WORKDIR $OPE_HOME
+ENTRYPOINT ["/opt/app/ope/bin/setup"]</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Set the version by running the <codeph>export VERSION=<ph keyref="minorVersion"
+            /></codeph> command then build the image by using the following commands:</cmd>
+        <info>
+          <codeblock id="codeblock_dh4_qhr_51c" outputclass="language-bourne">docker image build -t oxygen-publishing-engine:$VERSION .</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Create a <filepath>licensekey.txt</filepath> file inside the folder and copy the
+          license key in it.</cmd>
+      </step>
+      <step>
+        <cmd>Run the transformation from the Docker image:</cmd>
+        <info>
+          <codeblock id="codeblock_zfd_dhr_51c" outputclass="language-bourne">sudo docker run -e LICENSE_KEY="$(&lt;licensekey.txt)" \
+--rm --name dita-ot-publish \
+-v ~/OxygenXMLEditor/samples/dita/flowers:/src \
+oxygen-publishing-engine:$VERSION \
+-i /src/flowers.ditamap \
+-o /src/out/pdf-css-html5 \
+-f pdf-css-html5 -v</codeblock>
+          <codeblock outputclass="language-bourne" id="codeblock_trb_khr_51c">sudo docker run -e LICENSE_KEY="$(&lt;licensekey.txt)" \
+--rm --name dita-ot-publish \
+-v ~/OxygenXMLEditor/samples/dita/flowers:/src \
+oxygen-publishing-engine:$VERSION \
+-i /src/flowers.ditamap \
+-o /src/out/webhelp-responsive \
+-f webhelp-responsive -v</codeblock>
+        </info>
+      </step>
+    </steps></taskbody>
+  <related-links>
+    <link href="https://www.dita-ot.org/dev/topics/using-docker-images" format="html"
+      scope="external">
+      <linktext>Running the dita command from a Docker image</linktext>
+    </link>
+  </related-links>
+</task>
