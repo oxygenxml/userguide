@@ -1,8 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="cf-amazon-s3-connector">
-    <title>Amazon S3 Connector</title>
-    <body>
-        <p>TODO</p>
-    </body>
+  <title>Publishing Content to Amazon S3</title>
+  <body>
+    <p>The Amazon S3 connector facilitates the publishing of deliverable build outputs to the
+      designated Bucket. </p>
+    <section id="section_krc_5pl_2bc">
+      <title>Requirements</title>
+      <p>To publish content to an Amazon S3 Bucket, ensure you have the following:</p>
+      <ul id="ul_lcs_srl_2bc">
+        <li>An AWS account.</li>
+        <li>An existing S3 Bucket configured. For more details, refer to the AWS <xref
+          href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html"
+          format="html" scope="external">S3 Documentation</xref></li>
+        <li>The Access Key ID and Secret Access Key associated with your AWS account. For
+          more details, refer to the AWS <xref
+            href="https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html"
+            format="html" scope="external">Security Credentials
+            Documentation</xref></li>
+      </ul>
+      <p>For additional information regarding the above points, please consult the <xref
+        href="https://docs.aws.amazon.com/" format="html" scope="external">AWS
+        Documentation</xref>.</p>
+    </section>
+    <section id="section_wzb_hql_2bc">
+      <title>Define the Connector</title>
+      <p>To configure an Amazon S3 Connector, the following fields must be provided:<dl
+        id="dl_uc3_4vy_dbc">
+        <dlentry>
+          <dt>Connector Name</dt>
+          <dd>The name of the connector.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Region Name</dt>
+          <dd>The AWS Region where your Amazon S3 bucket is hosted. When you create a
+            bucket, you specify the AWS Region where you want Amazon S3 to create
+            the bucket.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Bucket Name</dt>
+          <dd>The Amazon S3 container used for storing your files.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Access Key ID</dt>
+          <dd>A unique identifier associated with your AWS account or with an IAM
+            user.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Secret Access Key</dt>
+          <dd>The secret key used together with Access key ID for authentication.</dd>
+        </dlentry>
+      </dl></p>
+      <p>(Screenshot with Amazon S3 connector dialog?)</p>
+    </section>
+    <section id="section_t53_svy_dbc">
+      <title>Select the Amazon S3 Connector in Deliverable Settings Page</title>
+      <p>To publish the output of a deliverable to Amazon S3, please proceed with the
+        following steps: <ol id="ol_lmg_bsl_2bc">
+          <li>After configuring the Amazon S3 Connector, navigate to the Deliverable
+            Settings page. You can access this page by either editing an existing
+            Deliverable or creating a new one.</li>
+          <li>Within the Deliverable Settings page, check the "Upload output using a
+            publishing connector" option checkbox.</li>
+          <li>Select the Amazon S3 Connector that you previously defined from the provided
+            list.</li>
+          <li>Specify the <filepath>Destination Folder</filepath> where the build output
+            will be published. Ensure that the designated folder already exists within
+            the Amazon S3 Bucket.<note id="note_zch_2sl_2bc">The output will be
+              published as a zip archive in this folder. </note></li>
+          <li>Save the Deliverable settings.</li>
+          <li>Begin the Deliverable build process. Upon completion, the build output will
+            be published to the configured Amazon S3 Bucket as a zip archive within the
+            folder you previously designated as the destination folder.</li>
+        </ol></p>
+    </section>
+    <section id="section_krd_3sl_2bc">
+      <title>(Optional) Lambda Function to unzip content</title>
+      <p>The Amazon S3 Connector will publish the deliverable output as a zip file to the
+        Destination Folder specified in the Deliverable Settings page. To extract the file,
+        one approach is to configure a Lambda Function on AWS to unzip the archive within
+        your designated <filepath>Documentation Folder</filepath>. (add the link to the
+        procedure on how to define a lambda function)<note id="note_a2b_xvy_dbc">The
+          <filepath>Documentation Folder</filepath> should be the folder that is
+          publicly accessible to users.</note></p>
+    </section>
+    <section id="section_jwq_511_fbc">
+      <title>(Optional) Lifecycle Rule to delete incomplete uploads</title>
+      <p>The Amazon S3 Connector will use multipart upload for larger files in order to
+        optimize performance. If the upload is interrupted before completing, upload parts
+        may remain stored inside your Amazon S3 Bucket. It is recommended to configure a
+        <filepath>Lifecycle Rule</filepath>  (add the link to the procedure on how to
+        configure a lifecyle rule) for your bucket to automatically delete incomplete
+        multipart uploads. </p>
+    </section>
+  </body>
 </topic>
