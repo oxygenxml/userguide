@@ -83,6 +83,93 @@
         procedure on how to define a lambda function)<note id="note_a2b_xvy_dbc">The
           <filepath>Documentation Folder</filepath> should be the folder that is
           publicly accessible to users.</note></p>
+      <p><b><u>Prerequisite:</u></b></p>
+      <p id="p_mps_nhg_p1c">You must have an Amazon role that has <i>S3 Full Access</i> and the <i>AWS
+        Lambda Basic Execution Role</i> policies.</p>
+      <p id="p_bmx_4kg_p1c">
+        <image href="../img/role_policies.png"/></p>
+      <p id="p_twb_53g_p1c"><b><u>Procedure:</u></b></p>
+      <p>
+        <ol id="ol_a2d_3bg_41c">
+          <li>Go to the AWS Lambda and create a new function.<note id="note_c4z_lbg_41c">Your
+            Lambda function and the bucket where the documentation is stored should be
+            in the same region.</note></li>
+          <li>
+            <p id="p_c13_mkg_p1c">Give your function a name, select the latest version of Python
+              runtime, and your already created role.</p>
+            <p id="p_ern_mkg_p1c"><image href="../img/lambda_config.png" id="image_axh_hcg_41c"/></p>
+          </li>
+          <li>In the <b>Code</b> section of the function, paste the code into the
+            <filepath>lambda_function.py</filepath>
+            file.<codeblock id="codeblock_tds_xdg_41c" outputclass="language-python">import zipfile
+              import urllib.parse
+              from io import BytesIO
+              from mimetypes import guess_type
+              import boto3
+              
+              s3 = boto3.client('s3')
+              
+              # Target path to unzip the archive.
+              TARGET_PATH = ""
+              
+              def lambda_handler(event, context):
+              # Bucket's name.
+              bucket = event['Records'][0]['s3']['bucket']['name']
+              
+              # Zip file's name.
+              zip_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'])
+              
+              try:
+              # Get the zipfile from S3 request.
+              obj = s3.get_object(Bucket=bucket, Key=zip_key)
+              z = zipfile.ZipFile(BytesIO(obj['Body'].read()))
+              
+              # Extract and upload each file to the bucket.
+              for filename in z.namelist():
+              s3.upload_fileobj(
+              Fileobj=z.open(filename),
+              Bucket=bucket,
+              Key=TARGET_PATH + filename,
+              )
+              
+              # Delete the archive after extraction.
+              s3.delete_object(Bucket=bucket, Key=zip_key)
+              except Exception as error:
+              print(f"An error occurred {error=}")</codeblock><note id="note_rpt_ydg_41c">If
+                you want to specify a custom target path, then modify the <b>TARGET_PATH</b> variable.
+                For example, if you want to unzip the archive into the <b>Documentation</b> folder, then
+                set the variable to: <codeph>TARGET_PATH = "Documentation/</codeph>.</note></li>
+          <li>Click the <b>Deploy</b> button to save your changes.</li>
+          <li><p>Go to the <uicontrol>Configuration</uicontrol> tab of the Lambda function.</p>
+            <p id="p_jn2_zjg_p1c"><image href="../img/configuration_tab.png" id="image_ctq_m2g_41c"/></p></li>
+          <li id="li_bdl_1kg_p1c">Click the <b>Edit</b> button of the <b>General
+            Configuration</b>.</li>
+          <li>Set the timeout to 15 minutes 0 seconds.<note id="note_amd_p2g_41c">If you do
+            not do that, your Lambda function may get timed out and the zip will not be
+            unzipped/deleted.</note></li>
+          <li>Set the <b>Memory</b> to somewhere between 1000-5000 MB.</li>
+          <li>Set the <b>Ephemeral storage</b> to somewhere between 1000-5000 MB.<note
+            id="note_dbx_cqq_3bc">If your output's size is bigger than allocated Memory and
+            Ephemeral storage the lambda function may fail to execute.</note></li>
+          <li>Click <b>Save</b> button.</li>
+          <li>
+            <p id="p_q2f_qkg_p1c">In the <b>Function overview</b> section, click the <b>Add
+              Trigger</b> button.</p>
+            <p id="p_zym_qkg_p1c"><image id="image_qss_x2g_41c" href="../img/add_trigger.png"/></p>
+          </li>
+          <li>As a <b>Source Trigger</b>, select <b>S3</b>.</li>
+          <li>Select your desired bucket.</li>
+          <li>Select <b>All object create events</b> for <b>Event Types</b>.</li>
+          <li>
+            <p id="p_e5n_rkg_p1c">In the <b>Suffix</b> field, type <b>.zip</b> so that the Lambda
+              function will only trigger for <b>.zip</b> files.</p>
+            <p id="p_pbd_rkg_p1c"><image href="../img/trigger_config.png" id="image_qfk_jfg_41c"/></p>
+          </li>
+          <li>Click <b>Add</b>.</li>
+        </ol>
+      </p>
+      <p><b>Result:</b> The AWS Lambda Function should trigger every time a <b>.zip</b> file is
+        uploaded, and it will unzip it and replace the files in a target directory.</p>
     </section>
     <section id="section_jwq_511_fbc">
       <title>(Optional) Lifecycle Rule to delete incomplete uploads</title>
