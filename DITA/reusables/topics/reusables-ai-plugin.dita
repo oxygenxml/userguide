@@ -81,36 +81,127 @@
         </dlentry>
         <dlentry id="dlentry_wym_225_y1c">
           <dt>API key</dt>
-          <dd>The <b>Microsoft Azure OpenAI Service</b> key necessary to work with the connector. If
-            you do not specify an API key, the add-on will attempt to use environment variables for
-            Microsoft Entra token authentication. It supports these authentication methods: <ul
-              id="ul_tqq_tnt_qbc">
-              <li>For service principal authentication using a client secret, set these environment
-                variables: <ul id="ul_fcf_znt_qbc">
-                  <li> AZURE_CLIENT_ID </li>
-                  <li>AZURE_CLIENT_SECRET</li>
-                  <li>AZURE_TENANT_ID</li>
-                </ul></li>
-              <li>For service principal authentication using a client certificate, set these
-                environment variables: <ul id="ul_zcp_14t_qbc">
-                  <li>AZURE_CLIENT_ID</li>
-                  <li>AZURE_CLIENT_CERTIFICATE_PATH</li>
-                  <li>AZURE_CLIENT_CERTIFICATE_PASSWORD</li>
-                  <li>AZURE_TENANT_ID</li>
-                </ul></li>
-              <li>For username and password authentication, set these environment variables: <ul
-                  id="ul_yx5_c4t_qbc">
-                  <li>AZURE_CLIENT_ID</li>
-                  <li>AZURE_USERNAME</li>
-                  <li>AZURE_PASSWORD</li>
-                </ul></li>
-            </ul><note id="note_qfc_l4t_qbc">Make sure the service principal you <xref
-                href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal"
-                format="html" scope="external">created</xref> has a role that grants access to the
-              Azure OpenAI service (e.g. the <xref
+          <dd>The <b>Microsoft Azure OpenAI Service</b> key necessary to work with the connector. </dd>
+          <dd>
+            <p>If you don't specify an API key, the add-on will try to use environment variables to
+              authenticate using Microsoft Entra ID.</p>
+            <p>To use this method, you must <xref
+                href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-microsoft-entra-id-and-create-a-service-principal"
+                format="html" scope="external">create a service principal</xref> and <xref
+                  href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#add-role-assignment-to-an-azure-openai-resource"
+                  format="html" scope="external">assign a role</xref> to it that allows access to the
+              Azure OpenAI service, like the <xref
                 href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#cognitive-services-openai-user"
-                format="html" scope="external">Cognitive Services OpenAI User</xref>
-              role).</note><note id="note_hwc_j4t_qbc">
+                format="html" scope="external">Cognitive Services OpenAI User</xref> role.</p>
+            <p> The add-on supports these authentication methods: <dl>
+                <dlentry>
+                  <dt>Service principal authentication using a client secret</dt>
+                  <dd>For this authentication <xref
+                      href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-3-create-a-new-client-secret"
+                      format="html" scope="external">create a client secret</xref> and set these
+                    environment variables: <table frame="all" rowsep="1" colsep="1">
+                      <tgroup cols="2" align="left">
+                        <colspec colname="c1" colnum="1" colwidth="1*"/>
+                        <colspec colname="c2" colnum="2" colwidth="1*"/>
+                        <thead>
+                          <row>
+                            <entry>Variable name</entry>
+                            <entry>Value</entry>
+                          </row>
+                        </thead>
+                        <tbody>
+                          <row>
+                            <entry>AZURE_CLIENT_ID</entry>
+                            <entry> ID of a Microsoft Entra application.</entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_TENANT_ID</entry>
+                            <entry>ID of the application's Microsoft Entra tenant.</entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_CLIENT_SECRET</entry>
+                            <entry>One of the application's client secrets.</entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </table>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Service principal authentication using a client certificate</dt>
+                  <dd>For this authentication , <xref
+                      href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-1-recommended-upload-a-trusted-certificate-issued-by-a-certificate-authority"
+                      format="html" scope="external">set up a certificate</xref> and set these
+                    environment variables: <table frame="all" rowsep="1" colsep="1">
+                      <tgroup cols="2" align="left">
+                        <colspec colname="c1" colnum="1" colwidth="1*"/>
+                        <colspec colname="c2" colnum="2" colwidth="1*"/>
+                        <thead>
+                          <row>
+                            <entry>Variable name</entry>
+                            <entry>Value</entry>
+                          </row>
+                        </thead>
+                        <tbody>
+                          <row>
+                            <entry>AZURE_CLIENT_ID</entry>
+                            <entry> ID of a Microsoft Entra application.</entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_TENANT_ID</entry>
+                            <entry>ID of the application's Microsoft Entra tenant.</entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_CLIENT_CERTIFICATE_PATH</entry>
+                            <entry>
+                              <p>Path of a PFX/PEM certificate file</p>
+                            </entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_CLIENT_CERTIFICATE_PASSWORD</entry>
+                            <entry>Password for a PFX/PEM certificate</entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </table>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt> Username and password authentication</dt>
+                  <dd>For username and password authentication, set these environment variables:
+                    <table frame="all" rowsep="1" colsep="1">
+                      <tgroup cols="2" align="left">
+                        <colspec colname="c1" colnum="1" colwidth="1*"/>
+                        <colspec colname="c2" colnum="2" colwidth="1*"/>
+                        <thead>
+                          <row>
+                            <entry>Variable name</entry>
+                            <entry>Value</entry>
+                          </row>
+                        </thead>
+                        <tbody>
+                          <row>
+                            <entry>AZURE_CLIENT_ID</entry>
+                            <entry> ID of a Microsoft Entra application.</entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_TENANT_ID</entry>
+                            <entry>ID of the application's Microsoft Entra tenant.</entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_USERNAME</entry>
+                            <entry>A username (usually an email address).</entry>
+                          </row>
+                          <row>
+                            <entry>AZURE_PASSWORD</entry>
+                            <entry>The associated password for the given username.</entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </table></dd>
+                </dlentry>
+            </dl></p>
+            <note id="note_hwc_j4t_qbc">
               <ph keyref="product"/> should be restarted after each environment variable change for
               the changes to take effect. </note>
           </dd>
