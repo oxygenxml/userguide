@@ -643,6 +643,43 @@ is not available for XQuery files.&lt;/instruction>
   ]
 }</codeblock></p>
     </section>
+    <section id="section_lqv_qnt_vbc">
+      <title>Function Calls</title>
+      <p>Custom defined actions can refer in their definition to existing functions that interact
+        with the application.</p>
+      <p>Example of a function reference that gets called by the AI engine to obtain the entire
+        document contents:<codeblock id="codeblock_ibw_5nt_vbc" outputclass="language-json">{
+    "id": "action.summarize",
+    "title": "Summarize",
+    "categoryId": "Overview",
+    "type": "show-response",
+    "description": "Generate a summary of the selected content or the entire document.",
+    "context": "Your task is to summarize the provided user text.",
+    "parameters": {
+        "function_refs": [
+            {
+                "ref": "get_full_document"
+            }
+        ]
+    }
+}</codeblock></p>
+      <p>The current available function reference values are:</p>
+      <ul id="ul_rhk_14t_vbc">
+        <li><codeph>get_full_document</codeph>- Obtain all text without mark-up from the current
+          editor</li>
+        <li><codeph>get_full_document_text</codeph> - Obtain all text with mark-up from the current
+          editor</li>
+        <li><codeph>get_text_around_caret</codeph>- Obtain a size limited content from the current
+          document around caret.</li>
+      </ul>
+      <p>You can impose a description for the referenced function that is called by the AI engine: </p>
+      <codeblock id="pre_uxb_24t_vbc" outputclass="language-json">"function_refs": [
+  {
+      "ref": "get_full_document",
+      "description": "The function is designed to retrieve the complete document."
+  }
+]</codeblock>
+    </section>
     <section id="record-changes">
       <title>Create Custom Prompts/Actions by Recording Changes</title>
       <p>The <uicontrol><image href="../img/ai-record18.png" id="image_cgj_cz3_zyb"
