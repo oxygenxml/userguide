@@ -99,45 +99,52 @@
             <p id="p_ern_mkg_p1c"><image href="../img/lambda_config.png" id="image_axh_hcg_41c"/></p>
           </li>
           <li>In the <b>Code</b> section of the function, paste the code into the
-            <filepath>lambda_function.py</filepath>
-            file.<codeblock id="codeblock_tds_xdg_41c" outputclass="language-python">import zipfile
-              import urllib.parse
-              from io import BytesIO
-              from mimetypes import guess_type
-              import boto3
+              <filepath>lambda_function.py</filepath>
+              file.<codeblock id="codeblock_tds_xdg_41c" outputclass="language-python">import zipfile
+import urllib.parse
+from io import BytesIO
+from mimetypes import guess_type
+import boto3
+import logging
               
-              s3 = boto3.client('s3')
+s3 = boto3.client('s3')
+logging.getLogger().setLevel(logging.INFO)
               
-              # Target path to unzip the archive.
-              TARGET_PATH = ""
+# Target path to unzip the archive.
+TARGET_PATH = "target"
               
-              def lambda_handler(event, context):
-              # Bucket's name.
-              bucket = event['Records'][0]['s3']['bucket']['name']
+def lambda_handler(event, context):
+  # Bucket's name.
+  bucket = event['Records'][0]['s3']['bucket']['name']
+  logging.info("Using bucket: " + bucket);
               
-              # Zip file's name.
-              zip_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'])
+  # Zip file's name.
+  zip_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'])
+  logging.info("File to unzip: " + zip_key);
+  logging.info("Path to unzp the files: " + TARGET_PATH);
               
-              try:
-              # Get the zipfile from S3 request.
-              obj = s3.get_object(Bucket=bucket, Key=zip_key)
-              z = zipfile.ZipFile(BytesIO(obj['Body'].read()))
+  try:
+    # Get the zipfile from S3 request.
+    obj = s3.get_object(Bucket=bucket, Key=zip_key)
+    z = zipfile.ZipFile(BytesIO(obj['Body'].read()))
               
-              # Extract and upload each file to the bucket.
-              for filename in z.namelist():
-              s3.upload_fileobj(
-              Fileobj=z.open(filename),
-              Bucket=bucket,
-              Key=TARGET_PATH + filename,
-              )
+    # Extract and upload each file to the bucket.
+    for filename in z.namelist():
+      content_type = str(guess_type(filename, strict=False)[0])
+      s3.upload_fileobj(
+        Fileobj=z.open(filename),
+        Bucket=bucket,
+        Key=TARGET_PATH + filename,
+        ExtraArgs={'ContentType': content_type}
+      )
               
-              # Delete the archive after extraction.
-              s3.delete_object(Bucket=bucket, Key=zip_key)
-              except Exception as error:
-              print(f"An error occurred {error=}")</codeblock><note id="note_rpt_ydg_41c">If
-                you want to specify a custom target path, then modify the <b>TARGET_PATH</b> variable.
-                For example, if you want to unzip the archive into the <b>Documentation</b> folder, then
-                set the variable to: <codeph>TARGET_PATH = "Documentation/</codeph>.</note></li>
+    # Delete the archive after extraction.
+    s3.delete_object(Bucket=bucket, Key=zip_key)
+  except Exception as error:
+    print(f"An error occurred {error=}")</codeblock><note id="note_rpt_ydg_41c">If you
+              want to specify a custom target path, then modify the <b>TARGET_PATH</b> variable. For
+              example, if you want to unzip the archive into the <b>Documentation</b> folder, then
+              set the variable to: <codeph>TARGET_PATH = "Documentation/</codeph>.</note></li>
           <li>Click the <b>Deploy</b> button to save your changes.</li>
           <li><p>Go to the <uicontrol>Configuration</uicontrol> tab of the Lambda function.</p>
             <p id="p_jn2_zjg_p1c"><image href="../img/configuration_tab.png" id="image_ctq_m2g_41c"/></p></li>
