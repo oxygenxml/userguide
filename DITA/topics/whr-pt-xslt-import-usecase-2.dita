@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="whr-pt-xslt-import-usecase-2">
+  <title>Use Case 2: Display Footnotes below Tables</title>
+  <body>
+    <p id="p_k4w_4nq_pwb">Suppose you want to separate the footnotes displayed in the WebHelp
+      Responsive pages: all footnotes are displayed at the end of the page except those contained in
+      tables which are displayed just after them.</p>
+    <p id="p_bn4_cgk_54b">To add this functionality using a <abbreviated-form
+        keyref="glossentry-wh-publishing-template"/>, follow these steps:<ol id="ol_kzc_tnq_pwb">
+        <li id="li_lzc_tnq_pwb">If you have not already created a Publishing Template, see <xref
+            href="whr-create-publishing-template.dita">How to Create a Publishing
+          Template</xref>.</li>
+        <li id="li_nf1_5nq_pwb">Link the folder associated with the publishing template to your
+          current project in the <uicontrol product="author developer editor webhelp-responsive ope"
+            >Project</uicontrol><uicontrol product="authorEclipse developerEclipse editorEclipse"
+            >Project Explorer</uicontrol> view.<p id="p_a2j_5nq_pwb"><b>Step Result:</b> You should
+            have the <filepath>custom_template</filepath> folder linked in your project.</p></li>
+        <li id="li_pkp_vnq_pwb">Using the <uicontrol
+            product="author developer editor webhelp-responsive ope">Project</uicontrol><uicontrol
+            product="authorEclipse developerEclipse editorEclipse">Project Explorer</uicontrol>
+          view, create an <filepath>xsl</filepath> folder inside the project root folder.<p
+            id="p_fpl_wnq_pwb"><b>Step Result:</b> You should have the
+              <filepath>custom_template/xsl</filepath> folder in your project.</p></li>
+        <li id="li_evp_xnq_pwb">Create your customization stylesheet (for example,
+            <b>tablesFootnotes.xsl</b>) in the <filepath>custom_template/xsl</filepath> folder with
+          the following
+          content:<codeblock outputclass="language-xml" id="codeblock_cn4_cgk_54b">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:whc="http://www.oxygenxml.com/webhelp/components"
+  exclude-result-prefixes="#all"
+  version="3.0">
+  
+  &lt;!--
+    Match only top level tables (i.e tables that are not nested in other tables),
+    that contains some footnotes.
+  -->
+  &lt;xsl:template match="*[contains(@class, 'topic/table')]
+    [not(ancestor::*[contains(@class, 'topic/table')])]
+    [//*[contains(@class, 'topic/fn')]]">
+    &lt;xsl:variable name="top-level-table" select="."/>
+    &lt;xsl:next-match>
+      &lt;xsl:with-param name="top-level-table" select="$top-level-table" tunnel="yes"/>
+    &lt;/xsl:next-match>
+    &lt;!-- Create a list with all the footnotes from the current table. -->
+    &lt;div outputclass="table-fn-container">
+      &lt;xsl:for-each select=".//*[contains(@class, 'topic/fn')]">
+        &lt;!--
+          Try to preserve the footnote ID, if available, so that the xrefs will have a target.
+        -->
+        &lt;div id="{if(@id) then @id else generate-id(.)}">
+          &lt;xsl:variable name="fnid">
+            &lt;xsl:number from="$top-level-table" level="any"/>
+          &lt;/xsl:variable>
+          
+          &lt;xsl:call-template name="commonattributes"/>
+          &lt;a name="tblfntarg_{$fnid}" href="#tblfnsrc_{$fnid}">
+            &lt;sup>
+              &lt;xsl:value-of select="$fnid"/>
+            &lt;/sup>
+          &lt;/a>
+          &lt;xsl:text>  &lt;/xsl:text>
+          
+          &lt;xsl:apply-templates/>
+        &lt;/div>
+      &lt;/xsl:for-each>
+    &lt;/div>
+  &lt;/xsl:template>
+  
+  &lt;!-- 
+    Process footnotes both inside and outside tables (based on the top-level-table parameter).
+  -->
+  &lt;xsl:template match="*[contains(@class, ' topic/fn ')]" name="topic.fn">
+    &lt;xsl:param name="xref"/>
+    &lt;xsl:param name="top-level-table" tunnel="yes"/>
+    &lt;!-- Footnotes with IDs must be ignored, they are accessible only through xrefs. -->
+    &lt;xsl:if test="not(@id) or $xref = 'yes'">
+      &lt;xsl:variable name="fnid" select="
+        if ($top-level-table) then
+          index-of($top-level-table//*[contains(@class, 'topic/fn')], .)
+        else
+          index-of(//*[contains(@class, 'topic/fn')]
+          [not(ancestor::*[contains(@class, 'topic/entry')])], .)"/>
+      &lt;xsl:variable name="callout" select="@callout"/>
+      &lt;xsl:variable name="convergedcallout" select="
+        if (string-length($callout)> 0) then
+          $callout
+        else
+          $fnid"/>
+      &lt;a>
+        &lt;!-- Generate different attributes based on the presence of a parent table. -->
+        &lt;xsl:attribute name="name" select="
+          if ($top-level-table) then
+            concat('tblfnsrc_', $fnid)
+          else
+            concat('fnsrc_', $fnid)"/>
+        &lt;xsl:attribute name="href" select="
+          if ($top-level-table) then
+            concat('#tblfntarg_', $fnid)
+          else
+            concat('#fntarg_', $fnid)"/>
+        &lt;sup>
+          &lt;xsl:value-of select="$convergedcallout"/>
+        &lt;/sup>
+      &lt;/a>
+    &lt;/xsl:if>
+  &lt;/xsl:template>
+  
+  &lt;!--
+    The xrefs to footnotes with IDs inside table-cells. We need to recalculate
+    their indexes if their referenced footnote is also in the table.
+  -->
+  &lt;xsl:template match="*[contains(@class, 'topic/xref')][@type='fn']
+    [ancestor::*[contains(@class, 'topic/entry')]]">
+    &lt;xsl:param name="top-level-table" tunnel="yes"/>
+    
+    &lt;xsl:variable name="topic-id" select="substring-after(@href, '#')"/>
+    &lt;xsl:variable name="element-id" select="substring-after($topic-id, '/')"/>
+    &lt;xsl:variable name="destination">
+      &lt;xsl:choose>
+        &lt;xsl:when test="$element-id = ''">
+          &lt;xsl:value-of select="$topic-id"/>
+        &lt;/xsl:when>
+        &lt;xsl:otherwise>
+          &lt;xsl:value-of select="$element-id"/>
+        &lt;/xsl:otherwise>
+      &lt;/xsl:choose>
+    &lt;/xsl:variable>
+    
+    &lt;xsl:variable name="fn" select="
+      $top-level-table//*[contains(@class, 'topic/fn')][@id = $destination]"/>
+    &lt;xsl:choose>
+      &lt;xsl:when test="$fn">
+        &lt;!-- There is a reference in the table, recalculate index. -->
+        &lt;xsl:variable name="fnid" select="
+          index-of($top-level-table//*[contains(@class, 'topic/fn')], $fn)"/>
+        &lt;a name="tblfnsrc_{$fnid}" href="#tblfntarg_{$fnid}">
+          &lt;sup>
+            &lt;xsl:value-of select="$fnid"/>
+          &lt;/sup>
+        &lt;/a>
+      &lt;/xsl:when>
+      &lt;xsl:otherwise>
+        &lt;!-- There is no reference in the table, keep original index. -->
+        &lt;xsl:next-match/>
+      &lt;/xsl:otherwise>
+    &lt;/xsl:choose>
+  &lt;/xsl:template>
+  
+  &lt;!--
+    Output footnotes below tables and at the end of the topic.
+  -->
+  &lt;xsl:template match="*[contains(@class, ' topic/fn ')]" mode="genEndnote">
+    &lt;!-- Do not process footnotes from tables. -->
+    &lt;xsl:if test="not(node()/ancestor::*[contains(@class, 'topic/table')])">
+      &lt;div>
+        &lt;!-- Do not number footnotes from tables. -->
+        &lt;xsl:variable name="fnid" select="index-of(//*[contains(@class, 'topic/fn')]
+          [not(ancestor::*[contains(@class, 'topic/entry')])], .)"/>
+        &lt;xsl:variable name="callout" select="@callout"/>
+        &lt;xsl:variable name="convergedcallout" select="
+          if (string-length($callout) > 0) then
+            $callout
+          else
+            $fnid"/>
+        
+        &lt;xsl:call-template name="commonattributes"/>
+        &lt;xsl:choose>
+          &lt;xsl:when test="@id and not(@id = '')">
+            &lt;xsl:variable name="topicid"
+              select="ancestor::*[contains(@class, ' topic/topic ')][1]/@id"/>
+            &lt;xsl:variable name="refid" select="concat($topicid, '/', @id)"/>
+            &lt;xsl:choose>
+              &lt;xsl:when test="key('xref', $refid)">
+                &lt;a>
+                  &lt;xsl:call-template name="setid"/>
+                  &lt;sup>
+                    &lt;xsl:value-of select="$convergedcallout"/>
+                  &lt;/sup>
+                &lt;/a>
+                &lt;xsl:text>  &lt;/xsl:text>
+              &lt;/xsl:when>
+              &lt;xsl:otherwise>
+                &lt;sup>
+                  &lt;xsl:value-of select="$convergedcallout"/>
+                &lt;/sup>
+                &lt;xsl:text>  &lt;/xsl:text>
+              &lt;/xsl:otherwise>
+            &lt;/xsl:choose>
+          &lt;/xsl:when>
+          &lt;xsl:otherwise>
+            &lt;a name="fntarg_{$fnid}" href="#fnsrc_{$fnid}">
+              &lt;sup>
+                &lt;xsl:value-of select="$convergedcallout"/>
+              &lt;/sup>
+            &lt;/a>
+            &lt;xsl:text>  &lt;/xsl:text>
+          &lt;/xsl:otherwise>
+        &lt;/xsl:choose>
+        
+        &lt;xsl:apply-templates/>
+      &lt;/div>
+    &lt;/xsl:if>
+  &lt;/xsl:template>
+  
+&lt;/xsl:stylesheet></codeblock></li>
+        <li id="li_lgx_ynq_pwb">Open the <xref
+            href="whr_publishing_template_contents.dita#template_descritpor_file">template
+            descriptor file</xref> associated with your publishing template and set the XSLT
+          stylesheet created in the previous step with the
+            <term>com.oxygenxml.webhelp.xsl.dita2webhelp</term> XSLT extension
+          point.<codeblock outputclass="language-xml" id="codeblock_dn4_cgk_54b">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...        
+        &lt;xslt>
+            &lt;extension 
+            file="xslt/tables-footnotes.xsl" 
+            id="com.oxygenxml.webhelp.xsl.dita2webhelp"/></codeblock></li>
+        <li id="li_bvd_14q_pwb">Open the <term>DITA Map WebHelp Responsive</term> transformation
+          scenario.</li>
+        <li id="li_g3p_14q_pwb">Click the <uicontrol>Choose Custom Publishing Template</uicontrol>
+          link and select your template.</li>
+        <li id="li_cfk_b4q_pwb">Click <uicontrol>OK</uicontrol> to save the changes to the
+          transformation scenario.</li>
+        <li id="li_zsy_b4q_pwb">Run the transformation scenario.</li>
+      </ol></p>
+  </body>
+</topic>
