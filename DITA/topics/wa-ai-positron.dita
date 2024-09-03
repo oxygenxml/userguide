@@ -55,7 +55,33 @@
       buttons to navigate between chat threads.</p>
     <p id="p_lcs_m4f_mcc">You can use the <uicontrol><image href="../img/ai-fav-drop18.png"
         />Favorites</uicontrol> drop-down button to store a favorite prompt during the editing
-      session. </p>
+      session. <note id="note_o3v_pp3_pcc" type="important">By default favorites are not persisted
+        in the demo <uicontrol>Web Author</uicontrol> web site. Content Management Systems which
+        integrate <uicontrol>Web Author</uicontrol> can add using <codeph>Javascript</codeph> to the
+        global <codeph>window</codeph> object two predefined variables which point to operations
+        used to store and retrieve persistent strings.
+        Example:<codeblock id="codeblock_tts_wp3_pcc" outputclass="language-java">window.POSITRON_RETRIEVE_OPERATION = "package.name.RetrieveOperation";
+window.POSITRON_STORE_OPERATION ="package.name.StoreOperation";</codeblock>with the
+          <codeph>RetrieveOperation</codeph> implemented for example
+        like:<codeblock id="codeblock_w15_fq3_pcc" outputclass="language-java">@WebappRestSafe
+@WebappCompatible
+public class RetrieveOperation extends AuthorOperationWithResult {
+  @Override
+  public String doOperation(AuthorDocumentModel model, ArgumentsMap args)
+      throws IllegalArgumentException, AuthorOperationException {
+    return cmsPropertiesMap.getProperty(model.getUserId() + "." + args.getArgumentValue("key"));
+  }
+}</codeblock>and <codeph>StoreOperation</codeph> implemented for example
+        like:<codeblock outputclass="language-java" id="codeblock_w1d_lq3_pcc">@WebappRestSafe
+@WebappCompatible
+public class StoreOperation extends AuthorOperationWithResult {
+  @Override
+  public String doOperation(AuthorDocumentModel model, ArgumentsMap args)
+      throws IllegalArgumentException, AuthorOperationException {
+    cmsPropertiesMap.setProperty(model.getUserId() + "." + args.getArgumentValue("key"), (String) args.getArgumentValue("value"));
+    return null;
+  }
+}</codeblock></note></p>
     <section id="section_lf1_vkz_qlb">
       <title>AI Actions</title>
       <p id="p_dcp_dgk_54b">The following AI-powered actions are available in the
