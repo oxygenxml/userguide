@@ -22,6 +22,10 @@
         available</xref> can be found in the <uicontrol>Actions</uicontrol> drop-down menu at the
       top of the pane. When an action is triggered, the main box within the pane presents the
       response from the server based on the particular action.</p>
+    <p id="p_ybx_pzt_bcc">You can also start chatting with the AI directly in the chat box at the
+      bottom of the pane, without invoking an action. In this case, if there is content selected in
+      the editor when a chat is initiated, the selection is passed to the AI as context for the
+      conversation.</p>
     <p id="p_a2c_42r_1zb">The response is received from the server in streaming mode (the AI sends
       chunks of the response as it is being generated rather than waiting to send the entire
       response after it is generated). Once the entire response is received from the server, the
@@ -41,8 +45,43 @@
       view. You can also use the <uicontrol><image href="../img/ai-history-drop.png"
         />History</uicontrol> drop-down toolbar button to select and continue previous conversations
       or actions.</p>
-    <p id="p_gjr_s2r_1zb">You can use the bottom box to refine the response by sending a message to
-      the AI platform and it will generate a new response based upon your message.</p>
+    <p id="p_xtt_dxx_pxb">You can use the bottom pane to refine the response by sending a message to
+      the AI platform and it will generate a new response based upon your message. You can edit your
+      message by clicking the <uicontrol><image href="../img/AI-EditMessage16.png"/>Edit</uicontrol>
+      button that appears to the right of your message in the response area. You would then edit
+      your message and click <uicontrol>Submit</uicontrol> to regenerate the response. For multiple
+      edited messages, you can use the <uicontrol><image href="../img/Next16.png"
+          />Next</uicontrol>/<uicontrol><image href="../img/Previous16.png"/>Previous</uicontrol>
+      buttons to navigate between chat threads.</p>
+    <p id="p_lcs_m4f_mcc">You can use the <uicontrol><image href="../img/ai-fav-drop18.png"
+        />Favorites</uicontrol> drop-down button to store a favorite prompt during the editing
+      session. <note id="note_o3v_pp3_pcc" type="important">By default, favorites are not persistent
+        in the demo <uicontrol>Web Author</uicontrol> web site. Content Management Systems that
+        integrate <uicontrol>Web Author</uicontrol> can add two predefined variables (using
+        JavaScript to the global <codeph>window</codeph> object) that point to operations used to
+        store and retrieve persistent strings.
+        Example:<codeblock id="codeblock_tts_wp3_pcc" outputclass="language-java">window.POSITRON_RETRIEVE_OPERATION = "package.name.RetrieveOperation";
+window.POSITRON_STORE_OPERATION ="package.name.StoreOperation";</codeblock>with the
+          <codeph>RetrieveOperation</codeph> implemented like this (for
+        example):<codeblock id="codeblock_w15_fq3_pcc" outputclass="language-java">@WebappRestSafe
+@WebappCompatible
+public class RetrieveOperation extends AuthorOperationWithResult {
+  @Override
+  public String doOperation(AuthorDocumentModel model, ArgumentsMap args)
+      throws IllegalArgumentException, AuthorOperationException {
+    return cmsPropertiesMap.getProperty(model.getUserId() + "." + args.getArgumentValue("key"));
+  }
+}</codeblock>and <codeph>StoreOperation</codeph> implemented like this (for
+        example):<codeblock outputclass="language-java" id="codeblock_w1d_lq3_pcc">@WebappRestSafe
+@WebappCompatible
+public class StoreOperation extends AuthorOperationWithResult {
+  @Override
+  public String doOperation(AuthorDocumentModel model, ArgumentsMap args)
+      throws IllegalArgumentException, AuthorOperationException {
+    cmsPropertiesMap.setProperty(model.getUserId() + "." + args.getArgumentValue("key"), (String) args.getArgumentValue("value"));
+    return null;
+  }
+}</codeblock></note></p>
     <section id="section_lf1_vkz_qlb">
       <title>AI Actions</title>
       <p id="p_dcp_dgk_54b">The following AI-powered actions are available in the
@@ -50,10 +89,22 @@
           Assistant</uicontrol> pane:</p>
       <p id="p_ecp_dgk_54b">
         <dl id="dl_lcm_vwz_1xb">
+          <dlentry>
+            <dt>Accessibility</dt>
+            <dd>
+              <ul id="ul_est_rvn_fcc">
+                <li id="li_c14_ybc_qbc"><uicontrol>Generate Image Alternate Text</uicontrol> -
+                  Generates an alternate text for a DITA XML image that is selected in the main
+                  editing area.</li>
+              </ul>
+            </dd>
+          </dlentry>
           <dlentry id="dlentry_ndv_qbr_1zb">
             <dt>Content Generation</dt>
             <dd>
               <ul id="ul_qbx_wwz_1xb">
+                <li id="li_gd5_rbx_jbc"><b>Update Content Based on Images</b> - Updates the content
+                  of a DITA XML topic based on the images that it references.</li>
                 <li id="li_odv_qbr_1zb"><uicontrol>Continue Writing</uicontrol> - Generates
                   additional text based on the content preceding the cursor position.</li>
                 <li id="li_tzv_hz3_qxb">
@@ -82,10 +133,24 @@
                 <li id="li_t34_lz3_qxb"><uicontrol>Use Active Voice</uicontrol> - Generates a
                   suggestion for replacing the selected content with content that has been converted
                   from passive to active voice.</li>
+                <li><uicontrol>Improve Structure</uicontrol> - Improves the selected DITA XML
+                  content by adding additional structure or inline elements.</li>
                 <li id="li_r34_lz3_qxb"><uicontrol>Itemize</uicontrol> - Generates a suggestion for
                   converting the selected content into a list of items.</li>
                 <li id="li_s34_lz3_qxb"><uicontrol>Join Items</uicontrol> - Generates a suggestion
                   for converting the selected list of items into a paragraph.</li>
+              </ul>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Review</dt>
+            <dd>
+              <ul id="ul_ynf_jn3_ybc">
+                <li><uicontrol>Proof Read</uicontrol>  Add comments over content which has logical
+                  consistency problems, grammar spelling mistakes or is hard to read and
+                  comprehend.</li>
+                <li><uicontrol>Resolve Comments</uicontrol> - Change the selected content based on
+                  the comment suggestions and then remove the comments.</li>
               </ul>
             </dd>
           </dlentry>
