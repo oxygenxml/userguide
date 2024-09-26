@@ -214,5 +214,35 @@
                 </ul></p></li>
         </ol></p>
     </section>
+    <section id="task_repository_fails_to_export_when_creating_a_b">
+      <title>Task Repository Fails to Export When Creating a Backup</title>
+      <p>While creating a <b>Content Fusion</b> backup using the command line in versions prior to
+        7.0, errors may be encountered. In the logs, you may see something like
+        this:<codeblock outputclass="language-ini">Failed to download tasks repository: 17 java.io.IOException: HTTP error code: 500
+
+&lt;html>&lt;body>&lt;h1>Whitelabel Error Page&lt;/h1>&lt;p>This application has no explicit mapping
+for/error, so you are seeing this as a fallback.&lt;/p>&lt;div id='created'>
+Mon Aug 26 05:38:22 GMT 2024&lt;/div>&lt;div>There was an unexpected error 
+(type=Internal Server Error, status=500).&lt;/div>&lt;/body>&lt;/html></codeblock></p>
+      <p>This could be caused when the <codeph>jgit</codeph> tool cannot open repositories during
+        the backup process because some <codeph>.git/refs/heads</codeph> have been moved to the
+          <codeph>.git/packed-refs</codeph> file, causing repository corruption.</p>
+      <p>If you encounter this issue, an administrator can do the following:</p>
+      <ol id="ol_i4c_4g2_5cc">
+        <li>Stop <b>Content Fusion</b>.</li>
+        <li>Create a backup of the <filepath>/fusion/data/temp/tasks</filepath> directory.</li>
+        <li>Execute this script: <xref
+            href="https://www.oxygenxml.com/userFiles/1421240910062937.zip" format="zip"
+            scope="external"/>.<ul id="ul_rzh_vg2_5cc">
+            <li>Download this zip file and extract it to find a
+                <filepath>patch-packed-refs.sh</filepath> bash script.</li>
+            <li>Run this command: <codeph>sudo bash patch-packed-refs.sh</codeph>.</li>
+          </ul></li>
+        <li>Start <b>Content Fusion</b>.</li>
+        <li>Let it run for a few minutes and check the logs for stack-traces.</li>
+        <li>Stop <b>Content Fusion</b>.</li>
+        <li>Create a <b>Content Fusion</b> Backup. </li>
+      </ol>
+    </section>
   </body>
 </topic>
