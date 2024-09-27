@@ -231,13 +231,45 @@ Mon Aug 26 05:38:22 GMT 2024&lt;/div>&lt;div>There was an unexpected error
       <ol id="ol_i4c_4g2_5cc">
         <li>Stop <b>Content Fusion</b>.</li>
         <li>Create a backup of the <filepath>/fusion/data/temp/tasks</filepath> directory.</li>
-        <li>Execute this script: <xref
-            href="https://www.oxygenxml.com/userFiles/1421240910062937.zip" format="zip"
-            scope="external"/>.<ul id="ul_rzh_vg2_5cc">
-            <li>Download this zip file and extract it to find a
-                <filepath>patch-packed-refs.sh</filepath> bash script.</li>
-            <li>Run this command: <codeph>sudo bash patch-packed-refs.sh</codeph>.</li>
-          </ul></li>
+        <li>Execute the following script with the <codeph>sudo bash patch-packed-refs.sh</codeph>
+          command:<codeblock outputclass="language-ini">#!/bin/bash
+
+# Directory containing git repositories
+REPO_DIR="/fusion/data/temp/tasks"
+
+# Loop through each repository in the directory
+for repo in "$REPO_DIR"/repo-*/; do
+    # Define the path to the packed-refs file
+    PACKED_REFS_FILE="$repo.git/packed-refs"
+    
+    # Check if the packed-refs file exists
+    if [ -f "$PACKED_REFS_FILE" ]; then
+        # Read the packed-refs file line by line
+        while IFS=" " read -r sha ref; do
+            # Skip lines that start with #
+            if [[ $sha == "#"* ]]; then
+                continue
+            fi
+
+            # Create the path to the reference file
+            REF_PATH="$repo.git/$ref"
+            REF_DIR=$(dirname "$REF_PATH")
+
+            # Create the directories if they don't exist
+            mkdir -p "$REF_DIR"
+
+            # Write the sha1 to the reference file
+            echo "$sha" > "$REF_PATH"
+
+            echo "Unpacked $ref in $repo"
+        done &lt; "$PACKED_REFS_FILE"
+        
+        echo Removing packed-refs
+        rm "$repo".git/packed-refs
+    else
+        echo "No packed-refs file found in $repo"
+    fi
+done</codeblock></li>
         <li>Start <b>Content Fusion</b>.</li>
         <li>Let it run for a few minutes and check the logs for stack-traces.</li>
         <li>Stop <b>Content Fusion</b>.</li>
