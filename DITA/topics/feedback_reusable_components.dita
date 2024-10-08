@@ -161,18 +161,31 @@ flush privileges;</codeblock><p id="p_pkl_bgk_54b">For more details, see: <xref
       <li id="li_xkl_bgk_54b">Configure <ph keyref="product"/> to connect to the database:<ol id="ol_lls_1hl_dmb">
         <li id="li_ykl_bgk_54b">Go to <codeph>/config</codeph> and create a file named
           <filepath>feedback-database.properties</filepath>. </li>
-        <li id="li_zkl_bgk_54b">Edit the file and update it with your configuration. An example is provided in the
-          <filepath>feedback-database-mysql.properties</filepath> file. It should look like
-          this:
-          <codeblock outputclass="language-bourne" id="codeblock_all_bgk_54b"># The database management system type. For example MySQL or PostgreSQL.
+        <li id="li_zkl_bgk_54b">Edit the file and update it with your configuration. An example is
+              provided in the <filepath>feedback-database-mysql.properties</filepath> file. It
+              should look like this:
+                <codeblock outputclass="language-bourne" id="codeblock_all_bgk_54b"># The database management system type. For example MySQL or PostgreSQL.
 feedback.database.type = mysql
 # The database URL in format: jdbc:mysql://&lt;hostname>:&lt;port>/&lt;database>
-# For example: jdbc:mysql://localhost:3306/feedback_db
-feedback.datasource.url=jdbc:mysql://localhost:3306/feedback_db
+feedback.datasource.url=jdbc:mysql://db_server_host:3306/feedback_db
 # The username to access the database
 feedback.datasource.username=feedback_db_user
 # The password to access the database
-feedback.datasource.password=password</codeblock></li>
+feedback.datasource.password=password</codeblock><p>In this example, replace
+                  <codeph>db_server_host</codeph> with the actual IP address or hostname of the
+                machine running the MySQL server (it can also be an internal network name if both
+                services run on the same Docker network).</p><note id="note_gdv_q5y_ycc"
+                type="important">
+                <p>Since <ph keyref="product"/> always runs inside a Docker container, do not use
+                    <codeph>localhost</codeph> in the database server URL configuration.</p>
+                <p>Inside the container, <codeph>localhost</codeph> refers to the container itself,
+                  not the host machine. To connect to a MySQL database running on the host machine
+                  or another server, use the host machine's IP address instead of
+                    <codeph>localhost</codeph>. You can determine the host's IP by running
+                    <codeph>ip a</codeph> on the host machine.</p>
+                <p>If the database is hosted on the same machine, ensure it is configured to accept
+                  connections from external sources (e.g. Docker containers). </p>
+              </note></li>
       </ol></li>
     </ol></p>
     <!--Database setup for PostgreSQL-->
@@ -197,17 +210,32 @@ feedback.datasource.password=password</codeblock></li>
         <li id="li_kll_bgk_54b">Configure <ph keyref="product"/> to connect to the database: <ol id="ol_olb_yvp_2mb">
           <li id="li_lll_bgk_54b">Go to <codeph>/config</codeph> and create a file named
             <filepath>feedback-database.properties</filepath>.</li>
-          <li id="li_mll_bgk_54b">Edit the file and update it with your configuration. An example is provided in the
-            <filepath>feedback-database-psql.properties</filepath> file. It should look like
-            this:<codeblock outputclass="language-bourne" id="codeblock_nll_bgk_54b"># The database management system type. For example MySQL or PostgreSQL.
+          <li id="li_mll_bgk_54b">Edit the file and update it with your configuration. An example is
+              provided in the <filepath>feedback-database-psql.properties</filepath> file. It should
+              look like this:<codeblock outputclass="language-bourne" id="codeblock_nll_bgk_54b"># The database management system type. For example MySQL or PostgreSQL.
 feedback.database.type = postgresql
 # The database URL in format: jdbc:postgresql://&lt;hostname>:&lt;port>/&lt;database>
-# For example: jdbc:postgresql://localhost:5432/feedback_db
-feedback.datasource.url=jdbc:postgresql://localhost:5432/feedback_db
+feedback.datasource.url=jdbc:postgresql://db_server_host:5432/feedback_db
 # The username to access the database
 feedback.datasource.username=feedback_db_user
 # The password to access the database
-feedback.datasource.password=password</codeblock></li>
+feedback.datasource.password=password</codeblock>
+              <p>In this example, replace <codeph>db_server_host</codeph> with the actual IP address
+                or hostname of the machine running the PostgreSQL server (it can also be an internal
+                network name if both services run on the same Docker network).<note type="important"
+                  id="note_wqj_m5g_zcc">
+                  <p id="p_xqj_m5g_zcc">Since <ph keyref="product"/> always runs inside a Docker
+                    container, do not use <codeph>localhost</codeph> in the database server URL
+                    configuration.</p>
+                  <p id="p_yqj_m5g_zcc">Inside the container, <codeph>localhost</codeph> refers to
+                    the container itself, not the host machine. To connect to a MySQL database
+                    running on the host machine or another server, use the host machine's IP address
+                    instead of <codeph>localhost</codeph>. You can determine the host's IP by
+                    running <codeph>ip a</codeph> on the host machine.</p>
+                  <p id="p_zqj_m5g_zcc">If the database is hosted on the same machine, ensure it is
+                    configured to accept connections from external sources (e.g. Docker containers).
+                  </p>
+                </note></p></li>
         </ol></li>
       </ol></p>
     <!--Base URL note-->
