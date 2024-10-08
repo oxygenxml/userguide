@@ -31,12 +31,27 @@
           <li>Edit the <filepath>$OXYGEN_FEEDBACK_INSTALL_DIR/docker-compose.yml</filepath>
             file.</li>
           <li>Configure <b>Oxygen Text Search Service</b> with the following environment
-            variables:<codeblock id="codeblock_v2x_tmt_5wb" outputclass="language-yml">  text-search-service:
+              variables:<codeblock id="codeblock_v2x_tmt_5wb" outputclass="language-yml">  text-search-service:
     # [...]
     environment:
-      - spring.datasource.url=jdbc:postgresql://localhost:5432/otss_db
+      - spring.datasource.url=jdbc:postgresql://db_server_host:5432/otss_db
       - spring.datasource.username=feedback_db_user
-      - spring.datasource.password=password</codeblock></li>
+      - spring.datasource.password=password</codeblock><p>In this example, replace
+                <codeph>db_server_host</codeph> with the actual IP address or hostname of the
+              machine running the PostgreSQL server (it can also be an internal network name if both
+              services run on the same Docker network).<note id="note_gdv_q5y_ycc" type="important">
+                <p id="p_wlh_q5g_zcc">Since <ph keyref="product"/> always runs inside a Docker
+                  container, do not use <codeph>localhost</codeph> in the database server URL
+                  configuration.</p>
+                <p id="p_xlh_q5g_zcc">Inside the container, <codeph>localhost</codeph> refers to the
+                  container itself, not the host machine. To connect to a MySQL database running on
+                  the host machine or another server, use the host machine's IP address instead of
+                    <codeph>localhost</codeph>. You can determine the host's IP by running
+                    <codeph>ip a</codeph> on the host machine.</p>
+                <p id="p_ylh_q5g_zcc">If the database is hosted on the same machine, ensure it is
+                  configured to accept connections from external sources (e.g. Docker containers).
+                </p>
+              </note></p></li>
         </ol></li>
     </ol>
     
