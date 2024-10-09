@@ -212,6 +212,54 @@ public class StoreOperation extends AuthorOperationWithResult {
         </dl>
       </p>
     </section>
+    <section id="section_lqv_qnt_vbc">
+      <title>Function Calls</title>
+      <p id="p_bvn_sr4_pcc">Within the definition of custom actions, you can reference existing
+        functions that are called by the AI engine to interact with the application. This gives
+        actions more context information and generates more accurate responses from the AI.</p>
+      <p>Here is an example of a function reference that gets called by the AI engine to obtain the
+        entire contents of the
+        document:<codeblock id="codeblock_ibw_5nt_vbc" outputclass="language-json">{
+    "id": "action.summarize",
+    "title": "Summarize",
+    "categoryId": "Overview",
+    "type": "show-response",
+    "description": "Generate a summary of the selected content or the entire document.",
+    "context": "Your task is to summarize the provided user text.",
+    "parameters": {
+        "function_refs": [
+            {
+                "ref": "get_current_document_plain_text_content"
+            }
+        ]
+    }
+}</codeblock></p>
+      <p>The current available function reference values are:</p>
+      <ul id="ul_rhk_14t_vbc">
+        <li><codeph>get_current_document_plain_text_content</codeph> - Retrieves all plain text
+          (e.g. without markup) from the current document open in the editor.</li>
+        <li><codeph>get_current_document_marked_up_content</codeph> - Retrieves all text with markup
+          from the current document open in the editor.</li>
+        <li><codeph>get_content_around_caret</codeph> - Retrieves size-limited content around the
+          current cursor location within the document open in the editor.</li>
+        <li><codeph>get_related_content_from_webhelp</codeph> - Returns content from the associated
+            <ph keyref="product-ofb"/> WebHelp system for which a token has been configured in the
+          WebAuthor <uicontrol>Positron</uicontrol> preferences administration page.</li>
+        <li id="li_knm_vch_zcc"><codeph>get-current-editor-file-location</codeph> - Retrieves the
+          location (absolute path/URL) of the current file that is open in the editor.</li>
+        <li id="li_af1_nch_zcc"><codeph>save_document(URL,content)</codeph> - Saves the document at
+          the specified path and writes content to it. If a resource already exists at the specified
+          URL, the content of the document will be overridden with the new content.</li>
+      </ul>
+      <p>You can impose a description for the referenced function that is called by the AI engine: </p>
+      <codeblock id="pre_uxb_24t_vbc" outputclass="language-json">"function_refs": [
+  {
+      "ref": "get_current_document_plain_text_content",
+      "description": "The function is designed to retrieve the complete document as 
+      plain text without markup."
+  }
+]</codeblock>
+    </section>
     <section id="section_enw_lnb_4yb">
       <title>AI Server Requests and Credits</title>
       <p id="p_fnw_lnb_4yb">Each user has a limit to the number of requests that are sent to the AI
