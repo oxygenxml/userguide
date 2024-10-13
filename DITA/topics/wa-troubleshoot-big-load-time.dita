@@ -97,6 +97,75 @@
           </ol>
         </steps-informal>
       </remedy>
+      <remedy id="remedy_t2q_bcs_1dc2455">
+        <title>Alternative Solution 5</title>
+        <steps-informal id="steps-informal_izj_dcs_1dc">
+          <p id="p_x21_fcs_1dc">Sometimes documents load slowly because of the time it takes to
+            compute styles. This increases linearly with the size of the document and the size of
+            the CSS rules. The CSS rules are mainly contributed by the framework. The styles are
+            computed when loading both server-side and client-side.</p>
+          <p id="p_y21_fcs_1dc">To see how much time it takes the browser to render the page, follow
+            these steps:</p>
+          <ol id="ol_z21_fcs_1dc">
+            <li id="li_af1_fcs_1dc">Open the <uicontrol>Developer Tools</uicontrol> in Google Chrome
+              (e.g. by pressing F12).</li>
+            <li id="li_bf1_fcs_1dc">Go to the <uicontrol>Performance</uicontrol> tab.</li>
+            <li id="li_cf1_fcs_1dc">Click on <uicontrol>Record</uicontrol> in the top-left
+              corner.</li>
+            <li id="li_df1_fcs_1dc">Reload the page.</li>
+            <li id="li_ef1_fcs_1dc">When the page fully loads, click
+              <uicontrol>Stop</uicontrol>.</li>
+            <li id="li_ff1_fcs_1dc">Click the <uicontrol>Main</uicontrol> section within the
+                <uicontrol>Performance</uicontrol> tab.</li>
+            <li id="li_gf1_fcs_1dc">In the bottom part, in the <uicontrol>Summary</uicontrol> tab,
+              you should see a circle with the load time split between "Scripting", "Rendering",
+              "Paint", "Idle", and "Other".</li>
+            <li id="li_ikw_qcs_1dc">Check that "Rendering" time is reasonable.</li>
+            <li id="li_yrl_rcs_1dc">If you want to reduce the client-side "Rendering" time:<ol
+                id="ol_yhf_gcs_1dc">
+                <li id="li_zhf_gcs_1dc">Make as many elements as possible collapsed by default by
+                  specifying the <codeph>-oxy-foldable</codeph> and <codeph>-oxy-folded</codeph> CSS
+                  rules:<codeblock outputclass="language-css">section {
+  -oxy-foldable: true;
+}
+* {
+  -oxy-folded: true;
+}</codeblock></li>
+                <li id="li_a3f_gcs_1dc">Hide irrelevant elements with the <codeph>display:
+                    none</codeph> CSS rule.</li>
+              </ol></li>
+          </ol>
+        </steps-informal>
+      </remedy>
+      <remedy id="remedy_gf2_ycs_1dc334">
+        <title>Alternative Solution 6</title>
+        <steps-informal>
+          <p id="p_aqd_1ds_1dc">Sometimes documents load slowly even if the main opened document is
+            small, because it references many other documents that get expanded by either
+              <codeph>xi:include</codeph> XML elements or DITA <xmlatt>conref</xmlatt> or
+              <xmlatt>conkeyref</xmlatt> attributes.</p>
+          <p id="p_bqd_1ds_1dc">For each referenced document that gets expanded, the application
+            makes a request to an external server to retrieve the document content, thus the network
+            speed and latency between the Web Author server and the server from where documents are
+            retrieved is critical.</p>
+          <p id="p_im2_fds_1dc">To troubleshoot this, enable network logs by following steps in
+              <xref href="#./solution4">Alternative Solution 3</xref> and count how many requests
+            are made when opening a document and how much time those requests took. After enabling
+            network logs, you should see entries like this in the
+            logs:<codeblock outputclass="language-bourne">2024-10-01 16:12:31,209 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 >> GET http://example-domain.oxygenxml.com/webdav/dita-topic.dita HTTP/1.1
+2024-10-01 16:12:31,210 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 >> Accept: application/xml,*/*
+2024-10-01 16:12:31,210 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 >> Accept-Encoding: gzip
+2024-10-01 16:12:31,211 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 >> Host: example-domain.oxygenxml.com
+2024-10-01 16:12:31,211 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 >> Proxy-Connection: Keep-Alive
+2024-10-01 16:12:31,211 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 >> User-Agent: Oxygen XML Editor/26.1
+2024-10-01 16:12:31,211 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 >> Authorization: ****
+2024-10-01 16:12:31,223 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 &lt;&lt; HTTP/1.1 200 OK
+2024-10-01 16:12:31,224 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 &lt;&lt; Date: Tue, 01 Oct 2024 13:12:31 GMT
+2024-10-01 16:12:31,225 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 &lt;&lt; Accept-Ranges: bytes
+2024-10-01 16:12:31,225 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 &lt;&lt; Content-Length: 4259
+2024-10-01 16:12:31,226 DEBUG [ https-jsse-nio-8443-exec-1 ] org.apache.http.headers - http-outgoing-2 &lt;&lt; Connection: keep-alive</codeblock></p>
+        </steps-informal>
+      </remedy>
     </troubleSolution>
   </troublebody>
   <related-links>
