@@ -30,62 +30,56 @@
               site.<note type="important" id="note_kl4_cgk_54b">For the <uicontrol>Layout</uicontrol>, you must select
                 <uicontrol>Results only</uicontrol> for the <term>Google Search Engine</term> to
               work with <b>Oxygen XML WebHelp Responsive</b>.</note></li>
-          <li id="li_ll4_cgk_54b">At the end of this process you should obtain a code snippet that looks like
-            this:<codeblock outputclass="language-javascript" id="codeblock_ml4_cgk_54b">&lt;script>   
- (function()  {     
-  var cx =
-    '000888210889775888983:8mn4x_mf-yg';     
-  var gcse = document.createElement('script'); 
-  gcse.type = 'text/javascript'; 
-  gcse.async = true;     
-  gcse.src = (document.location.protocol == 'https:' ?
-    'https:' : 'http:') +         '//www.google.com/cse/cse.js?cx=' + cx;     
-  var s = document.getElementsByTagName('script')[0]; 
-  s.parentNode.insertBefore(gcse, s);   
- }
- )(); 
-&lt;/script></codeblock></li>
-          <li id="li_nl4_cgk_54b">Save the script into a well-formed HTML file called
-              <filepath>googlecse.html</filepath>.</li>
-          <li id="li_ol4_cgk_54b">Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
-              >template descriptor file</xref> associated with your publishing template and add the
-              <codeph>webhelp.google.search.script</codeph> parameter in the <term>parameters</term>
-            section with its value set to reference the <filepath>googlecse.html</filepath> file
-            that you created
-            earlier.<codeblock outputclass="language-xml" id="codeblock_pl4_cgk_54b">&lt;publishing-template>
+          <li id="li_ll4_cgk_54b">At the end of this process you should obtain a code snippet that
+            looks like
+            this:<codeblock outputclass="language-xml" id="codeblock_ml4_cgk_54b">&lt;script async src="https://cse.google.com/cse.js?cx=xxxxxxxxxxxxxxx">&lt;/script>
+&lt;div class="gcse-searchresults-only">&lt;/div></codeblock></li>
+          <li id="li_nl4_cgk_54b">Create a folder named <filepath>html-fragments</filepath>, and in
+            that folder, create a file named <filepath>google-script.html</filepath>.</li>
+          <li>Inside <filepath>google-script.html</filepath>, add only the
+              <codeph>&lt;script></codeph> element. The file should look like
+            this:<codeblock id="codeblock_fyw_gcj_fdc" outputclass="language-xml">&lt;script async src="https://cse.google.com/cse.js?cx=xxxxxxxxxxxxxxx">&lt;/script></codeblock></li>
+          <li>In the <filepath>html-fragments</filepath> folder, create another file named
+              <filepath>google-results.html</filepath>.</li>
+          <li>Inside <i>google-results.html</i>, add only the <i>&lt;div></i> element and include
+            the <codeph>data-autoSearchOnLoad="true" data-queryParameterName="searchQuery"</codeph>
+            attributes. The file should look like
+              this:<codeblock id="codeblock_xt3_lcj_fdc" outputclass="language-xml">&lt;div class="gcse-searchresults-only" data-autoSearchOnLoad="true" data-queryParameterName="searchQuery">&lt;/div></codeblock><note
+              id="note_mgc_ncj_fdc">For more information about other supported attributes, see <xref
+                href="https://developers.google.com/custom-search/docs/element#supported_attributes"
+                format="html" scope="external">Google Custom Search: Supported
+              Attributes</xref>.</note></li>
+          <li id="li_ol4_cgk_54b">Open the <xref
+              href="whr_publishing_template_contents.dita#template_descritpor_file">template
+              descriptor file</xref> associated with your publishing template and add the
+              <codeph>webhelp.google.search.script</codeph> parameter in the parameters section,
+            setting its value to reference <filepath>google-script.html</filepath>. Then add the
+              <codeph>webhelp.google.search.results</codeph> parameter, with its value set to
+              <filepath>google-results.html</filepath>.<codeblock outputclass="language-xml" id="codeblock_pl4_cgk_54b">&lt;publishing-template>
   ...
   &lt;webhelp>
      ...                
      &lt;parameters>
+	     ...
          &lt;parameter 
              name="webhelp.google.search.script" 
-             value="resources/googlecse.html"
+             value="html-fragments/google-script.html"
+             type="filePath"/>
+         &lt;parameter 
+             name="webhelp.google.search.results" 
+             value="html-fragments/google-results.html"
              type="filePath"/>
      &lt;/parameters>
-  &lt;/webhelp></codeblock></li>
-          <li id="li_ql4_cgk_54b">You can also use the <codeph>webhelp.google.search.results</codeph> parameter to
-            choose where to display the search results.<ol id="ol_rl4_cgk_54b">
-              <li id="li_sl4_cgk_54b">Create an HTML file with the following content: <codeph>&lt;div
-                  class="gcse-searchresults-only" data-autoSearchOnLoad="true"
-                  data-queryParameterName="searchQuery">&lt;/div></codeph> (you must use the <xref
-                  href="https://developers.google.com/custom-search/docs/element#html5"
-                  format="html" scope="external">HTML5 version for the GCSE</xref>). For more
-                information about other supported attributes, see <xref
-                  href="https://developers.google.com/custom-search/docs/element#supported_attributes"
-                  format="html" scope="external">Google Custom Search: Supported
-                Attributes</xref>.</li>
-              <li id="li_tl4_cgk_54b">Set the value of the <codeph>webhelp.google.search.results</codeph> parameter to
-                the file path of the file you just created. If this parameter is not specified, the
-                following code is used: <codeph>&lt;div class="gcse-searchresults-only"
-                  data-autoSearchOnLoad="true"
-                  data-queryParameterName="searchQuery">&lt;/div></codeph>.</li>
-            </ol></li>
+  &lt;/webhelp>
+&lt;/publishing-template></codeblock></li>
           <li id="li_ul4_cgk_54b">Open the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
           <li id="li_vl4_cgk_54b">Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select
             your template.</li>
           <li id="li_wl4_cgk_54b">Click <uicontrol>OK</uicontrol> to save the changes to the transformation
             scenario.</li>
-          <li id="li_xl4_cgk_54b">Run the transformation scenario.</li>
+          <li id="li_xl4_cgk_54b">Run the transformation scenario.<note id="note_vxk_vcj_fdc"
+              type="important">The Google search feature will not work locally, it must be deployed
+              on an HTTP server.</note></li>
         </ol></p>
     </section>
     <section id="using_oxygen_xml_editorauthor">
@@ -99,46 +93,31 @@
               type="important" id="note_dm4_cgk_54b">For the <uicontrol>Layout</uicontrol>, you must select
                 <uicontrol>Results only</uicontrol> for the <term>Google Search Engine</term> to
               work with <b>Oxygen XML WebHelp Responsive</b>.</note></li>
-          <li id="li_em4_cgk_54b">At the end of this process you should obtain a code snippet that looks like
-            this:<codeblock outputclass="language-javascript" id="codeblock_fm4_cgk_54b">&lt;script>   
- (function()  {     
-  var cx =
-    '000888210889775888983:8mn4x_mf-yg';     
-  var gcse = document.createElement('script'); 
-  gcse.type = 'text/javascript'; 
-  gcse.async = true;     
-  gcse.src = (document.location.protocol == 'https:' ?
-    'https:' : 'http:') +         '//www.google.com/cse/cse.js?cx=' + cx;     
-  var s = document.getElementsByTagName('script')[0]; 
-  s.parentNode.insertBefore(gcse, s);   
- }
- )(); 
-&lt;/script></codeblock></li>
-          <li id="li_gm4_cgk_54b">Save the script into a well-formed HTML file called
-              <filepath>googlecse.html</filepath>.</li>
+          <li id="li_em4_cgk_54b">At the end of this process you should obtain a code snippet that
+            looks like
+            this:<codeblock outputclass="language-xml" id="codeblock_fm4_cgk_54b">&lt;script async src="https://cse.google.com/cse.js?cx=xxxxxxxxxxxxxxx">&lt;/script>
+&lt;div class="gcse-searchresults-only">&lt;/div></codeblock></li>
+          <li>Create a file named <filepath>google-script.html</filepath>, and add only the
+              <codeph>&lt;script></codeph> element. The file should look like
+            this:<codeblock outputclass="language-xml" id="codeblock_iqn_ndj_fdc">&lt;script async src="https://cse.google.com/cse.js?cx=xxxxxxxxxxxxxxx">&lt;/script></codeblock></li>
+          <li>Create a file named <filepath>google-results.html</filepath>, add only the
+              <i>&lt;div></i> element and include the <codeph>data-autoSearchOnLoad="true"
+              data-queryParameterName="searchQuery"</codeph> attributes. The file should look like
+              this:<codeblock id="codeblock_g4j_rdj_fdc" outputclass="language-xml">&lt;div class="gcse-searchresults-only" data-autoSearchOnLoad="true" data-queryParameterName="searchQuery">&lt;/div></codeblock><note
+              id="note_jdr_22j_fdc">For more information about other supported attributes, see <xref
+                href="https://developers.google.com/custom-search/docs/element#supported_attributes"
+                format="html" scope="external">Google Custom Search: Supported
+              Attributes</xref>.</note></li>
           <li id="li_hm4_cgk_54b">Edit the <term>DITA Map WebHelp Responsive</term> transformation scenario and choose a
               <i>template</i>.</li>
           <li id="li_im4_cgk_54b">Switch to the <uicontrol>Parameters</uicontrol> tab and edit the
               <codeph>webhelp.google.search.script</codeph> parameter to reference the
-              <filepath>googlecse.html</filepath> file that you created earlier.</li>
-          <li id="li_jm4_cgk_54b">You can also use the <codeph>webhelp.google.search.results</codeph> parameter to
-            choose where to display the search results.<ol id="ol_km4_cgk_54b">
-              <li id="li_lm4_cgk_54b">Create an HTML file with the following content: <codeph>&lt;div
-                  class="gcse-searchresults-only" data-autoSearchOnLoad="true"
-                  data-queryParameterName="searchQuery">&lt;/div></codeph> (you must use the <xref
-                  href="https://developers.google.com/custom-search/docs/element#html5"
-                  format="html" scope="external">HTML5 version for the GCSE</xref>). For more
-                information about other supported attributes, see <xref
-                  href="https://developers.google.com/custom-search/docs/element#supported_attributes"
-                  format="html" scope="external">Google Custom Search: Supported
-                Attributes</xref>.</li>
-              <li id="li_mm4_cgk_54b">Set the value of the <codeph>webhelp.google.search.results</codeph> parameter to
-                the file path of the file you just created. If this parameter is not specified, the
-                following code is used: <codeph>&lt;div class="gcse-searchresults-only"
-                  data-autoSearchOnLoad="true"
-                  data-queryParameterName="searchQuery">&lt;/div></codeph>.</li>
-            </ol></li>
-          <li id="li_nm4_cgk_54b">Click <uicontrol>Ok</uicontrol> and run the transformation scenario.</li>
+              <filepath>google-script.html</filepath> file. Then edit the
+              <codeph>webhelp.google.search.results</codeph> parameter to reference the
+              <filepath>google-results.html</filepath> file.</li>
+          <li id="li_nm4_cgk_54b">Click <uicontrol>Ok</uicontrol> and run the transformation
+              scenario.<note type="important" id="note_vn3_g2j_fdc">The Google search feature will
+              not work locally, it must be deployed on an HTTP server.</note></li>
         </ol></p>
     </section>
   </body>
