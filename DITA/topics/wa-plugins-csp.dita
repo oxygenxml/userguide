@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="wa-plugins-csp">
-  <title>Contribute to Content Security Policy for Plugins</title>
+  <title>How to configure Content Security Policy for Plugins</title>
   <body>
     <p id="p_dys_dgk_54b">Plugins can contribute to the <term>Content Security Policy (CSP)</term>.
       For more information about the Content Security Policy, see <xref
         href="webauthor-security-configuration.dita#webauthor-security-configuration/content_security_policy"
       /> and <xref href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP" format="html"
         scope="external"/>.</p>
-    <p id="p_znb_lm4_cbc">To allow a plugin to contribute to the Content Security Policy:<ol
-        id="ol_qjz_nm4_cbc">
-        <li id="li_rjz_nm4_cbc">Create a class that implements
-            <codeph>ro.sync.exml.plugin.workspace.security.CspPolicyProviderExtension</codeph>.</li>
-        <li id="li_m3r_rm4_cbc">Reference the class in your <filepath>plugin.xml</filepath>
-          file:</li>
-      </ol><codeblock outputclass="language-xml">&lt;extension type="CspPolicy" class="com.example.ClassName"/></codeblock><note
-        id="note_q43_5s3_2cc" type="tip">You can also specify the CSP for static resources like
-          this:<codeblock outputclass="language-xml">&lt;extension type="WebappStaticResourcesFolder" path="path/to/folder" 
-csp="default-src 'self' www.google.com; style-src 'self' 'unsafe-inline';"/></codeblock><p
-          id="p_cjb_bt3_2cc">where the value of the <codeph>csp</codeph> property is the value of
-          the <xref
-            href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy"
-            format="html" scope="external">Content Security Policy header</xref>.</p></note></p>
+    <p id="p_znb_lm4_cbc">To allow a plugin to contribute to the Content Security Policy you can:<ul
+        id="ul_ilt_yrt_gdc">
+        <li><b>Implement a <codeph>CspPolicyProviderExtension</codeph>:</b>
+          <ol id="ol_usg_bst_gdc">
+            <li>Create a class that implements
+                <codeph>ro.sync.exml.plugin.workspace.security.CspPolicyProviderExtension</codeph>.</li>
+            <li>Reference the class in your <filepath>plugin.xml</filepath> file:</li>
+          </ol><codeblock outputclass="language-xml" id="codeblock_wsg_bst_gdc">&lt;extension type="CspPolicy" class="com.example.ClassName"/></codeblock></li>
+        <li>
+          <b>Set the CSP for Static
+            Resources:</b><codeblock outputclass="language-xml" id="codeblock_ysg_bst_gdc">&lt;extension type="WebappStaticResourcesFolder" path="path/to/folder" 
+csp="default-src 'self' www.google.com; style-src 'self' 'unsafe-inline';"/></codeblock><p>where
+            the value of the <codeph>csp</codeph> property is the value of the <xref
+              href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy"
+              format="html" scope="external">Content Security Policy header</xref>.</p></li>
+        <li><b>Set the CSP directly on the
+          response:</b><codeblock outputclass="language-java" id="codeblock_atg_bst_gdc">resp.setHeader("Content-Security-Policy", "default-src 'self';");</codeblock>If
+          you are implementing an extension of type <codeph>WebappServlet</codeph> or a
+            <codeph>WebappServletFilter</codeph> you can set the
+            <codeph>Content-Security-Policy</codeph> of the response.</li>
+      </ul></p>
   </body>
 </topic>
