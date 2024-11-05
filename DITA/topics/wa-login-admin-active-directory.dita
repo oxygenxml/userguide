@@ -21,17 +21,53 @@
       <li id="li_fbr_dgk_54b"><b>Windows/Linux/All Platforms</b>:
           <filepath>tomcat/webapps/oxygen-xml-web-author/WEB-INF/shiro.ini</filepath></li>
     </ul>
-    <p id="p_gbr_dgk_54b">Replace the line: </p>
-    <codeblock outputclass="language-javascript" id="codeblock_hbr_dgk_54b">usersFileRealm = ro.sync.auth.PropertiesRealmWithDefaultUsersFile </codeblock>
-    <p id="p_ibr_dgk_54b">with some lines like this:</p>
-    <codeblock outputclass="language-javascript" id="codeblock_jbr_dgk_54b">usersFileRealm = ro.sync.auth.PrincipalSuffixADRealm
-usersFileRealm.url=ldap://&lt;server-address>:389
-usersFileRealm.searchBase=CN=Users,DC=mycompany,DC=ro
-usersFileRealm.principalSuffix=@my-company.ro
-usersFileRealm.groupRolesMap="CN=Web Author Admins,DC=mycompany,DC=ro":"admin"
-usersFileRealm.systemUsername=&lt;user>
-usersFileRealm.systemPassword=***</codeblock>
-    <p id="p_kbr_dgk_54b">where</p>
+    <p id="p_gbr_dgk_54b">Disable the default user password authentication configuration by deleting
+      the lines between the line between "<i>Start user-password admin auth config</i>" and "<i>End
+        user-password admin auth config</i>.": </p>
+    <codeblock outputclass="language-javascript" id="codeblock_hbr_dgk_54b"># &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+# Start user-password admin auth config:
+
+usersFileRealm = ro.sync.adminauth.userpassword.UserPasswordAdminRealm
+
+passwordMatcher = org.apache.shiro.authc.credential.PasswordMatcher
+passwordService = ro.sync.adminauth.userpassword.PlainAndHashedPasswordService
+hashFormatFactory = ro.sync.adminauth.userpassword.PlainHashFormatFactory
+
+passwordService.hashFormatFactory = $hashFormatFactory
+passwordMatcher.passwordService = $passwordService 
+
+usersFileRealm.credentialsMatcher = $passwordMatcher
+
+securityManager.realms = $usersFileRealm
+
+authc = ro.sync.adminauth.userpassword.UserPasswordFormAuthFilter
+authc.loginUrl = /admin-login
+
+# End user-password admin auth config.
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>></codeblock>
+    <p id="p_ibr_dgk_54b">and uncomment the Active Directory authentication configuration by
+      deleting leading "#" characters:</p>
+    <codeblock outputclass="language-javascript" id="codeblock_jbr_dgk_54b"># &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+# Start Active Directory admin auth config:
+#
+activeDirectoryRealm = ro.sync.adminauth.ad.ActiveDirectoryRealm
+activeDirectoryRealm.url=ldap://&lt;server-address>:389
+activeDirectoryRealm.principalSuffix=@my-company.ro
+activeDirectoryRealm.searchBase=CN=Users,DC=mycompany,DC=com
+activeDirectoryRealm.groupRolesMap="CN=Web Author Admins,DC=mycompany,DC=com":"admin"
+#
+activeDirectoryRealm.systemUsername=&lt;user>
+activeDirectoryRealm.systemPassword=***
+#
+securityManager.realms = $activeDirectoryRealm
+#
+authc = ro.sync.adminauth.userpassword.UserPasswordFormAuthFilter
+authc.loginUrl = /admin-login
+#
+#
+# End Active Directory admin auth config.
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>></codeblock>
+    <p id="p_kbr_dgk_54b">and configure it according to your Active Directory server, where:</p>
     <ul id="ul_n2n_gpw_vhb">
       <li id="li_lbr_dgk_54b"><codeph>principalSuffix</codeph> is usually the mail domain so that
         you do not have to enter it in the login form.</li>
