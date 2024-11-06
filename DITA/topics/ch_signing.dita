@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="ch_signing">
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="ch_signing">
     <title>Signing</title>
+  <shortdesc>This task explains how to sign your PDFs so that they appear certified by your
+    company.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -9,23 +11,40 @@
       </keywords>
     </metadata>
   </prolog>
-    <body>
-        <p>It is possible to sign your PDFs so that they appear certified by your company. To sign a
-        PDF:<ol id="ol_dyp_tgk_ddc">
-        <li>Create a keystore file (if you do not already have one
-          issued):<codeblock id="codeblock_kwj_3gk_ddc" outputclass="language-bourne">openssl req -new -newkey rsa:4096 -nodes -keyout my.key -out my.csr
+    <taskbody>
+    <prereq id="prereq_pwf_pwh_hdc">
+      <p>Some Bouncy Castle libraries need to be provided to use this feature:<ul
+          id="ul_f5m_5wh_hdc">
+          <li>bcpkix-jdk18on</li>
+          <li>bcprov-jdk18on</li>
+          <li>bcutil-jdk18on</li>
+        </ul></p>
+    </prereq>
+    <steps id="steps_orp_lwh_hdc">
+      <step>
+        <cmd>Create a keystore file (if you do not already have one issued):</cmd>
+        <info>
+          <codeblock outputclass="language-bourne" id="codeblock_y2k_mwh_hdc">openssl req -new -newkey rsa:4096 -nodes -keyout my.key -out my.csr
 openssl x509 -req -sha256 -days 365 -in my.csr -signkey my.key -out my.pem
 cat my.key my.pem > my2.pem
-openssl pkcs12 -export -in my2.pem -out mykeystore.pkcs12 -name myAlias</codeblock></li>
-        <li>Set the keystore from the command line using the <codeph>-keystore-file</codeph>
-          parameter. This file alone is enough to sign a PDF.</li>
-        <li>If you need to add more information (e.g. your company name, location, or reason) or to
-          set a password, you can use the following parameters:<ul id="ul_xvl_l3k_ddc">
+openssl pkcs12 -export -in my2.pem -out mykeystore.pkcs12 -name myAlias</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Set the keystore from the command line using the <codeph>-keystore-file</codeph>
+          parameter. This file alone is enough to sign a PDF.</cmd>
+      </step>
+      <step>
+        <cmd>If you need to add more information (e.g. your company name, location, or reason) or to
+          set a password, you can use the following parameters:</cmd>
+        <info>
+          <ul id="ul_kzm_4wh_hdc">
             <li><codeph>-sign-name</codeph></li>
             <li><codeph>-sign-location</codeph></li>
             <li><codeph>-sign-reason</codeph></li>
             <li><codeph>-sign-password</codeph></li>
-          </ul></li>
-      </ol></p>
-    </body>
-</topic>
+          </ul>
+        </info>
+      </step>
+    </steps></taskbody>
+</task>
