@@ -33,8 +33,7 @@
     } 
 }</codeblock></p><p id="p_onw_dgk_54b">For more information, see: <xref
                 href="https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/"
-                format="html" scope="external"/>.</p><p id="p_pnw_dgk_54b"><b>Sample configuration
-                for Nginx as a reverse proxy with
+                format="html" scope="external"/>.</p><p id="p_pnw_dgk_54b"><b>Sample configuration for Nginx as a reverse proxy with
               SSL:</b><codeblock outputclass="language-bourne" id="codeblock_qnw_dgk_54b"># Redirects trafic from http to https. 
 server { 
     listen 80 default_server; 
@@ -65,6 +64,9 @@ server {
               generator can be found here: <xref
                 href="https://mozilla.github.io/server-side-tls/ssl-config-generator/" format="html"
                 scope="external"/>.</p></li>
+          <li id="li_hb1_l4v_3dc">[Optional] To allow HTTP/2, add <codeph>http2</codeph> to the
+              <codeph>listen</codeph>
+            directive:<codeblock outputclass="language-bourne">listen 443 ssl http2;</codeblock></li>
           <li id="li_tnw_dgk_54b">Restart <term>Nginx</term>. </li>
         </ol>
       </p>
@@ -104,33 +106,48 @@ server {
               generator can be found here: <xref
                 href="https://mozilla.github.io/server-side-tls/ssl-config-generator/" format="html"
                 scope="external"/>.</p></li>
+          <li id="li_vzp_q4v_3dc">[Optional] To allow HTTP/2, follow these steps:<ol
+              id="ol_mq1_s4v_3dc">
+              <li id="li_nq1_s4v_3dc">Ensure that <b>Apache 2.4.17+</b> is installed (HTTP/2 is
+                supported in these versions).</li>
+              <li id="li_ocb_54v_3dc">Enable the <b>http2 module</b> by adding this to your
+                  <codeph>httpd.conf</codeph>:<codeblock outputclass="language-bourne">LoadModule http2_module modules/mod_http2.so</codeblock></li>
+              <li id="li_mct_z4v_3dc">Enable HTTP/2 for SSL/TLS
+                connections:<codeblock outputclass="language-bourne">&lt;VirtualHost *:443>
+  Protocols h2 http/1.1
+  SSLEngine on
+  # SSL configurations
+&lt;/VirtualHost></codeblock></li>
+            </ol></li>
           <li id="li_cbr_mhm_spb">Restart <term>Apache httpd</term>. </li>
         </ol>
       </p>
     </section>
     <section id="section_x4c_zzf_gmb">
       <title>Built-in SSL Support</title>
-      <p id="p_unw_dgk_54b">To configure the built-in SSL support for <ph keyref="product"/>, follow these steps:<ol
-          id="ol_cvw_rch_gmb">
-          <li id="li_vnw_dgk_54b">Generate a certificate or use an existing one.<p id="p_wnw_dgk_54b">[Optional] If you do not have a
-              certificate, use the following procedure to generate a self-signed certificate on a
-              Ubuntu machine. This should be used for testing purposes.</p><ol id="ol_bqb_v3h_gmb">
+      <p id="p_unw_dgk_54b">To configure the built-in SSL support for <ph keyref="product"/>, follow
+        these steps:<ol id="ol_cvw_rch_gmb">
+          <li id="li_vnw_dgk_54b">Generate a certificate or use an existing one.<p
+              id="p_wnw_dgk_54b">[Optional] If you do not have a certificate, use the following
+              procedure to generate a self-signed certificate on a Ubuntu machine. This should be
+              used for testing purposes.</p><ol id="ol_bqb_v3h_gmb">
               <li id="li_xnw_dgk_54b">Generate the private
                 key:<codeblock outputclass="language-bourne" id="codeblock_ynw_dgk_54b">openssl genrsa -out private.pem 2048</codeblock></li>
               <li id="li_znw_dgk_54b">Generate the public
                 key:<codeblock outputclass="language-bourne" id="codeblock_a4w_dgk_54b">openssl rsa -in private.pem -outform PEM -pubout -out public.pem</codeblock></li>
               <li id="li_b4w_dgk_54b">Create a CSR (Certificate Signing
-                  Request):<codeblock outputclass="language-bourne" id="codeblock_c4w_dgk_54b">openssl req -new -key private.pem -out certificate.csr</codeblock><note id="note_d4w_dgk_54b">After
-                  running this command, you will be prompted to enter some values. Follow the
-                  instructions on the screen and enter the corresponding values.</note></li>
+                  Request):<codeblock outputclass="language-bourne" id="codeblock_c4w_dgk_54b">openssl req -new -key private.pem -out certificate.csr</codeblock><note
+                  id="note_d4w_dgk_54b">After running this command, you will be prompted to enter
+                  some values. Follow the instructions on the screen and enter the corresponding
+                  values.</note></li>
               <li id="li_e4w_dgk_54b">Create a self-signed
                 certificate:<codeblock outputclass="language-bourne" id="codeblock_f4w_dgk_54b">openssl x509 -req -days 365 -in certificate.csr -signkey private.pem -out certificate.crt</codeblock></li>
               <li id="li_g4w_dgk_54b">Generate a PKCS12
-                  file:<codeblock outputclass="language-bourne" id="codeblock_h4w_dgk_54b">openssl pkcs12 -export -in certificate.crt -inkey private.pem -out feedback.p12 -name feedback -CAfile certificate.crt -chain</codeblock><p id="p_i4w_dgk_54b">The
-                  path of this file will be used for
-                  <codeph>server.ssl.key-store</codeph>.</p><p id="p_j4w_dgk_54b">The <b>name</b> attribute value will
-                  be used for <codeph>server.ssl.key-alias</codeph>.</p><p id="p_k4w_dgk_54b">The <b>export
-                    password</b> value you entered will be used for
+                  file:<codeblock outputclass="language-bourne" id="codeblock_h4w_dgk_54b">openssl pkcs12 -export -in certificate.crt -inkey private.pem -out feedback.p12 -name feedback -CAfile certificate.crt -chain</codeblock><p
+                  id="p_i4w_dgk_54b">The path of this file will be used for
+                    <codeph>server.ssl.key-store</codeph>.</p><p id="p_j4w_dgk_54b">The <b>name</b>
+                  attribute value will be used for <codeph>server.ssl.key-alias</codeph>.</p><p
+                  id="p_k4w_dgk_54b">The <b>export password</b> value you entered will be used for
                     <codeph>server.ssl.key-store-password</codeph>.</p></li>
             </ol></li>
           <li id="li_l4w_dgk_54b">Go to
@@ -138,24 +155,27 @@ server {
               <filepath>feedback-server.properties</filepath> file.</li>
           <li id="li_m4w_dgk_54b">Set the value for <codeph>server.ssl.enabled</codeph> to be
             true:<codeblock outputclass="language-bourne" id="codeblock_n4w_dgk_54b">server.ssl.enabled = true</codeblock></li>
-          <li id="li_o4w_dgk_54b">[Optional] Change the <codeph>http.port</codeph> and <codeph>https.port</codeph> with
-            according to your needs. The default values are 8080 for http and 8443 for
-              https.<note id="note_p4w_dgk_54b">If you want to use ports 80 and 443, you need to have root permission to
-              open them on a Linux machine.</note></li>
-          <li id="li_q4w_dgk_54b">Set the type of keystore file to be used for the server certificate. If you followed
-            the instructions to generate a self-signed SSL certificate, you will need to set this
-            property to
+          <li id="li_o4w_dgk_54b">[Optional] Change the <codeph>http.port</codeph> and
+              <codeph>https.port</codeph> with according to your needs. The default values are 8080
+            for http and 8443 for https.<note id="note_p4w_dgk_54b">If you want to use ports 80 and
+              443, you need to have root permission to open them on a Linux machine.</note></li>
+          <li id="li_q4w_dgk_54b">Set the type of keystore file to be used for the server
+            certificate. If you followed the instructions to generate a self-signed SSL certificate,
+            you will need to set this property to
             <codeph>PKCS12</codeph>:<codeblock outputclass="language-bourne" id="codeblock_r4w_dgk_54b">server.ssl.key-store-type=${certificate_key_store_type}</codeblock></li>
-          <li id="li_s4w_dgk_54b">Set the path name of the keystore file where you have stored the server certificate to
-            be
+          <li id="li_s4w_dgk_54b">Set the path name of the keystore file where you have stored the
+            server certificate to be
             loaded:<codeblock outputclass="language-bourne" id="codeblock_t4w_dgk_54b">server.ssl.key-store=${certificate_file_path}</codeblock></li>
-          <li id="li_u4w_dgk_54b">Set the password used to access the specified keystore file. If you followed the
-            instructions to generate a self-signed SSL certificate, you will need to use the
-            password set when you generated the PKCS12
+          <li id="li_u4w_dgk_54b">Set the password used to access the specified keystore file. If
+            you followed the instructions to generate a self-signed SSL certificate, you will need
+            to use the password set when you generated the PKCS12
             file:<codeblock outputclass="language-bourne" id="codeblock_v4w_dgk_54b">server.ssl.key-store-password=${password}</codeblock></li>
           <li id="li_w4w_dgk_54b">Set the alias that identifies the key in the key
             store:<codeblock outputclass="language-bourne" id="codeblock_x4w_dgk_54b">server.ssl.key-alias=${alias}</codeblock></li>
-        </ol></p>
+        </ol><note id="note_lrz_gpv_3dc">The built-in SSL support has HTTP/2 automatically enabled
+          (the <codeph>server.http2.enabled=true</codeph> property is set in the
+            <filepath>feedback-server.properties</filepath> file). If you want to disable HTTP/2,
+          set that property to <i>false</i>.</note></p>
     </section>
   </body>
 </topic>
