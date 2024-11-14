@@ -25,19 +25,21 @@
         <li id="li_evp_xnq_pwb">Create your customization stylesheet (for example,
             <b>tablesFootnotes.xsl</b>) in the <filepath>custom_template/xsl</filepath> folder with
           the following
-          content:<codeblock outputclass="language-xml" id="codeblock_cn4_cgk_54b">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          content:<codeblock outputclass="language-xml" id="codeblock_cn4_cgk_54b">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:whc="http://www.oxygenxml.com/webhelp/components"
+  xmlns:oxy="http://www.oxygenxml.com/extensions/author"
   exclude-result-prefixes="#all"
   version="3.0">
-  
+
   &lt;!--
     Match only top level tables (i.e tables that are not nested in other tables),
     that contains some footnotes.
   -->
-  &lt;xsl:template match="*[contains(@class, 'topic/table')]
-    [not(ancestor::*[contains(@class, 'topic/table')])]
-    [//*[contains(@class, 'topic/fn')]]">
+  &lt;xsl:template match="
+      *[contains(@class, 'topic/table')]
+      [not(ancestor::*[contains(@class, 'topic/table')])]
+      [//*[contains(@class, 'topic/fn')]]">
     &lt;xsl:variable name="top-level-table" select="."/>
     &lt;xsl:next-match>
       &lt;xsl:with-param name="top-level-table" select="$top-level-table" tunnel="yes"/>
@@ -49,24 +51,25 @@
           Try to preserve the footnote ID, if available, so that the xrefs will have a target.
         -->
         &lt;div id="{if(@id) then @id else generate-id(.)}">
-          &lt;xsl:variable name="fnid">
+          &lt;xsl:variable name="unique-id" select="generate-id($top-level-table)"/>
+          &lt;xsl:variable name="fn-id">
             &lt;xsl:number from="$top-level-table" level="any"/>
           &lt;/xsl:variable>
-          
+
           &lt;xsl:call-template name="commonattributes"/>
-          &lt;a name="tblfntarg_{$fnid}" href="#tblfnsrc_{$fnid}">
+          &lt;a name="tbl_{$unique-id}_fntarg_{$fn-id}" href="#tbl_{$unique-id}_fnsrc_{$fn-id}">
             &lt;sup>
-              &lt;xsl:value-of select="$fnid"/>
+              &lt;xsl:value-of select="$fn-id"/>
             &lt;/sup>
           &lt;/a>
           &lt;xsl:text>  &lt;/xsl:text>
-          
+
           &lt;xsl:apply-templates/>
         &lt;/div>
       &lt;/xsl:for-each>
     &lt;/div>
   &lt;/xsl:template>
-  
+
   &lt;!-- 
     Process footnotes both inside and outside tables (based on the top-level-table parameter).
   -->
@@ -75,45 +78,51 @@
     &lt;xsl:param name="top-level-table" tunnel="yes"/>
     &lt;!-- Footnotes with IDs must be ignored, they are accessible only through xrefs. -->
     &lt;xsl:if test="not(@id) or $xref = 'yes'">
-      &lt;xsl:variable name="fnid" select="
-        if ($top-level-table) then
-          index-of($top-level-table//*[contains(@class, 'topic/fn')], .)
-        else
-          index-of(//*[contains(@class, 'topic/fn')]
-          [not(ancestor::*[contains(@class, 'topic/entry')])], .)"/>
+      &lt;xsl:variable name="unique-id" select="
+          if ($top-level-table) then
+            generate-id($top-level-table)
+          else
+            ()"/>
+      &lt;xsl:variable name="fn-id" select="
+          if ($top-level-table) then
+            index-of($top-level-table//*[contains(@class, 'topic/fn')], .)
+          else
+            index-of(//*[contains(@class, 'topic/fn')]
+            [not(ancestor::*[contains(@class, 'topic/entry')])], .)"/>
       &lt;xsl:variable name="callout" select="@callout"/>
-      &lt;xsl:variable name="convergedcallout" select="
-        if (string-length($callout)> 0) then
-          $callout
-        else
-          $fnid"/>
+      &lt;xsl:variable name="converged-callout" select="
+          if (string-length($callout) > 0) then
+            $callout
+          else
+            $fn-id"/>
       &lt;a>
         &lt;!-- Generate different attributes based on the presence of a parent table. -->
         &lt;xsl:attribute name="name" select="
-          if ($top-level-table) then
-            concat('tblfnsrc_', $fnid)
-          else
-            concat('fnsrc_', $fnid)"/>
+            if ($top-level-table) then
+              concat('tbl_', $unique-id,'_fnsrc_', $fn-id)
+            else
+              concat('fnsrc_', $fn-id)"/>
         &lt;xsl:attribute name="href" select="
-          if ($top-level-table) then
-            concat('#tblfntarg_', $fnid)
-          else
-            concat('#fntarg_', $fnid)"/>
+            if ($top-level-table) then
+              concat('#tbl_', $unique-id,'_fntarg_', $fn-id)
+            else
+              concat('#fntarg_', $fn-id)"/>
         &lt;sup>
-          &lt;xsl:value-of select="$convergedcallout"/>
+          &lt;xsl:value-of select="$converged-callout"/>
         &lt;/sup>
       &lt;/a>
     &lt;/xsl:if>
   &lt;/xsl:template>
-  
+
   &lt;!--
     The xrefs to footnotes with IDs inside table-cells. We need to recalculate
     their indexes if their referenced footnote is also in the table.
   -->
-  &lt;xsl:template match="*[contains(@class, 'topic/xref')][@type='fn']
-    [ancestor::*[contains(@class, 'topic/entry')]]">
+  &lt;xsl:template match="
+      *[contains(@class, 'topic/xref')][@type = 'fn']
+      [ancestor::*[contains(@class, 'topic/entry')]]">
     &lt;xsl:param name="top-level-table" tunnel="yes"/>
-    
+
     &lt;xsl:variable name="topic-id" select="substring-after(@href, '#')"/>
     &lt;xsl:variable name="element-id" select="substring-after($topic-id, '/')"/>
     &lt;xsl:variable name="destination">
@@ -126,17 +135,18 @@
         &lt;/xsl:otherwise>
       &lt;/xsl:choose>
     &lt;/xsl:variable>
-    
+
     &lt;xsl:variable name="fn" select="
-      $top-level-table//*[contains(@class, 'topic/fn')][@id = $destination]"/>
+        $top-level-table//*[contains(@class, 'topic/fn')][@id = $destination]"/>
     &lt;xsl:choose>
       &lt;xsl:when test="$fn">
+        &lt;xsl:variable name="unique-id" select="generate-id($top-level-table)"/>
         &lt;!-- There is a reference in the table, recalculate index. -->
-        &lt;xsl:variable name="fnid" select="
-          index-of($top-level-table//*[contains(@class, 'topic/fn')], $fn)"/>
-        &lt;a name="tblfnsrc_{$fnid}" href="#tblfntarg_{$fnid}">
+        &lt;xsl:variable name="fn-id" select="
+            index-of($top-level-table//*[contains(@class, 'topic/fn')], $fn)"/>
+        &lt;a name="tbl_{$unique-id}_fnsrc_{$fn-id}" href="#tbl_{$unique-id}_fntarg_{$fn-id}">
           &lt;sup>
-            &lt;xsl:value-of select="$fnid"/>
+            &lt;xsl:value-of select="$fn-id"/>
           &lt;/sup>
         &lt;/a>
       &lt;/xsl:when>
@@ -146,7 +156,7 @@
       &lt;/xsl:otherwise>
     &lt;/xsl:choose>
   &lt;/xsl:template>
-  
+
   &lt;!--
     Output footnotes below tables and at the end of the topic.
   -->
@@ -155,54 +165,54 @@
     &lt;xsl:if test="not(node()/ancestor::*[contains(@class, 'topic/table')])">
       &lt;div>
         &lt;!-- Do not number footnotes from tables. -->
-        &lt;xsl:variable name="fnid" select="index-of(//*[contains(@class, 'topic/fn')]
+        &lt;xsl:variable name="fn-id" select="index-of(//*[contains(@class, 'topic/fn')]
           [not(ancestor::*[contains(@class, 'topic/entry')])], .)"/>
         &lt;xsl:variable name="callout" select="@callout"/>
-        &lt;xsl:variable name="convergedcallout" select="
-          if (string-length($callout) > 0) then
-            $callout
-          else
-            $fnid"/>
-        
+        &lt;xsl:variable name="converged-callout" select="
+            if (string-length($callout) > 0) then
+              $callout
+            else
+              $fn-id"/>
+
         &lt;xsl:call-template name="commonattributes"/>
         &lt;xsl:choose>
           &lt;xsl:when test="@id and not(@id = '')">
-            &lt;xsl:variable name="topicid"
-              select="ancestor::*[contains(@class, ' topic/topic ')][1]/@id"/>
-            &lt;xsl:variable name="refid" select="concat($topicid, '/', @id)"/>
+            &lt;xsl:variable name="topic-id" select="
+              ancestor::*[contains(@class, ' topic/topic ')][1]/@id"/>
+            &lt;xsl:variable name="ref-id" select="concat($topic-id, '/', @id)"/>
             &lt;xsl:choose>
-              &lt;xsl:when test="key('xref', $refid)">
+              &lt;xsl:when test="key('xref', $ref-id)">
                 &lt;a>
                   &lt;xsl:call-template name="setid"/>
                   &lt;sup>
-                    &lt;xsl:value-of select="$convergedcallout"/>
+                    &lt;xsl:value-of select="$converged-callout"/>
                   &lt;/sup>
                 &lt;/a>
                 &lt;xsl:text>  &lt;/xsl:text>
               &lt;/xsl:when>
               &lt;xsl:otherwise>
                 &lt;sup>
-                  &lt;xsl:value-of select="$convergedcallout"/>
+                  &lt;xsl:value-of select="$converged-callout"/>
                 &lt;/sup>
                 &lt;xsl:text>  &lt;/xsl:text>
               &lt;/xsl:otherwise>
             &lt;/xsl:choose>
           &lt;/xsl:when>
           &lt;xsl:otherwise>
-            &lt;a name="fntarg_{$fnid}" href="#fnsrc_{$fnid}">
+            &lt;a name="fntarg_{$fn-id}" href="#fnsrc_{$fn-id}">
               &lt;sup>
-                &lt;xsl:value-of select="$convergedcallout"/>
+                &lt;xsl:value-of select="$converged-callout"/>
               &lt;/sup>
             &lt;/a>
             &lt;xsl:text>  &lt;/xsl:text>
           &lt;/xsl:otherwise>
         &lt;/xsl:choose>
-        
+
         &lt;xsl:apply-templates/>
       &lt;/div>
     &lt;/xsl:if>
   &lt;/xsl:template>
-  
+
 &lt;/xsl:stylesheet></codeblock></li>
         <li id="li_lgx_ynq_pwb">Open the <xref
             href="whr_publishing_template_contents.dita#template_descritpor_file">template
