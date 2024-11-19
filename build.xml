@@ -382,6 +382,61 @@
 	    </then>
 	  </if>
 	</target>
-
-
+  
+  <target name="build-addons-public">
+    <antcall target="build-addons">
+      <param name="editlink.remote.ditamap.url">github://getFileContent/oxygenxml/userguide/master/DITA/addons.ditamap</param>
+    </antcall>
+  </target>
+  
+  <target name="build-addons-private">
+    <antcall target="build-addons">
+      <param name="editlink.remote.ditamap.url">github://getFileContent/oxygenxml/userguide-private/dev/DITA/addons.ditamap</param>
+    </antcall>
+  </target>
+  
+  <target name="build-addons">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    
+    <echo>--------------------------------</echo>
+    <echo>Build single addons webhelp target</echo>
+    
+    <property name="p-output">${project.build.directory}/output/ug-addons/</property>
+    <property name="p-temp">${project.build.directory}/temp/ug-addons/</property>
+    
+    <property name="p-template">${basedir}/publishing/publishing-template/editor-sa.opt</property>
+    
+    <property name="editlink.remote.ditamap.url"/>
+    <property property="editlink.web.author.url" value="https://www.oxygenxml.com/oxygen-xml-web-author/"/>
+    
+    <property name="clean.temp">yes</property>
+    
+    <delete dir="${p-output}" />
+    <mkdir dir="${p-output}" />
+    
+    <echo>Template         : ${p-template} </echo>
+    <echo>DITA OT          : ${dita-ot-dir} </echo>
+    <echo>Temp             : ${p-temp} </echo>
+    <echo>Output           : ${p-output} </echo>
+    <echo>Edit Link Map    : ${editlink.ditamap} </echo>
+    <echo>Remote Web Author: ${editlink.web.author.url} </echo>
+    
+    <exec failifexecutionfails="true" failonerror="true" executable="${dita-ot-dir}/bin/${dita.executable}">
+      <!-- General parameters -->
+      <arg value="--format=webhelp-responsive" />
+      <arg value="--output=${p-output}" />
+      <arg value="--temp=${p-temp}" />
+      <arg value="--clean.temp=${clean.temp}" />
+      <!-- <arg value="/-/-verbose" /> -->
+      <arg value="--input=${basedir}/DITA/addons.ditamap" />
+      
+      <arg value="-Dhttps.proxySet=true" />
+      <arg value="-Dhttps.proxyHost=proxy.sync.ro" />
+      <arg value="-Dhttps.proxyPort=3128" />
+      <!-- Relevant only for webhelp -->
+      <arg value="-Dwebhelp.publishing.template=${p-template}"/>
+      <arg value="-Deditlink.remote.ditamap.url=${editlink.ditamap}" />
+      <arg value="-Deditlink.web.author.url=${editlink.web.author.url}"/>
+    </exec>
+  </target>
 </project>
