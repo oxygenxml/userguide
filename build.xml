@@ -22,6 +22,8 @@
 			<param name="p-type">-public</param>
 		  <param name="editlink.remote.ditamap.url">${editlink.ditamap.url}</param>
 		</antcall>
+		
+		<antcall target="build-addons-public" />
 	</target>
 
 	<target name="build-webhelp-private">
@@ -31,6 +33,8 @@
 		  <param name="p-type">-private</param>
 		  <param name="editlink.remote.ditamap.url">${editlink.ditamap.url}</param>
 		</antcall>
+		
+		<antcall target="build-addons-private" />
 	</target>
 
 	<target name="build-webhelp-common">
@@ -386,24 +390,29 @@
   <target name="build-addons-public">
     <antcall target="build-addons">
       <param name="editlink.remote.ditamap.url">github://getFileContent/oxygenxml/userguide/master/DITA/addons.ditamap</param>
+  	<param name="p-format" value="webhelp-responsive" />
+  	<param name="p-type" value="-public" />
     </antcall>
   </target>
   
   <target name="build-addons-private">
     <antcall target="build-addons">
       <param name="editlink.remote.ditamap.url">github://getFileContent/oxygenxml/userguide-private/dev/DITA/addons.ditamap</param>
+  	<param name="p-format" value="webhelp-responsive" />
+  	<param name="p-type" value="-private" />
     </antcall>
   </target>
   
   <target name="build-addons">
     <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-    
-    <echo>--------------------------------</echo>
-    <echo>Build single addons webhelp target</echo>
-    
-    <property name="p-output">${project.build.directory}/output/ug-addons/</property>
-    <property name="p-temp">${project.build.directory}/temp/ug-addons/</property>
-    
+	
+    <property name="p-type" value=""/>
+	<echo>--------------------------------</echo>
+	<echo>Build single target: ug-addons / ${p-format} ${p-type}</echo>
+	 
+	<property name="p-output">${project.build.directory}/output/${p-format}${p-type}/ug-addons</property>
+	<property name="p-temp">${project.build.directory}/temp/${p-format}${p-type}/ug-addons</property>
+        
     <property name="p-template">${basedir}/publishing/publishing-template/editor-sa.opt</property>
     
     <property name="editlink.remote.ditamap.url"/>
