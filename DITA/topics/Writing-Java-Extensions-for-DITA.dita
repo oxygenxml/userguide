@@ -16,17 +16,26 @@
         <codeph>MyConrefResolver</codeph>. Here are the required steps:</p>
     <p id="p_c2t_dgk_54b">
       <ol id="ol_jv5_vqj_mmb">
-        <li id="li_d2t_dgk_54b">Create a Maven project for your Java extension and add the following
-          dependencies:<codeblock outputclass="language-xml" id="codeblock_e2t_dgk_54b">&lt;dependency>
+        <li id="li_d2t_dgk_54b">Create a Maven project that have access to the Oxygenxml Maven
+          Repository by following the procedure from the <xref scope="external" format="html"
+            href="https://www.oxygenxml.com/oxygen_sdk/download.html">Oxygen SDK</xref> page:</li>
+        <li>Add dependencies to <codeph>oxygen-sdk</codeph> and
+          <codeph>framework-dita</codeph>:<codeblock outputclass="language-xml" id="codeblock_e2t_dgk_54b">&lt;dependency>
       &lt;groupId>com.oxygenxml&lt;/groupId>
       &lt;artifactId>oxygen-sdk&lt;/artifactId>
-      &lt;version>${oxygen.version}&lt;/version>
+      &lt;version>${oxygen.sdk.version}&lt;/version>
 &lt;/dependency>
 &lt;dependency>
       &lt;groupId>com.oxygenxml&lt;/groupId>
       &lt;artifactId>oxygen-jars&lt;/artifactId>
       &lt;classifier>framework-dita&lt;/classifier>
-      &lt;version>${oxygen.version}&lt;/version>
+      &lt;version>${oxygen.sdk.version}&lt;/version>
+      &lt;exclusions>
+        &lt;exclusion>
+          &lt;groupId>*&lt;/groupId>
+          &lt;artifactId>*&lt;/artifactId>
+        &lt;/exclusion>
+      &lt;/exclusions>
 &lt;/dependency></codeblock></li>
         <li id="li_f2t_dgk_54b">Create a <codeph>MyConrefResolver.java</codeph> Java source file that contains your
           reference resolver implementation. To inherit the default behavior for resolving
@@ -45,8 +54,10 @@
             However, if specified directly, the default constructor will be used. In the case of the
               <codeph>DITAConRefResolver</codeph>, this causes keys to not be resolved in Web
             Author.</note></li>
-        <li id="li_j2t_dgk_54b">Create a JAR file with your compiled Java classes and add it to your framework's
-          classpath using the Document Type Configuration dialog box.</li>
+        <li id="li_j2t_dgk_54b">Create a JAR file with your compiled Java classes and add it to your
+          framework's classpath using the Document Type Configuration dialog box. You can create the
+          JAR from your IDE or with Maven by running <codeph>mvn clean package</codeph> and the JAR
+          will be created in <codeph>target</codeph> directory.</li>
       </ol>
     </p>
   </body>

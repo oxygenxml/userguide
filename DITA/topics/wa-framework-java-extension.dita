@@ -9,15 +9,9 @@
     <p id="p_qts_dgk_54b">To create such a Java extension, follow these steps:</p>
     <p id="p_rts_dgk_54b">
       <ol id="ul_ifj_cqs_dlb">
-        <li id="li_sts_dgk_54b">Create a Maven project.</li>
-        <li id="li_tts_dgk_54b">Declare <i>Oxygen's Maven</i> repository in the <filepath>pom.xml</filepath>
-          file:<codeblock outputclass="language-xml" id="codeblock_uts_dgk_54b">&lt;repositories>
-  &lt;repository>
-    &lt;id>oxygenxml&lt;/id>
-    &lt;name>Oxygen XML SDK Maven Repository&lt;/name>
-    &lt;url>https://oxygenxml.com/maven/&lt;/url>
-  &lt;/repository>
-&lt;/repositories></codeblock></li>
+        <li id="li_sts_dgk_54b">Create a Maven project that have access to the Oxygenxml Maven
+          Repository by following the procedure from the <xref scope="external" format="html"
+            href="https://www.oxygenxml.com/oxygen_sdk/download.html">Oxygen SDK</xref> page.</li>
         <li id="li_vts_dgk_54b">Add a dependency on the <codeph>oxygen-sdk</codeph> in the <filepath>pom.xml</filepath>
           file:<codeblock outputclass="language-xml" id="codeblock_wts_dgk_54b">&lt;dependency>
   &lt;groupId>com.oxygenxml&lt;/groupId>
@@ -30,14 +24,28 @@
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/ExtensionsBundle.html"
             format="html" scope="external"
               ><codeph>ro.sync.ecss.extensions.api.ExtensionsBundle</codeph></xref>. <note
-            type="important" id="note_yts_dgk_54b">The <xref href="webauthor-predefined-frameworks.dita">built-in
-              frameworks</xref> already have such an implementation. It is recommended to extend
-            this class for your particular framework so that you get the benefits of all the
+            type="important" id="note_yts_dgk_54b">The <xref
+              href="gitgh://4agk564kvsjhc3voiqshkue8fu@https%3A%2F%2Fgithub.com%2Foxygenxml%2Fuserguide/hotfixes%2F27.0/DITA/topics/webauthor-predefined-frameworks.dita"
+              >built-in frameworks</xref> already have such an implementation. It is recommended to
+            extend this class for your particular framework so that you get the benefits of all the
             built-in features. For example, the name of this class for the DITA framework is
-              <codeph>ro.sync.ecss.extensions.dita.DITAExtensionsBundle</codeph>.<p id="p_zts_dgk_54b">To be able to
-              compile your code, you should add the JAR files of the base framework to the Maven's
-              classpath. For
-              example:<codeblock outputclass="language-xml" id="codeblock_a5s_dgk_54b">&lt;dependency>
+              <codeph>ro.sync.ecss.extensions.dita.DITAExtensionsBundle</codeph>.<p
+              id="p_zts_dgk_54b">To be able to compile your code, you should add the JAR files of
+              the base framework to the Maven's classpath. For
+              example:<codeblock id="codeblock_jjd_3sc_pdc">&lt;dependency>
+      &lt;groupId>com.oxygenxml&lt;/groupId>
+      &lt;artifactId>oxygen-jars&lt;/artifactId>
+      &lt;classifier>framework-dita&lt;/classifier>
+      &lt;version>${oxygen.sdk.version}&lt;/version>
+      &lt;exclusions>
+        &lt;exclusion>
+          &lt;groupId>*&lt;/groupId>
+          &lt;artifactId>*&lt;/artifactId>
+        &lt;/exclusion>
+      &lt;/exclusions>
+&lt;/dependency></codeblock></p><p>If you depend on a custom dita.jar you can declare
+              a dependency with scope "system" like
+              this:</p><p><codeblock outputclass="language-xml" id="codeblock_a5s_dgk_54b">&lt;dependency>
   &lt;groupId>fake.group&lt;/groupId>
   &lt;artifactId>dita-jar&lt;/artifactId>
   &lt;version>1.0&lt;/version>
