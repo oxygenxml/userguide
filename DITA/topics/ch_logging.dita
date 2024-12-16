@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="ch_logging">
+    <title>Logging</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Logging</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <taskbody>
+        <context>
+            <p>By default, when running the product, the default log root level in INFO so only
+        INFO, WARN and ERROR message are displayed. You can change the logger configuration by
+        following this procedure:</p>
+        </context>
+        <steps>
+            <step>
+        <cmd>Create a custom <filepath>logback.xml</filepath> file in which, for example, you can
+          filter the inner Apache FOP messages:</cmd>
+        <info>
+          <codeblock id="codeblock_tfs_pgn_sdc" outputclass="language-xml">&lt;configuration>
+
+  &lt;conversionRule conversionWord="chmsg"
+    converterClass="com.oxygenxml.chemistry.logs.ChemistryMessageConverter"/>
+
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>%-5level %class{0} - %chmsg%n&lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;logger name="org.apache.fop" level="off" additivity="false">
+    &lt;appender-ref ref="CONSOLE"/>
+  &lt;/logger>
+
+  &lt;root level="info">
+    &lt;appender-ref ref="CONSOLE"/>
+  &lt;/root>
+
+&lt;/configuration></codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Set the configuration file from the command line using the <codeph>-log-file</codeph>
+          parameter.</cmd>
+      </step>
+        </steps>
+    </taskbody>
+</task>
