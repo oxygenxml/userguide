@@ -530,7 +530,7 @@
   <!-- keyword -> b, i, uicontrol, filepath, codeph -->
   <sch:pattern>
     <sch:rule context="keyword"> 
-      <sch:report test="not(@keyref) and not(ancestor::node()/local-name() = 'keydef')">
+      <sch:report test="not(@keyref) and not(ancestor::node()/local-name() = 'keydef') and not(ancestor::node()/local-name() = 'keywords')">
         You should not use this element because it is not rendered properly in the output. Use one of the following elements instead: b, i, uicontrol, filepath, codeph, term.
       </sch:report>        
     </sch:rule>
