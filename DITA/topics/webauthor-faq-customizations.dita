@@ -103,5 +103,44 @@ sync.Translation.addTranslations(myMsgs);</codeblock></li>
       <note id="note_cyy_bqc_hdc" type="notice">This only allows adding new messages for the default
         languages. You cannot add a new language.</note>
     </section>
+    <section id="section_bbv_sz3_k2c">
+      <title>How can I define a document template with a dynamic relative path?</title>
+      <p>Suppose you want to generate files from a document template that contains a link to a
+        specific document. In the generated files, the link should be relative to the location where
+        the template is created and the location of the link target. When the files are created in
+        different directories, the relative path should be automatically and accurately
+        calculated.</p>
+      <p>To make this happen, in your <xref
+          href="https://www.oxygenxml.com/doc/ug-waCustom/topics/wa-file-templates.html"
+          format="html" scope="external">newly created template</xref>, you must use the
+          <codeph>${makeRelative(base, location)}</codeph> and <codeph>${currentFileURL}</codeph>
+        <xref href="https://www.oxygenxml.com/doc/ug-waCustom/topics/webapp_editor_variables.html"
+          format="html" scope="external">Editor Variables</xref>.</p>
+      <p>For example, in a WebDav server, your template may look like
+          this:<codeblock id="codeblock_zb4_m4j_k2c" outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+&lt;topic id="newfile">
+  &lt;title>New File&lt;/title>
+  &lt;body>
+    &lt;p>This is a new file.&lt;/p>
+    &lt;p>Link to a specific document:
+      &lt;xref
+        href="${makeRelative(${currentFileURL}, 
+webdav-https://your-web-dav-server/path/to/your/target-document.dita)}"
+        format="dita"
+        scope="external"
+      />
+    &lt;/p>
+  &lt;/body>
+&lt;/topic></codeblock><note id="note_sf1_gvj_k2c">Make sure that you use the absolute
+            <xref href="https://www.oxygenxml.com/doc/ug-waCustom/topics/oxy-url.html" format="html"
+            scope="external">OXY-URL</xref> in the <codeph>location</codeph> parameter of the
+            <codeph>${makeRelative(base, location)}</codeph> editor variable.</note></p>
+    </section>
+    <p>Depending on where you create the new file from the template, the relative path to the target
+      document will be properly computed. It may look like
+      this:<codeblock id="codeblock_tnm_gpj_k2c" outputclass="language-xml">&lt;xref href="../../target-document.dita" format="dita" scope="external" /></codeblock></p>
+    <p>or like this (and so
+      on):<codeblock id="codeblock_usy_3pj_k2c" outputclass="language-xml">&lt;xref href="../target-document.dita" format="dita" scope="external"/></codeblock></p>
   </body>
 </topic>
