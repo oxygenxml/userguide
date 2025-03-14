@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="web-author-custom-connection-to-a-file-server">
+  <title>Integrate <ph keyref="product"/> with a File Storage Service with a Custom Plugin</title>
+  <body>
+    <p>The bridge between <ph keyref="product"/> and File Storage Servers (e.g. GitHub, Drupal,
+      Dropbox, etc.) is generally called a connector. This is basically a <xref
+        href="customizing_plugins.dita">plugin</xref> whose purpose is to enable a connection to a
+      file storage service.</p>
+    <p><ph keyref="product"/> operates documents generically. It does not have built-in business
+      logic for a specific File Storage Service. It has a few extension points, APIs, and interfaces
+      that a connector must implement to make the actual connection to the file storage service.
+      This generic approach is achieved by relying internally on <codeph>java.net.URL</codeph>
+      objects.</p>
+    <p>When it needs to read a document, it opens an HTTP connection the document URL by using
+        <codeph>java.net.URL.openConnection()</codeph>, and from the returned
+        <codeph>java.net.URLConnection</codeph>, it reads the document from the
+        <codeph>java.io.InputStream</codeph> returned by
+        <codeph>java.net.URLConnection.getInputStream()</codeph> method call.</p>
+    <p>When it needs to write a document, it does the same as above but uses the
+        <codeph>java.io.OutputStream</codeph> from <codeph>java.net.URLConnection</codeph>.</p>
+    <p>When it needs to list a directory, it checks that <codeph>java.net.URLConnection</codeph>
+      implements the <codeph><xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/net/protocol/FileBrowsingConnection.html"
+          format="html" scope="external">ro.sync.net.protocol.FileBrowsingConnection</xref></codeph>
+      interface, and if it does, it calls <codeph><xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/net/protocol/FileBrowsingConnection.html#listFolder()"
+          format="html" scope="external"
+          >ro.sync.net.protocol.FileBrowsingConnection.listFolder()</xref></codeph>.</p>
+    <p>To enable the file browsing from the browser, after implementing
+        <codeph>FileBrowsingConnection</codeph>, the connector has to initialize the
+        <codeph>UrlChooser</codeph> in the browser by executing the following code from a
+        <codeph>plugin.js</codeph>
+      file:<codeblock id="codeblock_kgs_gdw_q2c" outputclass="language-javascript">workspace.setUrlChooser(new sync.api.FileBrowsingDialog());</codeblock></p>
+    <p>The connector has to contribute a <codeph><xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/URLStreamHandlerWithContext.html"
+          format="html" scope="external"
+          >ro.sync.ecss.extensions.api.webapp.plugin.URLStreamHandlerWithContext</xref></codeph>
+      implementation that returns <codeph>java.net.URLConnection</codeph> objects that the <ph
+        keyref="product"/> server can use. To do so, in the <codeph>plugin.xml</codeph> file, the
+      connector has to define an extension of the type "<i>URLHandler</i>" with the class attribute
+      pointing to the class that implements the <codeph><xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/plugin/urlstreamhandler/URLStreamHandlerPluginExtension.html"
+          format="html" scope="external"
+          >ro.sync.exml.plugin.urlstreamhandler.URLStreamHandlerPluginExtension</xref></codeph>
+      interface.</p>
+    <p>The <codeph>URLStreamHandlerWithContext</codeph> interface extends the standard
+        <codeph>java.net.URLStreamHandler</codeph> interface, but it enables knowing what browser
+      session to return a connection for.</p>
+    <p>The part from plugin.xml where the "<i>URLHandler</i>" extension is declared may look like
+      this:<codeblock id="codeblock_dyx_rqh_q2c" outputclass="language-xml">  &lt;extension type="URLHandler" 
+    class="com.example.CustomUrlHandlerPluginExtension"/></codeblock></p>
+    <p>And the <codeph>com.example.CustomUrlHandlerPluginExtension</codeph> may look like
+      this:<codeblock id="codeblock_old_yqh_q2c" outputclass="language-java">public class CustomUrlStreamHandlerPluginExtension implements URLStreamHandlerPluginExtension {
+  @Override
+  public URLStreamHandler getURLStreamHandler(String protocol) {
+    if ("customprotocol".equals(protocol)) {
+      return new CustomUrlStreamHandler(protocol);
+    } else {
+      return null;
+    }
+  }
+}</codeblock></p>
+    <p>And the <codeph>CustomUrlStreamHandler</codeph> may look like
+      this:<codeblock id="codeblock_qql_hrh_q2c" outputclass="language-java">public class CustomURLStreamHandlerWithContext extends URLStreamHandlerWithContext {
+  @Override
+  protected URLConnection openConnectionInContext(String contextId, URL oxyUri, Proxy proxy) throws IOException {
+    return newCustomUrlConnection(contextId, oxyUri, proxy);
+  }
+}</codeblock></p>
+    <p>Note that the <codeph>contextId</codeph> argument of
+        <codeph>URLStreamHandlerWithContext.openConnectionInContext</codeph> is actually the user
+      session ID.</p>
+    <p>And the <codeph>CustomUrlConnection</codeph> may look like
+      this:<codeblock id="codeblock_ppb_msh_q2c" outputclass="language-java">  public class CustomUrlConnection extends URLConnection implements FileBrowsingConnection {
+
+    public CustomUrlConnection(String contextId, URL oxyUri, Proxy proxy) {
+      super(oxyUri);
+    }
+
+    @Override
+    public void connect() throws IOException {
+      // TODO: implement me.
+    }
+    
+    @Override
+    public InputStream getInputStream() throws IOException {
+      // TODO: implement me.
+    }
+    
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+      // TODO: implement me.
+    }
+    
+    @Override
+    public List&lt;FolderEntryDescriptor> listFolder() throws IOException, UserActionRequiredException {
+      // TODO: implement me.
+    }
+  }</codeblock></p>
+    <p>The <codeph>CustomUrlStreamHandler</codeph> from the above example will handle URLs with the
+        <codeph>"customprotocol"</codeph> protocol (for example:
+        <codeph>"customprotocol://hostname/path/to/file/doc.xml"</codeph>). This kind of URL is
+      called an <xref href="oxy-url.dita">OXY-URL</xref> and it is used internally by the
+      application. The user does not deal with this format. The URL of the <ph keyref="product"/>
+      application that opens the above example URL would look like this:
+        <codeph>"http://localhost:8081/oxygen-xml-web-author/app/oxygen.html?url=customprotocol%3A%2F%2Fhostname%2Fpath%2Fto%2Ffile%2Fdoc.xml"</codeph>.
+      Note that the document URL is specified in the "url" query parameter. You can see all the
+      available query parameteres in the <xref
+        href="webauthor-integrate-with-another-app.dita#webauthor-integrate-with-another-app/p_nxr_dgk_54b"
+        >Passing URL Parameters to the Editor</xref> topic. </p>
+    <p>The <codeph>CustomUrlConnection</codeph> receives the <xref href="oxy-url.dita"
+        >OXY-URL</xref> and based on that information, it has to make a request to the File Storage
+      Service to read a document, write a document, or list a directory.</p>
+    <p>If the File Storage Service rejects the request because of authentication, the
+        <codeph>URLConnection</codeph> must signal this to <ph keyref="product"/> by throwing
+          <codeph><xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/plugin/UserActionRequiredException.html"
+          format="html" scope="external">UserActionRequiredException</xref></codeph> with
+          <codeph><xref
+          href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/WebappMessage.html#MESSAGE_TYPE_CUSTOM"
+          format="html" scope="external">WebappMessage.MESSAGE_TYPE_CUSTOM</xref></codeph> like
+      this:<codeblock id="codeblock_xd5_byh_q2c" outputclass="language-java">throw new UserActionRequiredException(
+        new WebappMessage(
+          WebappMessage.MESSAGE_TYPE_CUSTOM,
+          "Authentication Required",
+          "Please authenticate.",
+          true));</codeblock></p>
+    <note id="note_knp_vsv_q2c">The default configuration of application's internal Firewall may
+      block requests to the File Storage Service. The configuration can be relaxed from the <xref
+        href="webauthor-security-configuration.dita#webauthor-security-configuration/trusted_hosts"
+      /> section from the Administration page. </note>
+    <section id="section_tqr_d5h_q2c">
+      <title>Authentication</title>
+      <p>The connector, when making requests to the File Storage Service, has to attach the required
+        authentication information for a particular user (for a particular
+          <codeph>contextId</codeph>). For example, the Authorization header that contains the
+        user's credentials or a JWT. The connector typically stores the authentication information
+        onto the session using the <codeph><xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/SessionStore.html"
+            format="html" scope="external"
+          >ro.sync.ecss.extensions.api.webapp.SessionStore</xref></codeph> API.</p>
+      <p>This is how storing the authentication information would
+        look:<codeblock id="codeblock_zms_z5h_q2c" outputclass="language-java">// Store authentication secret in the session store.
+WebappPluginWorkspace pluginWorkspace = (WebappPluginWorkspace) pluginWorkspaceAccess;
+SessionStore sessionStore = pluginWorkspace.getSessionStore();
+sessionStore.put(sessionId, "custom-connector-auth", authenticationSecret);</codeblock></p>
+      <p>This is how retrieving the authentication information from
+          <codeph>CustomUrlConnection</codeph> would
+        look:<codeblock id="codeblock_kcx_nvh_q2c" outputclass="language-java">// Get authentication secret from the session store.
+WebappPluginWorkspace pluginWorkspace = (WebappPluginWorkspace) pluginWorkspaceAccess;
+SessionStore sessionStore = pluginWorkspace.getSessionStore();
+String authenticationSecret = sessionStore.get(contextId, "custom-connector-auth");</codeblock></p>
+    </section>
+    <p>The connector may have to implement an OAuth flow, or to show username and password form, or
+      even receive an authentication token from the user. In all cases, it has to store the
+      authentication info into the <codeph>SessionStore</codeph>. For this, it can define a
+        <i>WebappServlet</i> extension by extending the <codeph><xref
+          keyref="url_WebappServletPluginExtension"
+          >ro.sync.ecss.extensions.api.webapp.plugin.ServletPluginExtension</xref></codeph> API
+      class. This allows the connector to register a servlet on a particular path (for e.g.
+      "custom-connector-auth") where it can receive requests from the plugin's JavaScript code,
+      allowing it to send data from the browser to the server. The servlet is supposed to receive
+      the authentication info from the client, validate it, and then store it in
+        <codeph>SessionStore</codeph>. The URL that the servlet handles may be like this:
+          <codeph>"http://localhost:8080/oxygen-xml-web-author/plugins-dispatcher/<i>custom-connector-auth</i>/"</codeph>.
+      The servlet can obtain the session id like this:
+      <codeph>"req.getSession().getId()"</codeph>.</p>
+    <p>The client-side part of the connector can show a username-password form. For this, it has to
+      use the <xref href="customizing_js.dita">JavaScript API</xref> and register a
+        <codeph>sync.api.FileServer</codeph> implementation to
+        <codeph>sync.api.FileServersManager</codeph>, somewhat like
+      this:<codeblock id="codeblock_v5g_lyh_q2c" outputclass="language-javascript">/**
+ * See sync.api.FileServer.
+ */
+class CustomFileServer {
+
+  /** @override */
+  login(serverUrl, loginCallback) {
+    // Show a dialog with username and password inputs and 
+sends them to the connector servlet.
+
+    let loginDialog = workspace.createDialog();
+    loginDialog.setTitle("Login");
+    loginDialog.setPreferredSize(400, 500);
+
+    loginDialog.getElement().innerHTML = `
+      &lt;label for="name">Username:&lt;/label>
+      &lt;input type="text" id="name" name="name">&lt;br>&lt;br>
+      
+      &lt;label for="password">Password:&lt;/label>
+      &lt;input type="password" id="password" name="password">&lt;br>&lt;br>
+    `;
+
+    loginDialog.onSelect(key => {
+      if (key === 'ok') {
+        let username = containerElement.querySelector("#name");
+        let password = containerElement.querySelector("#password");
+
+        // Sent the credentials to the connector servlet.
+        fetch('../plugins-dispatcher/custom-connector-auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: `username=${encodeURIComponent(username.getValue())}&amp;password=
+${encodeURIComponent(password.getValue())}`
+        })
+          .then(response => {
+            if (response.ok) {
+              loginDialog.setVisible(false);
+              logoutCallback();
+            } else {
+              workspace.getNotificationManager().showError("Authentication failed");
+            }
+          })
+          .catch(() => {
+            workspace.getNotificationManager().showError("An error occurred");
+          });
+      }
+    })
+
+    loginDialog.show();
+  }
+
+  /** @override */
+  logout(logoutCallback) {
+    //TODO Implement me.
+  }
+
+  /** @override */
+  getUserName() {
+    //TODO Implement me.
+  }
+
+  /** @override */
+  setUserChangedCallback(userChangedCallback) {
+    //TODO Implement me.
+  }
+
+  /** @override */
+  createRootUrlComponent(rootUrl, rootURLChangedCallback, readOnly) {
+    //TODO Implement me.
+  }
+
+  /** @override */
+  getUrlInfo(url, urlInfoCallback, showErrorMessageCallback) {
+    //TODO Implement me.
+  }
+}
+
+/** @type {sync.api.FileServer} */
+let customFileServer = new CustomFileServer();
+
+/** @type {sync.api.FileServerDescriptor} */
+let customFileServerDescriptor =  {
+  'id' : 'custom-connector',
+  'name' : 'Custom Connector',
+  'icon' : null,
+  'matches' : function matches(url) {
+    return url.match(/^customprotocol?:/);
+  },
+  'fileServer' : customFileServer
+};
+workspace.getFileServersManager().registerFileServerConnector(customFileServerDescriptor);</codeblock>The
+        <codeph>sync.api.FileServer.login</codeph> method is called when authentication is
+      requested. The implementation can show a dialog box that displays a username-password form and
+      then submits the credentials to the connector servlet. To show a dialog box in the browser,
+      the <codeph>workspace.createDialog</codeph> API can be used.</p>
+    <p>The username is important to be returned by <codeph>sync.api.FileServer.getUserName</codeph>
+      because otherwise, when adding comments or editing the document with change tracking, the user
+      will appear as "Anonymous".</p>
+    <p>The <codeph>ServletPluginExtension</codeph> that serves
+        "<filepath>/plugins-dispatcher/custom-connector-auth/</filepath>" may look like
+      this:<codeblock id="codeblock_jk1_vmw_q2c" outputclass="language-javascript">public class CustomConnectorAuthenticationServlet extends ServletPluginExtension {
+  
+  @Override
+  public void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws 
+ServletException, IOException {
+    String sessionId = httpRequest.getSession().getId();
+    
+    String user = httpRequest.getParameter("user");
+    String passwd = httpRequest.getParameter("password");
+    
+    if (areCredentialsValid(user, passwd)) {
+      WebappPluginWorkspace pluginWorkspace = (WebappPluginWorkspace) 
+PluginWorkspaceProvider.getPluginWorkspace();
+      SessionStore sessionStore = pluginWorkspace.getSessionStore();
+      sessionStore.put(sessionId, "custom-connector-auth", user + ":" + passwd);
+    } else {
+      httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+  }
+      
+  private boolean areCredentialsValid(String user, String passwd) {
+    // TODO Implement me.
+    return false;
+  }
+
+  @Override
+  public String getPath() {
+    return "custom-connector-auth";
+  }
+}</codeblock></p>
+    <section id="section_o2w_qtm_q2c">
+      <title>Troubleshooting</title>
+      <p>To troubleshoot the connector code, enable network logs by following the steps from the
+          <xref href="web-author-logs.dita#web-author-logs/p_aqr_dgk_54b">Enabling HTTP Request
+          Logging for Debugging</xref> topic.</p>
+    </section>
+  </body>
+  <related-links>
+    <link href="webauthor-integrate-with-another-app.dita"/>
+  </related-links>
+</topic>
