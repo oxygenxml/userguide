@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_use_fonts_for_symbols">
+  <title>How to Use Fonts for Symbols</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"
+            /><indexterm>Fonts<indexterm>Symbols</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Fonts<indexterm>Symbols</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_l4t_cgk_54b">For some specific symbols (like arrows), you must use a font or a sequence
+      of fonts that cover the needed character ranges. As an example, suppose the right arrow
+      character is used in a definition list like
+      this:<codeblock outputclass="language-xml" id="codeblock_o4t_cgk_54b">&lt;dlentry>
+  &lt;dt>&amp;#8594;&lt;/dt>
+  &lt;dd>&lt;ph>This is the right arrow.&lt;/ph>&lt;/dd>
+&lt;/dlentry></codeblock></p>
+    <p> If you are using Roboto, the character is not found, the # symbol is used and a warning is
+      thrown (see also <xref href="dcpp_glyph_not_available_in_font.dita"
+      />):<codeblock id="codeblock_hwb_1rt_kqb" outputclass="language-java">[CH] Glyph "?" (0x2192, arrowright) not available in font "Roboto-Bold".</codeblock></p>
+    <p id="p_p4t_cgk_54b">The PDF output will then look like
+      this:<codeblock outputclass="language-ini" id="codeblock_q4t_cgk_54b">  #
+    This is the right arrow.</codeblock></p>
+    <p id="p_r4t_cgk_54b">To solve this issue, you can use <i>Symbol</i> as a fallback font. In your
+        <xref href="dcpp_the_customization_css.dita">customization CSS</xref>,
+      add:<codeblock outputclass="language-css" id="codeblock_s4t_cgk_54b">*[class ~= "topic/dlentry"] {
+  font-family: "Roboto", Symbol;
+}</codeblock></p>
+    <p>To change the font for the entire publication, not just an element, you can
+      use:<codeblock id="codeblock_bbb_kbs_frb" outputclass="language-css">:root {font-family:  "Roboto", Symbol !important; }
+
+@page {
+    @top-left {font-family:  "Roboto", Symbol !important; }
+    @top-right {font-family:  "Roboto", Symbol !important; }
+    @top-center {font-family:  "Roboto", Symbol !important; }
+    @top-left-corner {font-family:  "Roboto", Symbol !important; }
+    @top-right-corner {font-family:  "Roboto", Symbol !important; }
+    
+    @bottom-left {font-family:  "Roboto", Symbol !important; }
+    @bottom-right {font-family:  "Roboto", Symbol !important; }
+    @bottom-center {font-family:  "Roboto", Symbol !important; }
+    @bottom-left-corner {font-family:  "Roboto", Symbol !important; }
+    @bottom-right-corner {font-family:  "Roboto", Symbol !important; }
+}</codeblock></p>
+    <note id="note_wy3_jjv_s2c" type="tip"><ph
+        conref="dcpp_reusable_components.dita#dcpp_reusable_components/ph_amc_sjv_s2c"/></note>
+  </body>
+</topic>
