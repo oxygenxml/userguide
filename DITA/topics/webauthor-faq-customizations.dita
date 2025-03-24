@@ -103,5 +103,69 @@ sync.Translation.addTranslations(msgs);</codeblock></li>
       <note id="note_cyy_bqc_hdc" type="notice">This only allows adding new messages for the default
         languages. You cannot add a new language.</note>
     </section>
+    <section id="section_q44_nq4_jdc">
+      <title>How can I add a custom action on the DITA Map side-view</title>
+      <p>You can extend the standard DITA Map side-view and add a custom action in the side-view
+        toolbar (next to the Configure DITA Context action) by overriding its
+        sync.view.ViewRenderer.getToolbarDescriptor and sync.view.ViewRenderer.getToolbarActionsMap
+        methods.</p>
+      <p>For example if you want to add an action to reload the view you can do this from a plugin
+        with the below
+        script:<codeblock id="codeblock_fvf_zq4_jdc" outputclass="language-javascript">class RefreshMapAction extends sync.actions.Action {
+  constructor() {
+    super({displayName: "Refresh"});
+  }
+
+  /**
+   * @override
+   */
+  actionPerformed(callback) {
+    let ditaContext = workspace.getEditingContextManager().getDitaContext();
+    workspace.getEditingContextManager().updateDitaContext(new sync.api.DitaContext());
+    workspace.getEditingContextManager().updateDitaContext(ditaContext);
+    callback();
+  }
+}
+
+class CustomDitaMapView extends sync.api.dita.DitaMapView {
+  /**
+   * @override
+   */
+  getToolbarActionsMap() {
+    let toolbarActionsMap = super.getToolbarActionsMap();
+    toolbarActionsMap["DMM/Refresh"] = new RefreshMapAction();
+    return toolbarActionsMap;
+  }
+
+  /**
+   * @override
+   */
+  getToolbarDescriptor() {
+    let toolbarDescriptor = super.getToolbarDescriptor();
+    toolbarDescriptor.children.push({
+      id: "DMM/Refresh",
+      type: "action"
+    });
+    return toolbarDescriptor;
+  }
+}
+
+workspace.listenOnce(sync.api.Workspace.EventType.EDITOR_LOADED, e => {
+  let customView = new CustomDitaMapView();
+  workspace.viewManager.addView('dita-map-view');
+  workspace.viewManager.installView('dita-map-view', customView, {
+    side: 'left',
+    initiallyClosed: false
+  });
+});</codeblock></p>
+      <note id="note_upv_br4_jdc">When you install the view you have to use "dita-map-view" in order
+        to override the view installed by the framework.<p>
+          <note id="note_mvj_dr4_jdc"> To enable the refresh action you can do this by implementing
+            the "isEnabled" method in RefreshMapAction and return true or false. When enabled status
+            changes you have to call
+              "workspace.getViewManager().getActionsManager("dita-map-view").<b>refreshActionsStatus</b>()"
+            to update the UI.</note>
+        </p></note>
+    </section>
   </body>
 </topic>
