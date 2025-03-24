@@ -16,25 +16,28 @@
           server you have selected to be the license server. Apache Tomcat 5.5 through 9.x is
           recommended (available at <xref href="http://tomcat.apache.org" format="org"
             scope="external"/>). Tomcat 9.x is officially supported.<note id="note_ljq_2m3_lzb"
-            type="note">Tomcat 10.x and later will not work with the license server.</note><note
-            type="important" id="note_hfn_bgk_54b">By default, the license server stores the
-            statistics database and other data in the Java Servlet Container's temporary directory.
-            If you are not using Apache Tomcat, this directory may be deleted when the server is
-            stopped or restarted. However, you can set the
-              <codeph>oxygen.license.server.work.dir</codeph> system property to specify a different
-            path for the directory where the database is stored.</note></li>
+              type="note">Tomcat 10.x and later will not work with the license server.</note><note
+                type="important" id="note_hfn_bgk_54b">By default, the license server stores the
+                statistics database and other data in the Java Servlet Container's temporary directory.
+                If you are not using Apache Tomcat, this directory may be deleted when the server is
+                stopped or restarted. However, you can set the
+                <codeph>oxygen.license.server.work.dir</codeph> system property to specify a different
+                path for the directory where the database is stored.</note></li>
         <li id="li_ifn_bgk_54b">Download the HTTP license server <uicontrol>Web Archive</uicontrol>
-            (<b>.war</b>) from the <xref href="https://www.oxygenxml.com/license_server.html"
+          (<b>.war</b>) from the <xref href="https://www.oxygenxml.com/license_server.html"
             format="html" scope="external">HTTP License Server website</xref>. </li>
         <li id="li_jfn_bgk_54b">
           <p id="p_kfn_bgk_54b">Configure three user roles in your installation of the Java Servlet
             Container (such as Apache Tomcat):<ol id="ol_asc_kb5_53b">
               <li id="li_lfn_bgk_54b">One user with the role <i>user</i>, used by an
-                  <uicontrol>Oxygen</uicontrol> application to connect to the license server. In the
+                <uicontrol>Oxygen</uicontrol> application to connect to the license server. In the
                 subsequent example, this user name is <b>John</b>.</li>
               <li id="li_mfn_bgk_54b">Another user with the role <i>admin</i>, used for accessing
                 the HTTP License Server administrative interface and the management interface. In
                 the subsequent example, this user name is <b>Mary</b>.</li>
+              <li>Another user with the role <i>manager-gui</i>, used for accessing the Apache
+                Tomcat Web Application Manager. In the subsequent example, this user name is
+                <b>tomcat</b>.</li>
             </ol></p>
           <p id="p_nfn_bgk_54b">For example, in Apache Tomcat, a typical way to achieve this is to
             edit the <filepath>tomcat-users.xml</filepath> file from your Tomcat installation (if
@@ -57,10 +60,10 @@
         <li id="li_pfn_bgk_54b">
           <p id="p_qfn_bgk_54b">Deploy the WAR file.</p>
           <p id="p_rfn_bgk_54b">For example, in Apache Tomcat, go to the Web Application Manager
-            page and log in with the user you configured with the <i>admin</i> role (<i>Mary</i> in
-            the example above). In the <uicontrol>WAR file to deploy</uicontrol> section, choose the
-            WAR file and click the <uicontrol>Deploy</uicontrol> button. The
-              <codeph>oXygenLicenseServlet</codeph> application is now up and running, but the
+            page and log in with the user you configured with the <i>manager-gui</i> role
+            (<i>tomcat</i> in the example above). In the <uicontrol>WAR file to deploy</uicontrol>
+            section, choose the WAR file and click the <uicontrol>Deploy</uicontrol> button. The
+            <codeph>oXygenLicenseServlet</codeph> application is now up and running, but the
             license key is not yet registered. </p>
         </li>
         <li id="li_sfn_bgk_54b">
@@ -70,20 +73,20 @@
             can also open this page by clicking the <codeph>oXygenLicenseServlet</codeph> link in
             the manager page.</p>
           <p id="p_ufn_bgk_54b">You need to authenticate with the user configured with the
-              <codeph>manager-gui</codeph> role (<i>tomcat</i> in the example above).</p>
+            <codeph>manager-gui</codeph> role (<i>tomcat</i> in the example above).</p>
         </li>
         <li id="activate-li">
           <p id="p_vfn_bgk_54b"><b>Activate the license key</b>. This process involves binding your
             license key to your license server deployment. The browser used in the activation
             process needs to have Internet access.<note id="note_wfn_bgk_54b">If you cannot access
               the internet during the deployment, you can manually activate the license
-            key.</note></p>
+              key.</note></p>
           <p id="p_xfn_bgk_54b">Once the process is completed you cannot activate the license on
             another license server. Follow these steps to activate the license:<ol
               id="substeps_sjt_w54_5r">
               <li id="li_yfn_bgk_54b">
                 <p id="p_zfn_bgk_54b">Paste your license key into the form and click
-                    <uicontrol>Register/Activate</uicontrol>.</p>
+                  <uicontrol>Register/Activate</uicontrol>.</p>
                 <p id="p_agn_bgk_54b"><b>Step Result:</b> You will be redirected to an online form
                   hosted on the <uicontrol>Oxygen</uicontrol> website. This form is pre-filled with
                   an activation code that uniquely identifies your license server deployment, and
@@ -99,12 +102,12 @@
         </li>
         <li id="li_egn_bgk_54b">
           <p id="p_fgn_bgk_54b">The application's log file location is specified by the
-              <codeph>log4j.appender.R2.File</codeph> property from the
-              <filepath>WEB-INF/lib/log4j.properties</filepath> configuration file.</p>
+            <codeph>log4j.appender.R2.File</codeph> property from the
+            <filepath>WEB-INF/lib/log4j.properties</filepath> configuration file.</p>
           <p id="p_ggn_bgk_54b">For example, in Apache Tomcat, the configuration file is located at:
-              <filepath>TomcatInstallDir/webapps/oXygenLicenseServlet/WEB-INF/lib/log4j.properties</filepath>
+            <filepath>TomcatInstallDir/webapps/oXygenLicenseServlet/WEB-INF/lib/log4j.properties</filepath>
             and the default log file location is
-              <filepath>TomcatInstallDir/logs/oxygenLicenseServlet.log</filepath>.</p>
+            <filepath>TomcatInstallDir/logs/oxygenLicenseServlet.log</filepath>.</p>
         </li>
       </ol>
     </p>
