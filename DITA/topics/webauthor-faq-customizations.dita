@@ -20,7 +20,7 @@
           a <xref
             href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/exml/plugin/workspace/WorkspaceAccessPluginExtension.html"
             format="html" scope="external"><codeph>WorkspaceAccessPluginExtension</codeph></xref>
-            (<codeph>WorkspaceAccess</codeph> extension in the <filepath>plugin.xml</filepath>
+          (<codeph>WorkspaceAccess</codeph> extension in the <filepath>plugin.xml</filepath>
           file):<codeblock id="codeblock_egb_xkk_gyb" outputclass="language-java">public class CustomFilterInstaller implements WorkspaceAccessPluginExtension {
   @Override
   public void applicationStarted(StandalonePluginWorkspace pluginWorkspaceAccess) {
@@ -33,7 +33,7 @@
       });</codeblock></li>
       </ol>
       <note id="note_xd2_kmk_gyb">When instantiating the <codeph>AuthorDocumentFilter</codeph>, the
-          <codeph>AuthorDocumentModel</codeph> object is passed because the filter needs it to check
+        <codeph>AuthorDocumentModel</codeph> object is passed because the filter needs it to check
         for duplicate spaces.</note>
     </section>
     <section id="section_rtn_jcs_jyb">
@@ -44,7 +44,7 @@
         project that uses a Framework Extension Script (EXF) to extend the built-in DITA framework
         to replace the default <uicontrol>Insert Table</uicontrol> action with another action that
         uses an <codeph>InsertFragmentOperation</codeph> to insert a CALS table element that has
-          <xmlatt>frame</xmlatt>, <xmlatt>colsep</xmlatt>, and <xmlatt>rowsep</xmlatt> attributes
+        <xmlatt>frame</xmlatt>, <xmlatt>colsep</xmlatt>, and <xmlatt>rowsep</xmlatt> attributes
         already set.</p>
     </section>
     <section id="section_w1k_2fz_2zb">
@@ -53,13 +53,13 @@
         size (small, medium, large) in <uicontrol>Preferences</uicontrol>, the font size selected is
         applied to the document.</p>
       <p>To achieve this, it is recommended to use <codeph>em</codeph> units (instead of
-          <codeph>px</codeph>, for example). This causes the font size to be adjusted according to
+        <codeph>px</codeph>, for example). This causes the font size to be adjusted according to
         the option chosen by the user in <uicontrol>Preferences</uicontrol>.</p>
     </section>
     <section id="section_dg5_gnc_2cc">
       <title>How can I obtain a URL parameter from a file open in Web Author?</title>
       <p id="p_eg5_gnc_2cc">The URL parameters are forwarded to the
-          <codeph>sync.api.Workspace.LoadingOptions</codeph> object. As a side-note, plugins can
+        <codeph>sync.api.Workspace.LoadingOptions</codeph> object. As a side-note, plugins can
         contribute or intercept a <codeph>sync.api.Workspace.LoadingOptions</codeph> object by
         listening on the <codeph>sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED</codeph> event.
         The <i>LoadingOptions</i> objects (client-side) are forwarded to the server where they end
@@ -85,7 +85,7 @@
         API:</p>
       <ol id="ol_vq2_tpc_hdc">
         <li id="li_wq2_tpc_hdc">Register your messages via
-            <codeph>sync.Translation.addTranslations</codeph>, like
+          <codeph>sync.Translation.addTranslations</codeph>, like
           this:<codeblock outputclass="language-javascript">let myMsgs={
 	YES_KEY_ : {
 		"en_US" : "Yes",
@@ -103,11 +103,116 @@ sync.Translation.addTranslations(myMsgs);</codeblock></li>
       <note id="note_cyy_bqc_hdc" type="notice">This only allows adding new messages for the default
         languages. You cannot add a new language.</note>
     </section>
-    <section id="section_p2g_hdw_t2c">
-      <title>How to list files in a directory on the server</title>
-      <p>To list the server-side files in a directory, you must open a connection with
-          <codeph>java.net.URL.openConnection()</codeph> then cast the
-          <codeph>java.net.URLConnection</codeph> object to <xref
+    <section id="section_bbv_sz3_k2c">
+      <title>How can I define a document template with a dynamic relative path?</title>
+      <p>Suppose you want to generate files from a document template that contains a link to a
+        specific document. In the generated files, the link should be relative to the location where
+        the template is created and the location of the link target. When the files are created in
+        different directories, the relative path should be automatically and accurately
+        calculated.</p>
+      <p>To make this happen, in your <xref
+          href="https://www.oxygenxml.com/doc/ug-waCustom/topics/wa-file-templates.html"
+          format="html" scope="external">newly created template</xref>, you must use the
+        <codeph>${makeRelative(base, location)}</codeph> and <codeph>${currentFileURL}</codeph>
+        <xref href="https://www.oxygenxml.com/doc/ug-waCustom/topics/webapp_editor_variables.html"
+          format="html" scope="external">Editor Variables</xref>.</p>
+      <p>For example, in a WebDav server, your template may look like
+        this:<codeblock id="codeblock_zb4_m4j_k2c" outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+&lt;topic id="newfile">
+  &lt;title>New File&lt;/title>
+  &lt;body>
+    &lt;p>This is a new file.&lt;/p>
+    &lt;p>Link to a specific document:
+      &lt;xref
+        href="${makeRelative(${currentFileURL}, 
+webdav-https://your-web-dav-server/path/to/your/target-document.dita)}"
+        format="dita"
+        scope="external"
+      />
+    &lt;/p>
+  &lt;/body>
+&lt;/topic></codeblock><note id="note_sf1_gvj_k2c">Make sure that you use the absolute
+  <xref href="https://www.oxygenxml.com/doc/ug-waCustom/topics/oxy-url.html" format="html"
+    scope="external">OXY-URL</xref> in the <codeph>location</codeph> parameter of the
+  <codeph>${makeRelative(base, location)}</codeph> editor variable.</note></p>
+      
+      <p>Depending on where you create the new file from the template, the relative path to the target
+        document will be properly computed. It may look like
+        this:<codeblock id="codeblock_tnm_gpj_k2c" outputclass="language-xml">&lt;xref href="../../target-document.dita" format="dita" scope="external" /></codeblock></p>
+      <p>or like this (and so
+        on):<codeblock id="codeblock_usy_3pj_k2c" outputclass="language-xml">&lt;xref href="../target-document.dita" format="dita" scope="external"/></codeblock></p>
+    </section>
+    
+    
+    <section id="section_q44_nq4_jdc">
+      <title>How can I add a custom action on the DITA Map side-view?</title>
+      <p>You can extend the standard <uicontrol>DITA Map</uicontrol> side-view and add a custom
+        action in the side-view's toolbar (next to the <uicontrol>Configure DITA Context</uicontrol>
+        action) by overriding its <codeph>sync.view.ViewRenderer.getToolbarDescriptor</codeph> and
+        <codeph>sync.view.ViewRenderer.getToolbarActionsMap</codeph> methods.</p>
+      <p>For example, if you want to add an action to reload the view, you can do this from a plugin
+        with the following
+        script:<codeblock id="codeblock_fvf_zq4_jdc" outputclass="language-javascript">class RefreshMapAction extends sync.actions.Action {
+  constructor() {
+    super({displayName: "Refresh"});
+  }
+
+  /**
+   * @override
+   */
+  actionPerformed(callback) {
+    let ditaContext = workspace.getEditingContextManager().getDitaContext();
+    workspace.getEditingContextManager().updateDitaContext(new sync.api.DitaContext());
+    workspace.getEditingContextManager().updateDitaContext(ditaContext);
+    callback();
+  }
+}
+
+class CustomDitaMapView extends sync.api.dita.DitaMapView {
+  /**
+   * @override
+   */
+  getToolbarActionsMap() {
+    let toolbarActionsMap = super.getToolbarActionsMap();
+    toolbarActionsMap["DMM/Refresh"] = new RefreshMapAction();
+    return toolbarActionsMap;
+  }
+
+  /**
+   * @override
+   */
+  getToolbarDescriptor() {
+    let toolbarDescriptor = super.getToolbarDescriptor();
+    toolbarDescriptor.children.push({
+      id: "DMM/Refresh",
+      type: "action"
+    });
+    return toolbarDescriptor;
+  }
+}
+
+workspace.listenOnce(sync.api.Workspace.EventType.EDITOR_LOADED, e => {
+  let customView = new CustomDitaMapView();
+  workspace.viewManager.addView('dita-map-view');
+  workspace.viewManager.installView('dita-map-view', customView, {
+    side: 'left',
+    initiallyClosed: false
+  });
+});</codeblock></p>
+      <note id="note_upv_br4_jdc" type="notice">When installing the view, you have to use
+        "dita-map-view" to override the view that is installed by the framework.</note>
+      <note id="note_mvj_dr4_jdc"> To enable the refresh action, you can do this by implementing the
+        <codeph>isEnabled</codeph> method in <codeph>RefreshMapAction</codeph> and return
+        <i>true</i> or <i>false</i>. When enabling status changes, you have to call
+        <codeph>workspace.getViewManager().getActionsManager('dita-map-view').refreshActionsStatus()</codeph>
+        to update the UI.</note>
+    </section>
+    <section id="section_axp_p41_52c">
+      <title>How to list files in a directory on the server?</title>
+      <p id="p_bxp_p41_52c">To list the server-side files in a directory, you must open a connection
+        with <codeph>java.net.URL.openConnection()</codeph> then cast the
+        <codeph>java.net.URLConnection</codeph> object to <xref
           href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/net/protocol/FileBrowsingConnection.html"
           format="html" scope="external">ro.sync.net.protocol.FileBrowsingConnection</xref>. Then,
         use the <codeph>ro.sync.net.protocol.FileBrowsingConnection.listFolder()</codeph>
