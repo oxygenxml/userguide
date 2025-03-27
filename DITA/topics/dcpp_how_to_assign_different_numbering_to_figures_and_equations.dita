@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_how_to_assign_different_numbering_to_figures_and_equations">
+    <title>How to Assign Different Numbering to Figures and Equations</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+            ><ph keyref="pdf-html5-transformation"/><indexterm>MathML equation
+          numbering</indexterm></indexterm>
+        <indexterm product="pdf-css ope">MathML equation numbering</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+    <body>
+        <p>By default both <xmlelement>fig</xmlelement> and <xmlelement>equation-figure</xmlelement>
+      are numbered as figures, to use a different numbering for equations, use the following rules
+      in your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>:</p>
+    <codeblock id="codeblock_s5n_glt_52c" outputclass="language-css">*[class ~= "equation-d/equation-figure"]:has(*[class~="topic/title"]) {
+  counter-increment: equationcount;
+}
+
+*[class ~= "topic/fig"] .fig--title-label {
+  content: "Figure";
+}
+*[class ~= "equation-d/equation-figure"] .fig--title-label {
+  content: "Equation";
+}
+
+/* Shallow and Deep Numbering. */
+*[class ~= "topic/fig"] .fig--title-label:after {
+  content: " " counter(figcount) ". ";
+}
+*[class ~= "equation-d/equation-figure"] .fig--title-label:after {
+  content: " " counter(equationcount) ". ";
+}
+
+/* Deep Chapter Scope and Deep Chapter Scope No Page Reset Numbering. */
+*[class ~= "map/map"][numbering ^= 'deep-chapter-scope'] *[class ~= "topic/fig"] > figcaption > .fig--title-label:after {
+  content: " " counter(chapter) "-" counter(figcount) " ";
+}
+*[class ~= "map/map"][numbering ^= 'deep-chapter-scope'] *[class ~= "equation-d/equation-figure"] > figcaption > .fig--title-label:after {
+  content: " " counter(chapter) "-" counter(equationcount) " ";
+}</codeblock>
+    </body>
+</topic>
