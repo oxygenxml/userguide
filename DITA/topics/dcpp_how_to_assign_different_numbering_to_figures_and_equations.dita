@@ -44,11 +44,20 @@
   content: " " counter(chapter) "-" counter(equationcount) " ";
 }</codeblock>
     <p>If there are links to these figures/equations, the following rules must also be added:</p>
-    <codeblock id="codeblock_j3k_4gj_w2c" outputclass="language-css">*[class ~= "topic/xref"][href][type = "equation-figure"] {
+    <codeblock id="codeblock_j3k_4gj_w2c" outputclass="language-css">/* Shallow and Deep Numbering. */
+*[class ~= "topic/xref"][href][type = "equation-figure"] {
   content: "Equation " target-counter(attr(href), equationcount);
 }
 *[class ~= "topic/xref"][href][type = "fig"] {
   content: "Figure " target-counter(attr(href), figcount);
+}
+
+/* Deep Chapter Scope and Deep Chapter Scope No Page Reset Numbering. */
+*[class ~= "map/map"][numbering ^= 'deep-chapter-scope'] *[class ~= "topic/xref"][href][type = "equation-figure"] {
+  content: "Equation " target-counter(attr(href), chapter) "-" target-counter(attr(href), equationcount);
+}
+*[class ~= "map/map"][numbering ^= 'deep-chapter-scope'] *[class ~= "topic/xref"][href][type = "fig"] {
+  content: "Figure " target-counter(attr(href), chapter) "-" target-counter(attr(href), figcount);
 }</codeblock>
     </body>
 </topic>
