@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai-positron-custom-connector">
+  <title>Oxygen AI Positron Custom Connector Add-on</title>
+  <body>
+    <p id="p_kdh_dgk_54b">The <b>Oxygen AI Positron Custom Connector</b> add-on contributes a custom
+      connector for the <b>Oxygen AI Positron Assistant</b>. The connector, named <uicontrol>Custom
+        AI Service</uicontrol>, enables integration with a custom AI service that exposes a REST
+      API, similar to OpenAI's chat-completion API. Unlike the built-in <b>Open AI</b> connector,
+      this supports the <i>OAuth Client Credentials Flow</i> for authentication and offers more
+      flexibility by letting you set query parameters.<note id="note_qc5_zq2_y2c">The <b>Oxygen AI
+          Positron Custom Connector</b> add-on is compatible with <b>Oxygen XML
+          Editor/Author/Developer</b> version 27.1 or newer.</note></p>
+    <section id="section_kgh_fzg_rsb">
+      <title>Installation</title>
+      <p id="p_jzg_dgk_54b">To install this add-on, follow this procedure:<ol id="ol_kzg_dgk_54b">
+          <li id="li_lzg_dgk_54b">Go to <menucascade>
+              <uicontrol>Help</uicontrol>
+              <uicontrol>Install new add-ons</uicontrol>
+            </menucascade> to open an add-on selection dialog box. Enter or paste
+              <b>https://www.oxygenxml.com/InstData/Addons/default/updateSite.xml</b> in the
+              <uicontrol>Show add-ons from</uicontrol> field or select it from the drop-down
+            menu.</li>
+          <li id="li_nzg_dgk_54b">Select the <b>Oxygen AI Positron Custom Connector</b> add-on and
+            click <uicontrol>Next</uicontrol>.</li>
+          <li id="li_ozg_dgk_54b">Read the end-user license agreement. Then select the <uicontrol>I
+              accept all terms of the end-user license agreement</uicontrol> option and click
+              <uicontrol>Finish</uicontrol>.</li>
+          <li id="li_pzg_dgk_54b">Restart the application.</li>
+        </ol></p>
+      <p id="p_qzg_dgk_54b"><b>Result:</b> The custom AI service will be available from the
+          <uicontrol>AI Connector</uicontrol> combo menu in the <menucascade>
+          <uicontrol>Plugins</uicontrol>
+          <uicontrol>Oxygen AI Positron Assistant Enterprise</uicontrol>
+          <uicontrol>AI Service Configuration</uicontrol>
+        </menucascade> preferences page.</p>
+      <p id="p_thl_mr2_y2c">The add-on can also be installed using the following alternative
+        installation procedure:<ol id="ol_t3p_nr2_y2c">
+          <li>Go to the <xref
+              href="https://www.oxygenxml.com/InstData/Addons/default/com/oxygenxml/oxygen-ai-positron-custom-connector-addon/"
+              format="html" scope="external">Releases page</xref> and download the
+              <filepath>oxygen-ai-positron-custom-connector-addon-{version}-plugin.jar</filepath>
+            file.</li>
+          <li>Unzip it inside <filepath>{oXygenInstallDir}/plugins</filepath>. Make sure you do not
+            create any intermediate folders. After unzipping the archive, the file system should
+            look like this:
+              <filepath>{oXygenInstallDir}/plugins/oxygen-ai-positron-custom-connector-addon-x.y.z</filepath>,
+            and inside this folder, there should be a <filepath>plugin.xml</filepath> file.</li>
+        </ol></p>
+    </section>
+    <section id="direct_ai_engine_licensing">
+      <title>How to Use the Connector Add-on</title>
+      <p>When the <b>Custom AI Service</b> is selected from the <uicontrol>AI Service
+          Configuration</uicontrol> preferences page, the following options are available to
+        configure the connector:</p>
+      <p id="p_zcs_5s2_y2c">
+        <dl id="dl_fmv_5s2_y2c">
+          <dlentry id="dlentry_gmv_5s2_y2c">
+            <dt>Address</dt>
+            <dd>The web address of the custom AI service. By default, it is
+                <filepath>https://api.openai.com/v1</filepath>.</dd>
+          </dlentry>
+          <dlentry id="dlentry_ppf_ys2_y2c">
+            <dt>API Key</dt>
+            <dd>The API key necessary to work with the connector. If you do not specify an API key,
+              the add-on will try to use environmental variables or system properties to
+              authenticate using the <i>OAuth Client Credential Flow</i>. These are the
+              environmental variables or system properties that should be specified:<ul
+                id="ul_arl_ct2_y2c">
+                <li id="li_brl_ct2_y2c">POSITRON_CONNECTOR_AUTH_DOMAIN - The domain for the
+                  authorization server (e.g. <filepath>example-123abc.us.auth0.com</filepath>).</li>
+                <li id="li_cc5_gt2_y2c">POSITRON_CONNECTOR_AUTH_CLIENT_ID - The ID of the requesting
+                  client.</li>
+                <li id="li_sgq_ht2_y2c">POSITRON_CONNECTOR_AUTH_CLIENT_SECRET - The secret of the
+                  client.</li>
+                <li>POSITRON_CONNECTOR_AUTH_AUDIENCE - (Optional) The audience for the token,
+                  typically the API or service you are accessing.</li>
+                <li id="li_ixz_lt2_y2c">POSITRON_CONNECTOR_AUTH_ORGANIZATION - (Optional) The
+                  organization name or identifier.</li>
+              </ul><p>You can find more information about how you can find these values in Auth0
+                here: <xref
+                  href="https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow/call-your-api-using-the-client-credentials-flow#parameters"
+                  format="html" scope="external">Auth0 Client Credentials Flow
+                Parameters</xref>.</p></dd>
+          </dlentry>
+          <dlentry id="dlentry_g3b_st2_y2c">
+            <dt>Model</dt>
+            <dd>The model to use.</dd>
+          </dlentry>
+          <dlentry id="dlentry_jxm_tt2_y2c">
+            <dt>Enable Text Moderation</dt>
+            <dd>This setting applies moderation to both the input text sent to the AI service and
+              the response received from the AI service. It is enabled by default. By default, when
+              executing an action using this connector, three requests are made:<ul
+                id="ul_rx5_xt2_y2c">
+                <li id="li_sx5_xt2_y2c">A moderation on the input content request to
+                    <codeph>configured_address/moderations</codeph>.</li>
+                <li id="li_uyk_yt2_y2c">A completion request to
+                    <codeph>configured_address/chat/completions</codeph>.</li>
+                <li id="li_yyk_b52_y2c">A moderation on content returned by the AI to
+                    <codeph>configured_address/moderations</codeph>.</li>
+              </ul><note id="note_vbg_252_y2c"> If your AI service does not require moderation (for
+                example, moderation is already made by the <codeph>chat/completions</codeph>
+                endpoint), you can disable it by deselecting this option.</note></dd>
+          </dlentry>
+          <dlentry id="dlentry_ost_g52_y2c">
+            <dt>Enable Streaming</dt>
+            <dd>When this option is disabled, the connector will only execute requests without
+              streaming to the AI service. It is useful when the AI service does not support
+              streaming. It is enabled by default.</dd>
+          </dlentry>
+          <dlentry id="dlentry_dzk_j52_y2c">
+            <dt>Extra Headers</dt>
+            <dd>Extra <codeph>name/value</codeph> parameters to set in the headers of the AI
+              requests.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+  </body>
+</topic>
