@@ -14,10 +14,12 @@
     <p id="p_wbt_dgk_54b"><ph keyref="webappProduct"/> provides the <xref
         href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webauthor-concurrent-editing.html"
         format="html" scope="external">ability for teams to edit and review content
-        concurrently</xref>. A user can share their editing session by using the <uicontrol><image
-          href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"/>Share
-        Session</uicontrol> toolbar button and then sending the retrieved URL to other collaborators
-      and then all of them can edit and review the same document simultaneously.</p>
+        concurrently</xref>. Concurrent editing sessions can be accessed either with the built-in
+      Share Session action or by integrating the concurrent editing support in a CMS using the
+      available API. The Share Session works by allowing the user to share their editing session by
+      using the <uicontrol><image href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"
+        />Share Session</uicontrol> toolbar button and then sending the retrieved URL to other
+      collaborators and then all of them can edit and review the same document simultaneously.</p>
   </body>
   <topic id="topic_k2k_qgt_rnb">
     <title>Enabling the Share Session Action</title>
@@ -33,7 +35,8 @@
             enabled by default).</li>
           <li id="li_act_dgk_54b">The <codeph>sharedSessionCompatible</codeph>
             <xref keyref="jscript_api_workspace_LoadingOptions">loading option</xref> is set to
-              <codeph>true</codeph> by the CMS connector plugin.</li>
+              <codeph>true</codeph> by the CMS connector plugin. Note that the built-in connectors
+            (for e.g. the Git connector) have this option by default configured.</li>
         </ul>
       </p>
       <p id="p_bct_dgk_54b">For the feature to work correctly, when a concurrent session is active, the CMS connector
@@ -136,25 +139,34 @@ RewriteRule ^/oxygen-xml-web-author/?(.*)
         </ul></p>
       <section id="section_evc_zgt_rnb">
         <title>Creating a Concurrent Editing Room</title>
-        <p id="p_fdt_dgk_54b">The CMS can use the following JavaScript code to create a concurrent editing
-          <i>room</i>:<codeblock outputclass="language-javascript" id="codeblock_gdt_dgk_54b">editor.getEditingSupport().getConcurrentEditingManager().createRoom().then(roomId =>
-window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
+        <p id="p_fdt_dgk_54b">The CMS can create a room either by using Java or JavaScript API.</p>
+        <p>By using the JavaScript API, a room can be created like
+          this:<codeblock outputclass="language-javascript" id="codeblock_gdt_dgk_54b">editor.getEditingSupport().getConcurrentEditingManager().createRoom()
+.then(roomId => console.log("Room URL: " + (window.location.href + '&amp;roomId=' + roomId)))</codeblock></p>
         <p id="p_hdt_dgk_54b">The ID of the room can then be shared with other users. To join an existing room, the
             <codeph>roomId</codeph> URL parameter can be used.</p>
+        <p>This can be used in conjunction with the
+            <codeph>sync.api.Workspace.EventType.EDITOR_LOADED</codeph> JavaScript event to create a
+          room right after the editor gets opened.</p>
         <p id="p_idt_dgk_54b">By using the Java API, a room can be created like this:</p>
-        <codeblock outputclass="language-javascript" id="codeblock_jdt_dgk_54b">String roomId = RoomsManager.INSTANCE.createRoomFromDocument(AuthorDocumentModel) </codeblock>
-        <p id="p_kdt_dgk_54b">This code can be used during the editor loading on the following callbacks:</p>
+        <codeblock outputclass="language-javascript" id="codeblock_jdt_dgk_54b">import ro.sync.ecss.extensions.api.webapp.ce.RoomsManager;
+String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel) </codeblock>
+        <p id="p_kdt_dgk_54b">This can be used in conjunction with the
+            <codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener</codeph>
+          Java API during the editor loading with the following callbacks:</p>
         <ul id="ul_vw1_mht_rnb">
-          <li id="li_ldt_dgk_54b"><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph>.
-            In this case, the room ID has to be added to the <codeph>sessionAttributes</codeph> map
-            using the <codeph>ro.sync.ecss.extensions.api.webapp.ce.Room.ROOM_ID_ATTRIBUTE</codeph>
+          <li id="li_ldt_dgk_54b"
+              ><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph>.
+            In this case, an already existing room ID has to be added to the
+              <codeph>sessionAttributes</codeph> map using the
+              <codeph>ro.sync.ecss.extensions.api.webapp.ce.Room.ROOM_ID_ATTRIBUTE</codeph>
             key.</li>
-          <li id="li_mdt_dgk_54b"><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph>.
-            In this case, the room ID has to be added as an attribute to the editing context of the
-            current document using
-              <codeph>ro.sync.ecss.extensions.api.webapp.ce.Room.ROOM_ID_ATTRIBUTE</codeph> as the
-            name. The editing context can be obtained by calling:
-              <codeph>authorDocumentModel.getAuthorAccess().getEditorAccess().getEditingContext()</codeph>.</li>
+          <li id="li_mdt_dgk_54b"
+              ><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph>.
+            In this case, if no room exists for the given URL, the RoomsManager API has to be used
+            to create one. Note that the roomId is automatically stored in the editing context and
+            it can be obtained when needed by calling: <codeph>String roomId =
+              authorDocumentModel.getAuthorAccess().getEditorAccess().getEditingContext(),getAttribute(Room.ROOM_ID_ATTRIBUTE)</codeph>.</li>
         </ul>
       </section>
       <section id="section_jkr_4ht_rnb">
@@ -163,11 +175,14 @@ window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
             strategy</term> that can be specified when creating the room by calling
             <codeph>ro.sync.ecss.extensions.api.webapp.ce.RoomFactory.createRoom(AuthorDocumentModel,
             SaveStrategy)</codeph>.</p>
-        <p>The save strategy specifies what gets written to the CMS. Either the changed document is
-          saved for each peer individually or all changes since the last save are grouped and
-          written to the CMS only once. Additionally, it provides the <codeph>URLConnection</codeph>
-          for the <codeph>OutputStream</codeph> where the changes from an author or from a list of
-          author are written.</p>
+        <p>The save strategy specifies how are the changes grouped when writing to the CMS the
+          changed document. Either each change made to the document is saved for each peer
+          individually or all changes since the last save are grouped and written to the CMS only
+          once. Additionally, it provides the <codeph>URLConnection</codeph> containing the
+            <codeph>OutputStream</codeph> where the changes from an author or from a list of author
+          are written, this allows to fully customize the request made to the CMS that saves the
+          edited document (for example, you can add a custom HTTP header containing the name of the
+          users that made the changes to be saved).</p>
         <p>There are two base classes to be extended:<ol id="ol_jt4_v2z_ypb">
             <li><codeph>ro.sync.ecss.extensions.api.webapp.ce.GroupChangesForSinglePeerStrategy</codeph>
               - It facilitates tracking precise authorship of changes, as each written revision
@@ -199,9 +214,26 @@ window.open(window.location.href + '&amp;roomId=' + roomId))</codeblock></p>
       </section>
       <section id="section_anj_sht_rnb">
         <title>Closing the Room</title>
-        <p id="p_ydt_dgk_54b">A room created this way is not closed when the last user leaves. It should be closed
-          using <codeph>Room.close()</codeph> when all the users have left and all the changes are
-          saved.</p>
+        <p id="p_ydt_dgk_54b">A programmatically created room is not closed automatically when the
+          last user leaves, when closes the browser tab. The room should be closed explicitly using
+            <codeph>Room.close()</codeph> when all the users have left and all the changes are
+          saved. To identify when room gets empty you can use the
+            <codeph>WebappEditingSessionLifecycleListener.editingSessionStarted</codeph> and
+            <codeph>WebappEditingSessionLifecycleListener.editingSessionClosed</codeph>.</p>
+        <p>The <codeph>WebappEditingSessionLifecycleListener.editingSessionStarted</codeph> is
+          called each time a tab with a Web Author editor is opened.</p>
+        <p>The <codeph>WebappEditingSessionLifecycleListener.editingSessionClosed</codeph> is called
+          when editing session closes, this happens in the following cases:</p>
+        <ol id="ol_l4w_1pg_2fc">
+          <li>when the user gracefully closes the tab or browser</li>
+          <li>when the tab or browser isn't closed gracefully:<ol id="ol_olv_ppg_2fc">
+              <li>when the user session expires, this by default happens at 12h</li>
+              <li>when using <xref href="customizing-options.dita" format="dita"
+                  >always.send.keepalive</xref> option and the timeout is reached</li>
+            </ol></li>
+        </ol>
+        <p>To access the room object you can use
+            <codeph>RoomsManager.INSTANCE.getRoom(roomId)</codeph>.</p>
       </section>
     </body>
     <related-links>
