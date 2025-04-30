@@ -14,19 +14,20 @@
     <p id="p_wbt_dgk_54b"><ph keyref="webappProduct"/> provides the <xref
         href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webauthor-concurrent-editing.html"
         format="html" scope="external">ability for teams to edit and review content
-        concurrently</xref>. Concurrent editing sessions can be accessed either with the built-in
-      Share Session action or by integrating the concurrent editing support in a CMS using the
-      available API. The Share Session works by allowing the user to share their editing session by
-      using the <uicontrol><image href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"
-        />Share Session</uicontrol> toolbar button and then sending the retrieved URL to other
-      collaborators and then all of them can edit and review the same document simultaneously.</p>
+        concurrently</xref>. The concurrent editing feature can be enabled either with the built-in
+      Share Editing Session action or by integrating the concurrent editing support in a CMS using
+      the available API. The Share Editing Session action works by allowing the user to share their
+      editing session by using the <uicontrol><image href="../img/wa-share-session-button.png"
+          id="image_kyj_315_rnb"/>Share Editing Session</uicontrol> toolbar button and then sending
+      the retrieved URL to other collaborators and then all of them can edit and review the same
+      document simultaneously.</p>
   </body>
   <topic id="topic_k2k_qgt_rnb">
-    <title>Enabling the Share Session Action</title>
+    <title>Enabling the Share Editing Session Action</title>
     <body>
-      <p id="p_xbt_dgk_54b">To enable the <uicontrol><image href="../img/wa-share-session-button.png"
-            id="image_fvg_w15_rnb"/>Share Session</uicontrol> action, the following conditions must
-        be met:</p>
+      <p id="p_xbt_dgk_54b">To enable the <uicontrol><image
+            href="../img/wa-share-session-button.png" id="image_fvg_w15_rnb"/>Share Editing
+          Session</uicontrol> action, the following conditions must be met:</p>
       <p id="p_ybt_dgk_54b">
         <ul id="ul_s3b_yk4_snb">
           <li id="li_zbt_dgk_54b">The <uicontrol>Concurrent Editing Plugin</uicontrol> must be
@@ -114,60 +115,62 @@ RewriteRule ^/oxygen-xml-web-author/?(.*)
         </ul>
       </note>
       <section id="section_mnm_x25_rnb">
-        <title>Disabling the Share Session Action</title>
-        <p id="p_xct_dgk_54b">To remove the <uicontrol><image href="../img/wa-share-session-button.png"
-              id="image_vv2_c25_rnb"/>Share Session</uicontrol> action from the toolbar, simply
-          disable the <uicontrol>Concurrent Editing Plugin</uicontrol> in the <xref
-            href="webapp-admin-page.dita#webapp-admin-page">Administration Page</xref>.</p>
+        <title>Disabling the Share Editing Session Action</title>
+        <p id="p_xct_dgk_54b">To remove the <uicontrol><image
+              href="../img/wa-share-session-button.png" id="image_vv2_c25_rnb"/>Share Editing
+            Session</uicontrol> action from the toolbar, simply disable the <uicontrol>Concurrent
+            Editing Plugin</uicontrol> in the <xref href="webapp-admin-page.dita#webapp-admin-page"
+            >Administration Page</xref>.</p>
       </section>
     </body>
   </topic>
   <topic id="topic_n2z_sgt_rnb222">
     <title>CMS-owned Concurrent Editing Sessions</title>
     <body>
-      <p id="p_yct_dgk_54b">Aside from using the <uicontrol><image href="../img/wa-share-session-button.png"
-            id="image_txt_2f5_rnb"/>Share Session</uicontrol> action, a more integrated concurrent
-        editing approach is to have a concurrent editing room owned by the CMS. </p>
+      <p id="p_yct_dgk_54b">Aside from using the <uicontrol><image
+            href="../img/wa-share-session-button.png" id="image_txt_2f5_rnb"/>Share Editing
+          Session</uicontrol> action, a more integrated concurrent editing approach is to have a
+        concurrent editing room owned by the CMS. </p>
+      <bodydiv>
+        <p>A concurrent editing room contains multiple editors, each working on the same document,
+          with all changes synchronized in real time. Each editor corresponds to a browser tab and
+          is represented by an <codeph>AuthorDocumentModel</codeph> in the API.</p>
+      </bodydiv>
+      <p>The CMS needs to ensure that there is at most one concurrent editing room for one
+        document.</p>
       <p id="p_zct_dgk_54b">The CMS should be responsible for:<ul id="ul_sht_mgt_rnb">
           <li id="li_adt_dgk_54b">Ensuring that aside from the Web Author users, no other users are modifying the file.
             The CMS can use a "service" account to hold the "lock" on the edited file, or to do a
             check-out.</li>
           <li id="li_bdt_dgk_54b">Creating the concurrent editing room.</li>
-          <li id="li_cdt_dgk_54b">Enabling users to join the room.</li>
+          <li id="li_cdt_dgk_54b">Adding new editors in the room.</li>
           <li id="li_ddt_dgk_54b">Specifying the Save Strategy.</li>
           <li id="li_edt_dgk_54b">Closing the room.</li>
         </ul></p>
       <section id="section_evc_zgt_rnb">
         <title>Creating a Concurrent Editing Room</title>
-        <p id="p_fdt_dgk_54b">The CMS can create a room either by using Java or JavaScript API.</p>
-        <p>By using the JavaScript API, a room can be created like
-          this:<codeblock outputclass="language-javascript" id="codeblock_gdt_dgk_54b">editor.getEditingSupport().getConcurrentEditingManager().createRoom()
-.then(roomId => console.log("Room URL: " + (window.location.href + '&amp;roomId=' + roomId)))</codeblock></p>
-        <p id="p_hdt_dgk_54b">The ID of the room can then be shared with other users. To join an existing room, the
-            <codeph>roomId</codeph> URL parameter can be used.</p>
-        <p>This can be used in conjunction with the
-            <codeph>sync.api.Workspace.EventType.EDITOR_LOADED</codeph> JavaScript event to create a
-          room right after the editor gets opened.</p>
-        <p id="p_idt_dgk_54b">By using the Java API, a room can be created like this:</p>
+        <p>When an user opens a document in an editor, the CMS needs to create a concurrent editing
+          room for that document if one is not already created.</p>
+        <p id="p_fdt_dgk_54b">The recommended way for a CMS to create a concurrent editing room is
+          by using the Java API:</p>
         <codeblock outputclass="language-javascript" id="codeblock_jdt_dgk_54b">import ro.sync.ecss.extensions.api.webapp.ce.RoomsManager;
+
 String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel) </codeblock>
-        <p id="p_kdt_dgk_54b">This can be used in conjunction with the
-            <codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener</codeph>
-          Java API during the editor loading with the following callbacks:</p>
-        <ul id="ul_vw1_mht_rnb">
-          <li id="li_ldt_dgk_54b"
-              ><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph>.
-            In this case, an already existing room ID has to be added to the
-              <codeph>sessionAttributes</codeph> map using the
-              <codeph>ro.sync.ecss.extensions.api.webapp.ce.Room.ROOM_ID_ATTRIBUTE</codeph>
-            key.</li>
-          <li id="li_mdt_dgk_54b"
-              ><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph>.
-            In this case, if no room exists for the given URL, the RoomsManager API has to be used
-            to create one. Note that the roomId is automatically stored in the editing context and
-            it can be obtained when needed by calling: <codeph>String roomId =
-              authorDocumentModel.getAuthorAccess().getEditorAccess().getEditingContext(),getAttribute(Room.ROOM_ID_ATTRIBUTE)</codeph>.</li>
-        </ul>
+        <p id="p_kdt_dgk_54b">This can be called in the
+            <codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph>
+          listener. </p>
+        <p>Note that the <codeph>roomId</codeph> is automatically stored in the editing context and
+          it can be obtained when needed by calling: <codeph>String roomId =
+            authorDocumentModel.getAuthorAccess().getEditorAccess().getEditingContext(),getAttribute(Room.ROOM_ID_ATTRIBUTE)</codeph>.</p>
+      </section>
+      <section id="section_nzw_pkh_2fc">
+        <title>Adding New Editors in a Room</title>
+        <p>When an user tries opens a document in an editor the CMS already created a room for that
+          document, it can link the editor to the existing room by using the
+            <codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph>
+          listener. In the implementation of this listener, the ID of the existing room has to be
+          added to the <codeph>sessionAttributes</codeph> map using the
+            <codeph>ro.sync.ecss.extensions.api.webapp.ce.Room.ROOM_ID_ATTRIBUTE</codeph> key.</p>
       </section>
       <section id="section_jkr_4ht_rnb">
         <title>Saving a Concurrent Editing Session</title>
@@ -175,42 +178,31 @@ String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel
             strategy</term> that can be specified when creating the room by calling
             <codeph>ro.sync.ecss.extensions.api.webapp.ce.RoomFactory.createRoom(AuthorDocumentModel,
             SaveStrategy)</codeph>.</p>
-        <p>The save strategy specifies how are the changes grouped when writing to the CMS the
-          changed document. Either each change made to the document is saved for each peer
-          individually or all changes since the last save are grouped and written to the CMS only
-          once. Additionally, it provides the <codeph>URLConnection</codeph> containing the
-            <codeph>OutputStream</codeph> where the changes from an author or from a list of author
-          are written, this allows to fully customize the request made to the CMS that saves the
-          edited document (for example, you can add a custom HTTP header containing the name of the
-          users that made the changes to be saved).</p>
+        <p>The save strategy specifies how the changes are grouped when writing the changed document
+          to the CMS. For example, if multiple users made changes to the document opened in the room
+          since the last save, the save strategy can choose to save the final version to the CMS or
+          to save intermediate versions, with every version containing changes from a single
+          editor.</p>
         <p>There are two base classes to be extended:<ol id="ol_jt4_v2z_ypb">
             <li><codeph>ro.sync.ecss.extensions.api.webapp.ce.GroupChangesForSinglePeerStrategy</codeph>
               - It facilitates tracking precise authorship of changes, as each written revision
               contains changes by only one author.<note id="note_tg1_1s1_zpb">The
                   <codeph>URLConnection openConnection(URL documentUrl, PeerContext author)</codeph>
-                method has only one peer involved, being both the author and the
-              committer.</note></li>
+                method's <codeph>author</codeph> parameter can be used to determine the user that
+                authored the version of the file that is going to be written in the returned
+                  <codeph>URLConnection</codeph>.</note></li>
             <li><codeph>ro.sync.ecss.extensions.api.webapp.ce.GroupChangesForMultiplePeersStrategy</codeph>
               - It facilitates a minimum number of writes to the file server per save.<note
                 id="note_s3p_cs1_zpb">The <codeph>URLConnection openConnection(URL documentUrl,
-                  PeerContext committer, List&lt;PeerContext> authors)</codeph> method has a
-                committer and a list of authors, whose changes are grouped together.</note></li>
+                  PeerContext committer, List&lt;PeerContext> authors)</codeph> method has two
+                  parameters:<ul id="ul_mpg_knh_2fc">
+                  <li><codeph>committer</codeph> can be used to identify the user that triggered the
+                    save</li>
+                  <li><codeph>authors</codeph> can be used to identify the users that authored the
+                    version of the file that is going to be written in the returned
+                      <codeph>URLConnection</codeph>.</li>
+                </ul></note></li>
           </ol></p>
-      </section>
-      <section id="section_wfk_qht_rnb">
-        <title>Enabling Users to Join a Room</title>
-        <p id="p_sdt_dgk_54b">To enable users to join a room, there are several options:</p>
-        <ul id="ul_jmz_rht_rnb">
-          <li id="li_tdt_dgk_54b">Add <codeph>roomId=&lt;the-id></codeph> as a URL parameter.</li>
-          <li id="li_udt_dgk_54b">Add <codeph>roomId=&lt;the-id></codeph> as a <xref
-              href="web_author_api_concepts.dita#web_author_api_concepts/loading-option">loading
-              option</xref> in a JavaScript plugin.</li>
-          <li id="li_vdt_dgk_54b">Set <codeph>roomId=&lt;the-id></codeph> as a session attribute in one of the following
-            Java listeners:<ul id="ul_kmz_rht_rnb">
-              <li id="li_wdt_dgk_54b"><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph></li>
-              <li id="li_xdt_dgk_54b"><codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionStarted()</codeph></li>
-            </ul></li>
-        </ul>
       </section>
       <section id="section_anj_sht_rnb">
         <title>Closing the Room</title>
