@@ -15,12 +15,12 @@
         href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webauthor-concurrent-editing.html"
         format="html" scope="external">ability for teams to edit and review content
         concurrently</xref>. The concurrent editing feature can be enabled either with the built-in
-      Share Editing Session action or by integrating the concurrent editing support in a CMS using
-      the available API. The Share Editing Session action works by allowing the user to share their
-      editing session by using the <uicontrol><image href="../img/wa-share-session-button.png"
-          id="image_kyj_315_rnb"/>Share Editing Session</uicontrol> toolbar button and then sending
-      the retrieved URL to other collaborators and then all of them can edit and review the same
-      document simultaneously.</p>
+        <uicontrol>Share Editing Session</uicontrol> action or by integrating the concurrent editing
+      support in a CMS using the available API. The <uicontrol>Share Editing Session</uicontrol>
+      action works by allowing the user to share their editing session by using the
+          <uicontrol><image href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"/>Share
+        Editing Session</uicontrol> toolbar button and then sending the retrieved URL to other
+      collaborators and then all of them can edit and review the same document simultaneously.</p>
   </body>
   <topic id="topic_k2k_qgt_rnb">
     <title>Enabling the Share Editing Session Action</title>
@@ -32,10 +32,10 @@
         <ul id="ul_s3b_yk4_snb">
           <li id="li_zbt_dgk_54b">The <uicontrol>Concurrent Editing Plugin</uicontrol> must be
             enabled in the <xref href="webapp-admin-page.dita#webapp-admin-page">Administration
-              Page</xref> (it is bundled with the <ph keyref="webappProduct"/> installers so it is
+              Page</xref> (it is bundled with the <ph keyref="webappProduct"/> installers and is
             enabled by default).</li>
           <li id="li_act_dgk_54b">The <codeph>sharedSessionCompatible</codeph>
-            <xref keyref="jscript_api_workspace_LoadingOptions">loading option</xref> is set to
+            <xref keyref="jscript_api_workspace_LoadingOptions">loading option</xref> must be set to
               <codeph>true</codeph> by the CMS connector plugin. Note that the built-in connectors
             (for e.g. the Git connector) have this option by default configured.</li>
         </ul>
@@ -88,8 +88,8 @@ if (mgr &amp;&amp; !mgr.isCreator()) {
                 </p>
               </li>
             </ul>
-            <p id="p_uct_dgk_54b">Also, a configuration similar to the one below should be
-              added:<codeblock outputclass="" id="codeblock_vct_dgk_54b">ProxyPass /oxygen-xml-web-author http://&lt;internal-host>:8080/oxygen-xml-web-author
+            <p id="p_uct_dgk_54b">Also, a configuration should be added similar to
+              this:<codeblock outputclass="" id="codeblock_vct_dgk_54b">ProxyPass /oxygen-xml-web-author http://&lt;internal-host>:8080/oxygen-xml-web-author
 ProxyPassReverse /oxygen-xml-web-author http://&lt;internal-host>:8080/oxygen-xml-web-author
 
 RewriteEngine on
@@ -165,8 +165,8 @@ String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel
       </section>
       <section id="section_nzw_pkh_2fc">
         <title>Adding New Editors in a Room</title>
-        <p>When an user tries opens a document in an editor the CMS already created a room for that
-          document, it can link the editor to the existing room by using the
+        <p>When a user tries to open a document in an editor that the CMS already created a room
+          for, it can link the editor to the existing room by using the
             <codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener.editingSessionAboutToBeStarted()</codeph>
           listener. In the implementation of this listener, the ID of the existing room has to be
           added to the <codeph>sessionAttributes</codeph> map using the
@@ -196,10 +196,10 @@ String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel
                 id="note_s3p_cs1_zpb">The <codeph>URLConnection openConnection(URL documentUrl,
                   PeerContext committer, List&lt;PeerContext> authors)</codeph> method has two
                   parameters:<ul id="ul_mpg_knh_2fc">
-                  <li><codeph>committer</codeph> can be used to identify the user that triggered the
-                    save</li>
-                  <li><codeph>authors</codeph> can be used to identify the users that authored the
-                    version of the file that is going to be written in the returned
+                  <li><codeph>committer</codeph> - It can be used to identify the user that
+                    triggered the save.</li>
+                  <li><codeph>authors</codeph> -  It can be used to identify the users that authored
+                    the version of the file that is going to be written in the returned
                       <codeph>URLConnection</codeph>.</li>
                 </ul></note></li>
           </ol></p>
@@ -207,24 +207,24 @@ String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel
       <section id="section_anj_sht_rnb">
         <title>Closing the Room</title>
         <p id="p_ydt_dgk_54b">A programmatically created room is not closed automatically when the
-          last user leaves, when closes the browser tab. The room should be closed explicitly using
+          last user leaves or closes the browser tab. The room should be closed explicitly using
             <codeph>Room.close()</codeph> when all the users have left and all the changes are
-          saved. To identify when room gets empty you can use the
+          saved. To identify when a room becomes empty, you can use
             <codeph>WebappEditingSessionLifecycleListener.editingSessionStarted</codeph> and
             <codeph>WebappEditingSessionLifecycleListener.editingSessionClosed</codeph>.</p>
         <p>The <codeph>WebappEditingSessionLifecycleListener.editingSessionStarted</codeph> is
           called each time a tab with a Web Author editor is opened.</p>
         <p>The <codeph>WebappEditingSessionLifecycleListener.editingSessionClosed</codeph> is called
-          when editing session closes, this happens in the following cases:</p>
+          when the editing session closes. This happens in the following cases:</p>
         <ol id="ol_l4w_1pg_2fc">
-          <li>when the user gracefully closes the tab or browser</li>
-          <li>when the tab or browser isn't closed gracefully:<ol id="ol_olv_ppg_2fc">
-              <li>when the user session expires, this by default happens at 12h</li>
-              <li>when using <xref href="customizing-options.dita" format="dita"
-                  >always.send.keepalive</xref> option and the timeout is reached</li>
+          <li>When the user closes the tab or browser cleanly.</li>
+          <li>If the tab or browser is not closed cleanly:<ol id="ol_olv_ppg_2fc">
+              <li>When the user's session expires (by default, this happens after 12 hours).</li>
+              <li>When using the <xref href="customizing-options.dita" format="dita"
+                  >always.send.keepalive</xref> option and the timeout is reached.</li>
             </ol></li>
         </ol>
-        <p>To access the room object you can use
+        <p>To access the room object, you can use
             <codeph>RoomsManager.INSTANCE.getRoom(roomId)</codeph>.</p>
       </section>
     </body>
