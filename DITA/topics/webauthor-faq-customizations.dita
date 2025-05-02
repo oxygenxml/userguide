@@ -218,5 +218,58 @@ workspace.listenOnce(sync.api.Workspace.EventType.EDITOR_LOADED, e => {
         use the <codeph>ro.sync.net.protocol.FileBrowsingConnection.listFolder()</codeph>
         method.</p>
     </section>
+    <section id="section_h1z_tm1_cfc">
+      <title>How to retrieve document content in Java and
+        JavaScript</title>
+      <p>In <ph keyref="product"/>, you can retrieve the full content of the current XML document
+        using both Java and JavaScript. Below are examples demonstrating how to achieve this in each
+        language.</p>
+      <p><u><b>Java Example</b></u></p>
+      <p>In Java, you can obtain the document content either from <codeph><xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/AuthorDocumentModel.html"
+            format="html" scope="external">AuthorDocumentModel</xref></codeph> or from <codeph><xref
+            href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorDocumentController.html"
+            format="html" scope="external">AuthorDocumentController</xref></codeph>.<ul
+          id="ul_rxv_yby_2fc">
+          <li id="li_sxv_yby_2fc">From
+              <codeph>AuthorDocumentModel</codeph>:<codeblock id="codeblock_tpp_h15_x2c" outputclass="language-java">AuthorDocumentModel authorDocumentModel = ...
+Reader reader = authorDocumentModel.createReader();
+String documentXmlContent = new BufferedReader(reader)
+  .lines()
+  .collect(Collectors.joining("\n"));
+System.out.println(documentXmlContent);</codeblock><p id="p_d42_dcy_2fc">The
+                <codeph>AuthorDocumentModel</codeph> object can be obtained from <codeph><xref
+                  href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/AuthorOperationWithResult.html"
+                  format="html" scope="external">AuthorOperationWithResult</xref></codeph> or from
+                  <codeph><xref
+                  href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/webapp/access/WebappEditingSessionLifecycleListener.html"
+                  format="html" scope="external"
+                >WebappEditingSessionLifecycleListener</xref></codeph>.</p></li>
+          <li id="li_ik4_dcy_2fc">
+            <p id="p_sr3_2cy_2fc">From
+              <codeph>AuthorDocumentController</codeph>:<codeblock id="codeblock_gqh_hvt_x2c" outputclass="language-java">AuthorDocumentController authorDocumentController = ...
+
+AuthorDocumentFragment documentAsAFragment = authorDocumentController.createDocumentFragment(0, authorDocumentController.getAuthorDocumentNode().getLength() - 1);
+String documentXmlContent = authorDocumentController.serializeFragmentToXML(documentAsAFragment);
+System.out.println(documentXmlContent);</codeblock></p>
+            <p id="p_flf_gcy_2fc">The <codeph>AuthorDocumentController</codeph> object can be
+              obtained from <codeph><xref
+                  href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorOperation.html"
+                  format="html" scope="external">AuthorOperation</xref></codeph> via <codeph><xref
+                  href="https://www.oxygenxml.com/InstData/Editor/SDK/javadoc/ro/sync/ecss/extensions/api/AuthorAccess.html#getDocumentController()"
+                  format="html" scope="external"
+                >AuthorAccess.getDocumentController()</xref></codeph> or from
+                <codeph>AuthorDocumentModel</codeph>:
+                <codeph>authorDocumentModel.getAuthorAccess().getDocumentController</codeph>.</p>
+          </li>
+        </ul></p>
+      <p><u><b>JavaScript Example</b></u></p>
+      <p>In JavaScript, you can invoke the <codeph>sync.api.Editor.getContent</codeph> or
+          <codeph>sync.api.EditingSupport.getContent</codeph>.<codeblock id="codeblock_drs_rvt_x2c" outputclass="language-javascript">workspace.currentEditor.getContent((error, documentXmlContent) => {
+  if (!error) {
+    console.log(documentXmlContent);
+  }
+})</codeblock></p>
+    </section>
   </body>
 </topic>
