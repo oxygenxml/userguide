@@ -198,11 +198,16 @@ String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel
                   parameters:<ul id="ul_mpg_knh_2fc">
                   <li><codeph>committer</codeph> - It can be used to identify the user that
                     triggered the save.</li>
-                  <li><codeph>authors</codeph> -  It can be used to identify the users that authored
+                  <li><codeph>authors</codeph> - It can be used to identify the users that authored
                     the version of the file that is going to be written in the returned
                       <codeph>URLConnection</codeph>.</li>
                 </ul></note></li>
-          </ol></p>
+          </ol><note id="note_drh_w3p_ffc">It's recommended to use an application account to make
+            requests to the CMS within
+              <codeph>GroupChangesForMultiplePeersStrategy.openConnection</codeph> and
+              <codeph>GroupChangesForSinglePeerStrategy.openConnection</codeph>, rather than relying
+            on user credentials by calling <codeph>url.openConnection</codeph>, to prevent request
+            failures due to expired or invalidated credentials.</note></p>
       </section>
       <section id="section_anj_sht_rnb">
         <title>Closing the Room</title>
@@ -226,6 +231,17 @@ String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel
         </ol>
         <p>To access the room object, you can use
             <codeph>RoomsManager.INSTANCE.getRoom(roomId)</codeph>.</p>
+        <p>
+          <note id="note_lzf_33p_ffc">It's recommended to enable the <xref
+              href="customizing-options.dita" format="dita">always.send.keepalive</xref> option
+            configured to ensure that even if browser crashes, the editor is disposed faster, in a
+            matter of minutes, not in 12h when session expires. </note>
+          <note id="note_tch_m3p_ffc">It's recommended to use an application account to make
+            requests to the CMS within
+              <codeph>WebappEditingSessionLifecycleListener.editingSessionClosed</codeph>, rather
+            than relying on user credentials, to prevent request failures due to expired or
+            invalidated credentials.</note>
+        </p>
       </section>
     </body>
     <related-links>
