@@ -54,10 +54,9 @@
           href="customizing_frameworks.dita#customizing_frameworks/deploying_a_framework">upload
           the changes to your <term>framework</term> to Web Author</xref>.</li>
       </ol></p>
-    <note type="tip" id="note_dss_dgk_54b">It is also possible to send the
-      <uicontrol>Outline</uicontrol> pane configuration through the
-      <codeph>outlineConfigurationProvider</codeph> loading option. This function that has a
-      callback that receives the JSON configuration as a parameter. It can be set like
+    <note type="tip" id="note_dss_dgk_54b">It is also possible to set the
+        <uicontrol>Outline</uicontrol> pane configuration as part of a Javascript plugin, using the
+        <codeph>outlineConfigurationProvider</codeph> loading option. It can be set like
       this:<codeblock outputclass="language-javascript" id="codeblock_ess_dgk_54b">goog.events.listen(workspace,sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED,function(e)
  {
     e.options.outlineConfigurationProvider = function(callback) {
@@ -77,10 +76,9 @@
  });</codeblock></note>
     <section id="section_o5s_mtk_slb">
       <title>How to Configure the Displayed Names of Elements in the Outline Pane</title>
-      <p id="p_fss_dgk_54b">The <b>Contents</b> mode (table of contents mode) uses a heuristic algorithm to present the
-        <i>title</i> (name) for any given element. For advanced use-cases, it is possible to
-        configure the location of the element title presented in the <uicontrol>Outline</uicontrol>
-        pane.</p>
+      <p id="p_fss_dgk_54b">The <b>Contents</b> mode (table of contents mode) uses a heuristic
+        algorithm to present a <i>title</i> for any element that appears in the Outline. For
+        advanced use-cases, it is possible to specify how the title for an element can be found.</p>
       <p id="p_gss_dgk_54b">Here is a DocBook example of what the <xmlelement>tocMode</xmlelement>
         element would look like for this type of
         configuration:<codeblock outputclass="language-xml" id="codeblock_hss_dgk_54b">&lt;outline> 
@@ -90,26 +88,28 @@
     &lt;titleLocator element="sect1" location="title"/>  
   &lt;/tocMode> 
 &lt;/outline></codeblock></p>
-      <p>Each element <codeph>titleLocator</codeph> specifies which elements are to be presented in
-        the <uicontrol>Outline</uicontrol> pane in the <i>Contents</i> mode with the
-          <codeph>@element</codeph> attribute.</p>
+      <p>The <xmlelement>elements</xmlelement> element specifies which elements are to be presented
+        in the <uicontrol>Outline</uicontrol> pane in the <i>Contents</i> mode, using a space
+        separated list of element local names in the <codeph>@names</codeph> attribute.</p>
+      <p>Each element <codeph>titleLocator</codeph> specifies how to determine the title for an
+        element that is presented in the <uicontrol>Outline</uicontrol> pane in the <i>Contents</i>
+        mode.</p>
       <p id="p_iss_dgk_54b">For each element presented in <i>Contents</i> mode, you can control the
-        rendered text in the outline tree with the <xmlatt>location</xmlatt> attribute that is a
-        simplified XPath syntax that supports a comma-separated list of the following:<ul
-          id="ul_p3l_jvk_slb">
-          <li id="li_jss_dgk_54b">Element names (e.g. <codeph>"title,h1,h2"</codeph>)</li>
-          <li>Element path (<codeph>"elementName1/elementName2/.../elementNameN"</codeph>)</li>
-          <li>Descendent element using ".//" (e.g. <codeph>".//title"</codeph>).</li>
-          <li id="li_kss_dgk_54b">Attribute names prefixed with "@" (e.g.
-            <codeph>"@title"</codeph>).</li>
-          <li>Any <term>before</term> or <term>after</term> pseudo-elements.<p>For example,
-                <codeph>before(1030)</codeph> selects the text from the <codeph>before</codeph>
-              pseudo-element on level 1030. This works on the DITA map in conjunction with a CSS
-              rule that sets the title of the topic on the <codeph>before</codeph> pseudo-element
-              using the <xref
-                href="https://www.oxygenxml.com/doc/ug-editor/topics/dg-oxy-link-text.html"
-                format="html" scope="external">oxy_link-text()</xref> custom CSS function. For
-              reference, see the following resources:<ul id="ul_ltw_p5p_hdc">
+        rendered text in the outline tree with the <xmlatt>location</xmlatt> attribute of the
+          <xmlelement>titleLocator</xmlelement> element.  That is a comma-separated list of the
+        following simplified XPath-like expressions:<ul id="ul_p3l_jvk_slb">
+          <li id="li_jss_dgk_54b">Element name (e.g. <codeph>title</codeph> or
+            <codeph>h1</codeph>)</li>
+          <li>Element path (e.g.<codeph>elementName1/elementName2/.../elementNameN</codeph>)</li>
+          <li>Descendent element prefixed with ".//" (e.g. <codeph>.//title</codeph>)</li>
+          <li id="li_kss_dgk_54b">Attribute name prefixed with "@" (e.g.
+            <codeph>@title</codeph>)</li>
+          <li>Any <term>before</term>, <term>before(n)</term>, <term>after,</term> or
+              <term>after(n)</term> pseudo-element<p>For example, <codeph>"before(1030)"</codeph>
+              selects the static content from the <codeph>before</codeph> pseudo-element on level
+              1030. This works in conjunction with a CSS rule that sets static content on the
+                <codeph>before(1030)</codeph> pseudo-element. For reference, see the following
+                resources:<ul id="ul_ltw_p5p_hdc">
                 <li><xref
                     href="https://www.oxygenxml.com/doc/ug-editor/topics/ch_advanced_styling_multiple_before_and_after_pseudo_elements.html"
                     format="html" scope="external">Advanced styling with multiple before and after
@@ -120,9 +120,11 @@
                   Editor</xref></li>
               </ul></p></li>
         </ul></p>
-      <p id="p_lss_dgk_54b">The first element in the list returned by the XPath is used. If no
-        <xmlelement>titleLocator</xmlelement> element is present, or if no match is found in the
-        document, the default algorithm is used to retrieve the text for the given element.</p>
+      <p id="p_lss_dgk_54b">The first XPath-like expression that returns content will be used, and
+        the title will be its first value, in case multiple values are returned. If no
+          <xmlelement>titleLocator</xmlelement> element is present, or if no values are obtained by
+        evaluating the XPath-like expressions, the default algorithm is used to retrieve the title
+        for that element.</p>
     </section>
     <section id="section_psf_tfq_j4b">
       <title>How to Configure Which Side of the UI the Outline Pane Appears</title>
