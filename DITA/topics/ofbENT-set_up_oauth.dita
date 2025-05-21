@@ -80,6 +80,33 @@ oauth.facebook.client.clientSecret=facebook-client-secret</codeblock><note
     </section>
     <section id="section_k1x_nzr_5pb">
       <title>Custom OAuth Identity Provider</title>
+      <p>
+        <note id="note_ypp_2c2_kfc" type="important"><b>Upgrade note</b><p>Starting with <b>Oxygen
+              Feedback 5.2.1</b>:<ol id="ol_ggq_gd2_kfc">
+              <li>
+                <p>The property <codeph>oauth.generic.userInfo.useIdToken</codeph> has been
+                    <b>removed</b> (see step 6).</p>
+                <p>If your OAuth provider supports OpenID Connect and you include the
+                    <codeph>openid</codeph> scope in <codeph>oauth.generic.client.scope</codeph>,
+                  you must now explicitly configure the following properties:</p>
+                <ul id="ul_xzr_zc2_kfc">
+                  <li>
+                    <p><codeph>oauth.generic.client.issuerUri</codeph> – the base URL of the
+                      authorization server or realm</p>
+                  </li>
+                  <li>
+                    <p><codeph>oauth.generic.client.jwksUri</codeph> – the endpoint returning the
+                      public keys for ID token validation</p>
+                  </li>
+                </ul>
+                <p>These settings are required to validate the identity token and complete the login
+                  process securely. </p>
+              </li>
+              <li>The <term>Redirect URI</term> form has been changed to
+                  <codeph>https://&lt;your-app-base-url>/login/oauth2/code/generic</codeph> (see
+                step 3b).</li>
+            </ol></p></note>
+      </p>
       <p id="p_jp3_3gk_xpb">To add <term>Log in</term> support for a custom <term>OAuth Identity
           Provider</term>, you need to configure the associated properties
           (<codeph>oauth.generic.*</codeph>) in the
@@ -124,16 +151,31 @@ oauth.generic.client.clientSecret=generic-client-secret</codeblock><note
             >This is the endpoint that <ph keyref="product"/> uses to request an access token from
             the custom <term>Identity Provider</term>.</note></li>
         <li id="li_wns_gyg_prb">
-          <p id="p_o5p_szg_prb">If the custom OAuth Identity Provider supports Open ID Connect, you
-            can extract information about the current user from the ID token provided by the
-            identify provider's server by setting the
-              <codeph>oauth.generic.userInfo.useIdToken=true</codeph> property (by default it is set
-            to <i>false</i>).</p>
-          <p id="p_bp2_szg_prb">If this property is set to <b>true</b>, <ph keyref="product"/>
-            expects that the <xref
-              href="https://openid.net/specs/openid-connect-core-1_0.html#IDToken" format="html"
-              scope="external">ID Token</xref> is available in the Access Token response under the
-              <codeph>id_token</codeph> key (see <xref
+          <p> If the identity provider supports the OpenID Connect (OIDC) protocol and you intend to
+            use OIDC-based login by including the <codeph>openid</codeph> scope in the
+              <codeph>oauth.generic.client.scope</codeph> property, then you must also configure the
+            following additional
+              properties:<codeblock id="codeblock_y5h_kzd_kfc">oauth.generic.client.issuerUri
+oauth.generic.client.jwksUri</codeblock><ul id="ul_ntw_nzd_kfc">
+              <li><codeph>oauth.generic.client.issuerUri</codeph><p>Specifies the <b>Issuer URI</b>
+                  of the identity provider. This must point to the base URL of the OIDC-compliant
+                  authorization server (for example, a Keycloak realm URL such as
+                    <codeph>http://localhost:8080/auth/realms/myrealm</codeph>). This URI is used
+                  internally to validate ID tokens issued by the provider.</p></li>
+              <li><codeph>oauth.generic.client.jwksUri</codeph><p>Specifies the full URL of the
+                    <b>JSON Web Key Set (JWKS) endpoint</b> exposed by the identity provider. This
+                  endpoint returns the public keys used to sign ID tokens. The Oxygen Feedback
+                  server uses this URI to verify the digital signature of the received ID
+                  token.</p><p>For example (Keycloak):
+                  <codeblock id="codeblock_rqm_c12_kfc">http://localhost:8080/auth/realms/myrealm/protocol/openid-connect/certs
+</codeblock></p></li>
+            </ul></p>
+          <p id="p_o5p_szg_prb">If the custom OAuth Identity Provider supports Open ID Connect, and
+            you include the <codeph>openid</codeph> scope in the
+              <codeph>oauth.generic.client.scope</codeph> property, <ph keyref="product"/> expects
+            that the <xref href="https://openid.net/specs/openid-connect-core-1_0.html#IDToken"
+              format="html" scope="external">ID Token</xref> is available in the Access Token
+            response under the <codeph>id_token</codeph> key (see <xref
               href="https://openid.net/specs/openid-connect-core-1_0.html#TokenResponse"
               format="html" scope="external"/>).</p>
           <p id="p_in2_5zg_prb">The ID Token is decoded (as it is a JSON Web Token according to the
@@ -149,19 +191,9 @@ oauth.generic.client.clientSecret=generic-client-secret</codeblock><note
               <codeph>oauth.generic.userInfo.claims.name</codeph>,
               <codeph>oauth.generic.userInfo.claims.email</codeph>).</p>
           <p id="p_dtn_h1h_prb">
-            <note id="note_u1s_h1h_prb" type="other" othertype="Notes">
-              <ul id="ul_lqx_31h_prb">
-                <li id="li_mqx_31h_prb">For the ID Token to be included in the Access Token
-                  Response, most Identity Providers require that the <term>openid</term> scope be
-                  specified in the list of scopes for the Authorization Code Flow. This can be done
-                  using the <codeph>oauth.generic.client.scope</codeph> configuration property. For
-                  example:<codeblock outputclass="language-bourne">oauth.generic.client.scope=email openid</codeblock></li>
-                <li id="li_wzn_q1h_prb">If the <codeph>oauth.generic.userInfo.useIdToken</codeph>
-                  property is set to <b>true</b>, then the value of the
-                    <codeph>oauth.generic.userInfo.uri</codeph> is ignored since a request to the
-                  associated <term>/userinfo</term> endpoint will not be performed.</li>
-              </ul>
-            </note>
+            <note id="note_pcg_q12_kfc" type="important">Starting with <b>Oxygen Feedback 5.2.1</b>,
+              the property <codeph>oauth.generic.userInfo.useIdToken</codeph> has been
+                <b>removed</b>.</note>
           </p>
         </li>
         <li id="li_qp3_3gk_xpb">Configure the <term>User Info Endpoint URI</term> by setting the
@@ -199,7 +231,10 @@ oauth.generic.client.clientId={oxygen-feedback-client-id}
 oauth.generic.client.clientSecret={oxygen-feedback-client-secret}
 oauth.generic.client.accessTokenUri={keycloak-server-base-url}/auth/realms/{keycloak-realm}/protocol/openid-connect/token
 oauth.generic.client.userAuthorizationUri={keycloak-server-base-url}/auth/realms/{keycloak-realm}/protocol/openid-connect/auth
-oauth.generic.client.scope=email
+oauth.generic.client.scope=email, openid
+# OIDC validation endpoints (required when using 'openid' scope)
+oauth.generic.client.issuerUri={keycloak-server-base-url}/auth/realms/{keycloak-realm}
+oauth.generic.client.jwksUri={keycloak-server-base-url}/auth/realms/{keycloak-realm}/protocol/openid-connect/certs
 ## User Info Properties
 oauth.generic.userInfo.useIdToken=true
 ## The URI of the OAuth Provider's '/userinfo' endpoint
