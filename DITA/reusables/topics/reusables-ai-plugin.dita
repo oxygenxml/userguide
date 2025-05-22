@@ -571,11 +571,11 @@
                   in a pop-up dialog box.</li>
               </ul>
             </p>
-            <p product="author developer editor json">
-              <note type="tip">The <xref href="../../topics/new-dialog-sa.dita"/> contains a folder
-                named <uicontrol>AI Positron Templates</uicontrol> with new file templates for
-                creating these same types of documents (XSLT, XML Schema, Schematron, JSON schema,
-                and DTD).</note>
+            <p>
+              <note type="tip">The <xref keyref="wizard_new-document">New Document Wizard</xref>
+                contains a folder named <uicontrol>AI Positron Templates</uicontrol> with new file
+                templates for creating these same types of documents (XSLT, XML Schema, Schematron,
+                JSON schema, and DTD).</note>
             </p>
           </dd>
         </dlentry>
@@ -603,16 +603,6 @@
         </dlentry>
       </dl>
     </p>
-    <!--Distributing/Filtering Actions-->
-    <section id="distributing_ai_actions">
-      <title>Distributing and Filtering AI Actions </title>
-      <p id="p_jrr_www_z2c">When installed in <ph keyref="product"/> 27.1 or newer, plugins or
-        frameworks can contain a folder named <filepath>ai-positron-actions</filepath> where custom
-        AI actions are automatically loaded from by the AI Positron add-on.</p>
-      <p id="p_krr_www_z2c">The <filepath>ai-positron-actions</filepath> folder can contain an extra
-        file named <filepath>excluded-action-ids.txt</filepath>, which can list all action IDs (on a
-        line-by-line basis) that should be filtered out of the AI Positron UI.</p>
-    </section>
     <!--AI Positron View-->
     <p id="para1">To clear the information in the chat pane and start a new chat, click the
           <uicontrol><image href="../../img/ai-Chat16.png"/>New Chat</uicontrol> button in the
@@ -725,6 +715,149 @@
         instance, you can export a conversation and share it with the developer of a custom action
         to help them investigate any issues encountered. Once the issue is resolved, you can import
         the previous conversation and resume from where you left off.</p>
+    </section>
+    <section id="section_Generating-Doc-Drafts">
+      <title>Generating Documentation Drafts</title>
+      <p>The <uicontrol>AI Positron Assistant</uicontrol> add-on provides the ability to generate a
+        documentation draft of a DITA topic based on a configuration file that tailors the draft
+        generation process using a context, instructions, images, and other data. </p>
+      <p>Once the add-on is installed, you can use the <uicontrol>New Document</uicontrol> wizard to
+        create a new <uicontrol>AI Doc Draft Configuration</uicontrol> file, that can be edited in
+          <uicontrol>Author</uicontrol> mode. Validation and content completion are automatically
+        provided for such configuration files. The <uicontrol>Author</uicontrol> mode also renders
+        short explanations for each element, as well as buttons for inserting the optional
+        elements.</p>
+      <p>After providing the configuration data, you can use the <uicontrol>Generate Documentation
+          Draft</uicontrol> action to trigger the AI-based drafting process. Once the AI response is
+        complete in the <uicontrol>AI Positron Assistant</uicontrol> side-view, click the
+            <uicontrol><image href="../../img/New16.png" id="image_uvs_2cv_fcc"/>Create
+          document</uicontrol> button to create a new DITA topic with content generated based upon
+        the data in the configuration file.</p>
+      <p>The simplest form of the configuration file would only contain the
+          <xmlelement>title</xmlelement> and <xmlelement>draft-summary</xmlelement> that will be
+        used by the AI as a starting point:
+        <codeblock outputclass="language-xml" id="codeblock_simplest_config_file">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;doc-draft>
+  &lt;title>Generate Documentation Draft&lt;/title>
+  &lt;instructions>
+    &lt;draft-summary>The new "Generate Documentation Draft" action was added to the 
+"Content Generation" category and can be used to draft a DITA documentation topic
+using AI and a configuration file.&lt;/draft-summary>
+  &lt;/instructions>
+&lt;/doc-draft></codeblock></p>
+      <p>Other data elements can be used to further configure the drafting process:
+          <xmlelement>context</xmlelement>, <xmlelement>target audience</xmlelement>,
+          <xmlelement>instructions</xmlelement>, <xmlelement>image</xmlelement>,
+          <xmlelement>file</xmlelement>, and <xmlelement>similar-topic</xmlelement>.<note
+          id="note_uy1_zlf_x1c" type="notice">
+          <ul id="ul_lxg_npt_z2c">
+            <li>For the <xmlelement>image</xmlelement> element, only a PNG, JPEG, and non-animated
+              GIF image should be provided.</li>
+            <li>
+              <p>For the <xmlelement>file</xmlelement> element, you may provide a file in plain text
+                format (including Markdown or XML) or in a document format (e.g. PDF, Word, or
+                PowerPoint).</p>
+            </li>
+          </ul>
+        </note><codeblock outputclass="language-xml" id="codeblock_bh3_cpf_x1c">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;doc-draft>
+  &lt;title>Generate Documentation Draft&lt;/title>
+  &lt;context>I am working on the user manual of a software application called Oxygen XML Editor,
+ used for authoring and publishing XML content.&lt;/context>
+  &lt;prolog>
+    &lt;metadata>
+      &lt;audience>The audience of our user manual is very wide and includes 
+people without a technical background.&lt;/audience>
+    &lt;/metadata>
+  &lt;/prolog>
+  &lt;instructions>
+    &lt;draft-summary>We have a new action in the contextual menu of the Project side-view,
+ called "Format and Indent...", which can be used to pretty print multiple files at once. 
+ The action is available in both the Oxygen XML Editor stand-alone distribution and the 
+ Eclipse plug-in.&lt;/draft-summary>
+    &lt;instruction>Analyze the following image and document the dialog box
+ and all its components.&lt;/instruction>
+    &lt;image href="format-and-indent-files.png"/>
+    &lt;instruction>Add additional information based on the following file.&lt;/instruction>
+    &lt;file href="format-and-indent-files-overview.docx"/>
+    &lt;instruction>Also add a DITA "note" element that mentions the fact that this feature 
+is not available for XQuery files.&lt;/instruction>
+  &lt;/instructions>
+  &lt;relationship-context>
+    &lt;similar-topic href="spell-check-in-files.dita"/>
+  &lt;/relationship-context>
+&lt;/doc-draft>
+</codeblock></p>
+      <note id="note_j1b_wjh_mcc">Project retrieval functionality can be enabled for this action by
+        setting the <codeph>use-related-content-from-project="true"</codeph> attribute on the
+          <xmlelement>draft-summary</xmlelement> element. This can easily be done in the Author-mode
+        rendering of the draft configuration file by selecting the <uicontrol>Use related content
+          from project</uicontrol> checkbox located below the text area of the draft summary.</note>
+    </section>
+    <section id="section_Creating-Custom-Actions">
+      <title>Creating Custom Actions</title>
+      <p>In the AI Positron Assistant preferences page, you can define a reference to a folder that
+        contains custom actions.</p>
+      <p>Once the add-on is installed, the <uicontrol>New Document</uicontrol> wizard can be used to
+        create either a new <uicontrol>AI Positron Custom Action</uicontrol> file that contains a
+        custom action definition in JSON format or an <uicontrol>AI Positron Custom Actions
+          List</uicontrol> that contains a JSON array with multiple defined actions. Validation and
+        content completion are automatically provided for such custom action files. If the action
+        definition files are saved in the custom actions folder defined in the <uicontrol>AI
+          Positron Assistant</uicontrol> preferences page, the <uicontrol>AI Positron
+          Assistant</uicontrol> view should automatically reload its <uicontrol>Actions</uicontrol>
+        drop-down list to include them.</p>
+      <p>The most simple action defines an action id, title, type, and
+        context:<codeblock id="codeblock_z1m_gq4_wxb" outputclass="language-json">{
+    "id": "my.action.id",
+    "title": "Improve Grammar",
+    "type": "replace-selection-with-fragment",
+    "input-type": "markup",
+    "context": "Improve grammar in the following content preserving the XML markup:"
+}</codeblock></p>
+      <p>Defined actions can contain expandable parameters and their values can be customized before
+        invoking the action:<codeblock outputclass="language-json" id="codeblock_rxj_qq4_wxb">{
+   "id": "my.action.id",
+   "title": "Improve Grammar",
+   "type": "replace-selection-with-fragment",
+   "input-type": "markup",
+   "context": "${style} Improve grammar in the following content preserving the XML markup:",
+   "expand-params":[
+   {
+           "name": "style",
+           "label": "Style",
+           "value": "",
+           "alternate-values": ["Use active voice.", "Use passive voice."],
+           "alternate-value-labels": ["Active voice", "Passive voice"],
+           "choice-type": "single-choice"
+    }
+  ]
+}</codeblock></p>
+      <p>The <codeph>input-type</codeph> property controls if the content to process from the
+        current document should be returned exactly as it is with the XML markup included
+          (<codeph>markup</codeph>) or as a simple text format (<codeph>text</codeph>) that has all
+        key references and content references expanded. An additional <codeph>input_flavor</codeph>
+        property with the value of <codeph>line_numbers</codeph> can be set in the
+          <codeph>additional_info</codeph> property to return the content with line numbering
+        contained inside it.</p>
+      <p>As prompts may become quite large, instead of using the <codeph>context</codeph> property,
+        you can use the <codeph>prompt_ref</codeph> JSON property to reference an external text or
+        Markdown file that contains the entire prompt. If an action defines both the
+          <codeph>context</codeph> and <codeph>prompt_ref</codeph> properties, the final prompt is
+        obtained by merging their contents.</p>
+      <p>More details about how AI actions can be built and configured along with samples can be
+        found in <xref
+          href="https://blog.oxygenxml.com/topics/creating_custom_ai_actions_for_the_ai_positron_add_on.html"
+          format="html" scope="external">this blog article</xref>.</p>
+    </section>
+    <section id="distributing_ai_actions">
+      <title>Distributing and Filtering AI Actions </title>
+      <p id="p_jrr_www_z2c">When installed in <ph keyref="product"/> 27.1 or newer, plugins or
+        frameworks can contain a folder named <filepath>ai-positron-actions</filepath> where custom
+        AI actions are automatically loaded from by the AI Positron add-on.</p>
+      <p id="p_krr_www_z2c">The <filepath>ai-positron-actions</filepath> folder can contain an extra
+        file named <filepath>excluded-action-ids.txt</filepath>, which can list all action IDs (on a
+        line-by-line basis) that should be filtered out of the AI Positron UI.</p>
     </section>
     <section id="section_enabling-RAG">
       <title>Enabling Functions for Retrieval Augmented Generation (RAG)</title>
