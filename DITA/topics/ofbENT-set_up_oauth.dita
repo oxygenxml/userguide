@@ -290,6 +290,9 @@ oauth.generic.client.clientSecret={oxygen-feedback-client-secret}
 oauth.generic.client.accessTokenUri={gitlab-base-url}/oauth/token
 oauth.generic.client.userAuthorizationUri={gitlab-base-url}/oauth/authorize
 oauth.generic.client.scope=openid
+# OIDC validation endpoints (required when using 'openid' scope)
+oauth.generic.client.issuerUri={gitlab-base-url}
+oauth.generic.client.jwksUri={gitlab-base-url}/oauth/discovery/keys
 # User Info Properties
 # The URI of the OAuth Provider's '/userinfo' endpoint
 oauth.generic.userInfo.uri={gitlab-base-url}/oauth/userinfo
@@ -301,9 +304,17 @@ oauth.generic.userInfo.claims.email=email</codeblock></p>
       <p id="p_gvc_ckk_xpb">You need to replace all placeholders (<codeph>{xxx-xxx}</codeph>) with
         their appropriate values. For more details about how to configure a client application for
         GitLab, see <xref href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
-          format="html" scope="external"/>.<note id="note_s5t_r1l_vpb" type="important">For a user
-          to be able to authenticate, they must have a <term>Public email</term> configured in their
-          user profile settings.</note></p>
+          format="html" scope="external"/>.</p>
+      <p>
+        <note id="note_ksv_kpn_lfc" type="tip">If your GitLab instance supports OpenID Connect
+          (OIDC) and provides a <xref
+            href="https://openid.net/specs/openid-connect-discovery-1_0.html" format="html"
+            scope="external">Discovery Document</xref>, you can retrieve the required property
+          values directly from the JSON available at:
+            <filepath>{gitlab-base-url}/.well-known/openid-configuration</filepath>.</note>
+        <note id="note_s5t_r1l_vpb" type="important">For a user to be able to authenticate, they
+          must have a <term>Public email</term> configured in their user profile settings.</note>
+      </p>
       <p id="p_scq_2sx_twb"><b>Example: <term>GitHub</term> Sample
         Configuration</b><codeblock outputclass="language-bourne">############################### GitHub ############################
 ### Custom OAuth Provider (other than Google or Facebook) ###
