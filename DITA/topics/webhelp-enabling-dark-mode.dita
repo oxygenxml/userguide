@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="webhelp-enabling-dark-mode">
+  <title>How to Enable Dark Mode in the Output</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Responsive <indexterm>CSS styling</indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Responsive <indexterm>Customizing output with CSS</indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Responsive <indexterm>Dark mode</indexterm></indexterm>
+        <indexterm product="webhelp-responsive ope">CSS styling</indexterm>
+        <indexterm product="webhelp-responsive ope">Customizing output with CSS</indexterm>
+        <indexterm product="webhelp-responsive ope">Dark mode</indexterm>
+      </keywords>
+      <keywords>
+        <keyword outputclass="label" product="webhelp-responsive">Dark Mode</keyword>
+        <keyword outputclass="label" product="webhelp-responsive">CSS Styling</keyword>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody><context>
+      <p>The WebHelp Responsive output supports dark mode, allowing users to switch between light
+        and dark themes based on their preference or browser's settings. This feature enhances
+        readability and reduces eye strain in low-light environments.</p>
+      <p>By default, the plugin only provides color variables for light theme, as
+        follows:<codeblock id="codeblock_q43_vcv_lfc" outputclass="language-css">:root {
+  --wh-body-bg: #fff;
+  --wh-body-color: #000;
+  --wh-border-color: #000;
+  --wh-link-color: #0d6efd;
+  --wh-search-bg: #ddd;
+  --wh-letters-bg: #f2f2f2;
+  --wh-main-page-toc-bg: #eeeeee;
+  --wh-toc-shortdesc-color: #808080;
+  --wh-top-menu-bg: #e6e6e6;
+}</codeblock></p>
+      <note id="note_eh4_l2v_lfc" type="fastpath">Both <b>Light</b> and <b>Oxygen</b> templates
+        support dark mode, providing you with complete examples to explore.</note>
+      <p>To enable dark theming, follow these steps:</p>
+    </context>
+    <steps id="steps_bvt_jy5_lfc">
+      <step>
+        <cmd>Create a custom CSS stylesheet and copy the default variables you want to override, for
+          example:</cmd>
+        <info>
+          <codeblock id="codeblock_e2g_kdv_lfc" outputclass="language-css">:root {
+  --wh-search-bg: #ECF2F9;
+  --wh-main-page-toc-bg: #F2F8FF;
+  --wh-toc-shortdesc-color: #0D1A2B;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Duplicate the default variables for dark color scheme (identified with
+            <xmlatt>data-wh-theme="dark"</xmlatt>), for example:</cmd>
+        <info>
+          <codeblock id="codeblock_xph_gdv_lfc" outputclass="language-css">:root[data-wh-theme="dark"] {
+  color-scheme: dark;
+  --wh-body-bg: #212529;
+  --wh-body-color: #fff;
+  --wh-border-color: #fff;
+  --wh-link-color: #6ea8fe;
+  --wh-search-bg: #2B3035;
+  --wh-letters-bg: #2a2a2a;
+  --wh-main-page-toc-bg: #22303C;
+  --wh-toc-shortdesc-color: #0DCAF0;
+  --wh-top-menu-bg: #2b3035;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Add custom additional variables for elements you need two color variants, for
+          example:</cmd>
+        <info>
+          <codeblock id="codeblock_xl4_xz5_lfc" outputclass="language-css">:root {
+  --wh-search-bg: #ECF2F9;
+  --wh-main-page-toc-bg: #F2F8FF;
+  --wh-toc-shortdesc-color: #0D1A2B;
+
+  --wh-tile-shortdesc-color: var(--wh-toc-shortdesc-color);
+  --wh-tile-bg: #ECF2F9;
+  --wh-breadcrumb-bg: #ECF2F9;
+  --wh-publication-toc-bg: #F8F8F8;
+}
+
+:root[data-wh-theme="dark"] {
+  color-scheme: dark;
+  --wh-body-bg: #212529;
+  --wh-body-color: #fff;
+  --wh-border-color: #fff;
+  --wh-link-color: #6ea8fe;
+  --wh-search-bg: #2B3035;
+  --wh-letters-bg: #2a2a2a;
+  --wh-main-page-toc-bg: #22303C;
+  --wh-toc-shortdesc-color: #0DCAF0;
+  --wh-top-menu-bg: #2b3035;
+
+  --wh-tile-shortdesc-color: var(--wh-toc-shortdesc-color);
+  --wh-tile-bg: #2B3035;
+  --wh-breadcrumb-bg: #2B3035;
+  --wh-publication-toc-bg: #343A40;
+}</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Use the custom created variables in CSS rules, for example:</cmd>
+        <info>
+          <codeblock id="codeblock_lxc_sdv_lfc" outputclass="language-css">.wh_tile {
+  background-color: var(--wh-tile-bg);
+}
+.wh_tile_shortdesc{
+  color: var(--wh-tile-shortdesc-color);
+}
+.wh_tools{
+  background-color: var(--wh-breadcrumb-bg);
+}
+.wh_publication_toc{
+  background-color: var(--wh-publication-toc-bg);
+}</codeblock>
+          <note id="note_vtq_f2v_lfc">The default variables (such as
+              <codeph>--wh-body-color</codeph>) will automatically be used.</note>
+        </info>
+      </step>
+      <step>
+        <cmd>Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</cmd>
+      </step>
+      <step>
+        <cmd>Set the <codeph>webhelp.enable.dark.mode</codeph> parameter to 'yes'.</cmd>
+      </step>
+      <step>
+        <cmd>Refer your custom stylesheet(s) in the scenario.</cmd>
+      </step>
+      <step>
+        <cmd>Click <uicontrol>OK</uicontrol> to save the changes, then run the transformation
+          scenario.</cmd>
+      </step>
+    </steps></taskbody>
+  <related-links>
+    <link href="webhelp-customizing-with-css.dita#whr-browser-inspect"/>
+  </related-links>
+</task>
