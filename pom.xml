@@ -583,30 +583,25 @@
         </executions>
       </plugin>
 
-
-
-      <!-- Unpack DITA-OT artifact, but only if missing. To refresh the DITA-OT, a clean is needed. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        
         <executions>
           <execution>
-            <id>unpack-dita-ot</id>
+            <id>get-and-unpack-ope</id>
             <goals>
-              <goal>unpack</goal>
+              <goal>run</goal>
             </goals>
             <phase>process-sources</phase>
-
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.oxygenxml</groupId>
-                  <artifactId>oxygen-publishing-engine</artifactId>
-                  <classifier>package-full</classifier>
-                  <type>zip</type>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
+              <target>
+                <echo>Get and unpack Oxygen Publishing Engine used as DITA-OT.</echo>
+                <get src="http://nas.sync.ro/MyWeb/kit/OPE/oxygen-publishing-engine.zip"
+                  dest="${project.build.directory}" verbose="true"/>
+                <unzip src="${project.build.directory}/oxygen-publishing-engine.zip"
+                  dest="${project.build.directory}"/>
+              </target>
             </configuration>
           </execution>
         </executions>
