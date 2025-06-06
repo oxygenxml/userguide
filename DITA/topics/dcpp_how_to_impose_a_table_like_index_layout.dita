@@ -13,78 +13,65 @@
     </metadata>
   </prolog>
   <body>
-    <p id="p_vys_cgk_54b">In case you need to place the index labels and links on the same line but with some extra
-      alignment constraints, you can use inline blocks to give the index a table-like
-      appearance:</p>
-    <image href="../img/dcpp_how_to_impose_a_table_like_index_layout.png" id="image_jy1_bzf_lhb"/>
-    <p id="p_wys_cgk_54b">You need to place the elements that have the following class on the same line:<dl id="dl_xys_cgk_54b">
-        <dlentry id="dlentry_yys_cgk_54b">
-          <dt>index/formatted-value</dt>
-          <dd>This is the text of the index term.</dd>
-        </dlentry>
-        <dlentry id="dlentry_zys_cgk_54b">
-          <dt>index/refid</dt>
-          <dd>This element contains a list of links.</dd>
-        </dlentry>
-      </dl></p>
-    <p id="p_azs_cgk_54b">A fixed width is used for the formatted value and the links container (almost half of the
-      available width). To achieve the index hierarchical layout, set progressive padding to the
-      formatted value text.</p>
-    <p id="p_bzs_cgk_54b">In your <xref href="dcpp_the_customization_css.dita">customization CSS</xref>, add the
-      following CSS rule:</p>
-    <codeblock outputclass="language-css" id="codeblock_czs_cgk_54b">*[class~="index/formatted-value"],
-*[class~="index/refid"]{
-    display:inline-block;
+    <p id="p_vys_cgk_54b">For a more complex inline layout (requiring greater alignment constraint),
+      using inline-block instead of inline provides a way to emulate a table-like appearance.</p>
+    <p id="p_bzs_cgk_54b">To implement this table layout, include the following CSS rule in your
+        <xref href="dcpp_the_customization_css.dita">customization CSS</xref>:<note
+        id="note_tkc_lbp_4fc">
+        <ul id="ul_epb_5cp_4fc">
+          <li>The 45% fixed width is used—slightly under 50% to keep content on the same line
+            despite possible margins/paddings</li>
+          <li>Hierarchical layout is achieved by applying progressive padding to the formatted value
+            text</li>
+        </ul>
+      </note><codeblock outputclass="language-css" id="codeblock_czs_cgk_54b">*[class ~= "index/formatted-value"],
+*[class ~= "index/refid"] {
+  display: inline-block;
+  width: 45%;
 }
-
-*[class~="index/formatted-value"]{
-    width:45%;
-}
-*[class~="index/refid"] {
-    width:45%;
-}
-
 
 /* Hide the sequences of links that actually do not contain links. */
-*[class ~= "index/groups"] *[class ~= "index/entry"] > *[class~="index/refid"]{
-    display:none;
+*[class ~= "index/groups"] *[class ~= "index/entry"] > *[class ~= "index/refid"] {
+  display: none;
 }
-*[class ~= "index/groups"] *[class ~= "index/entry"] > *[class~="index/refid"]:has(*[class~="index/link"]){
-    display:inline-block;
+*[class ~= "index/groups"] *[class ~= "index/entry"] > *[class ~= "index/refid"]:has(*[class ~= "index/link"]) {
+  display:inline-block;
 }
 
 /* Move the nesting of indexterms from margin to padding */
 *[class ~= "index/groups"] *[class ~= "index/entry"] {
-    margin-left: 0;
+  margin-left: 0;
 }
-*[class ~= "index/groups"] 
-*[class ~= "index/entry"] 
-*[class~="index/formatted-value"]{
-    padding-left: 0.2em;
+*[class ~= "index/groups"]
+*[class ~= "index/entry"]
+*[class ~= "index/formatted-value"] {
+  padding-left: 0.2em;
 }
-*[class ~= "index/groups"] 
-*[class ~= "index/entry"] 
-*[class ~= "index/entry"] 
-*[class~="index/formatted-value"]{
-    padding-left: 0.4em;
+*[class ~= "index/groups"]
+*[class ~= "index/entry"]
+*[class ~= "index/entry"]
+*[class ~= "index/formatted-value"] {
+  padding-left: 0.4em;
 }
-*[class ~= "index/groups"] 
-*[class ~= "index/entry"] 
-*[class ~= "index/entry"] 
-*[class ~= "index/entry"] 
-*[class~="index/formatted-value"]{
-    padding-left: 0.6em;
+*[class ~= "index/groups"]
+*[class ~= "index/entry"]
+*[class ~= "index/entry"]
+*[class ~= "index/entry"]
+*[class ~= "index/formatted-value"] {
+  padding-left: 0.6em;
 }
 
 /* Some styling */
-*[class~="index/formatted-value"],
-*[class~="index/refid"]{
-    padding:0.2em;
-    background-color:#EEEEEE;
-}</codeblock>
-    <p id="p_dzs_cgk_54b">To avoid bleeding of the index term label, you may need to mark it as being hyphenated:</p>
-    <p id="p_ezs_cgk_54b"
-      ><codeblock outputclass="language-css" id="codeblock_fzs_cgk_54b">*[class~="index/formatted-value"] {
+*[class ~= "index/formatted-value"],
+*[class ~= "index/refid"] {
+  padding: 0.2em;
+  background-color: #EEEEEE;
+}</codeblock></p>
+    <p>You will obtain this result:</p>
+    <image href="../img/dcpp_how_to_impose_a_table_like_index_layout.png" id="image_o41_l1p_4fc"/>
+    <p id="p_dzs_cgk_54b">To avoid bleeding of the index term label, you may need to mark it as
+      being
+      hyphenated:<codeblock outputclass="language-css" id="codeblock_fzs_cgk_54b">*[class~="index/formatted-value"] {
     hyphens:auto;
 }</codeblock>To activate hyphenation, see: <xref
         href="dcpp_how_to_enable_hyphenation_for_entire_document.dita"/>.</p>
