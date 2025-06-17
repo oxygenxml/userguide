@@ -43,17 +43,17 @@
     <section id="section_wrm_4jr_rfc">
       <title>Add Dark Mode in a New Publishing Template</title>
       <ol id="steps_bvt_jy5_lfc">
-        <li> Create a Publishing Template, see <xref
+        <li>Create a Publishing Template, see <xref
             href="whr-create-publishing-template.dita#whr-create-publishing-template/creating_a_template_starting_from_scratch"
           />.</li>
-        <li> Create a custom CSS stylesheet (<filepath>custom-color.css</filepath> for example) and
+        <li>Create a custom CSS stylesheet (<filepath>custom-color.css</filepath> for example) and
           copy the default variables you want to override, for
           example:<codeblock id="codeblock_e2g_kdv_lfc" outputclass="language-css">:root {
   --wh-search-bg: #ECF2F9;
   --wh-main-page-toc-bg: #F2F8FF;
   --wh-toc-shortdesc-color: #0D1A2B;
 }</codeblock></li>
-        <li> Duplicate the default variables for the dark color scheme (identified with
+        <li>Duplicate the default variables for the dark color scheme (identified with
             <xmlatt>data-wh-theme="dark"</xmlatt>), for
           example:<codeblock id="codeblock_xph_gdv_lfc" outputclass="language-css">:root[data-wh-theme="dark"] {
   color-scheme: dark;
@@ -68,23 +68,24 @@
   --wh-top-menu-bg: var(--wh-search-bg);
   --wh-oxy-change-bg: #b59f00;
 }</codeblock></li>
-        <li> Add custom additional variables for elements that you need two color or images
-          variants, for
-          example:<codeblock id="codeblock_xl4_xz5_lfc" outputclass="language-css">:root {
+        <li>Add custom additional variables for elements that you need two color or images variants,
+          for example:<codeblock id="codeblock_xl4_xz5_lfc" outputclass="language-css">:root {
+  /* Override default colors */
   --wh-search-bg: #ECF2F9;
   --wh-main-page-toc-bg: #F2F8FF;
   --wh-toc-shortdesc-color: #0D1A2B;
 
-  --wh-tile-shortdesc-color: var(--wh-toc-shortdesc-color);
+  /* New color variables */
   --wh-tile-bg: #ECF2F9;
   --wh-breadcrumb-bg: #ECF2F9;
-  --wh-publication-toc-bg: #F8F8F8;
   --wh-search-input-bg: #2771bb;
 
+  /* Image variable */
   --wh-search-image-small: url("resources/images/bgr_right_small.png");
 }
 
 :root[data-wh-theme="dark"] {
+  /* Add default colors */
   color-scheme: dark;
   --wh-body-bg: #212529;
   --wh-body-color: #e3e3e3;
@@ -97,12 +98,12 @@
   --wh-top-menu-bg: var(--wh-search-bg);
   --wh-oxy-change-bg: #b59f00;
 
-  --wh-tile-shortdesc-color: var(--wh-toc-shortdesc-color);
+  /* New color variables */
   --wh-tile-bg: #2B3035;
   --wh-breadcrumb-bg: #2B3035;
-  --wh-publication-toc-bg: #343A40;
   --wh-search-input-bg: #184573;
 
+  /* Image variable */
   --wh-search-image-small: url("resources/images/bgr_right_small_dark.png");
 }</codeblock></li>
         <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
@@ -114,26 +115,20 @@
         ...
         &lt;resources>
             &lt;css file="custom-color.css"/></codeblock></li>
-        <li> Create another custom CSS stylesheet (<filepath>custom.css</filepath> for example) and
+        <li>Create another custom CSS stylesheet (<filepath>custom.css</filepath> for example) and
           add CSS rules using the custom created variables, for example:<note id="note_vtq_f2v_lfc"
             >Default rules with color variables (such as <codeph>--wh-body-color</codeph>) will
             automatically use the new
           colors.</note><codeblock id="codeblock_lxc_sdv_lfc" outputclass="language-css">.wh_tile {
   background-color: var(--wh-tile-bg);
 }
-.wh_tile_shortdesc{
-  color: var(--wh-tile-shortdesc-color);
-}
 .wh_tools{
   background-color: var(--wh-breadcrumb-bg);
-}
-.wh_publication_toc{
-  background-color: var(--wh-publication-toc-bg);
 }
 .wh_search_input{
   background: var(--wh-search-image-small) right no-repeat var(--wh-search-input-bg);
 }</codeblock></li>
-        <li> Add the second stylesheet and the parameter in the template
+        <li>Add the second stylesheet and the parameter in the template
           descriptor:<codeblock id="codeblock_cmf_zdq_rfc" outputclass="language-xml">&lt;publishing-template>
     ...
     &lt;webhelp>
@@ -147,10 +142,10 @@
             ...
             &lt;parameter name="webhelp.enable.dark.mode" value="yes"/>
         &lt;/parameters></codeblock></li>
-        <li> Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
-        <li> Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select your
+        <li>Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+        <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select your
           template.</li>
-        <li> Click <uicontrol>OK</uicontrol> to save the changes, then run the transformation
+        <li>Click <uicontrol>OK</uicontrol> to save the changes, then run the transformation
           scenario.</li>
       </ol>
     </section>
@@ -162,7 +157,18 @@
         <li>Copy an existing Publishing Template, see <xref
             href="whr-create-publishing-template.dita#whr-create-publishing-template/creating_a_template_starting_from_an_existing_tem"
           />.</li>
-        <li>Add or edit the color.css stylesheet with the colors you want to add/change.</li>
+        <li>Add or edit the color.css stylesheet with the colors you want to
+          add/change:<codeblock id="codeblock_o1y_qmr_rfc" outputclass="language-css">:root {
+  --wh-body-bg: #fff;
+  --wh-body-color: #000;
+  ...
+}
+:root[data-wh-theme="dark"] {
+  color-scheme: dark;
+  --wh-body-bg: #293136;
+  --wh-body-color: #e3e3e3;
+  ...
+}</codeblock></li>
         <li importance="optional">If you create color.css stylesheet, open the <xref
             href="whr_publishing_template_contents.dita#template_descritpor_file">template
             descriptor file</xref> associated with your publishing template and add your custom CSS
@@ -175,8 +181,14 @@
             &lt;css file="ashes.css"/>
             ...
         &lt;/resources></codeblock></li>
-        <li> Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
-        <li> Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select your
+        <li>Add CSS rules using the custom created variables in the main stylesheet
+            (<filepath>ashes.css</filepath> for
+          example):<codeblock id="codeblock_xjg_cnr_rfc" outputclass="language-css">body {
+  font-family: "PT Sans", sans-serif;
+  background-color: var(--wh-body-bg);
+}</codeblock></li>
+        <li>Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+        <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select your
           template.</li>
         <li>Click <uicontrol>OK</uicontrol> to save the changes, then run the transformation
           scenario.</li>
