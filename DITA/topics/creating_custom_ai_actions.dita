@@ -528,5 +528,126 @@
             the quick assist bulb drop-down menu that appears in the left vertical stripe.</dd>
         </dlentry>
       </dl></p>
+    <section id="section_lqv_qnt_vbc">
+      <title>Function Calls</title>
+      <p id="p_bvn_sr4_pcc">Within the definition of custom actions, you can reference existing
+        functions that are called by the AI engine to interact with the application. This gives
+        actions more context information and generates more accurate responses from the AI.</p>
+      <p>Here is an example of a function reference that gets called by the AI engine to obtain the
+        entire contents of the
+        document:<codeblock id="codeblock_ibw_5nt_vbc" outputclass="language-json">{
+    "id": "action.summarize",
+    "title": "Summarize",
+    "categoryId": "Overview",
+    "output-type": "none",
+    "description": "Generate a summary of the selected content or the entire document.",
+    "prompt": "Your task is to summarize the provided user text.",
+    "parameters": {
+        "function_refs": [
+            {
+                "ref": "get_current_document_plain_text_content"
+            }
+        ]
+    }
+}</codeblock></p>
+      <p>The current available function reference values are:</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt><codeph>add_to_toc(ditaMapURL, resourceURL, anchorNodeURL,
+                positionOfInsertion)</codeph></dt>
+            <dd>Modifies the DITA map currently opened in the <uicontrol>DITA Maps
+                Manager</uicontrol> view and adds a topic reference to it.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>get_content_around_caret</codeph></dt>
+            <dd>Retrieves size-limited content around the current cursor location within the
+              document open in the editor.</dd>
+          </dlentry>
+          <dlentry id="dlentry_r2p_s3f_y2c12">
+            <dt><codeph>get_content_for_document_url</codeph></dt>
+            <dd>Retrieves content from the document specified by the provided URL. An optional
+                <codeph>lineNumbering</codeph> parameter allows the AI to request the returned
+              content to be returned with line numbers included.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>get_current_document_marked_up_content</codeph></dt>
+            <dd>Retrieves all text with markup from the current document open in the editor. An
+              optional <codeph>lineNumbering</codeph> parameter allows the AI to request the
+              returned content to be returned with line numbers included.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>get_current_document_plain_text_content</codeph></dt>
+            <dd>Retrieves all plain text (e.g. without markup) from the current document open in the
+              editor.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>get_current_editor_file_location</codeph></dt>
+            <dd>Retrieves the location (absolute path/URL) of the current file that is open in the
+              editor.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>get_related_content_from_webhelp</codeph></dt>
+            <dd>Returns content from the associated <uicontrol>Oxygen Feedback</uicontrol> WebHelp
+              system that has <xref
+                href="ai-positron-eclipse-preferences.dita#ai-positron-eclipse-preferences/section_vt1_x2n_3fc"
+                >external RAG sources enabled and configured</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>get_related_content_from_specific_feedback_site</codeph></dt>
+            <dd>Returns content from the specified <uicontrol>Oxygen Feedback</uicontrol> WebHelp
+              token passed as a parameter. The <xref
+                href="ai-positron-eclipse-preferences.dita#ai-positron-eclipse-preferences/section_vt1_x2n_3fc"
+                  ><uicontrol>Enable External RAG Sources</uicontrol> checkbox must be selected in
+                the <uicontrol>Functions and RAG</uicontrol> preferences</xref>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>get_topic_context_in_toc</codeph></dt>
+            <dd>Returns a hierarchical structure of the DITA map that is currently open in the
+                <uicontrol>DITA Maps Manager</uicontrol> view. This structure shows the selected
+              topic and provides context, including its parent, siblings, descendants, and nearby
+              nodes within the DITA map. This feature helps the AI understand where the topic is
+              located in relation to other elements in the DITA map. If the selected topic cannot be
+              identified, the hierarchy will start from the root of the DITA map.</dd>
+          </dlentry>
+          <dlentry id="dlentry_svh_mtv_g2c">
+            <dt><codeph>invoke_ai_action(actionID, content)</codeph></dt>
+            <dd>Invoke an action by passing the action ID and content to process.<note
+                id="note_gcg_qhn_d2c" type="tip">To define actions that are hidden in the interface
+                and intended only for use by other actions, prefix their IDs with
+                  <codeph>agent.hidden.action</codeph>.</note></dd>
+          </dlentry>
+          <dlentry id="dlentry_ydt_mtv_g2c">
+            <dt><codeph>retrieve_all_ai_actions</codeph></dt>
+            <dd>Get IDs and descriptions for each available AI action.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>save_document(URL,content)</codeph></dt>
+            <dd>Saves the document at the specified path and writes content to it. If a resource
+              already exists at the specified URL, the content of the document will be overridden
+              with the new content. For actions that use this function, the application gathers a
+              list of resources to modify and displays them in a <uicontrol>Preview</uicontrol>
+              dialog box after the action processes.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>validate_document_content(URL, content)</codeph></dt>
+            <dd>Validates specified content and reports error messages in JSON format.</dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>validate_current_document()</codeph></dt>
+            <dd>Validates the current document's content and reports error messages in JSON
+              format.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p>You can impose a description for the referenced function that is called by the AI engine: </p>
+      <codeblock id="pre_uxb_24t_vbc" outputclass="language-json">"function_refs": [
+  {
+      "ref": "get_current_document_plain_text_content",
+      "description": "The function is designed to retrieve the complete document as 
+      plain text without markup."
+  }
+]</codeblock>
+    </section>
   </body>
 </topic>
