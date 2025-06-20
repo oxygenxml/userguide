@@ -808,8 +808,7 @@ is not available for XQuery files.&lt;/instruction>
   &lt;relationship-context>
     &lt;similar-topic href="spell-check-in-files.dita"/>
   &lt;/relationship-context>
-&lt;/doc-draft>
-</codeblock></p>
+&lt;/doc-draft></codeblock></p>
       <note id="note_j1b_wjh_mcc">Project retrieval functionality can be enabled for this action by
         setting the <codeph>use-related-content-from-project="true"</codeph> attribute on the
           <xmlelement>draft-summary</xmlelement> element. This can easily be done in the Author-mode
@@ -1012,5 +1011,150 @@ Output:
           <b>Eclipse</b> requires <b>Oxygen XML Editor/Author/Developer</b> for <b>Eclipse</b>
         version 27.1 or newer.</note>
     </p>
+    <section id="section_custom-xpath-functions">
+      <title>Custom XPath Functions </title>
+      <p id="p_k1x_jk3_qxb">The add-on contributes some XPath extension functions (available in the
+        content completion proposals for Schematron, XSLT, XQuery, and XPath) that can be used to
+        rephrase content, perform validation checks on existing content, or to invoke an AI
+        action:</p>
+      <p id="p_adr_nl3_qxb">
+        <dl id="dl_kbv_nl3_qxb">
+          <dlentry id="dlentry_lbv_nl3_qxb">
+            <dt><codeph>ai:transform-content(system, (user, assistant,)* user)</codeph></dt>
+            <dd>
+              <p id="p_fxy_5l3_qxb">Use this function from namespace
+                  <i>http://www.oxygenxml.com/ai/function</i> to automatically transform content
+                using AI.</p>
+              <p id="p_erd_vl3_qxb">The function has the string parameters:<ul id="ul_pjk_wl3_qxb">
+                  <li id="li_qjk_wl3_qxb"><codeph>system</codeph> - This parameter is used to set up
+                    the context or provide instructions for the AI model. It can include guidelines,
+                    rules, or any other information that affects how the model should interpret
+                    inputs and generate outputs.</li>
+                  <li id="li_fs5_mx5_cbc"><codeph>user</codeph> - This parameter represents the
+                    input from the human user. The user's input guides the conversation and prompts
+                    a response from the assistant (AI model). This input is typically what you want
+                    to transform or have addressed by the AI.</li>
+                  <li id="li_xwh_yl3_qxb"><codeph>assistant</codeph> - This parameter represents the
+                    responses or actions from the AI model (assistant) based on the user's input and
+                    the context set by the system. Multiple <codeph>assistant</codeph> parameters
+                    can be provided to represent different stages or turns in the conversation.</li>
+                </ul></p>
+              <p id="p_cps_zl3_qxb">It returns a string that represents the transformed content.</p>
+              <p id="p_l1x_jk3_qxb">Here is an example of a custom Schematron schema that uses the
+                  <codeph>transform-content</codeph> function to correct the number of words used in
+                a short
+                description:<codeblock outputclass="language-xml">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt3"
+    xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+    &lt;sch:ns uri="http://www.oxygenxml.com/ai/function" prefix="ai"/>
+    &lt;sch:pattern>
+        &lt;sch:rule context="shortdesc">
+            &lt;sch:report test="count(tokenize(.,'\s+')) > 50" sqf:fix="rephrase">
+      The phrase must contain less than 50 words.&lt;/sch:report>
+            &lt;sqf:fix id="rephrase">
+                &lt;sqf:description>
+                    &lt;sqf:title>Rephrase phrase to be less that 50 words&lt;/sqf:title>
+                &lt;/sqf:description>
+                &lt;sqf:replace match="text()" select="ai:transform-content(
+                'Reformulate phrase to be less that 50 words', .)">&lt;/sqf:replace>
+            &lt;/sqf:fix>
+        &lt;/sch:rule>
+    &lt;/sch:pattern>
+&lt;/sch:schema> </codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_bln_dm3_qxb">
+            <dt><codeph>ai:verify-content(system, (user, assistant,)* user)</codeph></dt>
+            <dd>
+              <p id="p_er3_fm3_qxb">Use this function from namespace
+                  <i>http://www.oxygenxml.com/ai/function</i> to automatically validate content
+                using AI.</p>
+              <p id="p_v1b_mm3_qxb">The function has two string parameters:<ul id="ul_eyc_nyd_rcc">
+                  <li id="li_fyc_nyd_rcc"><codeph>system</codeph> - This parameter is used to set up
+                    the context or provide instructions for the AI model. It can include guidelines,
+                    rules, or any other information that affects how the model should interpret
+                    inputs and generate outputs.</li>
+                  <li id="li_gyc_nyd_rcc"><codeph>user</codeph> - This parameter represents the
+                    input from the human user. The user's input guides the conversation and prompts
+                    a response from the assistant (AI model). This input is typically what you want
+                    to transform or have addressed by the AI.</li>
+                  <li id="li_hyc_nyd_rcc"><codeph>assistant</codeph> - This parameter represents the
+                    responses or actions from the AI model (assistant) based on the user's input and
+                    the context set by the system. Multiple <codeph>assistant</codeph> parameters
+                    can be provided to represent different stages or turns in the conversation.</li>
+                </ul></p>
+              <p id="p_mmt_nm3_qxb">It returns a boolean value that represents the result of the
+                validation.</p>
+              <p id="p_sh5_pm3_qxb">Here is an example of a custom Schematron schema that uses the
+                  <codeph>verify-content</codeph> function to check a short description for
+                instances of a passive
+                voice:<codeblock outputclass="language-xml">&lt;sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt3"
+  xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+  &lt;sch:ns uri="http://www.oxygenxml.com/ai/function" prefix="ai"/>    
+  &lt;sch:pattern>
+    &lt;sch:rule context="shortdesc">
+      &lt;sch:report test="ai:verify-content('Does the following content has passive voice?', .)"
+            sqf:fix="rephrase">The phrase uses passive voice.&lt;/sch:report>
+      &lt;sqf:fix id="rephrase">
+         &lt;sqf:description>&lt;sqf:title>Rephrase text to be active voice&lt;/sqf:title>
+&lt;/sqf:description>
+         &lt;sqf:replace match="text()"
+                select="ai:transform-content('Rephrase text to be active voice', .)"/>
+         &lt;/sqf:fix>
+      &lt;/sch:rule>
+  &lt;/sch:pattern>
+&lt;/sch:schema> </codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>ai:invoke-action(actionId, extraPrompt, content)</codeph></dt>
+            <dd>
+              <p>Use this function from namespace <i>http://www.oxygenxml.com/ai/function</i> to
+                invoke a predefined AI action on a specified content.</p>
+              <p>The function has the string parameters:<ul id="ul_jc1_fbg_c2c">
+                  <li><codeph>actionId</codeph> - The ID of the action to call (string).</li>
+                  <li><codeph>extraPrompt</codeph> - An extra prompt to give to the action as a
+                    context. It gets expanded at the beginning of the action's prompt (string).</li>
+                  <li><codeph>content</codeph> - The content to process using the action
+                    (string).</li>
+                </ul></p>
+              <p>It returns a string that represents the content returned by the action.</p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    <section id="section_xpath-functions-preferences">
+      <title>XPath Functions Preferences</title>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Enable XPath Functions</dt>
+            <dd>Enables the use of AI-specific XPath functions in <b>Oxygen</b> when applying
+              Schematron validation or XSLT transformations.<p id="p_n1f_dpd_dbc">
+                <dl id="dl_m1z_kvr_jyb">
+                  <dlentry id="dlentry_o1f_dpd_dbc">
+                    <dt>Cache responses and reuse them for identical prompts</dt>
+                    <dd>If enabled (default), responses for identical requests are stored (cached),
+                      resulting in fewer requests being sent to the AI server and faster completion
+                      times. A <uicontrol>Clear cache</uicontrol> button located to the right of
+                      this option can be used to clear the cache.</dd>
+                  </dlentry>
+                  <dlentry id="dlentry_p1f_dpd_dbc">
+                    <dt>Cache size</dt>
+                    <dd>Specifies a maximum limit for the cache size.</dd>
+                  </dlentry>
+                  <dlentry id="dlentry_q1f_dpd_dbc">
+                    <dt>Notify me when the number of requests exceeds</dt>
+                    <dd>You can select this option and specify a number of AI requests that when
+                      exceeded, a confirmation dialog box is displayed asking if you want to
+                      continue using the XPath AI functions. If you select "No" for the answer, the
+                      XPath functions will be disabled.</dd>
+                  </dlentry>
+                </dl>
+              </p></dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
   </body>
 </topic>
