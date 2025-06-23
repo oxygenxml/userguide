@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-enable-text-and-md">
+  <title>Enabling Editing for Text and Markdown Files with a Custom Connector</title>
+  <body>
+    <section id="section_b4m_x13_tfc">
+      <title>Overview</title>
+      <p>By default, the Text and Markdown file editors in <ph keyref="product"/> are read-only. To
+        enable editing for these file types when using a custom connector, you must specify the
+          <codeph>supportsTextEditing</codeph> loading option with the value of
+          <codeph>true</codeph>. </p>
+      <p>This restriction helps prevent potential bugs, improper behavior, or even accidental file
+        overwrites that could occur if a Markdown file is opened through a connector not designed to
+        work with text editors. Web Author does not provide file storage or built-in connectors for
+        file servers. Instead, it offers APIs (Java and JavaScript) for integration. Most connectors
+        are primarily designed to support the Author editor. </p>
+    </section>
+    <section id="section_c4m_x13_tfc">
+      <title>Connector Responsibilities</title>
+      <p> A custom connector should enforce the business logic required by the specific file server
+        it integrates with. For example: </p>
+      <ul id="ul_d4m_x13_tfc">
+        <li>
+          <b>WebDAV</b> - The editor should be read-only if the document is locked by another user. </li>
+        <li>
+          <b>CMIS</b> - The user may need to perform a "Check Out" operation before editing. </li>
+        <li>
+          <b>Git</b> - The connector should handle conflict resolution appropriately. </li>
+      </ul>
+      <p>
+        <note id="note_ezf_2b3_tfc" type="important"> It is the connector's responsibility to ensure
+          that the Text or Markdown editor respects the file server's rules before allowing editing.
+        </note>
+      </p>
+    </section>
+    <section id="section_e4m_x13_tfc">
+      <title>Differences Between Author and Text/Markdown Editors</title>
+      <ul id="ol_f4m_x13_tfc">
+        <li>
+          <b>Underlying Support:</b>
+          <ul id="ul_g4m_x13_tfc">
+            <li>The Author editor is based on <codeph>sync.api.AuthorEditingSupport</codeph>.</li>
+            <li>The Text and Markdown editors are based on
+                <codeph><?oxy_comment_start author="Bogdan Dumitru" timestamp="20250623T091655+0000" comment="de fapt clasa aste e destul de seaca, nu are nimic. Intern avem sync.internal_api.TextEditingSupportImpl
+"?>sync.api.TextEditingSupport<?oxy_comment_end?></codeph></li>
+          </ul></li>
+        <li>
+          <b>Operation Invocation:</b>
+          <ul id="ul_h4m_x13_tfc">
+            <li>The Text/Markdown editors do not support invoking operations such as
+                <codeph>authorEditingSupport.getActionsManager().invokeOperation</codeph>.</li>
+          </ul></li>
+        <li>
+          <b>Document Model:</b>
+          <ul id="ul_i4m_x13_tfc">
+            <li>The Text/Markdown editors do not have a server-side model. The document is kept on
+              the client side, in the browser's memory.</li>
+            <li>The
+                <codeph>ro.sync.ecss.extensions.api.webapp.access.WebappEditingSessionLifecycleListener</codeph>
+              is only called for the Author editor.</li>
+          </ul></li>
+        <li>
+          <b>Editor Type:</b>
+          <ul id="ul_k4m_x13_tfc">
+            <li>The Author editor returns <codeph>authorEditingSupport.getType()</codeph> as
+                <codeph>sync.api.Editor.EditorTypes.AUTHOR</codeph>.</li>
+            <li>The Text/Markdown editors return <codeph>sync.api.Editor.EditorTypes.TEXT</codeph>
+              or <codeph>sync.api.Editor.EditorTypes.MARKDOWN</codeph>.</li>
+          </ul></li>
+        <li>
+          <b>Concurrent Editing:</b>
+          <ul id="ul_l4m_x13_tfc">
+            <li>The Text/Markdown editors do not support concurrent editing.</li>
+          </ul></li>
+        <li>
+          <b>Editor Loaded Event:</b>
+          <ul id="ul_j4m_x13_tfc">
+            <li>Both editors trigger the <codeph>sync.api.Workspace.EventType.EDITOR_LOADED</codeph>
+              API event.</li>
+          </ul></li>
+        <li>
+          <b>URL Stream Handler:</b>
+          <ul id="ul_m4m_x13_tfc">
+            <li>Both editors can use a <codeph>URLStreamHandler</codeph> defined on the server.</li>
+          </ul></li>
+        <li>
+          <b>Toolbar and Actions:</b>
+          <ul id="ul_n4m_x13_tfc">
+            <li>Both editors support toolbars and actions, and both trigger the
+                <codeph>sync.api.Editor.EventTypes.ACTIONS_LOADED</codeph> API event.</li>
+          </ul></li>
+      </ul>
+    </section>
+    <section id="section_g2b_pc3_tfc">
+      <title>General Guidance</title>
+      <p>To integrate the Text or Markdown editor with a custom connector, you may follow these
+        commonly used steps: </p>
+      <ol id="ol_h2b_pc3_tfc">
+        <li>Set the <codeph>supportsTextEditing</codeph> loading option by handling the
+            <codeph>sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED</codeph> event. For more
+          details, see the <xref
+            href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/27.1.0.0/jsdoc/tutorial-loadingoptions.html"
+            format="html" scope="external">Loading Options Tutorial</xref>. </li>
+        <li>Customize the toolbar as needed. Refer to the <xref
+            href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/27.1.0.0/jsdoc/tutorial-removeaction.html"
+            format="html" scope="external">Remove Action Tutorial</xref> for assistance. You can
+          also add your own custom actions to the toolbar. </li>
+        <li>Override the default "Text/Save" action with your custom implementation. </li>
+        <li>Listen for the <codeph>sync.api.Workspace.EventType.EDITOR_LOADED</codeph> event and use
+            <codeph>sync.api.Editor.setReadOnlyState</codeph> to control whether the editor is in
+          read-only mode. </li>
+      </ol>
+    </section>
+  </body>
+</topic>
