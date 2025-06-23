@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron_enterprise-installation">
+  <title>Installation and Licensing (Enterprise)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>AI Positron Enterprise</indexterm>
+        <indexterm>Licensing</indexterm>
+        <indexterm>Installation</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="section_kgh_fzg_rsb">
+      <title>Installation</title>
+      <p id="p_jzg_dgk_54b">To install this add-on, follow this procedure:<ol id="ol_kzg_dgk_54b">
+          <li id="li_lzg_dgk_54b">Go to <menucascade>
+              <uicontrol>Help</uicontrol>
+              <uicontrol>Install new add-ons</uicontrol>
+            </menucascade> to open an add-on selection dialog box. Enter or paste
+              <b>https://www.oxygenxml.com/InstData/Addons/default/updateSite.xml</b> in the
+              <uicontrol>Show add-ons from</uicontrol> field or select it from the drop-down
+              menu.<note id="note_manual_installation">If you have issues connecting to the default
+              update site, you can <xref keyref="positron-enterprise-manual-download">download the
+                add-on package</xref>, unzip it, then use the <uicontrol>Browse for local
+                files</uicontrol> action in the <uicontrol>Install new add-ons</uicontrol> dialog
+              box to locate the downloaded <filepath>addon.xml</filepath> file.</note></li>
+          <li id="li_nzg_dgk_54b">Select the <b>Oxygen AI Positron Assistant (Enterprise)</b> add-on
+            and click <uicontrol>Next</uicontrol>.<note type="important">There are two different
+              iterations of the add-on and you can only have one or the other installed at once:<ul>
+                <li><b>Oxygen AI Positron Assistant</b> - The regular version of the add-on.</li>
+                <li><b>Oxygen AI Positron Assistant (Enterprise)</b> - This Enterprise version is
+                  for those who want to connect to their own AI service (<b>OpenAI</b>, <b>MS Azure
+                    OpenAI</b>, <b>Anthropic Claude</b>, <b>Google Gemini</b>, or a custom
+                  service).</li>
+              </ul></note></li>
+          <li conkeyref="reusables-addons/ReadLicense-li" id="li_bcc_kjb_qfc"/>
+          <li conkeyref="reusables-addons/Restart-li" id="li_kb5_kjb_qfc"/>
+        </ol></p>
+      <p id="p_qzg_dgk_54b"><b>Result:</b> The <uicontrol>AI Positron Assistant</uicontrol> side
+        view is now available. If the view is not displayed, it can be opened by selecting it from <menucascade>
+          <uicontrol>Window</uicontrol>
+          <uicontrol>Show View</uicontrol>
+        </menucascade>.</p>
+    </section>
+    <section id="direct_ai_engine_licensing">
+      <title>Licensing and Configuration</title>
+      <p>You can configure the company-specific AI service details in the <xref
+          href="ai_positron_enterprise-preferences.dita#ai_positron_enterprise-preferences/ai_service_configuration"
+        />. </p>
+      <p>The <uicontrol>AI Positron Enterprise</uicontrol> add-on works free of charge with any
+          <b>Oxygen</b> installation using an <b>Enterprise</b> license type for <b>Oxygen</b>. </p>
+      <p>If your license of <b>Oxygen</b> is not an <b>Enterprise</b> license, <xref
+          href="https://www.oxygenxml.com/ai_positron/buy.html?licenseType=enterprise" format="html"
+          scope="external">a special license key</xref> needs to be purchased for the add-on to
+        enable this direct access. You can use the <uicontrol>Register</uicontrol> button in the
+          <uicontrol>AI Positron Assistant</uicontrol> side view to configure the special license
+        key.</p>
+      <note type="important">If you want to use the default <uicontrol>Oxygen AI
+          Positron</uicontrol> service instead of a company-specific AI service, the <xref
+          href="ai_positron-intro.dita"/> add-on needs to be installed and used instead of the one
+        listed above.</note>
+      <note id="note_gbn_ryb_qbc" type="note">If you are an integrator using the Web Author
+        Component in your own solution and you want to license the <uicontrol>AI Positron Enterprise
+          for Web Author</uicontrol>, you can set a dedicated license server for AI Positron.</note>
+    </section>
+    <section id="section_troubleshooting">
+      <title>Troubleshooting</title>
+      <p>If the add-on fails to connect with the custom settings, it might be useful to enable debug
+        logging in the application to see what requests and responses are made to/from the AI
+        server. </p>
+      <p>You can enable debug logging in the application by adding a
+          <filepath>logback.xml</filepath> file in the application's installation folder. A minimal
+          <codeph>logback.xml</codeph> configuration XML file content to enable logging only for the
+        AI Positron add-on's connections would look like
+          this:<codeblock id="codeblock_scr_vxn_h1c" outputclass="language-xml">&lt;configuration>
+  &lt;appender name="R2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>${user.home}/Desktop/oxygenLog/oxygen.log&lt;/file>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      &lt;fileNamePattern>${user.home}/Desktop/oxygenLog/oxygen%i.log.gz&lt;/fileNamePattern>
+      &lt;minIndex>1&lt;/minIndex>
+      &lt;maxIndex>20&lt;/maxIndex>
+    &lt;/rollingPolicy>
+    &lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      &lt;maxFileSize>12MB&lt;/maxFileSize>
+    &lt;/triggeringPolicy>
+    &lt;encoder>
+      &lt;pattern>%r %marker %p [ %t ] %c - %m%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  &lt;logger name="com.oxygenxml.positron.connector" level="debug"/>
+  &lt;logger name="com.oxygenxml.positron.core" level="debug"/>
+  &lt;root level="error">
+    &lt;appender-ref ref="R2"/>
+  &lt;/root>
+&lt;/configuration></codeblock><note type="important" id="note_ls1_qdk_gcc">The logging
+          information will be copied in the <filepath>Desktop/oxygenLog</filepath> folder once the
+          application is started. To avoid performance problems, the <codeph>logback.xml</codeph>
+          file must be deleted once the logging has been obtained.</note></p>
+    </section>
+  </body>
+</topic>
