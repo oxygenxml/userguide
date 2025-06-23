@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron_enterprise-extending">
+  <title>Extending Functionality Using Add-ons (Enterprise)</title>
+  <body>
+    <p id="p_t4x_kxf_tfc">The <b>Oxygen AI Positron Assistant Enterprise</b> add-on offers advanced
+      options for developers to extend its functionality. Below is an overview of the main extension
+      points available:</p>
+    <p id="p_ygn_lxf_tfc">
+      <dl id="dl_e1z_m1m_y2c">
+        <dlentry id="dlentry_zgn_lxf_tfc">
+          <dt>AI Connectors Extension</dt>
+          <dd>This extension point lets developers build an add-on that adds an AI connector to the
+              <b>Oxygen AI Positron Assistant Enterprise</b>. It enables connections with AI
+            providers not covered by our built-in options.</dd>
+          <dd>To create a connector, follow these steps:<ol id="ol_f1z_m1m_y2c">
+              <li id="li_ahn_lxf_tfc">Add <codeph>oxygen-ai-positron-api</codeph> as a dependency in
+                your plugin project's
+                <filepath>pom.xml</filepath>:<codeblock id="codeblock_w3s_j5b_1fc" outputclass="language-xml">&lt;dependency>
+  &lt;groupId>com.oxygenxml&lt;/groupId>
+  &lt;artifactId>oxygen-ai-positron-api&lt;/artifactId>
+  &lt;version>5.0.0&lt;/version>
+  &lt;scope>provided&lt;/scope>
+&lt;/dependency></codeblock></li>
+              <li id="li_bhn_lxf_tfc">Implement the
+                  <codeph>ro.sync.exml.plugin.ai.AIConnectorsPluginExtension</codeph> interface in
+                your plugin's libraries.</li>
+              <li id="li_chn_lxf_tfc">In the plugin descriptor file, define the
+                  <codeph>&lt;extension&gt;</codeph> element that points to the implementation of
+                your classes:
+                <codeblock id="codeblock_g1z_m1m_y2c" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIConnectors" class="my.pack.CustomAIConnectorsProviderPluginExtension"/&gt;</codeblock></li>
+            </ol></dd>
+          <dd>A sample plugin is available to show how to create a connector for a custom AI service
+            that uses a REST API to provide OpenAI chat completions. You can find it here: <xref
+              href="https://github.com/oxygenxml/oxygen-ai-positron-custom-connector-addon"
+              format="html" scope="external"/></dd>
+          <dd>
+            <note id="note_en4_zcm_y2c">The AIConnectors extension type can be implemented starting
+              with version 27.1 of <ph keyref="product"/></note>
+          </dd>
+        </dlentry>
+        <dlentry id="dlentry_dhn_lxf_tfc">
+          <dt>AI Functions Extension</dt>
+          <dd>The AI Functions extension point lets developers add their own custom callback
+            functions or replace the built-in ones. This makes it possible to create custom
+            interactions with AI engines.</dd>
+          <dd>To implement a function, follow these steps:<ol id="ol_h1z_m1m_y2c">
+              <li id="li_ehn_lxf_tfc">Implement the
+                  <codeph>ro.sync.exml.plugin.ai.AIFunctionsPluginExtension</codeph> interface in
+                your plugin's libraries.</li>
+              <li id="li_fhn_lxf_tfc">In the plugin descriptor file, define the
+                  <codeph>&lt;extension&gt;</codeph> element that points to the implementation of
+                your
+                classes:<codeblock id="codeblock_i1z_m1m_y2c" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIFunctions" class="my.pack.CustomAIFunctionsProviderPluginExtension"/&gt;</codeblock></li>
+            </ol></dd>
+          <dd>
+            <note id="note_gyt_3dm_y2c">The AIFunctions extension point can be implemented starting
+              with version 27.0 of <ph keyref="product"/></note>
+          </dd>
+        </dlentry>
+      </dl>
+    </p>
+  </body>
+</topic>
