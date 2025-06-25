@@ -82,161 +82,209 @@
         </dlentry>
         <dlentry id="dlentry_wym_225_y1c">
           <dt>API key</dt>
-          <dd>The <b>Microsoft Azure OpenAI Service</b> key necessary to work with the connector. </dd>
           <dd>
-            <p product="author developer editor authorEclipse developerEclipse editorEclipse json"
-              >If you do not specify an API key, the add-on will try to use environment variables to
-              authenticate using Microsoft Entra ID.</p>
-            <p product="webauthor waCustom fusion">If you do not specify an API key, the plugin will
-              try to use system properties to authenticate using Microsoft Entra ID.</p>
-            <p>To use this method, you must <xref
-                href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-microsoft-entra-id-and-create-a-service-principal"
-                format="html" scope="external">create a service principal</xref> and <xref
-                href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#add-role-assignment-to-an-azure-openai-resource"
-                format="html" scope="external">assign a role</xref> to it that allows access to the
-              Azure OpenAI service (e.g. the <xref
-                href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#cognitive-services-openai-user"
-                format="html" scope="external">Cognitive Services OpenAI User</xref> role).</p>
-            <p>The connector supports these authentication methods: <dl>
-                <dlentry>
-                  <dt>Service principal authentication using a client secret</dt>
-                  <dd>
+            <p>The <b>Microsoft Azure OpenAI Service</b> key necessary to work with the
+              connector.</p>
+            <p>If an API key is not provided, the application will attempt to authenticate with
+              Microsoft Entra ID by using one of the supported identity-based methods listed
+              below.</p>
+            <p>The connector supports the following authentication flows:
+            <dl id="dl_gpv_2rw_tfc">
+              <dlentry product="author developer editor authorEclipse developerEclipse editorEclipse json">
+                <dt>OAuth 2.0 Authorization Code Flow (User Sign-in)</dt>
+                <dd>
+                  <p>This method enables interactive user sign-in via browser. It is recommended for
+                    desktop applications used by individual users with personal or work
+                    accounts.</p>
+                    <p>When a user triggers an AI action and is not authenticated, the application
+                      displays a dialog prompting them to sign in using their Microsoft account.
+                      Upon successful login, the application retrieves an access token and continues
+                      operation.</p>
+                  <p>
+                    Required Environment Variables to configure authentication flow:
+                  </p>
+                  <table frame="all" rowsep="1" colsep="1" id="table_ipv_2rw_tfc">
+                    <tgroup cols="2" align="left">
+                      <thead>
+                        <row>
+                          <entry>Variable</entry>
+                          <entry>Description</entry>
+                        </row>
+                      </thead>
+                      <tbody>
+                        <row>
+                          <entry>AZURE_OAUTH_TENANT_ID</entry>
+                          <entry>Microsoft Entra (AAD) Tenant ID</entry>
+                        </row>
+                        <row>
+                          <entry>AZURE_OAUTH_CLIENT_ID</entry>
+                          <entry>Application (client) ID</entry>
+                        </row>
+                        <row>
+                          <entry>AZURE_OAUTH_REDIRECT_URI</entry>
+                          <entry>Redirect URI configured in the Entra app</entry>
+                        </row>
+                      </tbody>
+                    </tgroup>
+                  </table>
+                    <note id="note_pwl_c1y_tfc"> You must register an application in Microsoft Entra
+                      ID that includes the specified redirect URI.  The signed-in user must also be
+                      assigned a role that allows access to the Azure OpenAI service (e.g., <xref
+                        href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#cognitive-services-openai-user"
+                        format="html" scope="external">Cognitive Services OpenAI User</xref>.</note>
+                </dd>
+              </dlentry>
+              <dlentry>
+                <dt>Service Principal Authentication</dt>
+                <dd>
                     <p
                       product="author developer editor authorEclipse developerEclipse editorEclipse json"
-                      >For this type of authentication, <xref
-                        href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-3-create-a-new-client-secret"
-                        format="html" scope="external">create a client secret</xref> and set these
-                      environment variables: </p>
-                    <p product="fusion waCustom webauthor">For this type of authentication, <xref
-                        href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-3-create-a-new-client-secret"
-                        format="html" scope="external">create a client secret</xref> and set these
-                      system properties: </p>
-                    <table frame="all" rowsep="1" colsep="1">
-                      <tgroup cols="2" align="left">
-                        <colspec colname="c1" colnum="1" colwidth="1*"/>
-                        <colspec colname="c2" colnum="2" colwidth="1*"/>
-                        <thead>
-                          <row>
-                            <entry>Variable name</entry>
-                            <entry>Value</entry>
-                          </row>
-                        </thead>
-                        <tbody>
-                          <row>
-                            <entry>AZURE_CLIENT_ID</entry>
-                            <entry> ID of a Microsoft Entra application.</entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_TENANT_ID</entry>
-                            <entry>ID of the application's Microsoft Entra tenant.</entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_CLIENT_SECRET</entry>
-                            <entry>One of the application's client secrets.</entry>
-                          </row>
-                        </tbody>
-                      </tgroup>
-                    </table>
-                  </dd>
-                </dlentry>
-                <dlentry>
-                  <dt>Service principal authentication using a client certificate</dt>
-                  <dd>
+                      > Service principal authentication is ideal for non-interactive scenarios,
+                      such as background processes or automation scripts. </p>
+                    <p>Choose one of the options below if you need to authenticate  without
+                      prompting the user to sign in.</p>
+                  <p> Before you begin, <xref
+                        href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-microsoft-entra-id-and-create-a-service-principal"
+                        format="html" scope="external">create a service principal</xref> and <xref
+                        href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#add-role-assignment-to-an-azure-openai-resource"
+                        format="html" scope="external">assign a role</xref> to it that allows access
+                      to the Azure OpenAI service (e.g. the <xref
+                        href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#cognitive-services-openai-user"
+                        format="html" scope="external">Cognitive Services OpenAI User</xref>
+                      role).</p>
+                    <ol id="ol_yth_mdy_tfc">
+                      <li>
+                        <p><b>Client Secret</b></p>
+                        <p>Use this method for simpler setups in trusted environments.</p>
+                        <p product="author developer editor authorEclipse developerEclipse editorEclipse json">Be aware that on desktop systems, secrets stored in environment variables
+                          or config files are not encrypted by default and may be exposed to other
+                          local users or processes.</p>
+                        <p
+                          product="author developer editor authorEclipse developerEclipse editorEclipse json"
+                          > Required Environment Variables: </p>
+                        <p product="webauthor waCustom fusion"> Required System Properties : </p>
+                        <table frame="all" rowsep="1" colsep="1" id="table_kpv_2rw_tfc">
+                          <tgroup cols="2" align="left">
+                            <thead>
+                              <row>
+                                <entry>Variable name</entry>
+                                <entry>Value</entry>
+                              </row>
+                            </thead>
+                            <tbody>
+                              <row>
+                                <entry>AZURE_CLIENT_ID</entry>
+                                <entry>ID of a Microsoft Entra application.</entry>
+                              </row>
+                              <row>
+                                <entry>AZURE_TENANT_ID</entry>
+                                <entry>ID of the application's Microsoft Entra tenant.</entry>
+                              </row>
+                              <row>
+                                <entry>AZURE_CLIENT_SECRET</entry>
+                                <entry>One of the application's client secrets.</entry>
+                              </row>
+                            </tbody>
+                          </tgroup>
+                        </table>
+                      </li>
+                      <li>
+                        <p><b>Client Certificate</b></p>
+                        <p>Use this method in high-security environments where certificate-based
+                          authentication is preferred over storing client secrets. </p>
+                        <p product="author developer editor authorEclipse developerEclipse editorEclipse json">
+                          Be aware that certificate files, like other secrets, must be protected
+                          properly—especially on desktop systems where local users may gain access
+                          to file contents if not secured appropriately.</p>
+                        <p
+                          product="author developer editor authorEclipse developerEclipse editorEclipse json"
+                          > Required Environment Variables: </p>
+                        <p product="webauthor waCustom fusion"> Required System Properties: </p>
+                        <table frame="all" rowsep="1" colsep="1" id="table_cvh_42y_tfc">
+                          <tgroup cols="2" align="left">
+                            <thead>
+                              <row>
+                                <entry>Variable name</entry>
+                                <entry>Value</entry>
+                              </row>
+                            </thead>
+                            <tbody>
+                              <row>
+                                <entry>AZURE_CLIENT_ID</entry>
+                                <entry>ID of a Microsoft Entra application.</entry>
+                              </row>
+                              <row>
+                                <entry>AZURE_TENANT_ID</entry>
+                                <entry>ID of the application's Microsoft Entra tenant.</entry>
+                              </row>
+                              <row>
+                                <entry>AZURE_CLIENT_CERTIFICATE_PATH</entry>
+                                <entry>Path to the PEM or PFX certificate file.</entry>
+                              </row>
+                              <row>
+                                <entry>AZURE_CLIENT_CERTIFICATE_PASSWORD</entry>
+                                <entry>Password for the certificate file (if any).</entry>
+                              </row>
+                            </tbody>
+                          </tgroup>
+                        </table>
+                      </li>
+                    </ol>
+                </dd>
+              </dlentry>
+              <dlentry>
+                <dt>Username and Password Authentication</dt>
+                <dd>
+                  <p>This legacy method is not recommended for production, but may be used in
+                    testing or automation scenarios where interactive sign-in is not possible.</p>
                     <p
                       product="author developer editor authorEclipse developerEclipse editorEclipse json"
-                      >For this type of authentication, <xref
-                        href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-1-recommended-upload-a-trusted-certificate-issued-by-a-certificate-authority"
-                        format="html" scope="external">set up a certificate</xref> and set these
-                      environment variables:</p>
-                    <p product="webauthor waCustom fusion">For this type of authentication, <xref
-                        href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-1-recommended-upload-a-trusted-certificate-issued-by-a-certificate-authority"
-                        format="html" scope="external">set up a certificate</xref> and <xref
-                        href="../../topics/webauthor-set-system-property.dita" format="dita"
-                        scope="external">set these system properties</xref>:</p>
-                    <table frame="all" rowsep="1" colsep="1">
-                      <tgroup cols="2" align="left">
-                        <colspec colname="c1" colnum="1" colwidth="1*"/>
-                        <colspec colname="c2" colnum="2" colwidth="1*"/>
-                        <thead>
-                          <row>
-                            <entry>Variable name</entry>
-                            <entry>Value</entry>
-                          </row>
-                        </thead>
-                        <tbody>
-                          <row>
-                            <entry>AZURE_CLIENT_ID</entry>
-                            <entry> ID of a Microsoft Entra application.</entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_TENANT_ID</entry>
-                            <entry>ID of the application's Microsoft Entra tenant.</entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_CLIENT_CERTIFICATE_PATH</entry>
-                            <entry>
-                              <p>Path of a PFX/PEM certificate file</p>
-                            </entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_CLIENT_CERTIFICATE_PASSWORD</entry>
-                            <entry>Password for a PFX/PEM certificate</entry>
-                          </row>
-                        </tbody>
-                      </tgroup>
-                    </table>
-                  </dd>
-                </dlentry>
-                <dlentry>
-                  <dt> Username and password authentication</dt>
-                  <dd>
-                    <p
-                      product="author developer editor authorEclipse developerEclipse editorEclipse json"
-                      >For username and password authentication, set these environment
-                      variables:</p>
-                    <p product="webauthor waCustom fusion">For username and password authentication,
-                        <xref href="../../topics/webauthor-set-system-property.dita" format="dita"
-                        scope="external">set these system properties</xref>:
-                    </p>
-                    <table frame="all" rowsep="1" colsep="1">
-                      <tgroup cols="2" align="left">
-                        <colspec colname="c1" colnum="1" colwidth="1*"/>
-                        <colspec colname="c2" colnum="2" colwidth="1*"/>
-                        <thead>
-                          <row>
-                            <entry>Variable name</entry>
-                            <entry>Value</entry>
-                          </row>
-                        </thead>
-                        <tbody>
-                          <row>
-                            <entry>AZURE_CLIENT_ID</entry>
-                            <entry> ID of a Microsoft Entra application.</entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_TENANT_ID</entry>
-                            <entry>ID of the application's Microsoft Entra tenant.</entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_USERNAME</entry>
-                            <entry>A username (usually an email address).</entry>
-                          </row>
-                          <row>
-                            <entry>AZURE_PASSWORD</entry>
-                            <entry>The associated password for the given username.</entry>
-                          </row>
-                        </tbody>
-                      </tgroup>
-                    </table>
-                  </dd>
-                </dlentry>
-              </dl></p>
+                      > Required Environment Variables: </p>
+                    <p product="webauthor waCustom fusion"> Required System Properties: </p>
+                  <table frame="all" rowsep="1" colsep="1" id="table_mpv_2rw_tfc">
+                    <tgroup cols="2" align="left">
+                      <thead>
+                        <row>
+                          <entry>Variable name</entry>
+                          <entry>Value</entry>
+                        </row>
+                      </thead>
+                      <tbody>
+                        <row>
+                          <entry>AZURE_CLIENT_ID</entry>
+                          <entry>ID of a Microsoft Entra application.</entry>
+                        </row>
+                        <row>
+                          <entry>AZURE_TENANT_ID</entry>
+                          <entry>ID of the application's Microsoft Entra tenant.</entry>
+                        </row>
+                        <row>
+                          <entry>AZURE_USERNAME</entry>
+                          <entry>Username (usually a UPN or email).</entry>
+                        </row>
+                        <row>
+                          <entry>AZURE_PASSWORD</entry>
+                          <entry>Password for the specified user.</entry>
+                        </row>
+                      </tbody>
+                    </tgroup>
+                  </table>
+                </dd>
+              </dlentry>
+            </dl>
+            </p>
+            <p product="author developer editor authorEclipse developerEclipse editorEclipse json">
+              The connector will automatically detect and use the correct authentication flow based on which environment variables you have configured.
+            </p>
+            <p product="webauthor waCustom fusion">
+              The connector will automatically detect and use the correct authentication flow based on which system properties you have configured.
+            </p>
             <note id="note_hwc_j4t_qbc"
               product="author developer editor authorEclipse developerEclipse editorEclipse json">
-              <ph keyref="product"/> should be restarted after each environment variable change for
+              <ph keyref="product"/> should be restarted after each environment-variable change for
               the changes to take effect. </note>
             <note id="note_hwc_j4t_qbs" product="webauthor waCustom fusion">
-              <ph keyref="product"/> should be restarted after each system property change for the
+              <ph keyref="product"/> should be restarted after each system-property change for the
               changes to take effect. </note>
           </dd>
         </dlentry>
