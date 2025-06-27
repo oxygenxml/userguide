@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron_enterprise-config-file">
+  <title>Configuring the AI Service with a JSON File (Enterprise)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>AI Positron Enterprise</indexterm>
+        <indexterm>Configuration File</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <b>Oxygen AI Positron Assistant Enterprise</b> add-on can automatically configure its AI service using a JSON file placed in the installation directory. This method initializes the connector on first start and hides the <uicontrol>AI Service Configuration</uicontrol> preferences page.</p>
+    <section id="section_json_config_example">
+      <title>Configuration File Example</title>
+      <p>Create a file named <filepath>ai-positron.json</filepath> in the installation directory and populate it with content similar to:</p>
+      <codeblock outputclass="language-json">{
+  "connector_id": "open-ai-connector",
+  "connector_params": {
+    "base_url_param": "https://api.openai.com/",
+    "model_param": "gpt-4",
+    "streaming_param": true,
+    "ai_key_param_encrypted": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      <p>The <codeph>connector_id</codeph> can be <codeph>open-ai-connector</codeph>, <codeph>claude-connector</codeph>, <codeph>gemini-connector</codeph>, or <codeph>azure-connector</codeph>.</p>
+    </section>
+    <section id="section_behavior">
+      <title>Behavior on First Start</title>
+      <p>When the file is detected, the connector is initialized using its values when <ph keyref="product"/> starts for the first time. The <menucascade><uicontrol>Plugins</uicontrol><uicontrol>Oxygen AI Positron Assistant Enterprise</uicontrol><uicontrol>AI Service Configuration</uicontrol></menucascade> preferences page is then hidden. The encrypted key and seed endpoints can be removed afterwards.</p>
+    </section>
+    <section id="section_encrypt_key">
+      <title>How to Obtain the Encrypted Key</title>
+      <p>Install the <b>oxygen-ai-positron-apikey-encryption-addon</b> to generate the encrypted API key. This add-on contributes an <uicontrol>Encryption</uicontrol> menu with an <uicontrol>Encrypt</uicontrol> action. Enter the key and a seed in the dialog and it returns the encrypted value. Publish the encrypted key and seed at the URLs referenced in the configuration file.</p>
+    </section>
+  </body>
+</topic>
