@@ -11,11 +11,15 @@
     </metadata>
   </prolog>
   <body>
-    <p>The <b>Oxygen AI Positron Assistant Enterprise</b> add-on can automatically configure its AI service using a JSON file placed in the installation directory. This method initializes the connector on first start and hides the <uicontrol>AI Service Configuration</uicontrol> preferences page.</p>
+    <p>The <b>Oxygen AI Positron Assistant Enterprise</b> add-on can automatically configure its AI
+      service using a JSON file placed in the installation directory. This method initializes the
+      connector on first start and hides the <uicontrol>AI Service Configuration</uicontrol>
+      preferences page.</p>
     <section id="section_json_config_example">
       <title>Configuration File Example</title>
-      <p>Create a file named <filepath>ai-positron.json</filepath> in the installation directory and populate it with content similar to:</p>
-      <codeblock outputclass="language-json">{
+      <p>Create a file named <filepath>local-ai-service-configuration.json</filepath> in the
+        installation directory and populate it with content similar to:</p>
+      <codeblock outputclass="language-json" id="codeblock_lpg_ll3_vfc">{
   "connector_id": "open-ai-connector",
   "connector_params": {
     "base_url_param": "https://api.openai.com/",
@@ -25,19 +29,58 @@
     "ai_key_param_seed": "http://127.0.0.1:6573/seed"
   }
 }</codeblock>
-      <p>The <codeph>connector_id</codeph> can be <codeph>open-ai-connector</codeph>, <codeph>claude-connector</codeph>, <codeph>gemini-connector</codeph>, or <codeph>azure-connector</codeph>.</p>
+      <p>The <codeph>connector_id</codeph> can be <codeph>open-ai-connector</codeph>,
+          <codeph>claude-connector</codeph>, <codeph>gemini-connector</codeph>, or
+          <codeph>azure-connector</codeph>.</p>
     </section>
     <section id="section_behavior">
       <title>Behavior on First Start</title>
-      <p>When the file is detected, the connector is initialized using its values when <ph keyref="product"/> starts for the first time. The <menucascade><uicontrol>Plugins</uicontrol><uicontrol>Oxygen AI Positron Assistant Enterprise</uicontrol><uicontrol>AI Service Configuration</uicontrol></menucascade> preferences page is then hidden. The encrypted key and seed endpoints can be removed afterwards.</p>
+      <p>When the configuration file is detected, the connector is initialized with its values when
+          <ph keyref="product"/> starts for the first time. The <menucascade>
+          <uicontrol>Plugins</uicontrol>
+          <uicontrol>Oxygen AI Positron Assistant Enterprise</uicontrol>
+          <uicontrol>AI Service Configuration</uicontrol>
+        </menucascade> preferences page is then hidden. After setup, you can remove the encrypted
+        key and seed endpoints if they are no longer needed.</p>
     </section>
     <section id="section_encrypt_key">
       <title>How to Obtain the Encrypted Key</title>
       <p>Install the <b>oxygen-ai-positron-apikey-encryption-addon</b> to generate the encrypted API
-        key. This add-on contributes an <uicontrol>Encryption</uicontrol> menu with an
-          <uicontrol>Encrypt</uicontrol> action. Enter the key and a seed in the dialog box and it
-        returns the encrypted value. Publish the encrypted key and seed at the URLs referenced in
-        the configuration file.</p>
+        key. This add-on contributes an <uicontrol>API Key Tools</uicontrol> menu with
+          <uicontrol>Encrypt</uicontrol> and <uicontrol>Decrypt</uicontrol> actions.</p>
+      <ol id="ol_bst_dj3_vfc">
+        <li>
+          <b>Open the API Key Tools:</b> In the main menu, select <uicontrol>API Key
+            Tools</uicontrol>.</li>
+        <li>
+          <b>Select the Encrypt Action:</b> Choose <uicontrol>Encrypt...</uicontrol> from the API
+          Key Tools menu.</li>
+        <li>
+          <b>Enter Your API Key:</b> Follow the prompts to enter your encryption key and the API
+          key. The tool will encrypt the API key using the encryption key.</li>
+        <li><b>Publish the encryption key and the encrypted API key:</b> Publish the encryption key
+          and the encrypted API key to the URLs referenced in the configuration file.</li>
+      </ol>
+    </section>
+    <section id="section_verify_encryption" importance="optional">
+      <title>Verifying the Encryption Process (Optional)</title>
+      <p> To confirm that your API key was encrypted correctly, you can use the
+          <uicontrol>Decrypt</uicontrol> action: </p>
+      <ol id="ol_cst_dj3_vfc">
+        <li>
+          <b>Open the API Key Tools:</b> Go to <uicontrol>API Key Tools</uicontrol> in the main
+          menu.</li>
+        <li>
+          <b>Select the Decrypt Action:</b> Choose <uicontrol>Decrypt...</uicontrol> from the
+          menu.</li>
+        <li>
+          <b>Enter the Encryption Key and Encrypted API Key:</b> Provide the encryption key and
+          encrypted API key values. The tool will display the original API key, allowing you to
+          verify the encryption process.</li>
+      </ol>
+      <p>
+        <b>Note:</b> The Encrypt and Decrypt actions are available in the API Key Tools menu in the
+        main menu.</p>
     </section>
   </body>
 </topic>
