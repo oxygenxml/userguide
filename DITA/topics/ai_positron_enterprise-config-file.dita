@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron_enterprise-config-file">
+  <title>Configure the AI Service Using a JSON File</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>AI Positron Enterprise</indexterm>
+        <indexterm>Configuration File</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <b>Oxygen AI Positron Assistant Enterprise</b> add-on can automatically configure its AI
+      service using a JSON file placed in the installation directory. This method initializes the
+      connector on first start and hides the <uicontrol>AI Service Configuration</uicontrol>
+      preferences page. As a result, users are restricted to using the company's approved AI service
+      only.</p>
+    <section id="section_json_config_example">
+      <title>Configuration File Example</title>
+      <p>Create a file named <filepath>ai-service-configuration.json</filepath> in the installation
+        directory. The supported connectors are <codeph>open-ai-connector</codeph>,
+          <codeph>ms-azure-open-ai-connector</codeph>, <codeph>claude-ai-connector</codeph>,
+          <codeph>google-gemini-ai-connector</codeph>.</p>
+      <codeblock outputclass="language-json" id="codeblock_lpg_ll3_vfc">{
+  "connector_id": "open-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://api.openai.com/",
+    "model_param": "gpt-4",
+    "streaming_param": true,
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      <codeblock outputclass="language-json" id="codeblock_tft_l2q_vfc">{
+  "connector_id": "claude-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://api.anthropic.com/",
+    "model_param": "claude-3-opus-20240229",
+    "streaming_param": true,
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      <codeblock outputclass="language-json" id="codeblock_ubl_42q_vfc">{
+  "connector_id": "google-gemini-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://generativelanguage.googleapis.com/",
+    "model_param": "models/gemini-2.0-flash-lite",
+    "streaming_param": true,
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      <p>
+        <codeblock outputclass="language-json" id="codeblock_x4w_h2q_vfc">{
+  "connector_id": "ms-azure-open-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://oxygenxml-vision.openai.azure.com/",
+    "deployment_param": "gpt-4o",
+    "streaming_param": true,
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      </p>
+    </section>
+    <section id="section_behavior">
+      <title>Behavior on First Start</title>
+      <p>When the configuration file is detected, the connector is initialized with its values when
+          <ph keyref="product"/> starts for the first time. The <menucascade>
+          <uicontrol>Plugins</uicontrol>
+          <uicontrol>Oxygen AI Positron Assistant Enterprise</uicontrol>
+          <uicontrol>AI Service Configuration</uicontrol>
+        </menucascade> preferences page is then hidden. After setup, you can remove the encrypted
+        key and seed endpoints if they are no longer needed.</p>
+    </section>
+    <section id="section_encrypt_key">
+      <title>How to Obtain the Encrypted Key</title>
+      <p>Install the <uicontrol>Oxygen AI Positron API Key Encryption</uicontrol> add-on to generate
+        the encrypted API key. To install this add-on, follow these steps: </p>
+      <p>
+        <ol id="ol_mxh_tl4_vfc">
+          <li>Go to <menucascade>
+              <uicontrol>Help</uicontrol>
+              <uicontrol>Install new add-ons</uicontrol>
+            </menucascade> to open the add-on selection dialog box. Enter or paste
+              <b>https://www.oxygenxml.com/InstData/Addons/optional/updateSite.xml</b> in the
+              <uicontrol>Show add-ons from</uicontrol> field or select it from the drop-down menu. </li>
+          <li>Select the <uicontrol>Oxygen AI Positron API Key Encryption</uicontrol> add-on and
+            click <uicontrol>Next</uicontrol>. </li>
+          <li conkeyref="reusables-addons/ReadLicense-li"/>
+          <li conkeyref="reusables-addons/Restart-li"/>
+        </ol>
+      </p>
+      <p>To obtain the encrypted API key:<ol id="ol_tyk_vl4_vfc">
+          <li>
+            <b>Open the API Key Tools:</b> In the main menu, select <uicontrol>API Key
+              Tools</uicontrol>.</li>
+          <li>
+            <b>Select the Encrypt Action:</b> Choose <uicontrol>Encrypt...</uicontrol> from the API
+            Key Tools menu.</li>
+          <li>
+            <b>Enter Your API Key:</b> Follow the prompts to enter your encryption key and the API
+            key. The tool will encrypt the API key using the encryption key.</li>
+          <li><b>Publish the encryption key and the encrypted API key:</b> Publish the encryption
+            key and the encrypted API key to the URLs referenced in the configuration file.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>
