@@ -22,53 +22,135 @@
     </metadata>
   </prolog>
   <body>
-      <p>The WebHelp Responsive output supports dark mode, allowing users to switch between light
-      and dark themes based on their preference or their browser's settings. The dark mode feature
-      enhances readability and reduces eye strain in low-light environments.</p>
-    <p>After enabling dark mode, the output will use the theme selected in the browser's settings
-      and a "Switch theme" button will be displayed in the header.</p>
-    <p>By default, the WebHelp plugin only provides color variables for the light theme in the
-        <filepath>wh-color.css</filepath> stylesheet.</p>
-    <note id="note_eh4_l2v_lfc" type="fastpath"><b>Light</b> and <b>Oxygen</b> templates come with
-      both light and dark color schemes.</note>
+    <section id="section_snm_ckr_rfc">
+      <title>How to Enable Dark Mode in a Publishing Template Based on an Existing One</title>
+      <p>The following example uses the <b>Oxygen</b> template, which supports both light and dark
+        modes:</p>
+      <ol id="ol_esr_blr_rfc">
+        <li>Copy the existing Publishing Template (see <xref
+            href="whr-create-publishing-template.dita#whr-create-publishing-template/creating_a_template_starting_from_an_existing_tem"
+          />).</li>
+        <li>Edit the <filepath>oxygen-theme.css</filepath> stylesheet with the colors you want to
+          add/modify:<codeblock id="codeblock_o1y_qmr_rfc" outputclass="language-css">:root {
+  --wh-primary-bg: #e3e3e3;
+  ...
+  --wh-title-color: #333;
+}
+:root[data-wh-theme="dark"] {
+  color-scheme: dark;
+  --wh-primary-bg: #293136;
+  ...
+  --wh-title-color: #bfbfbf;
+}</codeblock></li>
+        <li importance="optional">If you added new color variables, add CSS rules using them (in
+            <filepath>oxygen.css</filepath> for
+          example):<codeblock id="codeblock_xjg_cnr_rfc" outputclass="language-css">*[class ~= "topic/title"] {
+  color: var(--wh-title-color);
+}</codeblock></li>
+        <li>Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
+        <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select your
+          template.</li>
+        <li>Click <uicontrol>OK</uicontrol> to save the changes, then run the transformation
+          scenario.</li>
+      </ol>
+    </section>
     <section id="section_wrm_4jr_rfc">
-      <title>How to Add Dark Mode in a New Publishing Template</title>
+      <title>How to Enable Dark Mode in a New Publishing Template</title>
       <ol id="steps_bvt_jy5_lfc">
         <li>Create a Publishing Template, see <xref
             href="whr-create-publishing-template.dita#whr-create-publishing-template/creating_a_template_starting_from_scratch"
           />.</li>
-        <li>Create a custom CSS stylesheet (<filepath>custom-color.css</filepath> for example) and
-          copy the default variables you want to override, for
-          example:<codeblock id="codeblock_e2g_kdv_lfc" outputclass="language-css">:root {
-  /* Override default colors */
+        <li>Create a custom CSS stylesheet (<filepath>custom-theme.css</filepath> for example) and
+          add the light colors:<note id="note_it1_4fp_xfc">Built-in CSS rules will automatically use
+            the variables defined here and in the next
+          step.</note><codeblock id="codeblock_e2g_kdv_lfc" outputclass="language-css">:root {
+  /* General */
+  --wh-primary-bg: #fff;
+  --wh-primary-color: #000;
+  --wh-secondary-bg: #000;
+  --wh-secondary-color: #fff;
+  --wh-strong-color: #888;
+  --wh-soft-color: #ccc;
+  --wh-subtle-color: #f2f2f2;
+
+  --wh-top-menu-bg: #e6e6e6;
   --wh-main-page-toc-bg: #eee;
-  --wh-toc-shortdesc-color: #808080;
+  --wh-main-page-toc-border: #c0c0c0;
+  --wh-main-page-shortdesc-color: #808080;
+  --wh-close-toc-icon-border: #343a40;
+  --wh-close-toc-button-shadow: rgba(0,0,0,.16);
+  --wh-go2top-bg: #444;
+  --wh-go2top-border: #999;
+  --wh-toggle-border: #347bb7;
 
   --wh-link-color: #0d6efd;
+  --wh-label-color: #666;
+  --wh-pre-bg: #eee;
   --wh-tooltip-color: #444;
+  --wh-boolean-color: #00ff00;
+  --wh-state-color: #ff0000;
+  --wh-syntaxdiagram-color: #800000;
+  --wh-markup-color: #639;
+  --wh-fig-border: #c0c0c0;
+  --wh-caution-bg: #ffd100;
+  --wh-danger-bg: #c8102e;
+  --wh-warning-bg: #ff8200;
+  --wh-hazardstatement-bg: #0072ce;
+  --wh-indexterm-bg: #fdf;
+
+  /* Search */
+  --wh-search-color: #c93416;
+  --wh-search-breadcrumb-color: #ccc;
+  --wh-search-loader-base-bg: #eaecec;
+  --wh-search-loader-glow-bg: #f3f3f3;
+  --wh-search-facets-bg: #e3ebf3;
+  --wh-search-facets-disabled-color: #b7b6b6;
+  --wh-search-facets-border: #ebebeb;
+  --wh-search-results-facets-bg: #f5f5f5;
+  --wh-search-results-facets-color: #212c37;
+  --wh-highlight-bg: #ffff88;
+  --wh-scroll-bg: #d6d6d6;
+
+  /* Change Tracking */
+  --wh-oxy-delete-color: #ff0000;
+  --wh-oxy-insert-color: #0000ff;
+  --wh-oxy-change-done-color: #808080;
+  --wh-oxy-range-color: #800000;
+  --wh-oxy-comment-border: #ffa500;
+  --wh-oxy-change-bg: #ffff00;
+  --wh-oxy-attributes-footnote-bg: #00ffff;
+  --wh-oxy-comment-footnote-bg: #ffffaa;
+  --wh-oxy-delete-footnote-bg: #ffaaaa;
+  --wh-oxy-insert-footnote-bg: #ddddff;
+
+  /* Syntax Highlight */
+  --wh-hl-json_key-color: #7263b9;
+  --wh-hl-keyword-color: #7f0055;
+  --wh-hl-string-color: #2a00ff;
+  --wh-hl-comment-color: #006400;
+  --wh-hl-directive-color: #8b26c9;
+  --wh-hl-tag-color: #000096;
+  --wh-hl-attribute-color: #ff7935;
+  --wh-hl-value-color: #993300;
+  --wh-hl-html-color: #000080;
+  --wh-hl-xsl-color: #0066ff;
+  --wh-hl-annotation-color: #808080;
+  --wh-hl-tag-doctype-comment-color: #3f5fbf;
+  --wh-hl-tag-doctype-color: #0000ff;
+
+  /* OpenAPI */
+  --wh-openapi-border: #c5c5c5;
+  --wh-openapi-post-bg: #c2f2cb; 
+  --wh-openapi-get-bg: #ccebff;
+  --wh-openapi-delete-bg: #ffceca;
+  --wh-openapi-put-bg: #ffe7c7;
+  --wh-openapi-head-bg: #f4e6ff;
 }</codeblock></li>
-        <li>Add custom additional variables for elements that you need two color or image variants,
-          for example:<codeblock id="codeblock_xl4_xz5_lfc" outputclass="language-css">:root {
-  /* Override default colors */
-  --wh-main-page-toc-bg: #f2f8ff;
-  --wh-toc-shortdesc-color: #0d1a2b;
-
-  --wh-link-color: #337ab7;
-  --wh-tooltip-color: #5185cb;
-
-  /* New color variables */
-  --wh-tile-bg: #ecf2f9;
-  --wh-tile-link-color: #3077be;
-  --wh-tile-shortdesc-color: var(--wh-toc-shortdesc-color);
-  --wh-breadcrumb-bg: var(--wh-search-bg);
-
-  /* Image variable */
-  --wh-search-image: url("resources/images/bgr_right.png");
-}</codeblock></li>
-        <li>Duplicate the default variables (from <filepath>wh-color.css</filepath>) for the dark
-          color scheme and replace the
-            values:<codeblock id="codeblock_jdl_ldx_vfc" outputclass="language-css">:root[data-wh-theme="dark"] {
+        <li>In the same stylesheet, add the dark colors:<note id="note_rwx_sxn_xfc">If you're using
+            the same color in both light and dark modes, you only need to define it for the light
+            mode.</note><codeblock id="codeblock_lnz_b2p_xfc" outputclass="language-css">:root[data-wh-theme="dark"] {
   color-scheme: dark;
+  /* General */
   --wh-primary-bg: #212529;
   --wh-primary-color: #e3e3e3;
   --wh-secondary-bg: #212529;
@@ -78,7 +160,7 @@
 
   --wh-top-menu-bg: #2b3035;
   --wh-main-page-toc-bg: #22303c;
-  --wh-toc-shortdesc-color: #d5d5d5;
+  --wh-main-page-shortdesc-color: #d5d5d5;
   --wh-close-toc-icon-border: var(--wh-primary-color);
   --wh-close-toc-button-shadow: rgba(255,255,255,.16);
 
@@ -95,8 +177,8 @@
   /* Search */
   --wh-search-color: #a2311a;
   --wh-search-breadcrumb-color: #6c757d;
-  --wh-search-fake-text-bg: #3a3f44;
-  --wh-search-fake-text-shimmer: #4b525a;
+  --wh-search-loader-base-bg: #3a3f44;
+  --wh-search-loader-glow-bg: #4b525a;
   --wh-search-facets-bg: #2d333b;
   --wh-search-facets-disabled-color: var(--wh-label-color);
   --wh-search-facets-border: #444;
@@ -139,105 +221,63 @@
   --wh-openapi-delete-bg: #994444;
   --wh-openapi-put-bg: #b08900;
   --wh-openapi-head-bg: #6c4a84;
-
-  /* New color variables */
-  --wh-tile-bg: var(--wh-top-menu-bg);
-  --wh-tile-link-color: #6fa1cc;
-  --wh-tile-shortdesc-color: var(--wh-toc-shortdesc-color);
-  --wh-breadcrumb-bg: var(--wh-top-menu-bg);
-
-  /* Image variable */
-  --wh-search-image: url("resources/images/bgr_right_dark.png");
-}</codeblock><note id="note_rwx_sxn_xfc">If you want to use the same color for both
-            light and dark theme, you don't need to duplicate it for dark color-scheme.</note></li>
-        <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
-            >template descriptor file</xref> associated with your publishing template and add your
-          custom CSS in the <term>resources</term>
-          section:<codeblock id="codeblock_cq2_hdq_rfc" outputclass="language-xml">&lt;publishing-template>
-    ...
-    &lt;webhelp>
-        ...
-        &lt;resources>
-            &lt;css file="custom-color.css"/></codeblock></li>
-        <li>Create another custom CSS stylesheet (<filepath>custom.css</filepath> for example) and
-          add CSS rules using the custom created variables, for
-            example:<codeblock id="codeblock_lxc_sdv_lfc" outputclass="language-css">.wh_tile {
-  background-color: var(--wh-tile-bg);
-}
-.wh_tools {
-  background-color: var(--wh-breadcrumb-bg);
-}
-.wh_search_input {
-  background: var(--wh-search-image) right no-repeat var(--wh-soft-color);
-}</codeblock><note id="note_vtq_f2v_lfc">Default CSS rules with color variables (such as
-              <codeph>body { background-color: var(--wh-primary-bg); }</codeph> in
-              <filepath>wh-common.css</filepath>) will automatically use the new colors.</note></li>
-        <li>Add the second stylesheet and the parameter in the template
-          descriptor:<codeblock id="codeblock_cmf_zdq_rfc" outputclass="language-xml">&lt;publishing-template>
-    ...
-    &lt;webhelp>
-        ...
-        &lt;resources>
-            &lt;css file="custom-color.css"/>
-            &lt;css file="custom.css"/>
-        &lt;/resources>
-        ...
-        &lt;parameters>
-            ...
-            &lt;parameter name="webhelp.enable.dark.mode" value="yes"/>
-        &lt;/parameters></codeblock></li>
-        <li>Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
-        <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select your
-          template.</li>
-        <li>Click <uicontrol>OK</uicontrol> to save the changes, then run the transformation
-          scenario.</li>
-      </ol>
-    </section>
-    <section id="section_snm_ckr_rfc">
-      <title>How to Add Dark Mode in a Publishing Template Copied from an Existing Template</title>
-      <ol id="ol_esr_blr_rfc">
-        <li>Copy an existing Publishing Template (see <xref
-            href="whr-create-publishing-template.dita#whr-create-publishing-template/creating_a_template_starting_from_an_existing_tem"
-          />).</li>
-        <li>Add or edit the <filepath>color.css</filepath> stylesheet with the colors you want to
-          add/change:<codeblock id="codeblock_o1y_qmr_rfc" outputclass="language-css">:root {
-  --wh-primary-bg: #fff;
-  --wh-primary-color: #000;
+}</codeblock></li>
+        <li importance="optional">Add custom variables for elements that require two color or image
+          variants, such
+          as:<codeblock id="codeblock_xl4_xz5_lfc" outputclass="language-css">:root {
   ...
+  --wh-breadcrumb-color: #878787;
+  --wh-related-links-color: #5185cb;
+  --wh-publication-toc-color: #7b7a7a;
+
+  --wh-search-image: url("resources/images/custom.png");
 }
+
 :root[data-wh-theme="dark"] {
   color-scheme: dark;
-  --wh-primary-bg: #293136;
-  --wh-primary-color: #e3e3e3;
   ...
+  --wh-breadcrumb-color: #6ab1e3;
+  --wh-related-links-color: #0d6efd;
+  --wh-publication-toc-color: var(--wh-breadcrumb-color);
+
+  --wh-search-image: url("resources/images/custom_dark.png");
 }</codeblock></li>
-        <li importance="optional">If you create a <filepath>color.css</filepath> stylesheet, open
-          the <xref href="whr_publishing_template_contents.dita#template_descritpor_file">template
-            descriptor file</xref> associated with your publishing template and add your custom CSS
-          in the <term>resources</term> section, for example:
-          <codeblock id="codeblock_zs3_zlr_rfc" outputclass="language-xml">&lt;publishing-template>
-    ...
-    &lt;webhelp>
-        &lt;resources>
-            &lt;css file="ashes-color.css"/>
-            &lt;css file="ashes.css"/>
-            ...
-        &lt;/resources></codeblock></li>
-        <li>Add CSS rules using the custom created variables in the main stylesheet
-            (<filepath>ashes.css</filepath> for
-          example):<codeblock id="codeblock_xjg_cnr_rfc" outputclass="language-css">body {
-  font-family: "PT Sans", sans-serif;
-  background-color: var(--wh-primary-bg);
+        <li importance="optional">If you added new color variables, add CSS rules using them (in
+            <filepath>custom.css</filepath> for
+          example):<codeblock id="codeblock_n2t_dfp_xfc" outputclass="language-css">.wh_breadcrumb ol{
+  color: var(--wh-breadcrumb-color);
+}
+.related-links a,
+.related-links a:visited {
+  color: var(--wh-related-links-color);
+  padding-bottom: .3em;
+}
+.wh_publication_toc a,
+.wh_publication_toc a:visited,
+.wh_publication_toc a:hover {
+  color: var(--wh-publication-toc-color);
+}
+.wh_search_input{
+  padding: 115px 0;
+  background: var(--wh-search-image) right no-repeat var(--wh-search-input-bg);
 }</codeblock></li>
-        <li>Add the parameter in the template
-          descriptor:<codeblock outputclass="language-xml" id="codeblock_sdg_t2x_vfc">&lt;publishing-template>
+        <li>Open the <xref href="whr_publishing_template_contents.dita#template_descritpor_file"
+            >template descriptor file</xref> associated with your publishing template, add your
+          custom CSS stylesheets in the <xmlelement>resources</xmlelement> section and declare the
+          parameter in the <xmlelement>parameters</xmlelement>
+          section:<codeblock id="codeblock_cmf_zdq_rfc" outputclass="language-xml">&lt;publishing-template>
+  ...
+  &lt;webhelp>
     ...
-    &lt;webhelp>
-        ...
-        &lt;parameters>
-            ...
-            &lt;parameter name="webhelp.enable.dark.mode" value="yes"/>
-        &lt;/parameters></codeblock></li>
+    &lt;resources>
+      &lt;css file="custom-color.css"/>
+      &lt;css file="custom.css"/>
+    &lt;/resources>
+    &lt;parameters>
+      ...
+      &lt;parameter name="webhelp.enable.dark.mode" value="yes"/>
+    &lt;/parameters>
+    ...</codeblock></li>
         <li>Duplicate the <term>DITA Map WebHelp Responsive</term> transformation scenario.</li>
         <li>Click the <uicontrol>Choose Custom Publishing Template</uicontrol> link and select your
           template.</li>
