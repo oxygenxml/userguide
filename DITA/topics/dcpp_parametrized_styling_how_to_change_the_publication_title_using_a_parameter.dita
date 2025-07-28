@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="dcpp_parametrized_styling_how_to_change_the_publication_title_using_a_parameter">
+  <title>How to Change the Publication Title Using a Parameter</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          ><ph keyref="pdf-html5-transformation"/><indexterm>Changing the title</indexterm></indexterm>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          ><ph keyref="single-topic-pdf-html5-transformation"/><indexterm>Changing the title</indexterm></indexterm>
+        <indexterm product="pdf-css ope">Changing the title</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>In the following example, a custom parameter is used as the publication main title. The parameter is defined in the transformation scenario
+      as:<codeblock id="codeblock_rg3_tzb_dgc">args.css.param.main-title="${ask('Main title', generic, 'Flowers')}"</codeblock>When running the scenario, a dialog will appear prompting for a title, with 'Flowers' set as the default.</p>
+    <p>Then in the CSS, the attribute value is extracted and used as follows:<codeblock id="codeblock_dw5_q1c_dgc" outputclass="language-css">/* Update the title */
+*[class ~= "front-page/front-page-title"] > *[class ~= "topic/title"] {
+  content: oxy_xpath('/*/@*[local-name()="main-title"][1]');
+}
+
+/* Update the bookmark */
+*[class ~= "front-page/front-page-title"] > *[class ~= "topic/title"]:not([class ~= "bookmap/booktitle"]),
+*[class ~= "front-page/front-page-title"] > *[class ~= "bookmap/booktitle"] > *[class ~= "bookmap/mainbooktitle"] {
+  bookmark-label: content(before) oxy_xpath('/*/@*[local-name()="main-title"][1]');
+}
+
+/* Update metadata and tab name */
+*[class ~= "front-page/front-page-title"] *[class ~= "topic/title"]:not([class ~= 'bookmap/booktitle']),
+*[class ~= "front-page/front-page"] *[class ~= "bookmap/booktitle"] > *[class ~= "bookmap/mainbooktitle"] {
+  -oxy-pdf-meta-title: oxy_xpath('/*/@*[local-name()="main-title"][1]');
+}</codeblock></p>
+  </body>
+</topic>
