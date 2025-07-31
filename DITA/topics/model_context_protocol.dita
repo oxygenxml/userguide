@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="model_context_protocol">
+    <title>Model Context Protocol</title>
+    <body>
+        <p>The Anthropic Model Context Protocol (MCP) is an open standard that enables developers to
+      build secure, two-way connections between their data sources and AI-powered tools.</p>
+    <p>In the <ph keyref="product"/>
+      <menucascade>
+        <uicontrol>Preferences</uicontrol>
+        <uicontrol>Plugins / Oxygen AI Positron Assistant Enterprise / Model Context
+          Protocol</uicontrol>
+      </menucascade> page you can configure a reference to a model context protocol configuration
+      file from which <uicontrol>AI Positron</uicontrol> loads extra tools which can be called by
+      the AI engine when using the chat modes or when invoking custom AI actions.</p>
+    <dl id="dl_zq4_31x_dgc">
+      <dlentry>
+        <dt>Configuration file</dt>
+        <dd>
+          <p>A reference to a JSON file which configures local or remote MCP servers.</p>
+          <p>Configuration file examples:<ul id="ul_ohx_l1x_dgc">
+              <li>
+                <p>Configuration of a local MCP server which adds tools allowing the AI to use the
+                    <b>Brave</b> engine to perform web
+                  searches:<codeblock id="codeblock_qr4_r1x_dgc" outputclass="language-json">{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "API_KEY_HERE"
+      }
+    }
+}</codeblock></p>
+              </li>
+              <li>Configuration of a remote MCP server which adds tools allowing the AI to call the
+                  <b>Deepwiki</b> service and obtain information about various Github
+                projects:<codeblock id="codeblock_wqv_w1x_dgc" outputclass="language-json">{
+  "mcpServers": {
+      "deepwiki": {
+        "url":"https://mcp.deepwiki.com/sse"
+      } 
+  }
+}</codeblock></li>
+              <li>Multiple MCP servers (Brave search, GitHub access, Deepwiki) configured in the
+                same file:<codeblock id="codeblock_gxv_z1x_dgc" outputclass="language-json">{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "API_KEY_HERE"
+      }
+    },
+    "github": {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "-e",
+          "GITHUB_PERSONAL_ACCESS_TOKEN",
+          "ghcr.io/github/github-mcp-server"
+        ],
+        "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "API_KEY_HERE"
+        }
+      },
+      "deepwiki": {
+        "url":"https://mcp.deepwiki.com/sse"
+      } 
+  }
+}</codeblock></li>
+            </ul></p>
+        </dd>
+      </dlentry>
+      <dlentry>
+        <dt>Connection timeout (seconds)</dt>
+        <dd>Configured timeout for attempts to connect to each server or retrieve content from
+          it.</dd>
+      </dlentry>
+      <dlentry>
+        <dt>Add provided tools to all chat modes</dt>
+        <dd>Enabled by default, allows all defined chat modes to access the tools provided by the
+          MCP servers during conversations.</dd>
+      </dlentry>
+      <dlentry>
+        <dt>Connection status</dt>
+        <dd>Presents the status of each MCP server connection and the tools which have been
+          retrieved from it.</dd>
+      </dlentry>
+    </dl>
+    </body>
+</topic>
