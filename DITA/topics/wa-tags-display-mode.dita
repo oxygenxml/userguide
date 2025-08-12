@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-tags-display-mode">
+  <title>Control the Tags Display Mode</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Tags Display Mode</indexterm>
+        <indexterm>Control tags display</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>There are several ways to control how the <uicontrol>Tags Display Mode</uicontrol> behaves in
+      <ph keyref="webappProduct"/>. This topic covers server defaults and persistence, a URL
+      parameter/loading option, UI controls, and a workspace API that applies to all editors.</p>
+    <section id="server-defaults">
+      <title>Server Defaults and Persistence (options.xml)</title>
+      <p>Use the following options in the <filepath>options.xml</filepath> configuration to control
+        the default rendering of tags and how a change persists:</p>
+      <dl>
+        <dlentry>
+          <dt><codeph>tagless.editor.tags.display.mode</codeph></dt>
+          <dd>
+            <p>The default display mode for rendering XML tags in <uicontrol>Author</uicontrol>
+              mode. Users can override this setting from the UI or via integration options. Allowed
+              values:</p>
+            <ul id="ul-tag-modes-values">
+              <li><codeph>0</codeph> - Full Tags</li>
+              <li><codeph>1</codeph> - No Tags</li>
+              <li><codeph>2</codeph> - Block Tags</li>
+              <li><codeph>3</codeph> - Partial Tags (default)</li>
+              <li><codeph>4</codeph> - Full Tags with Attributes</li>
+              <li><codeph>5</codeph> - Inline Tags</li>
+            </ul>
+            <p>Example:</p>
+            <codeblock outputclass="language-xml">
+&lt;entry>
+  &lt;String>tagless.editor.tags.display.mode&lt;/String>
+  &lt;Integer>4&lt;/Integer>
+&lt;/entry>
+            </codeblock>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt><codeph>tags.display.mode.persistence</codeph></dt>
+          <dd>
+            <p>Controls how a user-selected tags mode persists:</p>
+            <ul id="ul-tags-persistence">
+              <li><codeph>perEditor</codeph> - Resets to the default value whenever a new editor is
+                opened.</li>
+              <li><codeph>perUser</codeph> - The user’s selection is propagated to all open editors
+                and becomes the default for newly opened editors.</li>
+            </ul>
+            <p>Example:</p>
+            <codeblock outputclass="language-xml">
+&lt;entry>
+  &lt;String>tags.display.mode.persistence&lt;/String>
+  &lt;String>perUser&lt;/String>
+&lt;/entry>
+            </codeblock>
+          </dd>
+        </dlentry>
+      </dl>
+      <p>For more details about configuring options, see <xref href="customizing-options.dita"/> and
+        the <xref href="../reusables/topics/reusables-cf-wa-waCustom.dita#reusables-cf-wa-waCustom"
+          >list of supported server options</xref>.</p>
+    </section>
+
+    <section id="url-and-loading-option">
+      <title>URL Parameter and Loading Option</title>
+      <p>You can set the tags mode per document using the <codeph>tags-mode</codeph> URL parameter or
+        by providing a loading option before the editor opens. Supported values:
+        <codeph>full-tags-with-attributes</codeph>, <codeph>full-tags</codeph>,
+        <codeph>block-tags</codeph>, <codeph>inline-tags</codeph>, <codeph>partial-tags</codeph>,
+        <codeph>no-tags</codeph>.</p>
+      <p>Example (URL parameter): <codeph>&amp;tags-mode=no-tags</codeph>. See
+        <xref href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
+          >URL parameters</xref>.</p>
+      <p>Example (loading option):</p>
+      <codeblock outputclass="language-javascript">goog.events.listen(
+  workspace,
+  sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED,
+  function(e) {
+    // Set tags mode before the editor is created
+    e.options['tags-mode'] = 'full-tags-with-attributes';
+  }
+);
+      </codeblock>
+      <p>Alternative (after the editor is created):</p>
+      <codeblock outputclass="language-javascript">goog.events.listen(
+  workspace,
+  sync.api.Workspace.EventType.EDITOR_LOADED,
+  function(e) {
+    e.options['tags-mode'] = 'full-tags-with-attributes';
+  }
+);
+      </codeblock>
+      <p>For an introduction to loading options, see
+        <xref href="web_author_api_concepts.dita#web_author_api_concepts/loading-option"/>.</p>
+    </section>
+
+    <section id="ui-controls">
+      <title>User Interface Controls</title>
+      <p>Users can choose the tags mode from two places in the UI:</p>
+      <ul>
+        <li>The <uicontrol>Tags Display Mode</uicontrol> drop-down in the editor breadcrumb.</li>
+        <li><menucascade><uicontrol>Preferences</uicontrol></menucascade> →
+          <uicontrol>Tags Display Mode</uicontrol> (see
+          <xref href="webapp-overview.dita#webapp-overview/tags-display-mode"/>)</li>
+      </ul>
+      <note type="tip">For optimal performance while keeping some tag information visible, consider the <uicontrol>Partial Tags</uicontrol> mode.</note>
+    </section>
+
+    <section id="workspace-api">
+      <title>Programmatically Apply to All Editors</title>
+      <p>Use the workspace API to change the display mode for all open editors (same effect as
+        choosing the option from the UI):</p>
+      <codeblock outputclass="language-javascript">// Apply to all editors
+workspace.setOption('sentinels.display.mode', 'full-tags-with-attributes');
+      </codeblock>
+      <p>See the <xref format="html" scope="external"
+          href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/27.1.0.0/jsdoc/sync.api.Workspace.html"
+          >Workspace API</xref> documentation.</p>
+    </section>
+
+    <section id="related">
+      <title>Related</title>
+      <ul>
+        <li><xref href="author-display-markup.dita#author-display-markup"/> — overview of tag modes
+          in the Author mode UI.</li>
+        <li><xref href="../reusables/topics/reusables-webauthor-customization.dita#reusables-webauthor-customization"
+            >list of URL parameters</xref> (includes <codeph>tags-mode</codeph> and
+          <codeph>compactTagsMode</codeph>).</li>
+      </ul>
+    </section>
+  </body>
+ </topic>
+
+
