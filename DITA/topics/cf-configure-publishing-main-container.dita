@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-configure-publishing-containers">
+    <title>Configuring Publishing Main Container</title>
+    <body>
+    <p>The <b><i>Publishing Main Container</i></b> manages deliverables, the templates used by
+      deliverables, and the builds associated with a deliverable. You can configure the container by
+      setting some properties to customize and optimize the behavior of the publishing and build
+      processes according to your specific requirements:</p>
+      <p>
+        <dl id="dl_u55_zjk_wbc">
+          <dlentry>
+            <dt>publishing.service.deliverable.builds.number</dt>
+            <dd>Sets the number of builds to retain for each deliverable. This helps manage disk
+              space while maintaining only the most recent builds. Default value is <i>3</i>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>publishing.service.allow.automatic.builds</dt>
+            <dd>Controls whether or not automatic builds (triggered by remote modifications or
+              scheduled tasks) are allowed. Default value is <i>true</i>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>publising.service.check.remote.period</dt>
+            <dd>The interval (in seconds) at which the system checks for remote changes. Default
+              value is <i>60 seconds</i>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>publishing.service.start.build.remote.changes.period</dt>
+            <dd>The delay (in minutes) before starting a build when remote changes are detected. If
+              additional remote changes are detected during this period, the build is re-triggered.
+              Default value is <i>3 minutes</i>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>publishing.service.start.build.remote.changes.max.period</dt>
+            <dd>The delay (in minutes) before starting a build when remote changes are detected. If
+              additional remote changes are detected during this period, the build is not
+              re-triggered. Default value is <i>10 minutes</i>.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>publishing.service.build.console.max.lines.numbe</dt>
+            <dd>Specifies the maximum number of lines displayed in the console that shows the
+              transformation progress. Default value is <i>1000 lines</i>.</dd>
+          </dlentry>
+        </dl>
+      </p>
+    <section id="cf-increase-CPU-limit">
+  <title>Increasing the CPU Limit for the Publishing Container</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Content Fusion Enterprise - Increase CPU limit</indexterm>
+        <indexterm>Increase CPU limit</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_s35_dgk_54b">The CPU limit for the <b>Content Fusion</b> publishing container can be
+      controlled by setting a value for <codeph>cpus</codeph> in the
+        <filepath>/fusion/docker-compose.override.yml</filepath> file.</p>
+    <p id="p_t35_dgk_54b">For
+      example:<codeblock outputclass="language-yml" id="codeblock_u35_dgk_54b">  publishing-main:
+  deploy:
+    resources:
+      limits:
+        cpus: '1.80'</codeblock></p>
+    <note type="important" id="note_v35_dgk_54b">The indentation is required in the YML file.</note>
+    <p id="p_w35_dgk_54b">After modifying this configuration, you need to restart by running the
+      following commands in the <codeph>/fusion</codeph>
+      directory:<codeblock outputclass="language-bourne" id="codeblock_x35_dgk_54b">docker-compose stop publishing-main
+docker-compose rm -f publishing-main
+docker-compose up -d publishing-main</codeblock></p>
+  </body>
+</section>
+
+    </body>
+</topic>
