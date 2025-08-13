@@ -19,8 +19,12 @@
         <dlentry id="dlentry_lbr_skb_2gc">
           <dt>Configuration file</dt>
           <dd>
-            <p id="p_mbr_skb_2gc">A reference to a JSON file that configures local (STDIO) or remote
-              (SSE) MCP servers.</p>
+            <p id="p_mbr_skb_2gc">A reference to a JSON file that configures MCP servers of three
+              possible types:<ul id="ul_edw_jhn_hgc">
+                <li>Local process.</li>
+                <li>HTTP SSE.</li>
+                <li>HTTP Streamable.</li>
+              </ul></p>
             <p id="p_nbr_skb_2gc">Configuration file examples:<ul id="ul_ohx_l1x_dgc">
                 <li id="li_obr_skb_2gc">
                   <p id="p_pbr_skb_2gc">Configuration of a local MCP server that adds tools that
@@ -41,8 +45,8 @@
     }
 }</codeblock></p>
                 </li>
-                <li id="li_qbr_skb_2gc">Configuration of a remote MCP server that adds tools that
-                  allows the AI to call the <xref
+                <li id="li_qbr_skb_2gc">Configuration of a remote MCP HTTP SSE server that adds
+                  tools that allows the AI to call the <xref
                     href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
                     scope="external"><b>Deepwiki</b></xref> service and obtain information about
                   various Github
@@ -50,6 +54,17 @@
   "mcpServers": {
       "deepwiki": {
         "url":"https://mcp.deepwiki.com/sse"
+      } 
+  }
+}</codeblock></li>
+                <li>Configuration of a remote MCP HTTP Streamable server that adds tools that allows
+                  the AI to call the <xref href="https://docs.devin.ai/work-with-devin/deepwiki-mcp"
+                    format="html" scope="external"><b>Deepwiki</b></xref> service and obtain
+                  information about various Github
+                  projects:<codeblock outputclass="language-json" xml:space="preserve" id="codeblock_fl4_mhn_hgc">{
+  "mcpServers": {
+      "deepwiki": {
+        "url":"https://mcp.deepwiki.com/mcp"
       } 
   }
 }</codeblock></li>
@@ -88,13 +103,26 @@
   }
 }</codeblock></li>
                 <li>Starting an <xref href="https://github.com/sooperset/mcp-atlassian"
-                    format="html" scope="external">Atlassian JIRA</xref> MCP server
-                  with:<codeblock outputclass="language-bourne">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport sse --port 8000 --read-only --verbose</codeblock>and
+                    format="html" scope="external">Atlassian JIRA</xref> HTTP SSE MCP server with
+                  the
+                  command:<codeblock outputclass="language-bourne">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport sse --port 8000 --read-only --verbose</codeblock>and
                   then using it as a remote SSE server in the configuration
                   file:<codeblock outputclass="language-json">{
   "mcpServers": {
     "mcp-atlassian-sse": {
       "url": "http://our.jira.server.url:8000/sse"
+    }
+  }
+}</codeblock></li>
+                <li>Starting an <xref href="https://github.com/sooperset/mcp-atlassian"
+                    format="html" scope="external">Atlassian JIRA</xref> HTTP Streamable MCP server
+                  with the
+                  command:<codeblock outputclass="language-bourne" id="codeblock_bwm_4hn_hgc">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport streamable-http --port 8000 --read-only --verbose</codeblock>and
+                  then using it as a remote SSE server in the configuration
+                  file:<codeblock outputclass="language-json" id="codeblock_cwm_4hn_hgc">{
+  "mcpServers": {
+    "mcp-atlassian-mcp": {
+      "url": "http://our.jira.server.url:8000/mcp"
     }
   }
 }</codeblock></li>
