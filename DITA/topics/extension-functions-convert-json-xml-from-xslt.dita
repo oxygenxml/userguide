@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="extension-functions-convert-json-xml-from-xslt">
+  <title>Convert Between JSON and XML from XSLT</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Editing XSLT<indexterm>Convert between JSON and XML from
+          XSLT</indexterm></indexterm>
+        <indexterm>Convert between JSON and XML from XSLT</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_ihb_cgk_54b">Two XPath extension functions are available as built-in <b>Oxygen</b>
+      functions for converting between JSON and XML formats from an XSLT file:</p>
+    <ul id="ul_vgn_fhb_3gc">
+      <li id="li_wgn_fhb_3gc">
+        <p id="p_xgn_fhb_3gc"><b>xs:string xml-to-json(xs:string jsonText)</b> - Converts the input
+            <codeph>jsonText</codeph> to XML, using the <xref href="convert-JSON-to-XML.dita">JSON
+            to XML conversion tool</xref> provided by <ph keyref="product"/>.</p>
+      </li>
+      <li id="li_zgn_fhb_3gc">
+        <p id="p_ahn_fhb_3gc"><b>xs:string json-to-xml(xs:string xmlText)</b> - Converts the input
+            <codeph>xmlText</codeph> to JSON, using the <xref href="convert-XML-to-JSON.dita">XML to
+            JSON conversion tool</xref> provided by <ph keyref="product"/>.</p>
+      </li>
+    </ul>
+    <p id="p_chn_fhb_3gc">The namespace of the functions is:
+        <codeph>http://www.oxygenxml.com/extension</codeph></p>
+    <p id="p_dhn_fhb_3gc">Examples of XSLT files that perform a conversion:</p>
+    <p id="p_ehn_fhb_3gc"><u>XML to JSON</u></p>
+    <codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"    
+xmlns:oxy="http://www.oxygenxml.com/extension" version="3.0">
+
+    &lt;xsl:output method="text" indent="false" omit-xml-declaration="true"/>
+    &lt;xsl:template match="/">
+        &lt;xsl:value-of select="oxy:xml-to-json(serialize(node()))"/>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock>
+    <p id="p_fhn_fhb_3gc"><u>JSON to XML</u></p>
+    <codeblock outputclass="language-xml">&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"    
+xmlns:oxy="http://www.oxygenxml.com/extension" version="3.0">
+
+    &lt;xsl:template match=".">
+        &lt;xsl:variable name="xmlContent" 
+select="oxy:json-to-xml(serialize(., map { 'method' : 'json', 'indent' : true() }))"/>
+        &lt;xsl:value-of select="$xmlContent" disable-output-escaping="true"/>
+    &lt;/xsl:template>
+&lt;/xsl:stylesheet></codeblock>
+  </body>
+</topic>
