@@ -37,16 +37,15 @@
         proxy_set_header X-Forwarded-Proto $scheme; 
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  
         client_max_body_size 0; 
+        # Allow communication via websockets for the AI search features
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
     } 
 }</codeblock></p><p id="p_onw_dgk_54b">For more information, see: <xref
                 href="https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/"
-                format="html" scope="external"/>.</p><p id="p_whr_mgx_hfc">
-              <note id="note_o1x_mgx_hfc" type="tip">To allow communication via websockets for the
-                  <xref href="ofb-ai-features.dita">AI search features</xref>, add the following
-                directives:<codeblock outputclass="language-bourne">proxy_set_header Upgrade $http_upgrade;
-proxy_set_header Connection "upgrade";</codeblock></note>
-            </p><p id="p_pnw_dgk_54b"><b>Sample configuration for Nginx as a reverse proxy with
-                SSL:</b><codeblock outputclass="language-bourne" id="codeblock_qnw_dgk_54b"># Redirects trafic from http to https. 
+                format="html" scope="external"/>.</p><p id="p_pnw_dgk_54b"><b>Sample configuration
+                for Nginx as a reverse proxy with
+              SSL:</b><codeblock outputclass="language-bourne" id="codeblock_qnw_dgk_54b"># Redirects trafic from http to https. 
 server { 
     listen 80 default_server; 
     server_name ${your_server_name}; 
@@ -66,7 +65,10 @@ server {
         proxy_set_header X-Forwarded-Host $host; 
         proxy_set_header X-Forwarded-Proto $scheme; 
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  
-        client_max_body_size 0; 
+        client_max_body_size 0;
+        # Allow communication via websockets for the AI search features
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
     } 
 }</codeblock></p><p id="p_rnw_dgk_54b">There are other SSL configuration parameters
               that you may want to configure, depending on your needs. It is strongly advised to
