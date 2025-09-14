@@ -7,7 +7,7 @@
     <p id="p_f5g_d25_y1c">
       <dl id="openai-settings">
         <dlentry id="dlentry_wvg_d25_y1c">
-          <dt>Address</dt>
+          <dt>Base URL</dt>
           <dd>The web address of the OpenAI service. By default:
               <codeph>https://api.openai.com</codeph>.</dd>
         </dlentry>
@@ -70,7 +70,7 @@
               variables.</note></dd>
         </dlentry>
         <dlentry id="dlentry_uym_225_y1c">
-          <dt>Endpoint</dt>
+          <dt>Base URL</dt>
           <dd>The web address where the connector service is located. This value can be found in the
               <b>Keys &amp; Endpoint</b> section when examining your resource from the <b>Azure</b>
             portal. For example: <codeph>https://your-company-name.openai.azure.com/</codeph>.</dd>
@@ -93,7 +93,7 @@
             requests.</dd>
         </dlentry>
         <dlentry id="dlentry_qmt_325_y1c">
-          <dt>Endpoint</dt>
+          <dt>Base URL</dt>
           <dd>The web address where the connector service is located. By default, it is
               <codeph>https://api.anthropic.com/</codeph>.</dd>
         </dlentry>
@@ -103,9 +103,9 @@
         </dlentry>
         <dlentry id="dlentry_rtw_j25_y1c">
           <dt>Model</dt>
-          <dd>The <xref href="https://docs.anthropic.com/claude/docs/models-overview#key-features"
-              format="html" scope="external">Anthropic Claude</xref> model to use. By default, it is
-              <codeph>claude-3-opus-20240229</codeph>.</dd>
+          <dd>Use this drop-down to select the <xref
+              href="https://docs.anthropic.com/claude/docs/models-overview#key-features"
+              format="html" scope="external">Anthropic Claude</xref> model.</dd>
         </dlentry>
         <dlentry id="reusables-ai-context">
           <dt>Context prompt</dt>
@@ -161,7 +161,8 @@
                   </row>
                   <row>
                     <entry>AZURE_OAUTH_REDIRECT_URI</entry>
-                    <entry>Redirect URI configured in the Entra app.</entry>
+                    <entry>Redirect URI configured in the Entra app. This must be a localhost URL
+                      (for example: <codeph>http://localhost:8085/callback</codeph>).</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -298,14 +299,33 @@
             for certain projects.</dd>
         </dlentry>
         <dlentry id="dlentry_i4l_nbk_sfc">
-          <dt>Allow automatic validation and correction of AI-generated content</dt>
+          <dt>Automatic Validation and Correction</dt>
           <dd>
-            <p id="p_em3_sbk_sfc">When enabled (default), AI-generated content is automatically
-              validated when you insert it into a document or after the AI saves it to a file. If
-              errors are detected, the AI automatically tries to provide a corrected version of the
-              generated content.<note id="note_qcl_ybh_5fc">The AI will not be able to find
-                solutions for certain types of errors, so some manual corrections will still be
-                required.</note></p>
+            <p id="p_em3_sbk_sfc">This section contains options for specifying if and when you want
+              AI-generated content automatically validated:</p>
+            <p id="p_rxk_sxh_pgc">
+              <dl id="dl_hnq_sxh_pgc">
+                <dlentry id="dlentry_inq_sxh_pgc">
+                  <dt>After generation, for validation problems in complete XML documents</dt>
+                  <dd>When enabled (default), AI-generated XML content is automatically validated
+                    and the AI attempts to fix any detected validation errors in complete XML
+                    documents returned by the AI model.</dd>
+                </dlentry>
+                <dlentry id="dlentry_ixp_2yh_pgc">
+                  <dt>After generation, for well-formedness problems in XML fragments</dt>
+                  <dd>When enabled, AI-generated XML content is automatically validated and the AI
+                    attempts to fix any detected well-formedness errors in XML fragments returned by
+                    the AI model.</dd>
+                </dlentry>
+                <dlentry id="dlentry_ccm_jyh_pgc">
+                  <dt>After insertion in the document</dt>
+                  <dd>When enabled (default), AI-generated XML content is automatically validated
+                    and the AI attempts to fix any detected validation errors when the AI-generated
+                    content is inserted into the document (in the editor).</dd>
+                </dlentry>
+              </dl>
+            </p><note id="note_c33_2zh_pgc">The AI will not be able to find solutions for certain types of errors,
+              so some manual corrections will still be required in those situations.</note>
           </dd>
         </dlentry>
       </dl>
@@ -381,7 +401,11 @@
                   found in the current document when generating the new code. The instruction can be
                   a selected text, in which case the text will be replaced with the generated code.
                   Alternatively, the instruction can be the previous XML comment, in which case the
-                  generated text will be inserted after the comment.</li>
+                  generated text will be inserted after the comment.<note type="tip">You can use the
+                        <uicontrol><shortcut>Ctrl + G (Command + G on macOS)</shortcut></uicontrol>
+                    keyboard shortcut to invoke the <uicontrol>Generate Code</uicontrol> action. A
+                    text field will be presented at the cursor location where you can specify what
+                    you want to generate.</note></li>
                 <li id="li_n5z_v1h_zcc"><uicontrol>Suggest Refactoring (available for XSLT and
                     XSD)</uicontrol> - Generates a suggestion for refactoring the selected code to
                   simplify it and make it easier to read and understand. It has some enhanced
@@ -634,9 +658,7 @@
       to further refine the responses by sending messages to the <b>Positron</b> service platform.
       When an AI Positron action is triggered, the chat pane displays the progress and results.</p>
     <p id="para6">You can also start chatting with the AI directly in the chat input box at the
-      bottom of the view. In this case, if there is content selected in the main editor area when a
-      chat is initiated, the selection is passed to the AI along with the document type as context
-      for the conversation.<note id="note_dms_klb_jfc" type="tip">You can invoke an existing action
+      bottom of the view. <note id="note_dms_klb_jfc" type="tip">You can invoke an existing action
         directly from the chat input box by providing general instructions to the AI. For example,
         to invoke the <uicontrol>Correct Grammar</uicontrol> action, you could type something
         similar to the following in the chat input
@@ -712,6 +734,32 @@
       to stop the recording.<note id="note_r35_x2g_4fc">This button may not be available or may
         require setting extra connector-specific parameters in the <i>Enterprise</i> version of the
         add-on.</note></p>
+    <section id="chat-modes">
+      <title>Chat Modes</title>
+      <p>
+        <div>
+          <p>The <uicontrol>Chat Modes</uicontrol> drop-down menu allows you to select various modes
+            for chatting with the AI: </p>
+          <ul id="ul_mkb_kkb_yfc">
+            <li><uicontrol>Agent</uicontrol> - Chat with the AI about your project, set goals, or
+              give instructions. The AI proposes changes, and you decide what to keep.</li>
+            <li><uicontrol>DITA Agent </uicontrol>- Chat with the AI about your DITA XML project,
+              set goals, or give instructions. The AI explores your project to complete tasks
+              efficiently, proposes a plan, and can make project-wide changes on your behalf, while
+              you decide what to keep.</li>
+            <li><uicontrol>Ask</uicontrol> - Find answers, get explanations, and make plans using
+              the AI. This read-only mode has access to various search tools and uses them based on
+              your current task.</li>
+          </ul>
+        </div>
+      </p>
+      <p>While chatting with the AI, you can change between chat modes to access more functionality.
+        All chat modes automatically receive contextual information about your project's location,
+        the location of the current document, its document type, and the location of the context
+        DITA map. Additionally, if there is content selected in the main editor area when a chat is
+        initiated, the selection is passed to the AI along with the document type to be used as
+        context for the conversation.</p>
+    </section>
     <section id="section_import_export_chat">
       <title>Export and Import Chats</title>
       <p id="p_ocj_3hs_cfc">A conversation with the AI can be exported to a JSON file using the
@@ -835,15 +883,15 @@ is not available for XQuery files.&lt;/instruction>
         line-by-line basis) that should be filtered out of the AI Positron UI.</p>
     </section>
     <section id="section_enabling-RAG">
-      <title>Functions and RAG Preferences</title>
-      <p>Various settings related to the use of functions for retrieval augmented generation can be
+      <title>Tools and RAG Preferences</title>
+      <p>Various settings related to the use of tools for retrieval augmented generation can be
         configured in the <uicontrol>Retrieval-Augmented Generation (RAG)</uicontrol> preferences
         page (click the <uicontrol><image href="../../img/Settings16.png"/>Settings</uicontrol>
         button in the header and go to <uicontrol>Retrieval-Augmented Generation
           (RAG)</uicontrol>).<dl id="dl_nmb_r5n_hcc">
           <dlentry>
-            <dt>Enable functions</dt>
-            <dd>Enables the use of functions for retrieval-augmented generation and for writing
+            <dt>Enable tools</dt>
+            <dd>Enables the use of tools for retrieval-augmented generation and for writing
               content in the project.<p>
                 <dl>
                   <dlentry>
@@ -851,7 +899,7 @@ is not available for XQuery files.&lt;/instruction>
                     <dd>Enables retrieval-augmented generation based on similar content obtained
                       from the current open project. Actions and chat interactions generate content
                       give more precise and meaningful responses when this setting is enabled. It is
-                      enabled by default. The available functions used for RAG are listed in the
+                      enabled by default. The available tools used for RAG are listed in the
                       text box.</dd>
                     <dd>
                       <p>The AI actions that use RAG are:<ul>
@@ -865,7 +913,7 @@ is not available for XQuery files.&lt;/instruction>
                           <dlentry>
                             <dt>Ask for confirmation</dt>
                             <dd>When selected (default), the end user is asked to confirm whenever
-                              each specific project-based RAG function is about to be
+                              each specific project-based RAG tool is about to be
                               processed.</dd>
                           </dlentry>
                           <dlentry>
@@ -913,13 +961,13 @@ is not available for XQuery files.&lt;/instruction>
                   </dlentry>
                   <dlentry>
                     <dt>Enable writing content in project</dt>
-                    <dd>Allows functions that can be used by the AI to write content in the current
-                      project. The available functions used for this purpose are listed in the text
+                    <dd>Allows tools that can be used by the AI to write content in the current
+                      project. The available tools used for this purpose are listed in the text
                       box.</dd>
                   </dlentry>
                   <dlentry>
                     <dt>Limit read/write access to</dt>
-                    <dd>Allows you to restrict the locations where functions can read and write
+                    <dd>Allows you to restrict the locations where tools can read and write
                       content. You can specify these locations as a comma-separated list of resource
                       paths. By default, read and write access is restricted to the project
                       directory and the directory of the current root map.</dd>
@@ -976,6 +1024,11 @@ Output:
           <li>In the resulting dialog box, save the final result as either a Positron action or as a
             favorite chat prompt.</li>
         </ol></p>
+      <note> Administrators can hide the <uicontrol><image href="../../img/ai-record18.png"
+            id="image_cgj_cz3_zyb2"/>Record examples for instructions</uicontrol> button in the
+          <i>Enterprise</i> version of the add-on to prevent its use by <xref
+          href="../../topics/ai_positron_enterprise-preferences.dita#ai_positron_enterprise-preferences/section_t1v_dqh_42c"
+          >setting a custom option</xref>.</note>
     </section>
     <section id="section_change-tracking">
       <title>Change Tracking Limitations/Behavior</title>
@@ -1150,5 +1203,42 @@ Output:
         </dl>
       </p>
     </section>
+    <p id="gemini_connector_selected">If <b>Google Gemini</b> is chosen as the connector type, the following settings are available:</p>
+    <p id="gemini_connector_settings">
+      <dl>
+        <dlentry id="dlentry_bg2_v1l_1fc2">
+          <dt>Base URL</dt>
+          <dd>The web address where the connector service is located. By default, it is <codeph>https://generativelanguage.googleapis.com/</codeph>.</dd>
+        </dlentry>
+        <dlentry id="dlentry_wmm_nvw_nfc">
+          <dt>API Key</dt>
+          <dd>The API key required for authenticating. It can be generated in <xref href="https://aistudio.google.com/app/apikey" format="html" scope="external">Google AI Studio</xref>.</dd>
+        </dlentry>
+        <dlentry id="dlentry_dfj_svw_nfc">
+          <dt>Model</dt>
+          <dd>Use this drop-down to select the <xref
+              href="https://ai.google.dev/gemini-api/docs/models" format="html" scope="external"
+              >Google Gemini</xref> model.</dd>
+        </dlentry>
+      </dl>
+    </p>
+    <p id="grok_connector_selected">If <b>xAI Grok</b> is chosen as the connector type, the following settings are available:</p>
+    <p id="grok_connector_settings">
+      <dl>
+        <dlentry>
+          <dt>Base URL</dt>
+          <dd>The web address where the service is located. By default, it is <codeph>https://api.x.ai</codeph>.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>API Key</dt>
+          <dd>The API key required to authenticate with the xAI Grok service.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Model</dt>
+          <dd>Use this drop-down to select the <xref href="https://docs.x.ai/docs/models"
+              format="html" scope="external">xAI Grok</xref> model.</dd>
+        </dlentry>
+      </dl>
+    </p>
   </body>
 </topic>

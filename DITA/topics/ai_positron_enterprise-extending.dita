@@ -19,7 +19,7 @@
                 <filepath>pom.xml</filepath>:<codeblock id="codeblock_w3s_j5b_1fc" outputclass="language-xml">&lt;dependency>
   &lt;groupId>com.oxygenxml&lt;/groupId>
   &lt;artifactId>oxygen-ai-positron-api&lt;/artifactId>
-  &lt;version>6.0.0&lt;/version>
+  &lt;version>7.0.0&lt;/version>
   &lt;scope>provided&lt;/scope>
 &lt;/dependency></codeblock></li>
               <li id="li_bhn_lxf_tfc">Implement the
@@ -35,16 +35,62 @@
               href="https://github.com/oxygenxml/oxygen-ai-positron-custom-connector-addon"
               format="html" scope="external"/></dd>
           <dd>
+            <note type="other" othertype="Key Concepts for 'oxygn-ai-positron-api'">
+              <p>The <codeph>oxygen-ai-positron-api</codeph> artifact provides the types used to
+                declare a connector, expose UI parameters, and implement the runtime service.</p>
+              <p>
+                <dl>
+                  <dlentry>
+                    <dt><codeph>AIConnector</codeph></dt>
+                    <dd>Declares a connector that appears in Preferences and links the UI
+                      configuration to an <codeph>AIService</codeph> implementation. It does the
+                      following: <ul>
+                        <li>Defines the identity and display name (<codeph>getConnectorId</codeph>,
+                            <codeph>getConnectorName</codeph>).</li>
+                        <li>Exposes the list of UI parameters
+                          (<codeph>getParametersList</codeph>).</li>
+                        <li>Creates the runtime service (<codeph>createAIService</codeph>).</li>
+                        <li>Optionally adapts outgoing requests
+                            (<codeph>configureCompletionRequest</codeph>).</li>
+                      </ul></dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><codeph>AIService</codeph></dt>
+                    <dd>Encapsulates calls to the AI backend (chat completions in streaming and
+                      non-streaming mode, moderation). </dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><codeph>ConnectorParamBase</codeph> parameters</dt>
+                    <dd>Typed parameters drive both the Preferences UI and, when relevant, the AI
+                      Positron Assistant side-view. Common types: <ul>
+                        <li><codeph>TextFieldConnectorParam</codeph> (e.g. base URL, model)</li>
+                        <li><codeph>PasswordTextFieldConnectorParam</codeph> (e.g. API key)</li>
+                        <li><codeph>CheckBoxConnectorParam</codeph> (e.g. moderation,
+                          streaming)</li>
+                        <li><codeph>KeyValueTableConnectorParam</codeph> (e.g. extra headers, extra
+                          query params)</li>
+                        <li><codeph>ModelsComboConnectorParam</codeph> (supplies the model combo in
+                          Preferences and the side-view)</li>
+                      </ul></dd>
+                  </dlentry>
+                </dl>
+              </p>
+              <p>For a code-level example of a connector class, see <xref
+                  href="https://github.com/oxygenxml/oxygen-ai-positron-custom-connector-addon/blob/main/src/main/java/com/oxygenxml/positron/custom/connector/CustomAIConnector.java"
+                  format="html" scope="external"/>.</p>
+            </note>
+          </dd>
+          <dd>
             <note id="note_en4_zcm_y2c">The AIConnectors extension type can be implemented starting
               with version 27.1 of <ph keyref="product"/></note>
           </dd>
         </dlentry>
         <dlentry id="dlentry_dhn_lxf_tfc">
-          <dt>AI Functions Extension</dt>
-          <dd>The AI Functions extension point lets developers add their own custom callback
-            functions or replace the built-in ones. This makes it possible to create custom
+          <dt>AI Tools Extension</dt>
+          <dd>The AI Tools extension point lets developers add their own custom callback
+            tools or replace the built-in ones. This makes it possible to create custom
             interactions with AI engines.</dd>
-          <dd>To implement a function, follow these steps:<ol id="ol_h1z_m1m_y2c">
+          <dd>To implement a tool, follow these steps:<ol id="ol_h1z_m1m_y2c">
               <li id="li_ehn_lxf_tfc">Implement the
                   <codeph>ro.sync.exml.plugin.ai.AIFunctionsPluginExtension</codeph> interface in
                 your plugin's libraries.</li>

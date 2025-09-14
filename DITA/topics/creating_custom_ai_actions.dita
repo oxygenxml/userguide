@@ -28,7 +28,7 @@
             <p>A unique ID for the action. If the ID of the action starts with
                 <codeph>agent.hidden.action.</codeph>, then the action is not visible to be invoked
               directly but can be called by using the <xref href="#./dlentry_svh_mtv_g2c"/>
-              function.</p>
+              tool.</p>
             <p>Example:<codeblock id="codeblock_ghl_4q1_kfc" outputclass="language-json">{
         "id": "improve.grammar.custom.styles",
         "title": "...",
@@ -304,7 +304,7 @@
         <dlentry>
           <dt>parameters</dt>
           <dd>An array of parameters that can be used to specify an engine name, temperature, or the
-            available function definitions. Some of the most commonly set parameters:<p
+            available tool definitions. Some of the most commonly set parameters:<p
               id="p_emg_thq_nfc">
               <dl id="dl_t55_fdb_kfc">
                 <dlentry id="dlentry_jng_thq_nfc">
@@ -335,16 +335,16 @@
                 <dlentry id="dlentry_nng_thq_nfc">
                   <dt>function_refs</dt>
                   <dd>
-                    <p id="p_h5k_q3q_nfc">An optional JSON array that describes which functions can
-                      be used when executing this action. For the list of available functions, see
-                        <xref href="#./section_lqv_qnt_vbc"/>.</p>
+                    <p id="p_h5k_q3q_nfc">An optional JSON array that describes which tools can be
+                      used when executing this action. For the list of available tools, see <xref
+                        href="#./section_lqv_qnt_vbc"/>.</p>
                   </dd>
                   <dd>
                     <p id="p_wsv_q3q_nfc"><xref
                         href="https://github.com/oxygenxml-incubator/ai-positron-assistant-samples/blob/main/Custom%20Actions/add-related-links.json"
                         format="html" scope="external">Example</xref> of an AI action that uses
-                        <uicontrol>Retrieval Augmented Generation (RAG)</uicontrol> functions to
-                      find related content in the
+                        <uicontrol>Retrieval Augmented Generation (RAG)</uicontrol> tools to find
+                      related content in the
                       project:<codeblock id="codeblock_s5d_n2b_kfc" outputclass="language-json">{
     "id": "find.add.related.links",
     ...
@@ -358,24 +358,23 @@
                     <p id="p_ong_thq_nfc"><xref
                         href="https://github.com/oxygenxml-incubator/ai-positron-assistant-samples/blob/main/Custom%20Actions/get-content-from-website.json"
                         format="html" scope="external">Example</xref> of an AI action that uses the
-                        <codeph>get_content_for_document_url</codeph> function to retrieve content
-                      from a web
-                        site:<codeblock id="codeblock_thd_gml_lfc" outputclass="language-json">{
+                        <codeph>get_content_for_document_url</codeph> tool to retrieve content from
+                      a web site:<codeblock id="codeblock_thd_gml_lfc" outputclass="language-json">{
     "id": "action.get.oxygen.version.web.site",
     "output-action": "insert",
     "title": "Insert Latest Oxygen Version",
     "prompt": "Obtain the latest version of Oxygen from the 
-    'https://www.oxygenxml.com/xml_editor/whats_new.html' web site by calling the function 
+    'https://www.oxygenxml.com/xml_editor/whats_new.html' web site by calling the tool 
     'get_content_for_document_url' and return it.",
     "parameters": {
         "function_refs": [
             {"ref": "get_content_for_document_url"}
         ]
     }
-  }</codeblock><note id="note_hlw_x2b_kfc" type="important">There are
-                        specific actions that can be called to invoke other AI actions from an AI
-                        action, thus creating an agenting mechanism where various parts of the work
-                        is done by various actions. An example can be found <xref
+  }</codeblock><note id="note_hlw_x2b_kfc" type="important">There are specific
+                        actions that can be called to invoke other AI actions from an AI action,
+                        thus creating an agenting mechanism where various parts of the work is done
+                        by various actions. An example can be found <xref
                           href="https://github.com/oxygenxml-incubator/ai-positron-assistant-samples/blob/main/Custom%20Actions/ai-actions-composed.json"
                           format="html" scope="external">here</xref>.</note></p>
                   </dd>
@@ -522,7 +521,12 @@
             <p id="p_kvf_v3q_nfc">A JSON array that defines places for inserting the content in an
               XML document. The first mode for which the XPath condition becomes true is <i>run</i>.
               Such modes are used when the AI action <codeph>output-action</codeph> is
-                <codeph>insert</codeph>.</p>
+                <codeph>insert</codeph>. An insertion mode has an <codeph>xpath-condition</codeph>
+              parameter that, when activated, allows the mode to be run. It also has a
+                <codeph>target-location</codeph> parameter, which specifies an anchor node relative
+              to where the insertion is done. Also, it has an <codeph>action</codeph> parameter
+              (with the possible values <codeph>insert-after/insert-before/replace</codeph>), which
+              specifies where the content should be inserted relative to the target element.</p>
             <p id="p_ekp_bhq_nfc"><xref
                 href="https://github.com/oxygenxml-incubator/ai-positron-assistant-samples/blob/main/Custom%20Actions/update-title.json"
                 format="html" scope="external"
@@ -558,11 +562,11 @@
         </dlentry>
       </dl></p>
     <section id="section_lqv_qnt_vbc">
-      <title>Function Calls</title>
+      <title>Tool Calls</title>
       <p id="p_bvn_sr4_pcc">Within the definition of custom actions, you can reference existing
         functions that are called by the AI engine to interact with the application. This gives
         actions more context information and generates more accurate responses from the AI.</p>
-      <p>Here is an example of a function reference that gets called by the AI engine to obtain the
+      <p>Here is an example of a tool reference that gets called by the AI engine to obtain the
         entire contents of the
         document:<codeblock id="codeblock_ibw_5nt_vbc" outputclass="language-json">{
     "id": "action.summarize",
@@ -579,7 +583,7 @@
         ]
     }
 }</codeblock></p>
-      <p>The current available function reference values are:</p>
+      <p>The current available tool reference values are:</p>
       <p>
         <dl>
           <dlentry>
@@ -616,6 +620,19 @@
               editor.</dd>
           </dlentry>
           <dlentry>
+            <dt><codeph>get_related_resources_overview_from_project</codeph></dt>
+            <dd>Retrieves (in JSON format) a set of resources from the user's local project based on
+              given keywords. For each resource that has an overview that best matches the keywords
+              in the current context, you can call the <codeph>get_content_for_document_url</codeph>
+              tool to obtain the entire content of the resource URL. </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>search_in_project</codeph></dt>
+            <dd>Retrieves (in JSON format) a set of precise matches found in the project for a
+              searched text. The search can be done with regular expressions enabled or by setting
+              file name and XPath filters.</dd>
+          </dlentry>
+          <dlentry>
             <dt><codeph>get_related_content_from_webhelp</codeph></dt>
             <dd>Returns content from the associated <uicontrol>Oxygen Feedback</uicontrol> WebHelp
               system that has <xref
@@ -628,7 +645,7 @@
               token passed as a parameter. The <xref
                 href="ai_positron-preferences.dita#ai_positron-preferences/section_eyj_bfn_3fc"
                   ><uicontrol>Enable External RAG Sources</uicontrol> checkbox must be selected in
-                the <uicontrol>Functions and RAG</uicontrol> preferences</xref>.</dd>
+                the <uicontrol>Tools and RAG</uicontrol> preferences</xref>.</dd>
           </dlentry>
           <dlentry>
             <dt><codeph>get_sch_component_details</codeph></dt>
@@ -651,6 +668,16 @@
               located in relation to other elements in the DITA map. If the selected topic cannot be
               identified, the hierarchy will start from the root of the DITA map.</dd>
           </dlentry>
+          <dlentry>
+            <dt><codeph>resolve_dita_key_or_content_reference</codeph></dt>
+            <dd>Resolves a DITA XML key reference (e.g. <codeph>&lt;ph keyref="abc"/></codeph>),
+              content key reference (e.g. <codeph>&lt;uicontrol conkeyref="abc"/></codeph>), or
+              content reference (e.g. <codeph>&lt;uicontrol conref="abc"/></codeph>). </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>find_similar_reusable_content</codeph></dt>
+            <dd>Returns a list of DITA XML reusable components that match the keywords.</dd>
+          </dlentry>
           <dlentry id="dlentry_svh_mtv_g2c">
             <dt><codeph>invoke_ai_action(actionID, content)</codeph></dt>
             <dd>Invoke an action by passing the action ID and content to process.<note
@@ -666,9 +693,9 @@
             <dt><codeph>save_document(URL,content)</codeph></dt>
             <dd>Saves the document at the specified path and writes content to it. If a resource
               already exists at the specified URL, the content of the document will be overridden
-              with the new content. For actions that use this function, the application gathers a
-              list of resources to modify and displays them in a <uicontrol>Preview</uicontrol>
-              dialog box after the action processes.</dd>
+              with the new content. For actions that use this tool, the application gathers a list
+              of resources to modify and displays them in a <uicontrol>Preview</uicontrol> dialog
+              box after the action processes.</dd>
           </dlentry>
           <dlentry>
             <dt><codeph>validate_document_content(URL, content)</codeph></dt>
@@ -681,16 +708,26 @@
           </dlentry>
         </dl>
       </p>
-      <p>You can impose a description for the referenced function that is called by the AI engine: </p>
+      <p>You can impose a description for the referenced tool that is called by the AI engine: </p>
       <codeblock id="pre_uxb_24t_vbc" outputclass="language-json">"function_refs": [
   {
       "ref": "get_current_document_plain_text_content",
-      "description": "The function is designed to retrieve the complete document as 
+      "description": "The tool is designed to retrieve the complete document as 
       plain text without markup."
   }
 ]</codeblock>
     </section>
     <section conkeyref="reusables-ai-plugin/distributing_ai_actions" id="section_eh1_klq_gfc"
       ><p/></section>
+    <section id="testing_ai_actions_using_xspec">
+      <title>Testing AI Actions Using XSpec</title>
+      <p>The New Document Wizard contains a new file template named <uicontrol>AI Action
+          Test</uicontrol> to assist you with creating XSpec tests that can be used to test the
+        behavior of AI actions. It can be found in the <uicontrol>AI Positron Templates</uicontrol>
+        folder. When creating the template, you can optionally write a short summary to describe
+        what the AI should include and/or attach files (text, XML, Markdown, Word, PDF, images) via
+        copy/paste or drag/drop. The AI generates an initial structure for your XSpec document and
+        it includes comments to help guide you through the testing process. </p>
+    </section>
   </body>
 </topic>
