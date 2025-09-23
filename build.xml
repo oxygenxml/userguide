@@ -1,8 +1,11 @@
 <project name="userguide" default="build-all" xmlns:if="ant:if" xmlns:unless="ant:unless">
   <!-- Constants -->
   <property name="c-xmx">-Xmx3500m</property>
-  <condition property="dita.executable" value="dita.bat">
+  <condition property="is.windows">
     <os family="windows"/>
+  </condition>
+  <condition property="dita.executable" value="dita.bat">
+    <isset property="is.windows"/>
   </condition>
   <property name="dita.executable" value="dita"/>
   <!-- 
@@ -65,6 +68,11 @@
     </antcall>
     <antcall target="build-single">
       <param name="p-product" value="content-fusion"/>
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="${p-type}"/>
+    </antcall>
+    <antcall target="build-single">
+      <param name="p-product" value="fusion-cloud"/>
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="${p-type}"/>
     </antcall>
@@ -257,6 +265,17 @@
         <equals arg1="${editlink.ditamap}" arg2=""/>
       </not>
     </condition>
+    <if>
+      <not>
+        <isset property="is.windows"/>
+      </not>
+      <then>
+        <exec executable="chmod">
+          <arg value="+x"/>
+          <arg value="${dita-ot-dir}/bin/${dita.executable}"/>
+        </exec>
+      </then>
+    </if>
     <property name="clean.temp">yes</property>
     <delete dir="${p-output}"/>
     <mkdir dir="${p-output}"/>
