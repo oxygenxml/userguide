@@ -427,6 +427,36 @@
         file named <filepath>excluded-action-ids.txt</filepath>, which can list all action IDs (on a
         line-by-line basis) that should be filtered out of the AI Positron UI.</p>
     </section>
+    <section id="section_x4x_qh2_tgc">
+      <title>Persistent Favorites</title>
+      <p id="p_y4x_qh2_tgc">By default, favorites are not persistent in the demo <uicontrol>Web
+          Author</uicontrol> web site. Content Management Systems that integrate <uicontrol>Web
+          Author</uicontrol> can add two predefined variables (using JavaScript to the global
+          <codeph>window</codeph> object) that point to operations used to store and retrieve
+        persistent strings.
+        Example:<codeblock id="codeblock_tts_wp3_pcc" outputclass="language-java">window.POSITRON_RETRIEVE_OPERATION = "package.name.RetrieveOperation";
+window.POSITRON_STORE_OPERATION ="package.name.StoreOperation";</codeblock>with the
+          <codeph>RetrieveOperation</codeph> implemented like this (for
+        example):<codeblock id="codeblock_w15_fq3_pcc" outputclass="language-java">@WebappRestSafe
+@WebappCompatible
+public class RetrieveOperation extends AuthorOperationWithResult {
+  @Override
+  public String doOperation(AuthorDocumentModel model, ArgumentsMap args)
+      throws IllegalArgumentException, AuthorOperationException {
+    return cmsPropertiesMap.getProperty(model.getUserId() + "." + args.getArgumentValue("key"));
+  }
+}</codeblock>and <codeph>StoreOperation</codeph> implemented like this (for
+        example):<codeblock outputclass="language-java" id="codeblock_w1d_lq3_pcc">@WebappRestSafe
+@WebappCompatible
+public class StoreOperation extends AuthorOperationWithResult {
+  @Override
+  public String doOperation(AuthorDocumentModel model, ArgumentsMap args)
+      throws IllegalArgumentException, AuthorOperationException {
+    cmsPropertiesMap.setProperty(model.getUserId() + "." + args.getArgumentValue("key"), (String) args.getArgumentValue("value"));
+    return null;
+  }
+}</codeblock></p>
+    </section>
   </body>
   <related-links>
     <link href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-ai-positron.html" format="html"
