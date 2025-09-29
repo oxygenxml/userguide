@@ -21,9 +21,8 @@
           <dd>
             <p id="p_mbr_skb_2gc">A reference to a JSON file that configures MCP servers of three
               possible types:<ul id="ul_edw_jhn_hgc">
-                <li>Local process</li>
+                <li>Local process</li><li>HTTP Streamable</li>
                 <li>HTTP SSE</li>
-                <li>HTTP Streamable</li>
               </ul></p>
             <p id="p_nbr_skb_2gc">Configuration file examples:<ul id="ul_ohx_l1x_dgc">
                 <li id="li_obr_skb_2gc">
@@ -44,32 +43,53 @@
       }
     }
 }</codeblock></p>
-                </li>
-                <li id="li_qbr_skb_2gc">Configuration of a remote MCP HTTP SSE server that adds
-                  tools to allow the AI to call the <xref
-                    href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
-                    scope="external"><b>DeepWiki</b></xref> service and obtain information about
-                  various GitHub
-                  projects:<codeblock id="codeblock_wqv_w1x_dgc" outputclass="language-json" xml:space="preserve">{
-  "mcpServers": {
-      "deepwiki": {
-        "url":"https://mcp.deepwiki.com/sse"
-      } 
-  }
-}</codeblock>If the HTTP SSE server has a URL that does not end with
-                    <codeph>/sse</codeph>, then an extra <codeph>"type":"sse"</codeph> property must
-                  be added in the configuration.</li>
-                <li>Configuration of a remote MCP Streamable HTTP server that adds tools to allow
-                  the AI to call the <xref href="https://docs.devin.ai/work-with-devin/deepwiki-mcp"
-                    format="html" scope="external"><b>DeepWiki</b></xref> service and obtain
-                  information about various GitHub
-                  projects:<codeblock outputclass="language-json" xml:space="preserve" id="codeblock_fl4_mhn_hgc">{
+                </li><li>Configuration of a remote MCP Streamable HTTP server that adds tools to allow the AI to call the <xref href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html" scope="external"><b>DeepWiki</b></xref> service and obtain information about various GitHub projects:<codeblock outputclass="language-json" xml:space="preserve" id="codeblock_fl4_mhn_hgc">{
   "mcpServers": {
       "deepwiki": {
         "url":"https://mcp.deepwiki.com/mcp"
       } 
   }
+}</codeblock>For HTTP Streamable connections you can pass header values to the server using the <codeph>headers</codeph> property like this:<codeblock outputclass="language-json" id="codeblock_fkf_nxq_5gc">{
+  "mcpServers": {
+    "atlassian": {
+      "url": "http://our.jira.server.url:8000/mcp",
+      "headers": {
+         "Authorization": "Bearer SOME_KEY_VALUE_HERE"
+      }
+    }
+  }
+}</codeblock>You can also use <xref href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html" format="html" scope="external"><ph keyref="product"/> editor variables</xref> in the header values to access for example environmental variables or system properties. <p>If you want to ask the end user for a certain value to be used in the headers you can do so by defining inputs like this:</p><codeblock id="codeblock_rlm_zxq_5gc" outputclass="language-json">{
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:github_mcp_pat}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "github_mcp_pat",
+      "description": "GitHub Personal Access Token",
+      "password": true
+    }
+  ]
+}</codeblock>Example: Starting an <xref href="https://github.com/sooperset/mcp-atlassian" format="html" scope="external">Atlassian JIRA</xref> Streamable HTTP MCP server with the command:<codeblock outputclass="language-bourne" id="codeblock_bwm_4hn_hgc">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport streamable-http --port 8000 --read-only --verbose</codeblock>and then using it as a remote server in the configuration file:<codeblock outputclass="language-json" id="codeblock_cwm_4hn_hgc">{
+  "mcpServers": {
+    "atlassian": {
+      "url": "http://our.jira.server.url:8000/mcp"
+    }
+  }
 }</codeblock></li>
+                <li id="li_qbr_skb_2gc">Configuration of a remote MCP HTTP SSE server that adds tools to allow the AI to call the <xref href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html" scope="external"><b>DeepWiki</b></xref> service and obtain information about various GitHub projects:<codeblock id="codeblock_wqv_w1x_dgc" outputclass="language-json" xml:space="preserve">{
+  "mcpServers": {
+      "deepwiki": {
+        "url":"https://mcp.deepwiki.com/sse"
+      } 
+  }
+}</codeblock>If the HTTP SSE server has a URL that does not end with <codeph>/sse</codeph>, then an extra <codeph>"type":"sse"</codeph> property must be added in the configuration.</li>
                 <li id="li_rbr_skb_2gc">Multiple MCP servers (Brave search, <xref
                     href="https://github.com/github/github-mcp-server" format="html"
                     scope="external">GitHub</xref>, <xref
@@ -104,41 +124,6 @@
       "deepwiki": {
         "url":"https://mcp.deepwiki.com/sse"
       } 
-  }
-}</codeblock></li>
-                <li>Starting an <xref href="https://github.com/sooperset/mcp-atlassian"
-                    format="html" scope="external">Atlassian JIRA</xref> HTTP SSE MCP server with
-                  the
-                  command:<codeblock outputclass="language-bourne">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport sse --port 8000 --read-only --verbose</codeblock>and
-                  then using it as a remote SSE server in the configuration
-                  file:<codeblock outputclass="language-json">{
-  "mcpServers": {
-    "atlassian-sse": {
-      "url": "http://our.jira.server.url:8000/sse"
-    }
-  }
-}</codeblock></li>
-                <li>Starting an <xref href="https://github.com/sooperset/mcp-atlassian"
-                    format="html" scope="external">Atlassian JIRA</xref> Streamable HTTP MCP server
-                  with the
-                  command:<codeblock outputclass="language-bourne" id="codeblock_bwm_4hn_hgc">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport streamable-http --port 8000 --read-only --verbose</codeblock>and
-                  then using it as a remote SSE server in the configuration
-                  file:<codeblock outputclass="language-json" id="codeblock_cwm_4hn_hgc">{
-  "mcpServers": {
-    "atlassian": {
-      "url": "http://our.jira.server.url:8000/mcp"
-    }
-  }
-}</codeblock>To pass HTTP header properties to the server, you can use the
-                    <codeph>env</codeph> property like
-                  this:<codeblock outputclass="language-json">{
-  "mcpServers": {
-    "atlassian": {
-      "url": "http://our.jira.server.url:8000/mcp",
-      "env": {
-         "Authorization": "Bearer SOME_KEY_VALUE_HERE"
-      }
-    }
   }
 }</codeblock></li>
               </ul></p>
