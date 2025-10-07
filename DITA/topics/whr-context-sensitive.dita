@@ -22,68 +22,33 @@
       on mappings between a unique ID defined in the topic and a corresponding HTML page.</p>
     <section id="contextsensitive_queries">
       <title>Context-Sensitive Queries</title>
-      <p>This system uses the <filepath>cshelp.html</filepath> page and the
-          <filepath>context-help-map.xml</filepath> file along with a few parameters:<dl
-          id="dl_cnm_cgk_54b">
+      <p>Context-sensitive help is provided through the <filepath>cshelp.html</filepath>
+          page:<codeblock id="codeblock_okc_kj1_xgc" outputclass="language-ini">http://localhost/webhelp/cshelp.html?contextId=topicID&amp;appname=myApplication</codeblock><note
+          id="note_aw5_l2z_wgc">
+          <ul id="ul_vxp_kfz_wgc">
+            <li>The <codeph>contextId</codeph> parameter is not case-sensitive.</li>
+            <li>The URL can include an <xref keyref="glossentry_anchor"><term>anchor</term></xref>
+              to jump to a page section (e.g. <codeph>contextId=topicID#anchor</codeph>).</li>
+          </ul>
+        </note><note id="note_el2_c5s_rsb" type="attention">Prior to version 24.1, context-sensitive
+          help was accessible via <filepath>index.html</filepath>. This method still works but is
+          deprecated and will be removed in a future release.</note></p>
+      <p>Use the following parameters in the URL:<dl id="dl_cnm_cgk_54b">
           <dlentry id="dlentry_dnm_cgk_54b">
             <dt><uicontrol>contextId</uicontrol></dt>
-            <dd>Used by the WebHelp JavaScript engine to locate the entry in the XML file and open
-              the corresponding help page.<note id="note_aw5_l2z_wgc">
-                <ul id="ul_vxp_kfz_wgc">
-                  <li>The <codeph>contextId</codeph> parameter can include an <xref
-                      keyref="glossentry_anchor"><term>anchor</term></xref> to jump to a page
-                    section (e.g. <codeph>contextId=topicID#anchor</codeph>).</li>
-                  <li>The <codeph>contextId</codeph> parameter is not case-sensitive.</li>
-                </ul>
-              </note></dd>
-          </dlentry>
-          <dlentry
-            product="author developer editor authorEclipse developerEclipse editorEclipse webhelp-responsive ope"
-            id="dlentry_fnm_cgk_54b">
-            <dt><uicontrol>appname</uicontrol></dt>
-            <dd>Used in combination with <codeph>contextId</codeph> to match the corresponding
-                <i>appname</i> attribute in the mapping
-              file.<codeblock outputclass="language-ini" id="codeblock_gnm_cgk_54b">http://localhost/webhelp/cshelp.html?contextId=topicID&amp;appname=myApplication</codeblock></dd>
-          </dlentry>
-        </dl></p>
-      <note id="note_el2_c5s_rsb" type="attention">Prior to version 24.1, context-sensitive help was
-        accessible via <filepath>index.html</filepath>. This method still works but is deprecated
-        and will be removed in a future release.</note>
-    </section>
-    <section id="generating_contextsensitive_help">
-      <title>Generating Context-Sensitive Help</title>
-      <p>When WebHelp Responsive output is generated, the transformation produces the
-          <filepath>context-help-map.xml</filepath> in the output folder. This file maps IDs to HTML
-        pages using <xmlelement>appContext</xmlelement> elements, as shown
-        below:<codeblock outputclass="language-xml" id="codeblock_ylm_cgk_54b">&lt;map productID="oxy-webhelp" productVersion="1.1"&gt;
-  &lt;appContext helpID="myapp-functionid1" path="tasks/app-help1.html"/&gt;
-  &lt;appContext helpID="myapp-functionid2" path="tasks/app-help1.html"/&gt;
-    .  .  .
-&lt;/map&gt;</codeblock>The <filepath>context-help-map.xml</filepath> mapping file can also
-        be loaded by a PHP script on the server side. The script receives the
-          <codeph>contextId</codeph> value and will look it up in the XML file.</p>
-      <p id="p_zlm_cgk_54b">The <xmlelement>appContext</xmlelement> element supports the following
-          attributes:<dl id="dl_bmm_cgk_54b">
-          <dlentry id="dlentry_cmm_cgk_54b">
-            <dt><xmlatt>helpID</xmlatt></dt>
-            <dd>A Unique ID based on either the topic <xmlelement>resourceid</xmlelement> element or
-                <xmlatt>id</xmlatt> attribute:</dd>
-            <dd>
-              <p id="p_emm_cgk_54b">
+            <dd>Used by the WebHelp JavaScript engine to open the corresponding help page. Its value
+              comes from either:<p>
                 <dl id="dl_fmm_cgk_54b">
                   <dlentry id="dlentry_gmm_cgk_54b">
-                    <dt><xmlelement>resourceid</xmlelement> (see <xref
+                    <dt><xmlelement>resourceid</xmlelement> (see <xref format="html"
                         href="https://www.oxygenxml.com/dita/1.3/specs/langRef/base/resourceid.html#resourceid__attributes"
-                        format="html" scope="external">DITA Specifications: &lt;resourceid></xref>
-                      for more details)</dt>
+                        scope="external">DITA Specifications: &lt;resourceid&gt;</xref> for more
+                      details)</dt>
                     <dd>Specified in the <term>DITA map</term>
                       <xmlelement>topicref</xmlelement> or in the topic
                         <xmlelement>prolog</xmlelement>.</dd>
-                    <dd>Assigned the following attributes (ordered by priority):<ol
-                        id="ol_qgb_q3z_wgc">
-                        <li><xmlatt>appname</xmlatt> - Name for the external application referencing
-                          the topic, empty (<codeph>""</codeph>) if unspecified.</li>
-                        <li><xmlatt>appid</xmlatt> - ID for the external application referencing the
+                    <dd>Using the following attributes (ordered by priority):<ol id="ol_qgb_q3z_wgc">
+                        <li><xmlatt>appid</xmlatt> -  ID used by an application to identify the
                           topic.</li>
                         <li><xmlatt>id</xmlatt> - ID used by a specific application to identify the
                           topic, ignored if <xmlatt>appid</xmlatt> is present.</li>
@@ -98,32 +63,32 @@
                             Map</b></u></p><p id="p_mmm_cgk_54b">The
                           <xmlelement>resourceid</xmlelement> element can be specified in a
                           <xmlelement>topicmeta</xmlelement> element within a
-                          <xmlelement>topicref</xmlelement>.<codeblock outputclass="language-xml" id="codeblock_nmm_cgk_54b">&lt;map title="App Help">
-  &lt;topicref href="app-help1.dita" type="task">
-     &lt;topicmeta>
-       &lt;resourceid appname="myapp" appid="functionid1"/>
-       &lt;resourceid appname="myapp" appid="functionid2"/>
-     &lt;/topicmeta>
-  &lt;/topicref>
-&lt;/map></codeblock></p><p id="p_omm_cgk_54b"><u><b>Example: The
+                          <xmlelement>topicref</xmlelement>.<codeblock id="codeblock_nmm_cgk_54b" outputclass="language-xml" xml:space="preserve">&lt;map title="App Help"&gt;
+  &lt;topicref href="app-help1.dita" type="task"&gt;
+     &lt;topicmeta&gt;
+       &lt;resourceid appname="myapp" appid="functionid1"/&gt;
+       &lt;resourceid appname="myapp" appid="functionid2"/&gt;
+     &lt;/topicmeta&gt;
+  &lt;/topicref&gt;
+&lt;/map&gt;</codeblock></p><p id="p_omm_cgk_54b"><u><b>Example: The
                               <xmlelement>resourceid</xmlelement> Element Specified in a DITA
                             Topic</b></u></p><p id="p_pmm_cgk_54b">The
                           <xmlelement>resourceid</xmlelement> element can be specified in a
                           <xmlelement>prolog</xmlelement> element within a DITA
-                        topic.<codeblock outputclass="language-xml" id="codeblock_qmm_cgk_54b">&lt;task id="app-help1">
-  &lt;title>My App Help&lt;/title>
-  &lt;prolog>
-    &lt;resourceid appname="myapp" appid="functionid1"/>
-    &lt;resourceid appname="myapp" appid="functionid2"/>
-  &lt;/prolog>
+                        topic.<codeblock id="codeblock_qmm_cgk_54b" outputclass="language-xml" xml:space="preserve">&lt;task id="app-help1"&gt;
+  &lt;title&gt;My App Help&lt;/title&gt;
+  &lt;prolog&gt;
+    &lt;resourceid appname="myapp" appid="functionid1"/&gt;
+    &lt;resourceid appname="myapp" appid="functionid2"/&gt;
+  &lt;/prolog&gt;
 ...
-&lt;/task></codeblock></p></dd>
+&lt;/task&gt;</codeblock></p></dd>
                   </dlentry>
                   <dlentry id="dlentry_smm_cgk_54b">
                     <dt><xmlatt>id</xmlatt></dt>
                     <dd>Specified in the topic root element, used if no
                         <xmlelement>resourceid</xmlelement> is declared (in both <term>DITA
-                        map</term> and topic).<note type="important" id="note_tmm_cgk_54b">Ensure
+                        map</term> and topic).<note id="note_tmm_cgk_54b" type="important">Ensure
                         these IDs are unique within the entire DITA project. Duplicate IDs will
                         trigger warning messages and the help system will not work
                         properly.</note><note id="note_t5c_5gz_wgc">The <xref
@@ -134,8 +99,39 @@
                         context sensitive help mapping.</note></dd>
                   </dlentry>
                 </dl>
-              </p>
-            </dd>
+              </p></dd>
+          </dlentry>
+          <dlentry id="dlentry_fnm_cgk_54b">
+            <dt><uicontrol>appname</uicontrol> (optional)</dt>
+            <dd>Used in combination with <codeph>contextId</codeph> to match the corresponding
+                <i>appname</i>. Its value comes from the <xmlatt>appname</xmlatt> attribute of the
+                <xmlelement>resourceid</xmlelement> element and is empty (<codeph>""</codeph>) if
+              unspecified.</dd>
+          </dlentry>
+        </dl></p>
+    </section>
+    <section id="generating_contextsensitive_help">
+      <title>Generating Context-Sensitive</title>
+      <p>To simplify the integration of WebHelp Responsive into an application, the
+          <codeph>context-help-map.xml</codeph> file is generated in the output folder. This file
+        maps IDs to HTML pages using <xmlelement>appContext</xmlelement> elements, as shown
+        below:<codeblock outputclass="language-xml" id="codeblock_ylm_cgk_54b">&lt;map productID="oxy-webhelp" productVersion="1.1"&gt;
+  &lt;appContext helpID="myapp-functionid1" path="tasks/app-help1.html"/&gt;
+  &lt;appContext appname="myapp" helpID="myapp-functionid2" path="tasks/app-help1.html"/&gt;
+  ...
+&lt;/map&gt;</codeblock></p>
+      <p id="p_zlm_cgk_54b">The <xmlelement>appContext</xmlelement> element contains the following
+          attributes:<dl id="dl_bmm_cgk_54b">
+          <dlentry id="dlentry_cmm_cgk_54b">
+            <dt><xmlatt>helpID</xmlatt></dt>
+            <dd>A Unique ID identifying the topic based on the <xmlelement>resourceid</xmlelement>
+              element or the <xmlatt>id</xmlatt> attribute (as described above).</dd>
+          </dlentry>
+          <dlentry>
+            <dt><xmlatt>appname</xmlatt> (optional)</dt>
+            <dd> A name for the external application that references the topicn from the
+                <xmlatt>appname</xmlatt> attribute of the <xmlelement>resourceid</xmlelement>
+              element (as described above).</dd>
           </dlentry>
           <dlentry id="dlentry_umm_cgk_54b">
             <dt><xmlatt>path</xmlatt></dt>
