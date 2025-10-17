@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-organization-authentication">
+  <title>Organization Authentication Management</title>
+  <body>
+    <p>The <b>Authentication</b> page in Content Fusion allows organization administrators to
+      configure how users can join and sign in to the organization. Administrators can enable or
+      disable various authentication providers, making it easier and more secure for users to access
+      the platform.</p>
+
+    <section id="section_access_authentication">
+      <title>Accessing the Authentication Page</title>
+      <p>
+        Only users with an <b>Organization Administrator</b> role can access the authentication management page. To access this page:
+        <ol>
+          <li>Click on your user profile name in the top-right corner of the interface.</li>
+          <li>Select <uicontrol>Manage organization</uicontrol> from the drop-down menu.</li>
+          <li>In the organization management interface, click on <uicontrol>Authentication</uicontrol> in the left navigation panel.</li>
+        </ol>
+        <note type="note">If you do not see the <uicontrol>Manage organization</uicontrol> option in your user menu, you do not have administrator privileges for your organization.</note>
+      </p>
+    </section>
+
+    <section id="section_authentication_layout">
+      <title>Page Layout and Components</title>
+      <p>
+        The Authentication page is organized into the following sections:
+      </p>
+      <fig>
+        <title>Organization Authentication Management Page</title>
+        <image href="../img/cf-organization-authentication-page.png"/>
+      </fig>
+      <dl>
+        <dlentry>
+          <dt>Sign-up Options</dt>
+          <dd>
+            Allows administrators to enable or disable sign-up with GitHub, Google, or OIDC single sign-on. When enabled, users can join the organization using the selected provider without an invitation.
+            <note type="tip">
+              By default, Google and GitHub authentication are enabled when an organization is created. The organization administrator can choose to deactivate these providers at any time from this page.
+            </note>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>OIDC Provider Configuration</dt>
+          <dd>When OIDC single sign-on is enabled, additional fields appear for configuring the provider. To set up OIDC authentication for your organization:
+            <ul>
+              <li><b>Register an Application:</b> In your OpenID Connect provider’s administration
+                interface (such as Microsoft Entra ID or Okta), register a new application for your
+                Content Fusion cloud organization. <ul>
+                  <li>When prompted for a redirect URI, use:
+                      <codeph>https://&lt;content-fusion-organization-address>/api/oauthc/oidcId/callback</codeph>
+                    (replace <codeph>&lt;content-fusion-organization-address></codeph> with your
+                    actual organization address).</li>
+                  <li>After registration, note the <b>Client ID</b> (sometimes called Application
+                    ID) and <b>Client Secret</b>.</li>
+                </ul></li>
+              <li><b>Configure Provider Details in Content Fusion:</b>
+                <ul>
+                  <li><b>Provider Name:</b> The display name for the OIDC provider (e.g., "Okta" or
+                    "EntraID").</li>
+                  <li><b>Authorization endpoint URL, Token endpoint URL, User info endpoint URL:</b>
+                    <ul>
+                      <li><b>For Okta:</b> To retrieve the <b>authorization</b>, <b>token</b>, and
+                          <b>user info</b> endpoints, append
+                          <codeph>/.well-known/openid-configuration</codeph> to the <b>Issuer
+                          URI</b> of your <b>Authorization Server</b>. You can find the <b>Issuer
+                          URI</b> in <menucascade>
+                          <uicontrol>Okta Admin Console</uicontrol>
+                          <uicontrol>Security</uicontrol>
+                          <uicontrol>API</uicontrol>
+                          <uicontrol>Authorization Servers</uicontrol>
+                        </menucascade>.<p id="p_hyd_w2k_4fc">For example, your discovery URL might
+                          look
+                            like:<codeph>https://&lt;okta-subdomain>.okta.com/oauth2/&lt;authorizationServerId>/.well-known/openid-configuration</codeph></p><p
+                          id="p_iyd_w2k_4fc">where you must replace
+                            <codeph>&lt;okta-subdomain></codeph>with your Okta domain, and
+                            <codeph>&lt;authorizationServerId></codeph> with the actual ID of your
+                            <b>Authorization Server</b>.</p></li>
+                      <li><b>For Microsoft Entra ID:</b> To retrieve the <b>authorization</b>,
+                          <b>token</b>, and <b>user info</b> endpoints, use:
+                          <codeph>https://login.microsoftonline.com/&lt;tenant-id>/v2.0/.well-known/openid-configuration</codeph>,
+                        where you must replace <codeph>&lt;tenant-id></codeph> with the <b>Directory
+                          (tenant) ID</b> from your registered application's overview in Azure
+                        Portal. </li>
+                    </ul></li>
+                  <li><b>Client ID:</b> Enter the <b>Client ID</b> (or <b>Application ID</b> in some
+                    cases) that was generated in the step <b>Register an Application:</b>.</li>
+                  <li><b>Client Secret:</b> Enter the <b>Client Secret</b> that was generated in the
+                    step <b>Register an Application:</b>.</li>
+                </ul></li>
+              <li><b>Save Configuration:</b> After entering the required information, make sure you click the button <uicontrol>Save</uicontrol>.</li>
+            </ul>
+          </dd>
+        </dlentry>
+      </dl>
+      <note type="note">
+        <ul>
+          <li>Users who sign up with Google or GitHub do not receive a role automatically. An organization administrator must assign a role to grant appropriate access.</li>
+          <li>If a social provider is later disabled, users who originally signed up with it can select "Forgot my password" to set a password and continue signing in with their email address.</li>
+        </ul>
+      </note>
+    </section>
+  </body>
+</topic>
