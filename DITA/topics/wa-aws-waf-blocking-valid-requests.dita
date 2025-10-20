@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="wa-aws-waf-blocking-valid-requests">
+  <title>AWS WAF (Web Application Firewall) Blocks Valid Requests</title>
+  <troublebody>
+    <condition id="problem">
+      <title>Problem</title>
+      <p>Some valid requests from <b>Oxygen XML Web Author</b> (for example, switching between
+          <i>Text</i> and <i>Author</i> modes or editing attributes that contain relative paths such
+        as <codeph>href="../images/example.png"</codeph>) are blocked by AWS with WAF (Web
+        Application Firewall) managed rules enabled.</p>
+    </condition>
+    <troubleSolution>
+      <cause id="cause">
+        <title>Cause</title>
+        <p>Certain rules in the <codeph>AWSManagedRulesCommonRuleSet</codeph> (in particular,
+            <codeph>SizeRestrictions_BODY</codeph>, <codeph>GenericLFI_BODY</codeph>, and
+            <codeph>GenericRFI_BODY</codeph>) may trigger false positives when <b>Web Author</b>
+          sends requests or payloads that match their patterns (e.g. URLs with relative paths or
+          certain body sizes) and thereby these valid requests are incorrectly blocked.</p>
+      </cause>
+      <remedy id="solution">
+        <title>Solution</title>
+        <steps-informal id="steps-informal_xwg_xdp_1hc">
+          <p>In your Web ACL configuration in AWS WAF, locate the rules listed above and set them to
+            “Override to Allow” to prevent them from blocking these valid requests from <b>Web
+              Author</b>.</p>
+        </steps-informal>
+      </remedy>
+    </troubleSolution>
+  </troublebody>
+</troubleshooting>
