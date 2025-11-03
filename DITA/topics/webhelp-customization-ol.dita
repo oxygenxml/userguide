@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="webhelp-customization-ol">
+  <title>How to Change Ordered Lists Layout and Styles</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
+          >WebHelp Responsive <indexterm>Ordered
+              lists<indexterm>layout</indexterm><indexterm>styles</indexterm></indexterm></indexterm>
+        <indexterm product="webhelp-responsive ope">Ordered
+            lists<indexterm>layout</indexterm><indexterm>styles</indexterm></indexterm>
+      </keywords>
+      <keywords>
+        <keyword outputclass="label" product="webhelp-responsive">Publishing Template</keyword>
+        <keyword outputclass="label" product="webhelp-responsive">CSS Styling</keyword>
+      </keywords>
+    </metadata>
+  </prolog>
+  <topic id="topic_rl4_xdn_2hc">
+    <title>How to Continue Numbering in Ordered Lists</title>
+    <body>
+      <p>Ordered lists (<xmlelement>ol</xmlelement>) typically begin numbering at 1 in XHTML output.
+        However, in certain situations you may need to start at a given index. You can control the
+        starting number using the <xmlatt>outputclass="start-x"</xmlatt> attribute (where X is the
+        number you want the list to start with) to the <xmlelement>ol</xmlelement> element. This is
+        especially useful when lists do not have the same
+        parent:<codeblock outputclass="language-xml" id="codeblock_k1s_g2n_2hc">&lt;table frame="all">
+  &lt;title>Table with nested order lists&lt;/title>
+  &lt;tgroup cols="1">
+    &lt;tbody>
+      &lt;row>
+        &lt;entry>
+          &lt;ol>
+            &lt;li>First Item&lt;/li>
+            &lt;li>Second Item&lt;/li>
+          &lt;/ol>
+        &lt;/entry>
+      &lt;/row>
+      &lt;row>
+        &lt;entry>
+          &lt;ol outputclass="start-3">
+            &lt;li>Third Item&lt;/li>
+            &lt;li>Fourth Item&lt;/li>
+          &lt;/ol>
+        &lt;/entry>            
+      &lt;/row>
+    &lt;/tbody>
+  &lt;/tgroup>
+&lt;/table></codeblock></p>
+    </body>
+  </topic>
+  <topic id="topic_wx4_sdn_2hc">
+    <title>How to Change Numbering Styles for Ordered Lists</title>
+    <body>
+      <p id="p_mvn_cgk_54b">Ordered lists (<xmlelement>ol</xmlelement>) are usually numbered in
+        XHTML output using numerals. If you want to change the numbering to alphabetical, follow
+        these steps:<ol id="ul_g3s_23t_p4">
+          <li id="li_nvn_cgk_54b">Define a custom <xmlatt>outputclass</xmlatt> value and set it as
+            an attribute of the ordered list, as in the following
+            example:<codeblock outputclass="language-xml" id="codeblock_ovn_cgk_54b">&lt;ol outputclass="number-alpha">
+    &lt;li>A&lt;/li>
+    &lt;li>B&lt;/li>
+    &lt;li>C&lt;/li>
+&lt;/ol></codeblock></li>
+          <li id="li_pvn_cgk_54b">Add the following code snippet in a custom CSS
+            file:<codeblock outputclass="language-css" id="codeblock_qvn_cgk_54b">ol.number-alpha{
+    list-style-type:lower-alpha;
+}</codeblock></li>
+          <li id="li_rvn_cgk_54b">Reference the CSS file in a <term>WebHelp Responsive</term>
+            transformation using <xref
+              href="#webhelp-customization-ol-numbering/referencing_the_custom_css_from_a_publishing_temp"
+              format="dita">an <term>Oxygen Publishing Template</term></xref> or <xref
+              href="#webhelp-customization-ol-numbering/referencing_the_css_using_the_argscss_parameter"
+              format="dita">the <codeph>args.css</codeph> parameter</xref>.</li>
+        </ol></p>
+      <section id="referencing_the_custom_css_from_a_publishing_temp">
+        <title>Referencing the Custom CSS from a Publishing Template</title>
+        <p id="p_svn_cgk_54b">
+          <ol id="ol_tvn_cgk_54b">
+            <li id="li_uvn_cgk_54b">If you have not already created a Publishing Template, see <xref
+                href="ope-create-publishing-template.dita">How to Create a Publishing
+                Template</xref>.</li>
+            <li id="li_vvn_cgk_54b">Using the <uicontrol
+                product="author developer editor webhelp-responsive ope"
+                >Project</uicontrol><uicontrol
+                product="authorEclipse developerEclipse editorEclipse">Project Explorer</uicontrol>
+              view, copy your custom CSS in a folder inside the publishing template root folder (for
+              example, in the <filepath>custom_footer_template/resources</filepath> folder).</li>
+            <li id="li_wvn_cgk_54b">Open the <xref
+                href="whr_publishing_template_contents.dita#template_descritpor_file">template
+                descriptor file</xref> associated with your publishing template and add your custom
+              CSS in the <term>resources</term>
+              section.<codeblock outputclass="language-xml" id="codeblock_xvn_cgk_54b">&lt;publishing-template>
+    ...
+    &lt;webhelp>
+        ...                
+        &lt;resources>            
+            ...          
+            &lt;css file="resources/MyCustom.css"/></codeblock></li>
+            <li id="li_yvn_cgk_54b">Open the <term>DITA Map WebHelp Responsive</term> transformation
+              scenario.</li>
+            <li id="li_zvn_cgk_54b">Click the <uicontrol>Choose Custom Publishing
+                Template</uicontrol> link and select your template.</li>
+            <li id="li_awn_cgk_54b">Click <uicontrol>OK</uicontrol> to save the changes to the
+              transformation scenario.</li>
+            <li id="li_bwn_cgk_54b">Run the transformation scenario.</li>
+          </ol>
+        </p>
+        <p id="p_cwn_cgk_54b"><b>Result:</b> Your custom CSS will be applied as a final layer on top
+          of any existing CSS rules and the output will reflect the changes you made.</p>
+      </section>
+      <section id="referencing_the_css_using_the_argscss_parameter">
+        <title>Referencing the CSS Using the <i>args.css</i> Parameter</title>
+        <p id="p_dwn_cgk_54b">
+          <ol id="ol_ewn_cgk_54b">
+            <li id="li_fwn_cgk_54b">Edit the <term>DITA Map WebHelp Responsive</term> transformation
+              scenario and open the <uicontrol>Parameters</uicontrol> tab.</li>
+            <li id="li_gwn_cgk_54b">Set the <codeph>args.css</codeph> parameter to the path of your
+              custom CSS file.</li>
+            <li id="li_hwn_cgk_54b">Set the <codeph>args.copycss</codeph> parameter to
+                <codeph>yes</codeph> to automatically copy your custom CSS in the output folder when
+              the transformation scenario is processed.</li>
+            <li id="li_iwn_cgk_54b">Click <uicontrol>OK</uicontrol> to save the changes to the
+              transformation scenario.</li>
+            <li id="li_jwn_cgk_54b">Run the transformation scenario.</li>
+          </ol>
+        </p>
+        <p id="p_kwn_cgk_54b"><b>Result:</b> Your custom CSS will be applied as a final layer on top
+          of any existing CSS rules and the output will reflect the changes you made.</p>
+      </section>
+    </body>
+  </topic>
+</topic>
