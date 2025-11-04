@@ -334,5 +334,63 @@ System.out.println(documentXmlContent);</codeblock></p>
           specified there.</note>
       </p>
     </section>
+    <section id="section_mbj_gw5_2hc">
+      <title>How do I trigger UI changes after an element is inserted?</title>
+      <p id="p_nbj_gw5_2hc">In some workflows, you may want Web Author to perform a UI action
+        immediately after an element is inserted (for example, displaying a prompt dialog box,
+        updating a pane, or switching to a different view). This allows users to continue their task
+        in the right context without additional manual steps.</p>
+      <p id="p_obj_gw5_2hc">Web Author provides a JavaScript API that allows switching to a UI panel
+        programmatically. To focus a specific view, call:
+          <codeph>workspace.getViewManager().focusView('&lt;view-id>');</codeph></p>
+      <p id="p_pbj_gw5_2hc">Replace <codeph>&lt;view-id></codeph> with the desired view identifier.
+        For example, to focus on the Attributes pane, use:
+          <codeph>workspace.getViewManager().focusView('attributes-panel-table');</codeph></p>
+      <p id="p_qbj_gw5_2hc"><b>Example: Focusing the Attributes panel from a custom JavaScript
+          action</b> - The following custom action demonstrates how to focus on the Attributes pane
+        then insert an element (<xmlelement>note</xmlelement> in this example):</p>
+      <codeblock outputclass="language-javascript">class FocusAttributesView extends sync.actions.AbstractAction {
+  /**
+   * @type {sync.api.Editor}
+   */
+  constructor(editor) {
+    super(editor);
+    this.editor = editor;
+  }
+
+  /** @override */
+  getDisplayName() {
+    return 'Focus Attributes View';
+  }
+
+  /** @override */
+  isEnabled() {
+    return true;
+  }
+
+  /** @override */
+  actionPerformed(callback) {
+    // Focus the Attributes panel
+    workspace.getViewManager().focusView('attributes-panel-table');
+
+    // Example operation (you can replace this with your own logic)
+    workspace.currentEditor.getActionsManager().invokeOperation(
+      "ro.sync.ecss.extensions.commons.operations.InsertFragmentOperation",
+      { fragment: "&lt;note>test&lt;/note>" },
+      callback
+    );
+  }
+}
+
+// Register the custom action
+var editor = workspace.currentEditor;
+editor.getActionsManager().registerAction(
+  'insert.note.test',
+  new FocusAttributesView(editor)
+);</codeblock>
+      <p id="p_ubj_gw5_2hc">After this customization, whenever the element is inserted using this
+        action, <b>Web Author</b> automatically switches to the specified pane (the
+          <b>Attributes</b> view in this example).</p>
+    </section>
   </body>
 </topic>
