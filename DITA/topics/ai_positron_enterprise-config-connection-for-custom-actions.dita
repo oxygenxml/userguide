@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron_enterprise-config-connection-for-custom-actions">
+  <title>Configure the AI Service Connection for Custom Actions</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Configure connection for custom actions</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <b>Oxygen AI Positron Enterprise</b> add-on can automatically configure its AI service
+      using a JSON file placed in the <b>plugin's</b> installation directory. You can specify which
+      AI service connection should be used to execute an action directly in the action's JSON
+      configuration file. This allows for greater flexibility and control over which AI engine
+      processes each action.</p>
+    <section id="section_specify-service">
+      <title>How to Specify the AI Service Connection</title>
+      <p>To specify the AI service, set the connection ID as a prefix in the engine ID in the
+        action's configuration JSON file:<ul id="ol_uvl_dy5_2hc">
+          <li id="li_wmp_fy5_2hc">For a connection with an ID of
+            <i>openai</i>:<codeblock outputclass="language-json">"engine": "openai::gpt-5"</codeblock></li>
+          <li id="li_pfd_py5_2hc">For the Positron service, use the following
+            prefix:<codeblock outputclass="language-json">"engine": "aips::"</codeblock></li>
+        </ul></p>
+    </section>
+    <section id="section_connection-resolution">
+      <title>Connection Resolution Logic</title>
+      <p>
+        <ul id="ul_ysb_5y5_2hc">
+          <li id="li_zsb_5y5_2hc"><b>Explicit Connection</b> - If a connection ID is specified as a
+            prefix in the engine ID, the system will attempt to use that specific connection.</li>
+          <li id="li_tbs_vy5_2hc"><b>Fallback Mechanism</b> - If the specified connection does not
+            exist, the Positron service is disabled, or no configuration is provided, the system
+              will:<ol id="ol_nhw_wy5_2hc">
+              <li id="li_ohw_wy5_2hc">Search for the model in all available external
+                connections.</li>
+              <li id="li_phw_wy5_2hc">If not found, attempt to use the Positron service.</li>
+              <li id="li_qhw_wy5_2hc">If still not found or the Positron service is disabled, fall
+                back to the default model selected in the combo box from the view.</li>
+            </ol></li>
+        </ul>
+      </p>
+    </section>
+    <section id="section_examples">
+      <title>Examples</title>
+      <p id="p_chh_bz5_2hc">For the Positron Service:<codeblock outputclass="language-json">{
+        "id": "Test_gpt-4.1_Positron_Service",
+        "title": "Test gpt-4.1 Positron Service",
+        "description": "This action will be executed with Positron service",
+        "input": "selection, document",
+        "output-action": "replace",
+        "prompt": "Improve readability in the following XML content:",
+        "parameters": {
+            "engine": {"name": "aips::gpt-4.1"}
+        }
+    }</codeblock></p>
+      <p id="p_s1c_2z5_2hc">For a connection to an external AI
+        service:<codeblock outputclass="language-json">{
+        "id": "Test_gpt-4.1_openAI",
+        "title": "Test gpt-4.1 OpenAI",
+        "description": "This action will be executed with a connection with
+ 'openai' id if it exists",
+        "input": "selection, document",
+        "output-action": "replace",
+        "prompt": "Improve readability in the following XML content:",
+        "parameters": {
+            "engine": {"name": "openai::gpt-4.1"}
+        }
+    }</codeblock></p>
+    </section>
+  </body>
+</topic>
