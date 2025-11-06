@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron-troubleshooting">
+  <title>Troubleshooting</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Troubleshooting</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_rsc_mk3_fhc">To see the exact prompt that is sent for any custom AI action (in the Chat
+      view), you can set the <codeph>oxygen.ai.positron.development.mode</codeph>
+      <xref
+        href="https://www.oxygenxml.com/doc/ug-editor/topics/set-parameter-in-startup-script.html#set-parameters-for-application-launchers__setting-a-system-property"
+        format="html" scope="external">system property</xref> with the value of
+        <codeph>true</codeph> in the parent <ph keyref="product"/> application.</p>
+    <p id="p_ssc_mk3_fhc">If the add-on fails to connect with the custom settings, it might be
+      useful to enable debug logging in the application to see what requests and responses are made
+      to/from the AI server. </p>
+    <p id="p_tsc_mk3_fhc">You can enable debug logging in the application by adding a
+        <filepath>logback.xml</filepath> file in the application's installation folder. A minimal
+        <codeph>logback.xml</codeph> configuration XML file content to enable logging only for the
+      AI Positron add-on's connections would look like
+        this:<codeblock id="codeblock_scr_vxn_h1c" outputclass="language-xml">&lt;configuration>
+  &lt;appender name="R2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>${user.home}/Desktop/oxygenLog/oxygen.log&lt;/file>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      &lt;fileNamePattern>${user.home}/Desktop/oxygenLog/oxygen%i.log.gz&lt;/fileNamePattern>
+      &lt;minIndex>1&lt;/minIndex>
+      &lt;maxIndex>20&lt;/maxIndex>
+    &lt;/rollingPolicy>
+    &lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      &lt;maxFileSize>12MB&lt;/maxFileSize>
+    &lt;/triggeringPolicy>
+    &lt;encoder>
+      &lt;pattern>%r %marker %p [ %t ] %c - %m%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  &lt;logger name="com.oxygenxml.positron.connector" level="debug"/>
+  &lt;logger name="com.oxygenxml.positron.core" level="debug"/>
+  &lt;root level="error">
+    &lt;appender-ref ref="R2"/>
+  &lt;/root>
+&lt;/configuration></codeblock><note type="important" id="note_ls1_qdk_gcc">The logging
+        information will be copied in the <filepath>Desktop/oxygenLog</filepath> folder once the
+        application is started. To avoid performance problems, the <codeph>logback.xml</codeph> file
+        must be deleted once the logging has been obtained.</note></p>
+  </body>
+</topic>
