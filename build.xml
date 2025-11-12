@@ -21,6 +21,10 @@
       <param name="editlink.remote.ditamap.url">${editlink.ditamap.url}</param>
     </antcall>
     <antcall target="build-addons-public"/>
+    <antcall target="build-positron-desktop-public"/>
+    <antcall target="build-positron-eclipse-public"/>
+    <antcall target="build-positron-wa-public"/>
+    <antcall target="build-positron-cf-public"/>
   </target>
   <target name="build-webhelp-private">
     <property name="editlink.ditamap.url"
@@ -30,6 +34,10 @@
       <param name="editlink.remote.ditamap.url">${editlink.ditamap.url}</param>
     </antcall>
     <antcall target="build-addons-private"/>
+    <antcall target="build-positron-desktop-private"/>
+    <antcall target="build-positron-eclipse-private"/>
+    <antcall target="build-positron-wa-private"/>
+    <antcall target="build-positron-cf-private"/>
   </target>
   <target name="build-webhelp-common">
     <property name="p-type" value="-public"/>
@@ -403,6 +411,164 @@
       <arg value="-Dwebhelp.publishing.template=${p-template}"/>
       <arg value="-Deditlink.remote.ditamap.url=${editlink.ditamap}"/>
       <arg value="-Deditlink.web.author.url=${editlink.web.author.url}"/>
+    </exec>
+  </target>
+  
+  
+  <!-- Built targets for all the Positron sites -->
+  <target name="build-positron-desktop-public">
+    <antcall target="build-positron-desktop">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-public"/>
+    </antcall>
+  </target>
+  <target name="build-positron-desktop-private">
+    <antcall target="build-positron-desktop">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-private"/>
+    </antcall>
+  </target>
+  <target name="build-positron-desktop">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <property name="p-type" value=""/>
+    <echo>Build single target: ug-positron-desktop / ${p-format} ${p-type}</echo>
+    <property name="p-output"
+      >${project.build.directory}/output/${p-format}${p-type}/ug-positron-desktop</property>
+    <property name="p-temp"
+      >${project.build.directory}/temp/${p-format}${p-type}/ug-positron-desktop</property>
+    <property name="p-template"
+      >${basedir}/publishing/publishing-template/addons${p-type}.opt</property>
+    <property name="clean.temp">yes</property>
+    <delete dir="${p-output}"/>
+    <mkdir dir="${p-output}"/>
+    <exec failifexecutionfails="true" failonerror="true"
+      executable="${dita-ot-dir}/bin/${dita.executable}">
+      <arg value="--format=webhelp-responsive"/>
+      <arg value="--output=${p-output}"/>
+      <arg value="--temp=${p-temp}"/>
+      <arg value="--clean.temp=${clean.temp}"/>
+      <arg value="--input=${basedir}/DITA/positron-desktop.ditamap"/>
+      <arg value="-Dhttps.proxySet=true"/>
+      <arg value="-Dhttps.proxyHost=proxy.sync.ro"/>
+      <arg value="-Dhttps.proxyPort=3128"/>
+      <arg value="-Dwebhelp.publishing.template=${p-template}"/>
+    </exec>
+  </target>
+  
+  <target name="build-positron-eclipse-public">
+    <antcall target="build-positron-eclipse">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-public"/>
+    </antcall>
+  </target>
+  <target name="build-positron-eclipse-private">
+    <antcall target="build-positron-eclipse">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-private"/>
+    </antcall>
+  </target>
+  <target name="build-positron-eclipse">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <property name="p-type" value=""/>
+    <echo>Build single target: ug-positron-eclipse / ${p-format} ${p-type}</echo>
+    <property name="p-output"
+      >${project.build.directory}/output/${p-format}${p-type}/ug-positron-eclipse</property>
+    <property name="p-temp"
+      >${project.build.directory}/temp/${p-format}${p-type}/ug-positron-eclipse</property>
+    <property name="p-template"
+      >${basedir}/publishing/publishing-template/addons${p-type}.opt</property>
+    <property name="clean.temp">yes</property>
+    <delete dir="${p-output}"/>
+    <mkdir dir="${p-output}"/>
+    <exec failifexecutionfails="true" failonerror="true"
+      executable="${dita-ot-dir}/bin/${dita.executable}">
+      <arg value="--format=webhelp-responsive"/>
+      <arg value="--output=${p-output}"/>
+      <arg value="--temp=${p-temp}"/>
+      <arg value="--clean.temp=${clean.temp}"/>
+      <arg value="--input=${basedir}/DITA/positron-eclipse.ditamap"/>
+      <arg value="-Dhttps.proxySet=true"/>
+      <arg value="-Dhttps.proxyHost=proxy.sync.ro"/>
+      <arg value="-Dhttps.proxyPort=3128"/>
+      <arg value="-Dwebhelp.publishing.template=${p-template}"/>
+    </exec>
+  </target>
+  
+  <target name="build-positron-wa-public">
+    <antcall target="build-positron-wa">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-public"/>
+    </antcall>
+  </target>
+  <target name="build-positron-wa-private">
+    <antcall target="build-positron-wa">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-private"/>
+    </antcall>
+  </target>
+  <target name="build-positron-wa">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <property name="p-type" value=""/>
+    <echo>Build single target: ug-positron-wa / ${p-format} ${p-type}</echo>
+    <property name="p-output"
+      >${project.build.directory}/output/${p-format}${p-type}/ug-positron-wa</property>
+    <property name="p-temp"
+      >${project.build.directory}/temp/${p-format}${p-type}/ug-positron-wa</property>
+    <property name="p-template"
+      >${basedir}/publishing/publishing-template/addons${p-type}.opt</property>
+    <property name="clean.temp">yes</property>
+    <delete dir="${p-output}"/>
+    <mkdir dir="${p-output}"/>
+    <exec failifexecutionfails="true" failonerror="true"
+      executable="${dita-ot-dir}/bin/${dita.executable}">
+      <arg value="--format=webhelp-responsive"/>
+      <arg value="--output=${p-output}"/>
+      <arg value="--temp=${p-temp}"/>
+      <arg value="--clean.temp=${clean.temp}"/>
+      <arg value="--input=${basedir}/DITA/positron-webauthor.ditamap.ditamap"/>
+      <arg value="-Dhttps.proxySet=true"/>
+      <arg value="-Dhttps.proxyHost=proxy.sync.ro"/>
+      <arg value="-Dhttps.proxyPort=3128"/>
+      <arg value="-Dwebhelp.publishing.template=${p-template}"/>
+    </exec>
+  </target>
+  
+  <target name="build-positron-cf-public">
+    <antcall target="build-positron-cf">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-public"/>
+    </antcall>
+  </target>
+  <target name="build-positron-cf-private">
+    <antcall target="build-positron-cf">
+      <param name="p-format" value="webhelp-responsive"/>
+      <param name="p-type" value="-private"/>
+    </antcall>
+  </target>
+  <target name="build-positron-cf">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <property name="p-type" value=""/>
+    <echo>Build single target: ug-positron-cf / ${p-format} ${p-type}</echo>
+    <property name="p-output"
+      >${project.build.directory}/output/${p-format}${p-type}/ug-positron-cf</property>
+    <property name="p-temp"
+      >${project.build.directory}/temp/${p-format}${p-type}/ug-positron-cf</property>
+    <property name="p-template"
+      >${basedir}/publishing/publishing-template/addons${p-type}.opt</property>
+    <property name="clean.temp">yes</property>
+    <delete dir="${p-output}"/>
+    <mkdir dir="${p-output}"/>
+    <exec failifexecutionfails="true" failonerror="true"
+      executable="${dita-ot-dir}/bin/${dita.executable}">
+      <arg value="--format=webhelp-responsive"/>
+      <arg value="--output=${p-output}"/>
+      <arg value="--temp=${p-temp}"/>
+      <arg value="--clean.temp=${clean.temp}"/>
+      <arg value="--input=${basedir}/DITA/positron-content-fusion.ditamap.ditamap"/>
+      <arg value="-Dhttps.proxySet=true"/>
+      <arg value="-Dhttps.proxyHost=proxy.sync.ro"/>
+      <arg value="-Dhttps.proxyPort=3128"/>
+      <arg value="-Dwebhelp.publishing.template=${p-template}"/>
     </exec>
   </target>
 </project>
