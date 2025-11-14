@@ -14,33 +14,91 @@
     </metadata>
   </prolog>
   <body>
-    <p id="p_axq_cgk_54b">A common use-case is to add a background image to one of the page corners.</p>
-    <codeblock outputclass="language-css" id="codeblock_bxq_cgk_54b">@page :left {
-  @bottom-left-corner{
-      content: " ";
-      background-image: url('https://www.oxygenxml.com/resellers/resources/OxygenXMLEditor_icon.svg');
-      background-repeat:no-repeat;
-      background-position:50% 50%;        
+    <section id="section_cyl_tfr_hhc">
+      <title>Using Raster or Vector Images</title>
+      <p id="p_axq_cgk_54b">A common use-case is to add a company or a product logo to one of the
+        page corners.<note type="important" id="note_llq_dhr_hhc">Always specify a
+            <codeph>content</codeph> property. If not, the page margin box will not be generated.
+        </note><codeblock outputclass="language-css" id="codeblock_bxq_cgk_54b">@page {
+  @bottom-left-corner {
+    content: " ";
+    background-image: url('https://www.oxygenxml.com/img/resources/oxygen190x62.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 90%;
   }
-}</codeblock>
-    <note type="important" id="note_cxq_cgk_54b">Always specify a <codeph>content</codeph> property. If not, the page
-      margin box will not be generated. </note>
-    <p id="p_dxq_cgk_54b">Another use-case is to use the <codeph>@top-left</codeph> or <codeph>@top-right</codeph> page
-      margin boxes. These boxes have an automatic layout and they can be very small if they have no
-      content. If there is no text to be placed over the image, use a series of non-breaking spaces
-        (<codeph>\A0</codeph>) to increase the box width as in the following example (alternatively,
-      you can use the technique described in <xref
-        href="dcpp_how_to_simulate_the_header_and_footer_by_using_a_page_background_image.dita"
-      />):</p>
-    <codeblock outputclass="language-css" id="codeblock_exq_cgk_54b">@page :left {
+}</codeblock></p>
+      <p>Another use-case is to use the <codeph>@top-left</codeph> or <codeph>@top-right</codeph>
+        page margin boxes. These boxes have an automatic layout and they can be very small if they
+        have no content. If there is no text to be placed over the image, use a series of
+        non-breaking spaces (<codeph>\A0</codeph>) to increase the box width as in the following
+        example (alternatively, you can use the technique described in <xref
+          href="dcpp_how_to_simulate_the_header_and_footer_by_using_a_page_background_image.dita"
+        />):<codeblock outputclass="language-css" id="codeblock_exq_cgk_54b">@page :left {
   @top-left{
       content: '\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0';
       background-image: url('https://www.oxygenxml.com/resellers/resources/OxygenXMLEditor_icon.svg');
       background-repeat:no-repeat;
       background-position:50% 50%;
   }
-}</codeblock>
-    <note conkeyref="reusables-dcpp/note_pqy_hdn_vcb" id="note_fxq_cgk_54b"/>
+}</codeblock></p>
+      <note conkeyref="reusables-dcpp/note_pqy_hdn_vcb" id="note_fxq_cgk_54b"/>
+    </section>
+    <section id="section_jjf_ygr_hhc">
+      <title>Using SVG Templates</title>
+      <p>Additional requirements may need to insert dynamic content (such as version or date), to
+        achieve this you can use <xref
+          href="https://www.oxygenxml.com/doc/ug-chemistry/topics/ch_graphics_svg_templates.html"
+          format="html" scope="external">SVG Templates</xref>, for example if you need to display
+        the last version in a
+          <xmlelement>bookmap</xmlelement>:<codeblock id="codeblock_qrd_qfr_hhc" outputclass="language-xml">&lt;bookmap id="taskbook">
+    ...
+    &lt;bookmeta>
+        ...
+        &lt;prodinfo>
+            &lt;vrmlist>
+                &lt;vrm version="1.0"/>
+                &lt;vrm version="1.1"/>
+            &lt;/vrmlist>
+        &lt;/prodinfo>
+        ...
+    &lt;/bookmeta>
+    ...
+&lt;/bookmap></codeblock><ol id="ol_zl2_rhr_hhc">
+          <li>Locate the node you want to extract in the <filepath>merged.html</filepath>
+            file:<codeblock id="codeblock_tvn_vhr_hhc" outputclass="language-xml">&lt;div class="- front-page/front-page front-page">
+  &lt;div class="- map/topicmeta bookmap/bookmeta topicmeta bookmeta">
+    ...
+    &lt;div class="- topic/prodinfo prodinfo">
+      &lt;div class="- topic/prodname prodname">Product tasks&lt;/div>
+      &lt;div class="- topic/vrmlist vrmlist">
+        &lt;div version="1.0" class="- topic/vrm vrm">&lt;/div>
+        &lt;div version="1.1" class="- topic/vrm vrm">&lt;/div>
+      &lt;/div>
+    &lt;/div>
+    ...
+  &lt;/div>
+&lt;/div></codeblock></li>
+          <li>Create the template that will be set as footer
+              (<filepath>footer.template.svg</filepath> in our
+            example):<codeblock id="codeblock_jst_23r_hhc" outputclass="language-xml">&lt;svg xmlns="http://www.w3.org/2000/svg" width="1in" height="1in">
+  &lt;text x="0.10in" y="0.70in">Version: 
+    ${//*[contains(@class, 'bookmap/bookmeta')]
+    //*[contains(@class, 'topic/vrmlist')]
+    /*[contains(@class, 'topic/vrm')][last()]/@version}&lt;/text>
+&lt;/svg></codeblock></li>
+          <li>Refer the template in your CSS
+            customization:<codeblock id="codeblock_idm_jhr_hhc" outputclass="language-css">@page {
+  @bottom-left-corner {
+    content: " ";
+    background-image: url("footer.template.svg");
+    background-repeat: no-repeat;
+    background-position: 0;
+  }
+}</codeblock></li>
+          <li>After the transformation you will get <b>Version: 1.1</b> in the footer.</li>
+        </ol></p>
+    </section>
   </body>
   <related-links>
     <linklist>
@@ -48,6 +106,7 @@
       <link href="dcpp_images.dita"/>
       <link href="dcpp_how_to_change_the_cover_image.dita"/>
       <link href="ch_how_to_add_a_link_in_headers_and_footers.dita"/>
+      <link href="dcpp_how_to_use_xpath_expressions_in_css.dita"/>
     </linklist>
   </related-links>
 </topic>
