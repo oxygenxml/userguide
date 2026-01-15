@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-file-browsing-filter-customization">
+  <title>File Browser Descriptor API</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>File Browser Descriptor API</indexterm>
+        <indexterm>File browsing widget</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The File Browser Descriptor API enables complete customization of file type filtering in Web
+      Author's file browser and upload dialog boxes through a unified descriptor-based approach.</p>
+    <section id="quick-start">
+      <title>Quick Start</title>
+      <codeblock outputclass="language-javascript">// Get current descriptor
+var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Add SVG filter option to IMAGE type
+descriptor.types.IMAGE.filters.push({
+  label: 'SVG Files',
+  regex: '\\.(svg)$'
+});
+
+// Apply the updated descriptor
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);</codeblock>
+    </section>
+    <section id="api-reference">
+      <title>API Reference</title>
+      <p>Functions:</p>
+      <codeblock outputclass="language-javascript">sync.api.UrlChooser.getFileBrowserDescriptor()
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor)</codeblock>
+      <p>Descriptor Structure:</p>
+      <p>The file browser descriptor is a JSON object with the following structure:</p>
+      <codeblock outputclass="language-javascript">{
+  "types": {
+    "TYPE_NAME": {
+      "uploadAcceptAttribute": "string|undefined",
+      "allowAllFiles": boolean,
+      "filters": [
+        {
+          "label": "string",
+          "regex": "string|null"
+        }
+      ]
+    }
+  }
+}</codeblock>
+      <p>Type Configuration Properties:</p>
+      <table>
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Property</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>uploadAcceptAttribute</codeph></entry>
+              <entry>string | undefined</entry>
+              <entry>The HTML accept attribute for native file upload dialog boxes. If undefined, no
+                file type restriction is applied.</entry>
+            </row>
+            <row>
+              <entry><codeph>allowAllFiles</codeph></entry>
+              <entry>boolean</entry>
+              <entry>Specifies whether to show the "All Files" option in the file browser drop-down
+                menu. Default=<codeph>true</codeph>.</entry>
+            </row>
+            <row>
+              <entry><codeph>filters</codeph></entry>
+              <entry>FilterConfiguration[]</entry>
+              <entry>Array of filter configurations for this file type. The first filter is
+                considered the default.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p>Filter Configuration Properties:</p>
+      <table>
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Property</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>label</codeph></entry>
+              <entry>string</entry>
+              <entry>Localized display text shown in the file browser drop-down menu for this
+                filter.</entry>
+            </row>
+            <row>
+              <entry><codeph>regex</codeph></entry>
+              <entry>string | null</entry>
+              <entry>Regular expression pattern as a string for filtering files. If
+                  <codeph>null</codeph>, no filtering is applied (shows all files within the
+                type).</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+    <section id="use-cases">
+      <title>Use Cases</title>
+      <p><u><b>Add Filter Options (Recommended)</b></u></p>
+      <p> Add additional filter choices without removing defaults. </p>
+      <codeblock outputclass="language-javascript">var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Add SVG and PNG options to IMAGE type
+descriptor.types.IMAGE.filters.push({
+  label: 'SVG Files',
+  regex: '\\.(svg)$'
+});
+
+descriptor.types.IMAGE.filters.push({
+  label: 'PNG Files',
+  regex: '\\.(png)$'
+});
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);    </codeblock>
+      <p><u><b>Create Custom Types</b></u></p>
+      <p> Define completely new file types. </p>
+      <codeblock outputclass="language-javascript">var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Add a DOCUMENT type
+descriptor.types.DOCUMENT = {
+  uploadAcceptAttribute: '.doc,.docx,.pdf,.txt',
+  allowAllFiles: true,
+  filters: [
+    {
+      label: 'Document Files',
+      regex: '\\.(doc|docx|pdf|txt)$'
+    },
+    {
+      label: 'Office Documents',
+      regex: '\\.(doc|docx|xls|xlsx)$'
+    }
+  ]
+};
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);
+
+// Use the custom type in your file chooser
+var context = new sync.api.UrlChooser.Context('DOCUMENT');
+workspace.getUrlChooser().chooseUrl(context, function(url) {
+  console.log('Selected document:', url);
+}, sync.api.UrlChooser.Purpose.CHOOSE);</codeblock>
+      <p><u><b>Disable "All Files" Option</b></u></p>
+      <p> Remove the "All Files" option for specific file types. </p>
+      <codeblock outputclass="language-javascript">var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Disable "All Files" option for DITA type
+descriptor.types.DITA.allowAllFiles = false;
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);    </codeblock>
+      <p><u><b>Replace Default Filters</b></u></p>
+      <p> Completely replace the default filters for a file type. </p>
+      <codeblock outputclass="language-javascript">var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Replace IMAGE filters with JPEG-only
+descriptor.types.IMAGE = {
+  uploadAcceptAttribute: '.jpg,.jpeg',
+  allowAllFiles: false,
+  filters: [
+    {
+      label: 'JPEG Images Only',
+      regex: '\\.(jpg|jpeg)$'
+    }
+  ]
+};
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);</codeblock>
+    </section>
+    <section id="validation">
+      <title>Validation</title>
+      <p>The API logs console warnings for the following common issues:</p>
+      <ul>
+        <li><codeph>descriptor must be an object</codeph> - Provide valid descriptor object.</li>
+        <li><codeph>descriptor.types must be an object</codeph> - Ensure that the types property
+          exists.</li>
+        <li><codeph>invalid type configuration</codeph> - Check the type configuration
+          structure.</li>
+        <li><codeph>invalid filter configuration</codeph> - Verify that filter objects have the
+          required properties.</li>
+        <li><codeph>invalid regex</codeph> - Ensure that regex strings are valid regular
+          expressions.</li>
+      </ul>
+    </section>
+    <section id="troubleshooting">
+      <title>Troubleshooting</title>
+      <p id="p_kkq_f1c_zhc">The following is a list of suggestions for various troubleshooting
+          scenarios:<ul id="ul_xsm_31c_zhc">
+          <li id="li_ysm_31c_zhc"><b>Filter does not appear</b> - Check the label, regex validity,
+            type name, and console warnings.</li>
+          <li id="li_eqt_l1c_zhc"><b>"All Files" option is not hidden</b> - Ensure that
+              <codeph>allowAllFiles: false</codeph> is set on the type configuration.</li>
+          <li id="li_jff_p1c_zhc"><b>Upload restrictions do not work</b> -  Verify the
+              <codeph>uploadAcceptAttribute</codeph> format (e.g.
+            <codeph>'.jpg,.png'</codeph>).</li>
+          <li id="li_vf3_s1c_zhc"><b>Changes do not take affect</b> - Ensure that
+              <codeph>setFileBrowserDescriptor()</codeph> is called after modifying the descriptor.
+          </li>
+        </ul></p>
+    </section>
+  </body>
+</topic>
