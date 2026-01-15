@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="topic_emm_2by_yhc">
+    <title>File Browsing Filter Customization</title>
+    <prolog>
+        <metadata>
+            <keywords>
+                <indexterm>File Browsing Filter Customization</indexterm>
+                <indexterm>File browsing widget</indexterm>
+            </keywords>
+        </metadata>
+    </prolog>
+    <body>
+        <p>The File Filter Customization API allows customization of file type filtering in Web
+            Author file browser and upload dialogs.</p>
+      
+      
+          <section id="quick-start">
+      <title>Quick Start</title>
+
+      <codeblock outputclass="language-javascript">
+sync.api.UrlChooser.registerCustomFileFilterForType(
+  sync.api.UrlChooser.Type.IMAGE,
+  'svg',
+  {
+    filterRegex: /\.(svg)$/i,
+    label: 'SVG Files'
+  }
+);
+      </codeblock>
+    </section>
+
+    <section id="api-reference">
+      <title>API Reference</title>
+
+      <p>Function signature:</p>
+
+      <codeblock outputclass="language-javascript">
+sync.api.UrlChooser.registerCustomFileFilterForType(type, filterOptionId, config)
+      </codeblock>
+
+      <p>Parameters:</p>
+
+      <table>
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Parameter</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>type</codeph></entry>
+              <entry>string</entry>
+              <entry>
+                URL chooser type. Use <codeph>sync.api.UrlChooser.Type.*</codeph>
+                constants or a custom string.
+              </entry>
+            </row>
+            <row>
+              <entry><codeph>filterOptionId</codeph></entry>
+              <entry>string | null</entry>
+              <entry>
+                Unique ID used to add a filter option, or <codeph>null</codeph>
+                to replace the default filter (destructive).
+              </entry>
+            </row>
+            <row>
+              <entry><codeph>config</codeph></entry>
+              <entry>object</entry>
+              <entry>Configuration object.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <p>Configuration properties:</p>
+
+      <table>
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Property</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>filterRegex</codeph></entry>
+              <entry>RegExp | null</entry>
+              <entry>
+                Regular expression for UI file filtering.
+                Use <codeph>null</codeph> to disable filtering.
+              </entry>
+            </row>
+            <row>
+              <entry><codeph>acceptAttribute</codeph></entry>
+              <entry>string | undefined</entry>
+              <entry>
+                HTML <codeph>accept</codeph> attribute for upload dialogs.
+                Only applicable when <codeph>filterOptionId</codeph> is
+                <codeph>null</codeph>.
+              </entry>
+            </row>
+            <row>
+              <entry><codeph>label</codeph></entry>
+              <entry>string</entry>
+              <entry>Display label shown in the file filter drop-down. Strongly recommended. </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section id="use-cases">
+      <title>Use Cases</title>
+
+      <p><b>Add Filter Options (Recommended)</b></p>
+      <p>
+        Add additional filter choices without removing existing defaults.
+      </p>
+
+      <codeblock outputclass="language-javascript">
+sync.api.UrlChooser.registerCustomFileFilterForType(
+  sync.api.UrlChooser.Type.IMAGE,
+  'svg',
+  { filterRegex: /\.(svg)$/i, label: 'SVG Files' }
+);
+
+sync.api.UrlChooser.registerCustomFileFilterForType(
+  sync.api.UrlChooser.Type.IMAGE,
+  'png',
+  { filterRegex: /\.(png)$/i, label: 'PNG Files' }
+);
+      </codeblock>
+
+      <p><b>Create Custom Types</b></p>
+      <p>
+        Define a new file type with custom filtering and upload restrictions.
+      </p>
+
+      <codeblock outputclass="language-javascript">
+sync.api.UrlChooser.registerCustomFileFilterForType(
+  'DOCUMENT',
+  null,
+  {
+    filterRegex: /\.(doc|docx|pdf|txt)$/i,
+    acceptAttribute: '.doc,.docx,.pdf,.txt',
+    label: 'Document Files'
+  }
+);
+      </codeblock>
+
+      <p><b>Replace Default Filters</b></p>
+
+      <note type="warning">
+        Replacing a default filter is destructive and removes the original behavior.
+      </note>
+
+      <codeblock outputclass="language-javascript">
+sync.api.UrlChooser.registerCustomFileFilterForType(
+  sync.api.UrlChooser.Type.IMAGE,
+  null,
+  {
+    filterRegex: /\.(jpg|jpeg)$/i,
+    acceptAttribute: '.jpg,.jpeg',
+    label: 'JPEG Images Only'
+  }
+);
+      </codeblock>
+    </section>
+
+    <section id="troubleshooting">
+      <title>Troubleshooting</title>
+
+      <dl>
+        <dlentry>
+          <dt>Filter not appearing</dt>
+          <dd>
+            Verify the label, regular expression, type value, and check
+            console warnings.
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt><codeph>acceptAttribute</codeph> not working</dt>
+          <dd>
+            Ensure <codeph>filterOptionId</codeph> is <codeph>null</codeph>
+            and the format is correct (for example, <codeph>.jpg,.png</codeph>).
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Default replaced unintentionally</dt>
+          <dd>
+            Use a non-null <codeph>filterOptionId</codeph> to add filter
+            options instead of replacing the default.
+          </dd>
+        </dlentry>
+      </dl>
+    </section>
+
+      
+    </body>
+</topic>
