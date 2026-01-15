@@ -1,82 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="topic_emm_2by_yhc">
-    <title>File Browsing Filter Customization</title>
+    <title>File Browser Descriptor API</title>
     <prolog>
         <metadata>
             <keywords>
-                <indexterm>File Browsing Filter Customization</indexterm>
+                <indexterm>File Browser Descriptor API</indexterm>
                 <indexterm>File browsing widget</indexterm>
             </keywords>
         </metadata>
     </prolog>
     <body>
-        <p>The File Filter Customization API allows customization of file type filtering in Web
-            Author file browser and upload dialogs.</p>
+        <p>The File Browser Descriptor API enables complete customization of file type filtering in Web Author's file browser and upload dialogs through a unified descriptor-based approach.</p>
       
       
           <section id="quick-start">
       <title>Quick Start</title>
 
       <codeblock outputclass="language-javascript">
-sync.api.UrlChooser.registerCustomFileFilterForType(
-  sync.api.UrlChooser.Type.IMAGE,
-  'svg',
-  {
-    filterRegex: /\.(svg)$/i,
-    label: 'SVG Files'
-  }
-);
+// Get current descriptor
+var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Add SVG filter option to IMAGE type
+descriptor.types.IMAGE.filters.push({
+  label: 'SVG Files',
+  regex: '\\.(svg)$'
+});
+
+// Apply the updated descriptor
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);
       </codeblock>
     </section>
 
     <section id="api-reference">
       <title>API Reference</title>
 
-      <p>Function signature:</p>
+      <p>Functions:</p>
 
       <codeblock outputclass="language-javascript">
-sync.api.UrlChooser.registerCustomFileFilterForType(type, filterOptionId, config)
+sync.api.UrlChooser.getFileBrowserDescriptor()
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor)
       </codeblock>
 
-      <p>Parameters:</p>
+      <p>Descriptor Structure:</p>
 
-      <table>
-        <tgroup cols="3">
-          <thead>
-            <row>
-              <entry>Parameter</entry>
-              <entry>Type</entry>
-              <entry>Description</entry>
-            </row>
-          </thead>
-          <tbody>
-            <row>
-              <entry><codeph>type</codeph></entry>
-              <entry>string</entry>
-              <entry>
-                URL chooser type. Use <codeph>sync.api.UrlChooser.Type.*</codeph>
-                constants or a custom string.
-              </entry>
-            </row>
-            <row>
-              <entry><codeph>filterOptionId</codeph></entry>
-              <entry>string | null</entry>
-              <entry>
-                Unique ID used to add a filter option, or <codeph>null</codeph>
-                to replace the default filter (destructive).
-              </entry>
-            </row>
-            <row>
-              <entry><codeph>config</codeph></entry>
-              <entry>object</entry>
-              <entry>Configuration object.</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
+      <p>The file browser descriptor is a JSON object with the following structure:</p>
 
-      <p>Configuration properties:</p>
+      <codeblock outputclass="language-javascript">
+{
+  "types": {
+    "TYPE_NAME": {
+      "uploadAcceptAttribute": "string|undefined",
+      "allowAllFiles": boolean,
+      "filters": [
+        {
+          "label": "string",
+          "regex": "string|null"
+        }
+      ]
+    }
+  }
+}
+      </codeblock>
+
+      <p>Type Configuration Properties:</p>
 
       <table>
         <tgroup cols="3">
@@ -89,26 +76,45 @@ sync.api.UrlChooser.registerCustomFileFilterForType(type, filterOptionId, config
           </thead>
           <tbody>
             <row>
-              <entry><codeph>filterRegex</codeph></entry>
-              <entry>RegExp | null</entry>
-              <entry>
-                Regular expression for UI file filtering.
-                Use <codeph>null</codeph> to disable filtering.
-              </entry>
+              <entry><codeph>uploadAcceptAttribute</codeph></entry>
+              <entry>string | undefined</entry>
+              <entry>HTML accept attribute for native file upload dialogs. If undefined, no file type restriction is applied.</entry>
             </row>
             <row>
-              <entry><codeph>acceptAttribute</codeph></entry>
-              <entry>string | undefined</entry>
-              <entry>
-                HTML <codeph>accept</codeph> attribute for upload dialogs.
-                Only applicable when <codeph>filterOptionId</codeph> is
-                <codeph>null</codeph>.
-              </entry>
+              <entry><codeph>allowAllFiles</codeph></entry>
+              <entry>boolean</entry>
+              <entry>Whether to show the "All Files" option in the file browser dropdown. Defaults to <codeph>true</codeph>.</entry>
             </row>
+            <row>
+              <entry><codeph>filters</codeph></entry>
+              <entry>FilterConfiguration[]</entry>
+              <entry>Array of filter configurations for this type. The first filter is considered the default.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <p>Filter Configuration Properties:</p>
+
+      <table>
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Property</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
             <row>
               <entry><codeph>label</codeph></entry>
               <entry>string</entry>
-              <entry>Display label shown in the file filter drop-down. Strongly recommended. </entry>
+              <entry>Localized display text shown in the file browser dropdown for this filter.</entry>
+            </row>
+            <row>
+              <entry><codeph>regex</codeph></entry>
+              <entry>string | null</entry>
+              <entry>Regular expression pattern as a string for filtering files. If <codeph>null</codeph>, no filtering is applied (shows all files within the type).</entry>
             </row>
           </tbody>
         </tgroup>
@@ -120,57 +126,109 @@ sync.api.UrlChooser.registerCustomFileFilterForType(type, filterOptionId, config
 
       <p><b>Add Filter Options (Recommended)</b></p>
       <p>
-        Add additional filter choices without removing existing defaults.
+        Add additional filter choices without removing defaults.
       </p>
 
       <codeblock outputclass="language-javascript">
-sync.api.UrlChooser.registerCustomFileFilterForType(
-  sync.api.UrlChooser.Type.IMAGE,
-  'svg',
-  { filterRegex: /\.(svg)$/i, label: 'SVG Files' }
-);
+var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
 
-sync.api.UrlChooser.registerCustomFileFilterForType(
-  sync.api.UrlChooser.Type.IMAGE,
-  'png',
-  { filterRegex: /\.(png)$/i, label: 'PNG Files' }
-);
+// Add SVG and PNG options to IMAGE type
+descriptor.types.IMAGE.filters.push({
+  label: 'SVG Files',
+  regex: '\\.(svg)$'
+});
+
+descriptor.types.IMAGE.filters.push({
+  label: 'PNG Files',
+  regex: '\\.(png)$'
+});
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);
       </codeblock>
 
       <p><b>Create Custom Types</b></p>
       <p>
-        Define a new file type with custom filtering and upload restrictions.
+        Define completely new file types.
       </p>
 
       <codeblock outputclass="language-javascript">
-sync.api.UrlChooser.registerCustomFileFilterForType(
-  'DOCUMENT',
-  null,
-  {
-    filterRegex: /\.(doc|docx|pdf|txt)$/i,
-    acceptAttribute: '.doc,.docx,.pdf,.txt',
-    label: 'Document Files'
-  }
-);
+var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Add a DOCUMENT type
+descriptor.types.DOCUMENT = {
+  uploadAcceptAttribute: '.doc,.docx,.pdf,.txt',
+  allowAllFiles: true,
+  filters: [
+    {
+      label: 'Document Files',
+      regex: '\\.(doc|docx|pdf|txt)$'
+    },
+    {
+      label: 'Office Documents',
+      regex: '\\.(doc|docx|xls|xlsx)$'
+    }
+  ]
+};
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);
+
+// Use the custom type in your file chooser
+var context = new sync.api.UrlChooser.Context('DOCUMENT');
+workspace.getUrlChooser().chooseUrl(context, function(url) {
+  console.log('Selected document:', url);
+}, sync.api.UrlChooser.Purpose.CHOOSE);
+      </codeblock>
+
+      <p><b>Disable "All Files" Option</b></p>
+      <p>
+        Remove the "All Files" option for specific types.
+      </p>
+
+      <codeblock outputclass="language-javascript">
+var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Disable "All Files" option for DITA type
+descriptor.types.DITA.allowAllFiles = false;
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);
       </codeblock>
 
       <p><b>Replace Default Filters</b></p>
-
-      <note type="warning">
-        Replacing a default filter is destructive and removes the original behavior.
-      </note>
+      <p>
+        Completely replace the default filters for a type.
+      </p>
 
       <codeblock outputclass="language-javascript">
-sync.api.UrlChooser.registerCustomFileFilterForType(
-  sync.api.UrlChooser.Type.IMAGE,
-  null,
-  {
-    filterRegex: /\.(jpg|jpeg)$/i,
-    acceptAttribute: '.jpg,.jpeg',
-    label: 'JPEG Images Only'
-  }
-);
+var descriptor = sync.api.UrlChooser.getFileBrowserDescriptor();
+
+// Replace IMAGE filters with JPEG-only
+descriptor.types.IMAGE = {
+  uploadAcceptAttribute: '.jpg,.jpeg',
+  allowAllFiles: false,
+  filters: [
+    {
+      label: 'JPEG Images Only',
+      regex: '\\.(jpg|jpeg)$'
+    }
+  ]
+};
+
+sync.api.UrlChooser.setFileBrowserDescriptor(descriptor);
       </codeblock>
+    </section>
+
+    <section id="validation">
+      <title>Validation</title>
+
+      <p>The API logs console warnings for common issues:</p>
+
+      <ul>
+        <li><codeph>descriptor must be an object</codeph>: Provide valid descriptor object</li>
+        <li><codeph>descriptor.types must be an object</codeph>: Ensure types property exists</li>
+        <li><codeph>invalid type configuration</codeph>: Check type configuration structure</li>
+        <li><codeph>invalid filter configuration</codeph>: Verify filter objects have required properties</li>
+        <li><codeph>invalid regex</codeph>: Ensure regex strings are valid regular expressions</li>
+      </ul>
     </section>
 
     <section id="troubleshooting">
@@ -180,22 +238,25 @@ sync.api.UrlChooser.registerCustomFileFilterForType(
         <dlentry>
           <dt>Filter not appearing</dt>
           <dd>
-            Verify the label, regular expression, type value, and check
-            console warnings.
+            Check label, regex validity, type name, and console warnings.
           </dd>
         </dlentry>
         <dlentry>
-          <dt><codeph>acceptAttribute</codeph> not working</dt>
+          <dt>"All Files" option not hiding</dt>
           <dd>
-            Ensure <codeph>filterOptionId</codeph> is <codeph>null</codeph>
-            and the format is correct (for example, <codeph>.jpg,.png</codeph>).
+            Ensure <codeph>allowAllFiles: false</codeph> is set on the type configuration.
           </dd>
         </dlentry>
         <dlentry>
-          <dt>Default replaced unintentionally</dt>
+          <dt>Upload restrictions not working</dt>
           <dd>
-            Use a non-null <codeph>filterOptionId</codeph> to add filter
-            options instead of replacing the default.
+            Verify <codeph>uploadAcceptAttribute</codeph> format (e.g., <codeph>'.jpg,.png'</codeph>).
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Changes not taking effect</dt>
+          <dd>
+            Ensure <codeph>setFileBrowserDescriptor()</codeph> is called after modifying the descriptor.
           </dd>
         </dlentry>
       </dl>
