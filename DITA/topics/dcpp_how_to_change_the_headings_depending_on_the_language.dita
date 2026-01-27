@@ -7,26 +7,44 @@
       <keywords>
         <indexterm product="author developer editor authorEclipse developerEclipse editorEclipse"
             ><ph keyref="pdf-html5-transformation"/>
-          <indexterm>Header<indexterm>Changing the heading language</indexterm></indexterm></indexterm>
-        <indexterm product="pdf-css ope">Header<indexterm>Changing the
-          heading language</indexterm></indexterm>
+          <indexterm>Header<indexterm>Language</indexterm></indexterm></indexterm>
+        <indexterm product="pdf-css ope">Header<indexterm>Language</indexterm></indexterm>
       </keywords>
     </metadata>
   </prolog>
     <body>
-        <p>It is possible to customize the text displayed in the headings depending on the language
-      of the publication.</p>
-    <p>In this case, you can simply use of the <xmlatt>lang</xmlatt> attribute in your customization
-      CSS. In the following example, the page counter displayed in the bottom part of the page is
-      preceded by the word "Page", according to the selected language:</p>
-    <codeblock id="codeblock_wn5_vws_yqb" outputclass="language-css">@page chapter {
+    <section id="section_wbz_n2h_c3c">
+      <title>Example 1: Adjust the headings according to the publication’s language</title>
+      <p>It is possible to customize the text displayed in the headings depending on the language of
+        the publication (set by the <xmlatt>xml:lang</xmlatt> attribute on the main ditamap).</p>
+      <p>For instance, you can display the page counter at the bottom of each page, prefixed by the
+        word 'Page' in the selected
+          language:<codeblock id="codeblock_wn5_vws_yqb" outputclass="language-css">@page chapter {
   @bottom-center {
     content: oxy_xpath("if (@lang='es') then  'Página' \
                         else if (@lang='it') then 'Pagina' \
                         else 'Page'") " " counter(page);
   }
-}</codeblock>
-    <note id="note_r5h_nys_yqb">Backslashes (<uicontrol><shortcut>\</shortcut></uicontrol>) are used
-      to split the XPath into multiple lines to make it easier to read.</note>
+}</codeblock><note id="note_r5h_nys_yqb">Backslashes
+            (<uicontrol><shortcut>\</shortcut></uicontrol>) are used to split the XPath into
+          multiple lines to make it easier to read.</note></p>
+    </section>
+    <section id="section_l52_x2h_c3c">
+      <title>Example 2: Adjust the headings according to each topic language</title>
+      <p>It is possible to customize the heading text depending on the language of each topic as
+        well (using the <xmlatt>xml:lang</xmlatt> attribute)..</p>
+      <p>For example, you can display the language code in the top-right corner of each page,
+        according to each topic
+        language:<codeblock id="codeblock_gdr_1fh_c3c" outputclass="language-css">*[class ~= "topic/topic"] {
+  string-set: lang oxy_xpath("if (@lang) then upper-case(@lang) else 'EN'");
+}
+
+@page chapter {
+  @top-right-corner {
+    color: orange;
+    content: string(lang);
+  }
+}</codeblock></p>
+    </section>
     </body>
 </topic>
