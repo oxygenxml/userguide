@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ofb-advanced-search">
+    <title>Advanced Search</title>
+    <shortdesc>Along with simple searches, the Content Fusion search engine also supports advanced
+        query syntax that allows you to create more complex, flexible, and useful queries to make
+        the search more precise.</shortdesc>
+    <body>
+        <p>This topic describes the advanced search features that you can use when searching on the
+            Task Search page or Workspace search view. A short reference is also available in the UI via the help icon next to
+            the search field.</p>
+        <section id="phrase-search">
+            <title>Phrase Search</title>
+            <p>
+                A query consists of terms and operators. Terms can be either <b>single terms</b> (individual words) or <b>phrases</b> (multiple words surrounded by quotes).
+            </p>
+            <p>
+                When you enclose words in double quotation marks, the search returns results only when the exact phrase appears in the content.
+            </p>
+            <p>Search for the exact phrase:</p>
+            <codeblock>"Install Content Fusion"</codeblock>
+        </section>
+        <section id="field-search">
+            <title>Field Search</title>
+            <p>
+                You can search within specific fields by specifying the field name followed by a colon (<codeph>:</codeph>) and the search term.
+            </p>
+            <p>Search for a title that exactly matches <codeph>The Right Way</codeph>:</p>
+            <codeblock>title:"The Right Way"</codeblock>
+            <note>
+                The field specification applies only to the term it directly precedes. For example:
+                <codeblock>title:Do it right</codeblock>
+                will search <b>title</b> for <codeph>Do</codeph> and search the default <b>text</b> field for <codeph>it</codeph> and <codeph>right</codeph>.
+            </note>
+            <p>The available fields are:</p>
+            <ul>
+                <li><b>title</b> — Document title</li>
+                <li><b>description</b> — Document description</li>
+                <li><b>text</b> — Full text content of the document</li>
+                <li><b>keywords</b> — Document keywords</li>
+            </ul>
+        </section>
+        <section id="wildcard-search">
+            <title>Wildcard Search</title>
+            <p>
+                You can use wildcard characters in individual terms to broaden a search. Wildcards are not supported within quoted phrases.
+            </p>
+            <p><b>?</b> – matches a single character</p>
+            <p><b>*</b> – matches zero or more characters</p>
+            <p>Find terms like <codeph>meet</codeph> or <codeph>meat</codeph>:</p>
+            <codeblock>me?t</codeblock>
+            <p>Find terms like <codeph>test</codeph>, <codeph>tests</codeph>, <codeph>testing</codeph>:</p>
+            <codeblock>test*</codeblock>
+            <note>
+                A wildcard term cannot start with <codeph>*</codeph> or <codeph>?</codeph>.
+            </note>
+        </section>
+        <section id="regexp-search">
+            <title>Regular Expression Search</title>
+            <p>
+                You can use regular expressions to match patterns. A regular expression should be enclosed in forward slashes (<codeph>/.../</codeph>).
+            </p>
+            <p>Match <codeph>boat</codeph> or <codeph>moat</codeph>:</p>
+            <codeblock>/[mb]oat/</codeblock>
+        </section>
+        <section id="proximity-search">
+            <title>Proximity Search</title>
+            <p>
+                To find terms that occur within a defined number of words from each other, append a tilde (<codeph>~</codeph>) and a number after a quoted phrase.
+            </p>
+            <codeblock>"dita webhelp"~10</codeblock>
+            <p>Find instances where <codeph>dita</codeph> and <codeph>webhelp</codeph> occur within 10 words of each other.</p>
+        </section>
+        <section id="boosting">
+            <title>Boosting</title>
+            <p>
+                You can increase the relative importance of a term by adding a caret (<codeph>^</codeph>) with a numeric boost factor after the term.
+            </p>
+            <codeblock>dita^4 webhelp</codeblock>
+            <p>This increases the relevance of documents containing <codeph>dita</codeph>.</p>
+            <note>
+                The default boost factor is 1. Values must be positive and can be less than 1 (for example, 0.2).
+            </note>
+        </section>
+        <section id="boolean-operators">
+            <title>Boolean Operators</title>
+            <p>
+                Boolean operators combine terms logically. The supported operators are <b>AND</b>, <b>OR</b>, <b>+</b>, <b>NOT</b>, and <b>-</b>. Operators must be in ALL CAPS.
+            </p>
+            <p>
+                When no operator is specified between terms, <b>OR</b> is assumed.
+            </p>
+            <p>Find documents containing either term:</p>
+            <codeblock>"dita webhelp" dita</codeblock>
+            <p><b>AND</b> – Documents must contain both terms:</p>
+            <codeblock>"dita webhelp" AND "content search"</codeblock>
+            <p><b>+</b> – Term is required:</p>
+            <codeblock>+dita webhelp</codeblock>
+            <p><b>NOT</b> – Exclude documents with the following term:</p>
+            <codeblock>"dita webhelp" NOT "content search"</codeblock>
+            <p><b>-</b> – Another way to exclude results:</p>
+            <codeblock>"dita webhelp" -"content search"</codeblock>
+        </section>
+        <section id="field-grouping">
+            <title>Field Grouping</title>
+            <p>
+                Use parentheses to group multiple conditions within a field.
+            </p>
+            <codeblock>title:(+dita +"content search")</codeblock>
+            <p>Find titles that contain both <codeph>dita</codeph> and <codeph>content
+                    search</codeph>.</p>
+        </section>
+        <section id="escaping">
+            <title>Escaping Special Characters</title>
+            <p>
+                To search for characters that are part of the query syntax (for example <codeph>( ) * ? :</codeph>), escape those characters with a backslash (<codeph>\</codeph>).
+            </p>
+            <codeblock>\(1\+1\)\:2</codeblock>
+        </section>
+    </body>
+</topic>
