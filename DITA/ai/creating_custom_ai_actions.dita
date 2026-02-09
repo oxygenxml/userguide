@@ -34,8 +34,8 @@
         "id": "improve.grammar.custom.styles",
         "title": "...",
         ...
-}</codeblock><note id="note_q12_br1_kfc">An Oxygen XML desktop plugin can contribute an
-                extra <xref
+}</codeblock><note id="note_q12_br1_kfc">An <b>Oxygen XML</b> desktop plugin can
+                contribute an extra <xref
                   href="https://www.oxygenxml.com/doc/ug-editor/dev_guide/contributing_translations_for_new_labels_and_ui_text.html"
                   format="html" scope="external"><filepath>translation.xml</filepath></xref> file
                 that contains translations. Such a plugin may translate titles and descriptions for
@@ -293,7 +293,88 @@
                 <dlentry id="dlentry_gll_n3q_nfc">
                   <dt>choice-type</dt>
                   <dd>An optional choice type that defines how the end user can configure the
-                    alternate values (combo box, check boxes, radio buttons).</dd>
+                    alternate values (combo box, check boxes, radio buttons).<p id="p_fmb_1pb_zhc">
+                      <dl id="dl_xjt_cqq_yhc">
+                        <dlentry id="dlentry_c4b_1pb_zhc">
+                          <dt><codeph>editable-combo-choice</codeph></dt>
+                          <dd>
+                            <p id="p_d4b_1pb_zhc">An editable combo box.
+                              Example:<codeblock id="codeblock_dbc_gqq_yhc" outputclass="language-json">{
+    "id": "action.translate.to.lang",
+    ...
+    "title": "Other...",
+    .....
+    "expand-params": [
+      {
+        "name": "translationLanguage",
+        "label": "Language",
+        "choice-type": "editable-combo-choice",
+        "alternate-values": [
+          "Arabic",
+          "Bulgarian",
+          "Chinese (Simplified)"
+        ]
+      }
+    ],
+    ...
+  }</codeblock></p>
+                          </dd>
+                        </dlentry>
+                        <dlentry id="dlentry_e4b_1pb_zhc">
+                          <dt><codeph>multi-choice</codeph></dt>
+                          <dd>A list of checkboxes.
+                            Example:<codeblock id="codeblock_u2d_lqq_yhc" outputclass="language-json">{
+    "id": "action.short.description",
+    ...
+    "title": "Short description",
+    ...
+    "insert-modes": [
+      {
+        "xpath-condition": "(//shortdesc)[1]",
+        "target-location": "(//shortdesc)[1]",
+        "action": "replace"
+      },
+      {
+        "target-location": "(//title)[1]",
+        "action": "insert-after"
+      }
+    ],
+    "expand-params": [
+      {
+        "name": "style",
+        "label": "Style",
+        "choice-type": "multi-choice",
+        "alternate-values": [
+          "The description must be clear",
+          "The description must be engaging"
+        ],
+        "alternate-value-labels": [
+          "Clear",
+          "Engaging"
+        ]
+      },
+      {
+        "name": "length",
+        "label": "Maximum number of sentences",
+        "value": "2-3",
+        "choice-type": "single-choice",
+        "alternate-values": [
+          "1",
+          "2-3",
+          "3-5"
+        ]
+      }
+    ],
+    ....
+  }</codeblock></dd>
+                        </dlentry>
+                        <dlentry id="dlentry_f4b_1pb_zhc">
+                          <dt><codeph>single-choice</codeph></dt>
+                          <dd>Radio buttons. A usage example can be found in the code block
+                            above.</dd>
+                        </dlentry>
+                      </dl>
+                    </p></dd>
                 </dlentry>
                 <dlentry id="dlentry_hll_n3q_nfc">
                   <dt>prefix</dt>
@@ -438,12 +519,26 @@
           <dt>input-type</dt>
           <dd>
             <p id="p_lfx_r3q_nfc">Describes how the XML content from the document that is sent to
-              the platform should be processed, as regular XML including markup tags or as plain
-              text without the tags and with all DITA XML content references and key references
-              expanded. By default, its value is assumed to be <codeph>markup</codeph>, which means
-              the content is sent exactly as it is.</p>
-            <p id="p_ytn_lhq_nfc">Example of an AI action that requires the input to be sent without
-              any markup tags and with the DITA XML conrefs and keyrefs
+              the platform should be processed:<dl id="dl_zq2_qqx_yhc">
+                <dlentry>
+                  <dt><codeph>markup</codeph> (default)</dt>
+                  <dd>Sent as regular XML including markup tags.</dd>
+                </dlentry>
+                <dlentry>
+                  <dt><codeph>markup-with-images</codeph></dt>
+                  <dd>Sent as regular XML including markup tags and all referenced images for vision
+                    processing as part of the content. <xref
+                      href="https://github.com/oxygenxml-incubator/ai-positron-assistant-samples/blob/main/Custom%20Actions/review-images-logical-mistakes.json"
+                      format="html" scope="external">See an example</xref>.</dd>
+                </dlentry>
+                <dlentry>
+                  <dt><codeph>plain-text</codeph></dt>
+                  <dd>Sent without the XML tags and with all DITA XML content references and key
+                    references expanded.</dd>
+                </dlentry>
+              </dl></p>
+            <p id="p_ytn_lhq_nfc">An example of an AI action that requires the input to be sent
+              without any markup tags and with the DITA XML conrefs and keyrefs
               expanded:<codeblock id="codeblock_qkc_lgb_kfc" outputclass="language-json">{
     "id": "action.answer.questions",
     "output-action": "none",
@@ -571,6 +666,32 @@
   }</codeblock></p>
           </dd>
         </dlentry>
+        <dlentry id="visibility-dlentry">
+          <dt>visibility</dt>
+          <dd>
+            <p id="p_f4y_ktg_yhc">
+              <dl id="dl_xqw_g4c_yhc">
+                <dlentry id="dlentry_fpy_ktg_yhc">
+                  <dt>visible (default)</dt>
+                  <dd>Action appears in the UI and is accessible for tools that invoke actions (e.g.
+                    'invoke_ai_agent' or 'invoke_ai_action').</dd>
+                </dlentry>
+                <dlentry id="dlentry_gpy_ktg_yhc">
+                  <dt>visible-only-in-ui</dt>
+                  <dd>Action appears in the UI but cannot be invoked by tools.</dd>
+                </dlentry>
+                <dlentry id="dlentry_hpy_ktg_yhc">
+                  <dt>visible-only-for-tools</dt>
+                  <dd>Action does not appear in the UI but can be invoked by tools.</dd>
+                </dlentry>
+                <dlentry id="dlentry_ipy_ktg_yhc">
+                  <dt>hidden</dt>
+                  <dd>Action does not appear in the UI and cannot be invoked by tools.</dd>
+                </dlentry>
+              </dl>
+            </p>
+          </dd>
+        </dlentry>
         <dlentry>
           <dt>embed-assist</dt>
           <dd>Set this optional boolean parameter to <codeph>true</codeph> to add the AI action to
@@ -609,12 +730,13 @@
       <p>
         <dl id="dl_p4f_knm_2hc">
           <dlentry>
-            <dt>Tools that change content</dt>
+            <dt>Tools that Change Content</dt>
             <dd>
              <p>
                <dl id="dl_rkk_mnm_2hc">
                  <dlentry>
-                   <dt><codeph>add_dita_reference_to_ditamap</codeph></dt>
+                   <dt><codeph>add_dita_reference_to_ditamap</codeph> (Not Available for Web
+                      Author)</dt>
                    <dd>Modifies the DITA map currently opened in the <uicontrol>DITA Maps
                        Manager</uicontrol> view and adds a topic reference to it.</dd>
                  </dlentry>
@@ -632,12 +754,20 @@
                      this lightweight tool to make a limited number of small exact changes in a
                      document.</dd>
                  </dlentry>
+                  <dlentry>
+                    <dt><codeph>copy_move_rename_path</codeph> (Only Available for Positron
+                      Desktop)</dt>
+                    <dd>Copies, moves, or renames a local file or folder path. When used in
+                        <b>Oxygen</b> 28.1 or newer, if the <b>Main Files</b> feature is enabled in
+                      the application, references to the moved or renamed resource are automatically
+                      updated.</dd>
+                  </dlentry>
                </dl>
              </p>
             </dd>
           </dlentry>
           <dlentry>
-            <dt>Tools that retrieve content</dt>
+            <dt>Tools that Retrieve Content</dt>
             <dd>
               <p>
                 <dl id="dl_dnl_xnm_2hc">
@@ -653,17 +783,23 @@
                       the editor.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>search_project_resources</codeph></dt>
+                    <dt><codeph>search_project_resources</codeph> (Works with Oxygen desktop 27 or
+                      newer, Content Fusion 8.1 or newer, not Available for Web Author)</dt>
                     <dd>Retrieves (in JSON format) a set of resources from the user's local project
-                      based on the search keywords. When using Oxygen XML 28 and newer, the AI can
-                      specify the page size, current page, and whether to search for documents that
-                      contain all keywords or only part of the keywords. For each resource that has
-                      an overview that best matches the keywords in the current context, you can
-                      call the <codeph>get_document_content</codeph> tool to obtain the entire
-                      content of the resource URL. </dd>
+                      based on the search keywords. When using <b>Oxygen XML 28</b> and newer, the
+                      AI can specify the page size, current page, and whether to search for
+                      documents that contain all keywords or only part of the keywords. </dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>grep_project</codeph></dt>
+                    <dt><codeph>get_document_content</codeph></dt>
+                    <dd>
+                      <p>Retrieves the content from a specific URL. The LLM can control if the
+                        entire content or a particular lines range is read.</p>
+                    </dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><codeph>grep_project</codeph> (Works with Oxygen desktop 28 or newer,
+                      Content Fusion 9.0 or newer, Not Available for Web Author)</dt>
                     <dd>Retrieves (in JSON format) a set of precise matches found in the project for a
                       searched text. The search can be done with regular expressions enabled or by
                       setting file name and XPath filters. The maximum number of precise matches that
@@ -672,7 +808,8 @@
                       overview.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>list_dir</codeph></dt>
+                    <dt><codeph>list_dir</codeph> (Works with Oxygen desktop, Not Available for
+                      Content Fusion and Web Author)</dt>
                     <dd>Lists the contents of a folder/directory path.</dd>
                   </dlentry>
                   <dlentry>
@@ -693,11 +830,6 @@
                           RAG</uicontrol> preferences</xref>.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_text_around_caret</codeph></dt>
-                    <dd>Retrieves size-limited content around the current cursor location within the
-                      document open in the editor.</dd>
-                  </dlentry>
-                  <dlentry>
                     <dt><codeph>get_current_document_markup</codeph></dt>
                     <dd>Retrieves all text with markup from the current document open in the editor.
                       An optional <codeph>lineNumbering</codeph> parameter allows the AI to request
@@ -709,19 +841,22 @@
                       open in the editor.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_schematron_components</codeph></dt>
+                    <dt><codeph>get_schematron_components</codeph> (Not Available for Web Author or
+                      Content Fusion)</dt>
                     <dd>Retrieves Schematron components (e.g. pattern, title, phase, diagnostics) used
                       in the provided code, defined in both the current file and any imported or
                       included stylesheets.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_xsd_components</codeph></dt>
+                    <dt><codeph>get_xsd_components</codeph> (Not Available for Web Author or Content
+                      Fusion)</dt>
                     <dd>Retrieves XML schema components (e.g. simpleType, elements, notations,
                       complexType, attributes, groups) used in the provided code, defined in both the
                       current file and any imported or included stylesheets.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_ditamap_structure</codeph></dt>
+                    <dt><codeph>get_ditamap_structure</codeph> (Works in Oxygen desktop, Content
+                      Fusion 8.1 or newer, Not Available for Web Author)</dt>
                     <dd>Returns a hierarchical structure of the DITA map that is currently open in the
                       <uicontrol>DITA Maps Manager</uicontrol> view. This structure shows the selected
                       topic and provides context, including its parent, siblings, descendants, and
@@ -731,26 +866,29 @@
                       map.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>resolve_dita_reference</codeph></dt>
+                    <dt><codeph>resolve_dita_reference</codeph> (Not Available for Web Author or
+                      Content Fusion)</dt>
                     <dd>Resolves a DITA XML key reference (e.g. <codeph>&lt;ph keyref="abc"/></codeph>),
                       content key reference (e.g. <codeph>&lt;uicontrol conkeyref="abc"/></codeph>), or
                       content reference (e.g. <codeph>&lt;uicontrol conref="abc"/></codeph>). </dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>find_reusable_components</codeph></dt>
+                    <dt><codeph>find_reusable_components</codeph> (Works only in Oxygen Desktop
+                      version 27 or newer)</dt>
                     <dd>Returns a list of DITA XML reusable components that match the keywords.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_dita_keyrefs</codeph></dt>
-                    <dd>Return a mapping between product names and corresponding DITA key references
-                      in JSON format.</dd>
+                    <dt><codeph>get_dita_keyrefs</codeph> (Not Available for Web Author or Content
+                      Fusion)</dt>
+                    <dd>Returns a mapping between product names and corresponding DITA key
+                      references in JSON format.</dd>
                   </dlentry>
                 </dl>
               </p>
             </dd>
           </dlentry>
           <dlentry>
-            <dt>Tools to validate or change XML structure</dt>
+            <dt>Tools to Validate or Change XML Structure</dt>
             <dd>
               <p>
                 <dl>
@@ -764,22 +902,26 @@
                       format.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_xml_refactoring_operations</codeph></dt>
-                    <dd>Provide the AI with a list of all XML refactoring operations (ID, name,
+                    <dt><codeph>get_xml_refactoring_operations</codeph> (Works with Oxygen version
+                      28 or newer, not Available for Web Author or Content Fusion)</dt>
+                    <dd>Provides the AI with a list of all XML refactoring operations (ID, name,
                       description) defined in the application.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_xml_refactoring_operation_params</codeph></dt>
-                    <dd>Provide the required parameters list for a specific XML operation ID.</dd>
+                    <dt><codeph>get_xml_refactoring_operation_params</codeph> (Works with Oxygen
+                      version 28 or newer, not Available for Web Author or Content Fusion)</dt>
+                    <dd>Provides the required parameters list for a specific XML operation ID.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>refactor_xml</codeph></dt>
-                    <dd>Invoke a specific XML refactoring operation on a specific XML content with
+                    <dt><codeph>refactor_xml</codeph> (Works with Oxygen version 28 or newer, not
+                      Available for Web Author or Content Fusion)</dt>
+                    <dd>Invokes a specific XML refactoring operation on a specific XML content with
                       specific AI provided parameters.</dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>refactor_xml_with_xslt</codeph></dt>
-                    <dd>Use an XSLT stylesheet provided by the AI to process and modify the XML
+                    <dt><codeph>refactor_xml_with_xslt</codeph> (Works with Oxygen version 28 or
+                      newer, not Available for Web Author or Content Fusion)</dt>
+                    <dd>Uses an XSLT stylesheet provided by the AI to process and modify the XML
                       content.</dd>
                   </dlentry>
                 </dl>
@@ -787,20 +929,46 @@
             </dd>
           </dlentry>
           <dlentry>
-            <dt>Tools to invoke AI actions</dt>
+            <dt>Tools to Invoke AI Actions or Agents</dt>
             <dd>
               <p>
                 <dl>
+                  <dlentry id="dlentry_ydt_mtv_g2c">
+                    <dt><codeph>retrieve_ai_actions</codeph></dt>
+                    <dd>Gets IDs and descriptions for each available AI action.</dd>
+                  </dlentry>
                   <dlentry id="dlentry_svh_mtv_g2c">
                     <dt><codeph>invoke_ai_action</codeph></dt>
-                    <dd>Invoke an action by passing the action ID and content to process.<note
+                    <dd>Invokes an action by passing the action ID and content to process.<note
                         id="note_gcg_qhn_d2c" type="tip">To define actions that are hidden in the
                         interface and intended only for use by other actions, prefix their IDs with
                           <codeph>agent.hidden.action</codeph>.</note></dd>
                   </dlentry>
-                  <dlentry id="dlentry_ydt_mtv_g2c">
-                    <dt><codeph>retrieve_ai_actions</codeph></dt>
-                    <dd>Get IDs and descriptions for each available AI action.</dd>
+                  <dlentry id="dlentry_cns_mck_shc2">
+                    <dt><codeph>retrieve_ai_agents</codeph></dt>
+                    <dd>Gets IDs and descriptions for each available AI agent. <i>Agents</i> are AI
+                      actions that have the <codeph>"output-action": "agentic"</codeph> property set
+                      on them.</dd>
+                  </dlentry>
+                  <dlentry id="dlentry_ans_mck_shc2">
+                    <dt><codeph>invoke_ai_agent</codeph></dt>
+                    <dd>Invokes an AI agent by passing the agent ID and instructions. You can
+                      retrieve the available agent IDs by using the
+                        <codeph>retrieve_ai_agents</codeph> tool. </dd>
+                  </dlentry>
+                </dl>
+              </p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Multi Purpose Tools</dt>
+            <dd>
+              <p id="p_flh_cvg_yhc">
+                <dl id="dl_emh_cvg_yhc">
+                  <dlentry id="dlentry_fmh_cvg_yhc">
+                    <dt><codeph>run_command_line</codeph> (Works only in Oxygen desktop).</dt>
+                    <dd>Starts a command process on behalf of the user. The tool needs explicit user
+                      approval when it is invoked.</dd>
                   </dlentry>
                 </dl>
               </p>
@@ -816,6 +984,51 @@
       plain text without markup."
   }
 ]</codeblock>
+    </section>
+    <section id="section_sh4_wlj_phc">
+      <title>Creating Custom Chat Modes</title>
+      <p>The Chat view has a drop-down menu where you can choose between custom chat modes (e.g.
+          <uicontrol>Chat</uicontrol>/<uicontrol>Ask</uicontrol>/<uicontrol>DITA Agent</uicontrol>).
+        Each of these chat modes define an initial prompt and a set of tools that are used when the
+        chat is started. Extra chat modes can be added by creating custom AI actions with a specific
+          <codeph>output-action</codeph>, as exemplified
+        below:<codeblock id="codeblock_q5c_cmj_phc" outputclass="language-json">{
+    "id": "my.custom.chat.mode",
+    "title": "S1000D",
+    "description": "Chat with the AI about your S1000D project.",
+    "categoryId": "Chat modes",
+    "output-action": "agentic",
+    "prompt_ref": "prompts/s100d-detailed-prompt.md",
+    "expand-params": [
+      {
+        "name": "applicationContext",
+        "value": "${applicationContext}"
+      }
+    ],
+    "parameters": {
+      "function_refs": [
+        {"ref": "get_current_document_location"},
+        {"ref": "get_document_content"},
+        {"ref": "search_project_resources"},
+        {"ref": "search_webhelp_content"},
+        {"ref": "grep_project"},
+        {"ref": "list_dir"},
+        {"ref": "copy_move_rename_path"},
+        {"ref": "run_command_line"},
+        {"ref": "edit_document"},
+        {"ref": "invoke_ai_action"},
+        {"ref": "retrieve_ai_actions"},
+        {"ref": "get_xml_refactoring_operations"},
+        {"ref": "get_xml_refactoring_operation_params"},
+        {"ref": "refactor_xml_with_operation"},
+        {"ref": "refactor_xml_with_xslt"},
+        {"ref": "store_to_memory"},
+        {"ref": "clear_memory"},
+        {"ref": "validate_content"},
+        {"ref": "term_check_document_content"}
+      ]
+    }
+  }</codeblock></p>
     </section>
     <section conkeyref="reusables-ai-plugin/distributing_ai_actions" id="distributing_ai_actions"
       ><p/></section>
