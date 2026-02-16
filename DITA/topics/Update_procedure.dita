@@ -17,18 +17,55 @@
       simple or to tweak some of the settings.</p>
     <p id="p_wlq_dgk_54b">It is recommended that you make a separate deployment of the new version on a different VM,
       perform some acceptance tests, and then switch all of your users to the new deployment.</p>
+    <section id="section_yfl_1by_13c">
+      <title>Before you start</title>
+      <p>
+        <note id="note_a4c_cby_13c" type="important"><ph keyref="webappProduct"/> configuration
+          (options), custom plugins, and custom frameworks are stored in the <ph
+            keyref="webappProduct"/>
+          <xref href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-oxygen-data-dir.html"
+            format="html" scope="external">data directory</xref>. If you install a new version
+          without migrating the content of the previous data directory, the configuration will be
+          reset to defaults and your plugins/frameworks will not be available in the new
+          installation.</note>
+      </p>
+    </section>
     <p id="p_xlq_dgk_54b">To upgrade <ph keyref="webappProduct"/>, follow these steps:</p>
     <ol id="ol_tr4_wlz_hw">
       <li id="li_ylq_dgk_54b">Deploy the new version of <ph keyref="webappProduct"/> on a separate virtual machine and
         connect it to your existing license server. The two deployments will work in parallel, both
         using the same license pool.</li>
+      <li><?oxy_comment_start author="bogdan_dumitru" timestamp="20260204T091521+0000" comment="what is relevant there? Userilor o sa le fie greu sa inteleaga ce anume de acolo e relevant.
+Cred ca ar trebui sa fim mai specifici sa le zicem
+- sa copieze plugin-urile lor custom. Astea se afla un &quot;user-plugins&quot;. Atentie, acolo mai e un folder &quot;plugins&quot; in care se afla cele built-in.
+- framework-urile custom
+- optiunile configurate manual in options.xml
+- license.properties" flag="done"?>Copy the relevant content<?oxy_comment_end?> from the old
+          <xref href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-oxygen-data-dir.html"
+          format="html" scope="external">data directory</xref> into the new <codeph>data
+          directory</codeph> so that your customizations are preserved:<ul id="ul_dsh_3w5_23c">
+          <li>custom plugins from the <codeph>user-plugins</codeph> folder.</li>
+          <li>custom frameworks from the <codeph>user-frameworks</codeph> folder.<note
+              id="note_qlz_mw5_23c">Only custom frameworks and plugins should be copied. This should
+              not be confused with the <codeph>frameworks</codeph> and <codeph>plugins</codeph>
+              directories, which contain the built-in frameworks and plugins.</note></li>
+          <li>the <codeph>options.xml</codeph> file, which stores manually configured options.</li>
+          <li>the <codeph>license.properties</codeph> file, which contains the connection details
+            for the licensing server.<p>To see the complete contents of the <codeph>data
+                directory</codeph> see <ph keyref="webappProduct"/>
+              <xref href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-oxygen-data-dir.html"
+                format="html" scope="external">data directory</xref>.</p></li>
+        </ul></li>
       <li id="li_zlq_dgk_54b">It might be necessary to update your license key. If you receive an error message
         regarding the license key version, follow <xref
           href="https://www.oxygenxml.com/doc/ug-editor/topics/replace-floating-license.html"
           format="html" scope="external">this procedure</xref>. Your existing <ph
           keyref="webappProduct"/> deployment will continue to work with a license for the newer
         version.</li>
-      <li id="li_amq_dgk_54b">Tweak the settings for the new version to suit your needs.</li>
+      <li id="li_amq_dgk_54b">Review the settings in the <xref
+          href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webapp-admin-page.html"
+          format="html" scope="external">Administration Page</xref> and confirm that your
+        deployment-specific configuration is correct</li>
       <li id="li_bmq_dgk_54b">Switch all of the users to the new version. This can be achieved either by changing the
         DNS entry or configuring the <xref href="webapp-loadbalancing.dita#webapp-loadbalancing"
           >Load Balancer</xref> to use the new deployment.</li>
