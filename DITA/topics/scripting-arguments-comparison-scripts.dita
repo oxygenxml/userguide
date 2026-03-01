@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="scripting-arguments-comparison-scripts">
+  <title>Providing Arguments to Comparison Scripts via a Configuration File</title>
+  <body>
+    <p id="p_oyd_yvq_l3c">The arguments/options required to run comparison scripts (<xref
+        href="scripting-compare-directories.dita"/> and <xref href="scripting-compare-files.dita"/>)
+      can be provided through configuration files (argument files) if their structure follows a few
+      simple rules, as detailed below:</p>
+    <p id="p_bhz_vwq_l3c">
+      <ul id="ul_oqh_wwq_l3c">
+        <li id="li_pqh_wwq_l3c">The basic format of the configuration file is XML, but JSON or YAML
+          formatted files are also supported, being converted to XML.</li>
+        <li id="li_dc1_xwq_l3c">The name of the root does not matter.</li>
+        <li id="li_yfy_xwq_l3c">
+          <p id="p_ryd_yvq_l3c">Any child of the root (also, the name of the child does not matter)
+            is a candidate element for describing a script argument, if it meets the following 2
+            mandatory conditions:</p>
+          <ul id="ul_syd_yvq_l3c">
+            <li id="li_tyd_yvq_l3c">It has a sub-element <codeph>&lt;id>argument_id&lt;/id></codeph>
+                (<codeph>argument_id</codeph> must be present for it to be mapped to the
+                <codeph>argument_value</codeph>).</li>
+            <li id="li_uyd_yvq_l3c">It has a sub-element
+                <codeph>&lt;value>argument_value&lt;/value></codeph> (if
+                <codeph>argument_value</codeph> is missing, the mapping is completed
+              programmatically to a default value based on <codeph>argument_id</codeph>).</li>
+          </ul>
+        </li>
+        <li id="li_ny3_mxq_l3c">
+          <p id="p_vyd_yvq_l3c">Additionally:</p>
+          <ul id="ul_wyd_yvq_l3c">
+            <li id="li_xyd_yvq_l3c">If <codeph>&lt;id></codeph> denotes an argument ID of the type
+              'file path' and an alias is also desired, then a sub-element
+                <codeph>&lt;alias>path_alias&lt;/alias></codeph> must be added. However, an alias
+              also makes sense as a distinct argument ID, meaning for example, the sub-element
+              structure <codeph>&lt;id>spa&lt;/id>&lt;value>directory-2&lt;/value></codeph> will
+              correctly associate the alias directory-2 with sp ('sp' stands for 'second path',
+              'spa' stands for 'second path alias').</li>
+            <li id="li_yyd_yvq_l3c">An optional sub-element
+                <codeph>&lt;descr>argument_description&lt;/descr></codeph> can be useful when
+              editing/modifying the XML file, providing explanations about the ID of the current
+              argument (which is most often quite cryptic).</li>
+          </ul>
+        </li>
+        <li id="li_vdc_vxq_l3c">If there are non-mandatory script arguments without counterparts
+          among the child elements of the root of the parsed XML file, default values associated
+          with the IDs of the respective arguments are provided later programmatically.</li>
+      </ul>
+    </p>
+    <p id="p_azd_yvq_l3c">Below are some examples of configuration files that can be used to read
+      the script arguments from:</p>
+    <p id="p_axw_cwq_l3c"><u><b>XML
+      File</b></u><codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;args>
+    &lt;arg>
+        &lt;id>fp&lt;/id>
+        &lt;value>D:/workspace/oxygen-blog/blog-branch-01&lt;/value>
+        &lt;alias>DIR-1&lt;/alias>
+        &lt;descr>1st path&lt;/descr>
+    &lt;/arg>
+    &lt;arg>
+        &lt;id>sp&lt;/id>
+        &lt;value>D:/workspace/oxygen-blog/blog-branch-02&lt;/value>
+        &lt;alias>DIR-2&lt;/alias>
+        &lt;descr>2nd path&lt;/descr>
+    &lt;/arg>
+    &lt;arg>
+        &lt;id>bp&lt;/id>
+        &lt;value>D:/workspace/oxygen-blog/blog-main&lt;/value>
+        &lt;descr>base path&lt;/descr>
+    &lt;/arg>
+    &lt;arg>
+	&lt;descr>base path alias&lt;/descr>
+        &lt;id>bpa&lt;/id>
+        &lt;value>BASE&lt;/value>        
+    &lt;/arg>    
+    &lt;arg>
+        &lt;id>ia&lt;/id>
+        &lt;value>false&lt;/value>
+        &lt;descr>look inside archives&lt;/descr>
+    &lt;/arg>
+    &lt;arg>
+        &lt;id>ed&lt;/id>
+        &lt;value>git*&lt;/value>        
+        &lt;descr>exclude folders filter&lt;/descr>
+    &lt;/arg>
+	
+	...................................
+	
+&lt;args></codeblock></p>
+    <p id="p_o5v_jwq_l3c"><u><b>JSON File</b></u><codeblock outputclass="language-json">{
+    "options": {
+        "option": [
+            {
+                "id": "fp",                
+                "value": "D:/workspace/oxygen-blog/blog-branch-01",
+                "alias": "DIR-1",
+		"descr": "first path"
+            },
+            {
+                "id": "sp",                
+                "value": "D:/workspace/oxygen-blog/blog-branch-02",
+                "alias": "DIR-2",
+		"descr": "second path"
+            },
+	    {
+                "id": "ed",
+                "descr": "exclude folders filter",
+                "value": "git*"
+            }
+	    {
+                "id": "ia",
+                "descr": "look inside archives",
+                "value": false
+            },
+			
+			........................
+			
+	]
+    }
+}</codeblock></p>
+    <p id="p_bnl_mwq_l3c"><u><b>YAML File</b></u><codeblock outputclass="language-yml">---
+arguments:
+  argument:
+  - id: fp
+    descr: 1st path
+    value: D:/workspace/oxygen-blog/blog-branch-01
+    alias: DIR-1
+  - id: sp
+    descr: 2nd path
+    value: D:/workspace/oxygen-blog/blog-branch-02
+    alias: DIR-2
+  - id: bp
+    descr: base path
+    value: D:/workspace/oxygen-blog/blog-main
+    alias: BASE
+  - id: ia	
+    value: false
+    descr: include archives	
+  - id: ed	
+    value: git*
+    descr: exclude folders filter
+	
+.........................................</codeblock></p>
+  </body>
+  <related-links>
+    <link href="scripting-compare-directories.dita">
+      <linktext>Compare Directories Script</linktext>
+    </link>
+    <link href="scripting-compare-files.dita">
+      <linktext>Compare Files Script</linktext>
+    </link>
+  </related-links>
+</topic>
