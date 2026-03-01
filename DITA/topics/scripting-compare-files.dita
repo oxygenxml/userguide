@@ -11,11 +11,15 @@
       used to compare files and get the comparison results in various formats. </p>
     <section id="section_gbd_tzb_vmb">
       <title>Arguments for the Compare Files Script</title>
+      <p id="p_eyg_pcr_l3c">There are 2 ways that the script's arguments/options can be retrieved
+        (with slightly different command-line syntax), depending on whether or not a configuration
+        file is specified for retrieving the arguments.</p>
+      <p id="p_fyg_pcr_l3c"><u><b>Syntax 1 (Using the Command Line to Specify Arguments)</b></u></p>
       <p id="p_tnx_dgk_54b">
         <codeblock outputclass="language-bourne" id="codeblock_unx_dgk_54b">sh scripts/compareFiles.sh firstFilePath secondFilePath [[baseFilePath] [-ct contentType] [-alg comparisonAlg] [-als algStrength] [-iws ignoreWS] [-ipi ignorePI] [-icm ignoreComments] [-icd ignoreCDATA] [-idt ignoreDocType] [-itn ignoreText] [-ins ignoreNS] [-ind ignoreNSDecl] [-inp ignorePrefixes] [-iao ignoreAttrOrder] [-iee ignoreExpStateForEmptyElems] [-enx XPathExprToExcludeNodes] [-out outputFormat]] [-help | --help | -h | --h]</codeblock>
       </p>
-      <p id="p_vnx_dgk_54b">
-        <dl id="dl_wnx_dgk_54b">
+      <p id="p_jgs_rcr_l3c">
+        <dl>
           <dlentry id="dlentry_xnx_dgk_54b">
             <dt>firstFilePath</dt>
             <dd>Mandatory argument that specifies the first file path (it can also be provided as a
@@ -32,6 +36,42 @@
               will be compared against in a 3-way comparison (it can also be provided as a
               URL).</dd>
           </dlentry>
+        </dl>
+      </p>
+      <p id="p_wdr_vcr_l3c"><u><b>Syntax 2 (Using a Configuration File to Provide
+        Arguments)</b></u></p>
+      <p id="p_tnx_dgk_82392">
+        <codeblock outputclass="language-bourne" id="codeblock_unx_dgk_238">sh scripts/compareFiles.sh -argsFile argsFilePath [[-fp firstFilePath] [-sp secondFilePath] [-bp baseFilePath] [-ct contentType] [-alg comparisonAlg] [-als algStrength] [-iws ignoreWS] [-ipi ignorePI] [-icm ignoreComments] [-icd ignoreCDATA] [-idt ignoreDocType] [-itn ignoreText] [-ins ignoreNS] [-ind ignoreNSDecl] [-inp ignorePrefixes] [-iao ignoreAttrOrder] [-iee ignoreExpStateForEmptyElems] [-enx XPathExprToExcludeNodes] [-out outputFormat] [-outfile outputFile] [-merge mergeOperation] [-mergeout outputDirPathForMerge]] [-help | --help | -h | --h]</codeblock>
+      </p>
+      <p id="p_xdr_vcr_l3c">
+        <dl>
+          <dlentry id="dlentry_enn_zcr_l3c">
+            <dt>-argsFile argsFilePath</dt>
+            <dd>Mandatory argument (it must be the first one provided) that specifies the path of
+              the file to retrieve the script arguments from. The file path can also be provided as
+              a URL.</dd>
+          </dlentry>
+          <dlentry id="dlentry_fnn_zcr_l3c">
+            <dt>-fp firstFilePath</dt>
+            <dd>Optional argument that specifies the first file path (it can also be provided as a
+              URL).</dd>
+          </dlentry>
+          <dlentry id="dlentry_hnn_zcr_l3c">
+            <dt>-sp secondFilePath</dt>
+            <dd>Optional argument that specifies the second file path (it can also be provided as a
+              URL).</dd>
+          </dlentry>
+          <dlentry id="dlentry_rsn_kdr_l3c">
+            <dt>-bp baseFilePath</dt>
+            <dd>Optional argument that specifies the path of the base file that the other two files
+              will be compared against in a 3-way comparison (it can also be provided as a
+              URL).</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p id="p_i1y_ndr_l3c"><u><b>Common Arguments for Both Syntaxes</b></u></p>
+      <p id="p_vnx_dgk_54b">
+        <dl id="dl_wnx_dgk_54b">
           <dlentry id="dlentry_zcl_bgk_dpb">
             <dt>-ct contentType</dt>
             <dd>Specifies the content type of the files to be compared. Possible values (based on
@@ -193,6 +233,16 @@
         (and their absence from the argument list is equivalent to setting their value to "false").
         However, constructs of the form <codeph>bool_option true|false</codeph> are accepted and
         interpreted accordingly.</note>
+      <note id="note_wdp_qdr_l3c" type="tip">When using a configuration file, the only mandatory
+        argument is <b>-argsFile argsFilePath</b>. All others are optional, but if used on the
+        command line, they will take precedence and will overwrite the corresponding values in the
+        config file. The arguments required to run the script can therefore be specified as a
+        combination of what is provided in the config file and what is provided on the command line.
+        For any missing options (not specified either in the file or on the command line) default
+        values are used. However, at least 2 valid paths must always be provided in one way or
+        another, otherwise the script execution will be aborted. For details about the structure of
+        the configuration file (XML, JSON, or YAML), see: <xref
+          href="scripting-arguments-comparison-scripts.dita"/>.</note>
     </section>
     <section id="section_pnz_pnl_54b">
       <title>Examples of Compare Files Script</title>
@@ -229,6 +279,15 @@
                 </fig>
               </p>
             </dd>
+          </dlentry>
+          <dlentry id="dlentry_bmc_f2r_l3c">
+            <dt>Example 4: Compare Files by Getting Arguments from a Configuration File </dt>
+            <dd>The arguments are read from the <b>config.xml</b> file, including the mandatory
+                <b>file path</b> arguments. However, the values that correspond to the arguments
+              with the IDs <b>-out</b> and <b>-outfile</b> are overwritten by the <b>yaml</b> and
+                <b>anotherResults.yaml</b> values provided on the command line (even if specified in
+              the <b>config.xml</b>
+              file).<codeblock outputclass="language-bourne">sh scripts/compareFiles.sh -argsFile config.xml -out yaml -outfile anotherResults.yaml</codeblock></dd>
           </dlentry>
         </dl>
       </p>
