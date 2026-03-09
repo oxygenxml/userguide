@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron_skills_creation">
+  <title>Creating Custom AI Skills</title>
+  <shortdesc>Create skills for AI Positron using the <b>Anthropic</b> skills specification to extend
+    the assistant with custom tools and capabilities.</shortdesc>
+  <body>
+    <section id="section_what_are_skills">
+      <title>What Are Skills</title>
+      <p>Skills are reusable, filesystem-based resources that provide the LLM with domain-specific
+        expertise: workflows, context, and best practices that transform general-purpose agents into
+        specialists. Unlike prompts (conversation-level instructions for one-off tasks), Skills load
+        on-demand and eliminate the need to repeatedly provide the same guidance across multiple
+        conversations.</p>
+      <p>Skills follow the <xref
+          href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+          format="html" scope="external">Anthropic skills specification</xref>, that defines a
+        standard format. This specification ensures that skills are portable, well-structured, and
+        easy to keep.</p>
+      <p>All chat modes available in AI Positron have access to look up and load all skills
+        specified in the AI Positron preferences.</p>
+    </section>
+    <section id="section_skill_structure">
+      <title>Skill File Structure</title>
+      <p>For each skill a separate folder must be created. In the folder create a
+          <filepath>SKILL.md</filepath> file that follows the Anthropic skills specification format.
+        The file has a YAML front matter block with metadata specifying the skill name and
+        description, followed by a description of the skills purpose and behavior. The
+          <filepath>SKILL.md</filepath> can also refer to other files placed in the same skill
+        folder which should be used by the LLM.</p>
+      <p>A minimal skill file looks like this:</p>
+      <codeblock id="codeblock_skill_example" outputclass="language-markdown">---
+name: atlassian-jira-retrieve-note-for-documentation
+description: Retrieve the note for documentation from an Atlassian JIRA issue.
+---
+
+# Atlassian Jira Retrieve Note For Documentation
+
+When the user asks you to write documentation based on an Atlassian JIRA issue
+use this skill to retrieve documentation notes from a particular issue. Call the Model Context 
+Protocol tool "retrieve_jira_issue_field" having as parameter the issue ID and the 
+field name "note_for_documentation" to retrieve the note for documentation and use it further.</codeblock>
+    </section>
+  </body>
+  <related-links>
+    <link href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+      format="html" scope="external">
+      <linktext>Anthropic Skills Specification</linktext>
+    </link>
+  </related-links>
+</topic>
