@@ -1,122 +1,199 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="CF-task-states-user-roles">
-  <title>Review Task States and User Roles</title>
+  <title>Review Task States and Review Status</title>
+  <shortdesc>This topic explains the states a review task can have.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Review task states</indexterm>
+        <indexterm>User roles</indexterm>
+        <indexterm>Project Review Tasks</indexterm>
+        <indexterm>Independent Review Tasks</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
   <body>
-    <p>The purpose of this topic is to provide a general overview of the possible states for Content
-      Fusion review tasks and details about user roles.</p>
-    <section id="section_tm2_mfs_1yb">
-      <title>Regular Review Tasks vs Project-based Review Tasks</title>
-      <p>Content Fusion includes a <xref href="cf-projects.dita"><i>Projects</i> feature</xref> that
-        makes it possible for an organization to integrate a Git repository that contains DITA
-        content and changes proposed by reviewers can be integrated back into the DITA project
-        directly within Content Fusion.</p>
-      <p>Review tasks can be created inside or outside projects in Content Fusion and there are some
-        difference between the two:</p>
+    <p>The states of a review task depend on the <xref href="types_of_review_tasks.dita">type of
+        review task</xref> because Project Review Tasks and Independent Review Tasks have different
+      workflows. Transitioning the task from one state to another is done by actions made by a task
+      owner. The review status is a rendering of the task state for a particular <xref
+        href="cf-roles-review-task.dita">review task role</xref>. For the owner the review status is
+      the same as the task state, but for the reviewer the review status reflects only the states
+      that are relevant for that role. </p>
+    <section id="review_status_versus_review_state">
+      <title>Review status versus review task state</title>
+      <p>The task state generates a review status information that is presented to a collaborator.
+        The review status depends both on the task state and on the role of the collaborator. The
+        review status matches in general the state of the task, but in some cases the actual state
+        is not relevant for a specific role, so the review status presents the relevant information
+        for that role  instead of the actual state. More specific, a <xref
+          href="cf-roles-review-task.dita#cf-roles-review-task/reviewer-role"/> will see the review
+        status as <uicontrol>Review closed</uicontrol> for a task that is in the <uicontrol>Review
+          closed</uicontrol> state or in follow-up states, that are not relevant for the reviewers,
+        because from their point of view those states are equivalent to the <uicontrol>Review
+          closed</uicontrol> state.</p>
+    </section>
+    <section id="section_pwt_1fk_43c">
+      <title>Project Review Tasks states</title>
+      <p>A <b>Project Review Tasks</b> can be in one of the following states: <uicontrol>In
+          review</uicontrol>, <uicontrol>Review closed</uicontrol>,
+          <uicontrol>Integrating</uicontrol>, or <uicontrol>Integrated</uicontrol>. The review
+        status information associated to these states is presented in the following table:<table
+          frame="all" rowsep="1" colsep="1">
+          <title>How task state is rendered as review status based on the role</title>
+          <tgroup cols="5" align="center">
+            <colspec colnum="1" colname="c1" colwidth="1*"/>
+            <colspec colnum="2" colname="c2" colwidth="1*"/>
+            <colspec colnum="3" colname="c3" colwidth="1*"/>
+            <colspec colnum="4" colname="c4" colwidth="1*"/>
+            <colspec colnum="5" colname="newCol5" colwidth="1*"/>
+            <thead>
+              <row>
+                <entry>Task state</entry>
+                <entry>In review</entry>
+                <entry>Review closed</entry>
+                <entry>Integrating</entry>
+                <entry>Integrated</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry> Owner review status</entry>
+                <entry>In review</entry>
+                <entry>Review closed</entry>
+                <entry>Integrating</entry>
+                <entry>Integrated</entry>
+              </row>
+              <row>
+                <entry>Reviewer review status</entry>
+                <entry>In review</entry>
+                <entry>Review closed</entry>
+                <entry>Review closed</entry>
+                <entry>Review closed</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table></p>
+      <p>Here there are details about each state:</p>
+      <ul id="ul_dxr_lps_1yb">
+        <li>
+          <p><uicontrol>In review</uicontrol> - This is the initial state for newly created review
+            tasks. Tasks remain in this state until a task owner closes the review. Both reviewers
+            and task owners can edit the task files while the task is in this state. To close the
+            review a task owner can use the <uicontrol>Close review</uicontrol> button, and the task
+            will transition to the <uicontrol>Review closed</uicontrol> state.</p>
+        </li>
+        <li>
+          <p><uicontrol>Review closed</uicontrol> - Tasks change to this state when a task owner
+            uses the <uicontrol>Close Review</uicontrol> button. Only task owners can edit the task
+            files while the task is in this state. The files are read-only for reviewers. Task
+            owners can reopen the task using the <uicontrol>Reopen Review</uicontrol> button, and
+            its state returns to <uicontrol>In review</uicontrol> or they can start the integration
+            process to merge the task changes into the original content using the <uicontrol>Start
+              integration</uicontrol> button. <note id="note_n3d_rhk_43c">Only one owner will be
+              able to use the <uicontrol>Start integration</uicontrol> action, to keep the
+              integration responsibility to a single person.</note></p>
+        </li>
+        <li>
+          <p><uicontrol>Integrating</uicontrol> - Tasks change to this state when a task owner uses
+            the <uicontrol>Start Integrating</uicontrol> button to integrate the task changes into
+            the project. Only the task owner who started the integration can edit the task files
+            while the task is in this state. The files are read-only for all other collaborators.
+            From this state the owner that handles the integration can use <uicontrol>Cancel
+              integration</uicontrol> to return to the <uicontrol>Review closed</uicontrol> state,
+            or finalize the integration and merge the changes into the original project content
+            using the <uicontrol>Finish integration</uicontrol> button.</p>
+        </li>
+        <li>
+          <p><uicontrol>Integrated</uicontrol> - Tasks change to this state when a task owner uses
+            the <uicontrol>Finish Integration</uicontrol> button after the integration is complete.
+            Task files are read-only for all participants. An integrated review task can no longer
+            be reopened.</p>
+        </li>
+      </ul>
       <p>
-        <dl id="dl_ob1_2js_1yb">
-          <dlentry>
-            <dt>Regular Review Task (created outside a project)</dt>
-            <dd>
-              <ul id="ul_dpt_hjs_1yb">
-                <li>At the end of the review process, the task owner integrates changes proposed by
-                  reviewers into their documentation project using <b>Oxygen XML Editor/Author</b>
-                  or another tool outside of Content Fusion.</li>
-                <li>There is no interaction between Content Fusion and a remote repository.</li>
-                <li>Only the task owners and the reviewers that are granted access to the task are
-                  able to see and access the particular task. </li>
-              </ul>
-            </dd>
-          </dlentry>
-          <dlentry>
-            <dt>Project-based Review Task (created inside a project)</dt>
-            <dd>
-              <ul>
-                <li>At the end of the review process, the task owner has the ability to integrate
-                  changes proposed by reviewers into their documentation project directly within the
-                  Content Fusion browser interface.</li>
-                <li>The changes made to a project-based review task are stored in the Git repository
-                  and merged into the project's branch and pushed to the upstream remote repository
-                  when the task is finished.</li>
-                <li>All users with <xref
-                    href="CF-task-states-user-roles.dita#CF-task-states-user-roles/section_cjw_fns_1yb"
-                    >platform user role of <uicontrol>Author</uicontrol></xref> that have access to
-                  a project are able to see all review tasks that were created inside that
-                  particular project.</li>
-              </ul>
-            </dd>
-          </dlentry>
-        </dl>
+        <note id="note_dt1_vjk_43c">The review status presented to reviewers for the
+            <uicontrol>Integrating</uicontrol> and <uicontrol>Integrated</uicontrol> is
+            <uicontrol>Review closed</uicontrol>, because from the reviewers point of view these
+          states are equivalent to the <uicontrol>Review closed</uicontrol> state.</note>
       </p>
+      <p><fig id="fig_tpy_m1j_hzb">
+          <title>Project Review Task Workflow</title>
+          <image href="../img/cf-author-workflow.png" id="image_omv_n2k_43c" placement="inline"/>
+      </fig></p>
     </section>
-    <section id="section_fsr_mls_1yb">
-      <title>Review Task Ownership</title>
-      <p>On any given review task, collaborators have one of the following roles in regard to task
-          ownership:<ul id="ul_d5w_sls_1yb">
-          <li><b>Reviewer</b> - A collaborator who is not the task owner can review and edit
-            content, add messages to communicate with the task owner and other collaborators, and
-            mark the task as finalized once they consider the review process is finished.</li>
-          <li><b>Owner</b> - The task owner (the person who created the task or another person who
-            is assigned as a task owner by the task creator) can review and edit content, add
-            messages to communicate with other collaborators, change task settings, decide when to
-            close the review task. For project-based review tasks, a task owner who has a <xref
-              href="CF-task-states-user-roles.dita#CF-task-states-user-roles/section_cjw_fns_1yb"
-              >platform user role of <uicontrol>Author</uicontrol></xref> can integrate proposed
-            changes and build output deliverables.</li>
-        </ul></p>
+    <section id="section_gmr_cfk_43c">
+      <title>Independent Review Tasks states</title>
+      <p>An <b>Independent Review Tasks</b> can be in one of the following states: <uicontrol>In
+          review</uicontrol>, <uicontrol>Review closed</uicontrol>, or
+          <uicontrol>Integrated</uicontrol>.</p>
+      <table frame="all" rowsep="1" colsep="1">
+        <title>How task state is rendered as review status based on the role</title>
+        <tgroup cols="4" align="center">
+          <colspec colnum="1" colname="c1" colwidth="1*"/>
+          <colspec colnum="2" colname="c2" colwidth="1*"/>
+          <colspec colnum="3" colname="c3" colwidth="1*"/>
+          <colspec colnum="4" colname="newCol5" colwidth="1*"/>
+          <thead>
+            <row>
+              <entry>Task state</entry>
+              <entry>In review</entry>
+              <entry>Review closed</entry>
+              <entry>Integrated</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry> Owner review status</entry>
+              <entry>In review</entry>
+              <entry>Review closed</entry>
+              <entry>Integrated</entry>
+            </row>
+            <row>
+              <entry>Reviewer review status</entry>
+              <entry>In review</entry>
+              <entry>Review closed</entry>
+              <entry>Review closed</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <ul id="ul_lc4_2fk_43c">
+        <li>
+          <p><uicontrol>In review</uicontrol> - This is the initial state for newly created review
+            tasks. Tasks remain in this state until a task owner closes the review. Both reviewers
+            and task owners can edit the task files while the task is in this state. To close the
+            review a task owner can use the <uicontrol>Close review</uicontrol> button, and the task
+            will transition to the <uicontrol>Review closed</uicontrol> state.</p>
+        </li>
+        <li>
+          <p><uicontrol>Review closed</uicontrol> - Tasks change to this state when a task owner
+            uses the <uicontrol>Close Review</uicontrol> button. Only task owners can edit the task
+            files while the task is in this state. The files are read-only for reviewers. Task
+            owners can reopen the task using the <uicontrol>Reopen Review</uicontrol> button, and
+            its state returns to <uicontrol>In review</uicontrol>, or they can mark that they
+            integrated the content of the task using the <uicontrol>Mark as integrated</uicontrol>
+            button, and the task will transition to the <uicontrol>Integrated</uicontrol> state,
+          </p>
+        </li>
+        <li>
+          <p><uicontrol>Integrated</uicontrol> - Tasks change to this state when a task owner uses
+            the <uicontrol>Mark as integrated</uicontrol> button on a closed task to mark that the
+            content of the task was integrated and it is not needed anymore. In this state, task
+            files are read-only for all participants and the task is visible only to the task
+            owners. Using the <uicontrol>Mark as not integrated</uicontrol> button allows owners to
+            transition the task back to the <uicontrol>Review closed</uicontrol> state.</p>
+        </li>
+      </ul>
     </section>
-    <section id="section_cjw_fns_1yb">
-      <title>Platform User Roles for Project-based Review Tasks</title>
-      <p>For organizations that take advantage of the Content Fusion <xref href="cf-projects.dita"
-            ><i>Projects</i> feature</xref>, there are two platform user roles that can be assigned
-        by the administrator<ph product="fusion"> (from the <uicontrol>Users Management</uicontrol>
-          tab found in the <xref href="cf-enterprise-configuration.dita">Administration
-          Page</xref>)</ph>:<ul id="ul_e3j_yns_1yb">
-          <li><b>Subject Matter Expert (SME)</b> - By default, Content Fusion users have the Subject
-            Matter Expert (SME) role assigned for the platform. They can access review tasks that
-            are assigned to them and create tasks from scratch.</li>
-          <li><b>Content Fusion Author</b> - This platform role must be assigned by an
-            administrator. In addition to the features that an SME has access to, Authors can access
-            all projects created within the organization, create review tasks from inside projects,
-            build output deliverables, and other advanced features.</li>
-        </ul></p>
-    </section>
-    <section id="section_vkk_v4s_1yb">
-      <title>Review Task States</title>
-      <p>Content Fusion review tasks can be in one of the following possible states:<ul
-          id="ul_dxr_lps_1yb">
-          <li>
-            <p><uicontrol>In review</uicontrol> - This is the initial status for newly created
-              review tasks and they remain in this state until the task has been closed by the task
-              owner. Both reviewers and task owners can edit the task files while in this state.</p>
-          </li>
-          <li><uicontrol>Review closed</uicontrol> - Tasks are changed to this status when a task
-            owner uses the <uicontrol>Close Review</uicontrol> button to close the task. Only task
-            owners can edit the task files while in this state (they are read-only for reviewers).
-            Task owners can reopen the task and its status will return to <uicontrol>In
-              review</uicontrol>.</li>
-          <li><uicontrol>Integrating</uicontrol> (for project-based review tasks only) - Tasks are
-            changed to this status when a task owner uses the <uicontrol>Start
-              Integrating</uicontrol> button to integrate the proposed changes into the project.
-            Only the task owner that started the integration can edit the task files while in this
-            state (they are read-only for all other collaborators). Note that this task status is
-            only viewable by those with a <xref
-              href="CF-task-states-user-roles.dita#CF-task-states-user-roles/section_cjw_fns_1yb"
-              >platform user role of <uicontrol>Content Fusion Author</uicontrol></xref>.</li>
-          <li><uicontrol>Integrated</uicontrol> (for project-based review tasks only) - Tasks are
-            changed to this status when a task owner uses the <uicontrol>Finish
-              Integration</uicontrol> button once the integration is complete. Task files are
-            read-only for all participants. An integrated review task can no longer be re-opened.
-            Note that this task status is only viewable by those with a <xref
-              href="CF-task-states-user-roles.dita#CF-task-states-user-roles/section_cjw_fns_1yb"
-              >platform user role of <uicontrol>Content Fusion Author</uicontrol></xref>.</li>
-        </ul></p>
-    </section>
-    <p id="p_sfm_lcj_hzb">
-      <fig id="fig_tpy_m1j_hzb">
-        <title>Review Task Workflow from Author Role Perspective</title>
-        <image href="../img/cf-author-workflow.png"/>
-      </fig>
-    </p>
   </body>
+  <related-links>
+    <link href="review-tasks-intro.dita">
+      <linktext>Review Tasks</linktext>
+    </link>
+    <link href="content_fusion_task_details.dita">
+      <linktext>My Review Tasks Page and Review Task Header</linktext>
+    </link>
+  </related-links>
 </topic>
