@@ -68,6 +68,26 @@ function getUserDisplayName(user) {
   return user && user.displayName ? user.displayName : null;
 }
 
+function isImageAttachment(attachment) {
+  return !!(attachment && attachment.mimeType && attachment.mimeType.indexOf("image/") === 0);
+}
+
+function getAttachmentMetadata(attachments) {
+  return (attachments || []).map(function (attachment) {
+    return {
+      id: attachment.id || null,
+      filename: attachment.filename || null,
+      mimeType: attachment.mimeType || null,
+      size: attachment.size || null,
+      contentUrl: attachment.content || null,
+      thumbnailUrl: attachment.thumbnail || null,
+      created: attachment.created || null,
+      author: getUserDisplayName(attachment.author),
+      isImage: isImageAttachment(attachment)
+    };
+  });
+}
+
 function getCommentsForDocumentation(commentField) {
   var comments = commentField && commentField.comments ? commentField.comments : [];
 
@@ -113,7 +133,8 @@ function buildDocumentationOutput(data, fieldMap) {
       site: getNamedField(fields, fieldMap, "customfield_10751"),
       security: getNamedField(fields, fieldMap, "customfield_12350")
     },
-    comments: getCommentsForDocumentation(getFieldValue(fields, "comment"))
+    comments: getCommentsForDocumentation(getFieldValue(fields, "comment")),
+    attachments: getAttachmentMetadata(getFieldValue(fields, "attachment"))
   };
 }
 
