@@ -78,6 +78,26 @@ The project includes a script that reads `JIRA_PERSONAL_TOKEN` and fetches issue
    node jira-fetch.js
    ```
 
+### Add Jira comments
+
+The project also includes a script that can post comments to Jira issues. The script lives next to the skill file in `jira-add-comment.js`.
+
+1. Set `JIRA_PERSONAL_TOKEN`. Create it from Jira profile → Personal access tokens.
+2. Post a short comment directly from the command line:
+
+   ```bash
+   node jira-add-comment.js <ISSUE_KEY> "Comment text"
+   ```
+
+3. Post a longer comment from a text file:
+
+   ```bash
+   node jira-add-comment.js <ISSUE_KEY> --file <path-to-comment.txt>
+   ```
+
+4. Best practice: when the comment was prepared or posted through this workflow, mention that it was added via AI Positron.
+5. Use this only when the user asked to add a Jira comment or clearly approved posting one.
+
 ### Option 2: User pastes JSON
 
 If the user already fetched or copied the issue JSON from Jira, use that directly.
@@ -187,11 +207,14 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 1. **Script fails or no token:** Remind the user to set `JIRA_PERSONAL_TOKEN` and point to Jira profile → Personal access tokens.
 2. **HTTP 401 or 403:** Token is invalid or expired. The user must create a new token.
 3. **HTTP 404:** Issue key not found or no access. Confirm the key and permissions.
-4. **No JSON or partial paste:** Ask for the full issue JSON or suggest running `node jira-fetch.js <ISSUE_KEY>` and sharing the output.
+4. **Comment post fails:** Check the token, issue key, and Jira permissions. If the comment is long, prefer the `--file` option.
+5. **No JSON or partial paste:** Ask for the full issue JSON or suggest running `node jira-fetch.js <ISSUE_KEY>` and sharing the output.
 
 ## Summary
 
 1. Use `node jira-fetch.js <ISSUE_KEY>` for the default documentation-friendly output.
 2. Use `node jira-fetch.js <ISSUE_KEY> --full` when you need all Jira fields with labels.
-3. Treat the Jira issue as the source of truth for documentation updates and new topics.
-4. Prefer `summary`, `description`, `notes.documentation`, `notes.qa`, and relevant comments when drafting documentation.
+3. Use `node jira-add-comment.js <ISSUE_KEY> "Comment text"` or `node jira-add-comment.js <ISSUE_KEY> --file <path>` to add Jira comments.
+4. As a best practice, Jira comments added through this workflow should mention that they were added via AI Positron.
+5. Treat the Jira issue as the source of truth for documentation updates and new topics.
+6. Prefer `summary`, `description`, `notes.documentation`, `notes.qa`, and relevant comments when drafting documentation.
