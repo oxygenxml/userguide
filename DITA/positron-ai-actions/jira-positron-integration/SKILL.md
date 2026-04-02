@@ -64,7 +64,15 @@ The project includes a script that reads `JIRA_PERSONAL_TOKEN` and fetches issue
    node jira-fetch.js <ISSUE_KEY> --full
    ```
 
-6. Run the script with no issue key to get the current user's assigned issues:
+6. When an issue has attachments, the default output also includes attachment metadata such as file name, MIME type, size, author, and Jira download URLs.
+
+7. If you need an attached image in a format ready for OpenAI Chat Completions, fetch a specific image attachment as a data URL:
+
+   ```bash
+   node jira-get-attachment-base64.js <ISSUE_KEY> <ATTACHMENT_ID>
+   ```
+
+8. Run the script with no issue key to get the current user's assigned issues:
 
    ```bash
    node jira-fetch.js
@@ -105,6 +113,16 @@ When you run `node jira-fetch.js <ISSUE_KEY>`, the script returns a compact JSON
    2. `created`
    3. `updated`
    4. `body`
+4. The `attachments` array includes attachment metadata so the AI can decide whether it needs to fetch an image:
+   1. `id`
+   2. `filename`
+   3. `mimeType`
+   4. `size`
+   5. `contentUrl`
+   6. `thumbnailUrl`
+   7. `created`
+   8. `author`
+   9. `isImage`
 
 This format is the preferred source for documentation flows because it keeps the important context and removes most Jira noise.
 
@@ -117,6 +135,25 @@ When you run `node jira-fetch.js <ISSUE_KEY> --full`, the script returns all Jir
    1. `label`
    2. `value`
 3. This mode is useful when you need to inspect raw Jira data or discover additional fields.
+
+### Attachment image output
+
+When you run `node jira-get-attachment-base64.js <ISSUE_KEY> <ATTACHMENT_ID>`, the script returns a compact JSON object for a single image attachment.
+
+1. Top-level fields include:
+   1. `issueKey`
+   2. `issueUrl`
+   3. `id`
+   4. `filename`
+   5. `mimeType`
+   6. `size`
+   7. `created`
+   8. `author`
+   9. `contentUrl`
+   10. `thumbnailUrl`
+   11. `dataUrl`
+2. `dataUrl` is ready to pass to OpenAI Chat Completions as an inline image.
+3. The script fails if the attachment does not exist on the issue or if it is not an image.
 
 ## Using Jira data as extended context
 
@@ -142,7 +179,8 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 3. `notes.documentation.value` is often the most direct source for what to document.
 4. `notes.qa.value` can reveal behavior details, edge cases, and test scenarios.
 5. `comments` can contain implementation decisions, UX clarifications, and late changes.
-6. `components`, `fixVersions`, and `labels` help place the content in the right product area and release.
+6. `attachments` help identify screenshots or other visual evidence that may clarify the feature or bug.
+7. `components`, `fixVersions`, and `labels` help place the content in the right product area and release.
 
 ## Error handling
 
