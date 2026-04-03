@@ -65,14 +65,9 @@ The project includes a script that reads `JIRA_PERSONAL_TOKEN` and fetches issue
    ```
 
 6. When an issue has attachments, the default output also includes attachment metadata such as file name, MIME type, size, author, and Jira download URLs.
-
-7. If you need an attached image in a format ready for OpenAI Chat Completions, fetch a specific image attachment as a data URL:
-
-   ```bash
-   node jira-get-attachment-base64.js <ISSUE_KEY> <ATTACHMENT_ID>
-   ```
-
-8. Run the script with no issue key to get the current user's assigned issues:
+7. Keep attachment metadata in the main Jira fetch output so the AI can see that images exist and can reference them as supporting context.
+8. If the user wants to inspect a Jira image attachment manually, they can download it locally with `node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID>`. The script saves the image in a local `tmp` folder next to the script and returns the local path so the AI can ask the user to attach that file in the next message.
+9. Run the script with no issue key to get the current user's assigned issues:
 
    ```bash
    node jira-fetch.js
@@ -133,7 +128,7 @@ When you run `node jira-fetch.js <ISSUE_KEY>`, the script returns a compact JSON
    2. `created`
    3. `updated`
    4. `body`
-4. The `attachments` array includes attachment metadata so the AI can decide whether it needs to fetch an image:
+4. The `attachments` array includes attachment metadata so the AI can identify available supporting files, especially screenshots and other images:
    1. `id`
    2. `filename`
    3. `mimeType`
@@ -156,24 +151,13 @@ When you run `node jira-fetch.js <ISSUE_KEY> --full`, the script returns all Jir
    2. `value`
 3. This mode is useful when you need to inspect raw Jira data or discover additional fields.
 
-### Attachment image output
+### Attachment handling limitation
 
-When you run `node jira-get-attachment-base64.js <ISSUE_KEY> <ATTACHMENT_ID>`, the script returns a compact JSON object for a single image attachment.
-
-1. Top-level fields include:
-   1. `issueKey`
-   2. `issueUrl`
-   3. `id`
-   4. `filename`
-   5. `mimeType`
-   6. `size`
-   7. `created`
-   8. `author`
-   9. `contentUrl`
-   10. `thumbnailUrl`
-   11. `dataUrl`
-2. `dataUrl` is ready to pass to OpenAI Chat Completions as an inline image.
-3. The script fails if the attachment does not exist on the issue or if it is not an image.
+1. Attachment metadata is useful because it tells the AI that screenshots or other supporting files exist on the Jira issue.
+2. In the current setup, image content itself is not automatically interpreted.
+3. Treat Jira image attachments as metadata only.
+4. Keep the attachment information from `jira-fetch.js` so the AI can mention that screenshots or other images exist when relevant.
+5. If the user explicitly wants image inspection, use `jira-download-image-attachment.js` to save the file locally, then ask the user to attach that downloaded file in the next message.
 
 ## Using Jira data as extended context
 
@@ -199,7 +183,7 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 3. `notes.documentation.value` is often the most direct source for what to document.
 4. `notes.qa.value` can reveal behavior details, edge cases, and test scenarios.
 5. `comments` can contain implementation decisions, UX clarifications, and late changes.
-6. `attachments` help identify screenshots or other visual evidence that may clarify the feature or bug.
+6. `attachments` help identify screenshots or other visual evidence that may clarify the feature or bug, even if the current workflow cannot automatically interpret the image content itself.
 7. `components`, `fixVersions`, and `labels` help place the content in the right product area and release.
 
 ## Error handling
@@ -209,6 +193,7 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 3. **HTTP 404:** Issue key not found or no access. Confirm the key and permissions.
 4. **Comment post fails:** Check the token, issue key, and Jira permissions. If the comment is long, prefer the `--file` option.
 5. **No JSON or partial paste:** Ask for the full issue JSON or suggest running `node jira-fetch.js <ISSUE_KEY>` and sharing the output.
+6. **Image needs visual inspection:** Suggest running `node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID>`, then ask the user to attach the downloaded local file in the next message.
 
 ## Summary
 
@@ -217,4 +202,6 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 3. Use `node jira-add-comment.js <ISSUE_KEY> "Comment text"` or `node jira-add-comment.js <ISSUE_KEY> --file <path>` to add Jira comments.
 4. As a best practice, Jira comments added through this workflow should mention that they were added via AI Positron.
 5. Treat the Jira issue as the source of truth for documentation updates and new topics.
-6. Prefer `summary`, `description`, `notes.documentation`, `notes.qa`, and relevant comments when drafting documentation.
+6. Keep attachment metadata from the main Jira fetch flow, and treat image attachments as supporting context unless the user attaches a downloaded local image in a follow-up message.
+7. Use `node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID>` when the user wants to inspect a Jira image attachment and then ask them to attach the downloaded file.
+8. Prefer `summary`, `description`, `notes.documentation`, `notes.qa`, and relevant comments when drafting documentation.
