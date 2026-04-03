@@ -84,22 +84,6 @@ function buildLocalFileName(issueKeyValue, attachment) {
   return issueKeyValue + "-" + String(attachment.id || "attachment") + "-" + safeName;
 }
 
-function buildUserInstruction(filePaths) {
-  if (filePaths.length === 1) {
-    return [
-      "The image was downloaded locally.",
-      "If you want the AI to inspect it, attach this file in your next message:",
-      filePaths[0]
-    ].join(" ");
-  }
-
-  return [
-    "The images were downloaded locally.",
-    "If you want the AI to inspect them, attach these files in your next message:",
-    filePaths.join(", ")
-  ].join(" ");
-}
-
 function downloadAttachment(issue, attachment) {
   return jiraFetchBinary(attachment.content).then(function (buffer) {
     var localFileName = buildLocalFileName(issue.key, attachment);
@@ -150,10 +134,7 @@ function run() {
         issueKey: issue.key,
         issueUrl: baseUrl + "/browse/" + issue.key,
         downloadedCount: downloads.length,
-        attachments: downloads,
-        aiInstruction: buildUserInstruction(downloads.map(function (item) {
-          return item.localPath;
-        }))
+        attachments: downloads
       };
 
       console.log(JSON.stringify(output, null, 2));
