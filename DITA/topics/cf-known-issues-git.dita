@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-known-issues-git">
+  <title>Git Repository Issues</title>
+  <shortdesc>Common error messages and troubleshooting information when working with a Git
+    repository in <ph keyref="product"/>.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Git errors</indexterm>
+        <indexterm>Git repository issues</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_hn5_dgk_54b">This topic contains information about issues related to Git
+      repositories.</p>
+    <section id="section_pfr_d5p_53c">
+      <title>Error When Importing a Project from Git</title>
+      <p id="p_qfr_d5p_53c">When using the <xref href="cf-projects.dita#cf-projects/ul_bzx_h2h_1fc"
+            ><b>Import from Git</b> option</xref> to create a project in Content Fusion, the
+        operation may fail with an error. In most cases, this is due to an incorrect configuration
+        of the Git access token (or other credentials) used to connect to the repository. Content
+        Fusion needs <b>read</b> and <b>write</b> permissions on the repository to clone it, create
+        branches for review tasks, and commit changes. If the token has only read access (or no
+        access to the repository), the import will fail. To resolve this, ensure that the access
+        token is created with the correct scopes or permissions for your Git provider (GitHub,
+        GitLab, Bitbucket, Azure DevOps).</p>
+      <p id="p_b31_t5p_53c">For detailed steps and platform-specific requirements, see <xref
+          href="cf-git-access-tokens.dita"/>.</p>
+      <p id="p_ybp_t5p_53c">
+        <note id="note_pg2_55p_53c" type="other" othertype="Notes">
+          <ul id="ul_rfr_d5p_53c">
+            <li id="li_sfr_d5p_53c">If you are evaluating Content Fusion on the <xref
+                href="https://fusion.oxygenxml.com/" format="html" scope="external">Cloud
+                server</xref>, it cannot connect to Git platforms that are hosted internally (for
+              example, an internal Git server that you access only through VPN/proxy). In this case,
+              to evaluate Content Fusion with your internal repositories, you need to install
+              Content Fusion on your own servers (Enterprise version).</li>
+            <li id="li_tfr_d5p_53c">If you run Content Fusion Enterprise and need to connect to an
+              external Git server (for example, through a corporate proxy), you must configure the
+              proxy accordingly. For details, see <xref href="cf-proxy-setup.dita"/>.</li>
+          </ul>
+        </note>
+      </p>
+    </section>
+    <section id="connection_to_the_server_cannot_be_established">
+      <title>User Not Authorized on Git Repository</title>
+      <p id="p_jn5_dgk_54b">If you receive a <codeph>User not authorized on Git repository</codeph>
+        message when Content Fusion connects to your Git remote repository but the server rejects
+        the credentials or does not grant access to the repository URL you specified, there are
+        several possible causes:<ul id="ul_jtg_35p_53c">
+          <li id="li_ktg_35p_53c"><b>Invalid or unusable credentials</b> - Wrong access token or
+            password, expired token, or token that was revoked or rotated.</li>
+          <li id="li_ltg_35p_53c"><b>Insufficient permissions on this repository</b> - The token is
+            legitimate but does not have the <b>read and write</b> access Content Fusion needs on
+            the repository from your clone URL . A read-only token can lead to authorization
+            failures when pushing commits to the remote repository.</li>
+          <li id="li_mtg_35p_53c"><b>Token limited to another repository</b> - The token is tied to
+            a different repository or to a fixed list that does not include the one you are
+            importing (typical of fine-grained personal access tokens). Add the repository from your
+            import URL to the token's permissions, or create a new token for that repository.</li>
+        </ul></p>
+    </section>
+  </body>
+</topic>
