@@ -67,9 +67,7 @@ The project includes a script that reads `JIRA_PERSONAL_TOKEN` and fetches issue
 6. When an issue has attachments, the default output also includes attachment metadata such as file name, MIME type, size, author, and Jira download URLs.
 7. Keep attachment metadata in the main Jira fetch output so the AI can see that images exist and can reference them as supporting context.
 8. If the user wants to inspect one or more Jira image attachments manually, they can download them locally with `node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]`. The script saves the images in a local `tmp` folder next to the script and returns their local paths.
-9. After fetching images with `jira-download-image-attachment.js`, your very next message should focus first on telling the user exactly how to attach those locally downloaded files and send them back for inspection. Make it clear that the easiest way is to paste the `${attach(absolute path to the file)}` block or blocks directly into their next message. Emphasize this prominently and do not provide analysis, conclusions, or a long answer before the user attaches the images, because that important instruction can otherwise be missed.
-10. When asking the user to attach downloaded images in the next message, the AI should compose the message itself and include Positron attachment snippets in the form `${attach(absolute path to the file)}`, one snippet per downloaded image.
-11. Put each `${attach(...)}` snippet on its own line so the user can inspect them more easily.
+11. You can use the available tools to explore each image if necessary. 
 12. Run the script with no issue key to get the current user's assigned issues:
 
    ```bash
