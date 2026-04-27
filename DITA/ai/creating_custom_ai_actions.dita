@@ -208,6 +208,11 @@
 }
 </codeblock></p>
               </note>
+              <note id="note_ecr_tb4_z3c">All <xref
+                  href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html"
+                  format="html" scope="external">editor variables</xref> defined in
+                  <codeph>prompt</codeph> or <codeph>prompt_ref</codeph> content are automatically
+                expanded.</note>
             </p>
           </dd>
         </dlentry>
@@ -748,8 +753,7 @@
                      document.</dd>
                  </dlentry>
                   <dlentry>
-                    <dt><codeph>copy_move_rename_path</codeph> (Only Available for Positron
-                      Desktop)</dt>
+                    <dt><codeph>copy_move_rename_path</codeph> (Not Available for Web Author)</dt>
                     <dd>Copies, moves, or renames a local file or folder path. When used in
                         <b>Oxygen</b> 28.1 or newer, if the <b>Main Files</b> feature is enabled in
                       the application, references to the moved or renamed resource are automatically
@@ -784,10 +788,11 @@
                       documents that contain all keywords or only part of the keywords. </dd>
                   </dlentry>
                   <dlentry>
-                    <dt><codeph>get_document_content</codeph></dt>
+                    <dt><codeph>get_binary_resource_description</codeph></dt>
                     <dd>
-                      <p>Retrieves the content from a specific URL. The LLM can control if the
-                        entire content or a particular lines range is read.</p>
+                      <p>Describes the contents of a binary resource (image, PDF, DOCX, PPTX, or
+                        XSLX) by invoking an agent with a custom prompt and location of the
+                        resource.</p>
                     </dd>
                   </dlentry>
                   <dlentry>
@@ -1022,6 +1027,36 @@
       ]
     }
   }</codeblock></p>
+    </section>
+    <section id="section_rts_nzs_z3c">
+      <title>Application Context Metadata</title>
+      <p>A specific <codeph>applicationContext</codeph> parameter can be added to AI actions in a
+        JSON action/agent definition file to provide the LLM with the following editing session
+          details:<ul id="ul_ews_5zs_z3c">
+          <li>Name and version of the <i>Oxygen</i> application.</li>
+          <li>Name and version of operating system.</li>
+          <li>Locale language information.</li>
+          <li>Current date (day, month, year).</li>
+          <li>Project root folder.</li>
+          <li>List of files referenced in the <b>Main files</b> folder.</li>
+          <li>Current file opened in the DITA Maps Manager view.</li>
+          <li>Current file opened in the main editor area. Includes caret line/column and selection
+            information.</li>
+          <li>Skills support (header information from all skills is expanded in the application
+            context metadata).</li>
+        </ul></p>
+      <p>In addition, if the currently edited document or DITA map is changed, the LLM receives
+        information about the change.</p>
+      <p>The application context parameter needs to be defined in the JSON action/agent definition
+        file like this:</p>
+      <p>
+        <codeblock id="codeblock_jg1_tzs_z3c" outputclass="language-json">"expand-params": [
+      {
+        "name": "applicationContext",
+        "value": "${applicationContext}"
+      }
+]</codeblock>
+      </p>
     </section>
     <section conkeyref="reusables-ai-plugin/distributing_ai_actions" id="distributing_ai_actions"/>
   </body>

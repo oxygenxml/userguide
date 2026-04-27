@@ -36,6 +36,10 @@
           <codeph>ms-azure-open-ai-connector</codeph>, <codeph>claude-ai-connector</codeph>,
           <codeph>google-gemini-ai-connector</codeph>, <codeph>aws-bedrock-connector</codeph>, and
           <codeph>grok-connector</codeph>.</p>
+      <p>The configuration file accepts either a single JSON object (for one connection) or a <xref
+          href="#./section_multiple_connections">JSON array of objects (for multiple
+          connections)</xref>.</p>
+      <p id="p_alr_p2r_s3c">Examples of single connections:</p>
       <codeblock outputclass="language-json" id="codeblock_lpg_ll3_vfc">{
   "connection_name": "OpenAI",
   "connector_id": "open-ai-connector",
@@ -85,7 +89,7 @@
       <p id="p_etm_pln_ghc">
         <codeblock outputclass="language-json">{
   "connection_name": "Bedrock",
-   "connector_id": "aws-bedrock-connector",
+  "connector_id": "aws-bedrock-connector",
   "connector_params": {
     "aws_region_param": "us-east-1",
     "base_URL_param": "https://bedrock-runtime.us-east-1.amazonaws.com/",
@@ -108,6 +112,42 @@
   }
 }</codeblock>
       </p>
+    </section>
+    <section id="section_multiple_connections">
+      <title>Configuring Multiple Connections</title>
+      <p>To expose more than one AI connection to users, provide a JSON array instead of a single
+        object. Each entry follows the same structure as a single-connection file. When multiple
+        connections are defined, the first one in the array becomes the active connection. The
+        following example defines two separate MS Azure AI deployments (one for a standard model and
+        one for a mini model) so that users can switch between them:</p>
+      <codeblock outputclass="language-json" id="codeblock_multiple_azure">[
+  {
+    "connection_name": "AzureGpt5",
+    "connector_id": "ms-azure-open-ai-connector",
+    "connector_params": {
+      "base_URL_param": "https://oxygenxml-vision.openai.azure.com/",
+      "deployment_param": "gpt-5",
+      "streaming_param": true,
+      "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+      "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+    }
+  },
+  {
+    "connection_name": "AzureGpt5Mini",
+    "connector_id": "ms-azure-open-ai-connector",
+    "connector_params": {
+      "base_URL_param": "https://oxygenxml-vision.openai.azure.com/",
+      "deployment_param": "gpt-5-mini",
+      "streaming_param": true,
+      "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+      "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+    }
+  }
+]</codeblock>
+      <note type="tip">Each connection must have a unique <codeph>connection_name</codeph>. If two
+        entries share the same name (or both omit it), the second connection automatically receives a
+        numeric suffix (for example, <codeph>AzureGpt5_2</codeph>) to keep identifiers
+        distinct.</note>
     </section>
     <section id="section_behavior">
       <title>Configuration File Detection</title>

@@ -12,23 +12,28 @@
             <dd>
             <p id="p_mbr_skb_2gc">A reference to a JSON file that configures MCP servers. MCP
               servers can have three type of transport protocols:<ul id="ul_edw_jhn_hgc">
-                <li id="li_qyn_swh_fhc"><b>Stdio transport</b>: Uses standard input/output streams
+                <li id="li_qyn_swh_fhc"><b>Stdio transport</b> - Uses standard input/output streams
                   for direct process communication between local processes on the same machine,
                   providing optimal performance with no network overhead.</li>
-                <li id="li_ryn_swh_fhc"><b>Streamable HTTP transport</b>: Uses HTTP POST for
+                <li id="li_ryn_swh_fhc"><b>Streamable HTTP transport</b> - Uses HTTP POST for
                   client-to-server messages with optional Server-Sent Events for streaming
                   capabilities. </li>
-                <li id="li_syn_swh_fhc"><b>Streamable HTTP with SSE transport</b>: Uses HTTP POST
+                <li id="li_syn_swh_fhc"><b>Streamable HTTP with SSE transport</b> - Uses HTTP POST
                   for client-to-server messages with optional Server-Sent Events for streaming
                   capabilities. Server can make use of <b>Server-Sent Events (SSE)</b> to stream
                   multiple server messages</li>
               </ul></p>
             <p id="p_nbr_skb_2gc"><note id="note_rqz_2jk_3hc" type="important">For configuration
-                files which contain API key values you can use <xref
+                files that contain API key values, you can use <xref
                   href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html"
-                  format="html" scope="external">Oxygen XML editor variables</xref> in order to
-                avoid setting key values directly in the configuration files. </note>Configuration
-              file examples:<ul id="ul_ohx_l1x_dgc">
+                  format="html" scope="external">Oxygen XML editor variables</xref> to avoid setting
+                key values directly in the configuration files. You can also use <xref
+                  href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html"
+                  format="html" scope="external">Oxygen editor variables</xref> in the
+                  <codeph>url</codeph>, <codeph>command</codeph>, <codeph>args</codeph>,
+                  <codeph>headers</codeph> properties (for example, to access environmental
+                variables or system properties). </note>Configuration file examples:<ul
+                id="ul_ohx_l1x_dgc">
                 <li id="li_obr_skb_2gc">
                   <p id="p_pbr_skb_2gc">Configuration of a local MCP server that adds tools to allow
                     the AI to use the <xref
@@ -46,7 +51,21 @@
         "BRAVE_API_KEY": "API_KEY_HERE"
       }
     }
-}</codeblock></p>
+}</codeblock>The following properties are supported for local MCP server
+                      connections:<ul id="ul_kmx_rmd_y3c">
+                      <li><b>command</b> - The executable command used to start the MCP server
+                        process (e.g. <codeph>npx</codeph>, <codeph>docker</codeph>,
+                          <codeph>node</codeph>, <codeph>python</codeph>).</li>
+                      <li><b>args</b> - An array of string arguments to pass to the command (e.g.
+                          <codeph>["-y",
+                        "@modelcontextprotocol/server-brave-search"]</codeph>).</li>
+                      <li><b>env</b> - An object that contains environment variables to set for the
+                        server process. This is commonly used to pass API keys or configuration
+                        values (e.g. <codeph>{"BRAVE_API_KEY": "..."}</codeph>).</li>
+                      <li><b>cwd</b> - The working directory where the server process is launched.
+                        If not specified, the server process inherits the current working directory
+                        from the application.</li>
+                    </ul></p>
                 </li>
                 <li id="li_tyn_swh_fhc">Configuration of a remote MCP <b>Streamable HTTP</b> server
                   that adds tools to allow the AI to call the <xref
@@ -61,7 +80,7 @@
   }
 }</codeblock>For <b>Streamable HTTP</b> connections, you can pass header values to
                   the server using the <codeph>headers</codeph> property like
-                  this:<codeblock outputclass="language-json" id="codeblock_fkf_nxq_5gc">{
+                    this:<codeblock outputclass="language-json" id="codeblock_fkf_nxq_5gc">{
   "mcpServers": {
     "atlassian": {
       "url": "http://our.jira.server.url:8000/mcp",
@@ -70,12 +89,8 @@
       }
     }
   }
-}</codeblock>You can also use <xref
-                    href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html"
-                    format="html" scope="external"> editor variables</xref> in the header values
-                  (for example, to access environmental variables or system properties). <p
-                    id="p_uyn_swh_fhc">If you want to ask the end user for a certain value to be
-                    used in the headers, you can do so by defining inputs like
+}</codeblock><p id="p_uyn_swh_fhc">If you want to ask the end user for a certain
+                    value to be used in the headers, you can define inputs like
                     this:</p><codeblock id="codeblock_rlm_zxq_5gc" outputclass="language-json">{
   "servers": {
     "github": {
@@ -207,11 +222,11 @@
     custom AI actions.</p>
   <section id="section_yjc_k24_2hc">
     <title>Tool Call Security</title>
-    <p><uicontrol>AI Positron</uicontrol> does not control how various tools are implemented by
-      the configured MCP servers or what parameters are used by the <b>LLM</b> to call them. By
-      default, whenever the LLM calls tools obtained by <uicontrol>AI Positron</uicontrol> from an
-      MCP server, the end user is required to approve or reject each individual tool call in the
-      Chat view.</p>
+    <p><uicontrol>AI Positron</uicontrol> does not control how various tools are implemented by the
+        configured MCP servers or what parameters are used by the <b>LLM</b> to call them. By
+        default, whenever the LLM calls tools obtained by <uicontrol>AI Positron</uicontrol> from an
+        MCP server, the end user is <xref href="unsafe_tool_approval_preferences.dita">required to
+          approve or reject</xref> each individual tool call in the Chat view.</p>
     <p>To mark a MCP server as having all tool calls safe and avoid asking the end user each time
       for permission, you need to set an extra environmental parameter in its configuration
       file:<codeblock id="codeblock_t34_424_2hc" outputclass="language-json">"env": {
