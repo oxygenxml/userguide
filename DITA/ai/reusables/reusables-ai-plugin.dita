@@ -71,14 +71,33 @@
         </dlentry>
         <dlentry id="dlentry_uym_225_y1c">
           <dt>Base URL</dt>
-          <dd>The web address where the connector service is located. This value can be found in the
-              <b>Keys &amp; Endpoint</b> section when examining your resource from the <b>Azure</b>
-            portal. For example: <codeph>https://your-company-name.openai.azure.com/</codeph>.</dd>
+          <dd>
+            <p>The base URL of your Azure resource. Two types of deployments are supported:</p>
+            <ul>
+              <li><b>Microsoft Azure OpenAI deployments</b> - Provide your Azure OpenAI resource URL
+                found in the <b>Keys &amp; Endpoint</b> section of the <b>Azure</b> portal (for
+                example: <codeph>https://your-company-name.openai.azure.com</codeph>). The connector
+                automatically builds the full request URL using this pattern:
+                  <codeph>{base-url}/openai/deployments/{deployment}/chat/completions</codeph>.</li>
+              <li><b>Claude (Anthropic) deployments on Azure AI Foundry</b> - Provide the Anthropic
+                base URL for your Azure AI Foundry resource (for example:
+                  <codeph>https://&lt;resource-name&gt;.services.ai.azure.com/anthropic</codeph>).
+                When the URL contains <codeph>anthropic</codeph>, the connector automatically routes
+                requests to the Claude Messages API at <codeph>{base-url}/v1/messages</codeph>.</li>
+            </ul>
+          </dd>
         </dlentry>
         <dlentry id="dlentry_vym_225_y1c">
           <dt>Deployment</dt>
           <dd>The deployment name that was chosen when the model was deployed in <b>Microsoft
               Azure</b>.</dd>
+        </dlentry>
+        <dlentry id="dlentry_xym_225_y1c">
+          <dt>Reasoning effort</dt>
+          <dd>The default reasoning effort level to use when executing actions/chat requests (e.g.
+              <codeph>low</codeph>, <codeph>medium</codeph>, <codeph>high</codeph>). Individual
+            actions may override this default value. Leave it empty to use the deployment's built-in
+            default value.</dd>
         </dlentry>
         <dlentry id="dlentry_wym_225_y1c">
           <dt>API key</dt>
@@ -128,10 +147,9 @@
       </dl>
     </p>
     <!--MS Azure User based authentication-->
-    <p id="Azure-Auth-p-1"><b><u>Identity-based Authentication for Microsoft Azure OpenAI
-          Connector</u></b></p>
-    <p id="Azure-Auth-p-2">The Microsoft Azure OpenAI connector supports the following
-      identity-based authentication flows: <dl id="dl_gpv_2rw_tfc">
+    <p id="Azure-Auth-p-1"><b><u>Identity-based Authentication for MS Azure AI Connector</u></b></p>
+    <p id="Azure-Auth-p-2">The MS Azure AI connector supports the following identity-based
+      authentication flows: <dl id="dl_gpv_2rw_tfc">
         <dlentry id="authorization_code_flow">
           <dt>OAuth 2.0 Authorization Code Flow (User Sign-in)</dt>
           <dd>
@@ -169,10 +187,15 @@
               </tgroup>
             </table>
             <note id="note_pwl_c1y_tfc">You must register an application in Microsoft Entra ID that
-              includes the specified redirect URI. The signed-in user must also be assigned a role
-              that allows access to the Azure OpenAI service (e.g. <xref
-                href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#cognitive-services-openai-user"
-                format="html" scope="external">Cognitive Services OpenAI User</xref>).</note>
+              includes the specified redirect URI. The signed-in user or service principal must also
+              be granted an Azure RBAC role on the target Azure resource: <ul id="ul_a4r_txw_q3c">
+                <li><b>Microsoft Azure OpenAI deployments</b> - Assign a role such as Cognitive
+                  Services OpenAI User.</li>
+                <li><b>Claude (Anthropic) deployments on Azure AI Foundry</b> - Assign a role that
+                  allows model inference on the Foundry resource, such as Cognitive Services User.
+                  In Foundry project-based setups, Azure AI User may also be required depending on
+                  how the resource is organized.</li>
+              </ul></note>
           </dd>
         </dlentry>
         <dlentry id="service_principal_authentication">
@@ -187,7 +210,7 @@
                 format="html" scope="external">create a service principal</xref> and <xref
                 href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#add-role-assignment-to-an-azure-openai-resource"
                 format="html" scope="external">assign a role</xref> to it that allows access to the
-              Azure OpenAI service (e.g. the <xref
+              Microsoft Azure OpenAI service (e.g. the <xref
                 href="https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control#cognitive-services-openai-user"
                 format="html" scope="external">Cognitive Services OpenAI User</xref> role).</p>
             <ul id="ol_yth_mdy_tfc">
@@ -741,6 +764,12 @@
                 transform, or convert document components independently. This allows you to use the
                   <uicontrol>Planner</uicontrol> to convert user manuals while also extracting and
                 using the images from inside the manuals.</note></li>
+            <li><uicontrol>Personas</uicontrol> - Evaluates your task through multiple audience
+              personas before producing a final recommendation. It identifies 2 to 4 relevant
+              personas, consults each as a separate sub-agent, resolves tensions through a
+              compromise round, and synthesizes a final recommendation that balances their needs.
+              Use it for content, messaging, documentation, tutorials, or any task involving
+              tradeoffs between different user needs.</li>
             <li><uicontrol>Ask</uicontrol> - Find answers, get explanations, and make plans using
               the AI. This read-only mode has access to various search tools and uses them based on
               your current task.</li>
@@ -767,8 +796,8 @@
               (<b>Oxygen</b> 28.1 or newer).</li>
         </ul></p>
       <p>You can create your own <xref
-          href="../creating_custom_ai_actions.dita#creating_custom_ai_actions/section_sh4_wlj_phc"
-          >custom chat modes</xref>.</p>
+          href="https://www.oxygenxml.com/doc/ug-positron-desktop/ai/creating_custom_ai_actions.html#creating_custom_ai_actions__section_sh4_wlj_phc"
+          format="html" scope="external">custom chat modes</xref>.</p>
     </section>
     <section id="section_import_export_chat">
       <title>Export and Import Chats</title>
@@ -889,6 +918,7 @@ is not available for XQuery files.&lt;/instruction>
       <p id="p_krr_www_z2c">The <filepath>ai-positron-actions</filepath> folder can contain an extra
         file named <filepath>excluded-action-ids.txt</filepath>, which can list all action IDs (on a
         line-by-line basis) that should be filtered out of the AI Positron UI.</p>
+      <p id="extra_distribution_hints_cf_projects"><!-- DO NOT DELETE ME, USED BY CONREF PUSH --></p>
       <p id="action_id_export">To discover an action's ID, after you invoke an AI action, you can
         use the <uicontrol>Actions</uicontrol> drop-down menu in the chat view (or press
           <codeph>/</codeph> in the chat input text area if you are using the AI Positron for Web
@@ -901,6 +931,10 @@ is not available for XQuery files.&lt;/instruction>
       <p>When installed in <ph keyref="product"/> 27.1 or newer, plugins or frameworks can contain a
         folder named <filepath>ai-positron-actions</filepath> which can contain skill subfolders
         from which skills are automatically loaded by the AI Positron add-on.</p>
+      <p id="p_cf_distribution_skills">When working in an <b>Oxygen Content Fusion</b> project, AI
+        Positron also loads skills from an <filepath>ai-positron-actions</filepath> folder located
+        either in the project root or in <filepath>.contentfusion/ai-positron-actions</filepath>.
+        Updates to these skills are applied when you start a new chat.</p>
     </section>
     <section id="section_enabling-RAG">
       <title>Tools and RAG Preferences</title>
@@ -992,6 +1026,12 @@ is not available for XQuery files.&lt;/instruction>
                       the directory of the current root map. When unchecked, the LLM is allowed to
                       read and write content to any location.</dd>
                   </dlentry>
+                  <dlentry>
+                    <dt>Ask for confirmation before retrieving content from web sites</dt>
+                    <dd>When selected (default), the end user is asked for permission when the LLM
+                      attempts to read content from any web site. The user can choose to always
+                      allow connections to a certain web site host.</dd>
+                  </dlentry>
                 </dl>
               </p></dd>
           </dlentry>
@@ -1046,7 +1086,9 @@ Output:
         </ol></p>
       <note> Administrators can hide the <uicontrol><image href="../../img/ai-record18.png"
             id="image_cgj_cz3_zyb2"/>Record examples for instructions</uicontrol> button to prevent
-        its use by <xref href="../custom_options.dita">setting a custom option</xref>.</note>
+        its use by <xref
+          href="https://www.oxygenxml.com/doc/ug-positron-desktop/ai/custom_options.html"
+          format="html" scope="external">setting a custom option</xref>.</note>
     </section>
     <section id="section_change-tracking">
       <title>Change Tracking Limitations/Behavior</title>
@@ -1259,5 +1301,42 @@ Output:
         </dlentry>
       </dl>
     </p>
+    <section id="builtin_skills">
+      <title>Built-in Skills</title>
+      <p id="built-in-skills-p">AI Positron includes the following built-in skills. These skills are
+        available in all chat modes without extra setup. The AI loads them automatically when it
+        determines that a user request matches the skill description and needs that workflow.</p>
+      <p id="p_ik5_lch_1jc">
+        <dl id="dl_kl5_lch_1jc">
+          <dlentry id="dlentry_ll5_lch_1jc">
+            <dt>xml-review-comments</dt>
+            <dd>The AI uses this skill when a request involves reviewing XML content without editing
+              the text directly. It adds inline review comments for issues such as spelling,
+              grammar, readability, logic, and technical accuracy. It can also resolve existing
+              review comments by applying the suggested changes.</dd>
+          </dlentry>
+          <dlentry id="translate-builtin-skill">
+            <dt>translate-xml-content</dt>
+            <dd>The AI uses this skill when a request involves translating XML technical
+              documentation into another language. It keeps the XML structure intact, preserves
+              markup, attributes, code elements, file paths, API names, and other technical
+              identifiers, and then saves the translated result.</dd>
+          </dlentry>
+          <dlentry id="dlentry_ml5_lch_1jc">
+            <dt>personas-roundtable</dt>
+            <dd>The AI uses this skill when a task would benefit from feedback from several audience
+              points of view before a decision is made. It selects relevant personas, gathers
+              feedback from each one, identifies conflicts between their needs, runs a compromise
+              round, and then gives final recommendations by priority. This is useful for content,
+              messaging, tutorials, onboarding, UX copy, and other work that involves tradeoffs
+              between user needs.<note id="note_nl5_lch_1jc">The <uicontrol>Personas</uicontrol>
+                chat mode already embeds this workflow, so it does not need to load the skill
+                separately. In other chat modes, the AI can load the
+                  <codeph>personas-roundtable</codeph> skill when it determines that this type of
+                analysis would help with the user&apos;s request.</note></dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
   </body>
 </topic>
