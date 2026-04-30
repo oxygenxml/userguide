@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="how-to-add-support-for-s1000d-schemas">
+  <title>How to Add Support for S1000D Schemas in Oxygen XML Editor</title>
+  <body>
+    <p>Oxygen XML Editor, with its extensible framework and easy schema association, is ideal for this purpose. But by default, it does not fully support all S1000D versions out-of-the-box, requiring manual configuration.</p>
+    <p>In this guide, I’ll walk you through the best practices for integrating S1000D 2.x, 3.x, 5.x, and 6.x schemas into Oxygen XML Editor. We’ll cover both customization of built-in frameworks and methods for creating your own catalogs for maximum flexibility and compatibility.</p>
+    <section>
+      <title>Step 1: Download the Required S1000D Schemas</title>
+      <p>First, download the official XML schemas directly from <xref href="https://www.s1000d.org/" format="html" scope="external">s1000d.org</xref>. The directory structure varies by version:</p>
+      <ul>
+        <li><p>S1000D 5.0: <filepath>S1000D Issue 5.0\S1000D Issue 5.0 XML Schema Package\S1000D 5.0 Final - XML Schema Flat and Support Files\xml_schema_flat</filepath></p></li>
+        <li><p>S1000D 6.0: <filepath>S1000D Issue 6\S1000D Issue 6 XML Schema Package\S1000D 6 XML Schema Package\xml_schema_flat</filepath></p></li>
+        <li><p>S1000D 2.x: <filepath>S1000D Issue 2.x\XML-SGML Schema-DTD\package\S1000D_2-x_xml_schema\xml_schema</filepath></p></li>
+        <li><p>S1000D 3.0: <filepath>S1000D Issue 3.0\XML-SGML Schema-DTD package\S1000D_3-0_xml_schema\S1000D_3-0\xml_schema_flat</filepath></p></li>
+      </ul>
+      <p>For legacy data, or certain S1000D 2.x and 3.0 scenarios, you might need to use DTD-based validation. Here’s how to locate and prepare the DTDs:</p>
+      <ul>
+        <li>
+          <p>S1000D 3.0 (with DTD): Retrieve the following folders:</p>
+          <ul>
+            <li><p><filepath>S1000D Issue 3.0\XML-SGML Schema-DTD package\S1000D_3-0_xml_dtd\S1000D_3-0\ent</filepath></p></li>
+            <li><p><filepath>S1000D Issue 3.0\XML-SGML Schema-DTD package\S1000D_3-0_xml_dtd\S1000D_3-0\xml_dtd</filepath></p></li>
+          </ul>
+        </li>
+      </ul>
+      <note importance="high">
+        <p>Use XML sample files that conform to the DTD structure. Do not use SGML-based files.</p>
+      </note>
+    </section>
+    <section>
+      <title>Step 2: Integrate Schemas with the Oxygen XML Editor</title>
+      <p><b>Method A:</b> Modifying built-in frameworks</p>
+      <p>If you have permissions to alter Oxygen’s built-in frameworks, you can redirect schema resolution for a streamlined editing experience:</p>
+      <ol>
+        <li>
+          <p>Navigate to the built-in schemas directory:</p>
+          <ul>
+            <li><p>Go to <filepath>oxygen/frameworks/s1000d_base/schemas</filepath>.</p></li>
+          </ul>
+        </li>
+        <li>
+          <p>Create a schema folder per version:</p>
+          <ul>
+            <li><p>For example, if working with S1000D 5.0 and your XML uses <codeph>xsi:noNamespaceSchemaLocation="http://www.s1000d.org/S1000D_5-0/xml_schema_flat/comrep.xsd"</codeph>, then create a folder named <filepath>S1000D_5-0</filepath> under <filepath>schemas/</filepath>.</p></li>
+            <li><p>Copy your downloaded <filepath>xml_schema_flat</filepath> into this directory.</p></li>
+          </ul>
+        </li>
+        <li>
+          <p>Update the schema catalog:</p>
+          <ul>
+            <li><p>Open <filepath>oxygen/frameworks/s1000d_base/catalog.xml</filepath>.</p></li>
+            <li>
+              <p>Add entries to map the online S1000D namespace to your local schema directory:</p>
+              <codeblock outputclass="language-xml">&lt;rewriteSystem systemIdStartString="http://www.s1000d.org/S1000D_5-0/" rewritePrefix="schemas/S1000D_5-0/" /&gt;
+&lt;rewriteURI uriStartString="http://www.s1000d.org/S1000D_5-0/" rewritePrefix="schemas/S1000D_5-0/" /&gt;</codeblock>
+            </li>
+            <li><p>Repeat for each version as necessary.</p></li>
+          </ul>
+        </li>
+      </ol>
+      <p><b>Method B:</b> Creating a custom XML catalog</p>
+      <p>If modifying internal frameworks isn’t an option, you can create your own catalog and schemas folder in a writable location:</p>
+      <ol>
+        <li>
+          <p>Create the directory structure:</p>
+          <ul>
+            <li><p>Make a folder wherever you have write permissions. Inside, create a <filepath>schemas</filepath> folder and version-specific subfolders, such as <filepath>schemas/S1000D_5-0/</filepath>.</p></li>
+          </ul>
+        </li>
+        <li>
+          <p>Copy downloaded schemas:</p>
+          <ul>
+            <li><p>Place your S1000D <filepath>xml_schema_flat</filepath> file into the relevant subfolders.</p></li>
+          </ul>
+        </li>
+        <li>
+          <p>Create a <filepath>catalog.xml</filepath> file:</p>
+          <ul>
+            <li><p>Add the following content, adjusting versions as needed:</p>
+              <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"&gt;
+  &lt;rewriteSystem systemIdStartString="http://www.s1000d.org/S1000D_5-0/" rewritePrefix="schemas/S1000D_5-0/" /&gt;
+  &lt;rewriteURI uriStartString="http://www.s1000d.org/S1000D_5-0/" rewritePrefix="schemas/S1000D_5-0/" /&gt;
+&lt;/catalog&gt;</codeblock>
+            </li>
+            <li><p>Add entries for each S1000D version needed.</p></li>
+          </ul>
+        </li>
+        <li>
+          <p>Register the custom catalog in Oxygen:</p>
+          <ul>
+            <li><p>Go to <uicontrol>Options</uicontrol> <menucascade><uicontrol>Preferences</uicontrol><uicontrol>XML</uicontrol><uicontrol>XML Catalog</uicontrol></menucascade>.</p></li>
+            <li><p>Click <uicontrol>Add</uicontrol>, and enter the path or URL to your custom <filepath>catalog.xml</filepath>.</p></li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+    <section>
+      <title>Step 3: Document Type Association for Legacy Versions</title>
+      <p>Integrating older versions, like S1000D 2.x or 3.x, follows similar steps. However, be aware that the Oxygen-provided S1000D framework may not handle these correctly due to schema syntax differences. Enhanced support is achievable by creating a custom framework with a higher priority than the default, which is typically set to <q>Low</q>.</p>
+      <p>Tips for advanced customization:</p>
+      <ul>
+        <li><p>Navigate to <uicontrol>Options</uicontrol> <menucascade><uicontrol>Preferences</uicontrol><uicontrol>Document Type Association</uicontrol></menucascade> in Oxygen.</p></li>
+        <li><p>You can extend or duplicate the existing S1000D document type and assign your newly integrated schemas.</p></li>
+        <li><p>Prioritize your custom framework by increasing its priority to ensure it supersedes the default behavior.</p></li>
+      </ul>
+    </section>
+  </body>
+</topic>
