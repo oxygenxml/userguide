@@ -101,7 +101,8 @@ function downloadAttachment(issue, attachment) {
       author: getUserDisplayName(attachment.author),
       contentUrl: attachment.content || null,
       thumbnailUrl: attachment.thumbnail || null,
-      localPath: localFilePath
+      localPath: localFilePath,
+      isImage: !!(attachment.mimeType && attachment.mimeType.indexOf("image/") === 0)
     };
   });
 }
@@ -114,11 +115,6 @@ function run() {
 
       if (!attachment) {
         console.error("Attachment not found on issue " + issueKey + ": " + id);
-        process.exit(1);
-      }
-
-      if (!attachment.mimeType || attachment.mimeType.indexOf("image/") !== 0) {
-        console.error("Attachment is not an image: " + (attachment.filename || id));
         process.exit(1);
       }
 

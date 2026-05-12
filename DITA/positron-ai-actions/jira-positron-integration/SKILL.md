@@ -66,8 +66,8 @@ The project includes a script that reads `JIRA_PERSONAL_TOKEN` and fetches issue
 
 6. When an issue has attachments, the default output also includes attachment metadata such as file name, MIME type, size, author, and Jira download URLs.
 7. Keep attachment metadata in the main Jira fetch output so the AI can see that images exist and can reference them as supporting context.
-8. If the user wants to inspect one or more Jira image attachments manually, they can download them locally with `node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]`. The script saves the images in a local `tmp` folder next to the script and returns their local paths.
-11. You can use the available tools to explore each image if necessary. 
+8. If the user wants to inspect one or more Jira attachments manually, they can download them locally with `node jira-download-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]`. The script saves the files in a local `tmp` folder next to the script and returns their local paths.
+11. You can use the available tools to explore each downloaded file if necessary. 
 12. Run the script with no issue key to get the current user's assigned issues:
 
    ```bash
@@ -152,16 +152,16 @@ When you run `node jira-fetch.js <ISSUE_KEY> --full`, the script returns all Jir
    2. `value`
 3. This mode is useful when you need to inspect raw Jira data or discover additional fields.
 
-### Attachment handling limitation
+### Attachment handling
 
 1. Attachment metadata is useful because it tells the AI that screenshots or other supporting files exist on the Jira issue.
-2. In the current setup, image content itself is not automatically interpreted.
-3. Treat Jira image attachments as metadata only.
-4. Keep the attachment information from `jira-fetch.js` so the AI can mention that screenshots or other images exist when relevant.
-5. If the user explicitly wants image inspection, use `jira-download-image-attachment.js` to save one or more files locally.
-6. After fetching images with `jira-download-image-attachment.js`, your next message should be to inform the user what to do so they can attach those locally downloaded files and send them back for inspection.
-7. When composing that request, include Positron attachment snippets in the form `${attach(absolute path to the file)}`, one snippet per downloaded image.
-8. Put each `${attach(...)}` snippet on its own line so the user can inspect them more easily.
+2. In the current setup, attachment content itself is not automatically interpreted from Jira URLs alone.
+3. Keep the attachment information from `jira-fetch.js` so the AI can mention that screenshots, Markdown files, or other supporting files exist when relevant.
+4. If the user explicitly wants to inspect one or more attachments, use `jira-download-attachment.js` to save the files locally.
+5. After fetching attachments with `jira-download-attachment.js`, your next message should be to inform the user what to do so they can attach those locally downloaded files and send them back for inspection.
+6. When composing that request, include Positron attachment snippets in the form `${attach(absolute path to the file)}`.
+7. Put each `${attach(...)}` snippet on its own line so the user can inspect them more easily.
+8. If the downloaded files are images, you can use the available tools to inspect them visually after the user attaches them.
 
 ## Using Jira data as extended context
 
@@ -187,7 +187,7 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 3. `notes.documentation.value` is often the most direct source for what to document.
 4. `notes.qa.value` can reveal behavior details, edge cases, and test scenarios.
 5. `comments` can contain implementation decisions, UX clarifications, and late changes.
-6. `attachments` help identify screenshots or other visual evidence that may clarify the feature or bug, even if the current workflow cannot automatically interpret the image content itself.
+6. `attachments` help identify screenshots, Markdown files, or other supporting files that may clarify the feature or bug, even if the current workflow cannot automatically interpret attachment content directly from Jira.
 7. `components`, `fixVersions`, and `labels` help place the content in the right product area and release.
 
 ## Error handling
@@ -197,8 +197,8 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 3. **HTTP 404:** Issue key not found or no access. Confirm the key and permissions.
 4. **Comment post fails:** Check the token, issue key, and Jira permissions. If the comment is long, prefer the `--file` option.
 5. **No JSON or partial paste:** Ask for the full issue JSON or suggest running `node jira-fetch.js <ISSUE_KEY>` and sharing the output.
-6. **Image needs visual inspection:** Suggest running `node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]`. After the images are fetched, your next message should tell the user how to attach the downloaded local files and send them back for inspection.
-7. **User needs ready-to-paste attachment markup:** Compose the message and include Positron snippets in the form `${attach(absolute path to the file)}`, one snippet per downloaded image.
+6. **Attachment needs inspection:** Suggest running `node jira-download-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]`. After the files are fetched, your next message should tell the user how to attach the downloaded local files and send them back for inspection.
+7. **User needs ready-to-paste attachment markup:** Compose the message and include Positron snippets in the form `${attach(absolute path to the file)}`, one snippet per downloaded file.
 8. **Attachment snippets should be easy to inspect:** Put each `${attach(...)}` snippet on its own line.
 
 ## Summary
@@ -208,9 +208,9 @@ Treat the issue data as **extended context** for all documentation work. Use it 
 3. Use `node jira-add-comment.js <ISSUE_KEY> "Comment text"` or `node jira-add-comment.js <ISSUE_KEY> --file <path>` to add Jira comments.
 4. As a best practice, Jira comments added through this workflow should mention that they were added via AI Positron.
 5. Treat the Jira issue as the source of truth for documentation updates and new topics.
-6. Keep attachment metadata from the main Jira fetch flow, and treat image attachments as supporting context unless the user attaches downloaded local images in a follow-up message.
-7. Use `node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]` when the user wants to inspect one or more Jira image attachments.
-8. After fetching images with `jira-download-image-attachment.js`, your next message should tell the user how to attach those downloaded images and send them back for inspection.
-9. When asking the user to attach those downloaded images, compose the message and include `${attach(absolute path to the file)}` snippets, one per image.
+6. Keep attachment metadata from the main Jira fetch flow, and treat attachments as supporting context unless the user attaches downloaded local files in a follow-up message.
+7. Use `node jira-download-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]` when the user wants to inspect one or more Jira attachments.
+8. After fetching attachments with `jira-download-attachment.js`, your next message should tell the user how to attach those downloaded files and send them back for inspection.
+9. When asking the user to attach those downloaded files, compose the message and include `${attach(absolute path to the file)}` snippets, one per file.
 10. Put each `${attach(...)}` snippet on its own line so the user can inspect them more easily.
 11. Prefer `summary`, `description`, `notes.documentation`, `notes.qa`, and relevant comments when drafting documentation.
