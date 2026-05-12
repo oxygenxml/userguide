@@ -253,5 +253,68 @@
             format="html" scope="external"/>. <note id="note_jh4_2ny_4pb">The <b>${author.name}</b>
             editor variable is not supported in <ph keyref="product"/>.</note></li>
       </ul></p>
+    <section id="section_framework_url_file_path_variables">
+      <title><codeph>${framework}</codeph> vs <codeph>${frameworkDir}</codeph> and
+          <codeph>${frameworks}</codeph> vs <codeph>${frameworksDir}</codeph></title>
+      <p>These variables look similar, but the suffix determines whether the value is expanded as a
+        URL or as a local file path:</p>
+      <table frame="all" rowsep="1" colsep="1" id="table_framework_url_file_path_variables">
+        <tgroup cols="3">
+          <colspec colname="c1" colnum="1" colwidth="1*"/>
+          <colspec colname="c2" colnum="2" colwidth="2*"/>
+          <colspec colname="c3" colnum="3" colwidth="2.5*"/>
+          <thead>
+            <row>
+              <entry>Variable</entry>
+              <entry>Meaning</entry>
+              <entry>Example</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>${framework}</codeph></entry>
+              <entry>Current <term>framework</term> directory, as a URL.</entry>
+              <entry><filepath>file:/D:/.../user-frameworks/MyExtension/</filepath></entry>
+            </row>
+            <row>
+              <entry><codeph>${frameworkDir}</codeph></entry>
+              <entry>Current <term>framework</term> directory, as a file path.</entry>
+              <entry><filepath>D:/.../user-frameworks/MyExtension</filepath></entry>
+            </row>
+            <row>
+              <entry><codeph>${frameworks}</codeph></entry>
+              <entry>Parent directory of the current <term>framework</term>, as a URL.</entry>
+              <entry><filepath>file:/D:/.../user-frameworks/</filepath></entry>
+            </row>
+            <row>
+              <entry><codeph>${frameworksDir}</codeph></entry>
+              <entry>Parent directory of the current <term>framework</term>, as a file path.</entry>
+              <entry><filepath>D:/.../user-frameworks</filepath></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p>In this section, <i>framework</i> covers both the built-in frameworks and user-uploaded
+        framework extensions. The example column shows values for a user-uploaded extension; for a
+        built-in framework, the variables point to the matching folder under
+          <filepath>frameworks</filepath>.</p>
+      <p>Use the URL form when the target expects a URL, for example when registering framework CSS
+        files:</p>
+      <codeblock outputclass="language-xml" id="codeblock_framework_css_url_variable">&lt;addCss path="${framework}/css/hints.css" position="after"/></codeblock>
+      <p>Use the file path form when the target expects a local directory path, for example when
+        registering document templates:</p>
+      <codeblock outputclass="language-xml" id="codeblock_framework_template_file_path_variable">&lt;documentTemplates>
+  &lt;addEntry path="${frameworkDir}/templates/Topic"/>
+&lt;/documentTemplates></codeblock>
+      <note id="note_framework_url_file_path_not_interchangeable">Do not treat the URL and file path
+        forms as interchangeable. A common failure is using <codeph>${framework}</codeph> where Web
+        Author expects a file system path. On Windows, this expands to a value such as
+          <filepath>file:/D:/.../templates/Topic</filepath>. Some loaders pass that string to file
+        access code without removing the <codeph>file:</codeph> prefix, and Web Author logs a
+        security error, such as:
+		<codeblock id="codeblock_framework_url_file_path_security_error">
+			Templates directory cannot be accessed: file:/D:/.../templates/Topic java.security.AccessControlException: access denied ("java.io.FilePermission" "file:\D:\...\templates\Topic" "read")
+		</codeblock></note>
+    </section>
   </body>
 </topic>
