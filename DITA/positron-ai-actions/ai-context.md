@@ -49,6 +49,9 @@ This is a comprehensive DITA-based user guide project for Oxygen XML products, u
 - Use `<shortdesc>` for topic summaries
 - Add `<data name="wh-menu"><data name="hide" value="yes"/></data>` to hide from WebHelp menu when needed
 
+### Git Client Add-on Notes
+If Git Client add-on information is needed, an AI agent should read `positron-ai-actions/git-client-addon-notes.md`.
+
 ### Reusable Content
 - Reference reusable content: `<ph conkeyref="reusables-ai-plugin/note_qpr_zj4_2xb"/>`
 - Use key definitions for product names, versions, and common phrases
