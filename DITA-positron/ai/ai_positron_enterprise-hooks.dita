@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron_enterprise-hooks">
+  <title>Intercepting AI Events Using Hooks</title>
+  <body>
+    <p id="p_hooks_intro_a1b">The <b>Oxygen AI Positron</b> add-on exposes a hook system that lets
+      developers intercept events fired during the AI lifecycle. A hook handler can observe
+      fire-and-forget events for auditing or analytics, or veto blocking events to prevent an action
+      from running.</p>
+    <p id="p_hooks_usecases_b2c">Typical use cases include:</p>
+    <ul id="ul_hooks_usecases_c3d">
+      <li id="li_hooks_uc_audit">Auditing every AI action, tool call, or shell command to an
+        external log or compliance system.</li>
+      <li id="li_hooks_uc_gate">Gating risky operations, for example, blocking shell commands that
+        modify production files.</li>
+      <li id="li_hooks_uc_subagent">Controlling sub-agent execution to enforce organizational
+        policies on autonomous AI tasks.</li>
+      <li id="li_hooks_uc_metrics">Collecting token usage metrics after each assistant turn.</li>
+    </ul>
+    <section id="section_hooks_impl">
+      <title>Implementing a Hook Handler</title>
+      <p id="p_hooks_impl_a">To create a hook handler add-on, follow these steps:</p>
+      <ol id="ol_hooks_impl_steps">
+        <li id="li_hooks_dep">Add <codeph>oxygen-ai-positron-api</codeph> as a provided dependency
+          in your plugin project's
+          <filepath>pom.xml</filepath>:<codeblock id="codeblock_hooks_dep" outputclass="language-xml">&lt;dependency>
+  &lt;groupId>com.oxygenxml&lt;/groupId>
+  &lt;artifactId>oxygen-ai-positron-api&lt;/artifactId>
+  &lt;version>8.3.0&lt;/version>
+  &lt;scope>provided&lt;/scope>
+&lt;/dependency></codeblock>
+          <p id="p_hooks_repo">The artifact is published at <xref href="https://oxygenxml.com/maven/"
+              format="html" scope="external"><b>https://oxygenxml.com/maven/</b></xref>. Add the
+            repository to your <filepath>pom.xml</filepath> if it is not already
+            present:<codeblock id="codeblock_hooks_repo" outputclass="language-xml">&lt;repository>
+  &lt;id>oxygen-public-repo&lt;/id>
+  &lt;url>https://www.oxygenxml.com/maven/&lt;/url>
+&lt;/repository></codeblock></p>
+        </li>
+        <li id="li_hooks_implement">Implement the
+            <codeph>com.oxygenxml.positron.api.hook.AIHooksHandler</codeph> interface in your
+          plugin's libraries. The single method <codeph>eventOccurred(AIHookEvent event, String
+            eventPayload)</codeph> is called for every hook event. Throw an exception from this
+          method to <b>veto</b> a blocking event and prevent the associated action from
+          running.<codeblock id="codeblock_hooks_example" outputclass="language-java">package my.pack;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oxygenxml.positron.api.hook.AIHookEvent;
+import com.oxygenxml.positron.api.hook.AIHooksHandler;
+import com.oxygenxml.positron.api.hook.payload.BeforeStartActionPayload;
+
+/**
+ * Example hook handler that logs every event and blocks actions
+ * that target documents in the "restricted" folder.
+ */
+public class AuditHooksHandler implements AIHooksHandler {
+
+  private static final ObjectMapper MAPPER = new ObjectMapper();
+
+  @Override
+  public void eventOccurred(AIHookEvent event, String eventPayload) throws Exception {
+    logEvent(event, eventPayload);
+    if (event == AIHookEvent.BEFORE_START_ACTION) {
+      enforceAccessPolicy(eventPayload);
+    }
+  }
+
+  private void logEvent(AIHookEvent event, String payload) {
+    System.out.println("[AI Hook] " + event.getEventName() + " -> " + payload);
+  }
+
+  private void enforceAccessPolicy(String payload) throws Exception {
+    BeforeStartActionPayload data = MAPPER.readValue(payload, BeforeStartActionPayload.class);
+    String input = data.getInputContent();
+    if (input != null &amp;&amp; input.contains("/restricted/")) {
+      throw new Exception("AI actions are not allowed on documents in the 'restricted' folder.");
+    }
+  }
+}</codeblock>
+        </li>
+        <li id="li_hooks_ext_point">In the plugin descriptor file, declare the extension point that
+          points to your implementation:
+          <codeblock id="codeblock_hooks_ext" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIHooksHandler" class="my.pack.AuditHooksHandler"/&gt;</codeblock>
+        </li>
+      </ol>
+    </section>
+    <section id="section_hooks_events">
+      <title>Hook Events Reference</title>
+      <p id="p_hooks_events_intro">The following sections list all events defined in
+          <codeph>AIHookEvent</codeph>, grouped by lifecycle category. Events marked as
+          <b>Blocking</b> can be vetoed by throwing an exception inside
+          <codeph>eventOccurred</codeph>. Events marked as <b>Fire-and-forget</b> are informational,
+        throwing an exception has no effect on the AI action.</p>
+      <note type="important" id="note_hooks_threading">All hook events, including fire-and-forget
+        ones, are dispatched <b>synchronously on the calling thread</b>. For events that fire during
+        AI response streaming (such as <codeph>afterAgentResponse</codeph> or
+          <codeph>afterAgentThought</codeph>), the calling thread is an internal RxJava streaming
+        thread. Performing heavy or blocking operations (for example, writing to a remote audit
+        system or a database) inside <codeph>eventOccurred</codeph> will block that thread and
+        delay the AI response. If your handler needs to do significant work for a fire-and-forget
+        event, offload the work to a background thread inside your implementation.</note>
+      <p id="p_hooks_payload_base">Every event delivers its data as a JSON string. All payloads
+        share the following base fields, inherited from <codeph>BaseHookPayload</codeph>:</p>
+      <simpletable id="simpletable_base_payload" relcolwidth="1* 1* 2*">
+        <sthead>
+          <stentry>Field</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>conversationId</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Stable identifier for the current chat session, constant across all
+            turns.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>conversationActionId</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Identifier of the AI action or chat mode (e.g. <codeph>agent</codeph>,
+              <codeph>ask</codeph>, or a custom chat mode ID).</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>generationId</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Identifier that changes with each user message / AI generation round.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>connectionId</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Identifier of the AI connection as configured by the user in
+            Preferences.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>model</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>The AI model currently in use (e.g. <codeph>claude-opus-4-7</codeph>).</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>hookEventName</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>The name of the hook event that fired (e.g.
+            <codeph>beforeShellExecution</codeph>).</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>positronVersion</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Running version of the AI Positron plugin (e.g.
+            <codeph>8.3.0</codeph>).</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>oxygenVersion</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Running version of the host application (e.g.
+            <codeph>27.1.0</codeph>).</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>oxygenDistribution</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Host product distribution (e.g. <codeph>Oxygen XML Editor</codeph>).</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>workspaceRoot</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Absolute path to the current project or workspace root.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>userId</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>System identifier of the authenticated user.</stentry>
+        </strow>
+      </simpletable>
+      <p><dl id="dl_hooks_events">
+          <dlentry id="dlentry_session_start">
+            <dt><codeph>sessionStart</codeph>: Fire-and-forget</dt>
+            <dd>Fired when a new chat conversation is created. Use it to initialize session-level
+              state or inject startup context.</dd>
+            <dd>
+              <simpletable id="st_session_start" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>actionId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Identifier of the AI action that started the session (e.g.
+                      <codeph>improve-readability</codeph>).</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>actionName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Human-readable name of the AI action.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>is_background_agent</codeph></stentry>
+                  <stentry>boolean</stentry>
+                  <stentry>Present and <codeph>true</codeph> when the session was started by an
+                    autonomous background agent rather than a direct user interaction.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_session_end">
+            <dt><codeph>sessionEnd</codeph>: Fire-and-forget</dt>
+            <dd>Fired when a chat conversation is closed or cleared. Use it for cleanup, auditing, or
+              sending session summaries to an external system.</dd>
+            <dd>
+              <simpletable id="st_session_end" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>reason</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Reason the session ended: <codeph>user_close</codeph> or
+                    <codeph>application_close</codeph>.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>is_background_agent</codeph></stentry>
+                  <stentry>boolean</stentry>
+                  <stentry>Present and <codeph>true</codeph> when the session was started by a
+                    background agent.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_session_reload">
+            <dt><codeph>sessionReload</codeph>: Fire-and-forget</dt>
+            <dd>Fired when the user restores a previous conversation from the chat history.</dd>
+            <dd>
+              <simpletable id="st_session_reload" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>actionId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Identifier of the AI action that was active when the session was originally
+                    created.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>actionName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Human-readable name of the AI action.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>is_background_agent</codeph></stentry>
+                  <stentry>boolean</stentry>
+                  <stentry>Present and <codeph>true</codeph> when the session was originally started
+                    by a background agent.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_before_start_action">
+            <dt><codeph>beforeStartAction</codeph> : Blocking</dt>
+            <dd>Fired before an AI action is launched. Throwing an exception vetoes the action and
+              prevents it from running. The action identifier is also available via the base field
+              <codeph>conversationActionId</codeph>.</dd>
+            <dd>
+              <simpletable id="st_before_start_action" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>inputContent</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The text content of the initial user input passed to the action.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>inputAttachments</codeph></stentry>
+                  <stentry>string[]</stentry>
+                  <stentry>URLs of attachments included in the initial user input. Omitted when
+                    empty.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>tools</codeph></stentry>
+                  <stentry>string[]</stentry>
+                  <stentry>IDs of the tools available to the model for this request. Omitted when
+                    empty.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>actionExpandParameters</codeph></stentry>
+                  <stentry>map</stentry>
+                  <stentry>Expanded runtime parameters used to invoke the action (key-value pairs).
+                    Omitted when empty.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_before_submit_prompt">
+            <dt><codeph>beforeSubmitPrompt</codeph> : Blocking</dt>
+            <dd>Fired right before a user prompt is submitted to the AI model from the chat UI.
+              Throwing an exception prevents the prompt from being sent.</dd>
+            <dd>
+              <simpletable id="st_before_submit_prompt" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>prompt</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The full text of the prompt the user is about to submit.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>attachments</codeph></stentry>
+                  <stentry>string[]</stentry>
+                  <stentry>URLs of attachments included by user. Omitted when empty.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>tools</codeph></stentry>
+                  <stentry>string[]</stentry>
+                  <stentry>IDs of the tools available to the model for this request. Omitted when
+                    empty.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>actionExpandParameters</codeph></stentry>
+                  <stentry>map</stentry>
+                  <stentry>Expanded runtime parameters used to invoke the action (key-value pairs).
+                    Omitted when empty.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_stop">
+            <dt><codeph>stop</codeph>: Fire-and-forget</dt>
+            <dd>Fired when the AI agent loop finishes, regardless of whether it completed
+              successfully, was stopped by the user, or ended with an error.</dd>
+            <dd>
+              <simpletable id="st_stop" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>status</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Reason the loop stopped: <codeph>completed</codeph>,
+                    <codeph>aborted</codeph>, or <codeph>error</codeph>.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>loopCount</codeph></stentry>
+                  <stentry>integer</stentry>
+                  <stentry>Number of tool-call rounds completed during the interaction (0 for plain
+                    Q&amp;A with no tools).</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>errorMessage</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Human-readable error description. Present only when
+                    <codeph>status</codeph> is <codeph>error</codeph>.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <!-- ===================== GENERIC TOOL LIFECYCLE ===================== -->
+          <dlentry id="dlentry_pre_tool_use">
+            <dt><codeph>preToolUse</codeph> : Blocking</dt>
+            <dd>Fired before any AI tool (function or action) is invoked. Throwing an exception
+              prevents the tool from running.</dd>
+            <dd>
+              <simpletable id="st_pre_tool_use" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>toolId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>ID of the tool about to be invoked (e.g.
+                    <codeph>invoke_cmd_line</codeph>).</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolInput</codeph></stentry>
+                  <stentry>JSON object</stentry>
+                  <stentry>Tool arguments as a raw JSON object.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolUseId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Unique identifier for this specific tool call, assigned by the AI
+                    model.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_post_tool_use">
+            <dt><codeph>postToolUse</codeph>: Fire-and-forget</dt>
+            <dd>Fired after a tool has completed successfully. Use it for auditing, analytics, or
+              collecting tool execution metrics.</dd>
+            <dd>
+              <simpletable id="st_post_tool_use" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>toolName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Name of the tool that was invoked.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolInput</codeph></stentry>
+                  <stentry>JSON object</stentry>
+                  <stentry>Tool arguments as a raw JSON object.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolOutput</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Output produced by the tool execution.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolUseId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Unique identifier for this specific tool call, assigned by the AI
+                    model.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_post_tool_use_failure">
+            <dt><codeph>postToolUseFailure</codeph>: Fire-and-forget</dt>
+            <dd>Fired after a tool invocation has failed, timed out, or was denied. Use it for error
+              tracking or recovery logic.</dd>
+            <dd>
+              <simpletable id="st_post_tool_use_failure" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>toolName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Name of the tool that failed.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolInput</codeph></stentry>
+                  <stentry>JSON object</stentry>
+                  <stentry>Tool arguments as a raw JSON object.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolUseId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Unique identifier for this specific tool call, assigned by the AI
+                    model.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>errorMessage</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Human-readable description of the failure.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_subagent_start">
+            <dt><codeph>subagentStart</codeph> : Blocking</dt>
+            <dd>Fired before a sub-agent or sub-action is started. Throwing an exception prevents the
+              sub-agent from being created.</dd>
+            <dd>
+              <simpletable id="st_subagent_start" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>actionId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Identifier of the sub-action being started (e.g.
+                    <codeph>improve-readability</codeph>).</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>actionName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Human-readable name of the sub-action.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>content</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The document content or text fragment that the sub-agent will
+                    process.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>parentConversationId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Conversation ID of the parent agent that spawned this
+                    sub-agent.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_subagent_stop">
+            <dt><codeph>subagentStop</codeph>: Fire-and-forget</dt>
+            <dd>Fired when a sub-agent finishes, errors, or is abandoned.</dd>
+            <dd>
+              <simpletable id="st_subagent_stop" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>actionId</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Identifier of the sub-action that ended.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>actionName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Human-readable name of the sub-action.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>status</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Outcome of the sub-agent: <codeph>completed</codeph>,
+                    <codeph>failed</codeph>, or <codeph>abandoned</codeph>.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>durationMs</codeph></stentry>
+                  <stentry>long</stentry>
+                  <stentry>Total wall-clock duration of the sub-agent execution in
+                    milliseconds.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_before_shell">
+            <dt><codeph>beforeShellExecution</codeph> : Blocking</dt>
+            <dd>Fired before a shell command is executed by the AI agent. Throwing an exception
+              prevents the command from running. This is the primary hook to use when enforcing shell
+              command policies.</dd>
+            <dd>
+              <simpletable id="st_before_shell" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>command</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The full shell command string about to be executed.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>cwd</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Working directory in which the command will run.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>timeoutSeconds</codeph></stentry>
+                  <stentry>integer</stentry>
+                  <stentry>Maximum allowed execution time in seconds. Absent if no limit is
+                    set.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_shell">
+            <dt><codeph>afterShellExecution</codeph>: Fire-and-forget</dt>
+            <dd>Fired after a shell command has finished executing. Use it for auditing or collecting
+              metrics from command output.</dd>
+            <dd>
+              <simpletable id="st_after_shell" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>command</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The shell command that was executed.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>output</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Combined stdout/stderr output of the command.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>exitCode</codeph></stentry>
+                  <stentry>integer</stentry>
+                  <stentry>Process exit code, or absent if the process was terminated
+                    abnormally.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>durationMs</codeph></stentry>
+                  <stentry>long</stentry>
+                  <stentry>Wall-clock duration of the command execution in milliseconds.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_before_mcp">
+            <dt><codeph>beforeMCPExecution</codeph> : Blocking</dt>
+            <dd>Fired before an MCP (Model Context Protocol) tool is invoked. Throwing an exception
+              prevents the tool from running.</dd>
+            <dd>
+              <simpletable id="st_before_mcp" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>serverName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Name of the MCP server hosting the tool.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Name of the MCP tool to be invoked.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolInput</codeph></stentry>
+                  <stentry>JSON object</stentry>
+                  <stentry>Tool arguments as a raw JSON object.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_mcp">
+            <dt><codeph>afterMCPExecution</codeph>: Fire-and-forget</dt>
+            <dd>Fired after an MCP tool has completed. Includes the tool's input parameters and the
+              full JSON result.</dd>
+            <dd>
+              <simpletable id="st_after_mcp" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>serverName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Name of the MCP server that hosted the tool.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolName</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Name of the MCP tool that was invoked.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolInput</codeph></stentry>
+                  <stentry>JSON object</stentry>
+                  <stentry>Tool arguments as a raw JSON object.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>resultJson</codeph></stentry>
+                  <stentry>JSON value</stentry>
+                  <stentry>Result returned by the MCP tool as a raw JSON value.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_before_read_file">
+            <dt><codeph>beforeReadFile</codeph> : Blocking</dt>
+            <dd>Fired before the agent reads a file. Throwing an exception blocks the agent's access
+              to that file. Use this hook to implement file-level access control for example, to
+              prevent the AI from reading files that contain secrets.</dd>
+            <dd>
+              <simpletable id="st_before_read_file" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>filePath</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Absolute path or URL of the file about to be read.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_file_edit">
+            <dt><codeph>afterFileEdit</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the agent edits or creates a file. Use it to run post-edit formatters or
+              to audit AI-generated file changes.</dd>
+            <dd>
+              <simpletable id="st_after_file_edit" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>filePath</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Absolute path or URL of the file that was modified or created.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>operation</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Type of operation performed: <codeph>create</codeph> or
+                    <codeph>edit</codeph>.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>content</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The full content written to the file.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>fragments</codeph></stentry>
+                  <stentry>object[]</stentry>
+                  <stentry>The individual text replacements that were applied. Each fragment contains
+                    an <codeph>oldValue</codeph> and a <codeph>newValue</codeph>. Absent when the
+                    entire file content was written at once.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_agent_response">
+            <dt><codeph>afterAgentResponse</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the agent completes an assistant turn, whether the turn contained only
+              tool calls or produced a visible text response.</dd>
+            <dd>
+              <simpletable id="st_after_agent_response" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>text</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The text content of the completed assistant turn. Empty string when the
+                    turn consisted solely of tool calls.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>toolCallNames</codeph></stentry>
+                  <stentry>string[]</stentry>
+                  <stentry>Names of the tools called in this turn. Omitted when empty.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>tokensUsage</codeph></stentry>
+                  <stentry>object</stentry>
+                  <stentry>Token usage information for this assistant turn. Omitted when not reported
+                    by the backend.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_agent_thought">
+            <dt><codeph>afterAgentThought</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the agent completes a thinking block (extended thinking mode). Use it to
+              observe the agent's reasoning process.</dd>
+            <dd>
+              <simpletable id="st_after_agent_thought" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>text</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The thinking/reasoning text. Depending on the model it may be a summary or
+                    the complete text.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_user_insert">
+            <dt><codeph>afterUserInsertResponse</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the user clicks the <uicontrol>Insert</uicontrol> /
+              <uicontrol>Replace</uicontrol> button in the chat panel to apply an AI suggestion into
+              the document.</dd>
+            <dd>
+              <simpletable id="st_after_user_insert" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>content</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The content that was inserted or used to replace the selection.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_user_preview">
+            <dt><codeph>afterUserPreviewResponse</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the user clicks the <uicontrol>Preview</uicontrol> button in the chat
+              panel.</dd>
+            <dd>
+              <simpletable id="st_after_user_preview" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>content</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The content that was sent to the preview.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_user_accept">
+            <dt><codeph>afterUserAcceptChanges</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the user accepts agentic file changes proposed by the AI agent.</dd>
+            <dd>
+              <simpletable id="st_after_user_accept" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>documents</codeph></stentry>
+                  <stentry>string[]</stentry>
+                  <stentry>List of absolute paths or URLs of the documents whose changes were
+                    accepted.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+          <dlentry id="dlentry_after_user_reject">
+            <dt><codeph>afterUserRejectChanges</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the user rejects agentic file changes proposed by the AI agent.</dd>
+            <dd>
+              <simpletable id="st_after_user_reject" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>documents</codeph></stentry>
+                  <stentry>string[]</stentry>
+                  <stentry>List of absolute paths or URLs of the documents whose changes were
+                    rejected.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+          
+      </dl></p>
+    </section>
+    <note id="note_hooks_version">The <codeph>AIHooksHandler</codeph> extension point is available
+      starting with version 28.0 of <ph keyref="product"/>.</note>
+  </body>
+</topic>
