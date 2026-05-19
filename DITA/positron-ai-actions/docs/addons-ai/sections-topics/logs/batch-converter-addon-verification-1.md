@@ -1,12 +1,12 @@
-# Verification Log: `batch-converter-addon.dita`
+# Verification Log: `batch-converter-addon.dita` — Pass 1
 
-**Date**: 2026-05-18  
-**Performed by**: AI (Oxygen AI Positron)  
+**Pass**: 1 (initial refactoring)
+**Performed by**: AI (Oxygen AI Positron)
 **Task**: Extract 6 top-level sections into separate topic files
 
 ---
 
-## Validation Steps Performed
+## Verification Steps
 
 ### Step 1 — Read the original file in full
 Read `batch-converter-addon.dita` (503 lines) in its entirety before making any changes. Identified 6 top-level `<section>` elements and noted all element IDs, content, and 3 internal `<xref>` hrefs that would need fixup.
