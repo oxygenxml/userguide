@@ -1,3 +1,8 @@
+---
+name: Sections-to-Topics Refactoring — Instructions
+description: Use this when you have a task to extract sections from a topic as separate topics.
+---
+
 # Sections-to-Topics Refactoring — Instructions
 
 ## What This Task Is
