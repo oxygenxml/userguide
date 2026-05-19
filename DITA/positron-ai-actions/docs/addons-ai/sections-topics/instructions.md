@@ -95,8 +95,10 @@ If there were no xref fixups needed, say so explicitly in that section. List eve
 
 Save the verification output as a Markdown file in the `logs/` subfolder next to these instructions:
 - Path: `DITA/positron-ai-actions/docs/addons-ai/sections-topics/logs/`
-- Filename: `{parent-topic-id}-verification.md`
-- Example: `batch-converter-addon-verification.md`
+- Filename: `{parent-topic-id}-verification-{n}.md` where `{n}` is the pass number (1, 2, 3…)
+- Each run — whether it's the initial refactoring or a subsequent QA pass — gets its own numbered file
+- Examples: `batch-converter-addon-verification-1.md`, `batch-converter-addon-verification-2.md`
+- Do not overwrite a previous log; always increment the number
 
 Also update `progress.md` to mark the topic as ✅ Done.
 
