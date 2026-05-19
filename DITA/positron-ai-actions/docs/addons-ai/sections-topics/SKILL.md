@@ -141,6 +141,8 @@ Validate every changed or created file:
 - Each child topic.
 - Updated DITA map.
 
+When practical, re-read the saved parent and child topics after editing and compare the content mapping against the original sections. This extra check helps confirm that no content was lost during the split.
+
 Fix validation errors before reporting completion. If validation requires a content change beyond the structural rules, keep it minimal and report it.
 
 ## Verification Report
