@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="batch-converter-addon-configuration">
+  <title>Configuration</title>
+  <body>
+    <p>Options for configuring the
+      conversions can be found in the preferences page of the add-on (<menucascade>
+        <uicontrol>Options</uicontrol>
+        <uicontrol>Preferences</uicontrol>
+        <uicontrol>Plugins</uicontrol>
+        <uicontrol>Batch Documents Converter</uicontrol>
+      </menucascade>) or in the conversion dialog box.</p>
+    <p>
+      <dl id="dl_ayf_42j_jrb">
+        <dlentry id="wordStylesMapping">
+          <dt>Conversions from Word (Word Styles Mapping)</dt>
+          <dd>
+            <p>The conversions from MS Word work best if you only use the MS Word styles to
+              semantically mark up your document. It is important that sections from the Word
+              document are well defined using the heading styles.</p>
+            <p>Use the <uicontrol>Word styles mapping</uicontrol> option from the <uicontrol>Batch
+                Documents Converter</uicontrol> preferences page to configure any of the types of
+              Word conversions (Word to HTML, Word to DITA, Word to DocBook4, and Word to
+              DocBook5) by setting a mapping between Word elements and styles to the corresponding
+              HTML element.</p>
+            <p>If the Word document contains paragraphs formatted with custom styles that are not
+              based on default styles, they have to be set in the Word styles mapping
+              configuration. Those that are not set will be converted into simple paragraphs. </p>
+            <p>The styles mapping configuration is inherited between styles. If you use a custom
+              style that is based on a default style, the default style mapping configuration will
+              be inherited and also used for the custom style. The mapping from the base style is
+              not inherited if the custom style has a mapping defined in the Word styles mapping
+              configuration.</p>
+            <p>To define a mapping in the <uicontrol>Word Styles Mapping</uicontrol> table, you
+              can use the already defined default configuration. For example, if you use a custom
+              Word style named <codeph>Document Title</codeph> that is not based on a default
+              style, you can map this to the HTML "h1" element:</p>
+            <p>
+              <simpletable frame="all" relcolwidth="1* 1* 1*" id="simpletable_tdy_cbp_3rb">
+                <sthead>
+                  <stentry>Word element</stentry>
+                  <stentry>Word style</stentry>
+                  <stentry>HTML elements</stentry>
+                </sthead>
+                <strow>
+                  <stentry>p</stentry>
+                  <stentry>Document Title</stentry>
+                  <stentry>h1:fresh</stentry>
+                </strow>
+              </simpletable>
+            </p>
+            <p>The resulting 'h1' element will be transformed into the corresponding element when
+              converting to DITA, DocBook 4, and DocBook 5.</p>
+            <p>The <uicontrol>Word styles mapping</uicontrol> table contains the following
+              columns:</p>
+            <p>
+              <dl id="dl_t15_tdj_jrb">
+                <dlentry>
+                  <dt>Word element</dt>
+                  <dd>
+                    <p>This column allows one of the following Word elements: </p>
+                    <ul id="ol_wqt_qcp_3rb">
+                      <li><uicontrol>p</uicontrol> - Word paragraph</li>
+                      <li><uicontrol>r</uicontrol> - Word run</li>
+                      <li><uicontrol>b</uicontrol> - bold text</li>
+                      <li><uicontrol>i</uicontrol> - italicized text</li>
+                      <li><uicontrol>u</uicontrol> - underlined text</li>
+                      <li><uicontrol>strike</uicontrol> - strikethrough text</li>
+                      <li><uicontrol>table</uicontrol> - table</li>
+                      <li><uicontrol>p:unorderd-list(x)</uicontrol> - unordered list (where 'x' is
+                        the nesting level of the list)</li>
+                      <li><uicontrol>p:orderd-list(x)</uicontrol> - ordered list (where 'x' is the
+                        nesting level of the list)</li>
+                    </ul>
+                  </dd>
+                </dlentry>
+                <dlentry>
+                  <dt>Word style</dt>
+                  <dd><p>This column can be used to map a paragraph, run, or table with a specific
+                      style (referenced by name).</p>Styles can also be referenced by style ID.
+                    This is the ID used internally in the <codeph>.docx</codeph> file. To map a
+                    paragraph or run with a specific style ID, append a dot followed by the style
+                    ID in the <uicontrol>Word element</uicontrol> column (for example:
+                      <codeph>p.Heading1</codeph>).</dd>
+                </dlentry>
+                <dlentry>
+                  <dt>HTML elements</dt>
+                  <dd>
+                    <p>This column can be used to map the resulting HTML elements. It allows a
+                      single element or multiple nested elements.</p>
+                    <p>The nested elements can be declared by using the '>' character (for
+                      example: <codeph>ul > li</codeph>).</p>
+                    <p>The <codeph>class</codeph> attribute can be specified on the resulting HTML
+                      elements by appending a dot followed by the class value, after the element
+                      (for example: <codeph>p.myClass</codeph>).</p>
+                    <p>When converting Word to DITA, these <codeph>class</codeph> attributes are
+                      automatically converted to <codeph>outputclass</codeph> attributes. This may
+                      be useful if you want to apply extra processing on the resulting DITA
+                      document using a custom XLS stylesheet.</p>
+                    <p>The <codeph>:fresh</codeph> syntax can be used to create new elements. If
+                      it is not used, the converter will try to reuse the element and close it
+                      only when it is necessary.</p>
+                    <p>For example, if the following configuration is set: </p>
+                    <p>
+                      <simpletable frame="all" relcolwidth="1* 1* 1*" id="simpletable_pws_tmp_3rb">
+                        <strow>
+                          <stentry>p</stentry>
+                          <stentry>Heading 1</stentry>
+                          <stentry>h1</stentry>
+                        </strow>
+                      </simpletable>
+                    </p>
+                    <p>When the converter finds consecutive Word paragraphs with the style named
+                        <codeph>Heading 1</codeph>, these will be converted into a single
+                        <codeph>h1</codeph> element that contains the text appended from all of
+                      the Word paragraphs.</p>
+                    <p>If <codeph>h1:fresh</codeph> is set in the last column, the converter will
+                      create separate <codeph>h1</codeph> elements.</p>
+                    <p>The <codeph>:separator('<i>separator_string</i>')</codeph> syntax can be
+                      used to specify a separator between paragraphs that are merged when
+                        <codeph>:fresh</codeph> syntax is not specified.</p>
+                    <p>For example, if the following configuration is set:<simpletable frame="all"
+                        relcolwidth="1* 1* 1*" id="simpletable_sp5_s1p_fwb">
+                        <strow>
+                          <stentry>p</stentry>
+                          <stentry>Code Block</stentry>
+                          <stentry>pre:separator('\n')</stentry>
+                        </strow>
+                      </simpletable></p>
+                    <p>when the converter finds multiple consecutive paragraphs styled with the
+                        <codeph>Code Block</codeph> style, it will merge them into a single
+                        <xmlelement>pre</xmlelement> HTML element and the "\n" (new line)
+                      separator will be used between merged text.</p>
+                   
+                    <p>To ignore elements, the '!' character can be added in the <uicontrol>HTML
+                        elements</uicontrol> column.</p>
+                  </dd>
+                </dlentry>
+              </dl>
+            </p>
+            <p>The <uicontrol>Export</uicontrol> button can be used to export the word styles
+              configuration to an XML file. This exported file can be used to configure the MS
+              Word Dynamic Conversion from <ph keyref="product"/> by copying the file in the
+              DITA-OT plugin directory:
+                <codeph>[OXYGEN_INSTALL_DIR]/frameworks/dita/DITA-OT/plugins/com.oxygenxml.dynamic.resources.converter</codeph>.</p>
+            <p>The <uicontrol>Import</uicontrol> button allows you to import the word styles
+              configuration from an exported XML file.</p>
+            <p>
+              <note id="note_ubx_p2j_jrb">The <uicontrol>Word styles mapping</uicontrol>
+                configuration is applied only for the newer version of MS Word files formatted in
+                the Microsoft Office Open XML (DOCX) format.</note>
+            </p>
+          </dd>
+        </dlentry>
+        <dlentry id="maximumHeadingLevelForCreatingTopics">
+          <dt>Maximum Heading Level for Creating Topics</dt>
+          <dd>The <uicontrol>Maximum heading level for creating topics</uicontrol> option from the
+              <uicontrol>Batch Documents Converter</uicontrol> preferences page allows you to set
+            a maximum heading level that the converter will process as DITA topics. The headings
+            with a higher level will be converted to <codeph>section</codeph> elements. <p>When
+              the output is a DITA topic, this option sets the maximum heading level that will be
+              converted as a nested topic in the document.</p><p>When the output is a DITA map,
+              this option sets the maximum heading level that will be extracted as a DITA topic
+              file and referenced in the DITA map hierarchy.</p></dd>
+          <dd>
+            <note id="note_i12_dfk_lrb">This option only applies to the HTML to DITA and Word to
+              DITA conversions.</note>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Word to DITA</dt>
+          <dd>
+            <p>The <uicontrol id="createDitaMapFromWordOption">Create DITA maps from Word documents containing multiple
+                headings</uicontrol> option from the conversion dialog box allows you to decide
+              whether the output will be a DITA map or a DITA topic. When this option is selected,
+              the sections from your Word document marked by titles or headings will be separated
+              into individual DITA topics and referenced in a DITA map. If the word document does
+              not contain multiple sections, the output will be a single topic. When this option
+              is not selected, the output will be a topic with nested topics and sections
+              according to the number of titles and headings from the Word document. <note
+                id="note_rbf_cks_4tb">Mathematical equations in Word documents should be
+                automatically converted to MathML equations if they are in Office Math Markup
+                Language (OMML) format. If the mathematical equations are in Microsoft Equation
+                Editor format,  they first need to be converted to the newer OMML format. See:
+                  <xref
+                  href="https://support.microsoft.com/en-us/office/editing-equations-created-using-microsoft-equation-editor-08a44b8c-ae15-41a7-bc15-7239890c0cec"
+                  format="html" scope="external"/>.</note></p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Markdown to DITA</dt>
+          <dd>
+            <p>The <uicontrol>Create DITA maps from Markdown documents containing multiple
+                headings</uicontrol> option from the conversion dialog box allows you to decide
+              whether the output will be a DITA map or a DITA topic. When this option is selected,
+              all headings from your Markdown document will be separated into individual DITA
+              topics and referenced in a DITA map. If the Markdown document does not contain
+              multiple headings, the output will be a single topic. When this option is not
+              selected, the output will be a topic with nested topics or sections according to the
+              number of headings from the document.</p>
+            <p>The <uicontrol>Create short description elements</uicontrol> option from the
+              conversion dialog box allows you to decide whether or not the
+                <codeph>shortdesc</codeph> elements are created in the output DITA document. When
+              this option is selected, the first paragraph before the headings from the Markdown
+              document will be converted into DITA short description elements. When this option is
+              not selected, the output will not contain the short description element.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>HTML to DITA</dt>
+          <dd>
+            <p>The <uicontrol>Create DITA maps from HTML documents containing multiple
+                headings</uicontrol> option from the conversion dialog box allows you to decide
+              whether the output will be a DITA map or a DITA topic. When this option is selected,
+              the headings from your HTML document will be separated into individual DITA topics
+              and referenced in a DITA map. If the HTML document does not contain multiple
+              sections, the output will be a single topic. When this option is not selected, the
+              output will be a topic with nested topics or sections according to the number of
+              headings from the document.</p>
+            <p> The <uicontrol>Ignore HTML 'div' elements</uicontrol> option from the conversion
+              dialog box allows you to decide whether or not the <xmlelement>div</xmlelement>
+              elements will be ignored. When this option is selected, all
+                <xmlelement>div</xmlelement> elements will be ignored. When this option is not
+              selected, only <xmlelement>div</xmlelement> elements that include the
+                <xmlatt>class</xmlatt> or <xmlatt>id</xmlatt> attribute will be handled by the
+              converter. </p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Confluence to DITA</dt>
+          <dd>The <uicontrol>Confluence to DITA</uicontrol> conversion processes the HTML content
+            generated by the <tm tmtype="reg">Atlassian</tm> Confluence (see <xref
+              href="https://www.atlassian.com/software/confluence" format="html" scope="external"
+            />) export process. To export Confluence content to HTML, log in to your <tm
+              tmtype="reg">Atlassian</tm> Confluence account and navigate to the specific space
+            that you want to export. Then go to <menucascade>
+              <uicontrol>Space Settings</uicontrol>
+              <uicontrol>Export space</uicontrol>
+            </menucascade> and choose to export it as HTML. The resulting
+              <filepath>index.html</filepath> file must be provided in the <uicontrol>Input
+              files</uicontrol> list from the conversion dialog box.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>DocBook to DITA</dt>
+          <dd>The <uicontrol>Create DITA maps from DocBook documents containing multiple
+              sections</uicontrol> option from the conversion dialog box allows you to decide
+            whether the output will be a DITA map or a DITA topic. When this option is selected,
+            the sections from your DocBook document will be converted into individual DITA topics
+            and referenced in a DITA map. When this option is not selected, the output will be a
+            single topic with nested topics.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>OpenAPI to DITA</dt>
+          <dd>The <uicontrol>OpenAPI to DITA</uicontrol> conversion can be used to convert JSON or
+            YAML files that use and conform to the OpenAPI specification (versions 2.0, 3.0, or
+            3.1) into DITA documents. The <uicontrol>Create DITA maps from OpenAPI
+              documents</uicontrol> option from the conversion dialog box allows you to decide
+            whether the output will be a DITA map or a DITA topic. When this option is selected,
+            the converter will create separate DITA topics for the introduction (including OAS
+            'Info', 'Server', 'Security Requirement' and 'External Documentation' objects), 'Tag',
+            'Operation', 'Callback', and 'Components' objects. These topics will be referenced in
+            a DITA map. When this option is not selected, the output will be a single topic with
+            nested topics.</dd>
+        </dlentry>
+      </dl>
+    </p>
+  </body>
+</topic>
