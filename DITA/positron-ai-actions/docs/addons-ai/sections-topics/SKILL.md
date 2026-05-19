@@ -1,117 +1,169 @@
 ---
 name: Sections-to-Topics Refactoring — Instructions
-description: Use this when you have a task to extract sections from a topic as separate topics.
+description: Use this when you need to extract direct child sections from a DITA topic into separate child topics while preserving content.
 ---
 
 # Sections-to-Topics Refactoring — Instructions
 
-## What This Task Is
+## Purpose
 
-Some add-on topics in this project are structured as a single DITA topic with multiple top-level `<section>` elements inside `<body>`. The goal of this task is to extract each `<section>` into its own standalone `.dita` file, making the original topic the parent and the extracted sections its children in the ditamap.
+Use this skill to split a DITA topic that contains several top-level `<section>` elements into a parent topic and separate child topic files. This is useful when a long topic needs better navigation, reuse, or maintenance.
 
-This is a **structural refactoring only** — no content, text, attributes, or element IDs may be changed, added, or removed, except where mechanically required (see rules below).
+The refactoring is structural only. Do not rewrite, summarize, reword, reorder, or remove source content. Change only what is required to make the extracted content valid as standalone DITA topics and to keep links working.
 
----
+## Inputs To Infer Or Confirm
 
-## Project Paths
+Before you start, identify these values from the user request, current document, current DITA map, or project context:
 
-- **Add-ons topic files**: `DITA-addons/add-ons/`
-- **Ditamap**: `DITA-addons/add-ons.ditamap`
-- **Reference example (already completed)**: `DITA-addons/add-ons/batch-converter-addon.dita` and its 6 child topics
+- **Source topic**: The `.dita` file that contains the sections.
+- **Target folder**: Usually the same folder as the source topic, unless the user gives a different location.
+- **DITA map**: The map that contains the source topic reference.
+- **Parent topicref**: The topic reference that points to the source topic.
+- **Extraction scope**: Usually only `<section>` elements that are direct children of the topic body.
 
----
+If the user asks to process add-on documentation and does not provide paths, use these project defaults:
+
+- **Add-ons topic folder**: `DITA-addons/add-ons/`
+- **Add-ons DITA map**: `DITA-addons/add-ons.ditamap`
+
+If the source topic is named explicitly, proceed with that topic. If the user asks for candidates, report the candidates and wait for confirmation before changing files.
+
+## Candidate Discovery
+
+When asked to find candidates, scan the relevant topic folder and map for `.dita` files that:
+
+1. Appear in the DITA map as leaf topicrefs, or as topicrefs that would benefit from child topics.
+2. Contain one or more `<section>` elements as direct children of the topic body.
+
+Report each candidate with:
+
+- Topic file.
+- Number of direct child sections.
+- Section titles.
+- Any reason to skip or review manually, such as only one section, unusual nested structure, existing child topics, or many cross-references.
+
+Do not refactor candidate topics until the user confirms which topic or topics to process.
 
 ## Transformation Rules
 
-### 1. Identify sections
-Look for `<section>` elements that are **direct children of `<body>`** in the topic. These are the candidates for extraction.
+### 1. Identify The Sections To Extract
 
-### 2. Parent topic
-The original topic file is kept and becomes the parent. Its content after transformation:
-- `<title>` — unchanged
-- `<shortdesc>` — unchanged (if present)
-- `<prolog>` — unchanged (if present)
-- `<body>` — keep only content that appears **before the first `<section>`**. Remove all `<section>` elements. If there is no pre-section body content, the `<body>` element can be omitted entirely or left empty.
+Extract only `<section>` elements that are direct children of the body element of the source topic:
 
-### 3. Child topics
-Each `<section>` becomes a new standalone `.dita` file:
-- **DOCTYPE**: `<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">`
-- **Root element**: `<topic id="...">`
-- **`<title>`**: taken from the section's `<title>` element
-- **`<body>`**: contains all content from inside the `<section>`, **excluding** the `<title>` element (which becomes the topic title)
-- The `<section>` wrapper element itself is **dropped** — its children go directly into `<body>`
+- For a base topic, inspect `<topic>/<body>/<section>`.
+- For a concept, inspect `<concept>/<conbody>/<section>`.
+- For a reference, inspect `<reference>/<refbody>/<section>`.
+- For a task, do not extract sections unless the structure is valid and the user explicitly asked for it.
 
-### 4. File naming
-- Pattern: `{parent-topic-id}-{slugified-section-title}.dita`
-- Slugify = lowercase, spaces replaced with hyphens, special characters removed
-- Examples:
-  - Section "Quick Installation" in `batch-converter-addon.dita` → `batch-converter-addon-quick-installation.dita`
-  - Section "Word to DITA Conversion Notes" → `batch-converter-addon-word-to-dita-notes.dita`
+Do not extract nested sections unless the user explicitly asks for a deeper split.
+
+### 2. Keep The Source Topic As The Parent
+
+The original topic file remains in place and becomes the parent topic. Preserve the root element, topic ID, title, short description, prolog, metadata, attributes, and any content that appears before the first extracted section.
+
+Remove the extracted top-level `<section>` elements from the parent. If the body has no remaining content, keep or omit the body according to the topic type and project style, but keep the file valid.
+
+### 3. Create One Child Topic For Each Extracted Section
+
+Create one standalone `.dita` file for each extracted section.
+
+Use a base DITA topic unless the project or user requests a specialized topic type:
+
+- DOCTYPE: `<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">`
+- Root element: `<topic id="...">`
+- Topic title: the extracted section's `<title>` content.
+- Topic body: all content from the extracted section except the section `<title>`.
+
+Drop the `<section>` wrapper. Its children become direct children of the new topic body.
+
+Preserve all child elements, IDs, attributes, text, processing instructions, comments, and entity references unless a validation fix is required.
+
+### 4. File Naming
+
+Use this default naming pattern:
+
+`{parent-topic-id}-{slugified-section-title}.dita`
+
+Slug rules:
+
+- Lowercase letters.
+- Replace spaces and separators with hyphens.
+- Remove punctuation and special characters.
+- Collapse repeated hyphens.
+- Keep the name short but clear.
+
+If a file already exists or two section titles produce the same slug, add a short unique suffix.
 
 ### 5. Topic IDs
-- The topic `id` attribute = filename without `.dita`
-- Example: file `batch-converter-addon-quick-installation.dita` → `id="batch-converter-addon-quick-installation"`
-- The old section `id` attribute is **dropped** (it was on `<section>`, which no longer exists)
 
-### 6. Cross-reference fixup (the one allowed content change)
-If any `<xref href="...">` in the document uses the pattern `#topicid/elementid` to reference an element that was inside a section that has now moved to a different file, the href must be updated to:
-```
-filename.dita#new-topic-id/elementid
-```
-The link text and the target `elementid` are **never changed** — only the file path and topic ID prefix in the href.
+Set the child topic ID to the filename without `.dita`.
 
-### 7. Ditamap update
-After creating the child topic files, add them to `add-ons.ditamap` as children of the parent topicref, in the same order as the sections appeared in the original file. Use the `add_dita_reference_to_ditamap` tool.
+Example:
+
+- File: `sample-addon-quick-installation.dita`
+- Topic ID: `sample-addon-quick-installation`
+
+The old section `id` attribute is dropped with the `<section>` wrapper, unless preserving that ID is required for a valid cross-reference target. If another file links to the section ID, update those links to target the new child topic.
+
+### 6. Cross-Reference Fixup
+
+Fix links only when a target moved because of the extraction. Do not change link text.
+
+Update references that point to moved elements:
+
+- From `#old-topic-id/element-id`
+- To `child-file.dita#child-topic-id/element-id`
+
+Update references that point to the extracted section itself:
+
+- From `#old-topic-id/old-section-id`
+- To `child-file.dita#child-topic-id`
+
+Also check links from nearby topics when practical, especially when the extracted section IDs were used as targets from other files.
+
+Do not change external links, key references, unrelated local links, or links to content that stayed in the parent topic.
+
+### 7. DITA Map Update
+
+Add the new child topicrefs under the parent topicref in the same order as the original sections.
+
+Use the active DITA map unless the user gives a different map. For add-on documentation, use `DITA-addons/add-ons.ditamap` when applicable.
+
+Use `add_dita_reference_to_ditamap` for map updates when the tool is available.
+
+Do not add related-links from the parent topic to the new child topics. The map hierarchy already creates those links in the published output.
 
 ### 8. Validation
-Every saved file must validate without errors. Fix any validation errors before moving on.
 
-### 9. Mandatory content verification output
-After completing the refactoring, you **must** produce a verification table for the user. This is not optional. The table must show, for every piece of content in the original file, exactly where it ended up. The user needs to be able to *see* that nothing was changed — not just be told.
+Validate every changed or created file:
 
-The format is:
+- Parent topic.
+- Each child topic.
+- Updated DITA map.
 
-```
-## Content Verification
+Fix validation errors before reporting completion. If validation requires a content change beyond the structural rules, keep it minimal and report it.
 
-### Parent topic: `{filename}.dita`
-| Original location | Destination file | Element IDs preserved | Notes |
-|---|---|---|---|
-| `<title>` | `{filename}.dita` | — | Unchanged |
-| `<shortdesc>` | `{filename}.dita` | — | Unchanged |
-| `<prolog>` | `{filename}.dita` | — | Unchanged |
-| Body content before first section (e.g. `<p id="p_xyz">`) | `{filename}.dita` | ✅ `p_xyz` | Unchanged |
-| Section: "Quick Installation" | `{filename}-quick-installation.dita` | ✅ all IDs | Section wrapper dropped, title promoted |
-| Section: "Manual Installation" | `{filename}-manual-installation.dita` | ✅ all IDs | Section wrapper dropped, title promoted |
-...
+## Verification Report
 
-### Changed references (xref fixups)
-| Original href | Updated href | Reason |
-|---|---|---|
-| `#topicid/elementid` | `other-file.dita#other-topic/elementid` | Target moved to separate file |
+After the refactoring, provide a concise verification report in the chat. The report must show where the original content went so the user can confirm that no content was lost.
 
-### Structural changes only (nothing else)
-- `<section>` wrapper elements: removed (replaced by topic file structure)
-- Section `id` attributes (`section_abc`, etc.): dropped
-- All other element IDs, attributes, and text content: **identical to original**
-```
+Include:
 
-If there were no xref fixups needed, say so explicitly in that section. List every section by name — do not summarize with "etc." or "and so on".
+1. Parent topic file.
+2. Created child topic files in order.
+3. A content mapping table with each extracted section title and destination file.
+4. Any preserved pre-section body content.
+5. Any changed cross-references.
+6. Validation results.
 
-Save the verification output as a Markdown file in the `logs/` subfolder next to these instructions:
-- Path: `DITA/positron-ai-actions/docs/addons-ai/sections-topics/logs/`
-- Filename: `{parent-topic-id}-verification-{n}.md` where `{n}` is the pass number (1, 2, 3…)
-- Each run — whether it's the initial refactoring or a subsequent QA pass — gets its own numbered file
-- Examples: `batch-converter-addon-verification-1.md`, `batch-converter-addon-verification-2.md`
-- Do not overwrite a previous log; always increment the number
+If no cross-reference fixups were needed, say so explicitly.
 
-Also update `progress.md` to mark the topic as ✅ Done.
+Do not create log files unless the user requests them. If the user requests persistent logs, save them in a task-specific `logs/` folder and do not overwrite earlier logs.
 
----
+## Before And After Pattern
 
-## Before/After Pattern
+Before, inside the original topic body:
 
-**Before** (inside the original topic's `<body>`):
 ```xml
 <body>
   <p id="p_intro">Intro paragraph.</p>
@@ -126,18 +178,20 @@ Also update `progress.md` to mark the topic as ✅ Done.
 </body>
 ```
 
-**After** — parent topic `<body>`:
+After, in the parent topic body:
+
 ```xml
 <body>
   <p id="p_intro">Intro paragraph.</p>
 </body>
 ```
 
-**After** — child topic file `{parent-id}-quick-installation.dita`:
+After, in child topic file `sample-addon-quick-installation.dita`:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="{parent-id}-quick-installation">
+<topic id="sample-addon-quick-installation">
   <title>Quick Installation</title>
   <body>
     <p id="p_xyz">Install content here.</p>
@@ -145,33 +199,15 @@ Also update `progress.md` to mark the topic as ✅ Done.
 </topic>
 ```
 
-Note: the `<section>` wrapper and its `id` are gone. The section's `<title>` becomes the topic `<title>`. Everything else is preserved verbatim.
+The section wrapper and its ID are removed. The section title becomes the child topic title. All other content is preserved.
 
----
+## Project-Specific Notes
 
-## Candidate Discovery
+For add-on documentation in `DITA-addons`:
 
-If the user asks you to find candidates, scan the `DITA-addons/add-ons/` directory for `.dita` files that:
-1. Appear as **leaf topicrefs** in `add-ons.ditamap` (no child topicrefs)
-2. Contain one or more `<section>` elements as direct children of `<body>`
+- Prefer the same folder as the parent add-on topic for new child topics.
+- Add child topicrefs under the existing add-on topicref in `add-ons.ditamap`.
+- Keep the reading flow clear because some add-on topics may publish as continuous pages depending on map chunking.
+- If an add-on topic already has child topics, review the existing structure before adding more.
 
-Report the candidates with their section count and section titles. Do not proceed with the refactoring unless the user confirms which topic(s) to process.
-
-If the user names a specific topic, go straight to work on that topic without asking for confirmation.
-
----
-
-## Reference Example
-
-`batch-converter-addon.dita` has been fully processed. Its 6 child topics are:
-
-| File | Section title |
-|---|---|
-| `batch-converter-addon-quick-installation.dita` | Quick Installation |
-| `batch-converter-addon-manual-installation.dita` | Manual Installation |
-| `batch-converter-addon-details.dita` | Batch Documents Converter Details |
-| `batch-converter-addon-configuration.dita` | Configuration |
-| `batch-converter-addon-word-to-dita-notes.dita` | Word to DITA Conversion Notes |
-| `batch-converter-addon-resources.dita` | Resources |
-
-Study these files if you need to verify the expected output structure.
+Historical examples or old verification logs can help you understand prior work, but they are not required inputs for this skill.
