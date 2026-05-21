@@ -171,14 +171,13 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
         <strow>
           <stentry><codeph>userId</codeph></stentry>
           <stentry>string</stentry>
-          <stentry>System identifier of the authenticated user.</stentry>
+          <stentry>System identifier of the user.</stentry>
         </strow>
       </simpletable>
       <p><dl id="dl_hooks_events">
           <dlentry id="dlentry_session_start">
             <dt><codeph>sessionStart</codeph>: Fire-and-forget</dt>
-            <dd>Fired when a new chat conversation is created. Use it to initialize session-level
-              state or inject startup context.</dd>
+            <dd>Fired when a new chat conversation is created.</dd>
             <dd>
               <simpletable id="st_session_start" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -204,8 +203,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           
           <dlentry id="dlentry_session_end">
             <dt><codeph>sessionEnd</codeph>: Fire-and-forget</dt>
-            <dd>Fired when a chat conversation is closed or cleared. Use it for cleanup, auditing, or
-              sending session summaries to an external system.</dd>
+            <dd>Fired when a chat conversation is closed or cleared. </dd>
             <dd>
               <simpletable id="st_session_end" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -258,8 +256,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <dlentry id="dlentry_before_start_action">
             <dt><codeph>beforeStartAction</codeph> : Blocking</dt>
             <dd>Fired before an AI action is launched. Throwing an exception vetoes the action and
-              prevents it from running. The action identifier is also available via the base field
-              <codeph>conversationActionId</codeph>.</dd>
+              prevents it from running. The action identifier is available via the base field
+                <codeph>actionOrAgentId</codeph>.</dd>
             <dd>
               <simpletable id="st_before_start_action" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -433,8 +431,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           
           <dlentry id="dlentry_post_tool_use_failure">
             <dt><codeph>postToolUseFailure</codeph>: Fire-and-forget</dt>
-            <dd>Fired after a tool invocation has failed, timed out, or was denied. Use it for error
-              tracking or recovery logic.</dd>
+            <dd>Fired after a tool invocation has failed, timed out, or was denied.</dd>
             <dd>
               <simpletable id="st_post_tool_use_failure" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -640,8 +637,9 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           
           <dlentry id="dlentry_after_mcp">
             <dt><codeph>afterMCPExecution</codeph>: Fire-and-forget</dt>
-            <dd>Fired after an MCP tool has completed. Includes the tool's input parameters and the
-              full JSON result.</dd>
+            <dd>Fired after an MCP tool execution completes, whether successfully or with an error.
+              Includes the tool's input parameters, the JSON result, and the execution
+              outcome.</dd>
             <dd>
               <simpletable id="st_after_mcp" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -667,7 +665,20 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>resultJson</codeph></stentry>
                   <stentry>JSON value</stentry>
-                  <stentry>Result returned by the MCP tool as a raw JSON value.</stentry>
+                  <stentry>Result returned by the MCP tool as a raw JSON value. Absent when the
+                    execution failed.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>succeeded</codeph></stentry>
+                  <stentry>boolean</stentry>
+                  <stentry><codeph>true</codeph> if the MCP tool completed successfully;
+                      <codeph>false</codeph> if it threw an error.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>errorMessage</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Human-readable description of the failure. Absent when
+                      <codeph>succeeded</codeph> is <codeph>true</codeph>.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -723,7 +734,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
             <dd>Fired before the agent edits or creates a file. Throwing an exception prevents the
               write from happening; the exception message is returned to the AI model as an error.
               Note: the event is only fired when the content to be written has been successfully
-              computed — for replacement-based edits this means the replacement strings were located
+              computed,  for replacement-based edits this means the replacement strings were located
               in the existing file content.</dd>
             <dd>
               <simpletable id="st_before_edit_file" relcolwidth="1* 1* 2*">
@@ -762,9 +773,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
 
           <dlentry id="dlentry_after_edit_file">
             <dt><codeph>afterEditFile</codeph>: Fire-and-forget</dt>
-            <dd>Fired after the agent attempts to edit or create a file — both on success and on
-              failure. Use it to run post-edit formatters or to audit AI-generated file
-              changes.</dd>
+            <dd>Fired after the agent attempts to edit or create a file, both on success and on
+              failure. Use it to audit AI-generated file changes.</dd>
             <dd>
               <simpletable id="st_after_edit_file" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -818,7 +828,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry>Description</stentry>
                 </sthead>
                 <strow>
-                  <stentry><codeph>text</codeph></stentry>
+                  <stentry><codeph>response</codeph></stentry>
                   <stentry>string</stentry>
                   <stentry>The text content of the completed assistant turn. Empty string when the
                     turn consisted solely of tool calls.</stentry>
