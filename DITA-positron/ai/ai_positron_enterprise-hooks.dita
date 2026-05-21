@@ -44,36 +44,49 @@
           method to <b>veto</b> a blocking event and prevent the associated action from
           running.<codeblock id="codeblock_hooks_example" outputclass="language-java">package my.pack;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oxygenxml.positron.api.hook.AIHookEvent;
 import com.oxygenxml.positron.api.hook.AIHooksHandler;
-import com.oxygenxml.positron.api.hook.payload.BeforeStartActionPayload;
+import com.oxygenxml.positron.api.hook.payload.BeforeShellExecutionPayload;
 
 /**
- * Example hook handler that logs every event and blocks actions
- * that target documents in the "restricted" folder.
+ * Hook handler that blocks shell commands considered dangerous for
+ * a documentation project (destructive file operations, package
+ * installations, and network-fetching utilities).
  */
-public class AuditHooksHandler implements AIHooksHandler {
+public class ShellGuardHooksHandler implements AIHooksHandler {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
+  private static final List&lt;String> BLOCKED_PATTERNS = List.of(
+      "rm ",  "rmdir", "del ",  "rd ",
+      "npm install", "pip install", "mvn install",
+      "curl", "wget"
+  );
+
   @Override
   public void eventOccurred(AIHookEvent event, String eventPayload) throws Exception {
-    logEvent(event, eventPayload);
-    if (event == AIHookEvent.BEFORE_START_ACTION) {
-      enforceAccessPolicy(eventPayload);
+    if (event == AIHookEvent.BEFORE_SHELL_EXECUTION) {
+      blockDangerousCommands(eventPayload);
     }
   }
 
-  private void logEvent(AIHookEvent event, String payload) {
-    System.out.println("[AI Hook] " + event.getEventName() + " -> " + payload);
-  }
-
-  private void enforceAccessPolicy(String payload) throws Exception {
-    BeforeStartActionPayload data = MAPPER.readValue(payload, BeforeStartActionPayload.class);
-    String input = data.getInputContent();
-    if (input != null &amp;&amp; input.contains("/restricted/")) {
-      throw new Exception("AI actions are not allowed on documents in the 'restricted' folder.");
+  private void blockDangerousCommands(String payload) throws Exception {
+    BeforeShellExecutionPayload data = MAPPER.readValue(payload, BeforeShellExecutionPayload.class);
+    String command = data.getCommand();
+    if (command == null) {
+      return;
+    }
+    String lowerCommand = command.toLowerCase();
+    for (String pattern : BLOCKED_PATTERNS) {
+      if (lowerCommand.contains(pattern)) {
+        throw new Exception(
+            "Shell command blocked by policy: '" + command + "'. "
+            + "Matched restricted pattern: '" + pattern + "'."
+        );
+      }
     }
   }
 }</codeblock>
@@ -91,14 +104,6 @@ public class AuditHooksHandler implements AIHooksHandler {
           <b>Blocking</b> can be vetoed by throwing an exception inside
           <codeph>eventOccurred</codeph>. Events marked as <b>Fire-and-forget</b> are informational,
         throwing an exception has no effect on the AI action.</p>
-      <note type="important" id="note_hooks_threading">All hook events, including fire-and-forget
-        ones, are dispatched <b>synchronously on the calling thread</b>. For events that fire during
-        AI response streaming (such as <codeph>afterAgentResponse</codeph> or
-          <codeph>afterAgentThought</codeph>), the calling thread is an internal RxJava streaming
-        thread. Performing heavy or blocking operations (for example, writing to a remote audit
-        system or a database) inside <codeph>eventOccurred</codeph> will block that thread and
-        delay the AI response. If your handler needs to do significant work for a fire-and-forget
-        event, offload the work to a background thread inside your implementation.</note>
       <p id="p_hooks_payload_base">Every event delivers its data as a JSON string. All payloads
         share the following base fields, inherited from <codeph>BaseHookPayload</codeph>:</p>
       <simpletable id="simpletable_base_payload" relcolwidth="1* 1* 2*">
@@ -336,12 +341,12 @@ public class AuditHooksHandler implements AIHooksHandler {
             </dd>
           </dlentry>
           
-          <dlentry id="dlentry_stop">
-            <dt><codeph>stop</codeph>: Fire-and-forget</dt>
-            <dd>Fired when the AI agent loop finishes, regardless of whether it completed
-              successfully, was stopped by the user, or ended with an error.</dd>
+          <dlentry id="dlentry_agent_finish">
+            <dt><codeph>agentFinish</codeph>: Fire-and-forget</dt>
+            <dd>Fired when the AI agent interaction finishes, regardless of whether it completed
+              successfully, was aborted by the user, or terminated by an error.</dd>
             <dd>
-              <simpletable id="st_stop" relcolwidth="1* 1* 2*">
+              <simpletable id="st_agent_finish" relcolwidth="1* 1* 2*">
                 <sthead>
                   <stentry>Field</stentry>
                   <stentry>Type</stentry>
@@ -350,11 +355,11 @@ public class AuditHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>status</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Reason the loop stopped: <codeph>completed</codeph>,
+                  <stentry>Reason the interaction ended: <codeph>completed</codeph>,
                     <codeph>aborted</codeph>, or <codeph>error</codeph>.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>loopCount</codeph></stentry>
+                  <stentry><codeph>toolCallRounds</codeph></stentry>
                   <stentry>integer</stentry>
                   <stentry>Number of tool-call rounds completed during the interaction (0 for plain
                     Q&amp;A with no tools).</stentry>
@@ -368,8 +373,6 @@ public class AuditHooksHandler implements AIHooksHandler {
               </simpletable>
             </dd>
           </dlentry>
-          
-          <!-- ===================== GENERIC TOOL LIFECYCLE ===================== -->
           <dlentry id="dlentry_pre_tool_use">
             <dt><codeph>preToolUse</codeph> : Blocking</dt>
             <dd>Fired before any AI tool (function or action) is invoked. Throwing an exception
@@ -485,15 +488,15 @@ public class AuditHooksHandler implements AIHooksHandler {
                   <stentry>Description</stentry>
                 </sthead>
                 <strow>
-                  <stentry><codeph>actionId</codeph></stentry>
+                  <stentry><codeph>subActionOrAgentId</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Identifier of the sub-action being started (e.g.
+                  <stentry>Identifier of the sub-action or sub-agent being started (e.g.
                     <codeph>improve-readability</codeph>).</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>actionName</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Human-readable name of the sub-action.</stentry>
+                  <stentry>Human-readable name of the sub-action or sub-agent.</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>content</codeph></stentry>
@@ -502,10 +505,9 @@ public class AuditHooksHandler implements AIHooksHandler {
                     process.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>parentConversationId</codeph></stentry>
+                  <stentry><codeph>parentSessionId</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Conversation ID of the parent agent that spawned this
-                    sub-agent.</stentry>
+                  <stentry>Session ID of the parent agent that spawned this sub-agent.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -522,9 +524,9 @@ public class AuditHooksHandler implements AIHooksHandler {
                   <stentry>Description</stentry>
                 </sthead>
                 <strow>
-                  <stentry><codeph>actionId</codeph></stentry>
+                  <stentry><codeph>subActionOrAgentId</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Identifier of the sub-action that ended.</stentry>
+                  <stentry>Identifier of the sub-action or sub-agent that ended.</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>actionName</codeph></stentry>
@@ -697,13 +699,81 @@ public class AuditHooksHandler implements AIHooksHandler {
               </simpletable>
             </dd>
           </dlentry>
-          
-          <dlentry id="dlentry_after_file_edit">
-            <dt><codeph>afterFileEdit</codeph>: Fire-and-forget</dt>
-            <dd>Fired after the agent edits or creates a file. Use it to run post-edit formatters or
-              to audit AI-generated file changes.</dd>
+
+          <dlentry id="dlentry_after_read_file">
+            <dt><codeph>afterReadFile</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the agent successfully reads a file. Use it to audit file-access
+              patterns or log the content retrieved by the agent.</dd>
             <dd>
-              <simpletable id="st_after_file_edit" relcolwidth="1* 1* 2*">
+              <simpletable id="st_after_read_file" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>filePath</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Absolute path or URL of the file that was read.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>content</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The content that was read from the file.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+
+          <dlentry id="dlentry_before_edit_file">
+            <dt><codeph>beforeEditFile</codeph> : Blocking</dt>
+            <dd>Fired before the agent edits or creates a file. Throwing an exception prevents the
+              write from happening; the exception message is returned to the AI model as an error.
+              Note: the event is only fired when the content to be written has been successfully
+              computed — for replacement-based edits this means the replacement strings were located
+              in the existing file content.</dd>
+            <dd>
+              <simpletable id="st_before_edit_file" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>filePath</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Absolute path or URL of the file about to be modified or
+                    created.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>operation</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Type of operation about to be performed: <codeph>create</codeph> or
+                    <codeph>edit</codeph>.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>content</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The full content that will be written to the file.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>fragments</codeph></stentry>
+                  <stentry>object[]</stentry>
+                  <stentry>The individual text replacements about to be applied. Each fragment
+                    contains an <codeph>oldValue</codeph> and a <codeph>newValue</codeph>. Absent
+                    when the entire file content will be written at once.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+
+          <dlentry id="dlentry_after_edit_file">
+            <dt><codeph>afterEditFile</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the agent attempts to edit or create a file — both on success and on
+              failure. Use it to run post-edit formatters or to audit AI-generated file
+              changes.</dd>
+            <dd>
+              <simpletable id="st_after_edit_file" relcolwidth="1* 1* 2*">
                 <sthead>
                   <stentry>Field</stentry>
                   <stentry>Type</stentry>
@@ -723,14 +793,21 @@ public class AuditHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>content</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>The full content written to the file.</stentry>
+                  <stentry>The complete file content after a successful write, or
+                    <codeph>null</codeph> when the write failed. For fragment-based edits this is
+                    the full document with all replacements already merged in.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>fragments</codeph></stentry>
-                  <stentry>object[]</stentry>
-                  <stentry>The individual text replacements that were applied. Each fragment contains
-                    an <codeph>oldValue</codeph> and a <codeph>newValue</codeph>. Absent when the
-                    entire file content was written at once.</stentry>
+                  <stentry><codeph>toolResult</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The result string returned to the AI model after the tool call completed
+                    (e.g. a success confirmation or an error message).</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>succeeded</codeph></stentry>
+                  <stentry>boolean</stentry>
+                  <stentry><codeph>true</codeph> when the file was written to disk successfully,
+                    <codeph>false</codeph> when the save failed.</stentry>
                 </strow>
               </simpletable>
             </dd>
