@@ -113,16 +113,16 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <stentry>Description</stentry>
         </sthead>
         <strow>
-          <stentry><codeph>conversationId</codeph></stentry>
+          <stentry><codeph>sessionId</codeph></stentry>
           <stentry>string</stentry>
           <stentry>Stable identifier for the current chat session, constant across all
             turns.</stentry>
         </strow>
         <strow>
-          <stentry><codeph>conversationActionId</codeph></stentry>
+          <stentry><codeph>actionOrAgentId</codeph></stentry>
           <stentry>string</stentry>
-          <stentry>Identifier of the AI action or chat mode (e.g. <codeph>agent</codeph>,
-              <codeph>ask</codeph>, or a custom chat mode ID).</stentry>
+          <stentry>Identifier of the AI action or agent (chat mode) that produced this event (e.g.
+              <codeph>agent</codeph>, <codeph>ask</codeph>, or a custom chat mode ID).</stentry>
         </strow>
         <strow>
           <stentry><codeph>generationId</codeph></stentry>
@@ -187,21 +187,16 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry>Description</stentry>
                 </sthead>
                 <strow>
-                  <stentry><codeph>actionId</codeph></stentry>
-                  <stentry>string</stentry>
-                  <stentry>Identifier of the AI action that started the session (e.g.
-                      <codeph>improve-readability</codeph>).</stentry>
-                </strow>
-                <strow>
                   <stentry><codeph>actionName</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Human-readable name of the AI action.</stentry>
+                  <stentry>Human-readable name of the AI action that started the session.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>is_background_agent</codeph></stentry>
+                  <stentry><codeph>backgroundAgent</codeph></stentry>
                   <stentry>boolean</stentry>
                   <stentry>Present and <codeph>true</codeph> when the session was started by an
-                    autonomous background agent rather than a direct user interaction.</stentry>
+                    autonomous background agent rather than a direct user interaction. Omitted
+                    when <codeph>false</codeph>.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -225,10 +220,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                     <codeph>application_close</codeph>.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>is_background_agent</codeph></stentry>
+                  <stentry><codeph>backgroundAgent</codeph></stentry>
                   <stentry>boolean</stentry>
                   <stentry>Present and <codeph>true</codeph> when the session was started by a
-                    background agent.</stentry>
+                    background agent. Omitted from JSON when <codeph>false</codeph>.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -245,21 +240,16 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry>Description</stentry>
                 </sthead>
                 <strow>
-                  <stentry><codeph>actionId</codeph></stentry>
-                  <stentry>string</stentry>
-                  <stentry>Identifier of the AI action that was active when the session was originally
-                    created.</stentry>
-                </strow>
-                <strow>
                   <stentry><codeph>actionName</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Human-readable name of the AI action.</stentry>
+                  <stentry>Human-readable name of the AI action that was active when this session was
+                    originally created.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>is_background_agent</codeph></stentry>
+                  <stentry><codeph>backgroundAgent</codeph></stentry>
                   <stentry>boolean</stentry>
                   <stentry>Present and <codeph>true</codeph> when the session was originally started
-                    by a background agent.</stentry>
+                    by a background agent. Omitted from JSON when <codeph>false</codeph>.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -536,8 +526,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>status</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Outcome of the sub-agent: <codeph>completed</codeph>,
-                    <codeph>failed</codeph>, or <codeph>abandoned</codeph>.</stentry>
+                  <stentry>Outcome of the sub-agent: <codeph>completed</codeph> or
+                      <codeph>failed</codeph>.</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>durationMs</codeph></stentry>
@@ -564,11 +554,6 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry><codeph>command</codeph></stentry>
                   <stentry>string</stentry>
                   <stentry>The full shell command string about to be executed.</stentry>
-                </strow>
-                <strow>
-                  <stentry><codeph>cwd</codeph></stentry>
-                  <stentry>string</stentry>
-                  <stentry>Working directory in which the command will run.</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>timeoutSeconds</codeph></stentry>
@@ -611,6 +596,14 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry><codeph>durationMs</codeph></stentry>
                   <stentry>long</stentry>
                   <stentry>Wall-clock duration of the command execution in milliseconds.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>succeeded</codeph></stentry>
+                  <stentry>boolean</stentry>
+                  <stentry><codeph>true</codeph> if the command ran without a system-level error
+                    regardless of the process exit code; <codeph>false</codeph> if execution failed
+                    before the process could complete (e.g. IOException, unsupported
+                    platform).</stentry>
                 </strow>
               </simpletable>
             </dd>
