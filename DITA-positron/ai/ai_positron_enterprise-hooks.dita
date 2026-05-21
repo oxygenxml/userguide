@@ -5,14 +5,14 @@
   <body>
     <p id="p_hooks_intro_a1b">The <b>Oxygen AI Positron</b> add-on exposes a hook system that lets
       developers intercept events fired during the AI lifecycle. A hook handler can observe
-      fire-and-forget events for auditing or analytics, or veto blocking events to prevent an action
-      from running.</p>
+        <i>fire-and-forget</i> events for auditing or analytics, or veto blocking events to prevent
+      an action from running.</p>
     <p id="p_hooks_usecases_b2c">Typical use cases include:</p>
     <ul id="ul_hooks_usecases_c3d">
       <li id="li_hooks_uc_audit">Auditing every AI action, tool call, or shell command to an
         external log or compliance system.</li>
-      <li id="li_hooks_uc_gate">Gating risky operations, for example, blocking shell commands that
-        modify production files.</li>
+      <li id="li_hooks_uc_gate">Gating risky operations (for example, blocking shell commands that
+        modify production files).</li>
       <li id="li_hooks_uc_subagent">Controlling sub-agent execution to enforce organizational
         policies on autonomous AI tasks.</li>
       <li id="li_hooks_uc_metrics">Collecting token usage metrics after each assistant turn.</li>
@@ -23,20 +23,19 @@
       <ol id="ol_hooks_impl_steps">
         <li id="li_hooks_dep">Add <codeph>oxygen-ai-positron-api</codeph> as a provided dependency
           in your plugin project's
-          <filepath>pom.xml</filepath>:<codeblock id="codeblock_hooks_dep" outputclass="language-xml">&lt;dependency>
+            <filepath>pom.xml</filepath>:<codeblock id="codeblock_hooks_dep" outputclass="language-xml">&lt;dependency>
   &lt;groupId>com.oxygenxml&lt;/groupId>
   &lt;artifactId>oxygen-ai-positron-api&lt;/artifactId>
   &lt;version>8.3.0&lt;/version>
   &lt;scope>provided&lt;/scope>
-&lt;/dependency></codeblock>
-          <p id="p_hooks_repo">The artifact is published at <xref href="https://oxygenxml.com/maven/"
-              format="html" scope="external"><b>https://oxygenxml.com/maven/</b></xref>. Add the
-            repository to your <filepath>pom.xml</filepath> if it is not already
-            present:<codeblock id="codeblock_hooks_repo" outputclass="language-xml">&lt;repository>
+&lt;/dependency></codeblock><p id="p_hooks_repo">The artifact is published at <xref
+              href="https://oxygenxml.com/maven/" format="html" scope="external"
+                ><b>https://oxygenxml.com/maven/</b></xref>. Add the repository to your
+              <filepath>pom.xml</filepath> (if it is not already
+            present):<codeblock id="codeblock_hooks_repo" outputclass="language-xml">&lt;repository>
   &lt;id>oxygen-public-repo&lt;/id>
   &lt;url>https://www.oxygenxml.com/maven/&lt;/url>
-&lt;/repository></codeblock></p>
-        </li>
+&lt;/repository></codeblock></p></li>
         <li id="li_hooks_implement">Implement the
             <codeph>com.oxygenxml.positron.api.hook.AIHooksHandler</codeph> interface in your
           plugin's libraries. The single method <codeph>eventOccurred(AIHookEvent event, String
@@ -89,21 +88,19 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
       }
     }
   }
-}</codeblock>
-        </li>
+}</codeblock></li>
         <li id="li_hooks_ext_point">In the plugin descriptor file, declare the extension point that
           points to your implementation:
-          <codeblock id="codeblock_hooks_ext" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIHooksHandler" class="my.pack.AuditHooksHandler"/&gt;</codeblock>
-        </li>
+          <codeblock id="codeblock_hooks_ext" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIHooksHandler" class="my.pack.AuditHooksHandler"/&gt;</codeblock></li>
       </ol>
     </section>
     <section id="section_hooks_events">
       <title>Hook Events Reference</title>
-      <p id="p_hooks_events_intro">The following sections list all events defined in
+      <p id="p_hooks_events_intro">The following tables list all events defined in
           <codeph>AIHookEvent</codeph>, grouped by lifecycle category. Events marked as
           <b>Blocking</b> can be vetoed by throwing an exception inside
-          <codeph>eventOccurred</codeph>. Events marked as <b>Fire-and-forget</b> are informational,
-        throwing an exception has no effect on the AI action.</p>
+          <codeph>eventOccurred</codeph>. Events marked as <b>Fire-and-forget</b> are informational
+        (throwing an exception has no effect on the AI action).</p>
       <p id="p_hooks_payload_base">Every event delivers its data as a JSON string. All payloads
         share the following base fields, inherited from <codeph>BaseHookPayload</codeph>:</p>
       <simpletable id="simpletable_base_payload" relcolwidth="1* 1* 2*">
@@ -686,8 +683,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <dlentry id="dlentry_before_read_file">
             <dt><codeph>beforeReadFile</codeph> : Blocking</dt>
             <dd>Fired before the agent reads a file. Throwing an exception blocks the agent's access
-              to that file. Use this hook to implement file-level access control for example, to
-              prevent the AI from reading files that contain secrets.</dd>
+              to that file. Use this hook to implement file-level access control (for example, to
+              prevent the AI from reading files that contain secrets).</dd>
             <dd>
               <simpletable id="st_before_read_file" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -732,10 +729,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <dlentry id="dlentry_before_edit_file">
             <dt><codeph>beforeEditFile</codeph> : Blocking</dt>
             <dd>Fired before the agent edits or creates a file. Throwing an exception prevents the
-              write from happening; the exception message is returned to the AI model as an error.
-              Note: the event is only fired when the content to be written has been successfully
-              computed,  for replacement-based edits this means the replacement strings were located
-              in the existing file content.</dd>
+              write from happening (the exception message is returned to the AI model as an
+                error).<note id="note_ltc_dxg_3jc">The event is only fired when the content to be
+                written has been successfully computed. For replacement-based edits, this means the
+                replacement strings were located in the existing file content.</note></dd>
             <dd>
               <simpletable id="st_before_edit_file" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -871,9 +868,9 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           
           <dlentry id="dlentry_after_user_insert">
             <dt><codeph>afterUserInsertResponse</codeph>: Fire-and-forget</dt>
-            <dd>Fired after the user clicks the <uicontrol>Insert</uicontrol> /
-              <uicontrol>Replace</uicontrol> button in the chat panel to apply an AI suggestion into
-              the document.</dd>
+            <dd>Fired after the user clicks the
+                <uicontrol>Insert</uicontrol>/<uicontrol>Replace</uicontrol> button in the chat
+              panel to apply an AI suggestion in the document.</dd>
             <dd>
               <simpletable id="st_after_user_insert" relcolwidth="1* 1* 2*">
                 <sthead>
