@@ -10,36 +10,56 @@
           <dlentry id="dlentry_lbr_skb_2gc">
             <dt>Configuration file</dt>
             <dd>
-            <p id="p_mbr_skb_2gc">A reference to a JSON file that configures MCP servers. MCP
-              servers can have three type of transport protocols:<ul id="ul_edw_jhn_hgc">
-                <li id="li_qyn_swh_fhc"><b>Stdio transport</b> - Uses standard input/output streams
-                  for direct process communication between local processes on the same machine,
-                  providing optimal performance with no network overhead.</li>
-                <li id="li_ryn_swh_fhc"><b>Streamable HTTP transport</b> - Uses HTTP POST for
-                  client-to-server messages with optional Server-Sent Events for streaming
-                  capabilities. </li>
-                <li id="li_syn_swh_fhc"><b>Streamable HTTP with SSE transport</b> - Uses HTTP POST
-                  for client-to-server messages with optional Server-Sent Events for streaming
-                  capabilities. Server can make use of <b>Server-Sent Events (SSE)</b> to stream
-                  multiple server messages</li>
-              </ul></p>
-            <p id="p_nbr_skb_2gc"><note id="note_rqz_2jk_3hc" type="important">For configuration
-                files that contain API key values, you can use <xref
+              <p id="p_mbr_skb_2gc">Specify the path to a JSON file that defines the MCP servers to
+              load. The path to the configuration file can be either absolute or it can contain
+                <xref href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html"
+                format="html" scope="external">Oxygen editor variables</xref> like the project
+              directory variable <codeph>${pd}</codeph>.</p>
+            <p>Because there is no single standard MCP configuration file format used by all
+              clients, <uicontrol>AI Positron</uicontrol> accepts the following top-level server
+              container names:</p>
+              <ul id="ul_edw_jhn_hgc">
+                <li id="li_qyn_swh_fhc"><codeph>mcpServers</codeph> - Preferred and fully supported.</li>
+                <li id="li_ryn_swh_fhc"><codeph>servers</codeph> - Also supported for compatibility
+                  with other MCP clients.</li>
+              </ul>
+              <p id="p_az1_cfg_mcp">Each server entry can describe one of the following connection
+                types:</p>
+              <ul id="ul_cfg_transport_mcp">
+                <li id="li_cfg_stdio_mcp"><b>Local stdio server</b> - Starts a local process and
+                  communicates with it through standard input/output streams.</li>
+                <li id="li_cfg_http_mcp"><b>Remote Streamable HTTP server</b> - Connects to a remote
+                  MCP endpoint over HTTP.</li>
+                <li id="li_cfg_sse_mcp"><b>Remote SSE server (deprecated)</b> - Connects to a remote
+                MCP endpoint that uses Server-Sent Events.</li>
+              </ul>
+            <p id="p_cfg_behavior_mcp">When you select a configuration file in the <menucascade>
+                <uicontrol>Preferences</uicontrol>
+                <uicontrol>Plugins / Oxygen AI Positron / Model Context Protocol</uicontrol>
+              </menucascade> page, pressing <uicontrol>Apply</uicontrol> or
+                <uicontrol>OK</uicontrol> saves the preference and reloads the MCP servers using the
+              current file contents. For example you can configure the MCP configuration path and
+              then press <uicontrol>Apply</uicontrol> and look in the <uicontrol>Connection
+                status</uicontrol> text area to see if the connection is successful. If you edit the
+              JSON file outside the preferences page afterwards, use <uicontrol>Reload</uicontrol>
+              from the same preferences page to reconnect and load the updated configuration.</p>
+              <note id="note_rqz_2jk_3hc" type="important">For configuration files that contain API
+                key values, you can use <xref
                   href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html"
-                  format="html" scope="external">Oxygen XML editor variables</xref> to avoid setting
-                key values directly in the configuration files. You can also use <xref
-                  href="https://www.oxygenxml.com/doc/ug-editor/topics/editor-variables.html"
-                  format="html" scope="external">Oxygen editor variables</xref> in the
+                  format="html" scope="external">Oxygen editor variables</xref> to avoid setting key
+                values directly in the configuration file. You can also use editor variables in the
                   <codeph>url</codeph>, <codeph>command</codeph>, <codeph>args</codeph>,
-                  <codeph>headers</codeph> properties (for example, to access environmental
-                variables or system properties). </note>Configuration file examples:<ul
-                id="ul_ohx_l1x_dgc">
+                  <codeph>cwd</codeph>, and <codeph>headers</codeph> properties, for example, to
+                access environment variables or system properties.</note>
+              <p id="p_nbr_skb_2gc">Configuration file examples:</p>
+              <ul id="ul_ohx_l1x_dgc">
                 <li id="li_obr_skb_2gc">
                   <p id="p_pbr_skb_2gc">Configuration of a local MCP server that adds tools to allow
                     the AI to use the <xref
                       href="https://brave.com/search/api/guides/use-with-claude-desktop-with-mcp/"
                       format="html" scope="external"><b>Brave</b></xref> engine to perform web
-                    searches:<codeblock id="codeblock_qr4_r1x_dgc" outputclass="language-json" xml:space="preserve">{
+                    searches:</p>
+                  <codeblock id="codeblock_qr4_r1x_dgc" outputclass="language-json" xml:space="preserve">{
   "mcpServers": {
     "brave-search": {
       "command": "npx",
@@ -51,50 +71,61 @@
         "BRAVE_API_KEY": "API_KEY_HERE"
       }
     }
-}</codeblock>The following properties are supported for local MCP server
-                      connections:<ul id="ul_kmx_rmd_y3c">
-                      <li><b>command</b> - The executable command used to start the MCP server
-                        process (e.g. <codeph>npx</codeph>, <codeph>docker</codeph>,
-                          <codeph>node</codeph>, <codeph>python</codeph>).</li>
-                      <li><b>args</b> - An array of string arguments to pass to the command (e.g.
-                          <codeph>["-y",
-                        "@modelcontextprotocol/server-brave-search"]</codeph>).</li>
-                      <li><b>env</b> - An object that contains environment variables to set for the
-                        server process. This is commonly used to pass API keys or configuration
-                        values (e.g. <codeph>{"BRAVE_API_KEY": "..."}</codeph>).</li>
-                      <li><b>cwd</b> - The working directory where the server process is launched.
-                        If not specified, the server process inherits the current working directory
-                        from the application.</li>
-                    </ul></p>
-                </li>
-                <li id="li_tyn_swh_fhc">Configuration of a remote MCP <b>Streamable HTTP</b> server
-                  that adds tools to allow the AI to call the <xref
-                    href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
-                    scope="external"><b>DeepWiki</b></xref> service and obtain information about
-                  various GitHub
-                  projects:<codeblock outputclass="language-json" xml:space="preserve" id="codeblock_fl4_mhn_hgc">{
-  "mcpServers": {
-      "deepwiki": {
-        "url":"https://mcp.deepwiki.com/mcp"
-      } 
   }
-}</codeblock>For <b>Streamable HTTP</b> connections, you can pass header values to
-                  the server using the <codeph>headers</codeph> property like
-                    this:<codeblock outputclass="language-json" id="codeblock_fkf_nxq_5gc">{
+}</codeblock>
+                  <p id="p_local_props_mcp">The following properties are supported for local MCP
+                    server connections:</p>
+                  <ul id="ul_kmx_rmd_y3c">
+                    <li><b>command</b> - The executable command used to start the MCP server process
+                      (for example, <codeph>npx</codeph>, <codeph>docker</codeph>,
+                        <codeph>node</codeph>, <codeph>python</codeph>).</li>
+                    <li><b>args</b> - An array of string arguments to pass to the command.</li>
+                    <li><b>env</b> - An object that contains environment variables to set for the
+                      server process.</li>
+                    <li><b>cwd</b> - The working directory where the server process is launched.</li>
+                  </ul>
+                </li>
+                <li id="li_tyn_swh_fhc">
+                  <p id="p_http_example_mcp">Configuration of a remote MCP <b>Streamable HTTP</b>
+                    server that adds tools to allow the AI to call the <xref
+                      href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
+                      scope="external"><b>DeepWiki</b></xref> service and obtain information about
+                    various GitHub projects:</p>
+                  <codeblock outputclass="language-json" xml:space="preserve" id="codeblock_fl4_mhn_hgc">{
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp"
+    }
+  }
+}</codeblock>
+                  <p id="p_http_props_mcp">For remote HTTP-based connections, the following
+                    properties are supported:</p>
+                  <ul id="ul_http_props_mcp">
+                    <li><b>url</b> - The remote MCP endpoint URL.</li>
+                    <li><b>headers</b> - Optional HTTP headers sent when connecting to the server.</li>
+                    <li><b>type</b> - Optional transport hint. Use <codeph>sse</codeph> when the URL
+                      does not clearly identify an SSE endpoint.</li>
+                  </ul>
+                  <p id="p_http_headers_mcp">For <b>Streamable HTTP</b> connections, you can pass
+                    header values to the server using the <codeph>headers</codeph> property like
+                    this:</p>
+                  <codeblock outputclass="language-json" id="codeblock_fkf_nxq_5gc">{
   "mcpServers": {
     "atlassian": {
       "url": "http://our.jira.server.url:8000/mcp",
       "headers": {
-         "Authorization": "Bearer SOME_KEY_VALUE_HERE"
+        "Authorization": "Bearer SOME_KEY_VALUE_HERE"
       }
     }
   }
-}</codeblock><p id="p_uyn_swh_fhc">If you want to ask the end user for a certain
-                    value to be used in the headers, you can define inputs like
-                    this:</p><codeblock id="codeblock_rlm_zxq_5gc" outputclass="language-json">{
+}</codeblock>
+                  <p id="p_uyn_swh_fhc">If you want to prompt for a value and reuse it in the
+                    configuration file, define it outside the server definition and reference it
+                    from the header value. The following example uses the compatible
+                      <codeph>servers</codeph> top-level container:</p>
+                  <codeblock id="codeblock_rlm_zxq_5gc" outputclass="language-json">{
   "servers": {
     "github": {
-      "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
         "Authorization": "Bearer ${input:github_mcp_pat}"
@@ -109,38 +140,46 @@
       "password": true
     }
   ]
-}</codeblock><b>Example:</b> Start an <xref
-                    href="https://github.com/sooperset/mcp-atlassian" format="html" scope="external"
-                    >Atlassian JIRA</xref> Streamable HTTP MCP server with the
-                  command:<codeblock outputclass="language-bourne" id="codeblock_bwm_4hn_hgc">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport streamable-http --port 8000 --read-only --verbose</codeblock>and
-                  then use it as a remote server in the configuration
-                  file:<codeblock outputclass="language-json" id="codeblock_cwm_4hn_hgc">{
+}</codeblock>
+                  <p id="p_http_atlassian_mcp"><b>Example:</b> Start an <xref
+                      href="https://github.com/sooperset/mcp-atlassian" format="html"
+                      scope="external">Atlassian JIRA</xref> Streamable HTTP MCP server with the
+                    command:</p>
+                  <codeblock outputclass="language-bourne" id="codeblock_bwm_4hn_hgc">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport streamable-http --port 8000 --read-only --verbose</codeblock>
+                  <p id="p_http_atlassian_cfg_mcp">Then use it as a remote server in the
+                    configuration file:</p>
+                  <codeblock outputclass="language-json" id="codeblock_cwm_4hn_hgc">{
   "mcpServers": {
     "atlassian": {
       "url": "http://our.jira.server.url:8000/mcp"
     }
   }
-}</codeblock></li>
-                <li id="li_qbr_skb_2gc">Configuration of a remote MCP <b>Streamable HTTP with
-                    SSE</b> server that adds tools to allow the AI to call the <xref
-                    href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
-                    scope="external"><b>DeepWiki</b></xref> service and obtain information about
-                  various GitHub
-                  projects:<codeblock id="codeblock_wqv_w1x_dgc" outputclass="language-json" xml:space="preserve">{
+}</codeblock>
+                </li>
+                <li id="li_qbr_skb_2gc">
+                  <p id="p_sse_example_mcp">Configuration of a remote MCP <b>SSE</b> server that
+                    adds tools to allow the AI to call the <xref
+                      href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
+                      scope="external"><b>DeepWiki</b></xref> service and obtain information about
+                    various GitHub projects:</p>
+                  <codeblock id="codeblock_wqv_w1x_dgc" outputclass="language-json" xml:space="preserve">{
   "mcpServers": {
-      "deepwiki": {
-        "url":"https://mcp.deepwiki.com/sse"
-      } 
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/sse"
+    }
   }
-}</codeblock>If the HTTP SSE server has a URL that does not end with
-                    <codeph>/sse</codeph>, then an extra <codeph>"type":"sse"</codeph> property must
-                  be added in the configuration.</li>
-                <li id="li_rbr_skb_2gc">Multiple MCP servers (Brave search, <xref
-                    href="https://github.com/github/github-mcp-server" format="html"
-                    scope="external">GitHub</xref>, <xref
-                    href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
-                    scope="external">DeepWiki</xref>) configured in the same
-                  file:<codeblock id="codeblock_gxv_z1x_dgc" outputclass="language-json" xml:space="preserve">{
+}</codeblock>
+                  <p id="p_sse_hint_mcp">If the SSE server URL does not end with
+                      <codeph>/sse</codeph>, add <codeph>"type": "sse"</codeph> explicitly in the
+                    server definition.</p>
+                </li>
+                <li id="li_rbr_skb_2gc">
+                  <p id="p_multi_example_mcp">Multiple MCP servers (Brave Search, <xref
+                      href="https://github.com/github/github-mcp-server" format="html"
+                      scope="external">GitHub</xref>, and <xref
+                      href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
+                      scope="external">DeepWiki</xref>) configured in the same file:</p>
+                  <codeblock id="codeblock_gxv_z1x_dgc" outputclass="language-json" xml:space="preserve">{
   "mcpServers": {
     "brave-search": {
       "command": "npx",
@@ -153,26 +192,27 @@
       }
     },
     "github": {
-        "command": "docker",
-        "args": [
-          "run",
-          "-i",
-          "--rm",
-          "-e",
-          "GITHUB_PERSONAL_ACCESS_TOKEN",
-          "ghcr.io/github/github-mcp-server"
-        ],
-        "env": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "API_KEY_HERE"
-        }
-      },
-      "deepwiki": {
-        "url":"https://mcp.deepwiki.com/sse"
-      } 
+      }
+    },
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/sse"
+    }
   }
-}</codeblock></li>
-              </ul></p>
-          </dd>
+}</codeblock>
+                </li>
+              </ul>
+            </dd>
           </dlentry>
           <dlentry id="dlentry_sbr_skb_2gc">
             <dt>Connection timeout (seconds)</dt>
