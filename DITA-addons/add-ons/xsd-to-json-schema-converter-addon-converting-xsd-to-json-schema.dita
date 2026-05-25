@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="xsd-to-json-schema-converter-addon-converting-xsd-to-json-schema">
+  <title>Converting XSD to JSON Schema</title>
+  <body>
+    <p id="p_cxf_cgk_54b">To convert an XML Schema (XSD) to a JSON Schema, follow these steps:</p>
+    <p><ol id="procedure-import-from-HTML">
+      <li id="li_dxf_cgk_54b">
+        <p id="p_exf_cgk_54b">Select the <uicontrol>XSD to JSON Schema</uicontrol> action from the <menucascade>
+            <uicontrol>Tools</uicontrol>
+            <uicontrol>JSON Tools</uicontrol>
+          </menucascade> menu.</p>
+        <p id="p_fxf_cgk_54b"><b>Step Result:</b> The <uicontrol>XSD to JSON Schema</uicontrol>
+          dialog box is displayed:</p>
+        <p id="p_gxf_cgk_54b">
+          <fig id="fig_mvj_pvd_w3b">
+            <title>XSD to JSON Schema Dialog Box</title>
+            <image href="../img/Convert_XSD_JSON_Schema.png" id="image_twc_5qf_jd"/>
+          </fig>
+        </p>
+      </li>
+      <li id="li_hxf_cgk_54b">In the <uicontrol>XSD URL</uicontrol> field, choose or enter the URL
+        of the XML Schema document. The conversion supports XSD versions 1.0 and 1.1.</li>
+      <li id="li_ixf_cgk_54b">In the <uicontrol>Output file</uicontrol> field, choose the path for
+        the resulting output file.</li>
+      <li id="li_mxf_cgk_54b">[Optional] You can select the <uicontrol>Open in Editor</uicontrol>
+        option to open the resulting JSON Schema document in the main editing pane.</li>
+      <li id="li_jxf_cgk_54b">For the <uicontrol>JSON Schema version</uicontrol> option, choose
+        the version of the resulting JSON schema. The possible choices are: <uicontrol>Draft
+          4</uicontrol>, <uicontrol>Draft 6</uicontrol>, <uicontrol>Draft 7</uicontrol>,
+          <uicontrol>2019-09</uicontrol>, and <uicontrol>2020-12</uicontrol>.</li>
+      <li id="li_kxf_cgk_54b">[Optional] If you select the <uicontrol>Restrict additional
+          content</uicontrol> option, then <codeph>additionalProperties</codeph> (for objects) and
+          <codeph>additionalItems</codeph> (for arrays) will be set to <codeph>false</codeph> in
+        the resulting schema. By default, these keys are not in the schema, meaning that providing
+        additional content (according to the schema) is allowed.</li>
+      <li id="li_lxf_cgk_54b">[Optional] You can select the <uicontrol>Preserve case of names from
+          the XSD</uicontrol> option if you want the names from the XSD to remain unchanged in the
+        resulting JSON Schema. Otherwise, the default JAXB naming algorithm will be applied (for
+        example, "<codeph>some.nAMe</codeph>" is changed to "<codeph>SomeNAMe</codeph>", or
+          "<codeph>Some_oth3r_name</codeph>" is changed to "<codeph>SomeOth3RName</codeph>").</li>
+      <li id="li_nxf_cgk_54b">Click the <uicontrol>Convert</uicontrol> button.</li>
+    </ol></p>
+    <p id="p_oxf_cgk_54b"><b>Result:</b> The original XSD document is now converted to a JSON
+      Schema document. The resulting JSON Schema will be the specified draft and will contain:</p>
+    <p><ul id="ul_bfg_ngq_ckb">
+      <li id="li_pxf_cgk_54b">The <codeph>$id</codeph> of the schema, generated from XSD
+          <codeph>targetNamespace</codeph>.</li>
+      <li id="li_qxf_cgk_54b">The <codeph>$definitions</codeph> section, which declares
+          <codeph>complex</codeph> and <codeph>enum</codeph> types.</li>
+      <li id="li_rxf_cgk_54b">The <codeph>anyOf</codeph> section, which lists possible top-level
+        elements as an array of objects.</li>
+    </ul></p>
+    <p id="p_sxf_cgk_54b"><b>Other Possible Results</b>:</p>
+    <p><ul id="ul_j4b_1hq_ckb">
+      <li id="li_txf_cgk_54b">If an XSD type extends another type, then its schema is combined
+        with the schema of the base type using the <codeph>allOf</codeph> keyword.</li>
+      <li id="li_uxf_cgk_54b">If an extension in XSD defines an element with the same name as an
+        attribute in the base, a property named <codeph>rest</codeph> is generated to avoid name
+        conflicts in JSON.</li>
+      <li id="li_vxf_cgk_54b">If a property of a complex type is a collection property, the
+        schema of the collection items will be wrapped in the JSON array schema.</li>
+    </ul></p>
+  </body>
+</topic>
