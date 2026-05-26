@@ -890,7 +890,9 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <dlentry id="dlentry_after_user_preview">
             <dt><codeph>afterUserPreviewResponse</codeph>: Fire-and-forget</dt>
             <dd>Fired after the user clicks the <uicontrol>Preview</uicontrol> button in the chat
-              panel.</dd>
+              panel and the preview dialog closes. The preview opens a diff view comparing the
+              current editor content with the result of applying the AI response, so the user can
+              review the changes before deciding whether to apply them.</dd>
             <dd>
               <simpletable id="st_after_user_preview" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -901,12 +903,39 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>content</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>The content that was sent to the preview.</stentry>
+                  <stentry>The content that was sent to the preview dialog.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>applied</codeph></stentry>
+                  <stentry>boolean</stentry>
+                  <stentry><codeph>true</codeph> if the user applied the changes from within the
+                    preview dialog; <codeph>false</codeph> if the dialog was closed without
+                    applying.</stentry>
                 </strow>
               </simpletable>
             </dd>
           </dlentry>
-          
+
+          <dlentry id="dlentry_after_copy_response">
+            <dt><codeph>afterCopyResponse</codeph>: Fire-and-forget</dt>
+            <dd>Fired after the user clicks the <uicontrol>Copy</uicontrol> button in the chat
+              panel to copy an AI response to the clipboard.</dd>
+            <dd>
+              <simpletable id="st_after_copy_response" relcolwidth="1* 1* 2*">
+                <sthead>
+                  <stentry>Field</stentry>
+                  <stentry>Type</stentry>
+                  <stentry>Description</stentry>
+                </sthead>
+                <strow>
+                  <stentry><codeph>content</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>The text that was copied to the system clipboard.</stentry>
+                </strow>
+              </simpletable>
+            </dd>
+          </dlentry>
+
           <dlentry id="dlentry_after_user_accept">
             <dt><codeph>afterUserAcceptChanges</codeph>: Fire-and-forget</dt>
             <dd>Fired after the user accepts agentic file changes proposed by the AI agent.</dd>
