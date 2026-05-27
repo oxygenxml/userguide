@@ -174,7 +174,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
       <p><dl id="dl_hooks_events">
           <dlentry id="dlentry_session_start">
             <dt><codeph>sessionStart</codeph>: Fire-and-forget</dt>
-            <dd>Fired when a new chat conversation is created.</dd>
+            <dd>Fired when a new AI session is created. This includes interactive chat conversations
+              and batch AI refactoring sessions.</dd>
             <dd>
               <simpletable id="st_session_start" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -188,11 +189,11 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry>Human-readable name of the AI action that started the session.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>backgroundAgent</codeph></stentry>
-                  <stentry>boolean</stentry>
-                  <stentry>Present and <codeph>true</codeph> when the session was started by an
-                    autonomous background agent rather than a direct user interaction. Omitted
-                    when <codeph>false</codeph>.</stentry>
+                  <stentry><codeph>sessionType</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Classifies the kind of session: <codeph>chat</codeph> for an interactive
+                    chat conversation, or <codeph>refactoring</codeph> for a batch AI refactoring
+                    run.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -200,7 +201,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           
           <dlentry id="dlentry_session_end">
             <dt><codeph>sessionEnd</codeph>: Fire-and-forget</dt>
-            <dd>Fired when a chat conversation is closed or cleared. </dd>
+            <dd>Fired when an AI session ends, whether a chat conversation is closed or cleared, or
+              a batch AI refactoring run finishes.</dd>
             <dd>
               <simpletable id="st_session_end" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -211,14 +213,19 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>reason</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Reason the session ended: <codeph>user_close</codeph> or
-                    <codeph>application_close</codeph>.</stentry>
+                  <stentry>Reason the session ended: <codeph>user_close</codeph> (the user manually
+                    closed or cleared the chat), <codeph>application_close</codeph> (the host
+                    application is shutting down), <codeph>complete</codeph> (the session completed
+                    normally, for example a refactoring batch run finished), or
+                    <codeph>stopped</codeph> (the user pressed <uicontrol>Stop</uicontrol> during a
+                    batch refactoring run before all files were processed).</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>backgroundAgent</codeph></stentry>
-                  <stentry>boolean</stentry>
-                  <stentry>Present and <codeph>true</codeph> when the session was started by a
-                    background agent. Omitted from JSON when <codeph>false</codeph>.</stentry>
+                  <stentry><codeph>sessionType</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Classifies the kind of session that ended: <codeph>chat</codeph> or
+                    <codeph>refactoring</codeph>. Matches the value emitted in the corresponding
+                      <codeph>sessionStart</codeph> event.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -241,10 +248,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                     originally created.</stentry>
                 </strow>
                 <strow>
-                  <stentry><codeph>backgroundAgent</codeph></stentry>
-                  <stentry>boolean</stentry>
-                  <stentry>Present and <codeph>true</codeph> when the session was originally started
-                    by a background agent. Omitted from JSON when <codeph>false</codeph>.</stentry>
+                  <stentry><codeph>sessionType</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Classifies the kind of session being reloaded: <codeph>chat</codeph> or
+                    <codeph>refactoring</codeph>.</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -938,7 +945,9 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
 
           <dlentry id="dlentry_after_user_accept">
             <dt><codeph>afterUserAcceptChanges</codeph>: Fire-and-forget</dt>
-            <dd>Fired after the user accepts agentic file changes proposed by the AI agent.</dd>
+            <dd>Fired after the user accepts AI-proposed file changes. This event is emitted both
+              when the user accepts changes from the agentic chat flow and when the user accepts
+              files in the batch AI refactoring diff dialog.</dd>
             <dd>
               <simpletable id="st_after_user_accept" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -958,7 +967,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           
           <dlentry id="dlentry_after_user_reject">
             <dt><codeph>afterUserRejectChanges</codeph>: Fire-and-forget</dt>
-            <dd>Fired after the user rejects agentic file changes proposed by the AI agent.</dd>
+            <dd>Fired after the user rejects AI-proposed file changes. This event is emitted both
+              when the user rejects changes from the agentic chat flow and when files are rejected
+              in the batch AI refactoring diff dialog (including when the dialog is cancelled, in
+              which case all files in the batch are treated as rejected).</dd>
             <dd>
               <simpletable id="st_after_user_reject" relcolwidth="1* 1* 2*">
                 <sthead>
