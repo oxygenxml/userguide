@@ -244,11 +244,18 @@
                           using a static AWS Bedrock API key. This is the only option available
                           in Web Author, Content Fusion, and Eclipse.</li>
                         <li id="li_auth_sso"><uicontrol>AWS Credentials (Profile / SSO)</uicontrol>
-                        — Authenticates using the AWS credential chain. Depending on whether the AWS
-                        CLI is installed, the application uses either a CLI-based credential export
-                        or a native Java-based profile resolution that supports static keys and IAM
-                        Identity Center SSO.</li>
-                      </ul></dd>
+                        — Available on Positron Desktop only. Authenticates using AWS CLI v2,
+                        which must be installed and available in the system
+                          <codeph>PATH</codeph>. Credentials are resolved via <codeph>aws configure
+                          export-credentials</codeph>. This option supports SSO and any other
+                        credential type the <xref
+                          href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html"
+                          format="html" scope="external">AWS CLI supports</xref>.</li>
+                      </ul>
+                      <note type="important">To use the <uicontrol>AWS Credentials (Profile /
+                          SSO)</uicontrol> option, AWS CLI v2 must be installed and available in
+                        the system <codeph>PATH</codeph>. You can verify this by running
+                          <codeph>aws --version</codeph> in a terminal.</note></dd>
                   </dlentry>
                   <dlentry id="dlentry_m4l_2z2_fhc">
                     <dt>AWS Bedrock API key</dt>
@@ -272,12 +279,12 @@
                   <dlentry id="dlentry_auth_refresh_bedrock">
                     <dt>Auth Refresh Command</dt>
                     <dd>An optional shell command used to refresh an expired SSO session (e.g.,
-                        <codeph>aws sso login --profile=ai-writer</codeph>). This field is
-                      visible only when <uicontrol>AWS Credentials (Profile / SSO)</uicontrol>
-                      is selected and the AWS CLI is detected on the system. If left empty and
-                      a profile name is set, the command is auto-composed as <codeph>aws sso
-                        login --profile=&lt;name&gt;</codeph>. The command is triggered
-                      automatically in the background when a credential refresh is needed.</dd>
+                      <codeph>aws sso login --profile=ai-writer</codeph>). This field is visible
+                    only when <uicontrol>AWS Credentials (Profile / SSO)</uicontrol> is selected. If
+                    left empty and a profile name is set, the command is auto-composed as
+                      <codeph>aws sso login --profile=&lt;name&gt;</codeph>. When an SSO session
+                    expires, Positron automatically runs this command in the background, which
+                    launches a browser-based re-authentication flow.</dd>
                   </dlentry>
                   <dlentry id="dlentry_bcb_fz2_fhc">
                     <dt>Default model</dt>
