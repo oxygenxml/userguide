@@ -124,7 +124,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
         <strow>
           <stentry><codeph>generation_id</codeph></stentry>
           <stentry>string</stentry>
-          <stentry>Identifier that changes with each user message / AI generation round.</stentry>
+          <stentry>Identifier that changes with each user message/AI generation round.</stentry>
         </strow>
         <strow>
           <stentry><codeph>connection_id</codeph></stentry>
@@ -218,10 +218,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry>Reason the session ended: <codeph>user_close</codeph> (the user manually
                     closed or cleared the chat), <codeph>application_close</codeph> (the host
                     application is shutting down), <codeph>completed</codeph> (the session completed
-                    normally, for example a refactoring batch run or an AI XPath function invocation
-                    finished successfully), <codeph>aborted</codeph> (the user pressed
-                    <uicontrol>Stop</uicontrol> during an invocation before it finished), or
-                    <codeph>error</codeph> (the invocation was terminated by an unexpected
+                    normally, for example, a refactoring batch run or an AI XPath function
+                    invocation finished successfully), <codeph>aborted</codeph> (the user pressed
+                      <uicontrol>Stop</uicontrol> during an invocation before it finished), or
+                      <codeph>error</codeph> (the invocation was terminated by an unexpected
                     error).</stentry>
                 </strow>
                 <strow>
@@ -263,7 +263,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           </dlentry>
 
           <dlentry id="dlentry_before_start_action">
-            <dt><codeph>beforeStartAction</codeph> : Blocking</dt>
+            <dt><codeph>beforeStartAction</codeph>: Blocking</dt>
             <dd>Fired before an AI action is launched. Throwing an exception vetoes the action and
               prevents it from running. The action identifier is available via the base field
                 <codeph>action_or_agent_id</codeph>.</dd>
@@ -311,7 +311,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           </dlentry>
 
           <dlentry id="dlentry_before_submit_prompt">
-            <dt><codeph>beforeSubmitPrompt</codeph> : Blocking</dt>
+            <dt><codeph>beforeSubmitPrompt</codeph>: Blocking</dt>
             <dd>Fired right before a user prompt is submitted to the AI model from the chat UI.
               Throwing an exception prevents the prompt from being sent.</dd>
             <dd>
@@ -386,7 +386,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
             </dd>
           </dlentry>
           <dlentry id="dlentry_pre_tool_use">
-            <dt><codeph>preToolUse</codeph> : Blocking</dt>
+            <dt><codeph>preToolUse</codeph>: Blocking</dt>
             <dd>Fired before any AI tool (function or action) is invoked. Throwing an exception
               prevents the tool from running.</dd>
             <dd>
@@ -488,7 +488,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
             </dd>
           </dlentry>
           <dlentry id="dlentry_subagent_start">
-            <dt><codeph>subagentStart</codeph> : Blocking</dt>
+            <dt><codeph>subagentStart</codeph>: Blocking</dt>
             <dd>Fired before a sub-agent or sub-action is started. Throwing an exception prevents the
               sub-agent from being created.</dd>
             <dd>
@@ -560,7 +560,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
             </dd>
           </dlentry>
           <dlentry id="dlentry_before_shell">
-            <dt><codeph>beforeShellExecution</codeph> : Blocking</dt>
+            <dt><codeph>beforeShellExecution</codeph>: Blocking</dt>
             <dd>Fired before a shell command is executed by the AI agent. Throwing an exception
               prevents the command from running. This is the primary hook to use when enforcing shell
               command policies.</dd>
@@ -621,7 +621,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>succeeded</codeph></stentry>
                   <stentry>boolean</stentry>
-                  <stentry><codeph>true</codeph> if the command ran without a system-level error
+                  <stentry><codeph>true</codeph> if the command ran without a system-level error,
                     regardless of the process exit code; <codeph>false</codeph> if execution failed
                     before the process could complete (e.g. IOException, unsupported
                     platform).</stentry>
@@ -630,7 +630,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
             </dd>
           </dlentry>
           <dlentry id="dlentry_before_mcp">
-            <dt><codeph>beforeMCPExecution</codeph> : Blocking</dt>
+            <dt><codeph>beforeMCPExecution</codeph>: Blocking</dt>
             <dd>Fired before an MCP (Model Context Protocol) tool is invoked. Throwing an exception
               prevents the tool from running.</dd>
             <dd>
@@ -708,7 +708,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
             </dd>
           </dlentry>
           <dlentry id="dlentry_before_read_file">
-            <dt><codeph>beforeReadFile</codeph> : Blocking</dt>
+            <dt><codeph>beforeReadFile</codeph>: Blocking</dt>
             <dd>Fired before the agent reads a file. Throwing an exception blocks the agent's access
               to that file. Use this hook to implement file-level access control (for example, to
               prevent the AI from reading files that contain secrets). Also fired before the agent
@@ -762,14 +762,14 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           </dlentry>
 
           <dlentry id="dlentry_before_edit_file">
-            <dt><codeph>beforeEditFile</codeph> : Blocking</dt>
+            <dt><codeph>beforeEditFile</codeph>: Blocking</dt>
             <dd>Fired before the agent edits or creates a file. Throwing an exception prevents the
               write from happening (the exception message is returned to the AI model as an
-                error).<note id="note_ltc_dxg_3jc">The event is only fired when the content to be
+                error).<note id="note_ltc_dxg_3jc">The event is fired only when the content to be
                 written has been successfully computed. For replacement-based edits, this means the
-                replacement strings were located in the existing file content. For DITA map
-                structure additions (inserting a topic reference via the <uicontrol>Add to DITA Map
-                  Structure</uicontrol> tool).</note></dd>
+                replacement strings were located in the existing file content. This event is also
+                fired for DITA map structure additions (inserting a topic reference via the
+                  <uicontrol>Add to DITA Map Structure</uicontrol> tool).</note></dd>
             <dd>
               <simpletable id="st_before_edit_file" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -802,9 +802,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry>The individual text replacements about to be applied. Each fragment
                     contains an <codeph>old_value</codeph> and a <codeph>new_value</codeph>. Absent
                     when the entire file content will be written at once. For DITA map structure
-                    additions a single fragment is provided with <codeph>old_value</codeph> set to an
-                    empty string and <codeph>new_value</codeph> set to the topicref element about to
-                    be inserted (e.g. <codeph>&lt;topicref href='topic.dita'/></codeph>).</stentry>
+                    additions, a single fragment is provided with <codeph>old_value</codeph> set to
+                    an empty string and <codeph>new_value</codeph> set to the topicref element about
+                    to be inserted (e.g. <codeph>&lt;topicref
+                    href='topic.dita'/></codeph>).</stentry>
                 </strow>
               </simpletable>
             </dd>
@@ -837,7 +838,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry><codeph>content</codeph></stentry>
                   <stentry>string</stentry>
                   <stentry>The complete file content after a successful write, or
-                    <codeph>null</codeph> when the write failed. For fragment-based edits this is
+                      <codeph>null</codeph> when the write failed. For fragment-based edits, this is
                     the full document with all replacements already merged in.</stentry>
                 </strow>
                 <strow>
@@ -857,7 +858,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           </dlentry>
 
           <dlentry id="dlentry_before_load_skill">
-            <dt><codeph>beforeLoadSkill</codeph> : Blocking</dt>
+            <dt><codeph>beforeLoadSkill</codeph>: Blocking</dt>
             <dd>Fired before the agent loads a skill by name. Throwing an exception prevents the
               skill from being loaded.</dd>
             <dd>
@@ -961,8 +962,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>text</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>The thinking/reasoning text. Depending on the model it may be a summary or
-                    the complete text.</stentry>
+                  <stentry>The thinking/reasoning text. Depending on the model, it may be a summary
+                    or the complete text.</stentry>
                 </strow>
               </simpletable>
             </dd>
