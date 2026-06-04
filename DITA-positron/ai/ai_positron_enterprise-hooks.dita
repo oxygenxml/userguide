@@ -38,16 +38,19 @@
 &lt;/repository></codeblock></p></li>
         <li id="li_hooks_implement">Implement the
             <codeph>com.oxygenxml.positron.api.hook.AIHooksHandler</codeph> interface in your
-          plugin's libraries. The single method <codeph>eventOccurred(AIHookEvent event, String
-            eventPayload)</codeph> is called for every hook event. Throw an exception from this
-          method to <b>veto</b> a blocking event and prevent the associated action from
+          plugin's libraries. The single method <codeph>eventOccurred(AIHookEvent event,
+            BaseHookPayload payload)</codeph> is called for every hook event. The payload is a typed
+            <codeph>BaseHookPayload</codeph> object that you can cast to the event-specific subclass
+          to access its fields. Throw an <codeph>AIHookVetoException</codeph> from this method to
+            <b>veto</b> a blocking event and prevent the associated action from
           running.<codeblock id="codeblock_hooks_example" outputclass="language-java">package my.pack;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oxygenxml.positron.api.hook.AIHookEvent;
+import com.oxygenxml.positron.api.hook.AIHookVetoException;
 import com.oxygenxml.positron.api.hook.AIHooksHandler;
+import com.oxygenxml.positron.api.hook.payload.BaseHookPayload;
 import com.oxygenxml.positron.api.hook.payload.BeforeShellExecutionPayload;
 
 /**
@@ -57,8 +60,6 @@ import com.oxygenxml.positron.api.hook.payload.BeforeShellExecutionPayload;
  */
 public class ShellGuardHooksHandler implements AIHooksHandler {
 
-  private static final ObjectMapper MAPPER = new ObjectMapper();
-
   private static final List&lt;String> BLOCKED_PATTERNS = List.of(
       "rm ",  "rmdir", "del ",  "rd ",
       "npm install", "pip install", "mvn install",
@@ -66,14 +67,13 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
   );
 
   @Override
-  public void eventOccurred(AIHookEvent event, String eventPayload) throws Exception {
+  public void eventOccurred(AIHookEvent event, BaseHookPayload payload) throws AIHookVetoException {
     if (event == AIHookEvent.BEFORE_SHELL_EXECUTION) {
-      blockDangerousCommands(eventPayload);
+      blockDangerousCommands((BeforeShellExecutionPayload) payload);
     }
   }
 
-  private void blockDangerousCommands(String payload) throws Exception {
-    BeforeShellExecutionPayload data = MAPPER.readValue(payload, BeforeShellExecutionPayload.class);
+  private void blockDangerousCommands(BeforeShellExecutionPayload data) throws AIHookVetoException {
     String command = data.getCommand();
     if (command == null) {
       return;
@@ -81,7 +81,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
     String lowerCommand = command.toLowerCase();
     for (String pattern : BLOCKED_PATTERNS) {
       if (lowerCommand.contains(pattern)) {
-        throw new Exception(
+        throw new AIHookVetoException(
             "Shell command blocked by policy: '" + command + "'. "
             + "Matched restricted pattern: '" + pattern + "'."
         );
@@ -91,18 +91,20 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
 }</codeblock></li>
         <li id="li_hooks_ext_point">In the plugin descriptor file, declare the extension point that
           points to your implementation:
-          <codeblock id="codeblock_hooks_ext" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIHooksHandler" class="my.pack.AuditHooksHandler"/&gt;</codeblock></li>
+          <codeblock id="codeblock_hooks_ext" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIHooksHandler" class="my.pack.ShellGuardHooksHandler"/&gt;</codeblock></li>
       </ol>
     </section>
     <section id="section_hooks_events">
       <title>Hook Events Reference</title>
       <p id="p_hooks_events_intro">The following tables list all events defined in
           <codeph>AIHookEvent</codeph>, grouped by lifecycle category. Events marked as
-          <b>Blocking</b> can be vetoed by throwing an exception inside
+          <b>Blocking</b> can be vetoed by throwing an <codeph>AIHookVetoException</codeph> inside
           <codeph>eventOccurred</codeph>. Events marked as <b>Fire-and-forget</b> are informational
         (throwing an exception has no effect on the AI action).</p>
-      <p id="p_hooks_payload_base">Every event delivers its data as a JSON string. All payloads
-        share the following base fields, inherited from <codeph>BaseHookPayload</codeph>:</p>
+      <p id="p_hooks_payload_base">Every event delivers its data as a typed
+          <codeph>BaseHookPayload</codeph> object. Cast the payload to the event-specific subclass
+        (listed under each event below) to access its fields. All payload types share the following
+        base fields:</p>
       <simpletable id="simpletable_base_payload" relcolwidth="1* 1* 2*">
         <sthead>
           <stentry>Field</stentry>
