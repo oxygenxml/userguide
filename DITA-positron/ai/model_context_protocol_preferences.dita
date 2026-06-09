@@ -62,167 +62,7 @@
                 <codeph>url</codeph>, <codeph>command</codeph>, <codeph>args</codeph>,
                 <codeph>cwd</codeph>, and <codeph>headers</codeph> properties (for example, to
               access environment variables or system properties).</note>
-              <p id="p_nbr_skb_2gc">Configuration file examples:</p>
-              <ul id="ul_ohx_l1x_dgc">
-                <li id="li_obr_skb_2gc">
-                  <p id="p_pbr_skb_2gc">Configuration of a local MCP server that adds tools to allow
-                    the AI to use the <xref
-                      href="https://brave.com/search/api/guides/use-with-claude-desktop-with-mcp/"
-                      format="html" scope="external"><b>Brave</b></xref> engine to perform web
-                    searches:</p>
-                  <codeblock id="codeblock_qr4_r1x_dgc" outputclass="language-json" xml:space="preserve">{
-  "mcpServers": {
-    "brave-search": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-brave-search"
-      ],
-      "env": {
-        "BRAVE_API_KEY": "API_KEY_HERE"
-      }
-    }
-  }
-}</codeblock>
-                  <p id="p_local_props_mcp">The following properties are supported for local MCP
-                    server connections:</p>
-                  <ul id="ul_kmx_rmd_y3c">
-                    <li><b>command</b> - The executable command used to start the MCP server process
-                      (for example, <codeph>npx</codeph>, <codeph>docker</codeph>,
-                        <codeph>node</codeph>, <codeph>python</codeph>).</li>
-                    <li><b>args</b> - An array of string arguments to pass to the command.</li>
-                    <li><b>env</b> - An object that contains environment variables to set for the
-                      server process.</li>
-                    <li><b>cwd</b> - The working directory where the server process is launched.</li>
-                  </ul>
-                </li>
-                <li id="li_tyn_swh_fhc">
-                  <p id="p_http_example_mcp">Configuration of a remote MCP <b>Streamable HTTP</b>
-                    server that adds tools to allow the AI to call the <xref
-                      href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
-                      scope="external"><b>DeepWiki</b></xref> service and obtain information about
-                    various GitHub projects:</p>
-                  <codeblock outputclass="language-json" xml:space="preserve" id="codeblock_fl4_mhn_hgc">{
-  "mcpServers": {
-    "deepwiki": {
-      "url": "https://mcp.deepwiki.com/mcp"
-    }
-  }
-}</codeblock>
-                  <p id="p_http_props_mcp">For remote HTTP-based connections, the following
-                    properties are supported:</p>
-                  <ul id="ul_http_props_mcp">
-                    <li><b>url</b> - The remote MCP endpoint URL.</li>
-                    <li><b>headers</b> - Optional HTTP headers sent when connecting to the server.</li>
-                    <li><b>type</b> - Optional transport hint. Use <codeph>sse</codeph> when the URL
-                      does not clearly identify an SSE endpoint.</li>
-                  </ul>
-                  <p id="p_http_headers_mcp">For <b>Streamable HTTP</b> connections, you can pass
-                    header values to the server using the <codeph>headers</codeph> property like
-                    this:</p>
-                  <codeblock outputclass="language-json" id="codeblock_fkf_nxq_5gc">{
-  "mcpServers": {
-    "atlassian": {
-      "url": "http://our.jira.server.url:8000/mcp",
-      "headers": {
-        "Authorization": "Bearer SOME_KEY_VALUE_HERE"
-      }
-    }
-  }
-}</codeblock>
-                  <p id="p_uyn_swh_fhc">If you want to prompt for a value and reuse it in the
-                    configuration file, define it outside the server definition and reference it
-                    from the header value. The following example uses the compatible
-                      <codeph>servers</codeph> top-level container:</p>
-                  <codeblock id="codeblock_rlm_zxq_5gc" outputclass="language-json">{
-  "servers": {
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer ${input:github_mcp_pat}"
-      }
-    }
-  },
-  "inputs": [
-    {
-      "type": "promptString",
-      "id": "github_mcp_pat",
-      "description": "GitHub Personal Access Token",
-      "password": true
-    }
-  ]
-}</codeblock>
-                  <p id="p_http_atlassian_mcp"><b>Example:</b> Start an <xref
-                      href="https://github.com/sooperset/mcp-atlassian" format="html"
-                      scope="external">Atlassian JIRA</xref> Streamable HTTP MCP server with the
-                    command:</p>
-                  <codeblock outputclass="language-bourne" id="codeblock_bwm_4hn_hgc">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport streamable-http --port 8000 --read-only --verbose</codeblock>
-                  <p id="p_http_atlassian_cfg_mcp">Then use it as a remote server in the
-                    configuration file:</p>
-                  <codeblock outputclass="language-json" id="codeblock_cwm_4hn_hgc">{
-  "mcpServers": {
-    "atlassian": {
-      "url": "http://our.jira.server.url:8000/mcp"
-    }
-  }
-}</codeblock>
-                </li>
-                <li id="li_qbr_skb_2gc">
-                  <p id="p_sse_example_mcp">Configuration of a remote MCP <b>SSE</b> server that
-                    adds tools to allow the AI to call the <xref
-                      href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
-                      scope="external"><b>DeepWiki</b></xref> service and obtain information about
-                    various GitHub projects:</p>
-                  <codeblock id="codeblock_wqv_w1x_dgc" outputclass="language-json" xml:space="preserve">{
-  "mcpServers": {
-    "deepwiki": {
-      "url": "https://mcp.deepwiki.com/sse"
-    }
-  }
-}</codeblock>
-                  <p id="p_sse_hint_mcp">If the SSE server URL does not end with
-                      <codeph>/sse</codeph>, add <codeph>"type": "sse"</codeph> explicitly in the
-                    server definition.</p>
-                </li>
-                <li id="li_rbr_skb_2gc">
-                  <p id="p_multi_example_mcp">Multiple MCP servers (Brave Search, <xref
-                      href="https://github.com/github/github-mcp-server" format="html"
-                      scope="external">GitHub</xref>, and <xref
-                      href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
-                      scope="external">DeepWiki</xref>) configured in the same file:</p>
-                  <codeblock id="codeblock_gxv_z1x_dgc" outputclass="language-json" xml:space="preserve">{
-  "mcpServers": {
-    "brave-search": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-brave-search"
-      ],
-      "env": {
-        "BRAVE_API_KEY": "API_KEY_HERE"
-      }
-    },
-    "github": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "GITHUB_PERSONAL_ACCESS_TOKEN",
-        "ghcr.io/github/github-mcp-server"
-      ],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "API_KEY_HERE"
-      }
-    },
-    "deepwiki": {
-      "url": "https://mcp.deepwiki.com/sse"
-    }
-  }
-}</codeblock>
-                </li>
-              </ul>
+              <p id="p_nbr_skb_2gc"><xref href="#./mcp_configuration_file_examples"/>.</p>
             </dd>
           </dlentry>
           <dlentry id="dlentry_sbr_skb_2gc">
@@ -258,15 +98,240 @@
           <dlentry id="dlentry_ubr_skb_2gc">
             <dt>Connection status</dt>
             <dd>Presents the status of each MCP server connection and the tools that have been
-              retrieved from it.<note id="note_e55_2r3_rgc" type="important">All the tools loaded
-                from an MCP server have their names prefixed with the name of the MCP server. This
-                allows multiple servers to provide tools with the same name. If, for example, a tool
-                name is <codeph>search</codeph> and is loaded from an MCP server named
-                  <codeph>mcp-web-access</codeph>, the tool name that needs to be referenced in a
-                custom AI action is <codeph>mcp-web-access_search</codeph>.</note></dd>
+            retrieved from it.<note id="note_e55_2r3_rgc" type="important">All the tools loaded from
+              an MCP server have their names prefixed with the name of the MCP server. This allows
+              multiple servers to provide tools with the same name. For example, if a tool name is
+                <codeph>search</codeph> and is loaded from an MCP server named
+                <codeph>mcp-web-access</codeph>, the tool name that needs to be referenced in a
+              custom AI action is <codeph>mcp-web-access_search</codeph>.</note></dd>
           </dlentry>
         </dl>
       </p>
+    <section id="mcp_configuration_file_examples">
+      <title>MCP Configuration File Examples</title>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>MCP HTTP Streaming OAuth</dt>
+            <dd>
+              <ul>
+                <li>Configure an MCP OAuth connection to Atlassian JIRA Cloud using the simpler
+                  default authorization flow, where the MCP server handles app registration during
+                  authorization:<codeblock outputclass="language-json">{
+  "servers": {
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2"
+    }
+  }
+}</codeblock></li>
+                <li>Configure an MCP OAuth connection to Atlassian JIRA Cloud using your own
+                  Atlassian Cloud app. If you create an app in Atlassian Cloud, you can place the
+                  OAuth client credentials directly in the JSON configuration file so that the MCP
+                  server does not need to dynamically register an app during
+                  authorization:<codeblock outputclass="language-json">{
+  "servers": {
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+      "oauth": {
+        "client_id": "YOUR_ATLASSIAN_CLIENT_ID_HERE",
+        "client_secret": "YOUR_ATLASSIAN_CLIENT_SECRET_HERE",
+        "scopes": [
+          "read:jira-work"
+        ],
+        "resource": ""
+      }
+    }
+  }
+}</codeblock></li>
+                <li>Configure an MCP OAuth connection to GitHub (requires the creation of an app on
+                  the GitHub side). You can also provide the OAuth client credentials directly in
+                  the JSON configuration file:<codeblock outputclass="language-json">{
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "oauth": {
+        "client_id": "YOUR_GITHUB_CLIENT_ID_HERE",
+        "client_secret": "YOUR_GITHUB_CLIENT_SECRET_HERE"
+      }
+    }
+  }
+}</codeblock></li>
+              </ul>
+              <note>For HTTP MCP servers that use OAuth, the optional <codeph>oauth</codeph> object
+                can include properties such as <codeph>authorize_url</codeph>,
+                  <codeph>token_url</codeph>, <codeph>client_id</codeph>,
+                  <codeph>client_secret</codeph>, <codeph>scopes</codeph>,
+                  <codeph>redirect_uri</codeph>,  <codeph>additional_authorize_params</codeph>, and
+                  <codeph>resource</codeph>.</note>
+            </dd>
+          </dlentry>
+        </dl>
+        <dl>
+          <dlentry>
+            <dt>MCP HTTP Streaming</dt>
+            <dd>
+              <p id="p_http_example_mcp">Configuration of a remote MCP <b>Streamable HTTP</b> server
+                that adds tools to allow the AI to call the <xref
+                  href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
+                  scope="external"><b>DeepWiki</b></xref> service and obtain information about
+                various GitHub projects:</p>
+              <codeblock outputclass="language-json" xml:space="preserve" id="codeblock_fl4_mhn_hgc">{
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp"
+    }
+  }
+}</codeblock>
+              <p id="p_http_props_mcp">For remote HTTP-based connections, the following properties
+                are supported:</p>
+              <ul id="ul_http_props_mcp">
+                <li><b>url</b> - The remote MCP endpoint URL.</li>
+                <li><b>headers</b> - Optional HTTP headers sent when connecting to the server.</li>
+                <li><b>type</b> - Optional transport hint. Use <codeph>sse</codeph> when the URL
+                  does not clearly identify an SSE endpoint.</li>
+              </ul>
+              <p id="p_http_headers_mcp">For <b>Streamable HTTP</b> connections, you can pass header
+                values to the server using the <codeph>headers</codeph> property like this:</p>
+              <codeblock outputclass="language-json" id="codeblock_fkf_nxq_5gc">{
+  "mcpServers": {
+    "atlassian": {
+      "url": "http://our.jira.server.url:8000/mcp",
+      "headers": {
+        "Authorization": "Bearer SOME_KEY_VALUE_HERE"
+      }
+    }
+  }
+}</codeblock>
+              <p id="p_uyn_swh_fhc">If you want to prompt for a value and reuse it in the
+                configuration file, define it outside the server definition and reference it from
+                the header value. The following example uses the compatible <codeph>servers</codeph>
+                top-level container:</p>
+              <codeblock id="codeblock_rlm_zxq_5gc" outputclass="language-json">{
+  "servers": {
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:github_mcp_pat}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "github_mcp_pat",
+      "description": "GitHub Personal Access Token",
+      "password": true
+    }
+  ]
+}</codeblock>
+              <p id="p_http_atlassian_mcp"><b>Example:</b> Start an <xref
+                  href="https://github.com/sooperset/mcp-atlassian" format="html" scope="external"
+                  >Atlassian JIRA</xref> Streamable HTTP MCP server with the command:</p>
+              <codeblock outputclass="language-bourne" id="codeblock_bwm_4hn_hgc">uvx mcp-atlassian --jira-url https://our.jira.server.url --jira-personal-token MY_TOKEN_HERE --transport streamable-http --port 8000 --read-only --verbose</codeblock>
+              <p id="p_http_atlassian_cfg_mcp">Then use it as a remote server in the configuration
+                file:</p>
+              <codeblock outputclass="language-json" id="codeblock_cwm_4hn_hgc">{
+  "mcpServers": {
+    "atlassian": {
+      "url": "http://our.jira.server.url:8000/mcp"
+    }
+  }
+}</codeblock>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>MCP Local Server</dt>
+            <dd>
+              <p id="p_pbr_skb_2gc">Configuration of a local MCP server that adds tools to allow the
+                AI to use the <xref
+                  href="https://brave.com/search/api/guides/use-with-claude-desktop-with-mcp/"
+                  format="html" scope="external"><b>Brave</b></xref> engine to perform web
+                searches:</p>
+              <codeblock id="codeblock_qr4_r1x_dgc" outputclass="language-json" xml:space="preserve">{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "API_KEY_HERE"
+      }
+    }
+  }
+}</codeblock>
+              <p id="p_local_props_mcp">The following properties are supported for local MCP server
+                connections:</p>
+              <ul id="ul_kmx_rmd_y3c">
+                <li><b>command</b> - The executable command used to start the MCP server process
+                  (for example, <codeph>npx</codeph>, <codeph>docker</codeph>,
+                  <codeph>node</codeph>, <codeph>python</codeph>).</li>
+                <li><b>args</b> - An array of string arguments to pass to the command.</li>
+                <li><b>env</b> - An object that contains environment variables to set for the server
+                  process.</li>
+                <li><b>cwd</b> - The working directory where the server process is launched.</li>
+              </ul>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>MCP HTTP SSE (deprecated)</dt>
+            <dd>
+              <p id="p_sse_example_mcp">Configuration of a remote MCP <b>SSE</b> server that adds
+                tools to allow the AI to call the <xref
+                  href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
+                  scope="external"><b>DeepWiki</b></xref> service and obtain information about
+                various GitHub projects:</p>
+              <codeblock id="codeblock_wqv_w1x_dgc" outputclass="language-json" xml:space="preserve">{
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/sse"
+    }
+  }
+}</codeblock>
+              <p id="p_sse_hint_mcp">If the SSE server URL does not end with <codeph>/sse</codeph>,
+                add <codeph>"type": "sse"</codeph> explicitly in the server definition.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Configure multiple servers in the same configuration file</dt>
+            <dd>
+              <p id="p_multi_example_mcp">Multiple MCP servers (Brave Search, <xref
+                  href="https://github.com/github/github-mcp-server" format="html" scope="external"
+                  >GitHub</xref>, and <xref href="https://www.atlassian.com/" format="html"
+                  scope="external">Atlassian Cloud</xref>) configured in the same file:</p>
+              <codeblock id="codeblock_gxv_z1x_dgc" outputclass="language-json" xml:space="preserve">{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "API_KEY_HERE"
+      }
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer TOKEN_VALUE_HERE"
+      }
+    },
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2"
+    }
+  }
+}</codeblock>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
   <section id="section_yjc_k24_2hc">
     <title>Tool Call Security</title>
     <p><uicontrol>AI Positron</uicontrol> does not control how various tools are implemented by the
@@ -275,10 +340,10 @@
         MCP server, the end user is <xref href="unsafe_tool_approval_preferences.dita">required to
           approve or reject</xref> each individual tool call in the Chat view.</p>
     <p>To mark a MCP server as having all tool calls safe and avoid asking the end user each time
-      for permission, you need to set an extra environmental parameter in its configuration
-      file:<codeblock id="codeblock_t34_424_2hc" outputclass="language-json">"env": {
-        "OXYGEN_SAFE_TOOLS":"true"
-      }</codeblock></p>
+        for permission, you need to set an extra environmental parameter in its configuration
+        file:<codeblock id="codeblock_t34_424_2hc" outputclass="language-json">"env": {
+   "OXYGEN_SAFE_TOOLS":"true"
+}</codeblock></p>
   </section>
   <section id="section_al3_wm4_chc">
     <title>Oxygen XML as a Local MCP Server (Experimental)</title>
