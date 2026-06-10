@@ -93,6 +93,237 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           points to your implementation:
           <codeblock id="codeblock_hooks_ext" xml:space="preserve" outputclass="language-xml">&lt;extension type="AIHooksHandler" class="my.pack.ShellGuardHooksHandler"/&gt;</codeblock></li>
       </ol>
+      <p id="p_hooks_impl_sample">A ready-to-use sample implementation is available as the <xref
+          href="ai-positron-script-hooks-addon.dita"><b>Oxygen AI Positron Script Hooks</b>
+          add-on</xref>. It implements this extension point and dispatches hook events to external
+        scripts configured in a JSON file, without requiring any Java code. The source code is
+        publicly available on GitHub and can also serve as a reference for building your own hook
+        handler.</p>
+    </section>
+    <section id="section_hooks_overview">
+      <title>Hook Events Overview</title>
+      <p id="p_hooks_ov_intro">The following tables list all hook events grouped by category.
+        Blocking events can be vetoed by throwing an <codeph>AIHookVetoException</codeph>;
+        fire-and-forget events are informational only.</p>
+      <p id="p_hooks_ov_session"><b>Session</b></p>
+      <simpletable id="st_ov_session" relcolwidth="2* 1* 3*">
+        <sthead>
+          <stentry>Event</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_session_start"
+                ><codeph>sessionStart</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired when a new AI session is created.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_session_end"
+                ><codeph>sessionEnd</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired when an AI session ends.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_session_reload"
+                ><codeph>sessionReload</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired when the user restores a previous conversation from chat history.</stentry>
+        </strow>
+      </simpletable>
+      <p id="p_hooks_ov_actions"><b>Actions and prompts</b></p>
+      <simpletable id="st_ov_actions" relcolwidth="2* 1* 3*">
+        <sthead>
+          <stentry>Event</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_before_start_action"
+                ><codeph>beforeStartAction</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before an AI action is launched. Veto to prevent it from
+            running.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_before_submit_prompt"
+                ><codeph>beforeSubmitPrompt</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before a user prompt is submitted to the AI model from the chat
+            UI.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_agent_thought"
+                ><codeph>afterAgentThought</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the agent completes a thinking block (extended thinking
+            mode).</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_agent_response"
+                ><codeph>afterAgentResponse</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the agent completes an assistant turn.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_agent_finish"
+                ><codeph>agentFinish</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired when an AI agent interaction finishes (completed, aborted, or
+            error).</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_subagent_start"
+                ><codeph>subagentStart</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before a sub-agent is started. Veto to prevent it from being
+            created.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_subagent_stop"
+                ><codeph>subagentStop</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired when a sub-agent finishes, errors, or is abandoned.</stentry>
+        </strow>
+      </simpletable>
+      <p id="p_hooks_ov_tools"><b>Tool, shell, and MCP execution</b></p>
+      <simpletable id="st_ov_tools" relcolwidth="2* 1* 3*">
+        <sthead>
+          <stentry>Event</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_pre_tool_use"
+                ><codeph>preToolUse</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before any AI tool is invoked. Veto to prevent the tool from
+            running.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_post_tool_use"
+                ><codeph>postToolUse</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after a tool completes successfully.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_post_tool_use_failure"
+                ><codeph>postToolUseFailure</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after a tool invocation fails, times out, or is denied.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_before_shell"
+                ><codeph>beforeShellExecution</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before a shell command is executed. Use this to enforce shell command
+            policies.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_shell"
+                ><codeph>afterShellExecution</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after a shell command finishes executing.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_before_mcp"
+                ><codeph>beforeMCPExecution</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before an MCP tool is invoked. Veto to prevent it from running.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_mcp"
+                ><codeph>afterMCPExecution</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after an MCP tool execution completes, whether successfully or with an
+            error.</stentry>
+        </strow>
+      </simpletable>
+      <p id="p_hooks_ov_files"><b>File and skill operations</b></p>
+      <simpletable id="st_ov_files" relcolwidth="2* 1* 3*">
+        <sthead>
+          <stentry>Event</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_before_read_file"
+                ><codeph>beforeReadFile</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before the agent reads a file. Veto to block file access.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_read_file"
+                ><codeph>afterReadFile</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the agent successfully reads a file.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_before_edit_file"
+                ><codeph>beforeEditFile</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before the agent edits or creates a file. Veto to prevent the
+            write.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_edit_file"
+                ><codeph>afterEditFile</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the agent attempts to edit or create a file.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_before_load_skill"
+                ><codeph>beforeLoadSkill</codeph></xref></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before the agent loads a skill. Veto to prevent the skill from being
+            loaded.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_load_skill"
+                ><codeph>afterLoadSkill</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the agent successfully loads a skill.</stentry>
+        </strow>
+      </simpletable>
+      <p id="p_hooks_ov_response"><b>User actions</b></p>
+      <simpletable id="st_ov_response" relcolwidth="2* 1* 3*">
+        <sthead>
+          <stentry>Event</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_user_insert"
+                ><codeph>afterUserInsertResponse</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the user inserts or replaces an AI suggestion in the
+            document.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_user_preview"
+                ><codeph>afterUserPreviewResponse</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the user previews an AI response in the diff dialog.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_copy_response"
+                ><codeph>afterCopyResponse</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the user copies an AI response to the clipboard.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_user_accept"
+                ><codeph>afterUserAcceptChanges</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the user accepts AI-proposed file changes.</stentry>
+        </strow>
+        <strow>
+          <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_user_reject"
+                ><codeph>afterUserRejectChanges</codeph></xref></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after the user rejects AI-proposed file changes.</stentry>
+        </strow>
+      </simpletable>
     </section>
     <section id="section_hooks_events">
       <title>Hook Events Reference</title>
