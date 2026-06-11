@@ -2,8 +2,9 @@
 """Apply scripted style fixes to Git add-on DITA topics.
 
 This script performs a conservative first pass over files that match the
-configured Git add-on scope. It applies only deterministic replacements and
-writes a JSON report that can be reviewed by a validator script.
+configured Git add-on scope. It applies only deterministic replacements,
+discovers terminology sources from configured DITA maps, and writes a JSON
+report that can be reviewed by a validator script.
 """
 
 from __future__ import annotations
@@ -11,9 +12,10 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 
 
 @dataclass
@@ -36,6 +38,60 @@ def load_manifest(manifest_path: Path) -> Dict:
 def resolve_scope_paths(project_root: Path, scope_glob: str) -> List[Path]:
     dita_addons_root = project_root.parent / "DITA-addons"
     return sorted(dita_addons_root.glob("add-ons/git-addon*.dita"))
+
+
+def resolve_project_relative_path(project_root: Path, relative_path: str) -> Path:
+    return (project_root.parent / relative_path).resolve()
+
+
+def discover_terminology_sources(project_root: Path, manifest: Dict) -> List[Path]:
+    terminology_config = manifest.get("terminology", {})
+    if not terminology_config.get("discover_from_ditamaps", False):
+        return []
+
+    discovered: Set[Path] = set()
+    for ditamap_rel in terminology_config.get("ditamaps", []):
+        ditamap_path = resolve_project_relative_path(project_root, ditamap_rel)
+        if not ditamap_path.exists():
+            continue
+        try:
+            tree = ET.parse(ditamap_path)
+        except ET.ParseError:
+            continue
+        root = tree.getroot()
+        for elem in root.iter():
+            href = elem.attrib.get("href")
+            processing_role = elem.attrib.get("processing-role")
+            if elem.tag == "keydef" and href:
+                discovered.add((ditamap_path.parent / href).resolve())
+            elif elem.tag == "topicref" and href and processing_role == "resource-only":
+                discovered.add((ditamap_path.parent / href).resolve())
+    return sorted(discovered)
+
+
+def build_terminology_index(terminology_files: List[Path]) -> Dict[str, List[Dict[str, str]]]:
+    index: Dict[str, List[Dict[str, str]]] = {}
+    for file_path in terminology_files:
+        if not file_path.exists() or file_path.suffix != ".dita":
+            continue
+        try:
+            tree = ET.parse(file_path)
+        except ET.ParseError:
+            continue
+        root = tree.getroot()
+        topic_id = root.attrib.get("id", "")
+        for elem in root.iter():
+            elem_id = elem.attrib.get("id")
+            text = "".join(elem.itertext()).strip()
+            if elem_id and text:
+                index.setdefault(text, []).append(
+                    {
+                        "file": str(file_path),
+                        "topic_id": topic_id,
+                        "element_id": elem_id,
+                    }
+                )
+    return index
 
 
 def apply_literal_rule(content: str, rule: Dict) -> Tuple[str, int]:
@@ -84,7 +140,7 @@ def apply_rules_to_file(file_path: Path, manifest: Dict, dry_run: bool) -> FileR
     )
 
 
-def build_report(results: List[FileResult], manifest: Dict) -> Dict:
+def build_report(results: List[FileResult], manifest: Dict, terminology_files: List[Path], terminology_index: Dict[str, List[Dict[str, str]]]) -> Dict:
     changed_files = [r.file for r in results if r.changed]
     applied_rules: Dict[str, int] = {}
     for result in results:
@@ -97,6 +153,8 @@ def build_report(results: List[FileResult], manifest: Dict) -> Dict:
             "files_changed": len(changed_files),
             "changed_files": changed_files,
             "applied_rules": applied_rules,
+            "terminology_files_discovered": [str(p) for p in terminology_files],
+            "terminology_terms_indexed": len(terminology_index),
         },
         "files": [
             {
@@ -128,9 +186,11 @@ def main() -> int:
     manifest = load_manifest(manifest_path)
     scope_glob = manifest.get("scope", {}).get("glob", "")
     files = resolve_scope_paths(project_root, scope_glob)
+    terminology_files = discover_terminology_sources(project_root, manifest)
+    terminology_index = build_terminology_index(terminology_files)
 
     results = [apply_rules_to_file(file_path, manifest, args.dry_run) for file_path in files]
-    report = build_report(results, manifest)
+    report = build_report(results, manifest, terminology_files, terminology_index)
 
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
