@@ -45,13 +45,19 @@ def load_manifest(manifest_path: Path) -> Dict:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
+def get_workspace_root(project_root: Path) -> Path:
+    return project_root.parent.parent
+
+
 def resolve_scope_paths(project_root: Path, scope_glob: str) -> List[Path]:
-    dita_addons_root = project_root.parent / "DITA-addons"
+    workspace_root = get_workspace_root(project_root)
+    dita_addons_root = workspace_root / "DITA-addons"
     return sorted(dita_addons_root.glob("add-ons/git-addon*.dita"))
 
 
 def resolve_project_relative_path(project_root: Path, relative_path: str) -> Path:
-    return (project_root.parent / relative_path).resolve()
+    workspace_root = get_workspace_root(project_root)
+    return (workspace_root / relative_path).resolve()
 
 
 def get_source_priority(path: Path) -> int:
@@ -61,6 +67,15 @@ def get_source_priority(path: Path) -> int:
     if "/DITA/reusables/" in path_str:
         return 2
     return 99
+
+
+def is_local_dita_href(href: str) -> bool:
+    href_lower = href.lower()
+    if href_lower.startswith("http:") or href_lower.startswith("https:"):
+        return False
+    if "://" in href_lower:
+        return False
+    return href_lower.endswith(".dita")
 
 
 def discover_terminology_sources(project_root: Path, manifest: Dict) -> List[Path]:
@@ -81,9 +96,11 @@ def discover_terminology_sources(project_root: Path, manifest: Dict) -> List[Pat
         for elem in root.iter():
             href = elem.attrib.get("href")
             processing_role = elem.attrib.get("processing-role")
-            if elem.tag == "keydef" and href:
+            if not href or not is_local_dita_href(href):
+                continue
+            if elem.tag == "keydef":
                 discovered.add((ditamap_path.parent / href).resolve())
-            elif elem.tag == "topicref" and href and processing_role == "resource-only":
+            elif elem.tag == "topicref" and processing_role == "resource-only":
                 discovered.add((ditamap_path.parent / href).resolve())
     return sorted(discovered, key=get_source_priority)
 
@@ -146,7 +163,7 @@ def apply_resolve_conflict_term_rule(content: str, terminology_index: Dict[str, 
         f'<uicontrol conref="{target_file}#{preferred.topic_id}/{preferred.element_id}"/>'
     )
 
-    pattern = re.compile(r"<uicontrol>Resolve conflict</uicontrol>")
+    pattern = re.compile(r"<uicontrol(?:\s+[^>]*)?>\s*Resolve conflict\s*</uicontrol>", flags=re.MULTILINE)
     content, count = pattern.subn(replacement, content)
     return content, count
 

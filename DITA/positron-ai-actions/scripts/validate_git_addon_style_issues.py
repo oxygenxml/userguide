@@ -29,8 +29,13 @@ EXPECTED_TERMINOLOGY_RULES = {
 }
 
 
+def get_workspace_root(project_root: Path) -> Path:
+    return project_root.parent.parent
+
+
 def resolve_scope_paths(project_root: Path) -> List[Path]:
-    dita_addons_root = project_root.parent / "DITA-addons"
+    workspace_root = get_workspace_root(project_root)
+    dita_addons_root = workspace_root / "DITA-addons"
     return sorted(dita_addons_root.glob("add-ons/git-addon*.dita"))
 
 
