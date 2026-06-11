@@ -24,6 +24,10 @@ REPORT_ONLY_PATTERNS = {
     "unresolved_review_comments": ["<?oxy_comment_start"],
 }
 
+EXPECTED_TERMINOLOGY_RULES = {
+    "resolve_conflict_to_conref": "Resolve conflict"
+}
+
 
 def resolve_scope_paths(project_root: Path) -> List[Path]:
     dita_addons_root = project_root.parent / "DITA-addons"
@@ -86,13 +90,20 @@ def main() -> int:
             }
         )
 
+    terminology_expectations = {}
+    applied_rules = fixer_report.get("summary", {}).get("applied_rules", {})
+    preferred_resolve_conflict_term = fixer_report.get("summary", {}).get("preferred_resolve_conflict_term")
+    if preferred_resolve_conflict_term and applied_rules.get("resolve_conflict_to_conref", 0) >= 0:
+        terminology_expectations["resolve_conflict_to_conref"] = preferred_resolve_conflict_term
+
     output = {
         "fixer_summary": fixer_report.get("summary", {}),
         "validation_summary": {
             "files_checked": len(validation_results),
             "has_errors": has_errors,
             "terminology_files_discovered": fixer_report.get("summary", {}).get("terminology_files_discovered", []),
-            "terminology_terms_indexed": fixer_report.get("summary", {}).get("terminology_terms_indexed", 0)
+            "terminology_terms_indexed": fixer_report.get("summary", {}).get("terminology_terms_indexed", 0),
+            "terminology_expectations": terminology_expectations
         },
         "files": validation_results,
     }
