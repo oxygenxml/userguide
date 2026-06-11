@@ -91,6 +91,8 @@ def main() -> int:
         "validation_summary": {
             "files_checked": len(validation_results),
             "has_errors": has_errors,
+            "terminology_files_discovered": fixer_report.get("summary", {}).get("terminology_files_discovered", []),
+            "terminology_terms_indexed": fixer_report.get("summary", {}).get("terminology_terms_indexed", 0)
         },
         "files": validation_results,
     }
