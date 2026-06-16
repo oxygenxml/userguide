@@ -27,7 +27,7 @@
   &lt;groupId>com.oxygenxml&lt;/groupId>
   &lt;artifactId>oxygen-ai-positron-api&lt;/artifactId>
   &lt;version>8.3.0&lt;/version>
-  &lt;scope>provided&lt;/scope>
+  &lt;scope>compile&lt;/scope>
 &lt;/dependency></codeblock><p id="p_hooks_repo">The artifact is published at <xref
                 href="https://oxygenxml.com/maven/" format="html" scope="external"
                   ><b>https://oxygenxml.com/maven/</b></xref>. Add the repository to your
@@ -36,21 +36,24 @@
   &lt;id>oxygen-public-repo&lt;/id>
   &lt;url>https://www.oxygenxml.com/maven/&lt;/url>
 &lt;/repository></codeblock></p></li>
-          <li id="li_hooks_implement">Implement the
-              <codeph>com.oxygenxml.positron.api.hook.AIHooksHandler</codeph> interface in your
-            plugin's libraries. The single method <codeph>eventOccurred(AIHookEvent event,
-              BaseHookPayload payload)</codeph> is called for every hook event. The payload is a
-            typed <codeph>BaseHookPayload</codeph> object that you can cast to the event-specific
-            subclass to access its fields. Throw an <codeph>AIHookVetoException</codeph> from this
-            method to <b>veto</b> a blocking event and prevent the associated action from
-            running.<codeblock id="codeblock_hooks_example" outputclass="language-java">package my.pack;
+        <li id="li_hooks_implement">Implement the
+            <codeph>com.oxygenxml.positron.api.hook.AIHooksHandler</codeph> interface in your
+          plugin's libraries. The single method <codeph>eventOccurred(String eventName, String
+            payloadJson)</codeph> is called for every hook event. <codeph>eventName</codeph> is the
+          string identifier of the event (for example, <codeph>beforeShellExecution</codeph>);
+            <codeph>payloadJson</codeph> is the JSON serialization (snake_case keys) of the
+          event-specific payload, which you can deserialize into the matching
+            <codeph>BaseHookPayload</codeph> subclass using Jackson to access its fields. Throw an
+            <codeph>AIHookVetoException</codeph> from this method to <b>veto</b> a blocking event
+          and prevent the associated action from
+          running.<codeblock id="codeblock_hooks_example" outputclass="language-java">package my.pack;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oxygenxml.positron.api.hook.AIHookEvent;
 import com.oxygenxml.positron.api.hook.AIHookVetoException;
 import com.oxygenxml.positron.api.hook.AIHooksHandler;
-import com.oxygenxml.positron.api.hook.payload.BaseHookPayload;
 import com.oxygenxml.positron.api.hook.payload.BeforeShellExecutionPayload;
 
 /**
@@ -60,6 +63,8 @@ import com.oxygenxml.positron.api.hook.payload.BeforeShellExecutionPayload;
  */
 public class ShellGuardHooksHandler implements AIHooksHandler {
 
+  private static final ObjectMapper MAPPER = new ObjectMapper();
+
   private static final List&lt;String> BLOCKED_PATTERNS = List.of(
       "rm ",  "rmdir", "del ",  "rd ",
       "npm install", "pip install", "mvn install",
@@ -67,9 +72,15 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
   );
 
   @Override
-  public void eventOccurred(AIHookEvent event, BaseHookPayload payload) throws AIHookVetoException {
-    if (event == AIHookEvent.BEFORE_SHELL_EXECUTION) {
-      blockDangerousCommands((BeforeShellExecutionPayload) payload);
+  public void eventOccurred(String eventName, String payloadJson) throws AIHookVetoException {
+    if (AIHookEvent.BEFORE_SHELL_EXECUTION == AIHookEvent.fromEventName(eventName)) {
+      try {
+        BeforeShellExecutionPayload data =
+            MAPPER.readValue(payloadJson, BeforeShellExecutionPayload.class);
+        blockDangerousCommands(data);
+      } catch (Exception e) {
+        // log and continue — deserialization failures must not block the action
+      }
     }
   }
 
@@ -95,6 +106,13 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
         </ol></p>
       <p id="p_hooks_impl_desktop_insert"
         ><!--DON'T DELETE. This is target for conref push paragraph that provides a link to the Hooks add-on (for Desktop only).--></p>
+      <p id="p_hooks_impl_sample">A ready-to-use implementation is available via the <xref
+          href="ai-positron-script-hooks-addon.dita"><b>Oxygen AI Positron Script Hooks</b>
+          add-on</xref>. It implements this extension point and dispatches hook events to external
+        scripts configured in a JSON file, without requiring any Java code. </p>
+      <p>You can also use the sample plugin available on GitHub as a reference for building your
+        own hook handler: <xref href="https://github.com/oxygenxml/oxygen-ai-positron-script-hooks-addon"
+          format="html" scope="external"/>.</p>
     </section>
     <section id="section_hooks_overview">
       <title>Hook Events Overview</title>
@@ -349,10 +367,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <b>Blocking</b> can be vetoed by throwing an <codeph>AIHookVetoException</codeph> inside
           <codeph>eventOccurred</codeph>. Events marked as <b>Fire-and-forget</b> are informational
         (throwing an exception has no effect on the AI action).</p>
-      <p id="p_hooks_payload_base">Every event delivers its data as a typed
-          <codeph>BaseHookPayload</codeph> object. Cast the payload to the event-specific subclass
-        (listed under each event below) to access its fields. All payload types share the following
-        base fields:</p>
+      <p id="p_hooks_payload_base">Every event delivers its data as a JSON string
+          (<codeph>payloadJson</codeph>) with snake_case keys. Deserialize it with Jackson into the
+        event-specific <codeph>BaseHookPayload</codeph> subclass (listed under each event below) to
+        access its fields. All payload types share the following base fields:</p>
       <simpletable id="simpletable_base_payload" relcolwidth="1* 1* 2*">
         <sthead>
           <stentry>Field</stentry>
