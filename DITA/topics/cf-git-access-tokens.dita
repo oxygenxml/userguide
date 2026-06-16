@@ -56,17 +56,38 @@
 
         <section id="gitlab">
             <title>GitLab</title>
-            <p>GitLab uses <b>Personal Access Tokens</b> with explicit scopes. For full Git
-        operations (clone, pull, push, branches), you need the following:</p>
+            <p>GitLab supports both <b>Personal Access Tokens</b> and <b>Project Access Tokens</b>,
+        both with explicit scopes. For full Git operations (clone, pull, push, branches), you need
+        the following scopes regardless of the token type:</p>
             <ul>
                 <li><b>read_repository</b> - Read access (clone, pull).</li>
                 <li><b>write_repository</b> - Write access (push, create branches).</li>
             </ul>
-          <note id="note_dkb_fpz_bjc" type="notice">Token scopes do not replace the project role. If
-        the default branch (for example, <codeph>main</codeph>) is protected, many projects only
-        allow <b>Maintainer</b> (or <b>Owner</b>) to push to it. Check the user or token’s role on
-        the project and the protected branches settings. Otherwise, commit operations can fail even
-        with a valid personal access token that has <codeph>write_repository</codeph>.</note>
+            <p>Choose the token type that best fits your setup:</p>
+            <ul>
+                <li><b>Personal Access Token</b> - Tied to a GitLab user account and inherits that
+          user's access across all the projects and groups the user is a member of. Created from the
+          user's <menucascade>
+            <uicontrol>Preferences</uicontrol>
+            <uicontrol>Access tokens</uicontrol>
+          </menucascade>.</li>
+                <li><b>Project Access Token</b> - Scoped to a single project and not tied to a
+          specific user, which makes it well suited for connecting <ph keyref="product"/> to one
+          repository following the least-privilege principle. Created from the project's <menucascade>
+            <uicontrol>Settings</uicontrol>
+            <uicontrol>Access tokens</uicontrol>
+          </menucascade>. When creating it, in addition to the <codeph>read_repository</codeph> and
+          <codeph>write_repository</codeph> scopes, you must also select a <b>Role</b> for the
+          token (see the note below).</li>
+            </ul>
+          <note id="note_dkb_fpz_bjc" type="notice">Token scopes do not replace the project role.
+        This applies to both Personal Access Tokens and Project Access Tokens. For a Project Access
+        Token, you choose the role when you generate the token; for a Personal Access Token, the role
+        is the one the user already has on the project. If the default branch (for example,
+        <codeph>main</codeph>) is protected, many projects only allow <b>Maintainer</b> (or
+        <b>Owner</b>) to push to it. Check the user or token's role on the project and the protected
+        branches settings. Otherwise, commit operations can fail even with a valid access token that
+        has <codeph>write_repository</codeph>.</note>
         </section>
         <section id="bitbucket">
             <title>Bitbucket (Bitbucket Cloud)</title>
