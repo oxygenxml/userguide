@@ -22,6 +22,8 @@ REPORT_ONLY_PATTERNS = {
     "heading_case_review": ["<title>Create a new branch</title>"],
     "index_keyword_review": ["git-addon-up-to-date.dita"],
     "unresolved_review_comments": ["<?oxy_comment_start"],
+    "compare_editor_terminology_review": ["<uicontrol>Diff File</uicontrol>", "<uicontrol>compare editor</uicontrol>", "<uicontrol>Compare Editor</uicontrol>"],
+    "positron_ai_assistant_review": ["Positron AI Assistant"],
 }
 
 EXPECTED_TERMINOLOGY_RULES = {
