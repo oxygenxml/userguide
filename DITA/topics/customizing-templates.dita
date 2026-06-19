@@ -7,6 +7,9 @@
       <keywords>
         <indexterm>Customize document templates</indexterm>
         <indexterm>Document templates<indexterm>Customizing</indexterm></indexterm>
+        <indexterm>Document templates<indexterm>Properties file</indexterm></indexterm>
+        <indexterm>longDescriptionReference</indexterm>
+        <indexterm>categoryPath</indexterm>
       </keywords>
     </metadata>
   </prolog>
@@ -18,6 +21,207 @@
         href="creating-from-templates.dita#creating-from-templates"
         product="authorEclipse developerEclipse editorEclipse"><uicontrol>New from
           templates</uicontrol> wizard</xref>.</p>
+    <section id="template_properties_reference">
+      <title>Template Properties File Reference</title>
+      <p id="p_template_props_intro">Each document, archive, or project template can have a sibling
+          <filepath>.properties</filepath> file with the <b>same base name</b> as the template file
+        (for example, <filepath>Concept.dita</filepath> and
+          <filepath>Concept.properties</filepath>). The properties file configures how the template
+        is displayed and behaves in the <xref href="new-dialog-sa.dita#new-dialog-sa"
+          product="author developer editor"><uicontrol>New</uicontrol> document wizard</xref><xref
+          href="creating-from-templates.dita#creating-from-templates"
+          product="authorEclipse developerEclipse editorEclipse"><uicontrol>New from
+            templates</uicontrol> wizard</xref> and in other new-document dialog boxes.</p>
+      <p id="p_template_props_comments">You can add comments in a properties file by starting a line
+        with <codeph>#</codeph>. Comment lines are ignored when the file is read.</p>
+      <p id="p_template_props_table">The following table lists all supported properties:</p>
+      <table frame="all" colsep="1" rowsep="1" id="table_template_properties">
+        <title>Supported Template Properties</title>
+        <tgroup cols="3">
+          <colspec colname="c1" colnum="1" colwidth="1.2*"/>
+          <colspec colname="c2" colnum="2" colwidth="2.2*"/>
+          <colspec colname="c3" colnum="3" colwidth="1.6*"/>
+          <thead>
+            <row>
+              <entry>Property</entry>
+              <entry>Description</entry>
+              <entry>Values / format</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row id="prop_type">
+              <entry><codeph>type</codeph></entry>
+              <entry>Classifies the template and controls where it appears. For DITA topic and map
+                templates, this property also enables DITA-specific behavior when creating new
+                files.</entry>
+              <entry>See <xref href="#customizing-templates/type_property_values"
+                  format="dita">supported <codeph>type</codeph> values</xref> below.</entry>
+            </row>
+            <row id="prop_smallIcon">
+              <entry><codeph>smallIcon</codeph></entry>
+              <entry>Icon shown next to the template in the <uicontrol>New</uicontrol> wizard tree
+                and in the details area. The path is resolved relative to the template file (or can
+                be absolute).</entry>
+              <entry>Image file path. Recommended size: <b>16×16</b> pixels. Supported formats: PNG,
+                GIF, JPEG. If omitted, <ph keyref="product"/> looks for
+                  <filepath>&lt;TemplateName&gt;Small.gif</filepath> in the same folder.</entry>
+            </row>
+            <row id="prop_bigIcon">
+              <entry><codeph>bigIcon</codeph></entry>
+              <entry>Larger icon path, stored with the template definition. Built-in templates
+                conventionally define a <codeph>bigIcon</codeph> alongside
+                  <codeph>smallIcon</codeph>.</entry>
+              <entry>Image file path. Recommended size: <b>48×48</b> pixels (some project templates
+                use 64×64). Same supported formats as <codeph>smallIcon</codeph>. If omitted,
+                  <ph keyref="product"/> looks for
+                  <filepath>&lt;TemplateName&gt;Big.png</filepath> in the same folder.</entry>
+            </row>
+            <row id="prop_displayName">
+              <entry><codeph>displayName</codeph></entry>
+              <entry>Label shown in the <uicontrol>New</uicontrol> wizard instead of the template
+                file name.</entry>
+              <entry>Plain text, or <codeph>${i18n(tag)}</codeph> to look up a key in the
+                  <xref keyref="glossentry_framework"><term>framework</term></xref>'s
+                  <filepath>translation.xml</filepath> file.</entry>
+            </row>
+            <row id="prop_filenamePrefix">
+              <entry><codeph>filenamePrefix</codeph></entry>
+              <entry>Prefix added to the file name proposed when creating a document from the
+                template.</entry>
+              <entry>Any string. Supports <xref href="editor-variables.dita">editor
+                  variables</xref> that do not require user interaction (not
+                  <codeph>${ask()}</codeph> or <codeph>${answer()}</codeph>).</entry>
+            </row>
+            <row id="prop_filenameSuffix">
+              <entry><codeph>filenameSuffix</codeph></entry>
+              <entry>Suffix added to the file name proposed when creating a document from the
+                template.</entry>
+              <entry>Same rules as <codeph>filenamePrefix</codeph>.</entry>
+            </row>
+            <row id="prop_longDescriptionReference">
+              <entry><codeph>longDescriptionReference</codeph></entry>
+              <entry>Reference to an HTML file whose content is shown as a tooltip when you hover
+                over the template in the <uicontrol>New</uicontrol> wizard. This is the supported way
+                to provide a long description for a template. There is <b>no</b> property for
+                writing the description directly inside the <filepath>.properties</filepath>
+                file.</entry>
+              <entry>Relative path (for example,
+                  <filepath>../descriptions/topic/Concept.html</filepath>), absolute file path, or
+                URL. The referenced file typically contains a short HTML fragment (for example,
+                  <codeph>&lt;p&gt;...&lt;/p&gt;</codeph>). Built-in DITA templates store these
+                files under a <filepath>descriptions</filepath> folder next to the
+                  <filepath>templates</filepath> folders.</entry>
+            </row>
+            <row id="prop_tags">
+              <entry><codeph>tags</codeph></entry>
+              <entry>Comma-separated labels associated with the template. The value
+                  <codeph>popular</codeph> is interpreted by <ph keyref="product"/> to also show the
+                template in the <uicontrol>Popular</uicontrol> category of the <uicontrol>New</uicontrol>
+                wizard. Other tag values (for example, <codeph>advanced</codeph>) are stored but not
+                interpreted by the application.</entry>
+              <entry>For example: <codeph>popular</codeph>,
+                  <codeph>popular,advanced</codeph></entry>
+            </row>
+            <row id="prop_categoryPath">
+              <entry><codeph>categoryPath</codeph></entry>
+              <entry>Overrides the folder path under which templates from a templates subfolder are
+                grouped in the <uicontrol>New</uicontrol> wizard. This property is <b>not</b> set in
+                individual template properties files. Instead, create a
+                  <filepath>category.properties</filepath> file inside the templates
+                subfolder.</entry>
+              <entry>Slash-separated path, for example <codeph>DITA/Topics</codeph> or
+                  <codeph>DocBook/DocBook 5.1</codeph>. To include a literal slash in a segment,
+                escape it with a backslash.</entry>
+            </row>
+            <row id="prop_expandEditorVariablesIncludeFilter">
+              <entry><codeph>expandEditorVariablesIncludeFilter</codeph></entry>
+              <entry><xref href="project-templates.dita">Project templates</xref> only. Glob
+                patterns (relative to the new project directory) that select which copied project
+                files should have <xref href="editor-variables.dita">editor variables</xref>
+                expanded after the project is created.</entry>
+              <entry>For example: <codeph>topics/*, *.ditamap</codeph></entry>
+            </row>
+            <row id="prop_expandEditorVariablesExcludeFilter">
+              <entry><codeph>expandEditorVariablesExcludeFilter</codeph></entry>
+              <entry><xref href="project-templates.dita">Project templates</xref> only. Glob
+                patterns that exclude files from editor-variable expansion. Applied after the include
+                filter.</entry>
+              <entry>For example: <codeph>topics/templates</codeph></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p id="type_property_values"><b>Supported <codeph>type</codeph> values:</b></p>
+      <table frame="all" colsep="1" rowsep="1" id="table_type_property_values">
+        <title>Values for the <codeph>type</codeph> Property</title>
+        <tgroup cols="2">
+          <colspec colname="c1" colnum="1" colwidth="1*"/>
+          <colspec colname="c2" colnum="2" colwidth="2.5*"/>
+          <thead>
+            <row>
+              <entry>Value</entry>
+              <entry>When to use</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>dita</codeph></entry>
+              <entry>DITA topic and map templates (<filepath>.dita</filepath>,
+                  <filepath>.ditamap</filepath>, <filepath>.bookmap</filepath>, and similar). Required
+                for the template to appear in <ph product="author editor authorEclipse editorEclipse"
+                  >the <xref href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
+                    Manager</uicontrol></xref> <uicontrol>New</uicontrol> actions and in the <xref
+                    href="fast-create-topics.dita#fast-create-topics"><uicontrol>Fast Create
+                      Topics</uicontrol></xref> dialog box</ph>.</entry>
+            </row>
+            <row>
+              <entry><codeph>general</codeph></entry>
+              <entry>All non-DITA document templates (DocBook, TEI, XSLT, JSON, and so on).</entry>
+            </row>
+            <row>
+              <entry><codeph>ditaval</codeph></entry>
+              <entry>DITAVAL filter templates (<filepath>.ditaval</filepath>).</entry>
+            </row>
+            <row>
+              <entry><codeph>project</codeph></entry>
+              <entry>Generic project templates (<filepath>.zxpr</filepath> archives or
+                  <filepath>.dxpr</filepath> folders).</entry>
+            </row>
+            <row>
+              <entry><codeph>dita-ot-project</codeph></entry>
+              <entry>DITA Open Toolkit project descriptor templates.</entry>
+            </row>
+            <row>
+              <entry><codeph>dita-plugin</codeph></entry>
+              <entry>DITA-OT plugin templates.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p id="p_template_props_example">The following example shows a typical properties file for a
+        custom DITA topic template:</p>
+      <codeblock outputclass="language-ini" id="codeblock_template_properties_example"># Icons (paths relative to the template file)
+smallIcon=../icons/MyTopic_16.png
+bigIcon=../icons/MyTopic_48.png
+
+# Required for DITA topic/map templates
+type=dita
+
+# Optional display name and file-name defaults
+displayName=My Custom Topic
+# filenamePrefix=prod_
+# filenameSuffix=_draft
+
+# Tooltip description (external HTML file, not inline text)
+longDescriptionReference=../descriptions/MyTopic.html
+
+# Optional tag; use "popular" to also show the template in the Popular category
+tags=advanced</codeblock>
+      <note type="tip" id="note_template_props_category">To change the category path for an entire
+        templates subfolder, create <filepath>category.properties</filepath> in that folder (not next
+        to an individual template) with a line such as
+          <codeph>categoryPath=My Company/DITA/Topics</codeph>.</note>
+    </section>
     <section id="create-properties-file">
       <title>How to Customize the Icons for a Document Template</title>
       <p id="p_ebt_bgk_54b">If you want to customize the icons to be used for document templates, use a properties file
@@ -47,7 +251,11 @@ bigIcon=../icons/Article_48.png</codeblock><note type="tip" id="note_mbt_bgk_54b
                       href="dita-maps-manager.dita#dita-maps-manager"><uicontrol>DITA Maps
                         Manager</uicontrol></xref></ph>. For all other types of files, set it to
                     <b>general</b>. The icons specified in this properties file will only be used
-                  for the new file wizards and not in any other part of the interface.</note><note
+                  for the new file wizards and not in any other part of the interface. Use PNG or GIF
+                  images; a size of 16×16 pixels is recommended for <codeph>smallIcon</codeph> and
+                  48×48 pixels for <codeph>bigIcon</codeph>. For a complete list of properties, see
+                    <xref href="#customizing-templates/template_properties_reference" format="dita"
+                    >Template Properties File Reference</xref>.</note><note
                   type="important" id="note_nbt_bgk_54b">If you created a new template and chose to
                   use a custom directory for the new template (in <xref
                     href="create-your-own-templates.dita#create-your-own-templates/step2">step 2 of
@@ -197,6 +405,56 @@ filenameSuffix=_test</codeblock></p>
             </menucascade>) and you should see the new name for the template.</li>
         </ol></p>
     </section>
+    <section id="configure_long_description_for_document_templates">
+      <title>How to Add a Long Description (Tooltip) for a Document Template</title>
+      <p id="p_long_desc_intro">You can provide additional information about a template that is
+        shown as a tooltip when users hover over the template in the <uicontrol>New</uicontrol>
+        wizard. The description is stored in a separate HTML file and referenced from the properties
+        file using the <codeph>longDescriptionReference</codeph> property. You cannot write the
+        description text directly in the <filepath>.properties</filepath> file.</p>
+      <p id="p_long_desc_steps">To add a long description for a document template, follow these
+        steps:<ol id="ol_long_desc_steps">
+          <li id="li_long_desc_html">Create an HTML file that contains the description. A simple HTML
+            fragment is sufficient, for
+              example:<codeblock outputclass="language-xml" id="codeblock_long_desc_html">&lt;p&gt;
+  The DITA Concept topic type provides conceptual information to support
+  the performance of tasks.
+&lt;/p&gt;</codeblock><p id="p_long_desc_html_location">Store the file in a folder that is easy to
+              reference from the template, for example a <filepath>descriptions</filepath>
+              subfolder next to your <filepath>templates</filepath> folder.</p></li>
+          <li id="li_long_desc_properties">In the sibling <filepath>.properties</filepath> file for
+            the template, add the <codeph>longDescriptionReference</codeph> property pointing to the
+            HTML
+              file:<codeblock outputclass="language-ini" id="codeblock_long_desc_properties">type=dita
+longDescriptionReference=../descriptions/MyTopic.html</codeblock></li>
+          <li id="li_long_desc_test">Open the <uicontrol>New</uicontrol> wizard, hover over the
+            template, and verify that the tooltip shows the HTML content.</li>
+        </ol></p>
+      <note type="tip" id="note_long_desc_builtin">Built-in DITA templates use this mechanism. For
+        example, <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/templates/topic/Concept.properties</filepath>
+        references <filepath>../descriptions/topic/Concept.html</filepath>.</note>
+    </section>
+    <section id="configure_template_category_path">
+      <title>How to Customize the Category Path for Templates</title>
+      <p id="p_category_path_intro">By default, templates are grouped in the <uicontrol>New</uicontrol>
+        wizard according to the physical folder structure under the framework's
+          <filepath>templates</filepath> directory. You can override the displayed category path for
+        an entire templates subfolder by creating a <filepath>category.properties</filepath> file in
+        that folder.</p>
+      <p id="p_category_path_steps">To customize the category path:<ol id="ol_category_path_steps">
+          <li id="li_category_path_file">In the templates subfolder whose category you want to
+            customize, create a file named <filepath>category.properties</filepath>.</li>
+          <li id="li_category_path_value">Add the <codeph>categoryPath</codeph> property with the
+            desired path, using slashes as
+              separators:<codeblock outputclass="language-ini" id="codeblock_category_path">categoryPath=DITA/Topics</codeblock><p
+              id="p_category_path_example">For example, built-in DITA topic templates use
+                <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/templates/topic/category.properties</filepath>
+              with <codeph>categoryPath=DITA/Topics</codeph>, so the templates appear under
+                <i>DITA &gt; Topics</i> regardless of the physical folder name.</p></li>
+          <li id="li_category_path_test">Open the <uicontrol>New</uicontrol> wizard and verify that
+            the templates from that folder appear under the new category path.</li>
+        </ol></p>
+    </section>
     <section id="adding_placeholders_or_hints_in_a_document_templa">
       <title>How to Add Placeholders or Hints in a Document Template</title>
       <p id="p_vct_bgk_54b">If a document template contains empty elements, it may not be clear to
@@ -248,10 +506,14 @@ filenameSuffix=_test</codeblock></p>
         property. For example, for the
           <filepath>OXYGEN_INSTALL_DIR/frameworks/dita/templates/topic/Topic.dita</filepath>
         template, there is a <filepath>Topic.properties</filepath> sibling file that contains
-          <codeph>tags=popular</codeph>.</p>
+          <codeph>tags=popular,advanced</codeph>.</p>
       <p>To add another template to the <uicontrol>Popular</uicontrol> category, create/edit the
-        sibling properties file for the particular template and add the
-          <codeph>tags=popular</codeph> line.</p>
+        sibling properties file for the particular template and include <codeph>popular</codeph> in
+        the <codeph>tags</codeph> property (for example,
+          <codeph>tags=popular</codeph> or <codeph>tags=popular,advanced</codeph>). For details about
+        all supported properties, see <xref
+          href="#customizing-templates/template_properties_reference" format="dita">Template
+          Properties File Reference</xref>.</p>
     </section>
     <section id="section_v54_rr5_ypb">
       <title>Resources</title>
