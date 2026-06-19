@@ -72,7 +72,45 @@ sudo chown feedback: $NEW_OXYGEN_FEEDBACK_INSTALL_DIR</codeblock>
           <p><b>Update <filepath>docker-compose.yml</filepath></b> - Compare the
               <codeph>docker-compose.yml</codeph> files from the old and new installations. Update
             the new file based on the configuration in the old file, considering any updates or
-            changes in the new version.</p>
+            changes in the new version and make sure you read the information in the following
+              note.<note id="note_usw_1qd_qjc" type="important">
+              <p id="p_ndf_cqd_qjc">Starting with version 5.4, the <i>Oxygen Text Search Service</i>
+                was renamed to <i>Oxygen Feedback Text Search Service</i> to align with the naming
+                convention of the other <b>Oxygen Feedback</b> modules.</p>
+              <p id="p_odf_cqd_qjc">As a result of this rename, the
+                  <filepath>docker-compose.yml</filepath> file included in the <b>Oxygen
+                  Feedback</b> distribution package contains the following changes for the Text
+                Search Service container that you must account for when updating it:</p>
+              <ul id="ul_pdf_cqd_qjc">
+                <li id="li_qdf_cqd_qjc">The Docker image name changed from
+                    <codeph>oxygenxml/oxygen-text-search-service</codeph> to
+                    <codeph>oxygenxml/oxygen-feedback-text-search-service</codeph>.</li>
+                <li id="li_rdf_cqd_qjc">The container name changed from
+                    <codeph>oxygen-text-search-service</codeph> to
+                    <codeph>oxygen-feedback-text-search-service</codeph>.</li>
+                <li id="li_sdf_cqd_qjc">The volume mount target paths inside the container changed
+                  from <filepath>/oxygen-text-search-service/workspace/</filepath> and
+                    <filepath>/oxygen-text-search-service/logs/</filepath> to
+                    <filepath>/oxygen-feedback-text-search-service/workspace/</filepath> and
+                    <filepath>/oxygen-feedback-text-search-service/logs/</filepath>.</li>
+              </ul>
+              <p id="p_tdf_cqd_qjc">The source paths on the host machine
+                  (<filepath>./workspace</filepath> and <filepath>./logs</filepath>) are unchanged.
+                No data needs to be moved.</p>
+              <p id="p_udf_cqd_qjc">The relevant section of the updated
+                  <filepath>docker-compose.yml</filepath> file looks like
+                this:<codeblock outputclass="language-yml"> text-search-service:
+      image: oxygenxml/oxygen-feedback-text-search-service:&lt;version>
+      container_name: oxygen-feedback-text-search-service
+      ...
+      volumes:
+        - type: bind
+          source: ./workspace
+          target: /oxygen-feedback-text-search-service/workspace/
+        - type: bind
+          source: ./logs
+          target: /oxygen-feedback-text-search-service/logs/</codeblock></p>
+            </note></p>
         </li>
         <li>
           <p><b>Update Configuration Files</b> - Update the properties files in
@@ -126,6 +164,34 @@ docker-compose up -d</codeblock>
       <title>Verification</title>
       <p>Once the services are up and running, verify that the new version is functioning correctly
         by accessing the application and checking logs for any errors.</p>
+    </section>
+    <section id="section_wbq_1ph_qjc">
+      <title>Upgrading reCAPTCHA from v2 to v3</title>
+      <p id="p_xbq_1ph_qjc">The reCAPTCHA v2 and v3 site/secret key pairs are <b>not
+          interchangeable</b>. Thus, existing v2 keys will stop working after upgrading Feedback.
+        New keys must be generated and deployed before restarting the application.</p>
+      <p id="p_kq5_3ph_qjc">
+        <ol id="ol_ux4_jph_qjc">
+          <li id="li_vx4_jph_qjc"><b>Generate new reCAPTCHA v3 keys</b> - Go to <xref
+              href="https://www.google.com/recaptcha/admin" format="html" scope="external"/> and
+            sign in with the Google account that owns the existing reCAPTCHA registration.</li>
+          <li id="li_tqx_mph_qjc"><b>Update the properties file</b> - Open
+              <filepath>${FEEDBACK_HOME}/config/feedback-recaptcha.properties</filepath> and replace
+            the existing key
+            values:<codeblock outputclass="language-ini"># Replace these with the new v3 keys obtained in step 1
+  google.recaptcha.key.site=&lt;your-new-v3-site-key>
+  google.recaptcha.key.secret=&lt;your-new-v3-secret-key></codeblock></li>
+          <li id="li_dvg_qph_qjc"><b>Set the score threshold (optional)</b> - The
+              <codeph>google.recaptcha.score.threshold</codeph> property controls the minimum
+            acceptable risk score. Add it to the same file if you want a value other than the
+              default:<codeblock outputclass="language-ini"># Minimum acceptable reCAPTCHA v3 score. Range: 0.0 (allow all) to 1.0 (block all).
+  # Default: 0.5 — this value is used automatically if the property is absent.
+  google.recaptcha.score.threshold=0.5</codeblock><p id="p_fvw_xph_qjc">Scores closer
+              to <b>1.0</b> indicate a higher confidence that the interaction is human. Scores
+              closer to <b>0.0</b> indicate likely bot traffic. Start with the default <b>0.5</b>
+              and adjust it based on observed scores in the application logs.</p></li>
+        </ol>
+      </p>
     </section>
   </body>
 </topic>
