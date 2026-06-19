@@ -20,6 +20,12 @@
     <p id="p_hvw_dgk_54b">The second page of the site creation wizard is the <uicontrol>Version</uicontrol> page where
       you must specify a version and the base URL from your website where the WebHelp output is
       deployed.</p>
+    <p id="p_ovw_dgk_54b">
+      <fig id="fig_yf3_ys2_gjb">
+        <title>Version Page</title>
+        <image href="../img/ofb-Add-Site-Initial-Version.png" id="image_it2_1t2_gjb"/>
+      </fig>
+    </p>
     <p id="p_ivw_dgk_54b">This wizard page includes the following options:</p>
     <p id="p_jvw_dgk_54b">
       <dl id="dl_kvw_dgk_54b">
@@ -44,13 +50,139 @@
             NOT point to a file (e.g. <filepath>http://example.com/index.html</filepath> is not
               allowed).<note conkeyref="reusables-feedback/site-base-url-note" id="note_nvw_dgk_54b"/></dd>
         </dlentry>
+        <dlentry id="dlentry_adh_5h2_qjc">
+          <dt>Display in-place error message for comments component</dt>
+          <dd>Select this option if you want an error message to be displayed directly in the
+            location where the comments component should appear if any issues arise during the
+            integration process. A hyperlink is also displayed that directs you to a user guide
+            topic to help you troubleshoot the issue.</dd>
+        </dlentry>
+        <dlentry id="dlentry_cpf_m22_qjc">
+          <dt>Include query parameters when identifying pages</dt>
+          <dd>
+            <p id="p_ngd_lf2_qjc">
+              <note id="note_vzh_lf2_qjc">This feature is intended for sites where the same HTML
+                file serves different logical content depending on URL query parameters. It is
+                  <b>not</b> needed for standard WebHelp output where each topic has its own URL
+                path.</note>
+            </p>
+            <p id="p_eqv_kf2_qjc">Select this option if you want URL query parameters to be
+              considered when computing the unique identity of a page for comments. This is
+              particularly useful for portals or single-page applications where different content is
+              served at the same URL path but distinguished by query parameters (such as
+                <codeph>?docid=</codeph> or <codeph>?page=</codeph>).</p>
+            <p id="p_avs_ng2_qjc">When this option is enabled, you can optionally enter a
+              comma-separated list of <uicontrol>Query parameter names</uicontrol> to include. If
+              the field is left empty, all query parameters are included. If parameter names are
+              configured, only those parameters contribute to page identity, keeping unrelated
+              parameters (such as search highlighters) from affecting comment grouping.</p>
+            <p id="p_rpx_yf2_qjc">
+              <note id="note_gpb_zf2_qjc" type="important">Enabling this setting or changing the
+                parameter names may cause existing comments to become disassociated from their pages
+                if the new page identity path no longer matches the path stored with the comment.
+                Review your comment history before enabling on an active site.</note>
+            </p>
+            <p id="p_dc1_2h2_qjc"><b>Parameter matching rules:</b><ul id="ul_whn_fh2_qjc">
+                <li id="li_xhn_fh2_qjc">Parameter names are matched <b>exactly</b> and are
+                    <b>case-sensitive</b>.</li>
+                <li id="li_pv4_gh2_qjc">When multiple parameters are present, they are sorted
+                  alphabetically before being stored, so <codeph>?b=2&amp;a=1</codeph> and
+                    <codeph>?a=1&amp;b=2</codeph> produce the same page identity.</li>
+                <li id="li_swn_hh2_qjc">Parameters not included in the allow-list are <b>never</b>
+                  stored, even if they appear in the URL.</li>
+              </ul></p>
+            <p id="p_pxs_dg2_qjc"><b>Example:</b></p>
+            <p id="p_kms_xg2_qjc">The option is enabled and <codeph>docid</codeph> is specified in
+              the <uicontrol>Query parameter names</uicontrol> field.</p>
+            <p id="p_qtx_2g2_qjc">
+              <table frame="all" rowsep="1" colsep="1" id="table_oth_yg2_qjc">
+                <tgroup cols="2">
+                  <colspec colnum="1" colname="col1" align="center"/>
+                  <colspec colnum="2" colname="col2" align="center"/>
+                  <thead>
+                    <row>
+                      <entry>URL visited</entry>
+                      <entry>Page identity stored</entry>
+                    </row>
+                  </thead>
+                  <tbody>
+                    <row>
+                      <entry>/page.html?docid=topic1&amp;hl=search</entry>
+                      <entry>page.html?docid=topic1</entry>
+                    </row>
+                    <row>
+                      <entry>/page.html?docid=topic2&amp;hl=search</entry>
+                      <entry>page.html?docid=topic2</entry>
+                    </row>
+                    <row>
+                      <entry>/page.html?hl=search</entry>
+                      <entry>page.html <i>(no matching param)</i></entry>
+                    </row>
+                  </tbody>
+                </tgroup>
+              </table>
+            </p>
+          </dd>
+        </dlentry>
+        <dlentry id="dlentry_h4f_wh2_qjc">
+          <dt>Enable content indexing</dt>
+          <dd>Use this option to enable/disable content indexing and to configure search functions.
+            When content indexing is enabled for a site's version, the corresponding WebHelp
+            Responsive output will use <b>Oxygen Feedback</b> as the search engine when users search
+            the published content. If content indexing is disabled, the search will be performed
+            using the JS Search Engine bundled in the WebHelp Responsive output. Once the content
+            indexing is enabled, you can choose the language that the search engine will use for the
+            indexing and which AI features are enabled.<p id="p_jnb_swz_2xb">
+              <note id="note_s3h_swz_2xb" type="tip">For more details about the content indexing
+                functionality, watch our webinar: <xref
+                  href="https://www.oxygenxml.com/events/2023/webinar_how_to_enable_content_indexing_and_search_in_Oxygen_feedback_3_0.html"
+                  format="html" scope="external">How to Enable Content Indexing and Search in
+                    <b>Oxygen Feedback 3.0</b></xref>.</note>
+            </p></dd>
+        </dlentry>
+        <dlentry id="content-indexing-search">
+          <dt>AI Features</dt>
+          <dd><p id="p_zly_ynx_5wb">
+              <note id="note_pgs_jgq_ncc" type="notice">To use the AI features, you must have an
+                AI-ready subscription. See <xref
+                  href="https://www.oxygenxml.com/oxygen_feedback/buy_feedback.html" format="html"
+                  scope="external"/> for information about the available subscription plans.</note>
+            </p>The <uicontrol>AI Features</uicontrol> section contains options for configuring
+            AI-enhanced search functionality. These AI-related options are available if you have
+            configured <ph keyref="product"/> to <xref href="ofb-configuring-openai-connection.dita"
+              >connect to <tm tmtype="tm">OpenAI</tm> on your behalf</xref> in the <xref
+              href="ofb-organization-profile-page.dita"><i>Organization Profile</i> page</xref>.<ul
+              id="ul_df2_f15_m1c">
+              <li id="li_ef2_f15_m1c"><uicontrol>Enable semantic search</uicontrol> - Activates
+                  <xref href="ofb-semantic-search.dita">functionality to enable semantic
+                  searches</xref>, an advanced search technique that aims to improve the accuracy
+                and relevance of search results by understanding the context and meaning behind the
+                search query, rather than relying solely on keyword matching.</li>
+              <li id="li_hfs_m15_m1c"><uicontrol>Enable AI Assistant</uicontrol> - If selected,
+                WebHelp sites that have <ph keyref="product"/> installed will have an <xref
+                  href="ofb-ai-assistant.dita"><uicontrol>AI Assistant</uicontrol> button</xref>
+                displayed in the lower-right corner of each page that will allow users to interact
+                with the <xref href="ofb-ai-assistant.dita">AI Assistant</xref> to help find answers
+                to questions and find information quickly and accurately.</li>
+              <li id="li_wxn_w5t_pbc"><uicontrol>Enable Assistant debug mode</uicontrol> - Selecting
+                this option enables the debug mode for the <xref href="ofb-ai-assistant.dita">AI
+                  Assistant</xref>. When enabled, a <uicontrol>Debug</uicontrol> button appears at
+                the bottom of the chat window for users with a <xref
+                  href="ofb-user-roles-matrix.dita">role of <i>Admin</i> or <i>Owner</i></xref>.
+                Clicking the button displays the complete set of interactions between <ph
+                  keyref="product"/> and the AI. </li>
+              <li id="li_qsb_4sm_5bc"><uicontrol>Enable AI-enhanced search summary</uicontrol> - If
+                selected, when a user enters a search query in the WebHelp search results page, an
+                AI-generated response to the search query is displayed before the usual search
+                results. The response is generated using the <xref href="ofb-ai-assistant.dita">AI
+                  Assistant</xref> based upon information found in the current publication. </li>
+            </ul><note id="note_m5k_r5f_mcc" type="notice">The <uicontrol>AI Assistant</uicontrol>
+              and <uicontrol>AI-enhanced Search Summary</uicontrol> features can generate costs. It
+              is recommended to use support from OpenAI to configure a budget limit on the <xref
+                href="https://platform.openai.com/account/api-keys" format="html" scope="external"
+                >API key</xref> configured for the organization.</note></dd>
+        </dlentry>
       </dl>
-    </p>
-    <p id="p_ovw_dgk_54b">
-      <fig id="fig_yf3_ys2_gjb">
-        <title>Version Page</title>
-        <image href="../img/ofb-Add-Site-Initial-Version.png" id="image_it2_1t2_gjb"/>
-      </fig>
     </p>
   </body>
 </topic>
