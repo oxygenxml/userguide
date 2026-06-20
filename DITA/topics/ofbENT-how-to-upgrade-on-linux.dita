@@ -165,5 +165,33 @@ docker-compose up -d</codeblock>
       <p>Once the services are up and running, verify that the new version is functioning correctly
         by accessing the application and checking logs for any errors.</p>
     </section>
+    <section id="section_wbq_1ph_qjc">
+      <title>Upgrading reCAPTCHA from v2 to v3</title>
+      <p id="p_xbq_1ph_qjc">The reCAPTCHA v2 and v3 site/secret key pairs are <b>not
+          interchangeable</b>. Thus, existing v2 keys will stop working after upgrading Feedback.
+        New keys must be generated and deployed before restarting the application.</p>
+      <p id="p_kq5_3ph_qjc">
+        <ol id="ol_ux4_jph_qjc">
+          <li id="li_vx4_jph_qjc"><b>Generate new reCAPTCHA v3 keys</b> - Go to <xref
+              href="https://www.google.com/recaptcha/admin" format="html" scope="external"/> and
+            sign in with the Google account that owns the existing reCAPTCHA registration.</li>
+          <li id="li_tqx_mph_qjc"><b>Update the properties file</b> - Open
+              <filepath>${FEEDBACK_HOME}/config/feedback-recaptcha.properties</filepath> and replace
+            the existing key
+            values:<codeblock outputclass="language-ini"># Replace these with the new v3 keys obtained in step 1
+  google.recaptcha.key.site=&lt;your-new-v3-site-key>
+  google.recaptcha.key.secret=&lt;your-new-v3-secret-key></codeblock></li>
+          <li id="li_dvg_qph_qjc"><b>Set the score threshold (optional)</b> - The
+              <codeph>google.recaptcha.score.threshold</codeph> property controls the minimum
+            acceptable risk score. Add it to the same file if you want a value other than the
+              default:<codeblock outputclass="language-ini"># Minimum acceptable reCAPTCHA v3 score. Range: 0.0 (allow all) to 1.0 (block all).
+  # Default: 0.5 — this value is used automatically if the property is absent.
+  google.recaptcha.score.threshold=0.5</codeblock><p id="p_fvw_xph_qjc">Scores closer
+              to <b>1.0</b> indicate a higher confidence that the interaction is human. Scores
+              closer to <b>0.0</b> indicate likely bot traffic. Start with the default <b>0.5</b>
+              and adjust it based on observed scores in the application logs.</p></li>
+        </ol>
+      </p>
+    </section>
   </body>
 </topic>
