@@ -3,7 +3,8 @@
 <topic id="cf-deployment-architecture">
   <title>Deployment Architecture Overview</title>
   <shortdesc>A high-level overview of the on-premises <ph keyref="cfEnterprise"/> deployment
-    architecture, including supported clients, and sizing guidance.</shortdesc>
+    architecture, including supported clients,  authentication options and sizing
+    guidance.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -27,16 +28,20 @@
       <fig id="fig_architecture">
         <title>Content Fusion deployment architecture</title>
         <image href="../img/cf-deployment-architecture.svg" id="image_architecture">
-          <alt>Browsers and Oxygen XML Author connect over HTTPS to a Content Fusion server running on a single Linux host. The server includes an NGINX web tier, core platform services, PostgreSQL with backups, and Redis cache. Optional outbound integrations include SMTP, LDAP or Active Directory, OIDC SSO, Git or GitLab, and AI or LLM providers.</alt>
+          <alt>Browsers and Oxygen XML Author connect over HTTPS to a Content Fusion server running
+            on a single Linux host. The server includes an NGINX web tier, core platform services,
+            PostgreSQL, and cache. Optional outbound integrations include SMTP, LDAP or Active
+            Directory, OIDC SSO, Git, and AI providers.</alt>
         </image>
       </fig>
-      <p id="p_client_tiers">Users connect to <ph keyref="product"/> through two client tiers:</p>
+      <p id="p_client_tiers">Users connect to <ph keyref="product"/> through two supported
+        clients:</p>
       <dl id="dl_client_tiers">
         <dlentry id="dlentry_browser">
           <dt>Web browser</dt>
           <dd>The primary client for reviewers, authors, and administrators. The review UI runs in
-            any modern web browser over HTTPS, so the end-user operating system is
-            unconstrained.</dd>
+              <xref href="browser-compatibility.dita">any modern web browser</xref> over HTTPS, so
+            the end-user operating system is unconstrained.</dd>
         </dlentry>
         <dlentry id="dlentry_desktop">
           <dt>Oxygen XML Author / Editor (desktop client)</dt>
@@ -105,45 +110,7 @@
       <title>Hardware Sizing Guidance</title>
       <p id="p_sizing_intro">The workload is driven primarily by publishing/validation batch jobs
         (CPU-intensive) and active review sessions (memory-intensive), more than by raw connection
-        count. The baseline below runs the full set of services for a small team; scale up for
-        higher concurrent load.</p>
-      <table id="table_sizing" colsep="1" rowsep="1">
-        <title>Sizing starting points by expected load</title>
-        <tgroup cols="4">
-          <colspec colname="c1" colnum="1" colwidth="2*"/>
-          <colspec colname="c2" colnum="2" colwidth="1*"/>
-          <colspec colname="c3" colnum="3" colwidth="1*"/>
-          <colspec colname="c4" colnum="4" colwidth="1*"/>
-          <thead>
-            <row>
-              <entry>Expected load</entry>
-              <entry>CPU</entry>
-              <entry>RAM</entry>
-              <entry>Storage</entry>
-            </row>
-          </thead>
-          <tbody>
-            <row>
-              <entry>Small (up to ≈25 concurrent users)</entry>
-              <entry>4 vCPU</entry>
-              <entry>16 GB</entry>
-              <entry>100 GB</entry>
-            </row>
-            <row>
-              <entry>Medium (≈25–75 concurrent users)</entry>
-              <entry>8 vCPU</entry>
-              <entry>32 GB</entry>
-              <entry>250 GB+</entry>
-            </row>
-            <row>
-              <entry>Large (≈75–150 concurrent users, including publishing)</entry>
-              <entry>16 vCPU</entry>
-              <entry>64 GB</entry>
-              <entry>500 GB+</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
+        count.</p>
       <ul id="ul_sizing_notes">
         <li id="li_sizing_storage">Storage grows with the number and size of review tasks, document
           revisions, published outputs, and the search index. Provision generously and monitor it;
@@ -151,7 +118,7 @@
           see <xref href="cf-disk-space.dita"/> and <xref
             href="cf-increasing-available-disk-space.dita"/>.</li>
         <li id="li_sizing_publishing">Publishing is the heaviest CPU consumer; sites that publish
-          large DITA maps frequently should favor more vCPUs.</li>
+          large DITA maps frequently should favor more CPUs.</li>
         <li id="li_sizing_memory">For deployments that need more memory allocated to the services,
           see <xref href="cf-increase-memory.dita"/>.</li>
       </ul>
@@ -162,9 +129,7 @@
         Author), with port 80 typically redirecting to HTTPS.</p>
       <p>Port 9080 serving the administration console (restrict this to administrator networks). </p>
       <p>For the external services that must be reachable when the corresponding features are
-        enabled, see
-          <?oxy_comment_start author="Cristian Tălău" timestamp="20260625T220644+0000" comment="Make sure all are mentioned: AI, Git, OIDC,LDAP, SMTP"?><xref
-          href="cf-configure-firewall.dita"/><?oxy_comment_end?>.</p>
+        enabled, see <xref href="cf-configure-firewall.dita"/>.</p>
       <p>For the authoritative list of incoming and outgoing connections, see <xref
           href="cf-security.dita"/>. </p>
     </section>
@@ -173,8 +138,8 @@
       <p id="p_auth">Supported methods include:</p>
       <p>
         <ul id="ul_tp1_xsc_sjc">
-          <li id="li_auth_main"><xref href="cf-oidc-auth.dita">OIDC single sign-on</xref> (for
-            example, Microsoft Entra ID or Okta). Recommended. </li>
+          <li id="li_auth_main">Recommended: <xref href="cf-oidc-auth.dita">OIDC single
+              sign-on</xref> (for example, Microsoft Entra ID or Okta)</li>
           <li><xref href="cf-admin-page-authentication.dita">LDAP / Active Directory</xref>
             (LDAPS)</li>
           <li>Built-in local accounts (email and password)</li>
