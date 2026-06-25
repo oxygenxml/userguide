@@ -316,7 +316,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_user_preview"
                 ><codeph>afterUserPreviewResponse</codeph></xref></stentry>
           <stentry>Fire-and-forget</stentry>
-          <stentry>Fired after the user previews an AI response in the diff dialog.</stentry>
+          <stentry>Fired after the preview dialog box closes or when an error occurs while applying
+            the changes.</stentry>
         </strow>
         <strow>
           <stentry><xref href="#ai_positron_enterprise-hooks/dlentry_after_copy_response"
@@ -1245,9 +1246,10 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <dlentry id="dlentry_after_user_preview">
             <dt><codeph>afterUserPreviewResponse</codeph>: Fire-and-forget</dt>
             <dd>Fired after the user clicks the <uicontrol>Preview</uicontrol> button in the chat
-              panel and the preview dialog box closes. The preview opens a diff view comparing the
-              current editor content with the result of applying the AI response, so the user can
-              review the changes before deciding whether to apply them.</dd>
+              panel and the preview dialog box closes, or when an error occurs while applying the
+              changes. The preview opens a diff view comparing the current editor content with the
+              result of applying the AI response, so the user can review the changes before deciding
+              whether to apply them.</dd>
             <dd>
               <simpletable id="st_after_user_preview" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -1265,13 +1267,19 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                   <stentry>boolean</stentry>
                   <stentry><codeph>true</codeph> if the user applied the changes from within the
                     preview dialog box, <codeph>false</codeph> if the dialog box was closed without
-                    applying.</stentry>
+                    applying. Absent when an error occurred during the apply operation.</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>editor_location</codeph></stentry>
                   <stentry>string</stentry>
                   <stentry>URL of the editor (document) where the preview was shown. Absent if the
                     target editor could not be determined.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>error</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>Error message when applying the changes from the preview dialog box
+                    failed. Absent when no error occurred.</stentry>
                 </strow>
               </simpletable>
             </dd>

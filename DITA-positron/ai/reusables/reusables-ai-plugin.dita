@@ -1133,8 +1133,8 @@ Output:
       <!-- If this reusable section needs to be used as a standalone topic, use ../custom_xpath_functions.dita. -->
       <p id="p_k1x_jk3_qxb">The <b>AI Positron</b> contributes some XPath extension functions
         (available in the content completion proposals for Schematron, XSLT, XQuery, and XPath) that
-        can be used to rephrase content, perform validation checks on existing content, or to invoke
-        an AI action:</p>
+        can be used to rephrase content, perform validation checks on existing content, to invoke
+        an AI action, or to chat with the AI directly:</p>
       <p id="p_adr_nl3_qxb">
         <dl id="dl_kbv_nl3_qxb">
           <dlentry id="dlentry_lbv_nl3_qxb">
@@ -1236,6 +1236,65 @@ Output:
                     (string).</li>
                 </ul></p>
               <p>It returns a string that represents the content returned by the action.</p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>ai:chat(messages)</codeph> or <codeph>ai:chat(messages, options)</codeph></dt>
+            <dd>
+              <p>Use this function from namespace <i>http://www.oxygenxml.com/ai/function</i> to
+                send a conversation to the AI and obtain its response along with the complete
+                conversation history (so the conversation can be continued over multiple turns).</p>
+              <p>The function parameters are:<ul>
+                  <li><codeph>messages</codeph> - The conversation to send. It can be a single
+                    string (treated as a user message), a map with <codeph>role</codeph> and
+                    <codeph>content</codeph> keys, or a sequence that mixes strings and message maps.
+                    The <codeph>messages</codeph> array returned by a previous call (or by
+                    <codeph>ai:resolve-action</codeph>) can be passed back in to continue a
+                    conversation.</li>
+                  <li><codeph>options</codeph> - An optional map with completion options:
+                    <codeph>model</codeph>, <codeph>temperature</codeph>, <codeph>max-tokens</codeph>,
+                    <codeph>max-completion-tokens</codeph>, <codeph>reasoning-effort</codeph>,
+                    <codeph>stop</codeph>, <codeph>tools</codeph> (full tool definitions, such as
+                    those produced by <codeph>ai:resolve-action</codeph>), <codeph>cache</codeph>,
+                    and <codeph>on-error</codeph> (<codeph>'throw'</codeph> or
+                    <codeph>'return'</codeph>).</li>
+                </ul></p>
+              <p>It returns a map with the following keys: <codeph>response</codeph> (the final
+                assistant reply, as a string), <codeph>messages</codeph> (the complete conversation
+                history, as an array of message maps), an optional <codeph>warnings</codeph> array,
+                and an optional <codeph>error</codeph> string (present only when
+                <codeph>on-error</codeph> is <codeph>'return'</codeph> and the call failed).</p>
+              <p>Here is an example that asks the AI a question and outputs the
+                reply:<codeblock outputclass="language-xml">&lt;xsl:value-of select="ai:chat('Summarize what a shortdesc element is in DITA.')?response"/></codeblock></p>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt><codeph>ai:resolve-action(action)</codeph> or <codeph>ai:resolve-action(action, options)</codeph></dt>
+            <dd>
+              <p>Use this function from namespace <i>http://www.oxygenxml.com/ai/function</i> to turn
+                a predefined AI action into the ready-to-use messages and options that you pass to
+                <codeph>ai:chat</codeph>. This lets you reuse a configured action (its prompt, model,
+                and tools) from XPath, with full control over how it is sent to the AI.</p>
+              <p>The function parameters are:<ul>
+                  <li><codeph>action</codeph> - The action to resolve. It can be the ID of a
+                    registered action (string), the URL of an action definition file (string), or an
+                    inline map that defines the action (with keys such as <codeph>prompt</codeph> or
+                    <codeph>prompt_ref</codeph>, <codeph>parameters</codeph>, and
+                    <codeph>base-uri</codeph>).</li>
+                  <li><codeph>options</codeph> - An optional map of overrides, such as
+                    <codeph>model</codeph>, <codeph>temperature</codeph>, <codeph>max-tokens</codeph>,
+                    <codeph>max-completion-tokens</codeph>, <codeph>reasoning-effort</codeph>,
+                    <codeph>base-uri</codeph> (used to resolve a relative <codeph>prompt_ref</codeph>
+                    path), and <codeph>extra-context</codeph>.</li>
+                </ul></p>
+              <p>It returns a map with the following keys: <codeph>messages</codeph> (the resolved
+                conversation messages, including the system message) and <codeph>opts</codeph> (the
+                completion options, including any tools), plus an optional <codeph>warnings</codeph>
+                array. They are intended to be passed to <codeph>ai:chat</codeph>.</p>
+              <p>Here is an example that resolves a registered action and runs it with
+                <codeph>ai:chat</codeph> on the current element's
+                content:<codeblock outputclass="language-xml">&lt;xsl:variable name="a" select="ai:resolve-action('summarize-action')"/>
+&lt;xsl:value-of select="ai:chat(($a?messages, string(.)), $a?opts)?response"/></codeblock></p>
             </dd>
           </dlentry>
         </dl>
