@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-deployment-architecture">
+  <title>Deployment Architecture Overview</title>
+  <shortdesc>A high-level overview of the on-premises <ph keyref="cfEnterprise"/> deployment: the
+    single-host container architecture, bundled technology stack, client tiers, and sizing
+    guidance.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Content Fusion Enterprise deployment architecture</indexterm>
+        <indexterm>On-premises deployment overview</indexterm>
+        <indexterm>Technology stack</indexterm>
+        <indexterm>Hardware sizing</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_intro">The <ph keyref="cfEnterprise"/> solution is delivered as a self-contained Linux
+      installer. The entire platform runs as containers on a single Linux host (a virtual machine or
+      physical server that you control). The components communicate over an isolated internal
+      network on that host, and only a small, well-defined set of ports is exposed externally. This
+      topic describes the overall architecture and points to the topics that cover installation,
+      configuration, and operation in detail.</p>
+    <section id="solution_architecture">
+      <title>Solution Architecture</title>
+      <p id="p_arch_diagram">All services run on a single Linux host. The web tier terminates HTTPS
+        and proxies requests to the core platform services, which use bundled PostgreSQL and Redis
+        instances. Outbound integrations are optional and can be disabled, so the deployment is
+        capable of running fully air-gapped.</p>
+      <codeblock id="codeblock_architecture">   ┌──────────────────┐
+   │  Browser         │  HTTPS (reviewers, authors, administrators)
+   │  (Users / Admin) │───────────────────────────┐
+   └──────────────────┘                           │
+                                                  ▼
+   ┌──────────────────┐         ┌────────────────────────────────────────────────┐
+   │ Oxygen XML       │  HTTPS  │   CONTENT FUSION SERVER  (single Linux host)   │
+   │ Author (desktop) │───────▶│                                               │
+   │  via connector   │         │   ┌──────────────────────────────────────────┐ │
+   └──────────────────┘         │   │  Web tier (NGINX)                        │ │
+                                │   │  Static UI · HTTPS termination · proxy   │ │
+                                │   └───────────────────┬──────────────────────┘ │
+                                │                       │ (internal network)      │
+                                │   ┌───────────────────┴──────────────────────┐ │
+                                │   │  Core platform services                  │ │
+                                │   └───┬───────────────────────┬──────────────┘ │
+                                │       │                       │                 │
+                                │   ┌───▼────────┐      ┌────────▼───────┐         │
+                                │   │ PostgreSQL │      │ Cache (Redis)  │         │
+                                │   │ + backups  │      └────────────────┘         │
+                                │   └────────────┘                                 │
+                                │                                                  │
+                                └──────────────────────────────────────────────────┘
+
+   Optional outbound integrations (each can be disabled — air-gap capable):
+     • Corporate SMTP   • LDAP / Active Directory   • OIDC SSO provider
+     • Git / GitLab servers   • AI / LLM provider (only if AI features are enabled)</codeblock>
+      <p id="p_client_tiers">Users connect to <ph keyref="product"/> through two client tiers:</p>
+      <dl id="dl_client_tiers">
+        <dlentry id="dlentry_browser">
+          <dt>Web browser</dt>
+          <dd>The primary client for reviewers, authors, and administrators. The review UI runs in
+            any modern web browser over HTTPS, so the end-user operating system is
+            unconstrained.</dd>
+        </dlentry>
+        <dlentry id="dlentry_desktop">
+          <dt>Oxygen XML Author / Editor (desktop client)</dt>
+          <dd>The installed desktop application on author workstations connects to <ph
+              keyref="product"/> through its built-in <uicontrol>Oxygen Content Fusion
+              Connector</uicontrol> add-on over HTTPS to submit documents for review and retrieve
+            feedback. The desktop client is installed and licensed independently and runs on
+            Windows, macOS, and Linux.</dd>
+        </dlentry>
+      </dl>
+    </section>
+    <section id="technology_stack">
+      <title>Technology Stack</title>
+      <p id="p_stack_intro">All runtimes and infrastructure components below are bundled inside the
+        delivered container images. You do <b>not</b> install or separately maintain a Java runtime,
+        application server, or database on the host — only a supported operating system and a
+        container engine are required.</p>
+      <table id="table_tech_stack" colsep="1" rowsep="1">
+        <title>Bundled technology stack</title>
+        <tgroup cols="2">
+          <colspec colname="c1" colnum="1" colwidth="1*"/>
+          <colspec colname="c2" colnum="2" colwidth="2*"/>
+          <thead>
+            <row>
+              <entry>Layer</entry>
+              <entry>Technology</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Application runtime</entry>
+              <entry>Java and Node.js</entry>
+            </row>
+            <row>
+              <entry>Application / web server</entry>
+              <entry>Apache Tomcat (for the Java services)</entry>
+            </row>
+            <row>
+              <entry>Database</entry>
+              <entry>PostgreSQL</entry>
+            </row>
+            <row>
+              <entry>Cache / session store</entry>
+              <entry>Redis</entry>
+            </row>
+            <row>
+              <entry>Web / reverse-proxy tier</entry>
+              <entry>NGINX</entry>
+            </row>
+            <row>
+              <entry>Packaging and orchestration</entry>
+              <entry>Docker containers on Linux, orchestrated with Docker Compose</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <note id="note_sbom">A full inventory of bundled components and their versions (SBOM) is
+        available on request for vulnerability scanning and compliance.</note>
+    </section>
+    <section id="supported_operating_systems">
+      <title>Supported Operating Systems</title>
+      <p id="p_os">The <ph keyref="cfEnterprise"/> server runs on a 64-bit Linux host with a
+        supported container engine (Ubuntu 22.04/24.04 LTS, Red Hat Enterprise Linux 9, or CentOS
+        9). For the complete list of supported distributions, host prerequisites, and the
+        installation procedure, see <xref href="cf-linux.dita#cf-linux"/>.</p>
+    </section>
+    <section id="hardware_sizing">
+      <title>Hardware Sizing Guidance</title>
+      <p id="p_sizing_intro">The workload is driven primarily by publishing/validation batch jobs
+        (CPU-intensive) and active review sessions (memory-intensive), more than by raw connection
+        count. The baseline below runs the full set of services for a small team; scale up for
+        higher concurrent load.</p>
+      <table id="table_sizing" colsep="1" rowsep="1">
+        <title>Sizing starting points by expected load</title>
+        <tgroup cols="4">
+          <colspec colname="c1" colnum="1" colwidth="2*"/>
+          <colspec colname="c2" colnum="2" colwidth="1*"/>
+          <colspec colname="c3" colnum="3" colwidth="1*"/>
+          <colspec colname="c4" colnum="4" colwidth="1*"/>
+          <thead>
+            <row>
+              <entry>Expected load</entry>
+              <entry>CPU</entry>
+              <entry>RAM</entry>
+              <entry>Storage</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Small (up to ≈25 concurrent users)</entry>
+              <entry>4 vCPU</entry>
+              <entry>16 GB</entry>
+              <entry>100 GB</entry>
+            </row>
+            <row>
+              <entry>Medium (≈25–75 concurrent users)</entry>
+              <entry>8 vCPU</entry>
+              <entry>32 GB</entry>
+              <entry>250 GB+</entry>
+            </row>
+            <row>
+              <entry>Large (≈75–150 concurrent users, including publishing)</entry>
+              <entry>16 vCPU</entry>
+              <entry>64 GB</entry>
+              <entry>500 GB+</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <ul id="ul_sizing_notes">
+        <li id="li_sizing_storage">Storage grows with the number and size of review repositories,
+          document revisions, published outputs, and the search index. Provision generously and
+          monitor it; an SSD is strongly recommended. For details about how storage is used and how
+          to add more, see <xref href="cf-disk-space.dita"/> and <xref
+            href="cf-increasing-available-disk-space.dita"/>.</li>
+        <li id="li_sizing_publishing">Publishing is the heaviest CPU consumer; sites that publish
+          large DITA maps frequently should favor more vCPUs.</li>
+        <li id="li_sizing_memory">For deployments that need more memory allocated to the services,
+          see <xref href="cf-increase-memory.dita"/>.</li>
+        <li id="li_sizing_final">These are starting points. Final sizing should be confirmed with
+            <term>Oxygen</term> based on your document volume and concurrency profile.</li>
+      </ul>
+    </section>
+    <section id="network_and_ports">
+      <title>Network and Ports</title>
+      <p id="p_network">TLS is terminated at the web tier. Inbound access is over HTTPS on port 443
+        (browsers, the desktop Author connector, and Web Author), with port 80 typically redirecting
+        to HTTPS and port 9080 serving the administration console (restrict this to administrator
+        networks). All other internal service ports (database, cache, application servers) are not
+        exposed outside the host. For the authoritative list of incoming and outgoing connections,
+        see <xref href="cf-security.dita"/>. For the external services and endpoints that must be
+        reachable when the corresponding features are enabled, see <xref
+          href="cf-configure-firewall.dita"/>.</p>
+    </section>
+    <section id="authentication_and_integrations">
+      <title>Authentication and Integrations</title>
+      <p id="p_auth">Authentication methods can be enabled individually or in combination and are
+        configured through the administration console. Supported methods include built-in local
+        accounts (email and password), LDAP / Active Directory (LDAPS), OIDC single sign-on (for
+        example, Microsoft Entra ID, Okta, or Keycloak), and optional OAuth social login (Google,
+        GitHub). LDAP/Active Directory or OIDC SSO are recommended for enterprise IT. Multi-factor
+        authentication is not implemented in the application layer; enforce MFA at the identity
+        provider when federating via OIDC or LDAP.</p>
+      <p id="p_auth_links">For configuration details, see the following topics:</p>
+      <ul id="ul_auth_links">
+        <li id="li_auth_main"><xref href="cf-admin-page-authentication.dita"/> — single sign-on,
+          email/password sign-up restrictions, LDAP settings, and account lockout.</li>
+        <li id="li_auth_oidc"><xref href="cf-oidc-auth.dita"/> — OIDC single sign-on
+          configuration.</li>
+        <li id="li_auth_google"><xref href="cf-google-auth.dita"/> and <xref
+            href="cf-github-auth.dita"/> — OAuth social login.</li>
+        <li id="li_auth_mail"><xref href="cf-admin-page-mail.dita"/> — SMTP host/port for email
+          notifications and password resets. Email is optional; if no mail server is configured,
+          email-based features are disabled accordingly.</li>
+      </ul>
+    </section>
+    <section id="backup_ha_dependencies">
+      <title>Backup, High Availability, and Dependencies</title>
+      <p id="p_backup">The appliance includes built-in backup tooling (shell scripts that save the
+        backup locally). Integrate the backups into your organization's standard backup rotation and
+        storage, and test restores periodically. For the backup and restore procedure, see <xref
+          href="cf-enterprise-backups.dita"/>.</p>
+      <p id="p_ha">The standard Enterprise appliance is a single-host deployment with no built-in
+        active/active clustering. Use regular backups plus a documented restore procedure as the
+        disaster-recovery strategy.</p>
+      <p id="p_dependencies">The deployment is self-contained by default and has no mandatory
+        external or internet dependencies for core review functionality — it can run fully
+        air-gapped. Optional external integrations (SMTP, LDAP/Active Directory, OIDC SSO, and Git
+        servers) are the only services that communicate outside the host, and each can be turned off
+        or pointed at internal equivalents. Updates are applied using the provided installation kit
+        (new image versions); see <xref href="cf-upgrading.dita"/>.</p>
+    </section>
+  </body>
+  <related-links>
+    <link href="cf-linux.dita"/>
+    <link href="cf-security.dita"/>
+    <link href="cf-configure-firewall.dita"/>
+    <link href="cf-enterprise-backups.dita"/>
+    <link href="cf-integrate-ai-positron-overview.dita"/>
+  </related-links>
+</topic>
