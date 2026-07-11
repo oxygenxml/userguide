@@ -34,25 +34,59 @@
           branch, or the current local branch.</li>
         <li><uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-link-with-editor"/>
           (on by default) keeps the history in sync with the active editor.</li>
-        <li>A text filter narrows the list by message, date, author, commit ID, branch, or tag.</li>
+        <li>A text filter narrows the list by message, date, author, commit ID, branch, or tag. When
+          the field contains text, a clear (<uicontrol>X</uicontrol>) button appears; clearing the
+          filter keeps your current selection in view.</li>
+      </ul>
+    </section>
+    <section id="section_status_labels">
+      <title>Status Labels</title>
+      <p>A status bar shows the current working copy, the branch, and — when you're viewing the
+        history of a single resource — the file whose history is displayed. These labels are
+        interactive:</p>
+      <ul>
+        <li>Select the branch link to scroll the history table to the tip of that branch.</li>
+        <li>Select the <uicontrol>X</uicontrol> next to the file to clear the file filter and show
+          the full repository history again. Turning off
+            <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-link-with-editor"/>
+          also clears the file filter.</li>
       </ul>
     </section>
     <section id="section_table">
       <title>History Table</title>
-      <p>Each row shows the graph, message, date, author, and commit ID, latest first. Branch and
-        tag labels appear on their commits, the current local branch is highlighted, and hovering a
-        branch label shows its tracking information with a
-          <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-go-to-tracked-branch"/>
-        link. A grey
+      <p>Each row shows the graph, message, date, author, and commit ID, latest first. When the
+        working copy has uncommitted changes, a grey
           <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-uncommitted-changes"/>
-        row represents your working copy. Right-click a commit for actions such as
+        node appears at the top of the graph, representing the future commit; it disappears once you
+        commit or discard those changes.</p>
+      <p>Right-click a commit for actions such as
           <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-create-tag"/>,
           <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-cherry-pick"/>,
           <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-revert-commit"/>,
           <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-reset-to-commit"/>,
           <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-rebase"/>,
         and
-          <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-explain-commit"/>.</p>
+          <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-explain-commit"/>.
+        On the tip commit of the current branch, the menu also includes
+          <uicontrol conref="lib/git-menu-uicontrols.dita#git-menu-uicontrols/menu-pull"/> and
+          <uicontrol conref="lib/git-menu-uicontrols.dita#git-menu-uicontrols/menu-push"/> (the pull
+        action follows the type set in your preferences); these appear only when the branch has a
+        tracked remote, and after a pull the view scrolls to the new tip.</p>
+      <p><b>Branch labels</b> on a commit are interactive. Double-click a label to switch to that
+        branch. Hover a label for its details — for a local branch: its name, a current-branch
+        marker, its tracking branch, and how far ahead or behind it is (counts of 100 or more show as
+          <codeph>99+</codeph>); for a remote branch: the local branches that track it. The current
+        local branch's label is highlighted. Right-click a label — rather than elsewhere on the row —
+        for label-specific actions:</p>
+      <ul>
+        <li><uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-go-to-tracking-branch"/>
+          (local branch) or
+            <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-go-to-local-branch"/>
+          (remote branch) selects the related branch's tip commit.</li>
+        <li><uicontrol>Delete...</uicontrol> removes a local branch, after a confirmation.</li>
+        <li><uicontrol conref="lib/git-branch-uicontrols.dita#git-branch-uicontrols/branch-show-in-manager"/>
+          opens the Branch Manager with the branch selected (local or remote).</li>
+      </ul>
       <p>
         <fig>
           <title>Branch Label Tooltip</title>
@@ -64,7 +98,9 @@
       <title>Commit Details and Affected Resources</title>
       <p>The
         <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-commit-details"/>
-        pane shows the commit ID, parent, author, committer, dates, and message. The
+        pane shows the commit ID, parent, author, date, committer, any refs (branches and tags) on
+        the commit, and the message. The committer date is shown next to the committer only when it
+        differs from the author date (for example, after a rebase, cherry-pick, or amend). The
           <uicontrol conref="lib/git-history-uicontrols.dita#git-history-uicontrols/hist-affected-resources"/>
         pane lists the files the commit changed. Right-click a file for these actions (which ones
         are available depends on how the file changed):</p>
