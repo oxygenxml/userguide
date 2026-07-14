@@ -17,9 +17,9 @@ if (!issueKey) {
   process.exit(1);
 }
 
-var token = process.env.JIRA_PERSONAL_TOKEN;
+var token = process.env.JIRA_PERSONAL_TOKEN || process.env.SECRET_JIRA_PERSONAL_TOKEN;
 if (!token) {
-  console.error('Error: JIRA_PERSONAL_TOKEN must be set.');
+  console.error('Error: JIRA_PERSONAL_TOKEN or SECRET_JIRA_PERSONAL_TOKEN must be set.');
   console.error('Create a token at: Jira profile > Personal access tokens');
   process.exit(1);
 }
