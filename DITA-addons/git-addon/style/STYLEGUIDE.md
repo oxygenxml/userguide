@@ -55,7 +55,7 @@ Generic `<topic>` is **banned**. Every topic is one of four types:
   </keywords></metadata></prolog>
   <taskbody>
     <context>
-      <p>You clone from the <ph conref="lib/git-staging-uicontrols.dita#gs-uicontrols/gs-view">Git Staging</ph> view.</p>
+      <p>You clone from the <uicontrol conkeyref="gs-uicontrols/gs-view"/> view.</p>
     </context>
     <steps>
       <step><cmd>On the <uicontrol>Git Staging</uicontrol> toolbar, open the
@@ -180,7 +180,7 @@ Git-specific:
 - **Git as a system vs named UI action.** Lowercase prose for the concept/verb ("push your commits", "rebase onto `main`"); `<uicontrol>` with the button's own capitalization for the named action (`<uicontrol>Push</uicontrol>`, `<uicontrol>Stage Selected</uicontrol>`).
 - **`<codeph>`** for refs, branch names, commands, and env vars: `HEAD`, `main`, `origin`, `HTTPS`, `ssh-agent`, `HTTPS_PROXY`, `GNUPGHOME`. Use `<filepath>` when it is specifically a file or path (`.gitignore`, `~/.gnupg`, `.xpr`).
 - **Editor variables** in `<codeph>`: `${git(working_copy_name)}`.
-- **Reuse UI-label strings from `lib/`** via `conref`/`conkeyref` — name a control once, reference it everywhere (see ARCHITECTURE.md).
+- **Reuse UI-label strings from `lib/`** via `conkeyref` addressed by the lib handle key (e.g. `conkeyref="gs-uicontrols/gs-view"`, not a `lib/…​.dita#…` path) — name a control once, reference it everywhere (see ARCHITECTURE.md).
 
 ---
 
@@ -210,7 +210,7 @@ These are validated automatically in Oxygen. Follow them as you author:
 - **Descriptive link text** — "see [Pull Changes]", never "click here".
 - **External links** — `format="html" scope="external"` (GitHub/GitLab/Bitbucket docs, Git LFS, etc.).
 - **One canonical home per fact** — server-auth caveats live in Troubleshooting and are referenced, not copied.
-- Use the three-way reuse contract (keyref / conref / xref) from ARCHITECTURE.md.
+- Use the three-way reuse contract (keyref / conkeyref / xref) from ARCHITECTURE.md.
 
 ---
 
@@ -253,5 +253,5 @@ These are validated automatically in Oxygen. Follow them as you author:
 - [ ] At least one `Git Client add-on<…>` indexterm?
 - [ ] Images in `<fig>` with title, PNG, white bg, ≤ 650 px; only where they help?
 - [ ] Links resolve; descriptive text; external links `format="html" scope="external"`; link density low?
-- [ ] `@id` == filename; stable IDs only on real xref/conref targets?
+- [ ] `@id` == filename; stable IDs only on real xref/conref/conkeyref targets?
 - [ ] American spelling; house list-punctuation rules followed?

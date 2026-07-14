@@ -20,10 +20,12 @@ This document explains *how the doc set is built* — topic types, reuse mechani
 | Mechanism | Use it for | Rule of thumb |
 |---|---|---|
 | **`keyref`** (on `<ph>`, `<keyword>`, `<image>`, `<xref>`) | atomic, variable-like values: product name, add-on name, a shared icon, an external URL | "One word/thing that could change globally → key it." |
-| **`conref` / `conkeyref`** | whole reusable *blocks*: a shared note, `<li>`, warning, or a `<uicontrol>` element (which may carry an inline icon) from `lib/` | "A chunk of authored markup reused verbatim → conref it." |
+| **`conkeyref`** (preferred) / `conref` | whole reusable *blocks*: a shared note, `<li>`, warning, or a `<uicontrol>` element (which may carry an inline icon) from `lib/` | "A chunk of authored markup reused verbatim → conkeyref it via the lib handle key." |
 | **`xref`** | sparing pointers to a reference entry or a related topic (in-page anchors) | "Sending the reader elsewhere → link once, never duplicate; keep it rare." |
 
-**Why conref (not keyref) for UI labels:** a control label is often a marked-up `<uicontrol>` carrying an inline `<image>` icon. `keyref` on a `<ph>` can't cleanly carry that icon child; `conref` copies the whole element. So: **conref for labels with structure and an owning UI surface; keyref for global brand variables.**
+**Why conref (not keyref) for UI labels:** a control label is often a marked-up `<uicontrol>` carrying an inline `<image>` icon. `keyref` on a `<ph>` can't cleanly carry that icon child; a content reference copies the whole element. So: **content reference for labels with structure and an owning UI surface; keyref for global brand variables.**
+
+**Address `lib/` blocks by key, not path.** Every `lib/` topic has a handle key in the map (e.g. `gs-uicontrols` → `git-staging-uicontrols.dita`; see §3–§4), so write `conkeyref="gs-uicontrols/gs-view"` rather than a hardcoded `conref="lib/…​.dita#…"` path. The key indirection means moving or renaming a lib file touches only its one keydef, not the hundreds of references — and the reference reads shorter and drops the repeated topic id.
 
 ---
 
@@ -35,8 +37,8 @@ Defined locally in the submap's `<topicgroup id="keys">`:
 |---|---|---|
 | `git-client-manual-download` | external URL (`format="html" scope="external"`) | add-on download link |
 | `plugin-git-client` | keyword "Git Client" | add-on name brand token |
-| `sa-preferences` | shared preferences topic | preferences surface |
-| `sa-toolbar` | shared toolbar topic | toolbar surface |
+| `gs-uicontrols`, `hist-uicontrols`, `branch-uicontrols`, `menu-uicontrols`, `pref-uicontrols` | the matching `lib/*-uicontrols.dita` topic | conkeyref handle for that surface's UI labels |
+| `reuse-lib` | `lib/git-reusables.dita` | conkeyref handle for shared blocks |
 
 Consumed from **upstream** (`add-ons.ditamap` / `DITA/maps/keydefs.ditamap`) — **never redefined here**:
 
@@ -50,16 +52,16 @@ Because these resolve at publication time from the root map, **validate and prev
 
 ## 4. The `lib/` reuse library (resource-only, high fan-in)
 
-`lib/` holds the building blocks that are conref'd across many topics. They are physically separated from authored pages to signal "high fan-in — edit with care." Each is a plain `<topic>` referenced `processing-role="resource-only"` from the submap.
+`lib/` holds the building blocks that are reused (via `conkeyref`) across many topics. They are physically separated from authored pages to signal "high fan-in — edit with care." Each is a plain `<topic>` referenced `processing-role="resource-only"` from the submap, and each has a **handle key** (§3) so topics address it by key, not path — e.g. `conkeyref="gs-uicontrols/gs-view"`.
 
-| File | Holds |
-|---|---|
-| `git-staging-uicontrols.dita` | all Git Staging view control labels (toolbar, areas, stage controls, commit area, ignore submenu, conflict actions) |
-| `git-history-uicontrols.dita` | Git History view + explain-commit labels |
-| `git-branch-uicontrols.dita` | Git Branch Manager labels |
-| `git-menu-uicontrols.dita` | Git menu + contextual-action labels |
-| `git-preferences-uicontrols.dita` | preferences-page navigation + option labels |
-| `git-reusables.dita` | git-local reusable *blocks* (shared prereqs/notes used by ≥ 2 topics) |
+| File | Handle key | Holds |
+|---|---|---|
+| `git-staging-uicontrols.dita` | `gs-uicontrols` | all Git Staging view control labels (toolbar, areas, stage controls, commit area, ignore submenu, conflict actions) |
+| `git-history-uicontrols.dita` | `hist-uicontrols` | Git History view + explain-commit labels |
+| `git-branch-uicontrols.dita` | `branch-uicontrols` | Git Branch Manager labels |
+| `git-menu-uicontrols.dita` | `menu-uicontrols` | Git menu + contextual-action labels |
+| `git-preferences-uicontrols.dita` | `pref-uicontrols` | preferences-page navigation + option labels |
+| `git-reusables.dita` | `reuse-lib` | git-local reusable *blocks* (shared prereqs/notes used by ≥ 2 topics) |
 
 **ID prefix scheme** (regularized — one scheme, self-documenting):
 
