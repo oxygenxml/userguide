@@ -1,12 +1,12 @@
 var fs = require("fs");
 var path = require("path");
 
-var pat = process.env.JIRA_PERSONAL_TOKEN;
+var pat = process.env.JIRA_PERSONAL_TOKEN || process.env.SECRET_JIRA_PERSONAL_TOKEN;
 var issueKey = process.argv[2];
 var attachmentIds = process.argv.slice(3);
 
 if (!pat) {
-  console.error("Error: JIRA_PERSONAL_TOKEN must be set.");
+  console.error("Error: JIRA_PERSONAL_TOKEN or SECRET_JIRA_PERSONAL_TOKEN must be set.");
   console.error("Create a token at: Jira profile > Personal access tokens");
   process.exit(1);
 }

@@ -23,7 +23,9 @@ This skill extends the AI's context with data from a Jira issue so the AI can he
 
 ### Option 1: Run the fetch script
 
-The project includes a script that reads `JIRA_PERSONAL_TOKEN` and fetches issue data from `https://jira.sync.ro/`. The script lives next to the skill file in `jira-fetch.js`.
+When running the command line if it has parameters to pass env variables to it, pass the env variable named `SECRET_JIRA_PERSONAL_TOKEN` with value `${secret(SECRET_JIRA_PERSONAL_TOKEN)}`.
+
+The project includes a script that fetches issue data from `https://jira.sync.ro/`. The script lives next to the skill file in `jira-fetch.js`.
 
 1. Check if Node.js is installed:
 
