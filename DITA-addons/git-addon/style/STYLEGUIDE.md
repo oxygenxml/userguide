@@ -230,11 +230,11 @@ These are validated automatically in Oxygen. Follow them as you author:
 ## 9. Consistency Decisions (the short list)
 
 - **View names:** "Git Staging view", "Git History view", "Git Branch Manager view" — lowercase "view", following the name. Never "panel", "window", or "tab".
-- **Menus:** "context menu" (not "contextual menu") for the right-click menu; "contextual Git actions" only for the feature set as a whole.
+- **Menus:** "contextual menu" for the right-click menu (this is the established Oxygen User Guide norm — the main guide uses "contextual menu" ~900 times vs "context menu" a handful; do not use "context menu").
 - **select vs click:** use **select** for choosing an action, menu item, button, checkbox, or list entry. Reserve **click** for when the physical mouse action matters (a graph node); use **double-click** explicitly. Never "click on".
 - **Repository / working copy / remote:** "repository" = the Git repository; "working copy" = the local checkout the Git Client currently operates on; "the remote" = the remote repository. Never "repo".
 - **Operations vs actions:** lowercase prose for the verb ("push your commits"); `<uicontrol>` with button case for the named action. Decide each action's capitalization once (match the button text) and reuse it from `lib/`.
-- **AI vs Positron:** "AI" for the capability; **Positron** where the AI service is actually invoked (AI conflict resolution, explain commit, generate commit message).
+- **AI Positron name:** the AI product is **AI Positron** — always reference it with the key `<ph keyref="plugin-positron"/>` (defined in `add-ons.ditamap`, expands to "AI Positron"), never hardcode the name or use bare "Positron". Use plain "AI" only for the generic capability. The "requires AI Positron" prerequisite note is `conkeyref="reusables-addons/important_requires_positron"`.
 - **Numbers:** the outdated-branch check runs "every 3.5 hours".
 - **Version:** this doc set targets Git Client add-on **6.0**.
 
