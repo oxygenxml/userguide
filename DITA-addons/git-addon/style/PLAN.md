@@ -74,7 +74,7 @@ Extends the house guide at `DITA/positron-ai-actions/docs/addons-ai/dependencies
 6. **Images** — PNG, white bg, ≤650×650, wrapped in `<fig>` with title (noun phrase); only when they aid orientation.
 7. **Linking & reuse** — the three-way reuse contract (below); descriptive link text; external links `format="html" scope="external"`.
 8. **Indexterms** — nested pattern, primary term standardized to exactly **`Git Client add-on`**; lowercase secondary phrases matching search language.
-9. **Consistency decisions (the short list)** — "Git Staging view" (lowercase "view", never "panel/window/tab"); "context menu" not "contextual menu"; **select** for choosing UI (reserve **click** for physical actions, never "click on"); "repository" vs "working copy" vs "the remote" (never "repo"); "AI" for the capability, "Positron" where the AI service is invoked; "3.5 hours" for the outdated-branch check.
+9. **Consistency decisions (the short list)** — "Git Staging view" (lowercase "view", never "panel/window/tab"); "contextual menu" not "context menu"; **select** for choosing UI (reserve **click** for physical actions, never "click on"); "repository" vs "working copy" vs "the remote" (never "repo"); "AI" for the generic capability, **AI Positron** (via the `plugin-positron` key) where the service is invoked; "3.5 hours" for the outdated-branch check.
 10. **Pre-publish checklist.**
 
 ---

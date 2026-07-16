@@ -156,6 +156,8 @@ The `<shortdesc>` is phrased as the symptom — that is what search and any rela
 - **Concept / reference titles** — noun phrases: "Git Staging View", "Git Actions Reference", "Advanced Workflows".
 - **Troubleshooting titles** — a symptom statement: "Push Is Rejected Because the Branch Is Behind".
 - **`<shortdesc>` is mandatory on every topic.** One sentence, states the benefit or purpose, reads as a standalone search snippet. Do not start with "This topic…" or "Describes how to…". Aim 10–25 words.
+- **Keep shortdescs short — cut filler.** Because the guide publishes as one page (`chunk="to-content"`), every shortdesc is rendered together, so length adds up. Drop words that carry no meaning: "The controls **that are available** in…" → "The controls in…"; "The options **available in** the… page" → "The options on the… page"; "**Allow** X **to** analyze… a resolution **that** you can review" → "**Let** X analyze… a resolution you can review". Prefer the shorter wording whenever the extra words don't change the meaning.
+- **"How to …" is allowed for task shortdescs.** A task shortdesc may open with "How to \<verb\>…" (for example, "How to check out an existing branch…"). This is the one sanctioned exception to the "no 'Describes how to…'" rule above — keep it tight and don't pad it.
 
 ---
 
@@ -235,6 +237,10 @@ These are validated automatically in Oxygen. Follow them as you author:
 - **Repository / working copy / remote:** "repository" = the Git repository; "working copy" = the local checkout the Git Client currently operates on; "the remote" = the remote repository. Never "repo".
 - **Operations vs actions:** lowercase prose for the verb ("push your commits"); `<uicontrol>` with button case for the named action. Decide each action's capitalization once (match the button text) and reuse it from `lib/`.
 - **AI Positron name:** the AI product is **AI Positron** — always reference it with the key `<ph keyref="plugin-positron"/>` (defined in `add-ons.ditamap`, expands to "AI Positron"), never hardcode the name or use bare "Positron". Use plain "AI" only for the generic capability. The "requires AI Positron" prerequisite note is `conkeyref="reusables-addons/important_requires_positron"`.
+- **Dialog boxes:** write "dialog box", never bare "dialog" (for example, "the Checkout dialog box").
+- **Manually:** use "manually", not "by hand".
+- **No em-dashes:** avoid em-dash (`—`) asides in topic prose; reflow them into separate sentences or parentheses. In choice/label lists use "`<uicontrol>Label</uicontrol>` - description" with a spaced hyphen, and use "-" (not "—") for an empty or placeholder cell value.
+- **No clause-joining semicolons:** do not join two clauses with a semicolon. Write two sentences, or use a conjunction such as "and", "so", or "then". A semicolon is acceptable only to separate items in a list whose entries already contain commas.
 - **Numbers:** the outdated-branch check runs "every 3.5 hours".
 - **Version:** this doc set targets Git Client add-on **6.0**.
 
