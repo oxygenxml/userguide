@@ -95,7 +95,7 @@
                     <artifactItem>
                       <groupId>com.oxygenxml</groupId>
                       <artifactId>oxygen-publishing-engine</artifactId>
-                      <version>28.1-SNAPSHOT</version>
+                      <version>29.0-SNAPSHOT</version>
                       <classifier>package-full</classifier>
                       <type>zip</type>
                       <outputDirectory>${project.build.directory}</outputDirectory>
@@ -137,6 +137,110 @@
                     	<property name="userguide.server.password" value="${userguide.server.password}"/>
                       <property name="userguide.server.dir" value="${userguide.server.dir}"/>
                    	</ant>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>pdf-private</id>
+      <activation>
+        <property>
+          <name>build-pdf-private</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <userguide.server>userguide.sync.ro</userguide.server>
+        <userguide.server.dir>/var/www/userguide</userguide.server.dir>
+        <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap</editlink.ditamap.url>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-ope</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <phase>process-sources</phase>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.oxygenxml</groupId>
+                      <artifactId>oxygen-publishing-engine</artifactId>
+                      <version>29.0-SNAPSHOT</version>
+                      <classifier>package-full</classifier>
+                      <type>zip</type>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-pdf-private</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build.xml" target="build-pdf">
+                      <property name="p-type" value="-private"/>
+                    </ant>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-pdf-private</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-pdf.xml" target="private">
+                      <property name="userguide.server.user" value="${userguide.server.user}"/>
+                      <property name="userguide.server.password" value="${userguide.server.password}"/>
+                      <property name="userguide.server.dir" value="${userguide.server.dir}"/>
+                    </ant>
                   </tasks>
                 </configuration>
               </execution>
