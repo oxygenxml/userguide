@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA 1.3 Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="git-addon-ts-filesystem-name-collision">
+  <title>The Git Client Reports a Filesystem Name Collision</title>
+  <shortdesc>Tracked files whose names differ only in case or accent collide on your file system, so
+    the Git Client flags them and blocks risky operations.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Git Client add-on<indexterm>filesystem name collision</indexterm></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <troublebody>
+    <condition id="problem">
+      <title>Problem</title>
+      <p>A <uicontrol>Filesystem name collision</uicontrol> warning appears in the <uicontrol
+          conkeyref="gs-uicontrols/gs-view"/> view, and one or more files in the <uicontrol
+          conkeyref="gs-uicontrols/gs-unstaged-files"/> area are marked with a <uicontrol>Path
+          Collision</uicontrol> icon. You cannot stage or discard those files, and stashing (along
+        with the pull and pre-push operations that stash internally) is refused.</p>
+    </condition>
+    <troubleSolution>
+      <cause id="cause">
+        <title>Cause</title>
+        <p>Two files tracked in the repository have names that differ only in letter case or Unicode
+          form (for example, an accented and an unaccented spelling of the same name). On a
+          case-insensitive or Unicode-folding file system (such as macOS APFS or Windows), both
+          names resolve to a single physical file, so the two entries cannot be represented safely.
+          Round-tripping them through a stash would delete the file, so the Git Client refuses those
+          operations until you resolve the collision.</p>
+      </cause>
+      <remedy id="solution">
+        <title>Solution</title>
+        <steps>
+          <step>
+            <cmd>Decide which of the two colliding names to keep.</cmd>
+            <info>
+              <p>Because both names map to the same file on this file system, the Git Client cannot
+                stage or discard them for you. Resolve the collision with command-line Git.</p>
+            </info>
+          </step>
+          <step>
+            <cmd>From a command line in the repository, remove the other name from Git without
+              deleting the file on disk.</cmd>
+            <info>
+              <p>
+                <codeph>git rm --cached "the-other-name.txt"</codeph>
+              </p>
+              <note>Alternatively, open the repository on a case-sensitive file system, where the two
+                files are distinct, and rename or delete one of them there.</note>
+            </info>
+          </step>
+          <step>
+            <cmd>Commit the change.</cmd>
+            <stepresult>
+              <p>Only one entry remains, so the warning clears and the held operations become
+                available again.</p>
+            </stepresult>
+          </step>
+        </steps>
+      </remedy>
+    </troubleSolution>
+  </troublebody>
+</troubleshooting>
