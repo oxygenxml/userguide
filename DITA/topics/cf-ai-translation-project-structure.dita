@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-project-structure">
+  <title>Choosing a Project Structure for Translation</title>
+  <shortdesc>How to organize source and translated content into folders and branches, and how the
+    agent decides which layout to use.</shortdesc>
+  <body>
+    <section id="cf-ai-translation-default-layout">
+      <title>The Default Project Layout</title>
+      <p>By default, <ph keyref="product"/> organizes source and translated content as a folder
+        pair per language, all on the same branch:</p>
+      <ul>
+        <li>The English source content lives under an <filepath>en/</filepath> folder.</li>
+        <li>Each target language lives under its own top-level folder, named after the language tag
+          (for example <filepath>fr-FR/</filepath> or <filepath>de-DE/</filepath>).</li>
+        <li>Inside each language folder, files are laid out at the same relative paths as their
+          English counterparts (for example <filepath>en/topics/install.dita</filepath> and
+            <filepath>fr-FR/topics/install.dita</filepath>).</li>
+        <li>The <xref href="cf-ai-translation-index.dita">translation index</xref> lives at
+            <filepath>.contentfusion/i18n/translation-index.xml</filepath>.</li>
+      </ul>
+      <p>This is the layout the agent assumes when it <xref
+          href="cf-ai-translation-first-run.dita">sets up a project on the first translation
+          job</xref>, and the one described throughout this documentation unless stated
+        otherwise.</p>
+    </section>
+    <section id="cf-ai-translation-layout-detection">
+      <title>How the Agent Determines the Layout</title>
+      <p>When a translation job starts, the agent decides which layout to use in three steps:</p>
+      <ol>
+        <li>If a custom layout is documented in <filepath>agent-instructions.md</filepath>, the
+          agent follows it.</li>
+        <li>Otherwise, the agent tries to detect the layout from the existing content. If you use a
+          non-default layout, document it in <filepath>agent-instructions.md</filepath> so the agent
+          follows it reliably instead of having to infer it every time.</li>
+        <li>If no layout is detected, the agent uses the default layout described above.</li>
+      </ol>
+    </section>
+    <section id="cf-ai-translation-layout-constraints">
+      <title>Choosing a Custom Layout</title>
+      <p>If the default layout does not fit your project, you can use a different one, as long as it
+        respects these constraints:</p>
+      <ul>
+        <li>For compatibility with other tools, keep all DITA resources in subfolders of the folder
+          that contains the DITA map.</li>
+        <li>Give each source file the same relative location in every target language as it has in
+          the source language. Otherwise, links have to be updated during translation which is an
+          error-prone process. For example identifying french files by an <filepath>-fr</filepath>
+          suffix is not recommended.</li>
+        <li>Store the source and target languages on the same branch. For example, to keep an
+          editing branch that contains only English files, create a parallel branch that holds both
+          the English source and all the translations in the default per-language layout, and merge
+          the editing branch into it before each translation job.</li>
+      </ul>
+      <p>Document any non-default layout in detail in <filepath>agent-instructions.md</filepath> so
+        the agent follows it. See <xref href="cf-ai-translation-customizing.dita">Customizing the
+          Translation Behavior</xref>.</p>
+    </section>
+  </body>
+</topic>
