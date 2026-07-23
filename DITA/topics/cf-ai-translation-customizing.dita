@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-customizing">
+  <title>Customizing the Translation Behavior</title>
+  <shortdesc>An overview of the translation customization mechanisms and the kinds of guidance you
+    can give the translation agent.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>agent-instructions.md</indexterm>
+        <indexterm>customizing translation</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>You can steer how the translation agent behaves for your project through two
+      complementary mechanisms.</p>
+    <section id="cf-ai-translation-instructions-mechanisms">
+      <title>Per-Job Prompt vs. agent-instructions.md</title>
+      <ul>
+        <li><b>The per-job prompt</b> - Free-form instructions you type in the
+            <uicontrol>Instructions</uicontrol> field of the <uicontrol>New Translation</uicontrol>
+          dialog when you start a translation job. These instructions apply only to that one job.
+          They are useful for a one-off request, such as asking the agent to retranslate a topic in
+          a particular way.<p>
+            <fig id="fig_start_translation_dialog_customizing">
+              <title>Per-Job Prompt in the New Translation Dialog</title>
+              <image href="../img/CF-start-translation-dialog.png" id="image_ahc_44x_xjc"
+                placement="inline"/>
+            </fig>
+          </p></li>
+        <li><b><filepath>agent-instructions.md</filepath></b> - An optional file at
+            <filepath>.contentfusion/i18n/agent-instructions.md</filepath> in your project's
+          repository. When present, it applies to every translation job that has it in the
+          workspace. This is where you put durable, project-wide guidance: terminology, a style
+          guide, do-not-translate lists, and any other customization described in this section.</li>
+      </ul>
+      <p>Use the per-job prompt for one-time requests and <filepath>agent-instructions.md</filepath>
+        for anything you want to apply consistently across translation jobs.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-references">
+      <title>Referencing Other Files</title>
+      <p><filepath>agent-instructions.md</filepath> does not have to contain everything inline. You
+        can move detailed guidance into separate files, such as a terminology list, a style guide,
+        or a doctype configuration, and reference them from
+          <filepath>agent-instructions.md</filepath>, telling the agent when each one is relevant.
+        Refer to a file by a path relative to <filepath>agent-instructions.md</filepath>.</p>
+      <p>Splitting guidance this way is more than tidiness. It lets the agent load only what a given
+        job needs instead of front-loading every instruction into every job, a form of progressive
+        disclosure. For example, guidance on adding a newly translated publication to your
+        multilingual book matters only when you first translate that publication, and instructions
+        for translating SVG text are irrelevant to an incremental job that touches no SVG files.
+        Keeping such guidance in referenced files, consulted only when relevant, keeps each job
+        focused on the task at hand.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-use-cases">
+      <title>Common Use Cases</title>
+      <p>The following topics walk through specific customizations you can describe in
+          <filepath>agent-instructions.md</filepath>:</p>
+      <ul>
+        <li><xref href="cf-ai-translation-custom-doctypes.dita">Configuring DITA Specializations
+            for Translation</xref></li>
+        <li><xref href="cf-ai-translation-terminology.dita">Enforcing Terminology and
+            Glossaries</xref></li>
+      </ul>
+      <p>The sections below cover shorter customizations you can add directly to
+          <filepath>agent-instructions.md</filepath>.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-do-not-translate">
+      <title>Do-Not-Translate Lists</title>
+      <p>To keep specific strings in their original form (product names, code identifiers, or UI
+        labels that ship untranslated), list them and instruct the agent to leave them unchanged
+        wherever they appear, for example:</p>
+      <p>
+        <codeblock>Never translate the following strings; keep them exactly as written:
+Content Fusion, oXygen, WebHelp, DITA-OT.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-instructions-style-guide">
+      <title>Style Guide</title>
+      <p>To apply your house style, describe it in <filepath>agent-instructions.md</filepath> or
+        reference a separate style-guide file. Cover the choices that matter for your content, for
+        example tone and register, how to address the reader, and punctuation or formatting
+        conventions per language:</p>
+      <p>
+        <codeblock>Use a formal register and address the reader with the formal second person.
+Follow the target language's standard quotation marks. Keep UI labels in
+sentence case.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-instructions-svg">
+      <title>Translating Text Inside SVG Graphics</title>
+      <p>By default, SVG images are treated as binary assets and copied into each target language
+        unchanged, so the text they contain is not translated. If diagram labels or other text
+        inside your SVG graphics need to be localized, you can instruct the agent in
+          <filepath>agent-instructions.md</filepath> to also translate the text content of the SVG
+        files referenced from your content, for example:</p>
+      <p>
+        <codeblock>Always translate the text inside referenced SVG images (for example the
+content of &lt;text> and &lt;tspan> elements), leaving all other SVG markup
+unchanged.</codeblock>
+      </p>
+    </section>
+  </body>
+</topic>

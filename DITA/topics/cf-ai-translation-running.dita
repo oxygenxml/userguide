@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-running">
+  <title>Running an Incremental Translation</title>
+  <shortdesc>Describes what happens when you run the translation agent on a project.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>incremental translation</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>When you start a translation job, the agent first works out the translation status of every
+      source file covered by your selection, then translates only the files that need it. You follow
+      and manage the job from its card, the same way as any other translation job; see <xref
+        href="cf-ai-translation-jobs.dita">Following and Managing a Translation Job</xref>.</p>
+    <section id="cf-ai-translation-status">
+      <title>Translation Status</title>
+      <p>Each source file has one of three statuses for a given target language:</p>
+      <ul>
+        <li><b>Missing</b> - The file has never been translated into this language.</li>
+        <li><b>Stale</b> - The file was translated before, but its English source changed since
+          the last recorded translation.</li>
+        <li><b>Current</b> - The recorded translation already matches the current English
+          source.</li>
+      </ul>
+      <p>The agent determines whether a file is stale by comparing the English file's current
+        version against the source version recorded the last time its translation was
+        updated, using the <xref href="cf-ai-translation-index.dita">translation index</xref>.
+        Current files are skipped entirely, which is what makes translation
+        <i>incremental</i>.</p>
+    </section>
+    <section id="cf-ai-translation-processing">
+      <title>How Files Are Processed</title>
+      <p>For a stale file, it uses the existing translated file as context when producing the
+        updated translation, so previous phrasing and terminology choices carry over instead of
+        being translated from scratch. A file is only marked as current once its translated file
+        passes validation.</p>
+    </section>
+    <section id="cf-ai-translation-manual-edits">
+      <title>Manual Edits Are Preserved as Context</title>
+      <p>Hand-editing a translated file directly does not, by itself, make it stale; staleness is
+        only about whether the English source changed. So a translated file you corrected by hand
+        stays <b>current</b> until its English source changes again. When that happens and the file
+        becomes stale, the agent reuses your manual correction as context for the next translation,
+        so your wording is carried forward rather than retranslated.</p>
+    </section>
+  </body>
+</topic>
