@@ -695,6 +695,224 @@
     </profile>
     
     <profile>
+      <id>webhelp-products</id>
+      <activation>
+        <property>
+          <name>webhelp-products</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <type>-public</type>
+        <micro.version>0</micro.version>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-ope</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <phase>process-sources</phase>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.oxygenxml</groupId>
+                      <artifactId>oxygen-publishing-engine</artifactId>
+                      <classifier>package-full</classifier>
+                      <type>zip</type>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-webhelp-products</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-products">
+                      <property name="products" value="${products}"/>
+                      <property name="type" value="${type}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>deploy-webhelp-products</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="deploy-products">
+                      <property name="products" value="${products}"/>
+                      <property name="type" value="${type}"/>
+                      <property name="userguide.server.user" value="${userguide.server.user}"/>
+                      <property name="userguide.server.password" value="${userguide.server.password}"/>
+                      <property name="major.version" value="${parsedVersion.majorVersion}"/>
+                      <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+                      <property name="micro.version" value="${micro.version}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>webhelp-product</id>
+      <activation>
+        <property>
+          <name>webhelp-product</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <type>-public</type>
+        <micro.version>0</micro.version>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-ope</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <phase>process-sources</phase>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.oxygenxml</groupId>
+                      <artifactId>oxygen-publishing-engine</artifactId>
+                      <classifier>package-full</classifier>
+                      <type>zip</type>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-webhelp-product</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-product">
+                      <property name="product" value="${product}"/>
+                      <property name="type" value="${type}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>deploy-webhelp-product</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="deploy-product">
+                      <property name="product" value="${product}"/>
+                      <property name="type" value="${type}"/>
+                      <property name="userguide.server.user" value="${userguide.server.user}"/>
+                      <property name="userguide.server.password" value="${userguide.server.password}"/>
+                      <property name="major.version" value="${parsedVersion.majorVersion}"/>
+                      <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+                      <property name="micro.version" value="${micro.version}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
       <id>build-single</id>
       <activation>
         <property>

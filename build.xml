@@ -137,6 +137,105 @@
   </target>
   <!-- 
 		==================================
+		WebHelp single product
+		==================================	
+		-->
+  <target name="build-webhelp-products">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <fail unless="products" message="Missing required property: products"/>
+    <property name="type" value="-public"/>
+    <foreach list="${products}" delimiter="," target="build-webhelp-product" param="product"
+      inheritall="true"/>
+  </target>
+  
+  <target name="build-webhelp-product">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <fail unless="product" message="Missing required property: product"/>
+    <property name="type" value="-public"/>
+    <condition property="webhelp.product.default.editlink.ditamap.url"
+      value="github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap"
+      else="github://getFileContent/oxygenxml/userguide/master/DITA/UserManual.ditamap">
+      <equals arg1="${type}" arg2="-private"/>
+    </condition>
+    <property name="editlink.ditamap.url" value="${webhelp.product.default.editlink.ditamap.url}"/>
+    <!-- For website, generate "Edit Link" only for editor SA/Eclipse userguides. -->
+    <condition property="webhelp.product.standard.editlink.remote.ditamap.url"
+      value="${editlink.ditamap.url}" else="">
+      <or>
+        <equals arg1="${product}" arg2="editor-sa"/>
+        <equals arg1="${product}" arg2="editor-eclipse"/>
+      </or>
+    </condition>
+    <if>
+      <equals arg1="${product}" arg2="ug-addons"/>
+      <then>
+        <antcall target="build-addons">
+          <param name="editlink.remote.ditamap.url" value="${editlink.ditamap.url}"/>
+          <param name="p-format" value="webhelp-responsive"/>
+          <param name="p-type" value="${type}"/>
+        </antcall>
+      </then>
+      <elseif>
+        <equals arg1="${product}" arg2="ug-positron-desktop"/>
+        <then>
+          <antcall target="build-positron">
+            <param name="p-product" value="-desktop"/>
+            <param name="p-format" value="webhelp-responsive"/>
+            <param name="p-type" value="${type}"/>
+            <param name="p-path" value="-desktop"/>
+            <param name="p-publication-name" value="Desktop"/>
+          </antcall>
+        </then>
+      </elseif>
+      <elseif>
+        <equals arg1="${product}" arg2="ug-positron-eclipse"/>
+        <then>
+          <antcall target="build-positron">
+            <param name="p-product" value="-eclipse"/>
+            <param name="p-format" value="webhelp-responsive"/>
+            <param name="p-type" value="${type}"/>
+            <param name="p-path" value="-eclipse"/>
+            <param name="p-publication-name" value="Eclipse"/>
+          </antcall>
+        </then>
+      </elseif>
+      <elseif>
+        <equals arg1="${product}" arg2="ug-positron-wa"/>
+        <then>
+          <antcall target="build-positron">
+            <param name="p-product" value="-webauthor"/>
+            <param name="p-format" value="webhelp-responsive"/>
+            <param name="p-type" value="${type}"/>
+            <param name="p-path" value="-wa"/>
+            <param name="p-publication-name" value="Web Author"/>
+          </antcall>
+        </then>
+      </elseif>
+      <elseif>
+        <equals arg1="${product}" arg2="ug-positron-cf"/>
+        <then>
+          <antcall target="build-positron">
+            <param name="p-product" value="-content-fusion"/>
+            <param name="p-format" value="webhelp-responsive"/>
+            <param name="p-type" value="${type}"/>
+            <param name="p-path" value="-cf"/>
+            <param name="p-publication-name" value="Content Fusion"/>
+          </antcall>
+        </then>
+      </elseif>
+      <else>
+        <antcall target="build-single">
+          <param name="p-product" value="${product}"/>
+          <param name="p-format" value="webhelp-responsive"/>
+          <param name="p-type" value="${type}"/>
+          <param name="editlink.remote.ditamap.url"
+            value="${webhelp.product.standard.editlink.remote.ditamap.url}"/>
+        </antcall>
+      </else>
+    </if>
+  </target>
+  <!-- 
+		==================================
 		PDF
 		==================================	
 		-->
@@ -354,7 +453,7 @@
   </target>
   <target name="build-addons-public">
     <property name="editlink.ditamap.url"
-      >gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fuserguide/hotfixes-addons%2Fgit-addons%2F6.0/DITA/add-ons.ditamap</property>
+      >gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fuserguide/hotfixes%2F28.0/DITA/add-ons.ditamap</property>
     <antcall target="build-addons">
       <!--      <param name="editlink.remote.ditamap.url">${editlink.ditamap.url}</param>-->
       <param name="p-format" value="webhelp-responsive"/>
@@ -364,7 +463,7 @@
   <target name="build-addons-private">
     <antcall target="build-addons">
       <param name="editlink.ditamap"
-        >gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fuserguide/hotfixes-addons%2Fgit-addons%2F6.0/DITA/add-ons.ditamap</param>
+        >gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fuserguide/hotfixes%2F28.0/DITA/add-ons.ditamap</param>
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-private"/>
     </antcall>
@@ -380,8 +479,8 @@
       >${project.build.directory}/temp/${p-format}${p-type}/ug-addons</property>
     <property name="p-template"
       >${basedir}/publishing/publishing-template/addons${p-type}.opt</property>
-    <property name="editlink.ditamap"
-      >gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fuserguide/hotfixes-addons%2Fgit-addons%2F6.0/DITA/add-ons.ditamap</property>
+    <property name="editlink.remote.ditamap.url"
+      value="gitgh://https%3A%2F%2Fgithub.com%2Foxygenxml%2Fuserguide/hotfixes%2F28.0/DITA/add-ons.ditamap"/>
     <!-- For website, generate "Edit Link". For add-ons is a different dita map. -->
     <condition property="editlink.ditamap" value="${editlink.remote.ditamap.url}" else="">
       <equals arg1="${p-format}" arg2="webhelp-responsive"/>
@@ -427,6 +526,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-public"/>
       <param name="p-path" value="-desktop"/>
+      <param name="p-publication-name" value="Desktop"/>
     </antcall>
   </target>
   <target name="build-positron-desktop-private">
@@ -435,6 +535,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-private"/>
       <param name="p-path" value="-desktop"/>
+      <param name="p-publication-name" value="Desktop"/>
     </antcall>
   </target>
   <target name="build-positron-eclipse-public">
@@ -443,6 +544,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-public"/>
       <param name="p-path" value="-eclipse"/>
+      <param name="p-publication-name" value="Eclipse"/>
     </antcall>
   </target>
   <target name="build-positron-eclipse-private">
@@ -451,6 +553,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-private"/>
       <param name="p-path" value="-eclipse"/>
+      <param name="p-publication-name" value="Eclipse"/>
     </antcall>
   </target>
   <target name="build-positron-wa-public">
@@ -459,6 +562,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-public"/>
       <param name="p-path" value="-wa"/>
+      <param name="p-publication-name" value="Web Author"/>
     </antcall>
   </target>
   <target name="build-positron-wa-private">
@@ -467,6 +571,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-private"/>
       <param name="p-path" value="-wa"/>
+      <param name="p-publication-name" value="Web Author"/>
     </antcall>
   </target>
   <target name="build-positron-cf-public">
@@ -475,6 +580,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-public"/>
       <param name="p-path" value="-cf"/>
+      <param name="p-publication-name" value="Content Fusion"/>
     </antcall>
   </target>
   <target name="build-positron-cf-private">
@@ -483,6 +589,7 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="-private"/>
       <param name="p-path" value="-cf"/>
+      <param name="p-publication-name" value="Content Fusion"/>
     </antcall>
   </target>
   <target name="build-positron">
@@ -509,6 +616,7 @@
       <arg value="-Dhttps.proxyHost=proxy.sync.ro"/>
       <arg value="-Dhttps.proxyPort=3128"/>
       <arg value="-Dwebhelp.publishing.template=${p-template}"/>
+      <arg value="-Dwebhelp.publication.name=${p-publication-name}"/>
     </exec>
   </target>
 </project>

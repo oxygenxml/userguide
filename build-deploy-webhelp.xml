@@ -21,6 +21,189 @@
 
   </target>
 
+  <target name="deploy-products">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <fail unless="products" message="Missing required property: products"/>
+    <property name="type" value="-public"/>
+    <foreach list="${products}" delimiter="," target="deploy-product" param="product"
+      inheritall="true"/>
+  </target>
+
+  <target name="deploy-product">
+    <fail unless="product" message="Missing required property: product"/>
+    <property name="type" value="-public"/>
+    <property name="major.version" value=""/>
+    <property name="minor.version" value=""/>
+    <property name="micro.version" value="0"/>
+
+    <condition property="deploy.product.public">
+      <equals arg1="${type}" arg2="-public"/>
+    </condition>
+    <condition property="deploy.product.private">
+      <equals arg1="${type}" arg2="-private"/>
+    </condition>
+
+    <fail message="Invalid type '${type}'. Expected '-public' or '-private'.">
+      <condition>
+        <not>
+          <or>
+            <isset property="deploy.product.public"/>
+            <isset property="deploy.product.private"/>
+          </or>
+        </not>
+      </condition>
+    </fail>
+
+    <antcall target="deploy-product-public" inheritAll="true"/>
+    <antcall target="deploy-product-private" inheritAll="true"/>
+  </target>
+
+  <target name="deploy-product-public" if="deploy.product.public">
+    <property name="userguide.server">software-archive.sync.ro</property>
+    <property name="userguide.server.user" value=""/>
+    <property name="userguide.server.password" value=""/>
+    <property name="userguide.server.dir">/repository/userguides</property>
+    <property name="output.dir">webhelp-responsive-public</property>
+
+    <available file="${project.build.directory}/output/${output.dir}/${product}" type="dir"
+      property="local.product.output.exists"/>
+    <fail unless="local.product.output.exists"
+      message="Missing local WebHelp output directory: ${project.build.directory}/output/${output.dir}/${product}"/>
+
+    <!-- Local output directory -> public remote directory mapping. -->
+    <condition property="remote.product.dir" value="ug-author">
+      <equals arg1="${product}" arg2="author-sa"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-authorEclipse">
+      <equals arg1="${product}" arg2="author-eclipse"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-developer">
+      <equals arg1="${product}" arg2="developer-sa"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-developerEclipse">
+      <equals arg1="${product}" arg2="developer-eclipse"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-editor">
+      <equals arg1="${product}" arg2="editor-sa"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-editorEclipse">
+      <equals arg1="${product}" arg2="editor-eclipse"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-chemistry">
+      <equals arg1="${product}" arg2="chemistry"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-content-fusion">
+      <equals arg1="${product}" arg2="content-fusion"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-content-fusion-cloud">
+      <equals arg1="${product}" arg2="content-fusion-cloud"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-pdf-css">
+      <equals arg1="${product}" arg2="pdf-css"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-webhelp-responsive">
+      <equals arg1="${product}" arg2="webhelp-responsive"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-json">
+      <equals arg1="${product}" arg2="json"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-feedback">
+      <equals arg1="${product}" arg2="feedback"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-feedback-enterprise">
+      <equals arg1="${product}" arg2="feedback-enterprise"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-ope">
+      <equals arg1="${product}" arg2="ope"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-license-server">
+      <equals arg1="${product}" arg2="license-server"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-webauthor">
+      <equals arg1="${product}" arg2="webauthor"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-waCustom">
+      <equals arg1="${product}" arg2="webauthor-customization"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-addons">
+      <equals arg1="${product}" arg2="ug-addons"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-positron-desktop">
+      <equals arg1="${product}" arg2="ug-positron-desktop"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-positron-eclipse">
+      <equals arg1="${product}" arg2="ug-positron-eclipse"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-positron-wa">
+      <equals arg1="${product}" arg2="ug-positron-wa"/>
+    </condition>
+    <condition property="remote.product.dir" value="ug-positron-cf">
+      <equals arg1="${product}" arg2="ug-positron-cf"/>
+    </condition>
+
+    <fail unless="remote.product.dir"
+      message="Unsupported product '${product}'. Add a remote.product.dir mapping in deploy-product-public."/>
+
+    <condition property="remote.base.dir"
+      value="${userguide.server.dir}/InstData${major.version}.${minor.version}.${micro.version}"
+      else="${userguide.server.dir}/InstData${major.version}.${minor.version}">
+      <or>
+        <equals arg1="${product}" arg2="webauthor"/>
+        <equals arg1="${product}" arg2="webauthor-customization"/>
+      </or>
+    </condition>
+
+    <echo>Deploy public WebHelp product: ${product}</echo>
+    <echo>Local directory: ${project.build.directory}/output/${output.dir}/${product}</echo>
+    <echo>Remote directory: ${remote.base.dir}/${remote.product.dir}</echo>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      password="${userguide.server.password}" failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
+      command="mkdir -p ${remote.base.dir}/${remote.product.dir}.uploading &amp;&amp; rm -rf ${remote.base.dir}/${remote.product.dir}.uploading/*"/>
+
+    <scp remoteTodir="${userguide.server.user}@${userguide.server}:${remote.base.dir}/${remote.product.dir}.uploading/"
+      trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+      <fileset dir="${project.build.directory}/output/${output.dir}/${product}"/>
+    </scp>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      password="${userguide.server.password}" failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
+      command="rm -rf ${remote.base.dir}/${remote.product.dir}.old &amp;&amp; if [ -d ${remote.base.dir}/${remote.product.dir} ]; then mv ${remote.base.dir}/${remote.product.dir} ${remote.base.dir}/${remote.product.dir}.old; fi &amp;&amp; mv ${remote.base.dir}/${remote.product.dir}.uploading ${remote.base.dir}/${remote.product.dir}"/>
+  </target>
+
+  <target name="deploy-product-private" if="deploy.product.private">
+    <property name="userguide.server">userguide.sync.ro</property>
+    <property name="userguide.server.dir">/var/www/userguide</property>
+    <property name="output.dir">webhelp-responsive-private</property>
+
+    <available file="${project.build.directory}/output/${output.dir}/${product}" type="dir"
+      property="local.product.output.exists"/>
+    <fail unless="local.product.output.exists"
+      message="Missing local WebHelp output directory: ${project.build.directory}/output/${output.dir}/${product}"/>
+
+    <condition property="remote.product.dir" value="feedback-cloud">
+      <equals arg1="${product}" arg2="feedback"/>
+    </condition>
+    <property name="remote.product.dir" value="${product}"/>
+
+    <echo>Deploy private WebHelp product: ${product}</echo>
+    <echo>Local directory: ${project.build.directory}/output/${output.dir}/${product}</echo>
+    <echo>Remote directory: ${userguide.server.dir}/${remote.product.dir}</echo>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      password="${userguide.server.password}" failonerror="true"
+      command="mkdir -p ${userguide.server.dir}/${remote.product.dir}.uploading &amp;&amp; rm -rf ${userguide.server.dir}/${remote.product.dir}.uploading/*"/>
+
+    <scp remoteTodir="${userguide.server.user}:${userguide.server.password}@${userguide.server}:${userguide.server.dir}/${remote.product.dir}.uploading/"
+      trust="yes">
+      <fileset dir="${project.build.directory}/output/${output.dir}/${product}"/>
+    </scp>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      password="${userguide.server.password}" failonerror="true"
+      command="rm -rf ${userguide.server.dir}/${remote.product.dir}.old &amp;&amp; if [ -d ${userguide.server.dir}/${remote.product.dir} ]; then mv ${userguide.server.dir}/${remote.product.dir} ${userguide.server.dir}/${remote.product.dir}.old; fi &amp;&amp; mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
+  </target>
+
   <target name="public">
     <!-- Check for similarities with the private one. -->
   	<property name="userguide.server">software-archive.sync.ro</property>
