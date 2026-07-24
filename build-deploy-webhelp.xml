@@ -32,6 +32,7 @@
   <target name="deploy-product">
     <fail unless="product" message="Missing required property: product"/>
     <property name="type" value="-public"/>
+    <property name="auth.type" value="key"/>
     <property name="major.version" value=""/>
     <property name="minor.version" value=""/>
     <property name="micro.version" value="0"/>
@@ -42,6 +43,12 @@
     <condition property="deploy.product.private">
       <equals arg1="${type}" arg2="-private"/>
     </condition>
+    <condition property="deploy.auth.key">
+      <equals arg1="${auth.type}" arg2="key"/>
+    </condition>
+    <condition property="deploy.auth.password">
+      <equals arg1="${auth.type}" arg2="password"/>
+    </condition>
 
     <fail message="Invalid type '${type}'. Expected '-public' or '-private'.">
       <condition>
@@ -49,6 +56,16 @@
           <or>
             <isset property="deploy.product.public"/>
             <isset property="deploy.product.private"/>
+          </or>
+        </not>
+      </condition>
+    </fail>
+    <fail message="Invalid auth.type '${auth.type}'. Expected 'key' or 'password'.">
+      <condition>
+        <not>
+          <or>
+            <isset property="deploy.auth.key"/>
+            <isset property="deploy.auth.password"/>
           </or>
         </not>
       </condition>
@@ -157,18 +174,8 @@
     <echo>Local directory: ${project.build.directory}/output/${output.dir}/${product}</echo>
     <echo>Remote directory: ${remote.base.dir}/${remote.product.dir}</echo>
 
-    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
-      password="${userguide.server.password}" failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
-      command="mkdir -p ${remote.base.dir}/${remote.product.dir}.uploading &amp;&amp; rm -rf ${remote.base.dir}/${remote.product.dir}.uploading/*"/>
-
-    <scp remoteTodir="${userguide.server.user}@${userguide.server}:${remote.base.dir}/${remote.product.dir}.uploading/"
-      trust="yes" keyfile="${user.home}/.ssh/id_rsa">
-      <fileset dir="${project.build.directory}/output/${output.dir}/${product}"/>
-    </scp>
-
-    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
-      password="${userguide.server.password}" failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
-      command="rm -rf ${remote.base.dir}/${remote.product.dir}.old &amp;&amp; if [ -d ${remote.base.dir}/${remote.product.dir} ]; then mv ${remote.base.dir}/${remote.product.dir} ${remote.base.dir}/${remote.product.dir}.old; fi &amp;&amp; mv ${remote.base.dir}/${remote.product.dir}.uploading ${remote.base.dir}/${remote.product.dir}"/>
+    <antcall target="deploy-product-public-key" inheritAll="true"/>
+    <antcall target="deploy-product-public-password" inheritAll="true"/>
   </target>
 
   <target name="deploy-product-private" if="deploy.product.private">
@@ -190,6 +197,56 @@
     <echo>Local directory: ${project.build.directory}/output/${output.dir}/${product}</echo>
     <echo>Remote directory: ${userguide.server.dir}/${remote.product.dir}</echo>
 
+    <antcall target="deploy-product-private-key" inheritAll="true"/>
+    <antcall target="deploy-product-private-password" inheritAll="true"/>
+  </target>
+
+  <target name="deploy-product-public-key" if="deploy.auth.key">
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
+      command="mkdir -p ${remote.base.dir}/${remote.product.dir}.uploading &amp;&amp; rm -rf ${remote.base.dir}/${remote.product.dir}.uploading/*"/>
+
+    <scp remoteTodir="${userguide.server.user}@${userguide.server}:${remote.base.dir}/${remote.product.dir}.uploading/"
+      trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+      <fileset dir="${project.build.directory}/output/${output.dir}/${product}"/>
+    </scp>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
+      command="rm -rf ${remote.base.dir}/${remote.product.dir}.old &amp;&amp; if [ -d ${remote.base.dir}/${remote.product.dir} ]; then mv ${remote.base.dir}/${remote.product.dir} ${remote.base.dir}/${remote.product.dir}.old; fi &amp;&amp; mv ${remote.base.dir}/${remote.product.dir}.uploading ${remote.base.dir}/${remote.product.dir}"/>
+  </target>
+
+  <target name="deploy-product-public-password" if="deploy.auth.password">
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      password="${userguide.server.password}" failonerror="true"
+      command="mkdir -p ${remote.base.dir}/${remote.product.dir}.uploading &amp;&amp; rm -rf ${remote.base.dir}/${remote.product.dir}.uploading/*"/>
+
+    <scp remoteTodir="${userguide.server.user}:${userguide.server.password}@${userguide.server}:${remote.base.dir}/${remote.product.dir}.uploading/"
+      trust="yes">
+      <fileset dir="${project.build.directory}/output/${output.dir}/${product}"/>
+    </scp>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      password="${userguide.server.password}" failonerror="true"
+      command="rm -rf ${remote.base.dir}/${remote.product.dir}.old &amp;&amp; if [ -d ${remote.base.dir}/${remote.product.dir} ]; then mv ${remote.base.dir}/${remote.product.dir} ${remote.base.dir}/${remote.product.dir}.old; fi &amp;&amp; mv ${remote.base.dir}/${remote.product.dir}.uploading ${remote.base.dir}/${remote.product.dir}"/>
+  </target>
+
+  <target name="deploy-product-private-key" if="deploy.auth.key">
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
+      command="mkdir -p ${userguide.server.dir}/${remote.product.dir}.uploading &amp;&amp; rm -rf ${userguide.server.dir}/${remote.product.dir}.uploading/*"/>
+
+    <scp remoteTodir="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/${remote.product.dir}.uploading/"
+      trust="yes" keyfile="${user.home}/.ssh/id_rsa">
+      <fileset dir="${project.build.directory}/output/${output.dir}/${product}"/>
+    </scp>
+
+    <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
+      failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
+      command="rm -rf ${userguide.server.dir}/${remote.product.dir}.old &amp;&amp; if [ -d ${userguide.server.dir}/${remote.product.dir} ]; then mv ${userguide.server.dir}/${remote.product.dir} ${userguide.server.dir}/${remote.product.dir}.old; fi &amp;&amp; mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
+  </target>
+
+  <target name="deploy-product-private-password" if="deploy.auth.password">
     <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
       password="${userguide.server.password}" failonerror="true"
       command="mkdir -p ${userguide.server.dir}/${remote.product.dir}.uploading &amp;&amp; rm -rf ${userguide.server.dir}/${remote.product.dir}.uploading/*"/>
@@ -201,7 +258,7 @@
 
     <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
       password="${userguide.server.password}" failonerror="true"
-      command="mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
+      command="rm -rf ${userguide.server.dir}/${remote.product.dir}.old &amp;&amp; if [ -d ${userguide.server.dir}/${remote.product.dir} ]; then mv ${userguide.server.dir}/${remote.product.dir} ${userguide.server.dir}/${remote.product.dir}.old; fi &amp;&amp; mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
   </target>
 
   <target name="public">
