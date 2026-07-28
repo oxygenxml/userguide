@@ -21,6 +21,8 @@
       <param name="editlink.remote.ditamap.url">${editlink.ditamap.url}</param>
     </antcall>
     <antcall target="build-addons-public"/>
+    <antcall target="build-cf-public"/>
+    <antcall target="build-cf-cloud-public"/>
     <antcall target="build-positron-desktop-public"/>
     <antcall target="build-positron-eclipse-public"/>
     <antcall target="build-positron-wa-public"/>
@@ -34,6 +36,8 @@
       <param name="editlink.remote.ditamap.url">${editlink.ditamap.url}</param>
     </antcall>
     <antcall target="build-addons-private"/>
+    <antcall target="build-cf-private"/>
+    <antcall target="build-cf-cloud-private"/>
     <antcall target="build-positron-desktop-private"/>
     <antcall target="build-positron-eclipse-private"/>
     <antcall target="build-positron-wa-private"/>
@@ -73,16 +77,6 @@
       <param name="p-format" value="webhelp-responsive"/>
       <param name="p-type" value="${p-type}"/>
       <param name="editlink.remote.ditamap.url" value="${editlink.remote.ditamap.url}"/>
-    </antcall>
-    <antcall target="build-single">
-      <param name="p-product" value="content-fusion"/>
-      <param name="p-format" value="webhelp-responsive"/>
-      <param name="p-type" value="${p-type}"/>
-    </antcall>
-    <antcall target="build-single">
-      <param name="p-product" value="content-fusion-cloud"/>
-      <param name="p-format" value="webhelp-responsive"/>
-      <param name="p-type" value="${p-type}"/>
     </antcall>
     <antcall target="build-single">
       <param name="p-product" value="webauthor"/>
@@ -512,6 +506,78 @@
       <!-- Relevant only for webhelp -->
       <arg value="-Dwebhelp.publishing.template=${p-template}"/>
       <arg value="-Deditlink.remote.ditamap.url=${editlink.ditamap}"/>
+      <arg value="-Deditlink.web.author.url=${editlink.web.author.url}"/>
+    </exec>
+  </target>
+  <!-- 
+		==================================
+		Content Fusion
+		==================================	
+		-->
+  <target name="build-cf-public">
+    <antcall target="build-cf">
+      <param name="p-type" value="-public"/>
+      <param name="p-ditaval" value="content-fusion"/>
+      <param name="p-output-name" value="ug-content-fusion"/>
+    </antcall>
+  </target>
+  <target name="build-cf-private">
+    <antcall target="build-cf">
+      <param name="p-type" value="-private"/>
+      <param name="p-ditaval" value="content-fusion"/>
+      <param name="p-output-name" value="ug-content-fusion"/>
+    </antcall>
+  </target>
+  <target name="build-cf-cloud-public">
+    <antcall target="build-cf">
+      <param name="p-type" value="-public"/>
+      <param name="p-ditaval" value="content-fusion-cloud"/>
+      <param name="p-output-name" value="ug-content-fusion-cloud"/>
+    </antcall>
+  </target>
+  <target name="build-cf-cloud-private">
+    <antcall target="build-cf">
+      <param name="p-type" value="-private"/>
+      <param name="p-ditaval" value="content-fusion-cloud"/>
+      <param name="p-output-name" value="ug-content-fusion-cloud"/>
+    </antcall>
+  </target>
+  <target name="build-cf">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <property name="p-type" value=""/>
+    <echo>--------------------------------</echo>
+    <echo>Build single target: ${p-output-name} / webhelp-responsive ${p-type}</echo>
+    <property name="p-output"
+      >${project.build.directory}/output/webhelp-responsive${p-type}/${p-output-name}</property>
+    <property name="p-temp"
+      >${project.build.directory}/temp/webhelp-responsive${p-type}/${p-output-name}</property>
+    <property name="p-template"
+      >${basedir}/publishing/publishing-template/${p-ditaval}${p-type}.opt</property>
+    <property name="editlink.web.author.url"
+      value="https://www.oxygenxml.com/oxygen-xml-web-author/"/>
+    <property name="clean.temp">yes</property>
+    <delete dir="${p-output}"/>
+    <mkdir dir="${p-output}"/>
+    <echo>Template : ${p-template} </echo>
+    <echo>DITA OT : ${dita-ot-dir} </echo>
+    <echo>Temp : ${p-temp} </echo>
+    <echo>Output : ${p-output} </echo>
+    <echo>Remote Web Author: ${editlink.web.author.url} </echo>
+    <exec failifexecutionfails="true" failonerror="true"
+      executable="${dita-ot-dir}/bin/${dita.executable}">
+      <!-- General parameters -->
+      <arg value="--format=webhelp-responsive"/>
+      <arg value="--output=${p-output}"/>
+      <arg value="--temp=${p-temp}"/>
+      <arg value="--clean.temp=${clean.temp}"/>
+      <!-- <arg value="/-/-verbose" /> -->
+      <arg value="--input=${basedir}/DITA-cf/content-fusion.ditamap"/>
+      <arg value="-filter=${basedir}/DITA-cf/ditaval/${p-ditaval}.ditaval"/>
+      <arg value="-Dhttps.proxySet=true"/>
+      <arg value="-Dhttps.proxyHost=proxy.sync.ro"/>
+      <arg value="-Dhttps.proxyPort=3128"/>
+      <!-- Relevant only for webhelp -->
+      <arg value="-Dwebhelp.publishing.template=${p-template}"/>
       <arg value="-Deditlink.web.author.url=${editlink.web.author.url}"/>
     </exec>
   </target>
