@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-external-agency">
+  <title>Collecting Out-of-Date Content for an External Translation Agency</title>
+  <shortdesc>How to have the agent gather the source files whose translations are missing or stale
+    into a single folder, so that you can send them to an external translation agency for human
+    translation.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>translation agency</indexterm>
+        <indexterm>human translation</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_agency_intro">Not every language has to be translated by the agent. You may want a
+      professional translation agency or an in-house translator to handle some languages, while still
+      using <ph keyref="product"/> to keep track of what has changed. The agent can do the tracking
+      part for you: it knows which source files are out of date for a given target language, and it
+      can collect exactly those files into a folder that you hand over for human translation.</p>
+    <p id="p_agency_why">This is useful because the hard part of working with an agency is not
+      sending files, it is knowing <i>which</i> files to send. Sending the whole publication on every
+      round means paying to retranslate content that has not changed, while picking the changed files
+      by hand is slow and easy to get wrong.</p>
+    <section id="cf-ai-translation-external-agency-collecting">
+      <title>Collecting the Out-of-Date Files</title>
+      <p id="p_agency_collect">Start a translation job as usual, selecting the publications and the
+        target language you want to send out. In the <uicontrol>Instructions</uicontrol> field, tell
+        the agent not to translate anything, and ask it instead to copy the source files that are not
+        up to date into a folder that you name:</p>
+      <p>
+        <codeblock outputclass="language-ini">Do not translate anything. Export the files that need translating into French
+into the for-translation-fr folder.</codeblock>
+      </p>
+      <p id="p_agency_result">The agent determines the <xref
+          href="cf-ai-translation-running.dita#cf-ai-translation-running/cf-ai-translation-status"
+          >translation status</xref> of each file in your selection and copies only the files with the
+          <b>missing</b> or <b>stale</b> status. Files that are <b>current</b> are left out, because
+        their existing translation still matches the source. The images and other assets that the
+        publication references are collected as well, so that the translator can see the content in
+        context and localize screenshots. If you only want the translatable files, say so in the
+        instructions.</p>
+      <p id="p_agency_paths">The files are copied into the folder you named, inside your workspace,
+        keeping their paths relative to the root of the publication. A source file at
+          <filepath>topics/installation/install.dita</filepath> is copied to
+          <filepath>for-translation-fr/topics/installation/install.dita</filepath>. Because the
+        structure is preserved, the folder is a self-contained subset of your project that the
+        translator can open, and the relative references between the copied files keep resolving.</p>
+      <p>
+        <note id="note_agency_new_folder" type="tip">Use a folder name that is not part of any
+          publication, so that the copies are not picked up by validation or by later translation
+          jobs. A name such as <filepath>for-translation-fr</filepath> at the root of the project
+          makes it obvious what the folder is for and which language it was produced for.</note>
+      </p>
+    </section>
+    <section id="cf-ai-translation-external-agency-sending">
+      <title>Sending the Folder to the Agency</title>
+      <p id="p_agency_send">When the job finishes, select <uicontrol>Bring into workspace</uicontrol>
+        on the <xref href="cf-projects-workspace_translation_jobs_view.dita">job card</xref> to add
+        the collected folder to your workspace, and review it as you would any other result produced
+        by the agent. See <xref href="cf-ai-translation-reviewing.dita">Reviewing Translations Before
+          You Commit</xref>.</p>
+      <p id="p_agency_export">To get the package out of <ph keyref="product"/>, select the folder in
+        the workspace file tree and choose <uicontrol>Download</uicontrol>, which gives you a ZIP
+        archive of the folder that you can send to the agency. Alternatively, commit the folder and
+        export it from your content management system. If you want to include a PDF of the
+        publication, a glossary, or a README for the translator, upload those files into the folder
+        before you download it.</p>
+      <p id="p_agency_keep">Whether to keep the folder in the repository afterwards is up to you.
+        Removing it in a later commit keeps the project clean, since the folder is only a snapshot of
+        what needed translating at one point in time.</p>
+    </section>
+    <section id="cf-ai-translation-external-agency-back">
+      <title>Bringing the Human Translations Back</title>
+      <p id="p_agency_back">When the agency returns the translated files, place them in the
+        target-language folders of your project, in the same layout that the agent uses, and commit
+        them. See <xref href="cf-ai-translation-importing-existing.dita">Importing a Project with
+          Existing Translations</xref> for how existing translations are recognized and recorded in
+        the <xref href="cf-ai-translation-index.dita">translation index</xref>. Once they are
+        recorded, those files count as up to date, and the next round only reports what changed
+        after that.</p>
+      <p id="p_agency_mixed">The same project can mix both approaches. Languages translated by the
+        agent and languages translated by an agency are tracked in the same translation index, so the
+        out-of-date report is accurate for each language independently.</p>
+    </section>
+  </body>
+</topic>
