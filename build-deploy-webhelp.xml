@@ -2,7 +2,7 @@
 
 
   <target name="private">
-    <property name="userguide.server">userguide.sync.ro</property>
+    <fail unless="userguide.server" message="Missing required property: userguide.server"/>
     <property name="userguide.server.dir">/var/www/userguide</property>
     <property name="output.dir">webhelp-responsive-private</property>
 
@@ -76,7 +76,7 @@
   </target>
 
   <target name="deploy-product-public" if="deploy.product.public">
-    <property name="userguide.server">software-archive.sync.ro</property>
+    <fail unless="userguide.server" message="Missing required property: userguide.server"/>
     <property name="userguide.server.user" value=""/>
     <property name="userguide.server.password" value=""/>
     <property name="userguide.server.dir">/repository/userguides</property>
@@ -179,7 +179,7 @@
   </target>
 
   <target name="deploy-product-private" if="deploy.product.private">
-    <property name="userguide.server">userguide.sync.ro</property>
+    <fail unless="userguide.server" message="Missing required property: userguide.server"/>
     <property name="userguide.server.dir">/var/www/userguide</property>
     <property name="output.dir">webhelp-responsive-private</property>
 
@@ -243,7 +243,7 @@
 
     <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
       failonerror="true" keyfile="${user.home}/.ssh/id_rsa"
-      command="mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
+      command="rm -rf ${userguide.server.dir}/${remote.product.dir} &amp;&amp; mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
   </target>
 
   <target name="deploy-product-private-password" if="deploy.auth.password">
@@ -258,12 +258,12 @@
 
     <sshexec host="${userguide.server}" username="${userguide.server.user}" trust="yes"
       password="${userguide.server.password}" failonerror="true"
-      command="mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
+      command="rm -rf ${userguide.server.dir}/${remote.product.dir} &amp;&amp; mv ${userguide.server.dir}/${remote.product.dir}.uploading ${userguide.server.dir}/${remote.product.dir}"/>
   </target>
 
   <target name="public">
     <!-- Check for similarities with the private one. -->
-  	<property name="userguide.server">software-archive.sync.ro</property>
+  	<fail unless="userguide.server" message="Missing required property: userguide.server"/>
   	<property name="userguide.server.user" value="" />
   	<property name="userguide.server.password" value="" />
     <property name="userguide.server.dir">/repository/userguides</property>
