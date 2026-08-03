@@ -12,13 +12,16 @@
   <artifactId>publishing</artifactId>
   <packaging>pom</packaging>
 
-	<!-- TODO: Deploy PDFs on software-archive.sync.ro -->
+	<!-- TODO: Deploy PDFs on the public archive server. -->
   <name>oXygen User Guide - Artifacts</name>
 
   <!-- 
-  	Use -Duserguide.server.user=user to deploy WebHelp output using a SSH key.
+  	Use -Duserguide.server=SERVER_HOST to set the deployment server host.
+   	Use -Duserguide.server.user=user to deploy WebHelp output using a SSH key.
   		NOTE: SSH key must be installed in ${user.home}/.ssh/id_rsa
   	Use -Duserguide.server.user=user -Duserguide.server.password=password to deploy WebHelp output using user/password (without a SSH key)
+  	Use -Duserguide.proxy.host=PROXY_HOST to set the proxy host used by the DITA-OT transformations.
+  	Use -Dsnapshots.repository.url=REPOSITORY_URL to set the Maven snapshots repository URL.
   	Use -Deditlink.ditamap.url=URL_TO_REMOTE_DITAMAP to set the DITA Map used by "Edit Link"
    -->
 
@@ -57,7 +60,7 @@
   <properties>
     <sonar.skip>true</sonar.skip>
     <dependency-check.skip>true</dependency-check.skip>
-    <ANT_OPTS>-Dhttp.proxyHost=proxy.sync.ro -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.sync.ro -Dhttps.proxyPort=3128</ANT_OPTS>
+    <ANT_OPTS>-Dhttp.proxyHost=${userguide.proxy.host} -Dhttp.proxyPort=3128 -Dhttps.proxyHost=${userguide.proxy.host} -Dhttps.proxyPort=3128 -Dhttp.nonProxyHosts=${no.proxy}</ANT_OPTS>
     <dita-ot-dir>${project.build.directory}/oxygen-publishing-engine</dita-ot-dir>
     <!-- Timestamp used to organize user guides on software-archive server -->
     <timestamp>${maven.build.timestamp}</timestamp>
@@ -74,7 +77,6 @@
         </property>
       </activation>
       <properties>
-        <userguide.server>userguide.sync.ro</userguide.server>
         <userguide.server.dir>/var/www/userguide</userguide.server.dir>
         <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap</editlink.ditamap.url>
       </properties>
@@ -95,7 +97,7 @@
                     <artifactItem>
                       <groupId>com.oxygenxml</groupId>
                       <artifactId>oxygen-publishing-engine</artifactId>
-                      <version>28.1-SNAPSHOT</version>
+                      <version>29.0-SNAPSHOT</version>
                       <classifier>package-full</classifier>
                       <type>zip</type>
                       <outputDirectory>${project.build.directory}</outputDirectory>
@@ -134,9 +136,114 @@
                   <tasks>
                     <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="private">
                     	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server" value="${userguide.server}"/>
                     	<property name="userguide.server.password" value="${userguide.server.password}"/>
                       <property name="userguide.server.dir" value="${userguide.server.dir}"/>
                    	</ant>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>pdf-private</id>
+      <activation>
+        <property>
+          <name>build-pdf-private</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <userguide.server.dir>/var/www/userguide</userguide.server.dir>
+        <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide-private/dev/DITA/UserManual.ditamap</editlink.ditamap.url>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-ope</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <phase>process-sources</phase>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.oxygenxml</groupId>
+                      <artifactId>oxygen-publishing-engine</artifactId>
+                      <version>29.0-SNAPSHOT</version>
+                      <classifier>package-full</classifier>
+                      <type>zip</type>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <!-- Executes the transformation. -->
+              <execution>
+                <id>build-pdf-private</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build.xml" target="build-pdf">
+                      <property name="p-type" value="-private"/>
+                    </ant>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>deploy-pdf-private</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${project.basedir}/build-deploy-pdf.xml" target="private">
+                      <property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server" value="${userguide.server}"/>
+                      <property name="userguide.server.password" value="${userguide.server.password}"/>
+                      <property name="userguide.server.dir" value="${userguide.server.dir}"/>
+                    </ant>
                   </tasks>
                 </configuration>
               </execution>
@@ -178,7 +285,6 @@
         </property>
       </activation>
       <properties>
-        <userguide.server>software-archive.sync.ro</userguide.server>
         <userguide.server.dir>/repository/userguides</userguide.server.dir>
         <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide/master/DITA/UserManual.ditamap</editlink.ditamap.url>
       </properties>
@@ -238,6 +344,7 @@
                   <target>
                     <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" >
                     	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server" value="${userguide.server}"/>
                     	<property name="userguide.server.password" value="${userguide.server.password}"/>
                     	<property name="major.version" value="${parsedVersion.majorVersion}"/>
          					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
@@ -359,6 +466,7 @@
                   <tasks>
                     <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="public" >
                     	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server" value="${userguide.server}"/>
                     	<property name="userguide.server.password" value="${userguide.server.password}"/>
                     	<property name="major.version" value="${parsedVersion.majorVersion}"/>
          					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
@@ -378,6 +486,7 @@
                   <tasks>
                     <ant antfile="${project.basedir}/build-deploy-pdf.xml" target="public" >
                     	<property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server" value="${userguide.server}"/>
                     	<property name="userguide.server.password" value="${userguide.server.password}"/>
                     	<property name="major.version" value="${parsedVersion.majorVersion}"/>
         					    <property name="minor.version" value="${parsedVersion.minorVersion}"/>
@@ -421,7 +530,7 @@
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
-                  <url>https://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <url>${snapshots.repository.url}</url>
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
@@ -437,7 +546,7 @@
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
-                  <url>https://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <url>${snapshots.repository.url}</url>
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
@@ -453,7 +562,7 @@
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
-                  <url>https://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <url>${snapshots.repository.url}</url>
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
@@ -548,7 +657,7 @@
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
-                  <url>https://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <url>${snapshots.repository.url}</url>
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
@@ -564,7 +673,7 @@
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
-                  <url>https://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <url>${snapshots.repository.url}</url>
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
@@ -580,11 +689,242 @@
                   <groupId>com.oxygenxml</groupId>
                   <version>${project.version}</version>
                   <repositoryId>syncro-snapshots</repositoryId>
-                  <url>https://maven.sync.ro/archiva/repository/syncro-snapshots</url>
+                  <url>${snapshots.repository.url}</url>
                   <packaging>jar</packaging>
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>webhelp-products</id>
+      <activation>
+        <property>
+          <name>webhelp-products</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <type>-public</type>
+        <auth.type>key</auth.type>
+        <micro.version>0</micro.version>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-ope</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <phase>process-sources</phase>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.oxygenxml</groupId>
+                      <artifactId>oxygen-publishing-engine</artifactId>
+                      <classifier>package-full</classifier>
+                      <type>zip</type>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-webhelp-products</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-products">
+                      <property name="products" value="${products}"/>
+                      <property name="type" value="${type}"/>
+                      <property name="editlink.ditamap.url" value="${editlink.ditamap.url}"/>
+                      <property name="userguide.proxy.host" value="${userguide.proxy.host}"/>
+                      <property name="no.proxy" value="${no.proxy}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>deploy-webhelp-products</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="deploy-products">
+                      <property name="products" value="${products}"/>
+                      <property name="type" value="${type}"/>
+                      <property name="auth.type" value="${auth.type}"/>
+                      <property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server" value="${userguide.server}"/>
+                      <property name="userguide.server.password" value="${userguide.server.password}"/>
+                      <property name="userguide.server.dir" value="${userguide.server.dir}"/>
+                      <property name="major.version" value="${parsedVersion.majorVersion}"/>
+                      <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+                      <property name="micro.version" value="${micro.version}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>webhelp-product</id>
+      <activation>
+        <property>
+          <name>webhelp-product</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <type>-public</type>
+        <micro.version>0</micro.version>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-ope</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <phase>process-sources</phase>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.oxygenxml</groupId>
+                      <artifactId>oxygen-publishing-engine</artifactId>
+                      <classifier>package-full</classifier>
+                      <type>zip</type>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-webhelp-product</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build.xml" target="build-webhelp-product">
+                      <property name="product" value="${product}"/>
+                      <property name="type" value="${type}"/>
+                      <property name="editlink.ditamap.url" value="${editlink.ditamap.url}"/>
+                      <property name="userguide.proxy.host" value="${userguide.proxy.host}"/>
+                      <property name="no.proxy" value="${no.proxy}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>deploy-webhelp-product</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${project.basedir}/build-deploy-webhelp.xml" target="deploy-product">
+                      <property name="product" value="${product}"/>
+                      <property name="type" value="${type}"/>
+                      <property name="auth.type" value="${auth.type}"/>
+                      <property name="userguide.server.user" value="${userguide.server.user}"/>
+                    	<property name="userguide.server" value="${userguide.server}"/>
+                      <property name="userguide.server.password" value="${userguide.server.password}"/>
+                      <property name="userguide.server.dir" value="${userguide.server.dir}"/>
+                      <property name="major.version" value="${parsedVersion.majorVersion}"/>
+                      <property name="minor.version" value="${parsedVersion.minorVersion}"/>
+                      <property name="micro.version" value="${micro.version}"/>
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-jsch</artifactId>
+                <version>1.10.1</version>
+              </dependency>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
@@ -599,7 +939,6 @@
         </property>
       </activation>
       <properties>
-        <userguide.server>software-archive.sync.ro</userguide.server>
         <userguide.server.dir>/repository/userguides</userguide.server.dir>
         <editlink.ditamap.url>github://getFileContent/oxygenxml/userguide/master/DITA/UserManual.ditamap</editlink.ditamap.url>
       </properties>
