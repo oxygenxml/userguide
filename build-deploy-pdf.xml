@@ -1,7 +1,7 @@
 <project name="deploy-pdf" default="public">
 
   <target name="public">
-  	<property name="userguide.server">software-archive.sync.ro</property>
+  	<fail unless="userguide.server" message="Missing required property: userguide.server"/>
   	<property name="userguide.server.user" value="" />
   	<property name="userguide.server.password" value="" />
     <property name="userguide.server.dir">/repository/userguides</property>
@@ -80,6 +80,84 @@
     </scp>
   	
   </target>
-
-
+  
+  <target name="private">
+    <fail unless="userguide.server" message="Missing required property: userguide.server"/>
+    <property name="userguide.server.user" value="" />
+    <property name="userguide.server.password" value="" />
+    <property name="userguide.server.dir">/repository/userguides</property>
+    <property name="output.dir">pdf-css-html5-private</property>
+    <property name="major.version" value=""/>
+    <property name="minor.version" value=""/>
+    <property name="micro.version" value=""/>
+    
+    <echo>Username: ${userguide.server.user}</echo>
+    <echo>Password: ${userguide.server.password}</echo>
+    
+    <!-- Copy all PDF userguides to ${userguide.server.dir} directory 
+		 Author SA -->
+    <!-- keyfile="${user.home}/.ssh/id_rsa" -->
+    <scp file="${project.build.directory}/output/${output.dir}/author-sa/author-sa.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/Author-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- Author Eclipse -->
+    <scp file="${project.build.directory}/output/${output.dir}/author-eclipse/author-eclipse.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/AuthorEclipse-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- Developer SA -->
+    <scp file="${project.build.directory}/output/${output.dir}/developer-sa/developer-sa.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/Developer-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- Developer Eclipse -->
+    <scp file="${project.build.directory}/output/${output.dir}/developer-eclipse/developer-eclipse.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/DeveloperEclipse-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- Editor SA -->
+    <scp file="${project.build.directory}/output/${output.dir}/editor-sa/editor-sa.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/Editor-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- Editor Eclipse -->
+    <scp file="${project.build.directory}/output/${output.dir}/editor-eclipse/editor-eclipse.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/EditorEclipse-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- Chemistry -->
+    <scp file="${project.build.directory}/output/${output.dir}/chemistry/chemistry.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/Chemistry-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- DCPP -->
+    <scp file="${project.build.directory}/output/${output.dir}/pdf-css/pdf-css.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/DCPP-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- WebHelp Responsive -->
+    <scp file="${project.build.directory}/output/${output.dir}/webhelp-responsive/webhelp-responsive.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/WebHelpResponsive-UserManual.pdf" 
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    <!-- JSON Editor -->
+    <!--  keyfile="${user.home}/.ssh/id_rsa" -->
+    <scp file="${project.build.directory}/output/${output.dir}/json/json.pdf" 
+      remoteTofile="${userguide.server.user}@${userguide.server}:${userguide.server.dir}/JSONEditor-UserManual.pdf"
+      password="${userguide.server.password}"
+      trust="yes">
+    </scp>
+    
+  </target>
+  
 </project>
