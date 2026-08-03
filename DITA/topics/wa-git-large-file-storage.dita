@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-git-large-file-storage">
+  <title>Git Large File Storage (Git LFS) Support</title>
+  <shortdesc>Web Author works with repositories that use <xref href="https://git-lfs.github.com/"
+      format="html" scope="external">Git Large File Storage (Git LFS)</xref>.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Git LFS</indexterm>
+        <indexterm>Git Large File Storage</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_eqm_xs1_dkc">When a document references a file that is stored with Git LFS (such as an
+      image or a video), Web Author automatically retrieves the actual file so that it is displayed
+      correctly in the editing area.</p>
+    <p id="p_kl4_ts1_dkc">Git LFS is a Git extension that keeps large binary files (for example,
+      high-resolution images, PDFs, or videos) outside the main repository and stores only a small
+      text <i>pointer</i> in their place. Without this support, such a reference would appear as a
+      few lines of pointer text instead of the intended file. Web Author recognizes these pointers
+      and resolves them transparently, so you can work with the documents as usual.</p>
+    <p id="p_ll4_ts1_dkc">This support is available for all the Git hosting integrations (GitHub,
+      GitLab, Bitbucket Cloud, Bitbucket Server / Data Center, Azure DevOps, and the generic Git
+      connector). It also works with on-premises editions (such as GitHub Enterprise Server and
+      self-managed GitLab).</p>
+    <section id="section_s13_ct1_dkc">
+      <title>What You Can Do</title>
+      <p id="p_t13_ct1_dkc">
+        <ul id="ul_etb_dt1_dkc">
+          <li id="li_ftb_dt1_dkc"><b>View referenced media</b> - Images, videos, and other assets
+            stored with Git LFS and referenced from your DITA or XML documents are displayed
+            directly in the editing area, just like regular files.</li>
+          <li id="li_gtb_dt1_dkc"><b>Open Git LFS documents</b> - If an XML document is stored with
+            Git LFS, it opens with its real content rather than the pointer text.<p
+              id="p_htb_dt1_dkc">
+              <note id="note_jty_gt1_dkc" type="tip">No special configuration is required on your
+                side. If the repository already uses Git LFS, Web Author automatically handles the
+                resolution when you open documents.</note>
+            </p></li>
+        </ul>
+      </p>
+    </section>
+    <section id="section_fpt_3t1_dkc">
+      <title>Editing and Uploading Git LFS Files</title>
+      <p id="p_un5_jt1_dkc">Editing or uploading files stored with Git LFS is not supported yet. Git
+        LFS files are meant to be <i>viewed</i> in Web Author, not modified.</p>
+      <p id="p_vn5_jt1_dkc">If you try to save changes to a Git LFS file, or upload a file over an
+        existing Git LFS file, the operation is stopped and the file remains unchanged. A message
+        similar to the following is displayed: “This file is stored with Git LFS. Editing or
+        uploading Git LFS files is not supported yet.”</p>
+      <p id="p_wn5_jt1_dkc">This safeguard prevents the large file from being accidentally replaced
+        by the small pointer text, which would corrupt the file in the repository.</p>
+    </section>
+    <section id="section_i2z_kt1_dkc">
+      <title>Large Files</title>
+      <p id="p_j2z_kt1_dkc">To keep the server responsive, files above a configurable size limit are
+        not downloaded. By default, the limit is <b>100 MB</b>. If a referenced Git LFS file exceeds
+        this limit, it is not retrieved and the reference remains unresolved (the pointer is kept in
+        place).</p>
+    </section>
+    <section id="section_ld5_lt1_dkc">
+      <title>Configuration Options (for Administrators)</title>
+      <p id="p_md5_lt1_dkc">You can set the following options in the
+          <filepath>oXygenXmlWebAuthor.vmoptions</filepath> file to adjust the default behavior:</p>
+      <table frame="all" rowsep="1" colsep="1" id="table_wh1_4t1_dkc">
+        <tgroup cols="2">
+          <colspec colnum="1" colname="col1"/>
+          <colspec colnum="2" colname="col2"/>
+          <thead>
+            <row>
+              <entry>Option</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>-Dwebauthor.git.lfs.maxObjectSize</entry>
+              <entry>The maximum size, in bytes, of a Git LFS file that Web Author downloads. Files
+                larger than this value are not retrieved. The default is: 104857600 (100
+                MB).</entry>
+            </row>
+            <row>
+              <entry>-Dwebauthor.git.lfs.disabled</entry>
+              <entry>Set this option to true to turn off Git LFS resolution entirely. When disabled,
+                Git LFS references are shown as pointer text. The default is: false.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p id="p_xh1_4t1_dkc">
+        <note id="note_mm5_4t1_dkc">A server restart is required for changes to these options to
+          take effect.</note>
+      </p>
+    </section>
+  </body>
+</topic>
