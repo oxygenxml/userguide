@@ -2,6 +2,7 @@ var fs = require("fs");
 var path = require("path");
 
 var pat = process.env.JIRA_PERSONAL_TOKEN || process.env.SECRET_JIRA_PERSONAL_TOKEN;
+var baseUrl = process.env.JIRA_BASE_URL || process.env.SECRET_JIRA_BASE_URL;
 var issueKey = process.argv[2];
 var attachmentIds = process.argv.slice(3);
 
@@ -11,12 +12,17 @@ if (!pat) {
   process.exit(1);
 }
 
+if (!baseUrl) {
+  console.error("Error: JIRA_BASE_URL or SECRET_JIRA_BASE_URL must be set (e.g. https://jira.example.com).");
+  process.exit(1);
+}
+
+baseUrl = baseUrl.replace(/\/+$/, "");
+
 if (!issueKey || attachmentIds.length === 0) {
   console.error("Usage: node jira-download-image-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]");
   process.exit(1);
 }
-
-var baseUrl = "https://jira.sync.ro";
 var issueUrl = baseUrl + "/rest/api/2/issue/" + issueKey;
 var tmpDir = path.join(__dirname, "tmp");
 
