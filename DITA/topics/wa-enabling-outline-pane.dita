@@ -133,6 +133,78 @@
         evaluating the XPath-like expressions, the default algorithm is used to retrieve the title
         for that element.</p>
     </section>
+    <section id="section_aw3_2x1_dkc">
+      <title>How to Configure the Contextual Menu of the Outline Pane</title>
+      <p id="p_bw3_2x1_dkc">By default, the contextual menu of the <b>Outline</b> pane presents a
+        fixed set of actions. You can configure it to show only the entries you need, in the order
+        you choose, by adding a element to the configuration of a mode in the
+          <b>webAuthorOutlineConfig.xml</b> file. Each mode is configured separately, so the
+          <b>Contents</b> and <b>Structure</b> modes can present different contextual menus. The
+        following example shows what the element looks like for a DITA map:</p>
+      <codeblock outputclass="language-xml">&lt;outline>
+  &lt;structureMode editable="yes" default="no">
+    &lt;preferredAttributes names="id"/>
+    &lt;menu>
+      &lt;action>App/FocusAttributesPanel&lt;/action>
+      &lt;sep/>
+      &lt;action>Author/RenameElement&lt;/action>
+      &lt;action>Author/DeleteElement&lt;/action>
+      &lt;sep/>
+      &lt;action>Outline/CollapseAll&lt;/action>
+      &lt;action>Outline/ExpandAll&lt;/action>
+    &lt;/menu>
+  &lt;/structureMode>
+  &lt;tocMode editable="yes" default="yes">
+    &lt;elements names="topicref topichead"/>
+    &lt;menu>
+      &lt;action element="topicref">insert.topicref&lt;/action>
+      &lt;action>App/FocusAttributesPanel&lt;/action>
+      &lt;sep/>
+      &lt;action>Author/CutSpecial&lt;/action>
+      &lt;action>Author/CopySpecial&lt;/action>
+      &lt;sep/>
+      &lt;action>Author/DeleteElement&lt;/action>
+      &lt;action>Author/RenameElement&lt;/action>
+      &lt;sep/>
+      &lt;action>Outline/CollapseAll&lt;/action>
+      &lt;action>Outline/ExpandAll&lt;/action>
+    &lt;/menu>
+  &lt;/tocMode>
+&lt;/outline></codeblock>
+      <p id="p_cw3_2x1_dkc">The <xmlelement>menu</xmlelement> element accepts the following
+          children:<ul id="ul_dw3_2x1_dkc">
+          <li id="li_ew3_2x1_dkc"><xmlelement>action</xmlelement> - A menu entry. Its text content
+            is the ID of the action that is invoked when the entry is selected.</li>
+          <li id="li_fw3_2x1_dkc"><xmlelement>sep</xmlelement> - A separator between entries.</li>
+        </ul></p>
+      <p id="p_gw3_2x1_dkc">The entries are shown in the order in which they are declared.
+        Separators that would appear at the beginning or end of the menu, as well as consecutive
+        separators, are not shown.</p>
+      <p id="p_hw3_2x1_dkc">If a mode does not declare a <xmlelement>menu</xmlelement> element, the
+        contextual menu shown in that mode is the default one.</p>
+      <p id="p_iw3_2x1_dkc">Use the optional <b>@element</b> attribute of the
+          <xmlelement>action</xmlelement> element to show an entry only for a specific element. The
+        value of the attribute is the local name of the element. In the example above, the <b>Insert
+          Topic Reference</b> entry is shown when the contextual menu is opened on a topicref
+        element, and it is not shown for other elements. When the attribute is missing, the entry is
+        shown for all elements that appear in the <b>Outline</b> pane.</p>
+      <p id="p_qc5_4x1_dkc">Any action that is registered in the editor can be used, referenced by
+        its ID:<ul id="ul_jw3_2x1_dkc">
+          <li id="li_kw3_2x1_dkc">Actions defined in a framework, in the <b>Actions</b> tab of the
+            document type configuration. For example, <codeph>insert.topicref</codeph> is an action
+            of the DITA Map framework that inserts a topic reference to an existing resource.</li>
+          <li id="li_lw3_2x1_dkc">Actions contributed by a JavaScript plugin or by the web resources
+            of a framework, registered with an ID of your choice.</li>
+          <li id="li_nw3_2x1_dkc">The built-in actions of the <b>Outline</b> pane:
+            App/FocusAttributesPanel, Author/AppendChild, Author/InsertBefore, Author/InsertAfter,
+            Author/CutSpecial, Author/CopySpecial, Author/DeleteElement, Author/RenameElement,
+            Outline/CollapseAll, Outline/ExpandAll.</li>
+        </ul></p>
+      <p id="p_ow3_2x1_dkc">Actions that do not determine the position where they act by themselves,
+        such as those defined in a framework, are applied to the element on which the contextual
+        menu was opened. Content is inserted inside that element, after its existing children, in
+        the same way as with the <b>Append child</b> entry in the default menu.</p>
+    </section>
     <section id="section_psf_tfq_j4b">
       <title>How to Configure Which Side of the Editor the Outline Pane Appears</title>
       <p id="p_mss_dgk_54b">You can configure which side the <uicontrol>Outline</uicontrol> pane is displayed on by
