@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-custom-doctypes">
+  <title>Configuring DITA Specializations for Translation</title>
+  <shortdesc>How to make the translation agent aware of custom DITA specializations.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>DITA specialization</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_n55_tv5_1kc">The agent treats any well-formed XML file as translatable content, so a
+      topic written in a custom DITA specialization is included in translation without additional
+      configuration. However, you still need to configure <b>how it is validated</b> and <b>how it
+        is translated</b>.</p>
+    <section id="cf-ai-translation-custom-doctypes-validation">
+      <title>Configuring Validation Rules</title>
+      <p id="p_o55_tv5_1kc">Validation determines which elements and attributes must remain
+        unchanged and which can be translated. To extend or override the built-in rules for a
+        specialization, add an optional
+          <filepath>.contentfusion/i18n/validation-rules.xml</filepath> file to your workspace:</p>
+      <p>
+        <codeblock outputclass="language-xml">&lt;validation-rules version="1">
+  &lt;global>
+    &lt;keep-unchanged>&lt;element>my-token&lt;/element>&lt;attribute>my-ref&lt;/attribute>&lt;/keep-unchanged>
+    &lt;translate>&lt;element>mytitle&lt;/element>&lt;attribute>my-label&lt;/attribute>&lt;/translate>
+  &lt;/global>
+  &lt;match root="learningContent">
+    &lt;keep-unchanged>&lt;element>custom-skip&lt;/element>&lt;/keep-unchanged>
+    &lt;translate>&lt;element>lcTitle&lt;/element>&lt;/translate>
+  &lt;/match>
+&lt;/validation-rules></codeblock>
+      </p>
+      <p id="p_q55_tv5_1kc">The rules applied to a document come from three layers, listed here in
+        order of increasing precedence:</p>
+      <ol>
+        <li><b>Built-in defaults</b> - The rules the agent always starts from (described below).
+          They apply even when no <filepath>validation-rules.xml</filepath> file exists.</li>
+        <li><b><codeph>&lt;global></codeph> rules</b> - Your project-wide additions and overrides,
+          applied to every document.</li>
+        <li id="li_u55_tv5_1kc"><b><codeph>&lt;match root="…"></codeph> rules</b> - Overrides for
+          documents whose root element matches the specified name. This is how you target one
+          specialization without affecting others. For matching documents, these rules take
+          precedence over both <codeph>&lt;global></codeph> and the built-in defaults.</li>
+      </ol>
+      <p id="p_v55_tv5_1kc">In most cases, you do not need to list every element and attribute,
+        because each type has a sensible default behavior:</p>
+      <ul id="ul_w55_tv5_1kc">
+        <li id="li_x55_tv5_1kc"><b>Elements are translatable by default.</b> The text content of an
+          element is translated unless a built-in rule or one of your own
+            <codeph>&lt;keep-unchanged></codeph> entries explicitly protects it. Adding an element
+          under <codeph>&lt;translate></codeph> is only useful when you need to override an existing
+          protection.</li>
+        <li><b>Attributes default to protected.</b> An attribute is left unchanged unless a built-in
+          rule or your own <codeph>&lt;translate></codeph> entry explicitly allows it to be
+          translated. This is why a custom specialization usually only needs
+            <codeph>&lt;translate></codeph> entries for its own label-like attributes, and rarely
+          needs <codeph>&lt;keep-unchanged></codeph> for attributes.</li>
+      </ul>
+      <p id="p_z55_tv5_1kc">In short, for elements, list the exceptions that must <i>not</i> be
+        translated. For attributes, list the exceptions that <i>must</i> be translated.</p>
+      <p id="p_av5_tv5_1kc">The built-in defaults already protect the usual non-translatable DITA
+        content, such as code, identifiers, keys, and similar values. They also already allow
+        translation of the standard text-bearing attributes, such as <codeph>navtitle</codeph>,
+          <codeph>alt</codeph>, <codeph>spectitle</codeph>, <codeph>reftitle</codeph>,
+          <codeph>standby</codeph>, and <codeph>value</codeph>. Add rules only for the elements or
+        attributes specific to your specialization that are not already handled correctly by these
+        defaults.</p>
+    </section>
+    <section id="cf-ai-translation-custom-doctypes-guidance">
+      <title>Describing a Specialization in agent-instructions.md</title>
+      <p id="p_bv5_tv5_1kc">Validation rules only constrain the output; they do not teach the agent
+        the semantics of your specialization. Create a short Markdown file that describes the
+        specialization in plain language, for example
+        <filepath>learning-content-guide.md</filepath>, and reference it from
+          <filepath>agent-instructions.md</filepath>. When translating documents that use your
+        specialization, the agent uses this guidance together with its general DITA knowledge.</p>
+      <p id="p_cv5_tv5_1kc">Based on the structure of the built-in doctype guidance, include the
+        following when you describe your own specialization:</p>
+      <ul>
+        <li><b>Titles and labels vs. body content</b> - Which elements are titles, headings, or UI
+          labels (which should read tersely, like a heading) versus narrative prose, including any
+          titles nested inside structural child elements.</li>
+        <li><b>Protected, technical-looking content</b> - Elements or attributes that look like
+          ordinary words but are actually identifiers, keys, or code and must remain exactly as
+          written.</li>
+        <li><b>Context-dependent elements</b> - Elements that are only translatable in some
+          contexts and act as fixed tokens in others.</li>
+        <li><b>Which attributes may change</b> - Call out the specific attributes on your
+          specialization's elements that hold translatable text (labels, alt text, and similar),
+          since attributes are protected by default.</li>
+        <li><b>Tricky examples</b> - For any case that is easy to get wrong, include a short
+          before/after example showing the source and its expected translation.</li>
+      </ul>
+    </section>
+  </body>
+</topic>

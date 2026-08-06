@@ -24,6 +24,14 @@ if (!token) {
   process.exit(1);
 }
 
+var baseUrlEnv = process.env.JIRA_BASE_URL || process.env.SECRET_JIRA_BASE_URL;
+if (!baseUrlEnv) {
+  console.error('Error: JIRA_BASE_URL or SECRET_JIRA_BASE_URL must be set (e.g. https://jira.example.com).');
+  process.exit(1);
+}
+baseUrlEnv = baseUrlEnv.replace(/\/+$/, '');
+var baseUrl = new URL(baseUrlEnv);
+
 var commentBody = '';
 if (args[1] === '--file') {
   var filePath = args[2];
@@ -43,7 +51,7 @@ if (!commentBody) {
 
 var requestBody = JSON.stringify({ body: commentBody });
 var options = {
-  hostname: 'jira.sync.ro',
+  hostname: baseUrl.hostname,
   port: 443,
   path: '/rest/api/2/issue/' + encodeURIComponent(issueKey) + '/comment',
   method: 'POST',
@@ -74,7 +82,7 @@ var req = https.request(options, function(res) {
         commentId: json.id,
         created: json.created,
         author: json.author && json.author.displayName,
-        url: 'https://jira.sync.ro/browse/' + issueKey
+        url: baseUrlEnv + '/browse/' + issueKey
       }, null, 2));
     } catch (e) {
       console.log(data);

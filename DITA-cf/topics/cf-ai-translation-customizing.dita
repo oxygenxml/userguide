@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-customizing">
+  <title>Customizing the Translation Behavior</title>
+  <shortdesc>An overview of the translation customization mechanisms and the kinds of guidance you
+    can provide to the translation agent.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>agent-instructions.md</indexterm>
+        <indexterm>customizing translation</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_rjr_mv5_1kc">You can control how the translation agent behaves in your project by using
+      two complementary mechanisms.</p>
+    <section id="cf-ai-translation-instructions-mechanisms">
+      <title>Per-Job Prompt vs. agent-instructions.md</title>
+      <ul id="ul_sjr_mv5_1kc">
+        <li id="li_tjr_mv5_1kc"><b>The per-job prompt</b> - Free-form instructions that you enter in
+          the <uicontrol>Instructions</uicontrol> field of the <uicontrol>New
+            Translation</uicontrol> dialog box when you start a translation job. These instructions
+          apply only to that job. They are useful for one-time requests, such as asking the agent to
+          retranslate a topic in a specific way.<p id="p_ujr_mv5_1kc">
+            <fig id="fig_start_translation_dialog_customizing">
+              <title>Per-Job Prompt in the New Translation Dialog</title>
+              <image href="../img/CF-start-translation-dialog.png" id="image_ahc_44x_xjc"
+                placement="inline"/>
+            </fig>
+          </p></li>
+        <li id="li_vjr_mv5_1kc"><b><filepath>agent-instructions.md</filepath></b> - An optional file
+          located at <filepath>.contentfusion/i18n/agent-instructions.md</filepath> in your
+          project's repository. When present, it applies to every translation job that includes it
+          in the workspace. This is the right place for durable, project-wide guidance, such as
+          terminology, style rules, do-not-translate lists, and any other customization described in
+          this section.</li>
+      </ul>
+      <p id="p_wjr_mv5_1kc">Use the per-job prompt for one-time requests, and use
+          <filepath>agent-instructions.md</filepath> for guidance that should be applied
+        consistently across translation jobs.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-references">
+      <title>Referencing Other Files</title>
+      <p id="p_xjr_mv5_1kc"><filepath>agent-instructions.md</filepath> does not need to contain all
+        guidance inline. You can move detailed instructions into separate files, such as a
+        terminology list, a style guide, or a doctype configuration, and reference them from
+          <filepath>agent-instructions.md</filepath>, while also telling the agent when each file is
+        relevant. Refer to each file by using a path relative to
+          <filepath>agent-instructions.md</filepath>.</p>
+      <p id="p_yjr_mv5_1kc">Splitting guidance this way does more than keep things tidy. It allows
+        the agent to load only the instructions needed for a specific job instead of loading every
+        instruction for every job. This is a form of progressive disclosure. For example, guidance
+        about adding a newly translated publication to your multilingual book is relevant only when
+        that publication is translated for the first time, and instructions for translating SVG text
+        are not relevant to an incremental job that does not include SVG files. Keeping such
+        guidance in referenced files, and consulting them only when needed, helps keep each job
+        focused on the current task.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-use-cases">
+      <title>Common Use Cases</title>
+      <p id="p_zjr_mv5_1kc">The following topics describe specific customizations that you can
+        define in <filepath>agent-instructions.md</filepath>:</p>
+      <ul>
+        <li><xref href="cf-ai-translation-custom-doctypes.dita">Configuring DITA Specializations
+            for Translation</xref></li>
+        <li><xref href="cf-ai-translation-terminology.dita">Enforcing Terminology and
+            Glossaries</xref></li>
+      </ul>
+      <p id="p_dkr_mv5_1kc">The sections below describe shorter customizations that you can add
+        directly to <filepath>agent-instructions.md</filepath>.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-do-not-translate">
+      <title>Do-Not-Translate Lists</title>
+      <p>To keep specific strings in their original form (product names, code identifiers, or UI
+        labels that ship untranslated), list them and instruct the agent to leave them unchanged
+        wherever they appear. For example:</p>
+      <p>
+        <codeblock outputclass="language-ini">Never translate the following strings; keep them exactly as written:
+Content Fusion, oXygen, WebHelp, DITA-OT.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-instructions-style-guide">
+      <title>Style Guide</title>
+      <p id="p_gkr_mv5_1kc">To apply your house style, describe it in
+          <filepath>agent-instructions.md</filepath> or reference a separate style-guide file.
+        Include the choices that matter for your content, such as tone and register, how to address
+        the reader, and language-specific punctuation or formatting conventions:</p>
+      <p>
+        <codeblock outputclass="language-ini">Use a formal register and address the reader with the formal second person.
+Follow the target language's standard quotation marks. Keep UI labels in
+sentence case.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-instructions-svg">
+      <title>Translating Text Inside SVG Graphics</title>
+      <p id="p_ikr_mv5_1kc">By default, SVG images are treated as binary assets and copied unchanged
+        into each target language, so the text they contain is not translated. If diagram labels or
+        other text inside your SVG graphics must be localized, you can instruct the agent in
+          <filepath>agent-instructions.md</filepath> to also translate the text content of the SVG
+        files referenced from your content. For example:</p>
+      <p>
+        <codeblock outputclass="language-ini">Always translate the text inside referenced SVG images (for example the
+content of &lt;text> and &lt;tspan> elements), leaving all other SVG markup
+unchanged.</codeblock>
+      </p>
+    </section>
+  </body>
+</topic>

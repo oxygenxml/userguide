@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-importing-existing">
+  <title>Importing a Project with Existing Translations</title>
+  <shortdesc>How to initialize the translation index for a project that already contains translated
+    content produced outside the AI translation workflow.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>importing existing translations</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_od4_b55_1kc">If a project already contains translated content (created manually, by a
+      translation vendor, or with another tool), you do not need to translate it again when you
+      start using the translation agent. Instead, have the agent record the existing translations in
+      a <xref href="cf-ai-translation-index.dita">translation index</xref> so they are recognized as
+        <b>current</b> rather than <b>missing</b> the next time you run a translation. See <xref
+        href="cf-ai-translation-running.dita">Running an Incremental Translation</xref> for an
+      explanation of these statuses.</p>
+    <section id="cf-ai-translation-importing-steps">
+      <title>Building the Index for Existing Translations</title>
+      <ol id="ol_pd4_b55_1kc">
+        <li id="li_qd4_b55_1kc">Start a translation job. In the <uicontrol>Instructions</uicontrol>
+          field, tell the agent that the content is already translated and should be imported
+          instead of translated. For example:
+          <codeblock id="codeblock_tr1_snx_xjc" outputclass="language-ini">The files are already translated. Import them into the
+translation index instead of translating them.</codeblock></li>
+        <li>The agent pairs each translated file with its source file, following your project's
+            <xref href="cf-ai-translation-project-structure.dita">layout</xref> (or explicit
+          guidance you give it when the pairing is not obvious), and records an index entry for each
+          pair using the source file's current Git blob SHA-1. No content is translated in this
+          step; only the index is written.</li>
+        <li id="li_sd4_b55_1kc">Review the resulting index and translated files, and then commit
+          them.</li>
+      </ol>
+      <note id="note_xml_lang" type="important">Each translated file must declare its language in the
+          <codeph>xml:lang</codeph> attribute of its root element, set to the target language tag
+        (for example, <codeph>xml:lang="fr-FR"</codeph> on the <codeph>&lt;topic></codeph> element of
+        a French topic). A file that is missing the attribute, or whose attribute does not match the
+        language being imported, is rejected and is not recorded in the index. The agent can add the
+        attribute itself and retry, but the import is faster and more predictable if the files
+        already carry it.</note>
+    </section>
+    <section id="cf-ai-translation-importing-verify">
+      <title>Verify Before You Rely on It</title>
+      <p id="p_td4_b55_1kc">Importing marks a translation as <b>current</b> without checking its
+        quality, so confirm the imported state before you rely on it:</p>
+      <ul>
+        <li>Spot-check that the imported translations match the source content at the revision
+          recorded in the index.</li>
+        <li id="li_wd4_b55_1kc">Check for source files that do not have a matching translation.
+          These remain <b>missing</b> and are translated during the next job.</li>
+        <li id="li_xd4_b55_1kc">If you are not sure whether a translation is still accurate, leave
+          it out of the import or delete its index entry so the agent retranslates it instead of
+          treating it as current.</li>
+      </ul>
+    </section>
+    <p>This is a one-time preparation step. Once the index reflects your existing translations,
+      later jobs follow the same incremental workflow as any other project.</p>
+  </body>
+</topic>

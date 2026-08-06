@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-index">
+  <title>The Translation Index</title>
+  <shortdesc>The workspace file that records which source files have been translated, into which
+    languages, and from which source version.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>translation index</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_cmr_s55_1kc">The translation index is a workspace file that records which source files
+      have been translated, where the translated copies are stored, and which version of each source
+      file was used to produce the translation.</p>
+    <bodydiv>
+      <section id="section_bwp_w13_xjc">
+        <title>Location and Lifecycle</title>
+        <p id="p_dmr_s55_1kc">By default, the index is stored at
+            <codeph>.contentfusion/i18n/translation-index.xml</codeph>.</p>
+        <p id="p_emr_s55_1kc">The file is created automatically the first time the agent records a
+          translation or copies a non-translatable asset. <b>Commit it to your DITA project
+            repository</b> so the translation state stays with your branches and merges and follows
+          the same access-control model as your content.</p>
+      </section>
+      <section id="section_ewp_w13_xjc">
+        <title>Agent-Maintained, Human-Editable</title>
+        <p id="p_fmr_s55_1kc">Under normal conditions, you do not need to edit the index yourself.
+          It is maintained by the translation agent.</p>
+        <p id="p_gmr_s55_1kc">The agent also keeps entries sorted and writes one entry per line so
+          diffs remain readable and merge conflicts are less likely.</p>
+        <p id="p_hmr_s55_1kc"><b>You can still edit it when needed.</b> The index is plain XML
+          stored in your repository, so you can open it in any text editor, review it in pull
+          requests, and edit it directly when that is faster or more precise than running the agent
+          again. Common reasons to edit it manually include:</p>
+        <ul id="ul_hwp_w13_xjc">
+          <li id="li_imr_s55_1kc"><b>Force a retranslation</b> - Delete the
+              <codeph>&lt;entry></codeph> for a file, or delete the entire index to reset everything
+            (see <xref href="cf-ai-translation-redoing.dita">Redoing Translations</xref>).</li>
+          <li id="li_jmr_s55_1kc"><b>Fix an incorrect path</b> - Correct a <codeph>&lt;source
+              href></codeph> or <codeph>&lt;target href></codeph> after you moved or renamed files
+            in the repository outside <ph keyref="product"/>.</li>
+          <li id="li_kmr_s55_1kc"><b>Split or reorganize the index</b> - Add <codeph
+              id="codeblock_mwp_w13_xjc">&lt;include href="..."/></codeph> pointers to divide a
+            large index into smaller files. For example, you can split it by product area, such as
+            hardware and software products.</li>
+          <li id="li_lmr_s55_1kc"><b>Import existing translations</b> - Generate the index from
+            translations created outside <ph keyref="product"/> (see <xref
+              href="cf-ai-translation-importing-existing.dita">Importing a Project with Existing
+              Translations</xref>).</li>
+        </ul>
+        <p id="p_mmr_s55_1kc">
+          <note id="note_g5f_kd3_xjc">If you edit the file manually, keep the format rules below so
+            the agent can still parse it the next time it runs.</note>
+        </p>
+      </section>
+    </bodydiv>
+    <section id="file_example">
+      <title>File Example</title>
+      <p>Here is an example, indented to be easier to read:</p>
+      <p><codeblock id="codeblock_index_concept_example" outputclass="language-xml">&lt;translation-index version="1">
+  &lt;entry lang="de-DE">
+    &lt;source href="../../en/topics/install.dita" sha="b225ce…"/>
+    &lt;target href="../../de-DE/topics/install.dita" sha="08971e…"/>
+  &lt;/entry>
+  &lt;entry lang="fr-FR">
+    &lt;source href="../../en/topics/install.dita" sha="b225ce…"/>
+    &lt;target href="../../fr-FR/topics/install.dita" sha="500c34…"/>
+  &lt;/entry>
+&lt;/translation-index></codeblock>This example shows one source topic,
+          <codeph>../../en/topics/install.dita</codeph>, translated into two target languages:
+        German (<codeph>de-DE</codeph>) and French (<codeph>fr-FR</codeph>).</p>
+      <p id="p_pmr_s55_1kc">Each <codeph>&lt;entry></codeph> represents one <codeph>(language,
+          source file)</codeph> pair. Because both entries point to the same source
+          <codeph>href</codeph>, they record two translations of the same English file, not two
+        different source files.</p>
+      <p id="p_qmr_s55_1kc">The identical source <codeph>sha</codeph> value in both entries means
+        that both translations were produced from the same version of the English topic. The
+        different target <codeph>href</codeph> and <codeph>sha</codeph> values identify the separate
+        translated files and the exact recorded version of each translation.</p>
+      <p>See the <xref href="cf-ai-translation-index-format.dita">file format reference</xref> for
+        full details.</p>
+    </section>
+    <section id="section_osz_nmx_xjc">
+      <title>Resolving Conflicts</title>
+      <p>The format is designed to keep merge conflicts rare (one entry per line, sorted, and
+        splittable across fragments), but conflicts can still arise when two translation jobs or two
+        branches record translations independently. Running a single job at a time and translating on
+        a single branch are the simplest ways to avoid them. See <xref
+          href="cf-ai-translation-index-conflicts.dita">Resolving Translation Index
+          Conflicts</xref>.</p>
+    </section>
+  </body>
+</topic>
