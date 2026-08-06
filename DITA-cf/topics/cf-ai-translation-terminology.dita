@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-terminology">
+  <title>Enforcing Terminology and Glossaries</title>
+  <shortdesc>How to provide a terminology list so the agent uses consistent, approved translations
+    for key terms.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>terminology</indexterm>
+        <indexterm>glossary</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_c54_fw5_1kc">Product names, feature names, and other fixed terms should be translated
+      consistently every time they appear.</p>
+    <section id="cf-ai-translation-terminology-provided">
+      <title>Providing a Terminology List</title>
+      <p id="p_d54_fw5_1kc">If you already know which terms require a fixed translation, list them
+        in a file and tell the agent to use that file in <filepath>agent-instructions.md</filepath>.
+        The agent can read a terminology file in any format, including one exported from an existing
+        terminology tool, as long as <filepath>agent-instructions.md</filepath> explains how to read
+        it. Include a representative snippet of the file in your instructions so the agent knows
+        what to expect.</p>
+      <p id="p_e54_fw5_1kc">To reduce costs, the agent reads only the line ranges it needs instead
+        of the entire file, so keep each entry on a separate line.</p>
+      <p id="p_f54_fw5_1kc">For example, you can add instructions like these to
+          <filepath>agent-instructions.md</filepath>, including a snippet of your <b>TBX</b>
+          (<codeph>TermBase eXchange</codeph>) terminology file:</p>
+      <p>
+        <codeblock outputclass="language-xml">When you need to translate a term, search in [the terms file](./terms.tbx)
+and use the canonical translation found there instead of re-translating.
+
+The file has entries with this format:
+
+&lt;termEntry id="review-task">
+  &lt;langSet xml:lang="en">&lt;tig>&lt;term>review task&lt;/term>&lt;/tig>&lt;/langSet>
+  &lt;langSet xml:lang="fr-FR">&lt;tig>&lt;term>tâche de révision&lt;/term>&lt;/tig>&lt;/langSet>
+  &lt;langSet xml:lang="de-DE">&lt;tig>&lt;term>Prüfaufgabe&lt;/term>&lt;/tig>&lt;/langSet>
+&lt;/termEntry>
+
+Use your grep tool to search it.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-terminology-discovered">
+      <title>Letting the Agent Build the List</title>
+      <p id="p_h54_fw5_1kc">If you want the agent to also update the terms file, or create it if you
+        do not already have one, you can add instructions like these to
+          <filepath>agent-instructions.md</filepath>:</p>
+      <p>
+        <codeblock outputclass="language-ini">Whenever you translate a topic, identify terms 
+(product names, feature names, UI labels) and record them, together with
+the translation you used, in [the terms file](./terms.tbx).</codeblock>
+      </p>
+      <p id="p_j54_fw5_1kc">Over time, this creates a project-specific glossary without requiring
+        you to prepare one in advance. Review the terminology file after each translation task and
+        correct any entries the agent got wrong. The agent will use those corrected entries in
+        future translation tasks.</p>
+    </section>
+  </body>
+</topic>

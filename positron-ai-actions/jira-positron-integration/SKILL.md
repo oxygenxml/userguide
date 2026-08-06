@@ -23,9 +23,11 @@ This skill extends the AI's context with data from a Jira issue so the AI can he
 
 ### Option 1: Run the fetch script
 
-When running the command line if it has parameters to pass env variables to it, pass the env variable named `SECRET_JIRA_PERSONAL_TOKEN` with value `${secret(SECRET_JIRA_PERSONAL_TOKEN)}`.
+When running the command line if it has parameters to pass env variables to it, pass the env variable named `SECRET_JIRA_PERSONAL_TOKEN` with value `${secret(JPT)}`.
 
-The project includes a script that fetches issue data from `https://jira.sync.ro/`. The script lives next to the skill file in `jira-fetch.js`.
+The project includes a script that fetches issue data from the configured Jira server. The script lives next to the skill file in `jira-fetch.js`.
+
+All scripts in this folder (`jira-fetch.js`, `jira-add-comment.js`, `jira-download-attachment.js`) read the Jira server address from the `JIRA_BASE_URL` (or `SECRET_JIRA_BASE_URL`) environment variable, e.g. `https://jira.example.com`. No Jira server address is hardcoded in the scripts. If the variable is not set, each script exits with an error explaining how to set it.
 
 1. Check if Node.js is installed:
 
@@ -48,7 +50,8 @@ The project includes a script that fetches issue data from `https://jira.sync.ro
    ```
 
 3. Set `JIRA_PERSONAL_TOKEN`. Create it from Jira profile → Personal access tokens.
-4. Run the script for a single issue in the default documentation-friendly mode:
+4. Set `JIRA_BASE_URL` to the Jira server address, e.g. `https://jira.example.com` (no trailing slash needed).
+5. Run the script for a single issue in the default documentation-friendly mode:
 
    ```bash
    node jira-fetch.js <ISSUE_KEY>
@@ -60,17 +63,17 @@ The project includes a script that fetches issue data from `https://jira.sync.ro
    node jira-fetch.js PROJ-123
    ```
 
-5. Run the script for a single issue in full mode when you need all fields with labels:
+6. Run the script for a single issue in full mode when you need all fields with labels:
 
    ```bash
    node jira-fetch.js <ISSUE_KEY> --full
    ```
 
-6. When an issue has attachments, the default output also includes attachment metadata such as file name, MIME type, size, author, and Jira download URLs.
-7. Keep attachment metadata in the main Jira fetch output so the AI can see that images exist and can reference them as supporting context.
-8. If the user wants to inspect one or more Jira attachments manually, they can download them locally with `node jira-download-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]`. The script saves the files in a local `tmp` folder next to the script and returns their local paths.
-11. You can use the available tools to explore each downloaded file if necessary. 
-12. Run the script with no issue key to get the current user's assigned issues:
+7. When an issue has attachments, the default output also includes attachment metadata such as file name, MIME type, size, author, and Jira download URLs.
+8. Keep attachment metadata in the main Jira fetch output so the AI can see that images exist and can reference them as supporting context.
+9. If the user wants to inspect one or more Jira attachments manually, they can download them locally with `node jira-download-attachment.js <ISSUE_KEY> <ATTACHMENT_ID> [ATTACHMENT_ID ...]`. The script saves the files in a local `tmp` folder next to the script and returns their local paths.
+10. You can use the available tools to explore each downloaded file if necessary. 
+11. Run the script with no issue key to get the current user's assigned issues:
 
    ```bash
    node jira-fetch.js
@@ -81,13 +84,14 @@ The project includes a script that fetches issue data from `https://jira.sync.ro
 The project also includes a script that can post comments to Jira issues. The script lives next to the skill file in `jira-add-comment.js`.
 
 1. Set `JIRA_PERSONAL_TOKEN`. Create it from Jira profile → Personal access tokens.
-2. Post a short comment directly from the command line:
+2. Set `JIRA_BASE_URL` to the Jira server address, e.g. `https://jira.example.com` (no trailing slash needed).
+3. Post a short comment directly from the command line:
 
    ```bash
    node jira-add-comment.js <ISSUE_KEY> "Comment text"
    ```
 
-3. Post a longer comment from a text file:
+4. Post a longer comment from a text file:
 
    ```bash
    node jira-add-comment.js <ISSUE_KEY> --file <path-to-comment.txt>

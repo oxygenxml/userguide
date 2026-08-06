@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-redoing">
+  <title>Redoing Translations</title>
+  <shortdesc>How to make the agent retranslate content, either for a few files or for an entire
+    project, after you change the source, terminology, instructions, or validation
+    rules.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>redoing translations</indexterm>
+        <indexterm>force retranslation</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_nvw_n55_1kc">The agent skips any file it considers <xref
+        href="cf-ai-translation-running.dita">current</xref>. To redo a translation, reset the state
+      recorded for that file in the <xref href="cf-ai-translation-index.dita">translation
+        index</xref>. Once a file appears <b>missing</b> or <b>stale</b> again, the next translation
+      job processes it.</p>
+    <section id="cf-ai-translation-redoing-files">
+      <title>Retranslate Specific Files</title>
+      <p>To force the agent to retranslate a file, delete its recorded state from
+          <filepath>.contentfusion/i18n/translation-index.xml</filepath>:</p>
+      <ul id="ul_pvw_n55_1kc">
+        <li id="li_qvw_n55_1kc">Delete the <codeph>&lt;entry></codeph> for that file in a specific
+          language. The file then becomes <b>missing</b> for that language and is retranslated
+          during the next job.</li>
+        <li>Delete every <codeph>&lt;entry></codeph> for the file to retranslate it into all
+          languages.</li>
+      </ul>
+    </section>
+    <section id="cf-ai-translation-redoing-guidance">
+      <title>Start Over After Changing Your Guidance</title>
+      <p id="p_svw_n55_1kc">If a translation does not produce the result you want, you can often fix
+        the cause once and then regenerate the affected content. For example, you might correct your
+        terminology file, refine <filepath>agent-instructions.md</filepath>, or adjust your <xref
+          href="cf-ai-translation-custom-doctypes.dita">validation rules</xref>. These changes do
+        not make existing translations stale by themselves, because staleness tracks only changes in
+        the English source. As a result, a normal job skips those files, so you need to reset their
+        recorded state to have them processed again:</p>
+      <ul id="ul_tvw_n55_1kc">
+        <li id="li_uvw_n55_1kc">To redo everything, delete the entire translation index or the part
+          that covers the content you want to regenerate. Every recorded source file then becomes
+            <b>missing</b> and is retranslated during the next job.</li>
+        <li id="li_vvw_n55_1kc">To redo only part of the content, delete only the entries for the
+          files or languages you want to regenerate.</li>
+      </ul>
+      <p id="p_wvw_n55_1kc">Then run translation again and review the results as usual. See <xref
+          href="cf-ai-translation-reviewing.dita">Reviewing Translations Before You
+        Commit</xref>.</p>
+      <note type="caution">Deleting an entry discards the recorded link between a source file and its
+        translation, not the translated file on disk, and the next job overwrites that file with
+        fresh output. Commit or back up any manual corrections you want to keep before you rerun the
+        translation.</note>
+    </section>
+  </body>
+</topic>

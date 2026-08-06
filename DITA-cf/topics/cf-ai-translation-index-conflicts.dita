@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-index-conflicts">
+  <title>Resolving Translation Index Conflicts</title>
+  <shortdesc>How to avoid conflicts in the translation index, and how to resolve them when two
+    translation jobs or two branches record translations independently.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>translation</indexterm>
+        <indexterm>translation index</indexterm>
+        <indexterm>conflicts</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_idxconf_intro">The <xref href="cf-ai-translation-index.dita">translation index</xref>
+      is a single file that every translation job updates. Its format is designed to keep conflicts
+      rare, because entries are written one per line, kept sorted, and can be split across
+      fragments, but a conflict can still occur when the same region of the file is changed in two
+      parallel jobs.</p>
+    <p id="p_idxconf_cause">The usual cause is that a translation job works on a snapshot of your
+      workspace taken when the job started. A job does not see the entries that another job records
+      while it is running, and it returns an index that contains its own entries only. If you bring
+      in the results of two such jobs, or merge two branches that each recorded translations, both
+      versions of the index are legitimate and each one is missing the other's entries.</p>
+    <p id="p_idxconf_safe">
+      <note id="note_idxconf_safe" type="tip">A mistake here is not destructive. If an entry is lost
+        while you resolve a conflict, the only consequence is that its file is reported as
+          <b>missing</b> or <b>stale</b> and is translated again in the next job. Nothing is
+        overwritten silently.</note>
+    </p>
+    <section id="cf-ai-translation-index-conflicts-sequential">
+      <title>Preferred: Run One Job at a Time</title>
+      <p id="p_idxconf_seq">The simplest way to keep the index conflict-free is to never have two
+        jobs producing translations at the same time:</p>
+      <ul id="ul_idxconf_seq">
+        <li id="li_idxconf_onejob"><b>Put everything in the same job.</b> In the <uicontrol>New
+            translation</uicontrol> dialog box, select all the publications and all the target
+          languages that you want to update. A single job covers all of them and processes the
+          languages one after another, updating one index as it goes, so there is nothing to merge
+          afterwards.</li>
+        <li id="li_idxconf_commit"><b>If you do need several jobs, finish one before starting the
+            next.</b> Bring the results of the first job into your workspace, review them, and
+          commit them. Only then start the second job, so that it starts from a workspace that
+          already contains the entries of the first one.</li>
+      </ul>
+      <p id="p_idxconf_parallel">Running translation jobs in parallel is not advisable, and not only
+        because of the index. A job cannot reuse the topics that another job is translating at the
+        same time, so parallel jobs repeat work that a single job would have done once, and they
+        cannot keep their terminology consistent with each other.</p>
+    </section>
+    <section id="cf-ai-translation-index-conflicts-changes-view">
+      <title>Keeping the Entries of Both Jobs After the Fact</title>
+      <p id="p_idxconf_cv">If two jobs have already run in parallel, you can still combine their
+        results, one job at a time:</p>
+      <ol id="ol_idxconf_cv">
+        <li id="li_idxconf_cv_first">Bring the first job into your workspace, review it, and commit
+          it, as usual.</li>
+        <li id="li_idxconf_cv_second">Bring the second job into your workspace. Because the index in
+          your workspace is now the one committed for the first job, the <uicontrol>Import
+            conflict</uicontrol> dialog box does not appear for it, and the imported index replaces
+          the committed one.</li>
+        <li id="li_idxconf_cv_merge">Open the <xref href="cf-projects-workspace_changes_view.dita"
+              ><uicontrol>Changes</uicontrol> view</xref> and select
+            <filepath>translation-index.xml</filepath>. The comparison shows the version imported by
+          the second job on the left and the committed version of the first job on the right. Edit
+          the left side so that it keeps the entries from both versions, then commit.</li>
+      </ol>
+      <p id="p_idxconf_cv_easy">This is easier than it sounds, because the two versions differ only
+        by whole <codeph>&lt;entry></codeph> elements, one per line: none of the lines that both
+        jobs produced needs to be reconciled word by word. Keep every entry that appears on either
+        side, and keep the entries sorted.</p>
+      <p id="p_idxconf_cv_note">
+        <note id="note_idxconf_cv_translated_files" type="notice">Review the translated files of the
+          second job as well. If both jobs translated the same topic into the same language, the
+          second import overwrites the first translation of that topic, and only one of the two
+          entries for it is correct. Delete the entry for that topic instead of keeping both, so
+          that the topic is translated again from its current source. See <xref
+            href="cf-ai-translation-redoing.dita">Redoing Translations</xref>.</note>
+      </p>
+    </section>
+    <section id="cf-ai-translation-index-conflicts-branches">
+      <title>Translating on Separate Branches</title>
+      <p id="p_idxconf_branches">When the translations were produced on different branches, for
+        example one branch per language or per product area, the index conflict surfaces when you
+        merge. Use the <uicontrol>Merge into current branch</uicontrol> action and resolve the
+        conflict with the <xref href="cf-projects-workspace-conflict-resolution.dita">branch merging
+          conflict resolution dialog box</xref>:</p>
+      <ul id="ul_idxconf_branches">
+        <li id="li_idxconf_branch_manual">For <filepath>translation-index.xml</filepath>, choose
+            <uicontrol>Manual merge</uicontrol> and edit the merged version so that it contains the
+          entries of both branches. Do not choose <uicontrol>Keep main changes</uicontrol> or
+            <uicontrol>Keep dev changes</uicontrol>, because either one discards the entries
+          recorded on the other branch and the corresponding files are translated again in the next
+          job.</li>
+        <li id="li_idxconf_branch_same">If the same topic was translated into the same language on
+          both branches, the translated file itself also conflicts. Resolve that conflict, then
+          delete the entry for that topic from the merged index and retranslate the topic after the
+          merge.</li>
+      </ul>
+      <p id="p_idxconf_branch_split">If you work on separate branches regularly, consider splitting
+        the index into fragments, one per language or per product area, by using <codeph>&lt;include
+          href="..."/></codeph> pointers. Each branch then updates a different file, and the merge
+        has nothing to reconcile. See the <xref href="cf-ai-translation-index-format.dita">file
+          format reference</xref>.</p>
+    </section>
+    <section id="cf-ai-translation-index-conflicts-check">
+      <title>Checking the Result</title>
+      <p id="p_idxconf_check">After you resolve a conflict, make sure that the index is still
+        well-formed XML and that no entry was duplicated for the same <codeph>(language, source
+          file)</codeph> pair. The next translation job reports any file whose entry is missing as
+          <b>missing</b> or <b>stale</b>, which is a convenient way to confirm that the merge kept
+        what you expected. See <xref href="cf-ai-translation-running.dita">Running an Incremental
+          Translation</xref>.</p>
+    </section>
+  </body>
+</topic>

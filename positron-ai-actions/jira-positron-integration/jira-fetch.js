@@ -1,4 +1,5 @@
 var pat = process.env.JIRA_PERSONAL_TOKEN || process.env.SECRET_JIRA_PERSONAL_TOKEN;
+var baseUrl = process.env.JIRA_BASE_URL || process.env.SECRET_JIRA_BASE_URL;
 var issueKey = process.argv[2];
 var outputMode = process.argv[3] || "summary";
 
@@ -8,7 +9,12 @@ if (!pat) {
   process.exit(1);
 }
 
-var baseUrl = "https://jira.sync.ro";
+if (!baseUrl) {
+  console.error("Error: JIRA_BASE_URL or SECRET_JIRA_BASE_URL must be set (e.g. https://jira.example.com).");
+  process.exit(1);
+}
+
+baseUrl = baseUrl.replace(/\/+$/, "");
 var issueUrl = issueKey
   ? baseUrl + "/rest/api/2/issue/" + issueKey
   : baseUrl + "/rest/api/2/search?jql=assignee=currentUser()";
