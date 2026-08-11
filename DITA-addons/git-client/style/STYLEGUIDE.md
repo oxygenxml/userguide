@@ -242,7 +242,7 @@ These are validated automatically in Oxygen. Follow them as you author:
 - **No em-dashes:** avoid em-dash (`—`) asides in topic prose; reflow them into separate sentences or parentheses. In choice/label lists use "`<uicontrol>Label</uicontrol>` - description" with a spaced hyphen, and use "-" (not "—") for an empty or placeholder cell value.
 - **No clause-joining semicolons:** do not join two clauses with a semicolon. Write two sentences, or use a conjunction such as "and", "so", or "then". A semicolon is acceptable only to separate items in a list whose entries already contain commas.
 - **Numbers:** the outdated-branch check runs "every 3.5 hours".
-- **Version:** this doc set targets Git Client add-on **6.0**.
+- **Version:** this doc set targets Git Client add-on **6.1**.
 
 ---
 
