@@ -5,17 +5,17 @@
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>AI Positron Enterprise</indexterm>
+        <indexterm>AI Positron</indexterm>
         <indexterm>Configuration File</indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
-    <p>The <b>Oxygen AI Positron Enterprise</b> add-on can automatically configure its AI
-      service using a JSON file placed in the <b>plugin's</b> installation directory. This method
-      initializes the connector when <b>Oxygen</b> starts and hides the <uicontrol>AI
-        Service Configuration</uicontrol> preferences page. As a result, users are restricted to
-      using the company's approved AI service only.</p>
+    <p>The <b>Oxygen AI Positron</b> add-on can automatically configure its AI service using a JSON
+      file placed in the <b>plugin's</b> installation directory. This method initializes the
+      connector when <b>Oxygen</b> starts and hides the <uicontrol>AI Service
+        Configuration</uicontrol> preferences page. As a result, users are restricted to using the
+      company's approved AI service only.</p>
     <section id="section_json_config_example">
       <title>Configuration File Example</title>
       <p>Create a file named <filepath>ai-service-configuration.json</filepath>. The file can be
@@ -28,14 +28,16 @@
         </ul><note id="note_yjv_kvl_xfc" type="important">In the <menucascade>
             <uicontrol>Preferences</uicontrol>
             <uicontrol>Plugins</uicontrol>
-          </menucascade> page, you can select the <uicontrol>AI Positron Enterprise</uicontrol>
-          plugin and there is a <uicontrol>Location</uicontrol> detail that points to the plugin's
-          installation folder. That is the exact place where the JSON file must be
-        copied.</note></p>
+          </menucascade> page, you can select the <uicontrol>AI Positron</uicontrol> plugin and
+          there is a <uicontrol>Location</uicontrol> detail that points to the plugin's installation
+          folder. That is the exact place where the JSON file must be copied.</note></p>
       <p>The supported connectors are <codeph>open-ai-connector</codeph>,
+          <codeph>open-ai-responses-api-connector</codeph>,
           <codeph>ms-azure-open-ai-connector</codeph>, <codeph>claude-ai-connector</codeph>,
-          <codeph>google-gemini-ai-connector</codeph>, <codeph>aws-bedrock-connector</codeph>, and
-          <codeph>grok-connector</codeph>.</p>
+          <codeph>google-gemini-ai-connector</codeph>, <codeph>aws-bedrock-connector</codeph>,
+          <codeph>grok-connector</codeph>, and <codeph>vertex-ai-service</codeph> (the latter is only
+        available when the separate <b>Oxygen AI Positron Vertex AI Connector</b> add-on is also
+        installed).</p>
       <p>The configuration file accepts either a single JSON object (for one connection) or a <xref
           href="#./section_multiple_connections">JSON array of objects (for multiple
           connections)</xref>.</p>
@@ -45,7 +47,9 @@
   "connector_id": "open-ai-connector",
   "connector_params": {
     "base_URL_param": "https://api.openai.com/",
-    "model_param": "gpt-4",
+    "models_table_param": {
+      "defaultModelId": "gpt-5.6-terra"
+    },
     "streaming_param": true,
     "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
@@ -56,7 +60,9 @@
   "connector_id": "claude-ai-connector",
   "connector_params": {
     "base_URL_param": "https://api.anthropic.com/",
-    "model_param": "claude-3-opus-20240229",
+    "models_table_param": {
+      "defaultModelId": "claude-opus-5"
+    },
     "streaming_param": true,
     "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
@@ -67,8 +73,9 @@
   "connector_id": "google-gemini-ai-connector",
   "connector_params": {
     "base_URL_param": "https://generativelanguage.googleapis.com/",
-    "model_param": "models/gemini-2.5-flash-lite",
-    "streaming_param": true,
+    "models_table_param": {
+      "defaultModelId": "gemini-3.5-flash-lite"
+    },
     "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
   }
@@ -108,10 +115,89 @@
     "base_URL_param": "https://api.x.ai/",
     "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "ai_key_param_seed_url": "http://127.0.0.1:6573/seed",
-    "model_param": "grok-4"
+    "models_table_param": {
+      "defaultModelId": "grok-4.6"
+    }
   }
 }</codeblock>
       </p>
+      <p id="p_wai_9k1_vfc">The <codeph>open-ai-responses-api-connector</codeph> accepts the same
+          <codeph>connector_params</codeph> as <codeph>open-ai-connector</codeph> (only its
+        <codeph>connector_id</codeph> differs), since it is the same OpenAI backend accessed
+        through the Responses API instead of the Chat Completions API.</p>
+      <p id="p_ver_9k1_vfc">Example for the optional Vertex AI connector (requires the separate
+          <b>Oxygen AI Positron Vertex AI Connector</b> add-on):</p>
+      <codeblock outputclass="language-json" id="codeblock_vertex_9k1">{
+  "connection_name": "VertexAI",
+  "connector_id": "vertex-ai-service",
+  "connector_params": {
+    "project_id_param": "my-gcp-project",
+    "location_param": "us-central1",
+    "credentials_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "credentials_param_seed_url": "http://127.0.0.1:6573/seed",
+    "models_table_param": {
+      "defaultModelId": "google/gemini-3-flash-preview",
+      "userModels": [
+        {
+          "id": "google/gemini-3-flash-preview",
+          "displayName": "Gemini 3 Flash Preview",
+          "isCustom": true
+        }
+      ]
+    }
+  }
+}</codeblock>
+      <p>Vertex AI has no fixed model catalog, so its <codeph>models_table_param</codeph> is seeded
+        with only a single default model; any other model must be added as a custom entry in
+          <codeph>userModels</codeph>, as shown above. If <codeph>credentials_param</codeph> is
+        omitted, the connector falls back to Google Cloud's Application Default Credentials.</p>
+    </section>
+    <section id="section_models_table_param">
+      <title>Selecting a Model</title>
+      <p>The <codeph>ms-azure-open-ai-connector</codeph> and <codeph>aws-bedrock-connector</codeph>
+        take the model as a plain text value (<codeph>deployment_param</codeph> and
+          <codeph>model_param</codeph> respectively), as shown in the examples above. All other
+        connectors (<codeph>open-ai-connector</codeph>, <codeph>open-ai-responses-api-connector</codeph>,
+          <codeph>claude-ai-connector</codeph>, <codeph>google-gemini-ai-connector</codeph>,
+          <codeph>grok-connector</codeph>, and <codeph>vertex-ai-service</codeph>) manage models
+        through an admin-curated models table instead, exposed as the
+          <codeph>models_table_param</codeph> parameter. Its value is a JSON object, not a plain
+        string, and every field in it is optional:<ul>
+          <li><codeph>defaultModelId</codeph> — the ID of the model that becomes the connection's
+            selected/default model. It must match one of the connector's built-in model IDs, or the ID
+            of a model added through <codeph>userModels</codeph> (see below). Matching is
+            case-insensitive. If <codeph>models_table_param</codeph> is omitted entirely, or if
+              <codeph>defaultModelId</codeph> does not match any known model ID, the connector falls
+            back to its own built-in default model without raising an error.</li>
+          <li><codeph>userModels</codeph> — an array used to add models that are not in the
+            connector's built-in list, or to override a built-in model's display name or reasoning
+            settings. Each entry needs a unique <codeph>id</codeph>; for a brand-new model,
+              <codeph>isCustom</codeph> must also be set to <codeph>true</codeph>, otherwise the entry
+            is silently discarded. Other optional fields on an entry are
+              <codeph>displayName</codeph>, <codeph>reasoningLevel</codeph> (one of
+              <codeph>off</codeph>, <codeph>auto</codeph>, <codeph>none</codeph>,
+              <codeph>minimal</codeph>, <codeph>low</codeph>, <codeph>medium</codeph>,
+              <codeph>high</codeph>, <codeph>xhigh</codeph>, or <codeph>max</codeph>),
+              <codeph>requestModelId</codeph> (the model ID actually sent to the AI provider, when it
+            differs from <codeph>id</codeph>), <codeph>visibleInUI</codeph>, and the token limits
+              <codeph>maxTotalTokens</codeph>, <codeph>maxInputTokens</codeph>, and
+              <codeph>maxOutputTokens</codeph>.</li>
+          <li><codeph>removedDefaultIds</codeph> — an array of built-in model IDs to hide from
+            users.</li>
+        </ul></p>
+      <p>For example, to expose only a single, custom-labeled model on the OpenAI connector:</p>
+      <codeblock outputclass="language-json" id="codeblock_models_table_example">{
+  "models_table_param": {
+    "defaultModelId": "gpt-5.6-terra",
+    "userModels": [
+      {
+        "id": "gpt-5.6-terra",
+        "displayName": "Approved Writing Model"
+      }
+    ],
+    "removedDefaultIds": ["gpt-5.6-sol", "gpt-5.6-luna"]
+  }
+}</codeblock>
     </section>
     <section id="section_multiple_connections">
       <title>Configuring Multiple Connections</title>
@@ -146,15 +232,15 @@
 ]</codeblock>
       <note type="tip">Each connection must have a unique <codeph>connection_name</codeph>. If two
         entries share the same name (or both omit it), the second connection automatically receives a
-        numeric suffix (for example, <codeph>AzureGpt5_2</codeph>) to keep identifiers
+        numeric suffix (for example, <codeph>AzureGpt5 (2)</codeph>) to keep identifiers
         distinct.</note>
     </section>
     <section id="section_behavior">
       <title>Configuration File Detection</title>
       <p>When the configuration file is detected, the connector is initialized with its values when
-        <b>Oxygen</b> starts. The <menucascade>
+          <b>Oxygen</b> starts. The <menucascade>
           <uicontrol>Plugins</uicontrol>
-          <uicontrol>Oxygen AI Positron Enterprise</uicontrol>
+          <uicontrol>Oxygen AI Positron</uicontrol>
           <uicontrol>AI Service Configuration</uicontrol>
         </menucascade> preferences page is then hidden. After setup, you can remove the encrypted
         key and seed endpoints if they are no longer needed. Also, any changes to the configuration
