@@ -23,7 +23,7 @@ This skill extends the AI's context with data from a Jira issue so the AI can he
 
 ### Option 1: Run the fetch script
 
-When running the command line if it has parameters to pass env variables to it, pass the env variable named `SECRET_JIRA_PERSONAL_TOKEN` with value `${secret(JPT)}`.
+When running the command line if it has parameters to pass env variables to it, pass the env variable named `SECRET_JIRA_PERSONAL_TOKEN` with value `${secret(JPT)}` and another named `SECRET_JIRA_BASE_URL` with value `${secret(JBU)}`. These `${secret(` markers are expanded by Oxygen based on its Secrets preferences page. If they are not expanded, it means that the user should configure this page.
 
 The project includes a script that fetches issue data from the configured Jira server. The script lives next to the skill file in `jira-fetch.js`.
 
