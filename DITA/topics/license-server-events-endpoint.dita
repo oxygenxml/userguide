@@ -11,14 +11,14 @@
   </prolog>
   <body>
     <p id="p_ev_intro_54b">The license server also reports the individual licensing events that it
-      recorded, at:
-        <codeph>http://hostName:port/oXygenLicenseServlet/license-events</codeph>. An event says
-      which user was granted, rejected, released, or timed out a license, when, and from which
-      computer.</p>
-    <p id="p_ev_use_54b">Use this report to find out who was denied a license and how often, for
-      example to tell whether a single user retried many times or several different users were
-      affected. The <xref href="license-server-xml-report.dita#license-server-xml-report">XML
-        report</xref> only reports the total number of rejected requests, as a single counter.</p>
+      recorded at <codeph>http://hostName:port/oXygenLicenseServlet/license-events</codeph>. Each
+      event shows which user was granted, rejected, released, or timed out a license, when this
+      happened, and from which computer.</p>
+    <p id="p_ev_use_54b">Use this report to find out who was denied a license and how often. For
+      example, it can help you determine whether a single user retried many times or whether several
+      different users were affected. The <xref
+        href="license-server-xml-report.dita#license-server-xml-report">XML report</xref> reports
+      only the total number of rejected requests, as a single counter.</p>
     <note id="note_ev_auth_54b">This report is protected in the same way as the other license server
       management pages. You must use a user configured with the <codeph>admin</codeph> role, or with
       the <codeph>manager</codeph> role if you configured one.</note>
@@ -49,18 +49,18 @@
             <row>
               <entry><codeph>since</codeph></entry>
               <entry>The oldest recorded event</entry>
-              <entry>Only the events that were recorded at this moment or later.</entry>
+              <entry>Reports only the events that were recorded at this moment or later.</entry>
             </row>
             <row>
               <entry><codeph>until</codeph></entry>
               <entry>None</entry>
-              <entry>Only the events that were recorded before this moment.</entry>
+              <entry>Reports only the events that were recorded before this moment.</entry>
             </row>
             <row>
               <entry><codeph>after</codeph></entry>
               <entry>None</entry>
-              <entry>Only the events that follow the event with this identifier. Use it to read the
-                next page of a report that was truncated. It cannot be combined with
+              <entry>Reports only the events that follow the event with this identifier. Use it to
+                read the next page of a truncated report. It cannot be combined with
                   <codeph>groupBy</codeph>.</entry>
             </row>
             <row>
@@ -72,9 +72,9 @@
             <row>
               <entry><codeph>limit</codeph></entry>
               <entry><codeph>1000</codeph></entry>
-              <entry>The maximum number of rows to report. It must be at least
-                  <codeph>1</codeph>, and larger values than <codeph>10000</codeph> are reduced to
-                  <codeph>10000</codeph>.</entry>
+              <entry>The maximum number of rows to report. It must be at least <codeph>1</codeph>,
+                and values larger than <codeph>10000</codeph> are reduced to
+                <codeph>10000</codeph>.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -86,7 +86,7 @@
     <section id="events_report">
       <title>The Reported Events</title>
       <p id="p_ev_sample_54b">For example, if the current moment is <b>14 August 2026, 09:00
-          UTC</b>, then the users that were denied a license in the last day are reported by
+        UTC</b>, the users who were denied a license in the last day are reported by
           <codeph>/license-events?since=2026-08-13T09:00:00Z</codeph>:<codeblock outputclass="language-xml" id="codeblock_ev_events_54b">&lt;licenseEvents type="rejected" returned="2" hasMore="true"
                oldest="2026-02-11T08:00:01Z" nextAfter="10230">
   &lt;event id="10229" time="2026-08-14T09:12:03Z" type="rejected" user="jdoe"
@@ -106,33 +106,32 @@
               <codeph>after</codeph> parameter to read the next page. It is missing when no event was
             reported.</li>
           <li id="li_ev_oldest_54b"><codeph>oldest</codeph> - The moment of the oldest event of this
-            type that the license server still has. It is missing when it has none. It lets you tell
-            an interval in which nothing happened from an interval that is older than the recorded
-            history.</li>
+            type that the license server still has. It is missing when it has none. This lets you
+            distinguish an interval in which nothing happened from an interval that is older than
+            the recorded history.</li>
         </ul></p>
-      <p id="p_ev_attrs_54b">Each <codeph>event</codeph> element reports the identifier and the
-        moment of the event, its type, the user name, the host name, the IP address, and the MAC
-        address of the computer where <uicontrol>Oxygen</uicontrol> runs, the identifier of the
-        session, and the number of licenses that were in use when the event was recorded. The
-        attributes whose value the license server does not know are missing, rather than empty. For
-        example, the events that were recorded by a license server older than version 29 have no
-          <codeph>sessionId</codeph>.</p>
+      <p id="p_ev_attrs_54b">Each <codeph>event</codeph> element reports the identifier and moment
+        of the event, its type, the user name, the host name, the IP address, and the MAC address of
+        the computer where <uicontrol>Oxygen</uicontrol> runs, the identifier of the session, and
+        the number of licenses that were in use when the event was recorded. Attributes whose values
+        the license server does not know are missing rather than empty. For example, events recorded
+        by a license server older than version 29 have no <codeph>sessionId</codeph>.</p>
       <p id="p_ev_user_54b">The <codeph>user</codeph> attribute is the only one that is always
-        present. When the client did not name the user that it requested a license for, the event is
-        reported for the user <codeph>(unknown-name)</codeph>, and the events of all such clients are
-        counted together. For the events that were recorded by a license server older than version
-        29, it is the word <codeph>user</codeph> followed by the internal identifier of the user, as
-        the name itself was not recorded at that time.</p>
-      <note type="tip" id="note_ev_poll_54b">The events are never merged, and each of them has an
-        identifier larger than the identifier of the events before it. To follow the
-        events from a monitoring script, store the <codeph>nextAfter</codeph> value of a report and
-        pass it as the <codeph>after</codeph> parameter of the next request. This way, each event is
-        reported to you exactly once.</note>
+        present. When the client did not specify the user for whom it requested a license, the event
+        is reported for the user <codeph>(unknown-name)</codeph>, and the events of all such clients
+        are counted together. For events recorded by a license server older than version 29, it is
+        the word <codeph>user</codeph> followed by the internal identifier of the user, because the
+        name itself was not recorded at that time.</p>
+      <note type="tip" id="note_ev_poll_54b">The events are never merged, and each event has an
+        identifier larger than the identifiers of the events before it. To follow the events from a
+        monitoring script, store the <codeph>nextAfter</codeph> value of a report and pass it as the
+          <codeph>after</codeph> parameter of the next request. This way, each event is reported to
+        you exactly once.</note>
     </section>
     <section id="events_grouped_by_user">
       <title>Events Grouped by User</title>
-      <p id="p_ev_group_54b">The <codeph>groupBy=user</codeph> parameter counts the events of each
-        user instead of reporting them one by one, the users with the most events
+      <p id="p_ev_group_54b">The <codeph>groupBy=user</codeph> parameter counts each user's events
+        instead of reporting them one by one, with the users who have the most events listed
         first:<codeblock outputclass="language-xml" id="codeblock_ev_groups_54b">&lt;licenseEvents type="rejected" groupBy="user" returned="2" hasMore="false"
                oldest="2026-02-11T08:00:01Z">
   &lt;group user="jdoe" count="37"/>
@@ -148,13 +147,13 @@
       <title>Limitations</title>
       <p id="p_ev_limits_54b">
         <ul id="ul_ev_limits_54b">
-          <li id="li_ev_activated_54b">The events are reported only after a license key is activated
-            on the license server, and only the events of the currently activated kind of license
-            key are reported.</li>
-          <li id="li_ev_retention_54b">All the recorded events are removed when the kind of the
+          <li id="li_ev_activated_54b">Events are reported only after a license key is activated on
+            the license server, and only the events of the currently activated kind of license key
+            are reported.</li>
+          <li id="li_ev_retention_54b">All recorded events are removed when the kind of the
             activated license key changes.</li>
           <li id="li_ev_retention_user_54b">On a license server that uses a named-user license key,
-            the events of a user are also removed together with the user itself, that is when the
+            a user's events are also removed together with the user itself, that is when the
               <uicontrol>Oxygen</uicontrol> application reports that it did not use the license that
             it was granted, or when the user is no longer allowed to request a license. A floating
             license server never removes them.</li>
