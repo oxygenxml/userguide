@@ -12,10 +12,56 @@
   <body>
     <section id="section_vwf_ptq_2v">
       <title>How to Locate the Log File and the Log Configuration File</title>
-      <p id="p_zpr_dgk_54b">To locate the <b>Log file</b> where the logs are written, or the <b>Config file</b> used to
-        configure logging, go to the <xref href="webapp-admin-page.dita#webapp-admin-page"
-            ><uicontrol>Administration Page</uicontrol></xref>, and in the
-          <uicontrol>General</uicontrol> tab, you can view the location of these files.</p>
+      <p id="p_zpr_dgk_54b">To locate the <b>Log file</b> where the logs are written, or the
+          <b>Config file</b> used to configure logging, go to the <xref
+          href="webapp-admin-page.dita#webapp-admin-page"><uicontrol>Administration
+          Page</uicontrol></xref>, and in the <uicontrol>General</uicontrol> tab, you can view the
+        location of these files.<note id="note_hqd_zyw_kkc"><ph keyref="webappProduct"/> uses
+            <b>Logback</b> as its logging implementation. For backward compatibility and simplicity,
+          log levels can also be specified using the <i>Log4j 1</i> syntax, but Log4j itself is not
+          used for logging.</note></p>
+    </section>
+    <section id="section_nyz_czw_kkc">
+      <title>Logging Configuration Files</title>
+      <p id="p_oyz_czw_kkc">Logging is controlled by the following two configuration files, both
+        located in the <filepath>WEB-INF</filepath> directory of the deployed web application:</p>
+      <table id="tableID-logging_configuration_files" frame="all" rowsep="1" colsep="1">
+        <title>Logging configuration files</title>
+        <tgroup cols="2">
+          <colspec colnum="1" colname="col1"/>
+          <colspec colnum="2" colname="col2"/>
+          <thead>
+            <row>
+              <entry>File</entry>
+              <entry>Purpose</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>WEB-INF/logback.xml</entry>
+              <entry>It uses the standard Logback syntax and controls all aspects of logging
+                (appenders, the location and rotation of the log file, the layout of the messages,
+                and the log levels).</entry>
+            </row>
+            <row>
+              <entry>WEB-INF/log4j.properties</entry>
+              <entry>An optional file that is kept for backward compatibility. Only log levels
+                specified in the Log4j 1 syntax (log4j.category.<i>logger.name</i>=<i>level</i>) are
+                read from this file. Any other type of configuration must be added in
+                  <filepath>logback.xml</filepath>.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p id="p_pyz_czw_kkc">If the same logger is configured in more than one place, the following
+        precedence applies, from the highest to the lowest:<ul id="ul_bsh_3zw_kkc">
+          <li id="li_csh_3zw_kkc"><codeph>logging.level.*</codeph> system properties</li>
+          <li id="li_a3l_kzw_kkc"><filepath>WEB-INF/log4j.properties</filepath></li>
+          <li id="li_kbf_mzw_kkc"><codeph>WEB-INF/logback.xml</codeph></li>
+        </ul></p>
+      <note id="note_o32_pzw_kkc">The <codeph>logback.configurationFile</codeph> system property is
+        not taken into account because the configuration files are loaded explicitly from the
+          <filepath>WEB-INF</filepath> directory.</note>
     </section>
     <section id="section_tgc_1wq_2v">
       <title>Enabling HTTP Request Logging for Debugging</title>
