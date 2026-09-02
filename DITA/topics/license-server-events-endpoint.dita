@@ -10,11 +10,10 @@
     </metadata>
   </prolog>
   <body>
-    <p id="p_ev_intro_54b">The license server also reports the individual licensing events that it
-      recorded at <codeph>http://hostName:port/oXygenLicenseServlet/license-events</codeph>. Each
+    <p id="p_ev_intro_54b">The license server also reports individual licensing events at <codeph>http://hostName:port/oXygenLicenseServlet/license-events</codeph>. Each
       event shows which user was granted, rejected, released, or timed out a license, when this
       happened, and from which computer.</p>
-    <p id="p_ev_use_54b">Use this report to find out who was denied a license and how often. For
+    <p id="p_ev_use_54b">Use this report to see who was denied a license and how often. For
       example, it can help you determine whether a single user retried many times or whether several
       different users were affected. The <xref
         href="license-server-xml-report.dita#license-server-xml-report">XML report</xref> reports
@@ -24,7 +23,7 @@
       the <codeph>manager</codeph> role if you configured one.</note>
     <section id="parameters">
       <title>Query Parameters</title>
-      <p id="p_ev_params_54b">All the parameters are optional:</p>
+      <p id="p_ev_params_54b">All parameters are optional:</p>
       <table frame="all" colsep="1" rowsep="1" id="table_ev_params_54b">
         <title>Parameters of the Licensing Events Report</title>
         <tgroup cols="3">
@@ -49,12 +48,12 @@
             <row>
               <entry><codeph>since</codeph></entry>
               <entry>The oldest recorded event</entry>
-              <entry>Reports only the events that were recorded at this moment or later.</entry>
+              <entry>Reports only events recorded at or after this time.</entry>
             </row>
             <row>
               <entry><codeph>until</codeph></entry>
               <entry>None</entry>
-              <entry>Reports only the events that were recorded before this moment.</entry>
+              <entry>Reports only events recorded before this time.</entry>
             </row>
             <row>
               <entry><codeph>after</codeph></entry>
@@ -84,9 +83,9 @@
         date in the ISO-8601 format (<codeph>2026-08-14T09:12:03Z</codeph>).</p>
     </section>
     <section id="events_report">
-      <title>The Reported Events</title>
+      <title>Reported Events</title>
       <p id="p_ev_sample_54b">For example, if the current moment is <b>14 August 2026, 09:00
-        UTC</b>, the users who were denied a license in the last day are reported by
+        UTC</b>, the following request reports users who were denied a license in the last day:
           <codeph>/license-events?since=2026-08-13T09:00:00Z</codeph>:<codeblock outputclass="language-xml" id="codeblock_ev_events_54b">&lt;licenseEvents type="rejected" returned="2" hasMore="true"
                oldest="2026-02-11T08:00:01Z" nextAfter="10230">
   &lt;event id="10229" time="2026-08-14T09:12:03Z" type="rejected" user="jdoe"
@@ -96,8 +95,7 @@
          hostname="asmith-pc" ip="10.1.2.9" mac="00:11:22:33:44:66"
          sessionId="node01qq2z8p4d" usedLicenses="50"/>
 &lt;/licenseEvents></codeblock></p>
-      <p id="p_ev_root_54b">The <codeph>licenseEvents</codeph> element reports what was
-        queried:<ul id="ul_ev_root_54b">
+      <p id="p_ev_root_54b">The <codeph>licenseEvents</codeph> element shows the query result:<ul id="ul_ev_root_54b">
           <li id="li_ev_returned_54b"><codeph>returned</codeph> - The number of reported rows.</li>
           <li id="li_ev_hasmore_54b"><codeph>hasMore</codeph> - Whether more events match the query
             than were reported. When the events are grouped by user, it reports whether more users
@@ -113,8 +111,8 @@
       <p id="p_ev_attrs_54b">Each <codeph>event</codeph> element reports the identifier and moment
         of the event, its type, the user name, the host name, the IP address, and the MAC address of
         the computer where <uicontrol>Oxygen</uicontrol> runs, the identifier of the session, and
-        the number of licenses that were in use when the event was recorded. Attributes whose values
-        the license server does not know are missing rather than empty. For example, events recorded
+        the number of licenses that were in use when the event was recorded. Attributes that the
+        license server does not know are omitted rather than left empty. For example, events recorded
         by a license server older than version 29 have no <codeph>sessionId</codeph>.</p>
       <p id="p_ev_user_54b">The <codeph>user</codeph> attribute is the only one that is always
         present. When the client did not specify the user for whom it requested a license, the event
@@ -122,7 +120,7 @@
         are counted together. For events recorded by a license server older than version 29, it is
         the word <codeph>user</codeph> followed by the internal identifier of the user, because the
         name itself was not recorded at that time.</p>
-      <note type="tip" id="note_ev_poll_54b">The events are never merged, and each event has an
+      <note type="tip" id="note_ev_poll_54b">The server never merges events, and each event has an
         identifier larger than the identifiers of the events before it. To follow the events from a
         monitoring script, store the <codeph>nextAfter</codeph> value of a report and pass it as the
           <codeph>after</codeph> parameter of the next request. This way, each event is reported to
@@ -148,7 +146,7 @@
       <p id="p_ev_limits_54b">
         <ul id="ul_ev_limits_54b">
           <li id="li_ev_activated_54b">Events are reported only after a license key is activated on
-            the license server, and only the events of the currently activated kind of license key
+            the license server, and only the events of the currently active type of license key
             are reported.</li>
           <li id="li_ev_retention_54b">All recorded events are removed when the kind of the
             activated license key changes.</li>
