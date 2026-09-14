@@ -92,8 +92,10 @@
           personal access token.</li>
         <li id="li_mcp_prop_type"><b>type</b> - Optional transport hint. The only accepted value is
             <codeph>http</codeph>.</li>
-        <li id="li_mcp_prop_oauth"><b>oauth</b> - Optional OAuth 2.0 configuration for servers where
-          each user signs in individually. When it is present, it must contain at least a
+        <li id="li_mcp_prop_oauth"><b>oauth</b> - Optional OAuth 2.0 configuration, for servers
+          where each user signs in individually. A server that needs no authentication, or that
+          authenticates with a static key through <b>headers</b>, does not need it. When the server
+          does require an OAuth sign-in, this object must be present and must contain at least a
             <codeph>redirect_uri</codeph>. See <xref href="#./mcp_oauth_authentication"/>.</li>
       </ul>
       <note id="note_mcp_no_local" type="attention">The <codeph>command</codeph>,
@@ -248,12 +250,15 @@
           could be delivered to an address chosen by another.</p>
       </note>
       <note id="note_mcp_redirect_uri_requirements" type="attention">The configured callback URL
-        must be an absolute <codeph>https</codeph> URL (or an <codeph>http</codeph> URL on the
-        loopback interface), with no user information, query, or fragment. A sign-in attempt for a
-        server whose <codeph>redirect_uri</codeph> is missing, or does not meet these requirements,
-        is refused, and the reason is recorded in the server log. The log also reports a callback
-        URL that does not end in <codeph>/web-mcp-auth/callback</codeph>, since the authorization
-        code would then be sent somewhere that cannot complete the sign-in.</note>
+        must be an absolute <codeph>https</codeph> URL, with a path and with no user information,
+        query, or fragment. An <codeph>http</codeph> URL is accepted only on the loopback interface,
+        which means <codeph>localhost</codeph> or a loopback address such as
+          <codeph>127.0.0.1</codeph> - a host name that merely resolves to one is not accepted,
+        because the name is controlled by whoever owns it. A sign-in attempt for a server whose
+          <codeph>redirect_uri</codeph> is missing, or does not meet these requirements, is refused,
+        and the reason is recorded in the server log. The log also reports a callback URL that does
+        not end in <codeph>/web-mcp-auth/callback</codeph>, since the authorization code would then
+        be sent somewhere that cannot complete the sign-in.</note>
     </section>
     <section id="mcp_end_user_experience">
       <title>Using MCP Tools in the AI Positron Chat</title>
