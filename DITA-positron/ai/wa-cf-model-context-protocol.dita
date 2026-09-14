@@ -93,8 +93,8 @@
         <li id="li_mcp_prop_type"><b>type</b> - Optional transport hint. The only accepted value is
             <codeph>http</codeph>.</li>
         <li id="li_mcp_prop_oauth"><b>oauth</b> - Optional OAuth 2.0 configuration for servers where
-          each user signs in individually. See <xref
-            href="#./mcp_oauth_authentication"/>.</li>
+          each user signs in individually. When it is present, it must contain at least a
+            <codeph>redirect_uri</codeph>. See <xref href="#./mcp_oauth_authentication"/>.</li>
       </ul>
       <note id="note_mcp_no_local" type="attention">The <codeph>command</codeph>,
           <codeph>args</codeph>, <codeph>env</codeph>, and <codeph>cwd</codeph> properties, which
@@ -204,7 +204,10 @@
     },
     "atlassian": {
       "type": "http",
-      "url": "https://mcp.atlassian.com/v1/mcp/authv2"
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+      "oauth": {
+        "redirect_uri": "https://your.webauthor.server/oxygen-xml-web-author/plugins-dispatcher/web-mcp-auth/callback"
+      }
     }
   }
 }</codeblock>
@@ -227,25 +230,30 @@
           <codeph>redirect_uri</codeph>, <codeph>additional_authorize_params</codeph>, and
           <codeph>resource</codeph>. When they are omitted, the authorization endpoints are
         discovered automatically from the MCP server, and an OAuth client is registered dynamically
-        if the authorization server supports it.</p>
+        if the authorization server supports it. The exception is <codeph>redirect_uri</codeph>,
+        which is never discovered and must always be configured.</p>
       <note id="note_mcp_redirect_uri" type="important">
-        <p id="p_mcp_redirect_uri">Always set <codeph>oauth.redirect_uri</codeph> to the public
-          callback URL of your deployment, which is the public address of the plugins dispatcher
-          followed by <codeph>/web-mcp-auth/callback</codeph>. For example:</p>
+        <p id="p_mcp_redirect_uri"><codeph>oauth.redirect_uri</codeph> is required for every MCP
+          server that uses OAuth. Set it to the public callback URL of your deployment, which is the
+          public address of the plugins dispatcher followed by
+            <codeph>/web-mcp-auth/callback</codeph>. For example:</p>
         <p id="p_mcp_redirect_uri_example">
           <codeph>https://your.webauthor.server/oxygen-xml-web-author/plugins-dispatcher/web-mcp-auth/callback</codeph>
         </p>
         <p id="p_mcp_redirect_uri_why">This is the address the authorization server sends the
-          authorization code to, and the administrator is the only one who can vouch for it. If the
-          property is not configured, the callback address is taken from the sign-in request made by
-          the browser instead, which is a weaker arrangement that is kept only for compatibility
-          with deployments configured before this property was available.</p>
+          authorization code to, and the administrator is the only one who can vouch for it. A
+          callback address taken from the sign-in request instead would be chosen by whoever made
+          that request: for a server whose OAuth client is registered dynamically, that address is
+          the one registered with the authorization server, so the authorization code of one user
+          could be delivered to an address chosen by another.</p>
       </note>
       <note id="note_mcp_redirect_uri_requirements" type="attention">The configured callback URL
         must be an absolute <codeph>https</codeph> URL (or an <codeph>http</codeph> URL on the
         loopback interface), with no user information, query, or fragment. A sign-in attempt for a
-        server whose <codeph>redirect_uri</codeph> does not meet these requirements is refused, and
-        the reason is recorded in the server log.</note>
+        server whose <codeph>redirect_uri</codeph> is missing, or does not meet these requirements,
+        is refused, and the reason is recorded in the server log. The log also reports a callback
+        URL that does not end in <codeph>/web-mcp-auth/callback</codeph>, since the authorization
+        code would then be sent somewhere that cannot complete the sign-in.</note>
     </section>
     <section id="mcp_end_user_experience">
       <title>Using MCP Tools in the AI Positron Chat</title>
