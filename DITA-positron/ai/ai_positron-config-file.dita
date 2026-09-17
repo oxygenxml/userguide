@@ -47,14 +47,30 @@
   "connector_id": "open-ai-connector",
   "connector_params": {
     "base_URL_param": "https://api.openai.com/",
+    "organization_param": "org-1234567890",
     "models_table_param": {
       "defaultModelId": "gpt-5.6-terra"
     },
     "streaming_param": true,
+    "enable_text_moderation_param": true,
+    "enable_speech_to_text_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ],
     "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
   }
 }</codeblock>
+      <p id="p_openai_extra_params"><codeph>organization_param</codeph> sets the OpenAI organization
+        ID that requests are billed and scoped to. <codeph>enable_text_moderation_param</codeph> and
+          <codeph>enable_speech_to_text_param</codeph> (both <codeph>true</codeph> by default)
+        toggle OpenAI's moderation endpoint and Whisper speech-to-text integration.
+          <codeph>extra_headers_param</codeph> — also supported by
+          <codeph>open-ai-responses-api-connector</codeph>,
+          <codeph>ms-azure-open-ai-connector</codeph>, <codeph>claude-ai-connector</codeph>, and
+          <codeph>aws-bedrock-connector</codeph> — adds custom HTTP headers to every request sent
+        through the connector; its value is an array of <codeph>{"first": "&lt;header-name&gt;",
+          "second": "&lt;header-value&gt;"}</codeph> objects.</p>
       <codeblock outputclass="language-json" id="codeblock_tft_l2q_vfc">{
   "connection_name": "Claude",
   "connector_id": "claude-ai-connector",
@@ -64,6 +80,9 @@
       "defaultModelId": "claude-opus-5"
     },
     "streaming_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ],
     "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
   }
@@ -87,12 +106,32 @@
   "connector_params": {
     "base_URL_param": "https://oxygenxml-vision.openai.azure.com/",
     "deployment_param": "gpt-4o",
+    "reasoning_effort_param": "medium",
+    "max_context_window_param": "128000",
     "streaming_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ],
+    "ms_azure_speech_region": "eastus",
+    "ms_azure_speech_subscription_key_encrypted_url": "http://127.0.0.1:6573/speech_encrypted_key",
+    "ms_azure_speech_subscription_key_seed_url": "http://127.0.0.1:6573/speech_seed",
     "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
   }
 }</codeblock>
       </p>
+      <p id="p_reasoning_effort_azure"><codeph>reasoning_effort_param</codeph> sets the default
+        reasoning effort (<codeph>low</codeph>, <codeph>medium</codeph>, or <codeph>high</codeph>)
+        applied when executing actions and chat requests on that deployment; individual actions may
+        still override it. Omit it, or leave it empty, to use the deployment's built-in default
+        effort. <codeph>max_context_window_param</codeph> declares the deployment's context window
+        size in tokens (used by the chat context usage indicator), since it cannot be derived
+        automatically from an open-ended Azure deployment name.
+          <codeph>ms_azure_speech_region</codeph> and
+          <codeph>ms_azure_speech_subscription_key</codeph> configure the Azure Speech service used
+        for speech-to-text in the chat panel; both are optional, and the key, like
+          <codeph>ai_key_param</codeph>, is supplied through its own
+          <codeph>_encrypted_url</codeph>/<codeph>_seed_url</codeph> pair.</p>
       <p id="p_etm_pln_ghc">
         <codeblock outputclass="language-json">{
   "connection_name": "Bedrock",
@@ -103,10 +142,38 @@
     "aws_bedrock_api_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
     "aws_bedrock_api_key_param_seed_url": "http://127.0.0.1:6573/seed",
     "model_param": "anthropic.claude-3-haiku-20240307-v1:0",
-    "streaming_param": true
+    "max_context_window_param": "200000",
+    "streaming_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ]
   }
 }</codeblock>
       </p>
+      <p id="p_bedrock_extra_params"><codeph>max_context_window_param</codeph> declares the model's
+        context window size in tokens, since it cannot be derived automatically from an arbitrary
+        Bedrock model ID; it is used by the chat context usage indicator.</p>
+      <p id="p_bedrock_auth_type">By default, or when <codeph>aws_bedrock_auth_type_param</codeph>
+        is omitted or set to <codeph>api_key</codeph>, authentication uses
+          <codeph>aws_bedrock_api_key_param</codeph> as shown above. Set
+          <codeph>aws_bedrock_auth_type_param</codeph> to <codeph>aws_credentials</codeph> to
+        authenticate with a local AWS profile/SSO session instead (desktop add-on only):</p>
+      <codeblock outputclass="language-json" id="codeblock_bedrock_sso">{
+  "connection_name": "BedrockSSO",
+  "connector_id": "aws-bedrock-connector",
+  "connector_params": {
+    "aws_region_param": "us-east-1",
+    "base_URL_param": "https://bedrock-runtime.us-east-1.amazonaws.com/",
+    "aws_bedrock_auth_type_param": "aws_credentials",
+    "aws_bedrock_profile_param": "ai-writer",
+    "aws_bedrock_auth_refresh_cmd_param": "aws sso login --profile=ai-writer",
+    "model_param": "anthropic.claude-3-haiku-20240307-v1:0",
+    "streaming_param": true
+  }
+}</codeblock>
+      <p id="p_bedrock_sso_note"><codeph>aws_bedrock_profile_param</codeph> is optional; when it is
+        set and <codeph>aws_bedrock_auth_refresh_cmd_param</codeph> is left empty, the refresh
+        command defaults to <codeph>aws sso login --profile=&lt;profile&gt;</codeph>.</p>
       <p id="p_a2q_pln_ghc">
         <codeblock outputclass="language-json">{
   "connection_name": "xAI",
