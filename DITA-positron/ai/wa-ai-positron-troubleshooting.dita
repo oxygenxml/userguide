@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-ai-positron-troubleshooting">
+  <title>Troubleshooting</title>
+  <shortdesc>Enable debug logging to inspect the requests that AI Positron for Web Author sends to
+    an AI service.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>AI Positron<indexterm>troubleshooting</indexterm></indexterm>
+        <indexterm>AI Positron<indexterm>debug logging</indexterm></indexterm>
+        <indexterm>tool definitions</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="section_enable_debug_logging">
+      <title>Enable AI Positron Debug Logging</title>
+      <p id="p_debug_intro">If AI Positron cannot connect to a configured AI service, or if you need
+        to verify the structure of the requests sent to the service, enable debug logging for the AI
+        Positron plugin on the Web Author server.</p>
+      <ol id="ol_enable_debug_logging">
+        <li id="li_open_logging_configuration">Open the <uicontrol>Administration Page</uicontrol> and locate the Web Author logging configuration. For details, see <xref href="https://www.oxygenxml.com/doc/ug-waCustom/topics/web-author-logs.html" format="html" scope="external">Locating and Configuring Logs</xref>.</li>
+        <li id="li_add_log_category">Add the following line to the logging configuration:<codeblock id="codeblock_positron_logging" outputclass="language-ini">log4j.category.com.oxygenxml.positron=debug</codeblock></li>
+        <li id="li_restart_server"><xref href="https://www.oxygenxml.com/doc/ug-waCustom/topics/webauthor-restart.html" format="html" scope="external">Restart the Web Author server</xref>.</li>
+        <li id="li_reproduce_problem">Reproduce the problem, or send the prompt whose request you
+          want to inspect.</li>
+        <li id="li_inspect_logs">Open the Web Author server log and search for entries from the <codeph>com.oxygenxml.positron</codeph> package.</li>
+      </ol>
+      <note type="warning" id="note_disable_debug_logging">Debug logging can generate a large amount of information and may affect performance. After you finish troubleshooting, remove the added logging configuration and restart the Web Author server.</note>
+    </section>
+    <section id="section_inspect_ai_requests">
+      <title>Inspect AI Requests</title>
+      <p id="p_request_details">The debug log includes the target URL, request structure, model parameters, headers, and any tool definitions sent to the LLM. Sensitive values and content are filtered. A request may look similar to this:</p>
+      <codeblock id="codeblock_debug_request" outputclass="language-text" xml:space="preserve">--&gt; Sending request to: https://api.anthropic.com/v1/messages;
+Request body: {"model":"claude-3-5-sonnet","system":"**FILTERED: SYSTEM PROMPT**",
+  "messages":[{"role":"user","content":"**FILTERED: TEXT CONTENT**"}],
+  "tools":[{"function":{"name":"get_file","description":"**FILTERED: DESCRIPTION**"}}],
+  "temperature":0.7,"stream":true};
+Headers: {Authorization=Bearer sk-ant**[filtered]**, Content-Type=application/json}</codeblock>
+      <p id="p_custom_connector_logging">If you use the <xref href="wa-ai-positron-custom-connector.dita">Oxygen AI Positron Custom Connector Add-on</xref>, its request logging also records the content sent through that connector when logging is enabled.</p>
+      <note id="note_filtered_content">System prompts, message content, image data, tool
+        descriptions, and credentials are filtered in the AI Positron debug output. Review the logs
+        before sharing them because other server components or custom connectors may use different
+        filtering behavior.</note>
+    </section>
+  </body>
+</topic>

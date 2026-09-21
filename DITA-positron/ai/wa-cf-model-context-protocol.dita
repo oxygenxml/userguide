@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="wa-cf-model-context-protocol">
+  <title>Model Context Protocol (MCP)</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Model Context Protocol (MCP)</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_mcp_intro">The Anthropic Model Context Protocol (MCP) is an open standard that lets
+      developers create secure, two-way connections between their data sources and AI-powered
+      tools.</p>
+    <p id="p_mcp_intro_wa">An administrator can configure a set of MCP servers for the entire <ph
+        keyref="product"/> deployment. The tools provided by those servers are then offered to the
+      AI engine alongside the built-in tools. Each end user can view them, enable or disable them,
+      and sign in to servers that require authentication directly from the <uicontrol>AI
+        Positron</uicontrol> chat.</p>
+    <note id="note_mcp_web_constraints" type="important">The MCP support in <ph keyref="product"/>
+      differs from the <xref
+        href="https://www.oxygenxml.com/doc/ug-positron/topics/model_context_protocol_preferences.html"
+        format="html" scope="external">desktop version</xref> in the following ways:<ul
+        id="ul_mcp_web_constraints">
+        <li id="li_mcp_only_http">Only <b>Streamable HTTP</b> connections to remote MCP servers are
+          supported. Local (<codeph>stdio</codeph>) servers are never started, and the deprecated
+            <b>SSE</b> transport is not supported.</li>
+        <li id="li_mcp_inline_config">The configuration is pasted directly into the administration
+          page instead of being referenced as a file path on disk.</li>
+        <li id="li_mcp_per_session">MCP servers are connected separately for each user session, so
+          the OAuth credentials of one user are never used for another user.</li>
+      </ul></note>
+    <section id="mcp_configuration_tab">
+      <title>Configuring MCP Servers</title>
+      <p id="p_mcp_tab_steps">To configure the MCP servers available to all users, follow these
+        steps:</p>
+      <ol id="ol_mcp_tab_steps">
+        <li id="li_mcp_open_config">Open the <uicontrol>Plugin configuration</uicontrol> dialog box,
+          as described in <xref keyref="actions_preferences"/>.</li>
+        <li id="li_mcp_select_tab">Select the <uicontrol>MCP</uicontrol> tab.</li>
+        <li id="li_mcp_paste_config">In the <uicontrol>Model Context Protocol (MCP)</uicontrol> text
+          area, edit or paste the MCP configuration content. The expected format is described in
+            <xref href="#./mcp_configuration_format"/>. When the text area is empty, an example
+          configuration is displayed as a placeholder.</li>
+        <li id="li_mcp_apply">Click <uicontrol>Apply</uicontrol>. The MCP servers are reloaded using
+          the new configuration.</li>
+      </ol>
+      <p id="p_mcp_tab_effects">After a configuration is applied:</p>
+      <ul id="ul_mcp_tab_effects">
+        <li id="li_mcp_effect_button">The <uicontrol>MCP servers and tools</uicontrol> button
+          becomes available in the <uicontrol>AI Positron</uicontrol> chat for all users. If the
+          configuration is empty, the button is not displayed at all.</li>
+        <li id="li_mcp_effect_sessions">Each user session picks up the new configuration the next
+          time it is used, so users do not need to sign out and sign in again.</li>
+        <li id="li_mcp_effect_chatmodes">All tools provided by the configured MCP servers are
+          available in all chat modes by default, but they must be referenced individually in <xref
+            href="creating_custom_ai_actions.dita">custom AI actions</xref>.</li>
+      </ul>
+      <note id="note_mcp_encrypted" type="notice">The MCP configuration may contain access tokens
+        and OAuth client secrets, so it is stored in encrypted form in the deployment options, never
+        as plain text.</note>
+      <note id="note_mcp_tool_prefix" type="important">All tools loaded from an MCP server have
+        names prefixed with the name of the MCP server. This allows multiple servers to provide
+        tools with the same name. For example, if a tool name is <codeph>search</codeph> and is
+        loaded from an MCP server named <codeph>mcp-web-access</codeph>, the tool name that must be
+        referenced in a custom AI action is <codeph>mcp-web-access_search</codeph>.</note>
+      <p id="p_mcp_extension_point">
+        <note id="note_mcp_extension_point">Streamable HTTP MCP configurations can also be
+          contributed programmatically, as <xref
+            href="ai_positron_enterprise-extending.dita#ai_positron_enterprise-extending/dlentry_dhn_lxf_tfc"
+            >plugin extensions</xref>.</note>
+      </p>
+    </section>
+    <section id="mcp_configuration_format">
+      <title>MCP Configuration Format</title>
+      <p id="p_mcp_containers">Because there is no single standard MCP configuration file format
+        used by all clients, <uicontrol>AI Positron</uicontrol> accepts the following top-level
+        server container names:</p>
+      <ul id="ul_mcp_containers">
+        <li id="li_mcp_container_mcpservers"><codeph>mcpServers</codeph> - Preferred and fully
+          supported.</li>
+        <li id="li_mcp_container_servers"><codeph>servers</codeph> - Also supported for
+          compatibility with other MCP clients.</li>
+      </ul>
+      <p id="p_mcp_http_props">Each server entry describes a connection to a remote <b>Streamable
+          HTTP</b> MCP endpoint. The following properties are supported:</p>
+      <ul id="ul_mcp_http_props">
+        <li id="li_mcp_prop_url"><b>url</b> - The remote MCP endpoint URL.</li>
+        <li id="li_mcp_prop_headers"><b>headers</b> - Optional HTTP headers sent when connecting to
+          the server. Use this property for servers that authenticate with a static API key or a
+          personal access token.</li>
+        <li id="li_mcp_prop_type"><b>type</b> - Optional transport hint. The only accepted value is
+            <codeph>http</codeph>.</li>
+        <li id="li_mcp_prop_oauth"><b>oauth</b> - Optional OAuth 2.0 configuration, for servers
+          where each user signs in individually. A server that needs no authentication, or that
+          authenticates with a static key through <b>headers</b>, does not need it. When the server
+          does require an OAuth sign-in, this object must be present and must contain at least a
+            <codeph>redirect_uri</codeph>. See <xref href="#./mcp_oauth_authentication"/>.</li>
+      </ul>
+      <note id="note_mcp_no_local" type="attention">The <codeph>command</codeph>,
+          <codeph>args</codeph>, <codeph>env</codeph>, and <codeph>cwd</codeph> properties, which
+        start a local MCP server process, are not supported. A server entry that defines them
+        instead of a <codeph>url</codeph>, or that uses the deprecated <b>SSE</b> transport, is
+        skipped and presented as skipped in the list of servers in the <uicontrol>MCP</uicontrol>
+        dialog box.</note>
+      <p id="p_mcp_examples_intro">
+        <dl id="dl_mcp_examples">
+          <dlentry id="dlentry_mcp_example_http">
+            <dt>MCP HTTP Streaming</dt>
+            <dd>
+              <p id="p_mcp_example_http">Configuration for a remote MCP <b>Streamable HTTP</b>
+                server that adds tools allowing the AI to call the <xref
+                  href="https://docs.devin.ai/work-with-devin/deepwiki-mcp" format="html"
+                  scope="external"><b>DeepWiki</b></xref> service and obtain information about
+                various GitHub projects:</p>
+              <codeblock id="codeblock_mcp_example_http" outputclass="language-json"
+                xml:space="preserve">{
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp"
+    }
+  }
+}</codeblock>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_mcp_example_headers">
+            <dt>MCP HTTP Streaming with an authentication header</dt>
+            <dd>
+              <p id="p_mcp_example_headers">For servers that authenticate with a static key, you can
+                pass header values to the server by using the <codeph>headers</codeph> property:</p>
+              <codeblock id="codeblock_mcp_example_headers" outputclass="language-json"
+                xml:space="preserve">{
+  "mcpServers": {
+    "atlassian": {
+      "url": "http://our.jira.server.url:8000/mcp",
+      "headers": {
+        "Authorization": "Bearer SOME_KEY_VALUE_HERE"
+      }
+    }
+  }
+}</codeblock>
+              <note id="note_mcp_shared_headers" type="attention">A key configured this way is
+                shared by all users of the deployment, and every request sent to that MCP server is
+                made with it. Use <xref
+                  href="#./mcp_oauth_authentication">OAuth
+                  authentication</xref> instead when each user should act with their own
+                identity.</note>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_mcp_example_oauth">
+            <dt>MCP HTTP Streaming with OAuth</dt>
+            <dd>
+              <ul id="ul_mcp_example_oauth">
+                <li id="li_mcp_example_oauth_atlassian">Configure an MCP OAuth connection to
+                  Atlassian JIRA Cloud by using the simpler default authorization flow, where the
+                  MCP server handles app registration during
+                  authorization:<codeblock id="codeblock_mcp_example_oauth_atlassian" outputclass="language-json">{
+  "servers": {
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+      "oauth": {
+        "redirect_uri": "https://your.webauthor.server/oxygen-xml-web-author/plugins-dispatcher/web-mcp-auth/callback"
+      }
+    }
+  }
+}</codeblock></li>
+                <li id="li_mcp_example_oauth_github">Configure an MCP OAuth connection to GitHub by
+                  using your own GitHub application. If you create an application on the provider
+                  side, you can place the OAuth client credentials directly in the configuration so
+                  that the MCP server does not need to dynamically register an application during
+                  authorization:<codeblock id="codeblock_mcp_example_oauth_github" outputclass="language-json">{
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "oauth": {
+        "client_id": "YOUR_GITHUB_CLIENT_ID_HERE",
+        "client_secret": "YOUR_GITHUB_CLIENT_SECRET_HERE",
+        "redirect_uri": "https://your.webauthor.server/oxygen-xml-web-author/plugins-dispatcher/web-mcp-auth/callback"
+      }
+    }
+  }
+}</codeblock></li>
+              </ul>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_mcp_example_multiple">
+            <dt>Configure multiple servers in the same configuration</dt>
+            <dd>
+              <p id="p_mcp_example_multiple">Multiple MCP servers configured together:</p>
+              <codeblock id="codeblock_mcp_example_multiple" outputclass="language-json"
+                xml:space="preserve">{
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp"
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer TOKEN_VALUE_HERE"
+      }
+    },
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+      "oauth": {
+        "redirect_uri": "https://your.webauthor.server/oxygen-xml-web-author/plugins-dispatcher/web-mcp-auth/callback"
+      }
+    }
+  }
+}</codeblock>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
+    <section id="mcp_oauth_authentication">
+      <title>OAuth Authentication</title>
+      <p id="p_mcp_oauth_intro">For MCP servers that use OAuth 2.0, each end user signs in
+        individually from the <uicontrol>MCP</uicontrol> dialog box in the <uicontrol>AI
+          Positron</uicontrol> chat. An authorization code flow protected by PKCE runs in a separate
+        browser tab, and the resulting tokens are stored only in that user's session. They are
+        discarded when the user signs out of <uicontrol>AI Positron</uicontrol>, when the user signs
+        out of the MCP server, or when the session expires.</p>
+      <p id="p_mcp_oauth_props">The optional <codeph>oauth</codeph> object can include the following
+        properties: <codeph>authorize_url</codeph>, <codeph>token_url</codeph>,
+          <codeph>client_id</codeph>, <codeph>client_secret</codeph>, <codeph>scopes</codeph>,
+          <codeph>redirect_uri</codeph>, <codeph>additional_authorize_params</codeph>, and
+          <codeph>resource</codeph>. When these properties are omitted, the authorization endpoints
+        are discovered automatically from the MCP server, and an OAuth client is registered
+        dynamically if the authorization server supports it. The exception is
+          <codeph>redirect_uri</codeph>, which is never discovered and must always be
+        configured.</p>
+      <note id="note_mcp_redirect_uri" type="important">
+        <p id="p_mcp_redirect_uri"><codeph>oauth.redirect_uri</codeph> is required for every MCP
+          server that uses OAuth. Set it to the public callback URL of your deployment, which is the
+          public address of the plugins dispatcher followed by
+            <codeph>/web-mcp-auth/callback</codeph>. For example:</p>
+        <p id="p_mcp_redirect_uri_example">
+          <codeph>https://your.webauthor.server/oxygen-xml-web-author/plugins-dispatcher/web-mcp-auth/callback</codeph>
+        </p>
+        <p id="p_mcp_redirect_uri_why">This is the address the authorization server sends the
+          authorization code to, and the administrator is the only one who can vouch for it. A
+          callback address taken from the sign-in request instead would be chosen by whoever made
+          that request. For a server whose OAuth client is registered dynamically, that address is
+          the one registered with the authorization server, so the authorization code of one user
+          could be delivered to an address chosen by another.</p>
+      </note>
+      <note id="note_mcp_redirect_uri_requirements" type="attention">The configured callback URL
+        must be an absolute <codeph>https</codeph> URL, with a path and with no user information,
+        query, or fragment. An <codeph>http</codeph> URL is accepted only on the loopback interface,
+        which means <codeph>localhost</codeph> or a loopback address such as
+          <codeph>127.0.0.1</codeph> - a host name that merely resolves to one is not accepted,
+        because the name is controlled by whoever owns it. A sign-in attempt for a server whose
+          <codeph>redirect_uri</codeph> is missing, or does not meet these requirements, is refused,
+        and the reason is recorded in the server log. The log also reports a callback URL that does
+        not end in <codeph>/web-mcp-auth/callback</codeph>, since the authorization code would then
+        be sent somewhere that cannot complete the sign-in.</note>
+    </section>
+    <section id="mcp_end_user_experience">
+      <title>Using MCP Tools in the AI Positron Chat</title>
+      <p id="p_mcp_button_intro">When at least one MCP server is configured, an <uicontrol>MCP
+          servers and tools</uicontrol> button is displayed at the bottom of the <uicontrol>AI
+          Positron</uicontrol> chat, next to the chat mode and model selectors. A warning marker is
+        displayed over the button when an MCP server that uses OAuth authentication has not yet been
+        signed in to.</p>
+      <p id="p_mcp_dialog_intro">Clicking the button opens the <uicontrol>MCP</uicontrol> dialog
+        box, which contains the following:</p>
+      <p id="p_mcp_dialog_details">
+        <dl id="dl_mcp_dialog_details">
+          <dlentry id="dlentry_mcp_dialog_filter">
+            <dt>Filter tools</dt>
+            <dd>Use this text field to filter the list of tools by name or description.</dd>
+          </dlentry>
+          <dlentry id="dlentry_mcp_dialog_tools">
+            <dt>The list of tools</dt>
+            <dd>
+              <p id="p_mcp_dialog_tools">Lists all the tools that the currently selected chat mode
+                sends to the AI engine, grouped by category. This includes both the tools built into
+                  <uicontrol>AI Positron</uicontrol> (for example, tools that read or change
+                document content) and the tools contributed by the configured MCP servers, which are
+                presented first.</p>
+              <p id="p_mcp_dialog_tools_toggle">Use the check boxes to enable or disable individual
+                tools, or use the check box of a category to toggle all the tools it contains, and
+                then click <uicontrol>Apply</uicontrol>. A disabled tool is no longer offered to the
+                AI engine. The selection is stored per chat mode in your browser, so it is preserved
+                for your next editing sessions.</p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_mcp_dialog_servers">
+            <dt>MCP servers</dt>
+            <dd>
+              <p id="p_mcp_dialog_servers">Lists each configured MCP server and its current
+                connection state. For a server that is not connected, the reason is shown next to
+                its name.</p>
+              <p id="p_mcp_dialog_servers_signin">For servers that use OAuth authentication, a
+                  <uicontrol>Sign in</uicontrol> or <uicontrol>Sign out</uicontrol> button is
+                displayed at the end of the row. Clicking <uicontrol>Sign in</uicontrol> opens the
+                provider's authorization page in a new browser tab. After you authorize access, the
+                tab reports that the sign-in succeeded and the dialog box is refreshed
+                automatically. The tools provided by that server become available immediately
+                afterward. Clicking <uicontrol>Sign out</uicontrol> discards the stored credentials
+                and disconnects that server.</p>
+              <note id="note_mcp_browser_refresh">Some browsers or restrictive browser policies
+                prevent the sign-in tab from notifying the dialog box automatically. In that case, a
+                warning is displayed in the dialog box, and you need to close the sign-in tab
+                yourself so that the list of servers is refreshed.</note>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p id="p_mcp_tool_calls">When the AI engine calls a tool during a conversation, the tool name
+        is presented in the chat as a small button. Clicking it opens a dialog box where you can see
+        how the tool call was made and what result it returned.</p>
+    </section>
+    <section id="mcp_security">
+      <title>Tool Call Security</title>
+      <p id="p_mcp_security_admin"><uicontrol>AI Positron</uicontrol> does not control how the tools
+        are implemented by the configured MCP servers or what parameters the <b>LLM</b> uses to call
+        them. Only an administrator can configure the list of MCP servers, so make sure every
+        configured server is trusted before making it available to your users.</p>
+      <p id="p_mcp_security_sessions">The MCP servers are connected separately for each user
+        session, and connections for a session that has not been used for one hour are closed
+        automatically. They are re-established the next time that user interacts with <uicontrol>AI
+          Positron</uicontrol>.</p>
+    </section>
+  </body>
+</topic>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ai_positron-config-file">
+  <title>Configure the AI Service Using a JSON File</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>AI Positron</indexterm>
+        <indexterm>Configuration File</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <b>Oxygen AI Positron</b> add-on can automatically configure its AI service by using a
+      JSON file placed in the <b>plugin's</b> installation directory. This method initializes the
+      connector when <b>Oxygen</b> starts and hides the <uicontrol>AI Service
+        Configuration</uicontrol> preferences page. As a result, users can use only the company's
+      approved AI service.</p>
+    <section id="section_json_config_example">
+      <title>Configuration File Example</title>
+      <p>Create a file named <filepath>ai-service-configuration.json</filepath>. You can place the
+        file in one of the following locations:<ul>
+          <li>Inside an <filepath>ai-positron-actions</filepath> folder in any framework installed
+            in the application.</li>
+          <li>Inside an <filepath>ai-positron-actions</filepath> folder in any plugin installed in
+            the application.</li>
+          <li>Directly inside the AI Positron <b>plugin's</b> installation directory. </li>
+        </ul><note id="note_yjv_kvl_xfc" type="important">In the <menucascade>
+            <uicontrol>Preferences</uicontrol>
+            <uicontrol>Plugins</uicontrol>
+          </menucascade> page, you can select the <uicontrol>AI Positron</uicontrol> plugin. The
+            <uicontrol>Location</uicontrol> field points to the plugin's installation folder. This
+          is the exact location where you must copy the JSON file.</note></p>
+      <p>The supported connectors are <codeph>open-ai-connector</codeph>,
+          <codeph>open-ai-responses-api-connector</codeph>,
+          <codeph>ms-azure-open-ai-connector</codeph>, <codeph>claude-ai-connector</codeph>,
+          <codeph>google-gemini-ai-connector</codeph>, <codeph>aws-bedrock-connector</codeph>,
+          <codeph>grok-connector</codeph>, and <codeph>vertex-ai-service</codeph>. The latter is
+        only available when the separate <b>Oxygen AI Positron Vertex AI Connector</b> add-on is
+        also installed.</p>
+      <p>The configuration file accepts either a single JSON object (for one connection) or a <xref
+          href="#./section_multiple_connections">JSON array of objects (for multiple
+          connections)</xref>.</p>
+      <p id="p_alr_p2r_s3c">Examples of single connections:</p>
+      <codeblock outputclass="language-json" id="codeblock_lpg_ll3_vfc">{
+  "connection_name": "OpenAI",
+  "connector_id": "open-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://api.openai.com/",
+    "organization_param": "org-1234567890",
+    "models_table_param": {
+      "defaultModelId": "gpt-5.6-terra"
+    },
+    "streaming_param": true,
+    "enable_text_moderation_param": true,
+    "enable_speech_to_text_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ],
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      <p id="p_openai_extra_params">The <codeph>organization_param</codeph> parameter sets the
+        OpenAI organization ID to which requests are billed and scoped.</p>
+      <p id="p_vtd_t5p_pkc">The <codeph>enable_text_moderation_param</codeph> and
+          <codeph>enable_speech_to_text_param</codeph> parameters (both <codeph>true</codeph> by
+        default) toggle OpenAI's moderation endpoint and Whisper speech-to-text integration.</p>
+      <p id="p_gkp_t5p_pkc">The <codeph>extra_headers_param</codeph> parameter (also supported by
+          <codeph>open-ai-responses-api-connector</codeph>,
+          <codeph>ms-azure-open-ai-connector</codeph>, <codeph>claude-ai-connector</codeph>, and
+          <codeph>aws-bedrock-connector</codeph>) adds custom HTTP headers to every request sent
+        through the connector. Its value is an array of <codeph>{"first": "&lt;header-name&gt;",
+          "second": "&lt;header-value&gt;"}</codeph> objects.</p>
+      <codeblock outputclass="language-json" id="codeblock_tft_l2q_vfc">{
+  "connection_name": "Claude",
+  "connector_id": "claude-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://api.anthropic.com/",
+    "models_table_param": {
+      "defaultModelId": "claude-opus-5"
+    },
+    "streaming_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ],
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      <codeblock outputclass="language-json" id="codeblock_ubl_42q_vfc">{
+  "connection_name": "Gemini",
+  "connector_id": "google-gemini-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://generativelanguage.googleapis.com/",
+    "models_table_param": {
+      "defaultModelId": "gemini-3.5-flash-lite"
+    },
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      <p>
+        <codeblock outputclass="language-json" id="codeblock_x4w_h2q_vfc">{
+  "connection_name": "Azure",
+  "connector_id": "ms-azure-open-ai-connector",
+  "connector_params": {
+    "base_URL_param": "https://oxygenxml-vision.openai.azure.com/",
+    "deployment_param": "gpt-4o",
+    "reasoning_effort_param": "medium",
+    "max_context_window_param": "128000",
+    "streaming_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ],
+    "ms_azure_speech_region": "eastus",
+    "ms_azure_speech_subscription_key_encrypted_url": "http://127.0.0.1:6573/speech_encrypted_key",
+    "ms_azure_speech_subscription_key_seed_url": "http://127.0.0.1:6573/speech_seed",
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+  }
+}</codeblock>
+      </p>
+      <p id="p_reasoning_effort_azure">The <codeph>reasoning_effort_param</codeph> parameter sets
+        the default reasoning effort (<codeph>low</codeph>, <codeph>medium</codeph>, or
+          <codeph>high</codeph>) applied when actions and chat requests run on that deployment.
+        Individual actions can still override it. To use the deployment's built-in default effort,
+        omit the parameter or leave it empty.</p>
+      <p id="p_v1w_55p_pkc">The <codeph>max_context_window_param</codeph> parameter declares the
+        deployment's context window size in tokens. It is used by the chat context usage indicator,
+        because it cannot be derived automatically from an open-ended Azure deployment name.</p>
+      <p id="p_crf_v5p_pkc">The <codeph>ms_azure_speech_region</codeph> and
+          <codeph>ms_azure_speech_subscription_key</codeph> parameters configure the Azure Speech
+        service used for speech-to-text in the chat panel. Both are optional, and the key (e.g.
+          <codeph>ai_key_param</codeph>) is supplied through its own
+          <codeph>_encrypted_url</codeph>/<codeph>_seed_url</codeph> pair.</p>
+      <p id="p_etm_pln_ghc">
+        <codeblock outputclass="language-json">{
+  "connection_name": "Bedrock",
+  "connector_id": "aws-bedrock-connector",
+  "connector_params": {
+    "aws_region_param": "us-east-1",
+    "base_URL_param": "https://bedrock-runtime.us-east-1.amazonaws.com/",
+    "aws_bedrock_api_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "aws_bedrock_api_key_param_seed_url": "http://127.0.0.1:6573/seed",
+    "model_param": "anthropic.claude-3-haiku-20240307-v1:0",
+    "max_context_window_param": "200000",
+    "streaming_param": true,
+    "extra_headers_param": [
+      { "first": "X-Custom-Header", "second": "custom-value" }
+    ]
+  }
+}</codeblock>
+      </p>
+      <p id="p_bedrock_extra_params">The <codeph>max_context_window_param</codeph> parameter
+        declares the model's context window size in tokens, since it cannot be derived automatically
+        from an arbitrary Bedrock model ID. It is used by the chat context usage indicator.</p>
+      <p id="p_bedrock_auth_type">By default, or when <codeph>aws_bedrock_auth_type_param</codeph>
+        is omitted or set to <codeph>api_key</codeph>, authentication uses
+          <codeph>aws_bedrock_api_key_param</codeph>, as shown above. Set
+          <codeph>aws_bedrock_auth_type_param</codeph> to <codeph>aws_credentials</codeph> to
+        authenticate with a local AWS profile/SSO session instead (desktop add-on only):</p>
+      <codeblock outputclass="language-json" id="codeblock_bedrock_sso">{
+  "connection_name": "BedrockSSO",
+  "connector_id": "aws-bedrock-connector",
+  "connector_params": {
+    "aws_region_param": "us-east-1",
+    "base_URL_param": "https://bedrock-runtime.us-east-1.amazonaws.com/",
+    "aws_bedrock_auth_type_param": "aws_credentials",
+    "aws_bedrock_profile_param": "ai-writer",
+    "aws_bedrock_auth_refresh_cmd_param": "aws sso login --profile=ai-writer",
+    "model_param": "anthropic.claude-3-haiku-20240307-v1:0",
+    "streaming_param": true
+  }
+}</codeblock>
+      <p id="p_bedrock_sso_note">The <codeph>aws_bedrock_profile_param</codeph> parameter is
+        optional. When it is set and <codeph>aws_bedrock_auth_refresh_cmd_param</codeph> is left
+        empty, the refresh command defaults to <codeph>aws sso login
+          --profile=&lt;profile&gt;</codeph>.</p>
+      <p id="p_a2q_pln_ghc">
+        <codeblock outputclass="language-json">{
+  "connection_name": "xAI",
+  "connector_id": "grok-connector",
+  "connector_params": {
+    "base_URL_param": "https://api.x.ai/",
+    "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "ai_key_param_seed_url": "http://127.0.0.1:6573/seed",
+    "models_table_param": {
+      "defaultModelId": "grok-4.6"
+    }
+  }
+}</codeblock>
+      </p>
+      <p id="p_wai_9k1_vfc">The <codeph>open-ai-responses-api-connector</codeph> accepts the same
+          <codeph>connector_params</codeph> as <codeph>open-ai-connector</codeph> (only its
+          <codeph>connector_id</codeph> differs), since it is the same OpenAI backend accessed
+        through the Responses API instead of the Chat Completions API.</p>
+      <p id="p_ver_9k1_vfc">Example for the optional Vertex AI connector (requires the separate
+          <b>Oxygen AI Positron Vertex AI Connector</b> add-on):</p>
+      <codeblock outputclass="language-json" id="codeblock_vertex_9k1">{
+  "connection_name": "VertexAI",
+  "connector_id": "vertex-ai-service",
+  "connector_params": {
+    "project_id_param": "my-gcp-project",
+    "location_param": "us-central1",
+    "credentials_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+    "credentials_param_seed_url": "http://127.0.0.1:6573/seed",
+    "models_table_param": {
+      "defaultModelId": "google/gemini-3-flash-preview",
+      "userModels": [
+        {
+          "id": "google/gemini-3-flash-preview",
+          "displayName": "Gemini 3 Flash Preview",
+          "isCustom": true
+        }
+      ]
+    }
+  }
+}</codeblock>
+      <p>Vertex AI has no fixed model catalog, so its <codeph>models_table_param</codeph> starts
+        with only a single default model. Any other model must be added as a custom entry in
+          <codeph>userModels</codeph>, as shown above. If <codeph>credentials_param</codeph> is
+        omitted, the connector falls back to Google Cloud's Application Default Credentials.</p>
+    </section>
+    <section id="section_models_table_param">
+      <title>Configuring Models</title>
+      <p>The <codeph>ms-azure-open-ai-connector</codeph> and <codeph>aws-bedrock-connector</codeph>
+        take the model as a plain text value (<codeph>deployment_param</codeph> and
+          <codeph>model_param</codeph>, respectively), as shown in the examples above. All other
+        connectors (<codeph>open-ai-connector</codeph>,
+          <codeph>open-ai-responses-api-connector</codeph>, <codeph>claude-ai-connector</codeph>,
+          <codeph>google-gemini-ai-connector</codeph>, <codeph>grok-connector</codeph>, and
+          <codeph>vertex-ai-service</codeph>) manage models through an admin-curated models table
+        instead, exposed as the <codeph>models_table_param</codeph> parameter. Its value is a JSON
+        object, not a plain string, and every field in it is optional:<ul>
+          <li><codeph>defaultModelId</codeph> - The ID of the model that becomes the connection's
+            selected/default model. It must match one of the connector's built-in model IDs or the
+            ID of a model added through <codeph>userModels</codeph> (see below). Matching is
+            case-insensitive. If <codeph>models_table_param</codeph> is omitted entirely, or if
+              <codeph>defaultModelId</codeph> does not match any known model ID, the connector falls
+            back to its own built-in default model without raising an error.</li>
+          <li><codeph>userModels</codeph> - An array used to add models that are not in the
+            connector's built-in list or to override a built-in model's display name or reasoning
+            settings. Each entry needs a unique <codeph>id</codeph>. For a brand-new model,
+              <codeph>isCustom</codeph> must also be set to <codeph>true</codeph>. Otherwise, the
+            entry is silently discarded. Other optional fields on an entry are
+              <codeph>displayName</codeph>, <codeph>reasoningLevel</codeph> (one of
+              <codeph>off</codeph>, <codeph>auto</codeph>, <codeph>none</codeph>,
+              <codeph>minimal</codeph>, <codeph>low</codeph>, <codeph>medium</codeph>,
+              <codeph>high</codeph>, <codeph>xhigh</codeph>, or <codeph>max</codeph>),
+              <codeph>requestModelId</codeph> (the model ID actually sent to the AI provider when it
+            differs from <codeph>id</codeph>), <codeph>visibleInUI</codeph>, and the token limits
+              <codeph>maxTotalTokens</codeph>, <codeph>maxInputTokens</codeph>, and
+              <codeph>maxOutputTokens</codeph>.</li>
+          <li><codeph>removedDefaultIds</codeph> - An array of built-in model IDs to hide from
+            users.</li>
+        </ul></p>
+      <p>For example, to expose only a single, custom-labeled model on the OpenAI connector:</p>
+      <codeblock outputclass="language-json" id="codeblock_models_table_example">{
+  "models_table_param": {
+    "defaultModelId": "gpt-5.6-terra",
+    "userModels": [
+      {
+        "id": "gpt-5.6-terra",
+        "displayName": "Approved Writing Model"
+      }
+    ],
+    "removedDefaultIds": ["gpt-5.6-sol", "gpt-5.6-luna"]
+  }
+}</codeblock>
+    </section>
+    <section id="section_multiple_connections">
+      <title>Configuring Multiple Connections</title>
+      <p>To expose more than one AI connection to users, provide a JSON array instead of a single
+        object. Each entry follows the same structure as a single-connection file. When multiple
+        connections are defined, the first one in the array becomes the active connection. The
+        following example defines two separate MS Azure AI deployments, one for a standard model and
+        one for a mini model, so that users can switch between them:</p>
+      <codeblock outputclass="language-json" id="codeblock_multiple_azure">[
+  {
+    "connection_name": "AzureGpt5",
+    "connector_id": "ms-azure-open-ai-connector",
+    "connector_params": {
+      "base_URL_param": "https://oxygenxml-vision.openai.azure.com/",
+      "deployment_param": "gpt-5",
+      "streaming_param": true,
+      "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+      "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+    }
+  },
+  {
+    "connection_name": "AzureGpt5Mini",
+    "connector_id": "ms-azure-open-ai-connector",
+    "connector_params": {
+      "base_URL_param": "https://oxygenxml-vision.openai.azure.com/",
+      "deployment_param": "gpt-5-mini",
+      "streaming_param": true,
+      "ai_key_param_encrypted_url": "http://127.0.0.1:6573/encrypted_key",
+      "ai_key_param_seed_url": "http://127.0.0.1:6573/seed"
+    }
+  }
+]</codeblock>
+      <note type="tip">Each connection must have a unique <codeph>connection_name</codeph>. If two
+        entries share the same name (or both omit it), the second connection automatically receives a
+        numeric suffix (for example, <codeph>AzureGpt5 (2)</codeph>) to keep identifiers
+        distinct.</note>
+    </section>
+    <section id="section_behavior">
+      <title>Configuration File Detection</title>
+      <p>When the configuration file is detected, the connector is initialized with its values when
+          <b>Oxygen</b> starts. The <menucascade>
+          <uicontrol>Plugins</uicontrol>
+          <uicontrol>Oxygen AI Positron</uicontrol>
+          <uicontrol>AI Service Configuration</uicontrol>
+        </menucascade> preferences page is then hidden. After setup, you can remove the encrypted
+        key and seed endpoints if they are no longer needed. Any changes to the configuration file
+        are applied after you restart <b>Oxygen</b>.</p>
+    </section>
+    <section id="section_encrypt_key">
+      <title>How to Obtain the Encrypted Key</title>
+      <p>Install the <xref href="ai_positron_apikey_encryption_addon.dita"><uicontrol>Oxygen AI
+            Positron API Key Encryption</uicontrol> add-on</xref> to generate the encrypted API key.
+        To install this add-on, follow these steps:</p>
+      <p>
+        <ol id="ol_mxh_tl4_vfc">
+          <li>Go to <menucascade>
+              <uicontrol>Help</uicontrol>
+              <uicontrol>Install new add-ons</uicontrol>
+            </menucascade> to open the add-on selection dialog box. Enter or paste
+              <b>https://www.oxygenxml.com/InstData/Addons/optional/updateSite.xml</b> in the
+              <uicontrol>Show add-ons from</uicontrol> field, or select it from the drop-down
+            menu.</li>
+          <li>Select the <uicontrol>Oxygen AI Positron API Key Encryption</uicontrol> add-on and
+            click <uicontrol>Next</uicontrol>.</li>
+          <li conkeyref="reusables-addons/ReadLicense-li"/>
+          <li conkeyref="reusables-addons/Restart-li"/>
+        </ol>
+      </p>
+      <p>To obtain the encrypted API key:<ol id="ol_tyk_vl4_vfc">
+          <li>
+            <b>Open the API Key Tools:</b> From the main menu, select <uicontrol>API Key
+              Tools</uicontrol>.</li>
+          <li>
+            <b>Select the Encrypt Action:</b> Choose <uicontrol>Encrypt...</uicontrol> from the API
+            Key Tools menu.</li>
+          <li>
+            <b>Enter Your API Key:</b> Follow the prompts to enter your encryption key and API key.
+            The tool encrypts the API key by using the encryption key.</li>
+          <li><b>Publish the encryption key and the encrypted API key:</b> Publish the encryption
+            key and the encrypted API key to the URLs referenced in the configuration file.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>

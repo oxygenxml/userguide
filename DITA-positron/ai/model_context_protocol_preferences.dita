@@ -13,6 +13,10 @@
         <uicontrol>Preferences</uicontrol>
         <uicontrol>Plugins / Oxygen AI Positron / Model Context Protocol (MCP)</uicontrol>
       </menucascade> page. </p>
+    <p>All tools provided by configured MCP servers are available in all chat modes by default, but
+      they must be referenced individually in custom AI actions. The <b>Tools</b> drop-down menu in
+      the Chat view lets you see all MCP tools (displayed with human-readable names, if provided by
+      the MCP server) and disable or enable them.</p>
       
       <p id="p_r11_hwh_fhc">
         <dl id="dl_zq4_31x_dgc">
@@ -60,7 +64,10 @@
                 <codeph>url</codeph>, <codeph>command</codeph>, <codeph>args</codeph>,
                 <codeph>cwd</codeph>, and <codeph>headers</codeph> properties (for example, to
               access environment variables or system properties).</note>
-              <p id="p_nbr_skb_2gc">See: <xref href="#./mcp_configuration_file_examples"/>.</p>
+              <p id="p_nbr_skb_2gc">See: <xref href="#./mcp_configuration_file_examples"
+                />.<note>HTTP streamable MCP configurations can also be provided as <xref
+                  href="ai_positron_enterprise-extending.dita#ai_positron_enterprise-extending/dlentry_dhn_lxf_tfc"
+                    ><ph keyref="product"/> plugin extensions</xref>.</note></p>
             </dd>
           </dlentry>
           <dlentry id="dlentry_sbr_skb_2gc">
@@ -81,12 +88,6 @@
             <dd>Enabled by default, this option allows all defined chat modes to access the tools
               provided by the MCP servers during conversations.</dd>
           </dlentry>
-        <dlentry id="dlentry_zpk_dxh_fhc">
-          <dt>Allow running the Oxygen XML application as a local MCP server (Experimental)</dt>
-          <dd>If enabled, external applications are allowed to programmatically start and control
-            the <b>Oxygen XML</b> application. For more details, see <xref
-              href="#./section_al3_wm4_chc"/>.</dd>
-        </dlentry>
         <dlentry id="dlentry_qnk_ljz_jjc">
           <dt>OAuth authentication</dt>
           <dd>For HTTP MCP servers that use OAuth authentication, buttons are available to
@@ -357,66 +358,6 @@
         file:<codeblock id="codeblock_t34_424_2hc" outputclass="language-json">"env": {
    "OXYGEN_SAFE_TOOLS":"true"
 }</codeblock></p>
-  </section>
-  <section id="section_al3_wm4_chc">
-    <title>Oxygen XML as a Local MCP Server (Experimental)</title>
-    <p>When using <ph keyref="product"/> 28 or later, the entire <b>Oxygen XML</b> application can
-      be configured and started from a third-party AI assistant (e.g. <uicontrol>Claude
-        Desktop</uicontrol> or <uicontrol>Claude Code</uicontrol>) as a local MCP server,
-      providing access to tools for calling specific AI actions, validating, editing, and
-      refactoring XML documents.</p>
-    <p>Configuration steps:<ol id="ul_srq_bn4_chc">
-        <li>Install the <uicontrol>AI Positron</uicontrol> add-on in <ph
-            keyref="product"/>. You will need to have an <uicontrol>Enterprise</uicontrol>
-          distribution of <ph keyref="product"/> or buy a subscription license for it.</li>
-        <li>Enable the <uicontrol>Allow running the Oxygen XML application as a local MCP server
-            (Experimental)</uicontrol> option from the <uicontrol>Model Context
-              Protocol</uicontrol> preferences page. You must read through the security warning and
-          if suitable, accept the EULA that warns you that such a feature allows external AI
-          assistants to make changes to documents by calling tools from <b>Oxygen</b>. If you
-          accept the EULA and enable the setting afterwards, you can save the preferences and
-          close <b>Oxygen</b>.</li>
-        <li>Create a suitable MCP configuration file in the AI assistant. For Windows, it can look
-          something like this:<codeblock id="codeblock_t5g_ln4_chc" outputclass="language-json">{
-    "mcpServers": {
-        "oxygen-mcp": {
-            "command": "c:\\path\\to\\OXYGEN_INSTALL_DIR\\oxygen.bat",
-            "env": {
-                "OXYGEN_RUN_AS_MCP_SERVER": "true"
-            } 
-        }
-    }
-}</codeblock>and for
-          Mac/Linux:<codeblock id="codeblock_erb_xn4_chc" outputclass="language-json">{
-    "mcpServers": {
-        "oxygen-mcp": {
-            "command": "/bin/sh",
-            "args": [
-                "/Users/path/to/OXYGEN_INSTALL_DIR/oxygen.sh"
-            ],
-            "env": {
-                "OXYGEN_RUN_AS_MCP_SERVER": "true"
-            } 
-        }
-    }
-}</codeblock>As a configurable feature, you can configure the <ph keyref="product"/>
-          application to show a visual preview dialog box whenever its tools are used to save and
-          modify content using a specific <codeph>env</codeph>
-          variable:<codeblock id="codeblock_fg1_d44_chc" outputclass="language-json">{
-    "mcpServers": {
-        "oxygen-mcp": {
-            ....
-            "env": {
-                "OXYGEN_RUN_AS_MCP_SERVER": "true",
-                "OXYGEN_MCP_SERVER_GUI_PREVIEW_FILE_CHANGES": "true"
-            } 
-        }
-    }
-}</codeblock></li>
-        <li>Restart the AI assistant. When started, it should also start the <ph keyref="product"
-        /> application and gain access to all AI tools available in its installed <uicontrol>AI
-          Positron</uicontrol> add-on.</li>
-    </ol></p>
   </section>
     </body>
 </topic>
