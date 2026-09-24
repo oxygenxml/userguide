@@ -5,12 +5,11 @@
   <prolog>
     <metadata>
       <keywords>
-        <indexterm>server hangs</indexterm>
-        <indexterm>server crash</indexterm>
-        <indexterm>server gets stuck</indexterm>
-        <indexterm>server stops responding</indexterm>
-        <indexterm>server does not accept requests</indexterm>
-        <indexterm>infinite loading</indexterm>
+        <indexterm>Server hangs</indexterm>
+        <indexterm>Server crash</indexterm>
+        <indexterm>Server stops responding</indexterm>
+        <indexterm>Server does not accept requests</indexterm>
+        <indexterm>Infinite loading</indexterm>
       </keywords>
     </metadata>
   </prolog>
@@ -19,21 +18,17 @@
       <title>Problem</title>
       <p id="p_qkb_1kt_mdc">When attempting to open a document, the browser freezes with the loading
         widget spinning indefinitely, or it may take an excessively long time to open.</p>
-      <p id="p_rkb_1kt_mdc">This troubleshooting topic addresses scenarios where the server enters a
-        state where it does not respond to client requests or when it responds with a significant
-        delay, usually manifesting with an infinite spinner presented in the browser. Usually, when
-        this happens, server resources are depleted, getting out of memory, exhausting CPU, or
-        exhausting connections. When <ph keyref="webappProduct"/> has additional plugins and
-        customizations installed, other than the built-in ones, it is crucial to determine whether
-        the issue is caused by a faulty customization or an actual product bug. This topic provides
-        guidance on identifying the problem and its cause. The target audience of this topic is an
-        integrator who customized the application with custom Java or JavaScript plugins, but it can
-        be followed by anyone who has general knowledge about how Java programs run (e.g. how the
-        memory is allocated).<note id="note_m12_bkt_mdc">As a general consideration, if you manage
-          to reproduce the problem consistently and have identified a concrete set of steps that
-          reproduce the problem, please contact us on <xref
-            href="https://www.oxygenxml.com/technical_support.html" format="html" scope="external"
-            >Oxygen support team</xref>.</note></p>
+      <p id="p_rkb_1kt_mdc">This topic covers cases where the server does not respond to client
+        requests or responds only after a significant delay, usually displaying a loading indicator
+        that spins indefinitely. This can happen when the server runs out of memory, CPU capacity,
+        or available connections. If <ph keyref="webappProduct"/> has plugins or customizations
+        installed, other than the built-in ones, determine whether a faulty customization or a
+        product defect causes the issue. This topic helps you identify the problem and its cause. It
+        is intended for integrators who customize the application with Java or JavaScript plugins,
+        but anyone with a general understanding of Java applications can follow it.<note
+          id="note_m12_bkt_mdc">If you can consistently reproduce the problem and identify the steps
+          to reproduce it, contact <xref href="https://www.oxygenxml.com/technical_support.html"
+            format="html" scope="external">Oxygen Support</xref>.</note></p>
     </condition>
     <troubleSolution>
       <cause id="cause_nvx_vjt_mdc">
@@ -45,10 +40,9 @@
     <troubleSolution>
       <cause id="cause">
         <title>Cause 1 - Server runs out of memory</title>
-        <p>The server exhausts the available RAM memory, leaving it unable to respond to upcoming
-          requests. When a Java process runs out of Heap memory, the garbage collector runs
-          intensively to free each piece of memory that can be freed, and the code usually
-          encounters <codeph>java.lang.OutOfMemoryError</codeph> exceptions for various calls. </p>
+        <p>The server exhausts its available RAM and cannot respond to new requests. When a Java
+          process runs out of heap memory, the garbage collector runs intensively to free memory,
+          and the code usually throws <codeph>java.lang.OutOfMemoryError</codeph> exceptions.</p>
       </cause>
       <remedy id="check_if_an_out_of_memory_error_is_reported_in_se">
         <title>Solution 1 - Check if an out of memory error is reported in server logs</title>
@@ -59,8 +53,8 @@
                 and the Log Configuration File</xref>.</cmd>
           </step>
           <step>
-            <cmd>Check to see if the logs contain <codeph>java.lang.OutOfMemoryError</codeph>. If
-              affirmative, an out of memory occurred.</cmd>
+            <cmd>Check whether the logs contain <codeph>java.lang.OutOfMemoryError</codeph>. If they
+              do, the server ran out of memory.</cmd>
           </step>
         </steps>
       </remedy>
@@ -88,12 +82,12 @@
                 </info>
               </substep>
               <substep>
-                <cmd>Download a JDK with the same version as the one the server is running. Note
-                  that a different version might also work but it has to be at least the same major
+                <cmd>Download a JDK that has the same version as the JDK used by the server. A
+                  different version might work, but it must have at least the same major
                   version.</cmd>
               </substep>
               <substep>
-                <cmd>Move the JDK on the machine where the server is running.</cmd>
+                <cmd>Move the JDK to the machine where the server is running.</cmd>
               </substep>
               <substep>
                 <cmd>Open a terminal in the <codeph>bin</codeph> directory within the downloaded
@@ -120,12 +114,12 @@
             </info>
           </step>
           <step>
-            <cmd>Identify the total available memory and the used memory. In the above example, it
-              is <i>75776K</i> total and <i>22334K</i> used.</cmd>
+            <cmd>Identify the total and used memory. In the preceding example, the total is
+                <i>75776K</i> and the used memory is <i>22334K</i>.</cmd>
           </step>
           <step>
-            <cmd>Check to see if the used memory is equal to or almost equal to the available
-              memory. If affirmative, it is probably an ongoing out of memory issue.</cmd>
+            <cmd>Check whether the used memory equals or nearly equals the available memory. If it
+              does, an out-of-memory issue is likely occurring.</cmd>
           </step>
         </steps>
       </remedy>
@@ -151,12 +145,11 @@
             </info>
           </step>
           <step>
-            <cmd>Considering that an average DITA file consumes about 10MB of RAM, you can multiply
-              the number of documents by 10MB to find an estimation of the memory that the documents
-              occupy.</cmd>
+            <cmd>Because an average DITA file consumes about 10 MB of RAM, multiply the number of
+              documents by 10 MB to estimate the memory used by the documents.</cmd>
           </step>
           <step>
-            <cmd>If the number of opened documents is large, consider increasing the memory.</cmd>
+            <cmd>If many documents are open, consider increasing the available memory.</cmd>
           </step>
         </steps>
       </remedy>
@@ -195,9 +188,8 @@ Heap dump file created</codeblock>
       <remedy id="solution_1__inspect_the_threads">
         <title>Solution 1 - Inspect the threads</title>
         <steps-informal id="steps-informal_frf_43r_3dc">
-          <p>Inspect the threads by looking for their name and their stack-trace to identify if they
-            are initiated from custom plugins. If affirmative, continue troubleshooting the plugin's
-            code.</p>
+          <p>Inspect the threads by their names and stack traces to determine whether custom plugins
+            initiated them. If they did, continue troubleshooting the plugin code.</p>
         </steps-informal>
       </remedy>
       <remedy id="solution_2__obtain_a_thread_dump">
@@ -281,13 +273,12 @@ _java_thread_list=0x0000023dc40e74d0, length=47, elements={
       <remedy id="remedy_jy5_lkz_ddc">
         <title>Solution 2 - Inspecting connections</title>
         <steps-informal id="steps-informal_ky5_lkz_ddc">
-          <p>Each connection is kept open by a thread, so to find the number of open connections,
-            simply count how many threads have the name like <codeph>http-nio-8080-exec-10</codeph>,
-            where the trailing number varies.</p>
-          <p>If it is confirmed that all server connections are exhausted, inspect the threads that
-            hold connections open, look in their stack-trace and check if the thread is opened from
-            a custom plugin. If the connections are kept open by threads started from custom
-            plugins, continue troubleshooting the problem in the plugin's code.</p>
+          <p>Each connection remains open in a thread. To find the number of open connections, count
+            the threads named like <codeph>http-nio-8080-exec-10</codeph>, where the trailing number
+            varies.</p>
+          <p>If all server connections are exhausted, inspect the threads that keep connections
+            open. Check their stack traces to determine whether a custom plugin started them. If so,
+            continue troubleshooting the plugin code.</p>
         </steps-informal>
       </remedy>
     </troubleSolution>
