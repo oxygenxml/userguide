@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="load-xml-comparison-report">
+  <title>Load XML Comparison Report</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Compare Directories tool<indexterm>Load XML Report</indexterm></indexterm>
+        <indexterm>XML comparison report</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>The <uicontrol>Load XML Report</uicontrol> action loads a saved XML comparison report into
+      the <uicontrol>Compare Directories</uicontrol> tool and reconstructs the full comparison
+      result without running the comparison again. This action is particularly useful when the
+      report was created on another machine or when comparing the directories again would take a
+      long time.</p>
+    <p>The report must be saved in the <codeph>xml/flo</codeph> format, either by using the
+        <uicontrol>Save Results as XML Report</uicontrol> action in the <uicontrol>Compare
+        Directories</uicontrol> tool or the <xref
+        href="scripting-compare-directories.dita#scripting-compare-directories/section_gbd_tzb_vmb"
+          ><codeph>-out xml/flo</codeph> option of the Compare Directories script</xref>.<note
+        id="note_ymm_wqp_rkc">The <codeph>flo</codeph> qualifier means "Formatted for Loading in <ph
+          keyref="product"/>.</note></p>
+    <p>The <uicontrol>Load XML Report</uicontrol> action is available from the
+        <uicontrol>File</uicontrol> menu in the <uicontrol>Compare Directories</uicontrol> tool. The
+      action opens the <uicontrol>Load XML Report</uicontrol> dialog box.</p>
+    <p id="p_ybj_srp_rkc">
+      <fig id="fig_rkl_srp_rkc">
+        <title>Load XML Report Dialog Box</title>
+        <image href="../img/load-xml-report.png"/>
+      </fig>
+    </p>
+    <p id="p_ikj_fsp_rkc">The <uicontrol>Load XML Report</uicontrol> dialog box contains the
+      following options:</p>
+    <p>
+      <dl>
+        <dlentry>
+          <dt>XML comparison report file</dt>
+          <dd>Specifies the path to the XML report file to load. Use the browse button to locate the
+            file.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Left directory (local mapping)</dt>
+          <dd>Shows the value of the <codeph>mappedLeftDir</codeph> attribute saved in the report.
+            Initially, this value is the same as the <codeph>leftDir</codeph> attribute, which
+            stores the original left directory path. Change this path if the report was created on
+            another machine or if the original directory was moved or renamed.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Right directory (local mapping)</dt>
+          <dd>Shows the value of the <codeph>mappedRightDir</codeph> attribute saved in the report.
+            Change this path if the report was created on another machine or if the original
+            directory was moved or renamed.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Save the mapping into the report file</dt>
+          <dd>Updates the <codeph>mappedLeftDir</codeph> and <codeph>mappedRightDir</codeph>
+            attributes in the report with the paths currently specified for the left and right
+            directories. The next time you load the report, the directory fields are filled with the
+            saved paths.</dd>
+        </dlentry>
+      </dl>
+    </p>
+    <p>Loading a report activates report mode. In this mode, the tool uses the saved comparison
+      result rather than comparing the directories again. The following table summarizes the
+      behavior in report mode:</p>
+    <table frame="all" rowsep="1" colsep="1">
+      <tgroup cols="2">
+        <colspec colname="aspect" colwidth="1*"/>
+        <colspec colname="behavior" colwidth="2*"/>
+        <thead>
+          <row>
+            <entry>Aspect</entry>
+            <entry>Behavior in report mode</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>Directory path fields</entry>
+            <entry>The left field is empty. The displayed result comes from the report, not from a
+              live comparison.</entry>
+          </row>
+          <row>
+            <entry><uicontrol>Perform Directories Differencing</uicontrol> button</entry>
+            <entry>Disabled. The corresponding <uicontrol>Compare</uicontrol> menu item is also
+              disabled.</entry>
+          </row>
+          <row>
+            <entry>All diff options (<uicontrol>Diff Files Preferences</uicontrol> page, comparison
+              algorithm, include/exclude filters)</entry>
+            <entry>The <uicontrol>Diff Preferences</uicontrol> page shows the report settings. The
+              diff options available on the toolbars also use the report settings.</entry>
+          </row>
+          <row>
+            <entry>File-pair comparison (double-click a result row or click the <uicontrol>Perform
+                Files Differencing</uicontrol> toolbar button)</entry>
+            <entry>Opens the file pair with the report diff options. Each file pair opened from the
+                <uicontrol>Compare Directories</uicontrol> table resets the diff options to the
+              report values. Any temporary changes made since the previous file-pair comparison are
+              discarded.</entry>
+          </row>
+          <row>
+            <entry>Modifying diff options between file-pair comparisons</entry>
+            <entry>Allowed. Changes appear in the <uicontrol>Diff Preferences</uicontrol> page and
+              apply if you force a re-comparison in the same Compare Files session. The next file
+              pair opened from the Compare Directories table resets the options to the report
+              values.</entry>
+          </row>
+          <row>
+            <entry>Exiting report mode</entry>
+            <entry>Enter new directory paths in the left and right fields and start a new
+              comparison. All diff options revert to the values that were in effect before you
+              loaded the report. The same behavior occurs when you close the <uicontrol>Compare
+                Directories</uicontrol> dialog box.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    <note type="tip">Open the XML report file in <ph keyref="product"/> to inspect the <codeph>comparisonOptions</codeph> metadata section. This section lists the diff options used when the report was created in a readable format.</note>
+  </body>
+  <related-links>
+    <link href="directories-comparison.dita#directories-comparison"/>
+    <link href="scripting-compare-directories.dita#scripting-compare-directories">
+      <linktext>Compare Directories Scripting</linktext>
+    </link>
+  </related-links>
+</topic>
