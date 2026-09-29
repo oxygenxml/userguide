@@ -5,10 +5,9 @@
   <body>
     <section id="section_b4m_x13_tfc">
       <title>Overview</title>
-      <p>By default, the Text and Markdown file editors in <ph keyref="product"/> are read-only. To
-        enable editing for these file types when using a custom connector, you must specify the
-          <codeph>supportsTextEditing</codeph> loading option with the value of
-          <codeph>true</codeph>. </p>
+      <p>By default, the Text and Markdown editors in <ph keyref="product"/> are read-only. To
+        enable editing for these file types with a custom connector, set the
+          <codeph>supportsTextEditing</codeph> loading option to <codeph>true</codeph>.</p>
       <p>This restriction helps prevent potential bugs, improper behavior, or even accidental file
         overwrites that could occur if a Markdown file is opened through a connector not designed to
         work with text editors. Web Author does not provide file storage or built-in connectors for
@@ -17,8 +16,8 @@
     </section>
     <section id="section_c4m_x13_tfc">
       <title>Connector Responsibilities</title>
-      <p> A custom connector should enforce the business logic required by the specific file server
-        it integrates with. For example: </p>
+      <p>A custom connector should enforce the business rules of the file server that it integrates
+        with. For example:</p>
       <ul id="ul_d4m_x13_tfc">
         <li>
           <b>WebDAV</b> - The editor should be read-only if the document is locked by another user. </li>
@@ -42,7 +41,7 @@
             <li>The Author editor is based on <codeph>sync.api.AuthorEditingSupport</codeph>.</li>
             <li>The Text and Markdown editors are based on
                 <codeph><?oxy_comment_start author="Bogdan Dumitru" timestamp="20250623T091655+0000" comment="de fapt clasa aste e destul de seaca, nu are nimic. Intern avem sync.internal_api.TextEditingSupportImpl
-"?>sync.api.TextEditingSupport<?oxy_comment_end?></codeph></li>
+"?>sync.api.TextEditingSupport<?oxy_comment_end?></codeph>.</li>
           </ul></li>
         <li>
           <b>Operation Invocation:</b>
@@ -93,19 +92,20 @@
     </section>
     <section id="section_g2b_pc3_tfc">
       <title>General Guidance</title>
-      <p>To integrate the Text or Markdown editor with a custom connector, you may follow these
-        commonly used steps: </p>
+      <p>To integrate a Text or Markdown editor with a custom connector, follow these general
+        steps:</p>
       <ol id="ol_h2b_pc3_tfc">
         <li>Set the <codeph>supportsTextEditing</codeph> loading option by handling the
             <codeph>sync.api.Workspace.EventType.BEFORE_EDITOR_LOADED</codeph> event. For more
           details, see the <xref
             href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/27.1.0.0/jsdoc/tutorial-loadingoptions.html"
             format="html" scope="external">Loading Options Tutorial</xref>. </li>
-        <li>Customize the toolbar as needed. Refer to the <xref
+        <li>Customize the toolbar as needed. See the <xref
             href="https://www.oxygenxml.com/maven/com/oxygenxml/oxygen-webapp/27.1.0.0/jsdoc/tutorial-removeaction.html"
             format="html" scope="external">Remove Action Tutorial</xref> for assistance. You can
           also add your own custom actions to the toolbar. </li>
-        <li>Override the default "Text/Save" action with your custom implementation. </li>
+        <li>Override the default <uicontrol>Text/Save</uicontrol> action with your custom
+          implementation. </li>
         <li>Listen for the <codeph>sync.api.Workspace.EventType.EDITOR_LOADED</codeph> event and use
             <codeph>sync.api.Editor.setReadOnlyState</codeph> to control whether the editor is in
           read-only mode. </li>
