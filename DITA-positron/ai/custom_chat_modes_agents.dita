@@ -46,5 +46,86 @@
       ]
     }
   }</codeblock></p>
+    <section id="section_markdown_sub_agents">
+      <title>Defining a Sub-Agent in a Markdown File</title>
+      <p id="p_sub_agents_intro">Instead of using an action JSON file and a separate prompt file,
+        you can define a sub-agent in a single <filepath>Markdown</filepath> file. Place the file in
+        one of the AI action folders configured in the <xref keyref="actions_preferences"/> page.
+        The file begins with a YAML front matter block that names the sub-agent and specifies when
+        to use it, followed by the prompt that instructs it.</p>
+      <p id="p_sub_agents_example"
+        >Example:<codeblock id="codeblock_sub_agent_example" outputclass="language-markdown">---
+name: Style Reviewer
+description: Reviews a topic against the documentation style guide and reports what should be changed. Use it before a topic is published.
+tools: get_document_content, grep_project, search_project_resources
+---
+
+You are a documentation reviewer.
+
+Read the topic you are given and check it against the style guide of the project. Report
+what should be changed and why. Do not edit the document yourself.</codeblock></p>
+      <p id="p_sub_agents_invocation">A sub-agent defined this way does not appear in the
+          <uicontrol>Chat modes</uicontrol> drop-down menu. Instead, it is available to AI agents
+        that delegate work. These agents discover the sub-agent from its
+          <codeph>description</codeph> and invoke it by using the <codeph>invoke_ai_agent</codeph>
+        tool. The sub-agent ID is computed from its name (for example,
+          <codeph>agent.style-reviewer</codeph> for the preceding sub-agent). If two definitions
+        produce the same ID, only the first is loaded, and the others are reported in the
+        application log.</p>
+      <p id="p_sub_agents_keys">The YAML front matter may contain the following keys:<dl
+          id="dl_sub_agent_keys">
+          <dlentry id="dlentry_sub_agent_name">
+            <dt>name</dt>
+            <dd>(Required) The name of the sub-agent, presented to the AI agent that invokes it and
+              used to compute its ID.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_description">
+            <dt>description</dt>
+            <dd>(Required) Describes when to invoke this sub-agent. An AI agent reads this
+              description when choosing from the available sub-agents, so describe the sub-agent's
+              purpose rather than how it works.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_tools">
+            <dt>tools</dt>
+            <dd>
+              <p id="p_sub_agent_tools">(Optional) Specifies the tools that the sub-agent may call.
+                List the tools either on one line, separated by commas, or as a YAML list. If this
+                key is missing, the sub-agent inherits the tools of the built-in
+                  <uicontrol>Agent</uicontrol> chat mode, except for tools that invoke agents. This
+                prevents a sub-agent from delegating to itself. Declaring the key without specifying
+                a tool gives the sub-agent no tools.</p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_model">
+            <dt>model</dt>
+            <dd>(Optional) The ID of the model the sub-agent runs with. By default, it runs with the
+              model used by the conversation that invoked it.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_visibility">
+            <dt>visibility</dt>
+            <dd>(Optional) Accepts the same values as the <xref
+                href="#creating_custom_ai_actions/visibility-dlentry">visibility</xref> property of
+              an AI action. The default value for a sub-agent is
+                <codeph>visible-only-for-tools</codeph>. Set it to <codeph>visible</codeph> to also
+              show the sub-agent in the <uicontrol>Chat modes</uicontrol> drop-down menu.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_output_action">
+            <dt>output-action</dt>
+            <dd>(Optional) Takes the same values as the <codeph>output-action</codeph> property of
+              an AI action. The default is <codeph>agentic</codeph>, which is what makes the file
+              define a sub-agent rather than an ordinary action.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_profile">
+            <dt>profile</dt>
+            <dd>(Optional) Restricts the sub-agent to certain applications, with the same values as
+              the <codeph>profile</codeph> property of an AI action.</dd>
+          </dlentry>
+        </dl></p>
+      <p id="p_sub_agents_other_markdown">A <filepath>Markdown</filepath> file in the same folders
+        is loaded as a sub-agent only if it contains this type of front matter. A file named
+          <filepath>SKILL.md</filepath> is a <xref href="ai_positron_skills_creation.dita"
+          >skill</xref>, and a file without front matter is an ordinary prompt referenced by an
+        action through its <codeph>prompt_ref</codeph> property.</p>
+    </section>
   </body>
 </topic>
