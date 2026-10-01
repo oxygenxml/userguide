@@ -19,29 +19,26 @@
     <p id="p_qpm_ltj_drb"><ph keyref="product"/> provides a <xref
       href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-merge-tool.html" format="html"
       scope="external">file merge tool</xref> that is offered as an API for CMS integrations.</p>
-    <p>The Merge Tool is a useful feature for cases where multiple users work with the same file in
-      parallel because it can be used to resolve conflicts when committing changes to a repository.
-      Also it can be used to compare current unsaved changes with the document stored in the
-      CMS.</p>
+    <p>The Merge Tool helps multiple users work on the same file in parallel by resolving conflicts
+      when they commit changes to a repository. You can also use it to compare unsaved changes with
+      the version of the document stored in the CMS.</p>
     <section id="id_2">
-      <title>Use-cases</title>
+      <title>Use Cases</title>
       <ul id="ul_d54_zgc_drb">
         <li id="li_e54_zgc_drb">A CMS often keeps track of multiple versions of a file. For example,
-          if a new legal requirement has to be addressed in the documentation, all the versions of
-          the file have to be updated. One option is to make the change to the oldest version and
-          merge those changes in the other versions.</li>
+          if a new legal requirement affects the documentation, you must update all versions of the
+          file. One option is to make the change in the oldest version and merge it into the other
+          versions.</li>
         <li id="li_m4h_1hc_drb">If a CMS supports a review workflow, the copy of the file that is
-          sent for review can be changed in the CMS for other reasons. On the other hand, the review
-          workflow also results in some updates to the file. At the end, these updates need to be
-          merged in the version on the CMS.</li>
+          sent for review can change in the CMS for other reasons. The review workflow can also
+          update the file. At the end of the review, merge these updates into the CMS version.</li>
         <li id="li_lmr_1hc_drb">In other systems (such as Git), different users can edit the same
           file in parallel. When they finish editing, they have to merge the changes.</li>
       </ul>
     </section>
     <section id="id_3">
       <title>Integration Approach</title>
-      <p>To launch the Web Author Merge tool, it must be started with the following URL
-        parameters:</p>
+      <p>To launch the Web Author Merge tool, include the following URL parameters:</p>
       <p>
         <dl id="dl_gjh_qkq_crb">
           <dlentry>
@@ -62,31 +59,31 @@
             <dt>diffType</dt>
             <dd>
               <p>Use <codeph>merge</codeph> for the value to allow merging. If this parameter is not
-                specified, the left editor won't be editable, thus the tool will work as a read-only
-                diff tool.</p>
+                specified, the left editor is read-only, and the tool works as a read-only
+                comparison tool.</p>
             </dd>
           </dlentry>
           <dlentry>
             <dt>diffBaseUrl</dt>
             <dd>
               <p>The <xref href="oxy-url.dita">OXY-URL</xref> of the base file used for the 3-way
-                merge process. Usually, a file version where the two versions diverged (the common
-                ancestor). If this parameter is not specified, the tool will perform a 2-way diff
-                and will not be able to detect conflicts.</p>
+                merge process. It is usually the file version where the two versions diverged (the
+                common ancestor). If this parameter is not specified, the tool performs a two-way
+                comparison and cannot detect conflicts.</p>
             </dd>
           </dlentry>
           <dlentry>
             <dt>leftEditorLabel</dt>
             <dd>
               <p>Use this URL parameter to customize the label for the left editor. By default, the
-                label presents the file name.</p>
+                label displays the file name.</p>
             </dd>
           </dlentry>
           <dlentry>
             <dt>rightEditorLabel</dt>
             <dd>
               <p>Use this URL parameter to customize the label for the right editor. By default, the
-                label presents the file name.</p>
+                label displays the file name.</p>
             </dd>
           </dlentry>
           <dlentry>
@@ -101,23 +98,25 @@
           </dlentry>
         </dl>
       </p>
-      <p>Keep in mind that the above parameters have to be <xref
-        href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
-        >set as URL parameters</xref> and note that there are others that can be used to configure
-        various aspects of the editor.</p>
-      <p>An example of a merge URL can be found on our public demo web page: <xref
+      <p>
+        <note>The above parameters have to be <xref
+            href="webauthor-integrate-embedded-launch.dita#webauthor-integrate-embedded-launch/url_parameters"
+            >set as URL parameters</xref> and note that there are others that can be used to
+          configure various aspects of the editor.</note>
+      </p>
+    </section>
+    <p id="p_ljc_kjh_tkc">For an example of a merge URL, see the <xref
         href="https://www.oxygenxml.com/oxygen-xml-web-author/app/oxygen.html?url=samples%3A%2F%2Fsamples%2Fdiff%2Fchess%2FChess.dita&amp;diffUrl=samples%3A%2F%2Fsamples%2Fdiff%2Fchess%2FChess_repo.dita&amp;diffBaseUrl=samples%3A%2F%2Fsamples%2Fdiff%2Fchess%2FChess_base.dita&amp;leftEditorLabel=Your%20version&amp;rightEditorLabel=Latest%20version&amp;diffType=merge&amp;tags-mode=no-tags"
-          format="html" scope="external">Compare Files sample</xref>.</p>
-      <p>After the user finishes the merge, the merged content will be in the left-side pane. To get
-        the merged content, you can use JavaScript code from a plugin as follows:</p>
-      <codeblock id="pre_gm2_nkq_crb" outputclass="language-javascript">/** @type {sync.api.Editor} */
+        format="html" scope="external">Compare Files sample</xref>.</p>
+    <p id="p_mjc_kjh_tkc">After users finish the merge, the left pane contains the merged content.
+      To retrieve it, use JavaScript code from a plugin, as
+      follows:<codeblock id="pre_gm2_nkq_crb" outputclass="language-javascript">/** @type {sync.api.Editor} */
 var editor = ...;
 editor.getContent((err, content) => {
   if (!err) {
     // Save the content of the editor
   }
-});</codeblock>
-    </section>
+});</codeblock></p>
   </body>
   <related-links>
     <link href="https://www.oxygenxml.com/doc/ug-webauthor/topics/wa-merge-tool.html" format="html"
