@@ -41,11 +41,23 @@
         {"ref": "refactor_xml_with_xslt"},
         {"ref": "store_to_memory"},
         {"ref": "clear_memory"},
-        {"ref": "validate_content"},
-        {"ref": "term_check_document_content"}
+        {"ref": "validate_content"}
       ]
     }
   }</codeblock></p>
+    <p id="p_chat_mode_contributed_tools">The tools contributed by other plugins and add-ons, and the
+      tools provided by the configured MCP servers, do not have to be listed in
+        <codeph>function_refs</codeph>. They are added automatically to every chat mode. For the
+      tools contributed by plugins and add-ons, the following exceptions apply:<ul
+        id="ul_chat_mode_contributed_tools">
+        <li>A chat mode whose ID ends with <codeph>.ask</codeph> or contains
+            <codeph>.ask.</codeph>, such as the built-in <uicontrol>Ask</uicontrol> chat mode, is
+          offered only the contributed tools that declare they do not change anything.</li>
+        <li>A chat mode that runs from a transformation, through the AI XPath functions, gets only
+          the tools listed in its <codeph>function_refs</codeph>.</li>
+        <li>A contributed tool that replaces a built-in one is offered only in the chat modes that
+          list the built-in tool.</li>
+      </ul></p>
     <section id="section_markdown_sub_agents">
       <title>Defining a Sub-Agent in a Markdown File</title>
       <p id="p_sub_agents_intro">Instead of using an action JSON file and a separate prompt file,
@@ -93,7 +105,9 @@ what should be changed and why. Do not edit the document yourself.</codeblock></
                 key is missing, the sub-agent inherits the tools of the built-in
                   <uicontrol>Agent</uicontrol> chat mode, except for tools that invoke agents. This
                 prevents a sub-agent from delegating to itself. Declaring the key without specifying
-                a tool gives the sub-agent no tools.</p>
+                a tool gives the sub-agent no tools. A sub-agent that does not declare the key also
+                gets the tools contributed by other plugins and add-ons, while one that declares it
+                gets only the tools it lists.</p>
             </dd>
           </dlentry>
           <dlentry id="dlentry_sub_agent_model">
