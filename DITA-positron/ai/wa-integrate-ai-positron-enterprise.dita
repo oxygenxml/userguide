@@ -620,13 +620,14 @@
         line-by-line basis) that should be filtered out of the AI Positron UI.</p>
     </section>
     <section id="section_x4x_qh2_tgc">
-      <title>Persistent Favorites</title>
-      <p id="p_y4x_qh2_tgc">By default, favorites are not persistent in the demo <uicontrol>Web
-          Author</uicontrol> web site. Content Management Systems that integrate <uicontrol>Web
-          Author</uicontrol> can add two predefined variables (using JavaScript to the global
-          <codeph>window</codeph> object) that point to operations used to store and retrieve
-        persistent strings.
-        Example:<codeblock id="codeblock_tts_wp3_pcc" outputclass="language-java">window.POSITRON_RETRIEVE_OPERATION = "package.name.RetrieveOperation";
+      <title>Persistent Favorites and Chat History</title>
+      <p id="p_y4x_qh2_tgc">By default, the favorite prompts and the chat history are not persistent
+        in the demo <uicontrol>Web Author</uicontrol> web site. Content Management Systems that
+        integrate <uicontrol>Web Author</uicontrol> can add two predefined variables (using
+        JavaScript to the global <codeph>window</codeph> object) that point to operations used to
+        store and retrieve persistent strings. The same pair of operations is used for both the
+        favorites and the chat history.
+        Example:<codeblock id="codeblock_tts_wp3_pcc" outputclass="language-javascript">window.POSITRON_RETRIEVE_OPERATION = "package.name.RetrieveOperation";
 window.POSITRON_STORE_OPERATION ="package.name.StoreOperation";</codeblock>with the
           <codeph>RetrieveOperation</codeph> implemented like this (for
         example):<codeblock id="codeblock_w15_fq3_pcc" outputclass="language-java">@WebappRestSafe
@@ -648,6 +649,17 @@ public class StoreOperation extends AuthorOperationWithResult {
     return null;
   }
 }</codeblock></p>
+      <p id="p_hst_qh2_tgc">Both operations receive a <codeph>key</codeph> argument that identifies
+        what is being stored, and a <codeph>namespace</codeph> argument whose value is always
+          <codeph>positron</codeph>. The store operation also receives a <codeph>value</codeph>
+        argument that contains the data serialized as a JSON string. The retrieve operation must
+        return the string that was last stored for that key, or <codeph>null</codeph> if nothing
+        was stored yet. The following keys are used:<ul id="ul_hst_qh2_tgc">
+          <li><codeph>com.oxygenxml.positron.favorites.list</codeph> - The list of favorite
+            prompts.</li>
+          <li><codeph>com.oxygenxml.positron.history.list</codeph> - The chat history (the 10 most
+            recent conversations).</li>
+        </ul></p>
     </section>
   </body>
 </topic>
