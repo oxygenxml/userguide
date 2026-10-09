@@ -11,16 +11,15 @@
     </metadata>
   </prolog>
   <body>
-    <p id="p_wbt_dgk_54b"><ph keyref="webappProduct"/> provides the <xref
+    <p id="p_wbt_dgk_54b"><ph keyref="webappProduct"/> lets teams <xref
         href="https://www.oxygenxml.com/doc/ug-webauthor/topics/webauthor-concurrent-editing.html"
-        format="html" scope="external">ability for teams to edit and review content
-        concurrently</xref>. The concurrent editing feature can be enabled either with the built-in
-      <uicontrol>Share Editing Session</uicontrol> action or by integrating the concurrent editing
-      support in a CMS using the available API. The <uicontrol>Share Editing Session</uicontrol>
-      action works by allowing the user to share their editing session by using the
-      <uicontrol><image href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"/>Share
-        Editing Session</uicontrol> toolbar button and then sending the retrieved URL to other
-      collaborators and then all of them can edit and review the same document simultaneously.</p>
+        format="html" scope="external">edit and review content concurrently</xref>. Enable
+      concurrent editing with the built-in <uicontrol>Share Editing Session</uicontrol> action or
+      integrate concurrent editing into a CMS with the available API. To share a session, users
+      click the <uicontrol><image href="../img/wa-share-session-button.png" id="image_kyj_315_rnb"
+        />Share Editing Session</uicontrol> toolbar button and send the resulting URL to
+      collaborators. All collaborators can then edit and review the same document
+      simultaneously.</p>
   </body>
   <topic id="topic_k2k_qgt_rnb">
     <title>Enabling the Share Editing Session Action</title>
@@ -34,10 +33,11 @@
             enabled in the <xref href="webapp-admin-page.dita#webapp-admin-page">Administration
               Page</xref> (it is bundled with the <ph keyref="webappProduct"/> installers and is
             enabled by default).</li>
-          <li id="li_act_dgk_54b">The <codeph>sharedSessionCompatible</codeph>
-            <xref keyref="jscript_api_workspace_LoadingOptions">loading option</xref> must be set to
-            <codeph>true</codeph> by the CMS connector plugin. Note that the built-in connectors
-            (for e.g. the Git connector) have this option by default configured.</li>
+          <li id="li_act_dgk_54b">The CMS connector plugin must set the
+              <codeph>sharedSessionCompatible</codeph>
+            <xref keyref="jscript_api_workspace_LoadingOptions">loading option</xref> to
+              <codeph>true</codeph>. Built-in connectors, such as the Git connector, set this option
+            by default.</li>
         </ul>
       </p>
       <p id="p_bct_dgk_54b">For the feature to work correctly, when a concurrent session is active, the CMS connector
@@ -59,10 +59,10 @@ if (mgr &amp;&amp; !mgr.isCreator()) {
             is deployed on multiple servers behind a <xref href="webapp-loadbalancing.dita">load
               balancer</xref>.</li>
           <li id="li_jct_dgk_54b">
-            <p id="p_kct_dgk_54b"><ph keyref="webappProduct"/> uses Web Sockets to propagate changes
-              in real time between collaborators. If you are using a reverse proxy, some additional
-              configuration may be required to enable Web Socket connections to the
-              <codeph>./ws</codeph> endpoint of the application.</p>
+            <p id="p_kct_dgk_54b"><ph keyref="webappProduct"/> uses WebSockets to propagate changes
+              between collaborators in real time. If you use a reverse proxy, you may need
+              additional configuration to enable WebSocket connections to the application's
+                <codeph>./ws</codeph> endpoint.</p>
             <p id="p_lct_dgk_54b">For example, NGINX requires the following configuration for the
               <filepath>/oxygen-xml-web-author/ws</filepath>
               path:<codeblock outputclass="language-javascript" id="codeblock_mct_dgk_54b">location /oxygen-xml-web-author/ws {
@@ -127,10 +127,10 @@ RewriteRule ^/oxygen-xml-web-author/?(.*)
   <topic id="topic_n2z_sgt_rnb222">
     <title>CMS-owned Concurrent Editing Sessions</title>
     <body>
-      <p id="p_yct_dgk_54b">Aside from using the <uicontrol><image
+      <p id="p_yct_dgk_54b">Instead of using the <uicontrol><image
             href="../img/wa-share-session-button.png" id="image_txt_2f5_rnb"/>Share Editing
-          Session</uicontrol> action, a more integrated concurrent editing approach is to have a
-        concurrent editing room owned by the CMS. </p>
+          Session</uicontrol> action, you can integrate concurrent editing by having the CMS own the
+        concurrent editing room.</p>
       <bodydiv>
         <p>A concurrent editing room contains multiple editors, each working on the same document,
           with all changes synchronized in real time. Each editor corresponds to a browser tab and
@@ -149,10 +149,10 @@ RewriteRule ^/oxygen-xml-web-author/?(.*)
       </ul></p>
       <section id="section_evc_zgt_rnb">
         <title>Creating a Concurrent Editing Room</title>
-        <p>When an user opens a document in an editor, the CMS needs to create a concurrent editing
-          room for that document if one is not already created.</p>
-        <p id="p_fdt_dgk_54b">The recommended way for a CMS to create a concurrent editing room is
-          by using the Java API:</p>
+        <p>When a user opens a document in an editor, the CMS must create a concurrent editing room
+          for the document if one does not already exist.</p>
+        <p id="p_fdt_dgk_54b">The recommended method for a CMS to create a concurrent editing room
+          is to use the Java API:</p>
         <codeblock outputclass="language-javascript" id="codeblock_jdt_dgk_54b">import ro.sync.ecss.extensions.api.webapp.ce.RoomsManager;
 
 String roomId = RoomsManager.INSTANCE.createRoomFromDocument(authorDocumentModel) </codeblock>
