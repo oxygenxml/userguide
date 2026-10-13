@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="generate-hash-report-for-directory">
+  <title>Generate Hash Report for Directory</title>
+  <body>
+    <p>Use this feature to generate a report that contains a content-aware fingerprint (hash) for
+      every file in a directory or archive. Unlike a plain checksum of a file's bytes, this
+      fingerprint reflects the file's <i>meaningful</i> content. The same "ignore" settings
+      available in the Compare Directories tool (ignore attribute order, ignore whitespaces, ignore
+      specific nodes by XPath, etc.) can be applied before the hash is computed. Therefore, two
+      files that differ only in ways you choose to disregard produce the <i>same</i> hash.</p>
+    <p>This is especially useful when you need to check whether the same content is deployed
+      identically across multiple locations (servers, branches, or environments) without running
+      pairwise comparisons between every pair of locations. Generate a report for each location,
+      then compare the <codeph>hash</codeph> values for matching file paths. No direct access
+      between the locations is required.</p>
+    <section id="section_tsl_t4q_wkc">
+      <title>Generating a Report</title>
+      <p id="p_usl_t4q_wkc">
+        <fig id="fig_mcd_54q_wkc">
+          <title>Generate Hash Report for Directory Dialog Box</title>
+          <image href="../img/hash-generator-dlg.png"/>
+        </fig>
+      </p>
+      <p id="p_mq4_2pq_wkc">To generate a hash report:<ol id="ol_lpy_dpq_wkc">
+          <li id="li_mpy_dpq_wkc">Go to <menucascade>
+              <uicontrol>Tools</uicontrol>
+              <uicontrol>Comparison Tools</uicontrol>
+              <uicontrol>Generate Hash Report for Directory</uicontrol>
+            </menucascade>.</li>
+          <li id="li_npy_dpq_wkc">In the <b>Directory or archive</b> field, browse to or enter the
+            path to the directory or archive to fingerprint.</li>
+          <li id="li_opy_dpq_wkc">In the <b>Report file</b> field, choose where to save the
+            generated XML report.</li>
+          <li>If the <uicontrol>Open in Editor</uicontrol> option is selected, the report will be
+            opened in the editor once generated.</li>
+          <li id="li_ppy_dpq_wkc"><i>(Optional)</i> In the <b>Diff options configuration file</b>
+            field, select a JSON, YAML, or XML configuration file that specifies the differences to
+            ignore when computing hashes. This is the same format used by the <xref
+              href="https://www.oxygenxml.com/doc/versions/28.1/ug-editor/topics/scripting-arguments-comparison-scripts.html"
+              format="html" scope="external">scripting comparison arguments</xref>. If you leave
+            this field empty, no differences are ignored, and hashes reflect the exact file
+            content.</li>
+          <li id="li_qpy_dpq_wkc">Click <b>Generate report</b>.</li>
+        </ol></p>
+      <p id="p_mfx_dpq_wkc">
+        <note id="note_w55_gpq_wkc" type="important">If you plan to compare hash values across
+          reports generated separately (for example, for different locations and possibly by
+          different people), ensure that every report uses the <i>same</i> diff options
+          configuration file. Hashes computed with different ignore settings cannot be compared,
+          even when the content is identical.</note>
+      </p>
+    </section>
+    <section id="section_osx_jpq_wkc">
+      <title>Content Type Coverage</title>
+      <p id="p_psx_jpq_wkc">
+        <table id="table_sry_kpq_wkc">
+          <tgroup cols="3">
+            <colspec colname="col1"/>
+            <colspec colname="col2"/>
+            <colspec colname="col3"/>
+            <thead>
+              <row>
+                <entry>Content</entry>
+                <entry>How the fingerprint is computed</entry>
+                <entry>Which "ignore" options apply</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>XML, XHTML, HTML, XSL, XSD, RNG, Schematron, XProc, WSDL, SVG, DITA
+                  maps</entry>
+                <entry>Canonical form of the parsed document tree</entry>
+                <entry>All: ignore attribute order, ignore whitespaces, ignore nodes by XPath,
+                  ignore expansion state of empty elements, etc.</entry>
+              </row>
+              <row>
+                <entry>Markdown, CSS, LESS, JavaScript, JSON, JSON5, JSONL, YAML, and other formats
+                  with syntax highlighting support</entry>
+                <entry>Canonical form of the tokenized content</entry>
+                <entry>Ignore whitespaces only</entry>
+              </row>
+              <row>
+                <entry>Plain text or unrecognized content, or content that fails to parse</entry>
+                <entry>Raw byte fingerprint of the file</entry>
+                <entry>None</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </p>
+      <p id="p_c4s_lpq_wkc">When a file falls back to a raw byte fingerprint, the report flags it
+        with an <codeph>additionalInfo</codeph> attribute explaining why (unsupported content type,
+        or a parsing failure).</p>
+    </section>
+    <section id="section_bqs_mpq_wkc">
+      <title>Report Format</title>
+      <codeblock xml:space="preserve" outputclass="language-xml">&lt;fileHashReport directoryPath="D:/deployments/location-046" 
+                diffOptionsFilePath="D:/deployments/diffOptions.json"&gt;
+  &lt;meta name="description" content="File hash report"/&gt;
+  &lt;meta name="author" content="Oxygen XML App Suite"/&gt;
+  &lt;meta name="userName" content="john_doe"/&gt;
+  &lt;meta name="reportTimestamp" content="2026-09-17T10:18:01.3927923"/&gt;
+  &lt;meta name="diffOptions" content= "
+    Include files filter:*;
+    Include folders filter:*;
+    Exclude files filter:.DS_Store;
+    Exclude folders filter:CVS,.svn,_svn,.git;    
+    ......
+    Ignore prefixes:false;
+    Ignore attribute order:true;
+    Ignore expansion state for empty elements:true;"/&gt;  
+  &lt;dir name="app"&gt;
+    &lt;file name="log.xml" path="app/log.xml" size="1204" modified="2026-09-16T11:30:12.374Z" 
+          hash="7e83f485e6ea30e7c7b52614e2f08daaf5c0a6496d5b31091d8a3e162918387f"/&gt;
+    &lt;file name="log-ext.xml" path="app/log-ext.xml" size="2555" modified="2026-09-16T11:31:09.875Z" 
+          hash="89dfb8c5f66beabb045d7d6cfd45883fc3593015440baa0054fab7e09730edf9"/&gt;
+    &lt;file name="notes.txt" path="app/notes.txt" size="598" modified="2026-09-16T15:02:10.657Z" 
+          hash="1505a90671f30a6c6af075493d77a1b1eb04985ae82716102c42fd8d7c334a64"
+          additionalInfo="hash based on raw file bytes"/&gt;          
+  &lt;/dir&gt;
+  ......
+  &lt;file name="results-023.json" path="results-023.json" size="4522" modified="2026-08-16T16:22:19.571Z" 
+        hash="1c23bebcbf488bbfa3b6f5f2be6c82a1d490b7a641eda526570ee9ffd0233b4c"/&gt;  
+&lt;/fileHashReport&gt;</codeblock>
+      <p id="p_wwq_npq_wkc">File paths are relative to the directory for which the hash report was
+        generated. Therefore, the same file at the same relative location in different reports can
+        be matched directly (for example, through a SQL join on <codeph>path</codeph>), even when
+        the reports are generated independently on different machines and from different absolute
+        locations.</p>
+    </section>
+    <section id="section_pl4_4pq_wkc">
+      <title>Known Limitations</title>
+      <p id="p_ql4_4pq_wkc">
+        <ul id="ul_nvf_ppq_wkc">
+          <li id="li_ovf_ppq_wkc">For JSON and YAML content, property order is significant. Two
+            files that are otherwise identical but have properties in a different order produce
+              <i>different</i> hashes, although property order has no meaning in JSON or YAML
+            itself.</li>
+          <li id="li_pvf_ppq_wkc">For HTML content, attribute order is generally preserved, and the
+              <b>ignore attribute order</b> option works as expected. However, if a file is
+            sufficiently "malformed" to require the most lenient internal HTML-to-XHTML conversion
+            step, that step alphabetically normalizes attributes, and the option has no effect for
+            that file.</li>
+        </ul>
+      </p>
+    </section>
+    <section id="section_kfs_ppq_wkc">
+      <title>Example: Verifying Consistent Deployment Across Multiple Locations</title>
+      <p id="p_cql_spq_wkc">If you manage the same content deployed across many separate locations
+        (servers, branches, or environments), you can use the generated reports to detect drift
+        without directly comparing every pair of locations. Generate a report for each location,
+        using the <i>same</i> diff options configuration file for all reports (see the <xref
+          href="#./note_w55_gpq_wkc">important note</xref> above), and then compare the reports.</p>
+      <p id="p_dql_spq_wkc">The most actionable approach is to designate one location's report as
+        the <b>reference</b> (a known-good or golden copy, a certified build, a production baseline,
+        etc.) and compare every other location's report with it. Comparing reports with a reference
+        immediately identifies <i>which</i> locations deviated and <i>how</i>. This information is
+        needed for further investigation, so use this approach first when you have a location,
+        build, or environment that you trust to be correct.</p>
+      <p id="p_cyd_fqq_wkc"><b><u>Comparing Against a Reference Location (XQuery)</u></b></p>
+      <p id="p_ebc_wpq_wkc">This example assumes that the reports are collected in one folder and
+        queried as a collection, and that the reference report's file name is known in advance:</p>
+      <codeblock xml:space="preserve" outputclass="language-xquery">let $referenceReport := doc('file:///path/to/reports/reference-report.xml')
+let $referenceHashes :=
+    map:merge(
+      for $f in $referenceReport//file
+      return map:entry(string($f/@path), string($f/@hash))
+    )
+for $file in collection('file:///path/to/reports/')//file
+let $path := string($file/@path)
+let $refHash := map:get($referenceHashes, $path)
+let $report := $file/ancestor::fileHashReport
+where exists($refHash) and string($file/@hash) != $refHash
+return
+  &lt;mismatch path="{$path}"
+            report="{base-uri(root($file))}"
+            user="{$report/meta[@name='userName']/@content}"
+            referenceHash="{$refHash}" actualHash="{$file/@hash}"/&gt;</codeblock>
+      <p id="p_fbc_wpq_wkc">The reference report's <codeph>path</codeph>/<codeph>hash</codeph> pairs
+        are loaded once into a map (<codeph>$referenceHashes</codeph>), then every
+          <codeph>&lt;file&gt;</codeph> in every report in the collection (including the reference
+        report itself, which trivially matches its own hashes and so never appears in the result) is
+        checked against it. The result lists every file, in every location, whose hash does not
+        match the reference (exactly the locations and files worth investigating further). The
+          <codeph>user</codeph> attribute (from the report's own <codeph>&lt;meta
+          name="userName"&gt;</codeph>) identifies who generated <i>that</i> report. This is useful
+        when different people run the report for different locations, though if the same person
+        generates several reports for several locations, it will not tell those apart. In that case,
+          <codeph>report</codeph> (the report file's own path) is the reliable way to identify the
+        location.</p>
+      <p id="p_gbc_wpq_wkc">In <ph keyref="product"/>, the most convenient way to run this query is
+        to define a <b>Collection</b> input that points to the report folder in an XQuery scenario,
+        then use <codeph>collection()</codeph> without an argument to refer to it. Alternatively,
+        enable the XPath/XQuery Builder view and run the XQuery code directly in the view.</p>
+      <p id="p_z5s_hqq_wkc"><b><u>Running a Quick Drift Check</u></b></p>
+      <p id="p_dnf_1qq_wkc">If you do not yet have a specific reference location to compare with,
+        you can check whether any file differs <i>at all</i> between locations without designating
+        one as the reference. For example, use this as an inexpensive initial check across peer
+        locations that should all be identical, where no location is considered "more correct" than
+        the others:</p>
+      <codeblock xml:space="preserve" outputclass="language-xquery">for $file in collection('file:///path/to/reports/')//file
+group by $path := string($file/@path)
+where count(distinct-values($file/@hash)) &gt; 1
+return $path</codeblock>
+      <p id="p_enf_1qq_wkc">This query indicates only <i>that</i> a path has more than one distinct
+        hash across locations, not <i>which</i> location or locations deviated, or from what. Use it
+        as a trigger for further investigation, preferably by choosing one flagged location as a
+        reference and running the preceding comparison, not as a complete diagnosis.</p>
+    </section>
+  </body>
+</topic>
