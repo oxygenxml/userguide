@@ -11,13 +11,37 @@
       in the chat box to allow the tool to run. When prompted, the end user can also choose to
       always allow a tool to run. In that case, the allowed tool is automatically added to the list
       of allowed tools on this preferences page.</p>
-    <p id="p_nqd_cr5_jkc">The text area contains a line-separated list of tool name prefixes that
-      are always allowed to run without asking the end user. The <codeph>*</codeph> character acts
-      as a wildcard that matches any sequence of characters.</p>
-    <p id="p_oqd_cr5_jkc">For a tool that runs a command line, when the end user allows a certain
-      command line, the prefix of that command line is also added to the tool name. Therefore, the
-      user may always allow a command line such as <codeph>git log</codeph> to run, but they may
-      want to be asked about any other command line.</p>
+    <p id="p_nqd_cr5_jkc">The text area contains a line-separated list of entries for the tools
+      that are always allowed to run without asking the end user. Each entry starts with a tool
+      name, which must match exactly, unless it contains the <codeph>*</codeph> character. The
+        <codeph>*</codeph> character acts as a wildcard that matches any sequence of
+      characters.</p>
+    <p id="p_oqd_cr5_jkc">For the tool that runs command lines (<codeph>run_command_line</codeph>),
+      the tool name can be followed by a space and a command key. The command key is a short name
+      that the AI model gives to each command line, made of words separated by underscores, which
+      describes the command line rather than repeating it. For example, the command line <codeph>p4
+        opened //demo/spec/...</codeph> may receive the <codeph>p4_opened_demo_spec</codeph> key.
+      When the end user always allows a command line, an entry made of the tool name and the
+      command key, such as <codeph>run_command_line p4_opened_demo_spec</codeph>, is added to the
+      list. This way, the end user can always allow a certain command line and still be asked about
+      any other one. The command key of an entry is matched as follows:</p>
+    <ul id="ul_aqd_cr5_jkc">
+      <li>Without a wildcard, the command key of the entry must be the same as the key of the
+        command line. For example, <codeph>run_command_line p4_opened</codeph> allows the
+          <codeph>p4_opened</codeph> key, but not the <codeph>p4_opened_demo_spec</codeph>
+        key.</li>
+      <li>With a wildcard, the command key of the entry is a pattern that must match the entire key
+        of the command line. For example, <codeph>run_command_line p4_opened_*</codeph> allows every
+        key that starts with <codeph>p4_opened_</codeph>, and <codeph>run_command_line p4_*</codeph>
+        allows every key that starts with <codeph>p4_</codeph>.</li>
+      <li>Without a command key, the entry allows every command line. This is the case for both
+          <codeph>run_command_line</codeph> and <codeph>run_command_line*</codeph>.</li>
+    </ul>
+    <p id="p_bqd_cr5_jkc">The command key is chosen by the AI model to describe the command line; it
+      does not restrict the command line itself. Since the key is chosen by the AI model, the same
+      command line may also receive a slightly different key on another run. Use a wildcard to
+      cover such variations. The <b>Always allow</b> option is not offered for a command line whose
+      key contains the <codeph>*</codeph> character.</p>
     <p id="p_pqd_cr5_jkc">For MCP tools, each tool call is initially approved individually. For
       example, when this single tool call is always allowed:</p>
     <image href="../img/mcp-brave-always-allow.png" placement="break" id="image_wtp_znv_v3c"/>
@@ -25,7 +49,9 @@
     <image href="../img/mcp-always-allowed-prefs.png" placement="break" id="image_mmm_h4v_v3c"/>
     <p>If you want to allow all tool calls to the MCP server, you can manually edit that entry to
       use the wildcard form <codeph>brave-search_*</codeph>.</p>
-    <p>The standalone wildcard <codeph>*</codeph> is not allowed as a single entry.</p>
+    <p>An entry made only of <codeph>*</codeph> characters, or a command key made only of
+        <codeph>*</codeph> characters, matches nothing, so it cannot allow every tool or every
+      command line by accident.</p>
     <p>This preferences page can be saved at project level if you want to share a certain set of
       allowed tools with your team members.</p>
   </body>
