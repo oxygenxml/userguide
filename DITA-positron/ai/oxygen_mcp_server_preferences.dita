@@ -23,7 +23,9 @@
           <dt>Port</dt>
           <dd>
             <p>The port number on which the local MCP HTTP server listens for incoming connections.
-              Change this value if the default port is already in use by another application.</p>
+              The default port is <codeph>8757</codeph>. Change this value if the default port is
+              already in use by another application. The port can be changed only while the server
+              is stopped.</p>
           </dd>
         </dlentry>
         <dlentry>
@@ -60,6 +62,16 @@
           </dd>
         </dlentry>
         <dlentry>
+          <dt>Server URL</dt>
+          <dd>
+            <p>Displayed while the server is running. The server accepts connections only from the
+              local computer, at <codeph>http://127.0.0.1:<varname>port</varname>/mcp</codeph> (for
+              example, <codeph>http://127.0.0.1:8757/mcp</codeph> for the default port). It uses
+              the MCP Streamable HTTP transport only; the older HTTP with SSE transport is not
+              supported, so configure the AI assistant to connect using Streamable HTTP.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
           <dt>Copy MCP Configuration</dt>
           <dd>
             <p id="p_gg5_2s5_jkc">Copies the MCP configuration JSON to the clipboard. Paste this
@@ -68,6 +80,20 @@
               the AI assistant will be able to discover and call the XML tools available in the <ph
                 keyref="product"/>
               <b>AI Positron</b> add-on.</p>
+            <p>The authentication token is kept when you stop and start the server, change the
+              port, or restart <ph keyref="product"/>. After changing the port, copy the
+              configuration again, since the server URL changes.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Restore Defaults</dt>
+          <dd>
+            <p>Stops the server if it is running, resets the port to its default value, and
+              generates a new authentication token. AI assistants that were configured with the
+              previous token are rejected (with an HTTP <codeph>401 Unauthorized</codeph> error)
+              until you click <uicontrol>Copy MCP Configuration</uicontrol> and paste the new
+              configuration into each of them. Use this button to revoke the access of all the AI
+              assistants that you previously connected.</p>
           </dd>
         </dlentry>
       </dl>
@@ -78,6 +104,12 @@
           <b>AI Positron</b> add-on are available through the use of the HTTP MCP server to the
         third-party <b>AI Assistant</b>, with the exception of the <codeph>Run command line</codeph>
         tool. </p>
+      <note type="important">The <xref href="unsafe_tool_approval_preferences.dita">approval
+          prompt</xref> that <b>AI Positron</b> displays before running an unsafe tool applies only
+        to its own chat. Tools called by a third-party AI assistant through the HTTP MCP server run
+        without any prompt from <b>AI Positron</b>, including tools that modify files, such as
+          <codeph>edit_document</codeph>. Approving tool calls is the responsibility of the
+        third-party AI assistant, so configure its own tool permission settings accordingly.</note>
       <p>AI Tools contributed by the main <ph keyref="product"/> application and other installed
         plugins which are loaded by the <b>AI Positron</b> add-on also become available through the
         started HTTP MCP server.</p>
