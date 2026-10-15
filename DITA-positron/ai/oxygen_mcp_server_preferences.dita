@@ -37,7 +37,10 @@
               not displayed again for subsequent starts and stops.</p>
             <p>When the server is running, third-party AI assistants can discover and call the tools
               provided by <b>AI Positron</b>.<note type="important">The server must be started
-                manually each time you restart the <ph keyref="product"/> application.</note><note
+                manually each time you restart the <ph keyref="product"/> application, unless the
+                  <xref href="#oxygen_mcp_server_preferences/keep_server_state" type="dlentry"
+                  >Keep the server state (running or stopped) between application restarts</xref>
+                option is selected.</note><note
                 id="note_eg5_2s5_jkc">The MCP HTTP server can be started only if you are using <ph
                   keyref="product"/>
                 <b>Enterprise</b> version or the <b>AI Positron</b> Enterprise license.</note><note
@@ -59,6 +62,22 @@
                   </li>
                 </ol>
               </note></p>
+          </dd>
+        </dlentry>
+        <dlentry id="keep_server_state">
+          <dt>Keep the server state (running or stopped) between application restarts</dt>
+          <dd>
+            <p>If selected, the server keeps the state you left it in when <ph keyref="product"/> is
+              restarted: if the server was running when you closed the application, it is started
+              again automatically after the main window of the application is displayed, and if you
+              had stopped it, it stays stopped. The server is started with the same port and
+              authentication token, so the AI assistants that you already connected do not need a
+              new configuration. This option is not selected by default.</p>
+            <p>The server is started automatically only after you have accepted the EULA by
+              clicking <uicontrol>Start</uicontrol> once. If it cannot be started, for example
+              because its port is already used by another application, the page shows the server as
+              stopped and the start is attempted again the next time <ph keyref="product"/>
+              starts.</p>
           </dd>
         </dlentry>
         <dlentry>
@@ -88,9 +107,10 @@
         <dlentry>
           <dt>Restore Defaults</dt>
           <dd>
-            <p>Stops the server if it is running, resets the port to its default value, and
-              generates a new authentication token. AI assistants that were configured with the
-              previous token are rejected (with an HTTP <codeph>401 Unauthorized</codeph> error)
+            <p>Stops the server if it is running, resets the port to its default value, deselects
+              the <uicontrol>Keep the server state (running or stopped) between application
+                restarts</uicontrol> option, and generates a new authentication token. AI
+              assistants that were configured with the previous token are rejected (with an HTTP <codeph>401 Unauthorized</codeph> error)
               until you click <uicontrol>Copy MCP Configuration</uicontrol> and paste the new
               configuration into each of them. Use this button to revoke the access of all the AI
               assistants that you previously connected.</p>
@@ -129,6 +149,29 @@
               document.</dd>
           </dlentry>
         </dl></p>
+    </section>
+    <section id="section_concurrent_changes">
+      <title>Changes Made to the Same Document at the Same Time</title>
+      <p>Several AI assistants connected through the HTTP MCP server, or an AI assistant and the
+          <b>AI Positron</b> chat, can modify files at the same time. Changes to different documents
+        are made in parallel. Changes to the same document are made one at a time: each tool call
+        reads the document only after the previous change was saved, so no change is lost. This
+        applies to the tools that modify a document: <codeph>edit_document</codeph>,
+          <codeph>save_document</codeph>, <codeph>refactor_xml</codeph>,
+          <codeph>refactor_xml_with_xslt</codeph>, and
+          <codeph>add_dita_reference_to_ditamap</codeph>.</p>
+      <ul>
+        <li>If another change already modified the text that an edit replaces, the edit fails with
+          an error saying that the text could not be located. The AI assistant is expected to read
+          the document again and retry the edit.</li>
+        <li>If a change waits for more than 30 seconds for another change of the same document to
+          end, it fails with an error telling the AI assistant to retry. This can happen, for
+          example, while another change of that document is waiting for you to confirm it.</li>
+      </ul>
+      <note>A tool call that writes the entire content of a document replaces whatever the document
+        contains at that moment. If the AI assistant read the content before another change was
+        made, that change is overwritten. Edits that replace specific text, the usual way of editing
+        with <codeph>edit_document</codeph>, are not affected.</note>
     </section>
     <section id="section_preview_file_changes">
       <title>Preview File Changes</title>
