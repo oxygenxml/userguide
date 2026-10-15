@@ -660,6 +660,39 @@ public class StoreOperation extends AuthorOperationWithResult {
           <li><codeph>com.oxygenxml.positron.history.list</codeph> - The chat history (the 10 most
             recent conversations).</li>
         </ul></p>
+      <p>Instead of operations, the page that integrates <uicontrol>Web Author</uicontrol> can
+        provide its own storage, for example the local storage of the browser. To do this, define a
+          <codeph>window.POSITRON_STORAGE</codeph> object with a <codeph>save(key, value)</codeph>
+        and a <codeph>load(key)</codeph> JavaScript method. When both methods are defined, they are
+        used for the favorites and the chat history instead of the operations.
+        Example:<codeblock outputclass="language-javascript">// currentUserId identifies the user logged in to the CMS.
+window.POSITRON_STORAGE = {
+  save: (key, value) => localStorage.setItem(currentUserId + "." + key, value),
+  load: key => localStorage.getItem(currentUserId + "." + key)
+};</codeblock></p>
+      <p>The methods receive the same keys as the operations:<ul>
+          <li><codeph>save(key, value)</codeph> receives the data serialized as a JSON string in
+              <codeph>value</codeph>, and must keep it under <codeph>key</codeph>, replacing what
+            was kept there before. It can return a promise.</li>
+          <li><codeph>load(key)</codeph> must return the string that was last saved for that key,
+            or <codeph>null</codeph> if nothing was saved yet. It can return the string directly or
+            as a promise. A promise must always be resolved or rejected: until it is, the
+            conversations that end in the meantime are not saved.</li>
+        </ul></p>
+      <note type="important">
+        <ul>
+          <li>The stored data is the content of the user: the chat history includes the prompts,
+            the answers, and the results of the tools, which may contain document content. If the
+            storage is shared by several users (for example, the local storage of a shared browser
+            profile), prefix the keys with an identifier of the user, as in the example
+            above.</li>
+          <li>If a load fails (the method throws an error or its promise is rejected), the list is
+            empty, and the next save replaces everything that was kept under that key.</li>
+          <li>The local storage of a browser holds about 5 MB for each web site. A save that
+            exceeds this limit fails, and the failure is only reported in the browser
+            console.</li>
+        </ul>
+      </note>
     </section>
   </body>
 </topic>
