@@ -664,13 +664,14 @@ public class StoreOperation extends AuthorOperationWithResult {
         provide its own storage, for example the local storage of the browser. To do this, define a
           <codeph>window.POSITRON_STORAGE</codeph> object with a <codeph>save(key, value)</codeph>
         and a <codeph>load(key)</codeph> JavaScript method. When both methods are defined, they are
-        used for the favorites and the chat history instead of the operations.
+        used for the favorites and the chat history instead of the operations. Define the object
+        when the page loads, before AI Positron loads or saves the favorites and the chat history.
         Example:<codeblock outputclass="language-javascript">// currentUserId identifies the user logged in to the CMS.
 window.POSITRON_STORAGE = {
   save: (key, value) => localStorage.setItem(currentUserId + "." + key, value),
   load: key => localStorage.getItem(currentUserId + "." + key)
 };</codeblock></p>
-      <p>The methods receive the same keys as the operations:<ul>
+      <p>The methods receive the same keys as the operations, and must behave as follows:<ul>
           <li><codeph>save(key, value)</codeph> receives the data serialized as a JSON string in
               <codeph>value</codeph>, and must keep it under <codeph>key</codeph>, replacing what
             was kept there before. It can return a promise.</li>
@@ -686,8 +687,10 @@ window.POSITRON_STORAGE = {
             storage is shared by several users (for example, the local storage of a shared browser
             profile), prefix the keys with an identifier of the user, as in the example
             above.</li>
-          <li>If a load fails (the method throws an error or its promise is rejected), the list is
-            empty, and the next save replaces everything that was kept under that key.</li>
+          <li>If a load fails (the method throws an error, its promise is rejected, or it returns
+            something other than the saved string), or if the object is defined after AI Positron
+            has loaded a list, the list is empty, and the next save replaces everything that was
+            kept under that key.</li>
           <li>The local storage of a browser holds about 5 MB for each web site. A save that
             exceeds this limit fails, and the failure is only reported in the browser
             console.</li>
