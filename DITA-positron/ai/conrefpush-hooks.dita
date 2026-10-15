@@ -116,24 +116,24 @@
         <codeph>invocation_source</codeph> field. For a tool that the AI assistant calls directly,
       there is no AI Positron chat session: the <codeph>session_id</codeph> field holds the
       identifier of the MCP session of the assistant, which a sub-agent started by the tool reports
-      as its <codeph>parent_session_id</codeph>, and no prompt or response events are fired. The
-      MCP session itself is reported as a session of type <codeph>mcp_server</codeph>:
+      as its <codeph>parent_session_id</codeph>, and no prompt or response events are fired. The MCP
+      session itself is reported as a session of type <codeph>mcp_server</codeph> and
         <codeph>sessionStart</codeph> is fired when the AI assistant connects to the server and
         <codeph>sessionEnd</codeph> when its session ends, with one of the following reasons:<ul
         id="ul_hooks_mcp_session_end_reasons">
         <li><codeph>client_close</codeph> - The AI assistant ended its session.</li>
-        <li><codeph>connection_lost</codeph> - The AI assistant could no longer be reached, for
-          example because it dropped its connection while waiting for the result of a tool. An
+        <li><codeph>connection_lost</codeph> - The AI assistant could no longer be reached (for
+          example, because it dropped its connection while waiting for the result of a tool). An
           assistant usually starts a new session then, so one connection of an assistant can be
           reported as several sessions.</li>
-        <li><codeph>server_stop</codeph> - The Oxygen MCP server was stopped from its preferences
-          page.</li>
+        <li><codeph>server_stop</codeph> - The <i>Oxygen</i> MCP server was stopped from its
+          preferences page.</li>
         <li><codeph>application_close</codeph> - <ph keyref="product"/> was closed.</li>
       </ul>There is no idle timeout: an AI assistant that disconnects without ending its session,
       while no tool result or notification is being sent to it, is reported as ended only when the
-      server stops or <ph keyref="product"/> closes. The payloads of all these events also
-      name the MCP client of the AI assistant, as it introduced itself when it connected to the
-      server:<simpletable id="st_hooks_mcp_client" relcolwidth="1* 1* 2*">
+      server stops or <ph keyref="product"/> closes. The payloads of all these events also name the
+      MCP client of the AI assistant, as it introduced itself when it connected to the
+        server:<simpletable id="st_hooks_mcp_client" relcolwidth="1* 1* 2*">
         <sthead>
           <stentry>Field</stentry>
           <stentry>Type</stentry>
@@ -151,28 +151,31 @@
           <stentry>Version of the MCP client. Omitted when the client gave none.</stentry>
         </strow>
       </simpletable></p>
-    <dl>
-      <dlentry>
-        <dt/>
-        <dd conaction="mark"
-          conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/dd_session_start_desc"/>
-        <dd conaction="pushafter" id="dd_session_start_mcp">It is also fired when an AI assistant
-          connects to the Oxygen MCP server, with <codeph>mcp_server</codeph> as its
-            <codeph>session_type</codeph> (see <b>Tools called through the Oxygen MCP server</b> in
-          the overview above).</dd>
-      </dlentry>
-      <dlentry>
-        <dt/>
-        <dd conaction="mark"
-          conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/dd_session_end_desc"/>
-        <dd conaction="pushafter" id="dd_session_end_mcp">It is also fired when the session of an AI
-          assistant connected to the Oxygen MCP server ends, with <codeph>mcp_server</codeph> as its
-            <codeph>session_type</codeph> and <codeph>client_close</codeph>,
-            <codeph>connection_lost</codeph>, <codeph>server_stop</codeph>, or
-            <codeph>application_close</codeph> as its <codeph>reason</codeph> (see <b>Tools called
-            through the Oxygen MCP server</b> in the overview above).</dd>
-      </dlentry>
-    </dl>
+    <p id="p_gwl_l4k_xkc">
+      <dl id="dl_hwl_l4k_xkc">
+        <dlentry id="dlentry_iwl_l4k_xkc">
+          <dt><!----></dt>
+          <dd conaction="mark"
+            conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/dd_session_start_desc"/>
+          <dd conaction="pushafter" id="dd_session_start_mcp">It is also fired when an AI assistant
+            connects to the <i>Oxygen</i> MCP server, with <codeph>mcp_server</codeph> as its
+              <codeph>session_type</codeph> (see <b>Tools called through the Oxygen MCP server</b>
+            in the overview above).</dd>
+        </dlentry>
+        <dlentry id="dlentry_lwl_l4k_xkc">
+          <dt><!----></dt>
+          <dd conaction="mark"
+            conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/dd_session_end_desc"/>
+          <dd conaction="pushafter" id="dd_session_end_mcp">It is also fired when the session of an
+            AI assistant connected to the <i>Oxygen</i> MCP server ends, with
+              <codeph>mcp_server</codeph> as its <codeph>session_type</codeph> and
+              <codeph>client_close</codeph>, <codeph>connection_lost</codeph>,
+              <codeph>server_stop</codeph>, or <codeph>application_close</codeph> as its
+              <codeph>reason</codeph> (see <b>Tools called through the Oxygen MCP server</b> in the
+            overview above).</dd>
+        </dlentry>
+      </dl>
+    </p>
     <simpletable id="st_base_payload_mcp">
       <strow conaction="mark"
         conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/strow_base_user_id">
@@ -184,9 +187,9 @@
         <stentry><codeph>invocation_source</codeph></stentry>
         <stentry>string</stentry>
         <stentry>The route through which the run that fired the event was started from outside AI
-          Positron: <codeph>mcp_server</codeph> for a tool called through the Oxygen MCP server,
-          and for the AI actions and sub-agents that such a tool starts. Omitted when AI Positron
-          started the run itself.</stentry>
+          Positron: <codeph>mcp_server</codeph> for a tool called through the <i>Oxygen</i> MCP
+          server, and for the AI actions and sub-agents that such a tool starts. Omitted when AI
+          Positron started the run itself.</stentry>
       </strow>
     </simpletable>
   </body>
