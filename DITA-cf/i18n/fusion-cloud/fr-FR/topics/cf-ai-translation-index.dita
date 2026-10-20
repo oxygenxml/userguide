@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-index" xml:lang="fr-FR">
+  <title>L'index de traduction</title>
+  <shortdesc>Le fichier de l'espace de travail qui enregistre quels fichiers sources ont été
+    traduits, dans quelles langues et à partir de quelle version de la source.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>index de traduction</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_cmr_s55_1kc">L'index de traduction est un fichier de l'espace de travail qui enregistre
+      quels fichiers sources ont été traduits, où sont stockées les copies traduites et quelle
+      version de chaque fichier source a servi à produire la traduction.</p>
+    <bodydiv>
+      <section id="section_bwp_w13_xjc">
+        <title>Emplacement et cycle de vie</title>
+        <p id="p_dmr_s55_1kc">Par défaut, l'index est stocké à l'emplacement
+            <codeph>.contentfusion/i18n/translation-index.xml</codeph>.</p>
+        <p id="p_emr_s55_1kc">Le fichier est créé automatiquement la première fois que l'agent
+          enregistre une traduction ou copie une ressource non traduisible. <b>Validez-le dans le
+            dépôt de votre projet DITA</b> afin que l'état de la traduction accompagne vos branches
+          et vos fusions et suive le même modèle de contrôle d'accès que votre contenu.</p>
+      </section>
+      <section id="section_ewp_w13_xjc">
+        <title>Maintenu par l'agent, modifiable par l'utilisateur</title>
+        <p id="p_fmr_s55_1kc">Dans des conditions normales, vous n'avez pas besoin de modifier
+          l'index vous-même. Il est maintenu par l'agent de traduction.</p>
+        <p id="p_gmr_s55_1kc">L'agent garde également les entrées triées et écrit une entrée par ligne
+          afin que les différences restent lisibles et que les conflits de fusion soient moins
+          probables.</p>
+        <p id="p_hmr_s55_1kc"><b>Vous pouvez toutefois le modifier si nécessaire.</b> L'index est un
+          fichier XML simple stocké dans votre dépôt&#160;; vous pouvez donc l'ouvrir dans n'importe quel
+          éditeur de texte, le réviser dans les pull requests et le modifier directement lorsque
+          c'est plus rapide ou plus précis que de relancer l'agent. Voici les raisons courantes de
+          le modifier manuellement&#160;:</p>
+        <ul id="ul_hwp_w13_xjc">
+          <li id="li_imr_s55_1kc"><b>Forcer une retraduction</b> - Supprimez le
+              <codeph>&lt;entry></codeph> d'un fichier, ou supprimez l'index entier pour tout
+            réinitialiser (consultez <xref href="cf-ai-translation-redoing.dita">Refaire des
+              traductions</xref>).</li>
+          <li id="li_jmr_s55_1kc"><b>Corriger un chemin incorrect</b> - Corrigez un <codeph>&lt;source
+              href></codeph> ou un <codeph>&lt;target href></codeph> après avoir déplacé ou renommé
+            des fichiers dans le dépôt en dehors de <ph keyref="product"/>.</li>
+          <li id="li_kmr_s55_1kc"><b>Diviser ou réorganiser l'index</b> - Ajoutez des pointeurs <codeph
+              id="codeblock_mwp_w13_xjc">&lt;include href="..."/></codeph> pour répartir un index
+            volumineux en fichiers plus petits. Par exemple, vous pouvez le diviser par domaine de
+            produit, comme les produits matériels et logiciels.</li>
+          <li id="li_lmr_s55_1kc"><b>Importer des traductions existantes</b> - Générez l'index à
+            partir de traductions créées en dehors de <ph keyref="product"/> (consultez <xref
+              href="cf-ai-translation-importing-existing.dita">Importation d'un projet contenant des
+              traductions existantes</xref>).</li>
+        </ul>
+        <p id="p_mmr_s55_1kc">
+          <note id="note_g5f_kd3_xjc">Si vous modifiez le fichier manuellement, respectez les règles
+            de format ci-dessous afin que l'agent puisse toujours l'analyser lors de sa prochaine
+            exécution.</note>
+        </p>
+      </section>
+    </bodydiv>
+    <section id="file_example">
+      <title>Exemple de fichier</title>
+      <p>Voici un exemple, mis en retrait pour faciliter la lecture&#160;:</p>
+      <p><codeblock id="codeblock_index_concept_example" outputclass="language-xml">&lt;translation-index version="1">
+  &lt;entry lang="de-DE">
+    &lt;source href="../../en/topics/install.dita" sha="b225ce…"/>
+    &lt;target href="../../de-DE/topics/install.dita" sha="08971e…"/>
+  &lt;/entry>
+  &lt;entry lang="fr-FR">
+    &lt;source href="../../en/topics/install.dita" sha="b225ce…"/>
+    &lt;target href="../../fr-FR/topics/install.dita" sha="500c34…"/>
+  &lt;/entry>
+&lt;/translation-index></codeblock>Cet exemple montre un topic source,
+          <codeph>../../en/topics/install.dita</codeph>, traduit dans deux langues cibles&#160;:
+        l'allemand (<codeph>de-DE</codeph>) et le français (<codeph>fr-FR</codeph>).</p>
+      <p id="p_pmr_s55_1kc">Chaque <codeph>&lt;entry></codeph> représente une paire <codeph>(language,
+          source file)</codeph>. Comme les deux entrées pointent vers le même <codeph>href</codeph>
+        source, elles enregistrent deux traductions du même fichier anglais, et non deux fichiers
+        sources différents.</p>
+      <p id="p_qmr_s55_1kc">La valeur <codeph>sha</codeph> source identique dans les deux entrées
+        signifie que les deux traductions ont été produites à partir de la même version du topic
+        anglais. Les valeurs <codeph>href</codeph> et <codeph>sha</codeph> cibles, différentes,
+        identifient les fichiers traduits distincts et la version exacte enregistrée de chaque
+        traduction.</p>
+      <p>Consultez la <xref href="cf-ai-translation-index-format.dita">référence du format de
+          fichier</xref> pour plus de détails.</p>
+    </section>
+    <section id="section_osz_nmx_xjc">
+      <title>Résolution des conflits</title>
+      <p>Le format est conçu pour rendre les conflits de fusion peu fréquents, grâce à une entrée par
+        ligne, des entrées triées et la possibilité de répartir le contenu en fragments. Cependant,
+        des conflits peuvent tout de même survenir lorsque deux tâches de traduction ou deux
+        branches enregistrent des traductions de manière indépendante. Les moyens les plus simples de
+        les éviter sont de n'exécuter qu'une seule tâche à la fois et de traduire sur une seule
+        branche. Consultez <xref href="cf-ai-translation-index-conflicts.dita">Résolution des
+          conflits de l'index de traduction</xref>.</p>
+    </section>
+  </body>
+</topic>

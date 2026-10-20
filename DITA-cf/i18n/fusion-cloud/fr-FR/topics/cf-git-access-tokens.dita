@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-git-access-tokens" xml:lang="fr-FR">
+  <title>Création de jetons d'accès Git pour les projets</title>
+  <shortdesc>Comment créer les jetons d'accès personnels (PAT) nécessaires pour se connecter aux
+    dépôts Git depuis <ph keyref="product"/> (pour GitHub, GitLab, Bitbucket et Azure DevOps).</shortdesc>
+  <body>
+    <p>Pour créer un projet dans <ph keyref="product"/> via l'<xref
+        href="cf-projects.dita#cf-projects/ul_bzx_h2h_1fc">option <b>Importer depuis Git</b></xref>, vous
+      devez fournir des identifiants Git (nom d'utilisateur et jeton d'accès). <ph keyref="product"/>
+      a besoin des autorisations de lecture et d'écriture sur le contenu du dépôt pour cloner le
+      dépôt, créer des branches pour les tâches de révision et valider les modifications.</p>
+    <p>Ce topic décrit (de manière générale) comment créer des jetons dotés des autorisations
+      requises sur les principales plateformes Git. Les détails exacts (menus, libellés) peuvent
+      varier selon la version de la plateforme.</p>
+
+    <section id="general-recommendations">
+      <title>Recommandations générales</title>
+      <p>Quelle que soit la plateforme, suivez ces bonnes pratiques&#160;:</p>
+      <ul>
+        <li><b>Moindre privilège</b> - Accordez uniquement les autorisations nécessaires aux
+          opérations Git (clonage, tirage, envoi, branches).</li>
+        <li><b>Limitation aux dépôts</b> - Dans la mesure du possible, limitez le jeton aux dépôts
+          utilisés avec Content Fusion, et non à tous les dépôts du compte.</li>
+        <li><b>Expiration et rotation</b> - Définissez une date d'expiration, renouvelez les jetons
+          périodiquement et révoquez ceux qui ne sont plus utilisés.</li>
+        <li><b>Confidentialité</b> - Ne partagez pas les jetons et ne les validez pas dans le code.
+          Utilisez des variables d'environnement ou des <xref
+            href="https://www.oxygenxml.com/doc/ug-content-fusion/topics/cf-admin-page-git.html"
+            format="html" scope="external">comptes Git</xref> configurés dans Content Fusion.</li>
+      </ul>
+    </section>
+
+    <section id="github">
+      <title>GitHub</title>
+      <p>GitHub utilise des <b>jetons d'accès personnels (PAT)</b>. Pour <ph keyref="product"/>, vous
+        avez besoin des autorisations de lecture et d'écriture sur le contenu du dépôt.</p>
+      <ul>
+        <li><b>Jeton classique</b> - Lors de sa création, sélectionnez la portée <b>repo</b> (qui
+          accorde un accès complet aux dépôts privés et publics, y compris la lecture et l'écriture
+          de Contents).</li>
+        <li><b>PAT à granularité fine (recommandé)</b>&#160;: <ul>
+            <li>Sous <b>Repository access</b>, choisissez <b>Only select repositories</b> et
+              sélectionnez les dépôts utilisés avec Content Fusion.</li>
+            <li>Sous <menucascade>
+                <uicontrol>Permissions</uicontrol>
+                <uicontrol>Repository permissions</uicontrol>
+            </menucascade>, définissez <b>Contents</b> sur <b>Read and write</b>.</li>
+        </ul></li>
+      </ul>
+      <note>Sans l'autorisation <menucascade>
+          <uicontrol>Contents</uicontrol>
+          <uicontrol>Read and write</uicontrol>
+      </menucascade>, l'authentification peut échouer (par exemple avec des erreurs 403) même si le
+        jeton est valide. Précisez également les dépôts auxquels le jeton a accès.</note>
+    </section>
+
+    <section id="gitlab">
+      <title>GitLab</title>
+      <p>GitLab prend en charge à la fois les <b>jetons d'accès personnels</b> et les <b>jetons
+        d'accès de projet</b>, tous deux avec des portées explicites. Pour des opérations Git
+        complètes (clonage, tirage, envoi, branches), vous avez besoin des portées suivantes, quel
+        que soit le type de jeton&#160;:</p>
+      <ul>
+        <li><b>read_repository</b> - Accès en lecture (clonage, tirage).</li>
+        <li><b>write_repository</b> - Accès en écriture (envoi, création de branches).</li>
+      </ul>
+      <p>Choisissez le type de jeton qui convient le mieux à votre configuration&#160;:</p>
+      <ul>
+        <li><b>Jeton d'accès personnel</b> - Lié à un compte utilisateur GitLab, il hérite de
+          l'accès de cet utilisateur à l'ensemble des projets et des groupes dont il est membre. Il
+          est créé depuis <menucascade>
+            <uicontrol>Préférences</uicontrol>
+            <uicontrol>Access tokens</uicontrol>
+          </menucascade> de l'utilisateur.</li>
+        <li><b>Jeton d'accès de projet</b> - Limité à un seul projet et non lié à un utilisateur
+          précis, ce qui le rend bien adapté pour connecter <ph keyref="product"/> à un seul dépôt
+          selon le principe du moindre privilège. Il est créé depuis <menucascade>
+            <uicontrol>Paramètres</uicontrol>
+            <uicontrol>Access tokens</uicontrol>
+          </menucascade> du projet. Lors de sa création, en plus des portées <codeph>read_repository</codeph> et
+          <codeph>write_repository</codeph>, vous devez également sélectionner un <b>Role</b> pour
+          le jeton (voir la remarque ci-dessous).</li>
+      </ul>
+      <note id="note_dkb_fpz_bjc" type="notice">Les portées du jeton ne remplacent pas le rôle dans
+        le projet. Cela s'applique aussi bien aux jetons d'accès personnels qu'aux jetons d'accès de
+        projet. Pour un jeton d'accès de projet, vous choisissez le rôle lorsque vous générez le
+        jeton&#160;; pour un jeton d'accès personnel, le rôle est celui que l'utilisateur possède
+        déjà sur le projet. Si la branche par défaut (par exemple, <codeph>main</codeph>) est
+        protégée, de nombreux projets n'autorisent que le rôle <b>Maintainer</b> (ou <b>Owner</b>) à
+        y envoyer des modifications. Vérifiez le rôle de l'utilisateur ou du jeton sur le projet
+        ainsi que les paramètres des branches protégées. Sinon, les opérations de validation peuvent
+        échouer même avec un jeton d'accès valide disposant de <codeph>write_repository</codeph>.</note>
+    </section>
+    <section id="bitbucket">
+      <title>Bitbucket (Bitbucket Cloud)</title>
+      <p>Bitbucket Cloud utilise des <b>Access tokens</b> pour fournir un accès précis aux API de
+        Bitbucket et aux opérations sur les dépôts. Vous les créez depuis <menucascade>
+          <uicontrol>Repository settings</uicontrol>
+          <uicontrol>Security</uicontrol>
+          <uicontrol>Access tokens</uicontrol>
+        </menucascade>, puis vous utilisez <b>Create access token</b> et choisissez les
+        autorisations appropriées.</p>
+      <p>Pour une utilisation avec <ph keyref="product"/> (clonage, tirage, envoi, branches),
+        accordez au moins les autorisations suivantes&#160;:</p>
+      <ul>
+        <li><b>Repository: Read</b> - Afficher le contenu (clonage, tirage).</li>
+        <li><b>Repository: Write</b> - Modifier le contenu (envoi, branches).</li>
+      </ul>
+      <p>Ces autorisations suffisent pour les opérations Git courantes. Les autorisations Admin ou
+        Delete au niveau du dépôt ne sont pas nécessaires. Les jetons d'accès sont limités au dépôt
+        (ou à l'espace de travail) dans lequel vous les créez.</p>
+    </section>
+
+    <section id="azure-devops">
+      <title>Azure DevOps</title>
+      <p>Azure DevOps utilise des <b>jetons d'accès personnels (PAT)</b>. Lors de la création d'un
+        jeton, vous choisissez les <b>Scopes</b> (zones d'accès) ainsi que l'organisation ou le
+        projet.</p>
+      <p>Pour l'accès Git aux dépôts (clonage, tirage, envoi, branches), définissez les éléments
+        suivants&#160;:</p>
+      <ul>
+        <li><b>Code: Read &amp; Write</b> - Autorise la lecture et l'écriture du code dans les dépôts
+          Git.</li>
+      </ul>
+      <p>Limitez le PAT à l'organisation et, si possible, aux projets ou aux dépôts utilisés avec
+        Content Fusion. Microsoft recommande d'utiliser des jetons OAuth lorsque c'est possible. Les
+        PAT sont appropriés lorsque d'autres méthodes d'authentification ne sont pas disponibles.</p>
+    </section>
+
+    <section id="summary-table">
+      <title>Récapitulatif des autorisations</title>
+      <table frame="all">
+        <title>Autorisations requises par plateforme pour <ph keyref="product"/></title>
+        <tgroup cols="3">
+          <colspec colname="c1" colnum="1" colwidth="1*"/>
+          <colspec colname="c2" colnum="2" colwidth="1*"/>
+          <colspec colname="c3" colnum="3" colwidth="2*"/>
+          <thead>
+            <row>
+              <entry>Plateforme</entry>
+              <entry>Type d'identifiant</entry>
+              <entry>Autorisations / portées requises</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>GitHub</entry>
+              <entry>Jeton d'accès personnel (classique ou à granularité fine)</entry>
+              <entry>Repository permissions → Contents: Read and Write&#160;; limiter aux dépôts
+                souhaités (granularité fine).</entry>
+            </row>
+            <row>
+              <entry>GitLab</entry>
+              <entry>Jeton d'accès personnel</entry>
+              <entry>read_repository, write_repository.</entry>
+            </row>
+            <row>
+              <entry>Bitbucket Cloud</entry>
+              <entry>Jeton d'accès</entry>
+              <entry>Repository: Read, Repository: Write (Repository settings → Security → Access tokens).</entry>
+            </row>
+            <row>
+              <entry>Azure DevOps</entry>
+              <entry>Jeton d'accès personnel</entry>
+              <entry>Code: Read &amp; Write.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </body>
+  <related-links>
+    <link href="cf-projects.dita"/>
+  </related-links>
+</topic>

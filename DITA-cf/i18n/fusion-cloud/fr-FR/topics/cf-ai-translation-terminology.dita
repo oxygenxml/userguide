@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-terminology" xml:lang="fr-FR">
+  <title>Application de la terminologie et des glossaires</title>
+  <shortdesc>Comment fournir une liste terminologique afin que l'agent utilise des traductions
+    cohérentes et approuvées pour les termes clés.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>terminologie</indexterm>
+        <indexterm>glossaire</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_c54_fw5_1kc">Les noms de produits, les noms de fonctionnalités et les autres termes
+      figés doivent être traduits de manière cohérente chaque fois qu'ils apparaissent.</p>
+    <section id="cf-ai-translation-terminology-provided">
+      <title>Fournir une liste terminologique</title>
+      <p id="p_d54_fw5_1kc">Si vous savez déjà quels termes nécessitent une traduction fixe,
+        répertoriez-les dans un fichier et indiquez à l'agent d'utiliser ce fichier dans
+        <filepath>agent-instructions.md</filepath>. L'agent peut lire un fichier terminologique dans
+        n'importe quel format, y compris un fichier exporté depuis un outil de terminologie
+        existant, tant que <filepath>agent-instructions.md</filepath> explique comment le lire.
+        Incluez dans vos instructions un extrait représentatif du fichier afin que l'agent sache à
+        quoi s'attendre.</p>
+      <p id="p_e54_fw5_1kc">Pour réduire les coûts, l'agent ne lit que les plages de lignes dont il a
+        besoin plutôt que le fichier entier&#160;; veillez donc à placer chaque entrée sur une ligne
+        distincte.</p>
+      <p id="p_f54_fw5_1kc">Par exemple, vous pouvez ajouter des instructions comme celles-ci dans
+          <filepath>agent-instructions.md</filepath>, en incluant un extrait de votre fichier
+        terminologique <b>TBX</b> (<codeph>TermBase eXchange</codeph>)&#160;:</p>
+      <p>
+        <codeblock outputclass="language-xml">When you need to translate a term, search in [the terms file](./terms.tbx)
+and use the canonical translation found there instead of re-translating.
+
+The file has entries with this format:
+
+&lt;termEntry id="review-task">
+  &lt;langSet xml:lang="en">&lt;tig>&lt;term>review task&lt;/term>&lt;/tig>&lt;/langSet>
+  &lt;langSet xml:lang="fr-FR">&lt;tig>&lt;term>tâche de révision&lt;/term>&lt;/tig>&lt;/langSet>
+  &lt;langSet xml:lang="de-DE">&lt;tig>&lt;term>Prüfaufgabe&lt;/term>&lt;/tig>&lt;/langSet>
+&lt;/termEntry>
+
+Use your grep tool to search it.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-terminology-discovered">
+      <title>Laisser l'agent créer la liste</title>
+      <p id="p_h54_fw5_1kc">Si vous souhaitez que l'agent mette également à jour le fichier de
+        termes, ou le crée si vous n'en avez pas encore, vous pouvez ajouter des instructions comme
+        celles-ci dans <filepath>agent-instructions.md</filepath>&#160;:</p>
+      <p>
+        <codeblock outputclass="language-ini">Whenever you translate a topic, identify terms
+(product names, feature names, UI labels) and record them, together with
+the translation you used, in [the terms file](./terms.tbx).</codeblock>
+      </p>
+      <p id="p_j54_fw5_1kc">Au fil du temps, cela crée un glossaire propre au projet sans que vous
+        ayez à en préparer un à l'avance. Révisez le fichier terminologique après chaque tâche de
+        traduction et corrigez les entrées que l'agent a mal renseignées. L'agent utilisera ces
+        entrées corrigées lors des prochaines tâches de traduction.</p>
+    </section>
+  </body>
+</topic>

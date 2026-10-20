@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-external-agency" xml:lang="fr-FR">
+  <title>Collecte du contenu obsolète pour une agence de traduction externe</title>
+  <shortdesc>Comment demander à l'agent de rassembler dans un seul dossier les fichiers sources dont
+    les traductions sont manquantes ou obsolètes, afin de pouvoir les envoyer à une agence de
+    traduction externe.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>agence de traduction</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_agency_intro">Toutes les langues ne doivent pas nécessairement être traduites par
+      l'agent. Vous pouvez confier certaines langues à une agence de traduction professionnelle ou à
+      un traducteur interne, tout en continuant à utiliser <ph keyref="product"/> pour suivre ce qui
+      a changé. L'agent peut se charger de ce suivi à votre place&#160;: il sait quels fichiers
+      sources sont obsolètes pour une langue cible donnée, et il peut regrouper exactement ces
+      fichiers dans un dossier que vous pouvez transmettre pour une traduction humaine.</p>
+    <p id="p_agency_why">Cette fonctionnalité est utile, car la difficulté du travail avec une agence
+      ne réside pas dans l'envoi des fichiers, mais dans le fait de savoir <i>quels</i> fichiers
+      envoyer. Envoyer toute la publication à chaque fois revient à payer pour retraduire du contenu
+      qui n'a pas changé, tandis que sélectionner à la main les fichiers modifiés est long et source
+      d'erreurs.</p>
+    <section id="cf-ai-translation-external-agency-collecting">
+      <title>Collecte des fichiers obsolètes</title>
+      <p id="p_agency_collect">Lancez une tâche de traduction comme d'habitude en sélectionnant les
+        publications et la langue cible que vous souhaitez envoyer. Dans le champ
+        <uicontrol>Instructions</uicontrol>, demandez à l'agent de ne rien traduire et de copier
+        plutôt les fichiers sources qui ne sont pas à jour dans un dossier que vous nommez&#160;:</p>
+      <p>
+        <codeblock outputclass="language-ini">Do not translate anything. Export the files that need translating into French
+into the `for-translation-fr/` folder.</codeblock>
+      </p>
+      <p id="p_agency_result">L'agent détermine le <xref
+          href="cf-ai-translation-running.dita#cf-ai-translation-running/cf-ai-translation-status"
+          >statut de traduction</xref> de chaque fichier de votre sélection et copie uniquement les
+        fichiers dont le statut est <b>manquant</b> ou <b>obsolète</b>. Les fichiers <b>à jour</b>
+        sont exclus, car leur traduction existante correspond toujours à la source. Les images et
+        les autres ressources référencées par la publication sont également collectées, afin que le
+        traducteur puisse voir le contenu en contexte et localiser les captures d'écran. Si vous ne
+        voulez que les fichiers traduisibles, précisez-le dans les instructions.</p>
+      <p id="p_agency_paths">Les fichiers sont copiés dans le dossier que vous avez nommé, à
+        l'intérieur de votre espace de travail, en conservant leurs chemins relatifs à la racine de
+        votre projet. Un fichier source situé dans
+          <filepath>en/topics/installation/install.dita</filepath> est copié dans
+          <filepath>for-translation-fr/en/topics/installation/install.dita</filepath>&#160;; le
+        dossier de la langue source fait donc partie du chemin copié. Comme la structure est
+        préservée, le dossier constitue un sous-ensemble autonome de votre projet que le traducteur
+        peut ouvrir, les références relatives entre les fichiers copiés continuent de fonctionner, et
+        un même dossier peut contenir les fichiers de plusieurs publications sans conflit de
+        chemins.</p>
+    </section>
+    <section id="cf-ai-translation-external-agency-sending">
+      <title>Envoi du dossier à l'agence</title>
+      <p id="p_agency_send">Une fois la tâche terminée, sélectionnez <uicontrol>Importer dans
+          l'espace de travail</uicontrol> sur la <xref
+          href="cf-projects-workspace_translation_jobs_view.dita">fiche de la tâche</xref> pour
+        ajouter le dossier collecté à votre espace de travail, puis vérifiez-le.</p>
+      <p id="p_agency_export">Pour extraire le paquet de <ph keyref="product"/>, sélectionnez le
+        dossier dans l'arborescence de fichiers de l'espace de travail et choisissez
+        <uicontrol>Télécharger</uicontrol>. Vous obtenez une archive ZIP du dossier que vous pouvez
+        envoyer à l'agence. Si vous souhaitez inclure un PDF de la publication, un glossaire ou un
+        fichier README pour le traducteur, téléversez ces fichiers dans le dossier avant de le
+        télécharger.</p>
+      <p id="p_agency_lang_request">Demandez à l'agence de définir l'attribut
+        <codeph>xml:lang</codeph> sur l'élément racine de chaque fichier traduit avec le code de la
+        langue cible. Les fichiers qui ne déclarent pas leur langue sont rejetés lorsque les
+        traductions sont renvoyées.</p>
+      <p id="p_agency_keep">Vous pouvez supprimer le dossier après l'avoir téléchargé.</p>
+    </section>
+    <section id="cf-ai-translation-external-agency-back">
+      <title>Récupération des traductions humaines</title>
+      <p id="p_agency_back">Lorsque l'agence renvoie les fichiers traduits, placez-les dans les
+        dossiers de langue cible de votre projet, en utilisant la même disposition que celle de
+        l'agent, puis validez-les. Consultez <xref href="cf-ai-translation-importing-existing.dita"
+          >Importation d'un projet contenant des traductions existantes</xref> pour savoir comment
+        les traductions existantes sont reconnues et enregistrées dans l'<xref
+          href="cf-ai-translation-index.dita">index de traduction</xref>. Une fois enregistrés, ces
+        fichiers sont considérés comme à jour, et le cycle suivant ne signale que ce qui a changé
+        depuis.</p>
+      <p id="p_agency_mixed">Un même projet peut combiner les deux approches. Les langues traduites
+        par l'agent et celles traduites par une agence sont suivies dans le même index de
+        traduction, de sorte que le rapport des fichiers obsolètes est exact pour chaque langue,
+        indépendamment des autres.</p>
+    </section>
+  </body>
+</topic>

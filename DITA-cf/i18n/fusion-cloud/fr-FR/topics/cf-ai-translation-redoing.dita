@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-redoing" xml:lang="fr-FR">
+  <title>Refaire des traductions</title>
+  <shortdesc>Comment demander à l'agent de retraduire du contenu, pour quelques fichiers ou pour un
+    projet entier, après avoir modifié la source, la terminologie, les instructions ou les règles de
+    validation.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>refaire des traductions</indexterm>
+        <indexterm>forcer la retraduction</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_nvw_n55_1kc">L'agent ignore tout fichier qu'il considère comme <xref
+        href="cf-ai-translation-running.dita">à jour</xref>. Pour refaire une traduction,
+      réinitialisez l'état enregistré pour ce fichier dans l'<xref
+        href="cf-ai-translation-index.dita">index de traduction</xref>. Dès qu'un fichier apparaît
+      de nouveau comme <b>manquant</b> ou <b>obsolète</b>, la tâche de traduction suivante le
+      traite.</p>
+    <section id="cf-ai-translation-redoing-files">
+      <title>Retraduire des fichiers spécifiques</title>
+      <p>Pour forcer l'agent à retraduire un fichier, supprimez son état enregistré dans
+          <filepath>.contentfusion/i18n/translation-index.xml</filepath>&#160;:</p>
+      <ul id="ul_pvw_n55_1kc">
+        <li id="li_qvw_n55_1kc">Supprimez le <codeph>&lt;entry></codeph> de ce fichier pour une langue
+          donnée. Le fichier devient alors <b>manquant</b> pour cette langue et est retraduit lors
+          de la tâche suivante.</li>
+        <li>Supprimez chaque <codeph>&lt;entry></codeph> du fichier pour le retraduire dans toutes
+          les langues.</li>
+      </ul>
+    </section>
+    <section id="cf-ai-translation-redoing-guidance">
+      <title>Recommencer après avoir modifié vos consignes</title>
+      <p id="p_svw_n55_1kc">Si une traduction ne produit pas le résultat souhaité, vous pouvez
+        souvent corriger la cause une fois, puis régénérer le contenu concerné. Par exemple, vous
+        pouvez corriger votre fichier de terminologie, affiner <filepath>agent-instructions.md</filepath>
+        ou ajuster vos <xref href="cf-ai-translation-custom-doctypes.dita">règles de
+          validation</xref>. Ces modifications ne rendent pas les traductions existantes obsolètes à
+        elles seules, car l'obsolescence ne suit que les modifications de la source anglaise. Par
+        conséquent, une tâche normale ignore ces fichiers&#160;; vous devez donc réinitialiser leur état
+        enregistré pour qu'ils soient traités à nouveau&#160;:</p>
+      <ul id="ul_tvw_n55_1kc">
+        <li id="li_uvw_n55_1kc">Pour tout refaire, supprimez l'index de traduction entier ou la
+          partie qui couvre le contenu que vous souhaitez régénérer. Chaque fichier source enregistré
+          devient alors <b>manquant</b> et est retraduit lors de la tâche suivante.</li>
+        <li id="li_vvw_n55_1kc">Pour ne refaire qu'une partie du contenu, supprimez uniquement les
+          entrées des fichiers ou des langues que vous souhaitez régénérer.</li>
+      </ul>
+      <p id="p_wvw_n55_1kc">Relancez ensuite la traduction et révisez les résultats comme d'habitude.
+        Consultez <xref href="cf-ai-translation-reviewing.dita">Révision des traductions avant de
+          les valider</xref>.</p>
+      <note type="caution">Supprimer une entrée élimine le lien enregistré entre un fichier source et
+        sa traduction, et non le fichier traduit sur le disque&#160;; la tâche suivante écrase ce fichier
+        avec une nouvelle sortie. Validez ou sauvegardez toutes les corrections manuelles que vous
+        souhaitez conserver avant de relancer la traduction.</note>
+    </section>
+  </body>
+</topic>

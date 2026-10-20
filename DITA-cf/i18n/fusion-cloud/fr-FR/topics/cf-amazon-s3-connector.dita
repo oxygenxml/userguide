@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-amazon-s3-connector" xml:lang="fr-FR">
+  <title>Publier du contenu sur Amazon S3</title>
+  <shortdesc>Comment configurer un connecteur Amazon S3 et l'utiliser pour publier la sortie d'un
+    livrable dans un bucket S3.</shortdesc>
+  <body>
+    <p>Le connecteur Amazon S3 facilite la publication des sorties de build des livrables dans le
+      bucket désigné. </p>
+    <section id="section_krc_5pl_2bc">
+      <title>Prérequis</title>
+      <p>Pour publier du contenu dans un bucket Amazon S3, vous devez disposer des éléments
+        suivants&#160;:</p>
+      <ul id="ul_lcs_srl_2bc">
+        <li>Un compte AWS.</li>
+        <li>Un bucket S3 existant et configuré. Pour plus de détails, consultez la <xref
+            href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html" format="html"
+            scope="external">documentation S3</xref> d'AWS.</li>
+        <li>L'ID de la clé d'accès et la clé d'accès secrète associés à votre compte AWS. Pour plus de
+          détails, consultez la <xref
+            href="https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html"
+            format="html" scope="external">documentation sur les informations d'identification de
+            sécurité</xref> d'AWS.</li>
+      </ul>
+      <p>Pour plus d'informations, consultez la <xref href="https://docs.aws.amazon.com/"
+          format="html" scope="external">documentation AWS</xref>.</p>
+    </section>
+    <section id="section_wzb_hql_2bc">
+      <title>Définir le connecteur</title>
+      <p>Pour configurer un connecteur Amazon S3, les champs suivants doivent être
+        renseignés&#160;:<dl
+          id="dl_uc3_4vy_dbc">
+          <dlentry>
+            <dt>Nom du connecteur</dt>
+            <dd>Le nom du connecteur.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Nom de la région</dt>
+            <dd>La région AWS où votre bucket Amazon S3 est hébergé. Lorsque vous créez un bucket,
+              vous indiquez la région AWS dans laquelle vous souhaitez qu'Amazon S3 le crée.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Nom du seau</dt>
+            <dd>Le conteneur Amazon S3 utilisé pour stocker vos fichiers.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>ID de la clé d'accès</dt>
+            <dd>Un identifiant unique associé à votre compte AWS ou à un utilisateur IAM.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Clé d'accès secrète</dt>
+            <dd>La clé secrète utilisée avec l'ID de la clé d'accès pour l'authentification.</dd>
+          </dlentry>
+        </dl></p>
+    </section>
+    <section id="section_t53_svy_dbc">
+      <title>Sélectionner le connecteur Amazon S3 dans la page Livrables</title>
+      <p>Pour publier la sortie d'un livrable sur Amazon S3, procédez comme suit&#160;: <ol
+          id="ol_lmg_bsl_2bc">
+          <li>Après avoir configuré le connecteur Amazon S3, accédez à la page
+              <uicontrol>Livrables</uicontrol>, puis modifiez un livrable existant ou créez-en un
+            nouveau.</li>
+          <li>Dans la page de configuration qui s'affiche, sélectionnez l'option <uicontrol>Upload
+              output using a publishing connector</uicontrol>.</li>
+          <li>Utilisez la liste déroulante située sous cette option pour sélectionner le connecteur
+            Amazon S3 que vous avez défini précédemment.</li>
+          <li>Indiquez le <filepath>Dossier de destination</filepath> dans lequel la sortie du build
+            sera publiée. Assurez-vous que le dossier désigné existe déjà dans le bucket Amazon
+              S3.<note id="note_zch_2sl_2bc">La sortie sera publiée dans ce dossier sous la forme
+              d'une archive zip. </note></li>
+          <li>Si vous souhaitez téléverser le build au format ZIP, sélectionnez l'option
+              <uicontrol>Téléchargez la sortie de construction du livrable au format
+              ZIP</uicontrol>. Par défaut, tous les fichiers du build sont téléversés dans le
+            dossier de destination.</li>
+          <li>Cliquez sur <uicontrol>Enregistrer</uicontrol> en bas de la page de
+            configuration.</li>
+          <li>Lancez le processus de build du livrable. Une fois celui-ci terminé, la sortie du
+            build sera publiée dans le bucket Amazon S3 configuré sous la forme d'une archive zip,
+            dans le dossier que vous avez indiqué comme dossier de destination.</li>
+        </ol></p>
+    </section>
+    <section id="section_krd_3sl_2bc">
+      <title>(Facultatif) Fonction Lambda pour décompresser le contenu</title>
+      <p>Le connecteur Amazon S3 publie la sortie du livrable sous forme de fichier zip dans le
+        dossier de destination indiqué lors de la configuration du livrable. Pour extraire le
+        fichier, une approche consiste à <xref
+          href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/transforming-objects.html"
+          format="html" scope="external">configurer une fonction Lambda sur AWS</xref> afin de
+        décompresser l'archive dans le <filepath>Documentation Folder</filepath> que vous avez
+        désigné.<note
+          id="note_a2b_xvy_dbc">Le <filepath>Documentation Folder</filepath> doit être le dossier
+          accessible publiquement aux utilisateurs.</note></p>
+      <p><b><u>Prérequis&#160;:</u></b></p>
+      <p id="p_mps_nhg_p1c">Vous devez disposer d'un rôle Amazon auquel sont associées les stratégies
+        <i>S3 Full Access</i> et <i>AWS Lambda Basic Execution Role</i>.</p>
+      <p id="p_bmx_4kg_p1c">
+        <image href="../img/role_policies.png"/></p>
+      <p id="p_twb_53g_p1c"><b><u>Procédure&#160;:</u></b></p>
+      <p>
+        <ol id="ol_a2d_3bg_41c">
+          <li>Accédez à AWS Lambda et créez une nouvelle fonction.<note id="note_c4z_lbg_41c">Votre
+            fonction Lambda et le bucket où la documentation est stockée doivent se trouver dans la
+            même région.</note></li>
+          <li>
+            <p id="p_c13_mkg_p1c">Donnez un nom à votre fonction, sélectionnez la dernière version
+              du runtime Python, ainsi que le rôle que vous avez déjà créé.</p>
+            <p id="p_ern_mkg_p1c"><image href="../img/lambda_config.png" id="image_axh_hcg_41c"/></p>
+          </li>
+          <li>Dans la section <b>Code</b> de la fonction, collez le code dans le fichier
+              <filepath>lambda_function.py</filepath>.<codeblock id="codeblock_tds_xdg_41c" outputclass="language-python">import zipfile
+import urllib.parse
+from io import BytesIO
+from mimetypes import guess_type
+import boto3
+import logging
+
+s3 = boto3.client('s3')
+logging.getLogger().setLevel(logging.INFO)
+
+# Target path to unzip the archive.
+TARGET_PATH = "target"
+
+def lambda_handler(event, context):
+  # Bucket's name.
+  bucket = event['Records'][0]['s3']['bucket']['name']
+  logging.info("Using bucket: " + bucket);
+
+  # Zip file's name.
+  zip_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'])
+  logging.info("File to unzip: " + zip_key);
+  logging.info("Path to unzp the files: " + TARGET_PATH);
+
+  try:
+    # Get the zipfile from S3 request.
+    obj = s3.get_object(Bucket=bucket, Key=zip_key)
+    z = zipfile.ZipFile(BytesIO(obj['Body'].read()))
+
+    # Extract and upload each file to the bucket.
+    for filename in z.namelist():
+      content_type = str(guess_type(filename, strict=False)[0])
+      s3.upload_fileobj(
+        Fileobj=z.open(filename),
+        Bucket=bucket,
+        Key=TARGET_PATH + filename,
+        ExtraArgs={'ContentType': content_type}
+      )
+
+    # Delete the archive after extraction.
+    s3.delete_object(Bucket=bucket, Key=zip_key)
+  except Exception as error:
+    print(f"An error occurred {error=}")</codeblock><note id="note_rpt_ydg_41c">Si vous
+              souhaitez indiquer un chemin cible personnalisé, modifiez la variable
+                <b>TARGET_PATH</b>. Par exemple, pour décompresser l'archive dans le dossier
+                <b>Documentation</b>, définissez la variable comme suit&#160;: <codeph>TARGET_PATH = "Documentation/</codeph>.</note></li>
+          <li>Cliquez sur le bouton <b>Deploy</b> pour enregistrer vos modifications.</li>
+          <li><p>Accédez à l'onglet <uicontrol>Configuration</uicontrol> de la fonction
+              Lambda.</p>
+            <p id="p_jn2_zjg_p1c"><image href="../img/configuration_tab.png" id="image_ctq_m2g_41c"/></p></li>
+          <li id="li_bdl_1kg_p1c">Cliquez sur le bouton <b>Edit</b> de la section <b>General
+            Configuration</b>.</li>
+          <li>Définissez le délai d'expiration sur 15&#160;minutes 0&#160;seconde.<note id="note_amd_p2g_41c">Si
+            vous ne le faites pas, votre fonction Lambda risque d'expirer et le zip ne sera pas
+            décompressé ni supprimé.</note></li>
+          <li>Définissez <b>Memory</b> sur une valeur comprise entre 1&#160;000 et 5&#160;000&#160;Mo.</li>
+          <li>Définissez <b>Ephemeral storage</b> sur une valeur comprise entre 1&#160;000 et 5&#160;000&#160;Mo.<note
+            id="note_dbx_cqq_3bc">Si la taille de votre sortie dépasse la mémoire et le stockage
+            éphémère alloués, la fonction Lambda risque de ne pas s'exécuter.</note></li>
+          <li>Cliquez sur le bouton <b>Save</b>.</li>
+          <li>
+            <p id="p_q2f_qkg_p1c">Dans la section <b>Function overview</b>, cliquez sur le bouton
+              <b>Add Trigger</b>.</p>
+            <p id="p_zym_qkg_p1c"><image id="image_qss_x2g_41c" href="../img/add_trigger.png"/></p>
+          </li>
+          <li>Comme <b>Source Trigger</b>, sélectionnez <b>S3</b>.</li>
+          <li>Sélectionnez le bucket de votre choix.</li>
+          <li>Sélectionnez <b>All object create events</b> pour <b>Event Types</b>.</li>
+          <li>
+            <p id="p_e5n_rkg_p1c">Dans le champ <b>Suffix</b>, saisissez <b>.zip</b> afin que la
+              fonction Lambda ne se déclenche que pour les fichiers <b>.zip</b>.</p>
+            <p id="p_pbd_rkg_p1c"><image href="../img/trigger_config.png" id="image_qfk_jfg_41c"/></p>
+          </li>
+          <li>Cliquez sur <b>Add</b>.</li>
+        </ol>
+      </p>
+      <p><b>Résultat&#160;:</b> La fonction AWS Lambda doit se déclencher chaque fois qu'un fichier
+        <b>.zip</b> est téléversé, puis le décompresser et remplacer les fichiers du répertoire
+        cible.</p>
+    </section>
+    <section id="section_jwq_511_fbc">
+      <title>(Facultatif) Règle de cycle de vie pour supprimer les téléversements incomplets</title>
+      <p>Le connecteur Amazon S3 utilise des téléversements en plusieurs parties pour les fichiers
+        volumineux afin d'optimiser les performances. Si le téléversement est interrompu avant la
+        fin, les parties téléversées peuvent rester stockées dans votre bucket Amazon S3. Il est
+        recommandé de <xref
+          href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html"
+          format="html" scope="external">configurer une <filepath>Lifecycle Rule</filepath></xref>
+        pour votre bucket afin de supprimer automatiquement les téléversements en plusieurs parties
+        incomplets. </p>
+    </section>
+  </body>
+</topic>

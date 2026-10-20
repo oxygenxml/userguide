@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-search-syntax-dita" xml:lang="fr-FR">
+  <title>Recherche avancée</title>
+  <shortdesc>Comment utiliser la syntaxe de requête avancée pour créer des recherches plus précises dans les fichiers de la tâche.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Recherche avancée</indexterm>
+        <indexterm>Syntaxe de recherche</indexterm>
+        <indexterm>Recherche dans une tâche de révision</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_qxt_tjy_23c">En plus des recherches simples, le moteur de recherche Content Fusion prend également en charge
+      une syntaxe de requête avancée qui vous permet de créer des requêtes plus complexes, plus souples et plus utiles afin de
+      rendre la recherche plus précise. Ce topic décrit les fonctionnalités de recherche avancée que vous pouvez
+      utiliser lors d'une recherche. Une référence rapide est également disponible en cliquant sur l'icône d'aide (<image
+        href="../img/Help16.png"/>) à côté du champ de recherche.</p>
+    <p><image href="../img/generated/cf-search-syntax-dita.png"/></p>
+    <section id="phrase-search">
+      <title>Recherche de phrase</title>
+      <p>Une requête se compose de termes et d'opérateurs. Les termes peuvent être soit des <b>termes simples</b>
+        (mots individuels), soit des <b>expressions</b> (plusieurs mots entourés de guillemets). </p>
+      <p>Lorsque vous placez des mots entre guillemets doubles, la recherche ne renvoie des résultats que si l'expression
+        exacte apparaît dans le contenu.</p>
+      <p>Exemple - Rechercher l'expression exacte&#160;:</p>
+      <codeblock outputclass="language-ini">"Install Content Fusion"</codeblock>
+    </section>
+    <section id="field-search">
+      <title>Recherche d'élément</title>
+      <p>Vous pouvez effectuer une recherche dans un élément XML spécifique en indiquant le nom de l'élément suivi de deux-points
+        (<codeph>:</codeph>) puis du terme recherché. </p>
+      <p>Exemple - Rechercher les occurrences de l'expression <codeph>The Right Way</codeph> dans un élément
+          <codeph>title</codeph>&#160;:</p>
+      <codeblock outputclass="language-ini">title:"The Right Way"</codeblock>
+      <note>La spécification du champ s'applique uniquement au terme qu'elle précède directement. Par exemple&#160;:
+        <codeblock outputclass="language-ini">title:Do it right</codeblock> recherchera, dans un élément
+          <codeph>title</codeph>, le terme <codeph>Do</codeph> et recherchera <codeph>it</codeph>
+        et <codeph>right</codeph> n'importe où dans le document. </note>
+      <p>Pour DITA, voici quelques éléments utiles&#160;: <codeph>title</codeph>,
+          <codeph>shortdesc</codeph>, <codeph>codeblock</codeph>, <codeph>filepath</codeph>,
+          <codeph>keyword</codeph>.</p>
+    </section>
+    <section id="wildcard-search">
+      <title>Recherche avec caractères génériques</title>
+      <p>Vous pouvez utiliser des caractères génériques dans des termes individuels pour élargir une recherche. Les caractères génériques ne sont pas
+        pris en charge dans les expressions entre guillemets. </p>
+      <p><b>?</b> - Correspond à un seul caractère.</p>
+      <p><b>*</b> - Correspond à zéro caractère ou plus.</p>
+      <p>Exemple - Rechercher des termes tels que <codeph>meet</codeph> ou <codeph>meat</codeph>&#160;:</p>
+      <codeblock outputclass="language-ini">me?t</codeblock>
+      <p>Exemple - Rechercher des termes tels que <codeph>test</codeph>, <codeph>tests</codeph>,
+          <codeph>testing</codeph>&#160;:</p>
+      <codeblock outputclass="language-ini">test*</codeblock>
+      <note>Un terme avec caractère générique ne peut pas commencer par <codeph>*</codeph> ou <codeph>?</codeph>. </note>
+    </section>
+    <section id="regexp-search">
+      <title>Recherche par expression régulière</title>
+      <p>Vous pouvez utiliser des expressions régulières pour rechercher des motifs. Une expression régulière doit être placée
+        entre barres obliques (<codeph>/.../</codeph>). </p>
+      <p>Exemple - Rechercher <codeph>boat</codeph> ou <codeph>moat</codeph>&#160;:</p>
+      <codeblock outputclass="language-ini">/[mb]oat/</codeblock>
+    </section>
+    <section id="proximity-search">
+      <title>Recherche de proximité</title>
+      <p>Pour trouver des termes qui apparaissent à une distance définie (en nombre de mots) les uns des autres, ajoutez un tilde
+          (<codeph>~</codeph>) et un nombre après une expression entre guillemets. </p>
+      <p>Exemple - Rechercher les occurrences où <codeph>dita</codeph> et <codeph>webhelp</codeph> apparaissent
+        à moins de 10&#160;mots l'un de l'autre&#160;:</p>
+      <codeblock outputclass="language-ini">"dita webhelp"~10</codeblock>
+    </section>
+    <section id="boosting">
+      <title>Pondération</title>
+      <p>Vous pouvez augmenter l'importance relative d'un terme en ajoutant un accent circonflexe (<codeph>^</codeph>)
+        suivi d'un facteur de pondération numérique après le terme. </p>
+      <p id="p_gpz_qky_23c">Exemple - Augmenter la pertinence des documents qui contiennent
+          <codeph>dita</codeph>&#160;:</p>
+      <codeblock outputclass="language-ini">dita^4 webhelp</codeblock>
+      <note> Le facteur de pondération par défaut est 1. Les valeurs doivent être positives et peuvent être inférieures à 1 (par
+        exemple, 0,2). </note>
+    </section>
+    <section id="boolean-operators">
+      <title>Opérateurs booléens</title>
+      <p>Les opérateurs booléens combinent les termes de manière logique. Les opérateurs pris en charge sont <b>AND</b>,
+          <b>OR</b>, <b>+</b>, <b>NOT</b> et <b>-</b>. Les opérateurs doivent être en MAJUSCULES. </p>
+      <p>Lorsqu'aucun opérateur n'est spécifié entre les termes, <b>OR</b> est utilisé par défaut. </p>
+      <p>Exemple - Rechercher les documents qui contiennent l'un ou l'autre terme&#160;:</p>
+      <codeblock outputclass="language-ini">"dita webhelp" dita</codeblock>
+      <p><b>AND</b> - Les documents doivent contenir les deux termes&#160;:</p>
+      <codeblock outputclass="language-ini">"dita webhelp" AND "content search"</codeblock>
+      <p><b>+</b> - Le terme est obligatoire&#160;:</p>
+      <codeblock outputclass="language-ini">+dita webhelp</codeblock>
+      <p><b>NOT</b> - Exclure les documents contenant le terme suivant&#160;:</p>
+      <codeblock outputclass="language-ini">"dita webhelp" NOT "content search"</codeblock>
+      <p><b>-</b> - Une autre façon d'exclure des résultats&#160;:</p>
+      <codeblock outputclass="language-ini">"dita webhelp" -"content search"</codeblock>
+    </section>
+    <section id="field-grouping">
+      <title>Regroupement de champs</title>
+      <p>Utilisez des parenthèses pour regrouper plusieurs conditions dans un champ.</p>
+      <p id="p_j5v_wky_23c">Exemple - Rechercher les titres qui contiennent à la fois <codeph>dita</codeph> et
+          <codeph>content search</codeph>.</p>
+      <codeblock outputclass="language-ini">title:(+dita +"content search")</codeblock>
+    </section>
+    <section id="escaping">
+      <title>Échappement des caractères spéciaux</title>
+      <p>Pour rechercher des caractères qui font partie de la syntaxe de requête (par exemple <codeph>( ) * ?
+          :</codeph>), faites précéder ces caractères d'une barre oblique inverse (<codeph>\</codeph>)&#160;:</p>
+      <codeblock outputclass="language-ini">\(1\+1\)\:2</codeblock>
+    </section>
+  </body>
+</topic>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-sftp-connector" xml:lang="fr-FR">
+  <title>Publication de contenu sur un serveur SFTP</title>
+  <shortdesc>Comment configurer un connecteur SFTP et l'utiliser pour publier la sortie d'un livrable sur un serveur
+    SFTP.</shortdesc>
+  <body>
+    <p>Le connecteur SFTP facilite la publication des sorties de build des livrables sur le serveur
+      SFTP désigné. </p>
+    <section id="section_zm1_xfm_2bc">
+      <title>Prérequis</title>
+      <p>Pour publier du contenu sur un serveur SFTP, vous devez disposer des éléments suivants&#160;:</p>
+      <ul id="ul_lcs_srl_2bc">
+        <li>Un serveur SFTP en cours d'exécution accessible par l'application.</li>
+        <li>Un compte qui vous permet de vous connecter au serveur SFTP.</li>
+      </ul>
+    </section>
+    <section id="section_g3w_1gm_2bc">
+      <title>Définition du connecteur</title>
+      <p>Pour configurer un connecteur SFTP, les champs suivants doivent être renseignés&#160;:<dl
+          id="dl_t13_mxy_dbc">
+          <dlentry>
+            <dt>Nom du connecteur</dt>
+            <dd>Le nom du connecteur.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Nom d'hôte</dt>
+            <dd>L'adresse du serveur vers lequel les fichiers seront transférés.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Numéro de port</dt>
+            <dd>Le port réseau sur lequel le serveur SFTP est à l'écoute.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Nom d'utilisateur</dt>
+            <dd>Le nom d'utilisateur utilisé pour se connecter au serveur SFTP.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Authentification </dt>
+            <dd>Le connecteur SFTP propose deux types d'authentification, chacun avec ses champs
+                correspondants.<ul id="ul_alk_fyy_dbc">
+                <li><b>Authentification par mot de passe</b> - Le champ suivant apparaît&#160;:<p
+                    id="p_jnc_ybv_kbc">
+                    <dl id="dl_d4m_qyy_dbc">
+                      <dlentry id="dlentry_wnc_ybv_kbc">
+                        <dt>Mot de passe</dt>
+                        <dd>Le mot de passe utilisé pour authentifier l'utilisateur. </dd>
+                      </dlentry>
+                    </dl>
+                  </p></li>
+                <li><b>Authentification par clé privée SSH</b> - Les champs suivants apparaissent&#160;:<p
+                    id="p_s3n_ybv_kbc">
+                    <dl id="dl_f4s_yyy_dbc">
+                      <dlentry id="dlentry_ejn_ybv_kbc">
+                        <dt>Clé privée</dt>
+                        <dd>La clé privée utilisée avec la clé publique d'un serveur pour
+                          authentifier l'utilisateur.</dd>
+                      </dlentry>
+                      <dlentry id="dlentry_fjn_ybv_kbc">
+                        <dt>Phrase secrète</dt>
+                        <dd>Phrase secrète facultative utilisée pour déchiffrer la clé privée.</dd>
+                      </dlentry>
+                    </dl>
+                  </p></li>
+              </ul></dd>
+          </dlentry>
+        </dl></p>
+      <p>Lors de la configuration du connecteur SFTP, une connexion initiale au serveur sera
+        établie et vous serez invité à accepter l'empreinte de la clé d'hôte du serveur
+          SFTP.<note id="note_pcy_yzy_dbc" type="important">Assurez-vous de vérifier que l'empreinte de la clé d'hôte
+          correspond à celle associée à votre serveur SFTP. Cette vérification garantit
+          que la sortie est correctement publiée sur le serveur SFTP prévu.</note></p>
+    </section>
+    <section id="select_the_sfpt_connector_in_deliverable_settings">
+      <title>Sélection du connecteur SFTP dans la page Livrables</title>
+      <p>Pour publier la sortie d'un livrable sur un serveur SFTP, procédez comme suit&#160;: <ol
+          id="ol_j3p_jgm_2bc">
+          <li>Après avoir configuré le connecteur SFTP, accédez à la page
+              <uicontrol>Livrables</uicontrol>, puis modifiez un livrable existant ou
+            créez-en un nouveau.</li>
+          <li id="li_jd2_xv5_kbc">Dans la page de configuration qui s'affiche, sélectionnez l'option <uicontrol>Upload
+              output using a publishing connector</uicontrol>.</li>
+          <li>Utilisez la liste déroulante située sous cette option pour sélectionner le connecteur SFTP que vous avez
+            défini précédemment.</li>
+          <li>Indiquez le <filepath>Dossier de destination</filepath>.<note id="note_a5w_ngm_2bc">Le
+              dossier dans lequel les fichiers de sortie du build seront stockés après le processus de téléversement. </note></li>
+          <li>Indiquez le <filepath>Dossier temporaire</filepath>.<note id="note_zjn_n3m_2bc">L'emplacement
+              où les fichiers temporaires seront stockés pendant le processus de téléversement. Le
+              processus de build du livrable téléversera les fichiers dans le <filepath>Dossier
+                temporaire</filepath>. Une fois le téléversement terminé, le connecteur vérifie
+              l'existence du <filepath>Dossier de destination</filepath> et applique l'un de ces
+                scénarios&#160;:<ul id="ul_jm4_n3m_2bc">
+                <li>Si le <filepath>Dossier de destination</filepath> n'existe pas, le
+                  connecteur renomme le <filepath>Dossier temporaire</filepath> en
+                    <filepath>Dossier de destination</filepath>.</li>
+                <li>Si le <filepath>Dossier de destination</filepath> existe, le connecteur
+                  crée une sauvegarde du <filepath>Dossier de destination</filepath>, puis déplace
+                  le contenu du <filepath>Dossier temporaire</filepath> vers le
+                    <filepath>Dossier de destination</filepath>. Si toutes les opérations réussissent, la
+                  sauvegarde est supprimée. Sinon, la sauvegarde est restaurée dans le
+                    <filepath>Dossier de destination</filepath>.</li>
+              </ul></note></li>
+          <li id="li_akt_1w5_kbc">Cliquez sur <uicontrol>Enregistrer</uicontrol> en bas de la
+            page de configuration.</li>
+          <li id="li_p11_ddv_kbc">Lancez le processus de build du livrable. Une fois celui-ci terminé, la sortie du build
+            sera publiée sur le serveur SFTP configuré.</li>
+        </ol></p>
+    </section>
+  </body>
+</topic>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-customizing" xml:lang="fr-FR">
+  <title>Personnalisation du comportement de la traduction</title>
+  <shortdesc>Présentation des mécanismes de personnalisation de la traduction et des types de consignes que vous
+    pouvez fournir à l'agent de traduction.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>agent-instructions.md</indexterm>
+        <indexterm>personnalisation de la traduction</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_rjr_mv5_1kc">Vous pouvez contrôler le comportement de l'agent de traduction dans votre projet à l'aide de
+      deux mécanismes complémentaires.</p>
+    <section id="cf-ai-translation-instructions-mechanisms">
+      <title>Invite par tâche et agent-instructions.md</title>
+      <ul id="ul_sjr_mv5_1kc">
+        <li id="li_tjr_mv5_1kc"><b>L'invite par tâche</b> - Instructions libres que vous saisissez dans
+          le champ <uicontrol>Instructions</uicontrol> de la boîte de dialogue <uicontrol>Nouvelle
+            traduction</uicontrol> lorsque vous lancez une tâche de traduction. Ces instructions
+          ne s'appliquent qu'à cette tâche. Elles sont utiles pour les demandes ponctuelles, par exemple demander à l'agent de
+          retraduire un topic d'une manière précise.<p id="p_ujr_mv5_1kc">
+            <fig id="fig_start_translation_dialog_customizing">
+              <title>Invite par tâche dans la boîte de dialogue Nouvelle traduction</title>
+              <image href="../img/generated/CF-start-translation-dialog.png" id="image_ahc_44x_xjc"
+                placement="inline"/>
+            </fig>
+          </p></li>
+        <li id="li_vjr_mv5_1kc"><b><filepath>agent-instructions.md</filepath></b> - Un fichier facultatif
+          situé à l'emplacement <filepath>.contentfusion/i18n/agent-instructions.md</filepath> dans le
+          dépôt de votre projet. Lorsqu'il est présent, il s'applique à chaque tâche de traduction qui l'inclut
+          dans l'espace de travail. C'est l'endroit idéal pour des consignes durables à l'échelle du projet, telles que
+          la terminologie, les règles de style, les listes de termes à ne pas traduire et toute autre personnalisation décrite dans
+          cette section.</li>
+      </ul>
+      <p id="p_wjr_mv5_1kc">Utilisez l'invite par tâche pour les demandes ponctuelles, et utilisez
+          <filepath>agent-instructions.md</filepath> pour les consignes qui doivent être appliquées
+        de manière cohérente d'une tâche de traduction à l'autre.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-references">
+      <title>Référencer d'autres fichiers</title>
+      <p id="p_xjr_mv5_1kc"><filepath>agent-instructions.md</filepath> n'a pas besoin de contenir toutes les
+        consignes directement. Vous pouvez déplacer des instructions détaillées dans des fichiers distincts, tels qu'une
+        liste de terminologie, un guide de style ou une configuration de doctype, et les référencer depuis
+          <filepath>agent-instructions.md</filepath>, tout en indiquant à l'agent quand chaque fichier est
+        pertinent. Désignez chaque fichier à l'aide d'un chemin relatif à
+          <filepath>agent-instructions.md</filepath>.</p>
+      <p id="p_yjr_mv5_1kc">Répartir les consignes ainsi ne sert pas seulement à garder les choses ordonnées. Cela permet
+        à l'agent de ne charger que les instructions nécessaires à une tâche donnée au lieu de charger toutes les
+        instructions pour chaque tâche. C'est une forme de divulgation progressive. Par exemple, les consignes
+        sur l'ajout d'une publication nouvellement traduite à votre livre multilingue ne sont pertinentes que lorsque
+        cette publication est traduite pour la première fois, et les instructions de traduction du texte SVG
+        ne sont pas pertinentes pour une tâche incrémentielle qui n'inclut pas de fichiers SVG. Conserver ces
+        consignes dans des fichiers référencés, et ne les consulter qu'en cas de besoin, aide à garder chaque tâche
+        concentrée sur l'objectif en cours.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-use-cases">
+      <title>Cas d'usage courants</title>
+      <p id="p_zjr_mv5_1kc">Les topics suivants décrivent des personnalisations spécifiques que vous pouvez
+        définir dans <filepath>agent-instructions.md</filepath>&#160;:</p>
+      <ul>
+        <li><xref href="cf-ai-translation-custom-doctypes.dita">Configuration des spécialisations DITA
+            pour la traduction</xref></li>
+        <li><xref href="cf-ai-translation-terminology.dita">Application de la terminologie et des
+            glossaires</xref></li>
+      </ul>
+      <p id="p_dkr_mv5_1kc">Les sections ci-dessous décrivent des personnalisations plus courtes que vous pouvez ajouter
+        directement dans <filepath>agent-instructions.md</filepath>.</p>
+    </section>
+    <section id="cf-ai-translation-instructions-do-not-translate">
+      <title>Listes de termes à ne pas traduire</title>
+      <p>Pour conserver certaines chaînes sous leur forme d'origine (noms de produits, identifiants de code ou libellés
+        d'interface livrés sans traduction), listez-les et demandez à l'agent de les laisser inchangées
+        partout où elles apparaissent. Par exemple&#160;:</p>
+      <p>
+        <codeblock outputclass="language-ini">Never translate the following strings; keep them exactly as written:
+Content Fusion, oXygen, WebHelp, DITA-OT.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-instructions-style-guide">
+      <title>Guide de style</title>
+      <p id="p_gkr_mv5_1kc">Pour appliquer votre style rédactionnel, décrivez-le dans
+          <filepath>agent-instructions.md</filepath> ou référencez un fichier de guide de style distinct.
+        Incluez les choix importants pour votre contenu, tels que le ton et le registre, la manière de s'adresser
+        au lecteur, et les conventions de ponctuation ou de mise en forme propres à la langue&#160;:</p>
+      <p>
+        <codeblock outputclass="language-ini">Use a formal register and address the reader with the formal second person.
+Follow the target language's standard quotation marks. Keep UI labels in
+sentence case.</codeblock>
+      </p>
+    </section>
+    <section id="cf-ai-translation-instructions-svg">
+      <title>Traduction du texte à l'intérieur des graphiques SVG</title>
+      <p id="p_ikr_mv5_1kc">Par défaut, les images SVG sont traitées comme des ressources binaires et copiées sans modification
+        dans chaque langue cible&#160;; le texte qu'elles contiennent n'est donc pas traduit. Si les libellés de diagrammes ou
+        d'autres textes à l'intérieur de vos graphiques SVG doivent être localisés, vous pouvez demander à l'agent, dans
+          <filepath>agent-instructions.md</filepath>, de traduire également le contenu textuel des fichiers SVG
+        référencés depuis votre contenu. Par exemple&#160;:</p>
+      <p>
+        <codeblock outputclass="language-ini">Always translate the text inside referenced SVG images (for example the
+content of &lt;text> and &lt;tspan> elements), leaving all other SVG markup
+unchanged.</codeblock>
+      </p>
+    </section>
+  </body>
+</topic>
