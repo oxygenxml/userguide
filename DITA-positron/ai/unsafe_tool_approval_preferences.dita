@@ -6,8 +6,10 @@
 <body>
     <p id="p_mqd_cr5_jkc">Tools that, once executed, cannot be undone or previewed by AI Positron
       are considered <b>unsafe</b>. These tools include all tools obtained through the <xref
-        href="model_context_protocol_preferences.dita">Model Context Protocol</xref> integration and
-      tools used to run command lines. By default, for such tools, the end user is explicitly asked
+        href="model_context_protocol_preferences.dita">Model Context Protocol</xref> integration,
+      tools used to run command lines, and the tools contributed by other plugins and add-ons (see
+        <xref href="#unsafe_tool_approval_preferences/section_plugin_tools"/>). By default, for such
+      tools, the end user is explicitly asked
       in the chat box to allow the tool to run. When prompted, the end user can also choose to
       always allow a tool to run. In that case, the allowed tool is automatically added to the list
       of allowed tools on this preferences page.</p>
@@ -52,5 +54,67 @@
       command line by accident.</p>
     <p>This preferences page can be saved at project level if you want to share a certain set of
       allowed tools with your team members.</p>
+    <section id="section_plugin_tools">
+      <title>Tools Contributed by Plugins</title>
+      <p id="p_plugin_tools_intro">Before the AI runs a tool contributed by another plugin or add-on,
+        the chat asks for your confirmation, even when the plugin declares that the tool is safe.
+        The approval box asks <uicontrol>Allow this tool to run?</uicontrol>, shows the name of the
+        tool and that it comes from a plugin, says what the tool does (or, for a call that the plugin
+        considers unsafe, the plugin's own warning), and shows the arguments of the call, if any.
+        The tools that <ph keyref="product"/> itself contributes, such as
+          <codeph>compare_documents</codeph>, are not concerned.</p>
+      <!-- Screenshot to add: the approval box of a plugin tool, with the menu of "Always allow this tool" open. -->
+      <p id="p_plugin_tools_choices">The approval box offers the following choices:</p>
+      <dl id="dl_plugin_tools_choices">
+        <dlentry>
+          <dt><uicontrol>Always allow this tool</uicontrol></dt>
+          <dd>Runs the tool and adds it to the list on this preferences page, so that it no longer
+            asks. If the plugin declares the call safe, only the calls that the tool declares safe
+            are allowed from then on, and the calls that it declares unsafe still ask for your
+            confirmation. If the plugin declares the call unsafe, every call of the tool is
+            allowed.</dd>
+        </dlentry>
+        <dlentry>
+          <dt><uicontrol>Allow once</uicontrol></dt>
+          <dd>Available in the menu of <uicontrol>Always allow this tool</uicontrol>. Runs the tool
+            this time only. Pressing <uicontrol>Enter</uicontrol> has the same effect.</dd>
+        </dlentry>
+        <dlentry>
+          <dt><uicontrol>Always allow the <varname>category</varname> tools</uicontrol></dt>
+          <dd>Available in the menu of <uicontrol>Always allow this tool</uicontrol> when all the
+            tools of the plugin are in a category of their own that no other tool uses. The menu item
+            names the category, for example <uicontrol>Always allow the Git tools</uicontrol>. Runs
+            the tool and allows all the tools of the category at once, with the same distinction
+            between the calls declared safe and unsafe. This also covers the tools added
+            to the category later, by an update of the plugin or by another plugin.</dd>
+        </dlentry>
+        <dlentry>
+          <dt><uicontrol>Skip</uicontrol></dt>
+          <dd>Does not run the tool, and tells the AI that the call was skipped. Pressing
+              <uicontrol>Esc</uicontrol> has the same effect.</dd>
+        </dlentry>
+      </dl>
+      <p id="p_plugin_tools_entries">The tools contributed by plugins are listed on this preferences
+        page under names of their own, so that an entry added for another tool never allows them:</p>
+      <ul id="ul_plugin_tools_entries">
+        <li><codeph>plugin:</codeph> followed by the tool name, such as
+            <codeph>plugin:git_push</codeph>, allows every call of the tool.</li>
+        <li>The same entry followed by a space and <codeph>safe-calls</codeph>, such as
+            <codeph>plugin:git_status safe-calls</codeph>, allows only the calls that the tool
+          declares safe.</li>
+        <li><codeph>plugin:category:</codeph> followed by the category, in lower case and with
+          underscores in place of its spaces, such as <codeph>plugin:category:git</codeph>, allows
+          all the tools of the category. It can also be followed by a space and
+            <codeph>safe-calls</codeph>.</li>
+      </ul>
+      <p id="p_plugin_tools_patterns">An entry that contains the <codeph>*</codeph> character covers
+        the tools contributed by plugins only if it starts with <codeph>plugin:</codeph>. For
+        example, <codeph>plugin:*</codeph> allows all of them, while <codeph>*_status</codeph> does
+        not allow <codeph>plugin:git_status</codeph>.</p>
+      <p id="p_plugin_tools_option">To stop asking for a confirmation before the tools contributed by
+        plugins run, clear the <uicontrol>Ask for confirmation before running the tools contributed
+          by plugins</uicontrol> option in the <xref keyref="actions_preferences"/> preferences
+        page.</p>
+    </section>
   </body>
 </topic>
