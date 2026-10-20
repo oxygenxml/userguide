@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-known-issues-git" xml:lang="fr-FR">
+  <title>Problèmes liés aux dépôts Git</title>
+  <shortdesc>Messages d'erreur courants et informations de dépannage lors de l'utilisation d'un
+    dépôt Git dans <ph keyref="product"/>.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Erreurs Git</indexterm>
+        <indexterm>Problèmes de dépôt Git</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_hn5_dgk_54b">Ce topic contient des informations sur les problèmes liés aux dépôts
+      Git.</p>
+    <section id="section_pfr_d5p_53c">
+      <title>Erreur lors de l'importation d'un projet depuis Git</title>
+      <p id="p_qfr_d5p_53c">Lorsque vous utilisez l'<xref href="cf-projects.dita#cf-projects/ul_bzx_h2h_1fc"
+            >option <b>Importer depuis Git</b></xref> pour créer un projet dans Content Fusion, l'opération
+        peut échouer avec une erreur. Dans la plupart des cas, cela est dû à une configuration
+        incorrecte du jeton d'accès Git (ou d'autres identifiants) utilisé pour se connecter au dépôt.
+        Content Fusion a besoin des autorisations de <b>lecture</b> et d'<b>écriture</b> sur le dépôt
+        pour le cloner, créer des branches pour les tâches de révision et valider les modifications.
+        Si le jeton dispose uniquement d'un accès en lecture (ou n'a aucun accès au dépôt),
+        l'importation échoue. Pour résoudre ce problème, assurez-vous que le jeton d'accès est créé
+        avec les portées ou les autorisations appropriées pour votre fournisseur Git (GitHub, GitLab,
+        Bitbucket, Azure DevOps).</p>
+      <p id="p_b31_t5p_53c">Pour obtenir des instructions détaillées et connaître les exigences propres
+        à chaque plateforme, consultez <xref href="cf-git-access-tokens.dita"/>.</p>
+      <note id="note_myb_r1y_v3c" product="fusion-cloud">Si vous évaluez Content Fusion sur le
+          <xref href="https://fusion.oxygenxml.com/" format="html" scope="external">serveur
+          cloud</xref>, il ne peut pas se connecter aux plateformes Git hébergées en interne (par
+        exemple, un serveur Git interne auquel vous accédez uniquement par VPN ou proxy). Dans ce
+        cas, pour évaluer Content Fusion avec vos dépôts internes, vous devez installer Content
+        Fusion sur vos propres serveurs (version Enterprise).</note>
+      <note id="note_ttd_s1y_v3c" product="fusion">Si vous utilisez Content Fusion Enterprise et
+        devez vous connecter à un serveur Git externe (par exemple, via un proxy d'entreprise), vous
+        devez configurer le proxy en conséquence. Pour plus de détails, consultez <xref
+          href="cf-proxy-setup.dita"/>.</note>
+    </section>
+    <section id="connection_to_the_server_cannot_be_established">
+      <title>Utilisateur non autorisé sur le dépôt Git</title>
+      <p id="p_jn5_dgk_54b">Si vous recevez le message <codeph>Utilisateur non autorisé sur le dépôt Git</codeph>
+        lorsque Content Fusion se connecte à votre dépôt Git distant mais que le serveur rejette les
+        identifiants ou n'accorde pas l'accès à l'URL du dépôt que vous avez indiquée, plusieurs
+        causes sont possibles&#160;:<ul id="ul_jtg_35p_53c">
+          <li id="li_ktg_35p_53c"><b>Identifiants non valides ou inutilisables</b>&#160;: jeton d'accès
+            ou mot de passe incorrect, jeton expiré, ou jeton révoqué ou renouvelé.</li>
+          <li id="li_ltg_35p_53c"><b>Autorisations insuffisantes sur ce dépôt</b>&#160;: le jeton est
+            légitime mais ne dispose pas de l'accès en <b>lecture et écriture</b> dont Content Fusion
+            a besoin sur le dépôt correspondant à votre URL de clonage. Un jeton en lecture seule peut
+            provoquer des échecs d'autorisation lors de l'envoi de commits vers le dépôt distant.</li>
+          <li id="li_mtg_35p_53c"><b>Jeton limité à un autre dépôt</b>&#160;: le jeton est lié à un
+            dépôt différent ou à une liste fixe qui n'inclut pas celui que vous importez (cas typique
+            des jetons d'accès personnels à granularité fine). Ajoutez le dépôt de votre URL
+            d'importation aux autorisations du jeton, ou créez un nouveau jeton pour ce dépôt.</li>
+        </ul></p>
+    </section>
+  </body>
+</topic>

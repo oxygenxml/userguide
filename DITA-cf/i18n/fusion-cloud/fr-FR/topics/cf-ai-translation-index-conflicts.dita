@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-index-conflicts" xml:lang="fr-FR">
+  <title>Résolution des conflits de l'index de traduction</title>
+  <shortdesc>Comment éviter les conflits dans l'index de traduction et comment les résoudre lorsque
+    deux tâches de traduction ou deux branches enregistrent des traductions de manière
+    indépendante.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>index de traduction</indexterm>
+        <indexterm>conflits</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_idxconf_intro">L'<xref href="cf-ai-translation-index.dita">index de traduction</xref>
+      est un fichier unique que chaque tâche de traduction met à jour. Son format est conçu pour
+      rendre les conflits rares, car les entrées sont écrites une par ligne, restent triées et
+      peuvent être réparties en fragments. Cependant, un conflit peut tout de même survenir lorsque
+      la même zone du fichier est modifiée par deux tâches parallèles.</p>
+    <p id="p_idxconf_cause">La cause habituelle est qu'une tâche de traduction travaille sur un
+      instantané de votre espace de travail pris au démarrage de la tâche. Une tâche ne voit pas les
+      entrées qu'une autre tâche enregistre pendant son exécution, et elle renvoie un index qui ne
+      contient que ses propres entrées. Si vous importez les résultats de deux tâches de ce type, ou
+      si vous fusionnez deux branches qui ont chacune enregistré des traductions, les deux versions
+      de l'index sont légitimes, et chacune ne contient pas les entrées de l'autre.</p>
+    <p id="p_idxconf_safe">
+      <note id="note_idxconf_safe" type="tip">Une erreur à cet endroit n'est pas destructrice. Si une
+        entrée est perdue lors de la résolution d'un conflit, la seule conséquence est que son
+        fichier est signalé comme <b>manquant</b> ou <b>obsolète</b> et qu'il est traduit à nouveau
+        lors de la tâche suivante. Rien n'est écrasé silencieusement.</note>
+    </p>
+    <section id="cf-ai-translation-index-conflicts-sequential">
+      <title>Méthode recommandée&#160;: exécuter une seule tâche à la fois</title>
+      <p id="p_idxconf_seq">Le moyen le plus simple de garder l'index sans conflit est d'éviter que
+        deux tâches produisent des traductions en même temps&#160;:</p>
+      <ul id="ul_idxconf_seq">
+        <li id="li_idxconf_onejob"><b>Tout regrouper dans la même tâche.</b> Dans la boîte de
+          dialogue <uicontrol>Nouvelle traduction</uicontrol>, sélectionnez toutes les publications
+          et toutes les langues cibles que vous souhaitez mettre à jour. Une seule tâche les couvre
+          toutes et traite les langues les unes après les autres, en mettant à jour un seul index au
+          fur et à mesure&#160;; il n'y a donc rien à fusionner par la suite.</li>
+        <li id="li_idxconf_commit"><b>Si vous avez besoin de plusieurs tâches, terminez l'une avant
+            de lancer la suivante.</b> Importez les résultats de la première tâche dans votre espace
+          de travail, révisez-les et validez-les. Lancez seulement ensuite la deuxième tâche afin
+          qu'elle parte d'un espace de travail qui contient déjà les entrées de la première.</li>
+      </ul>
+      <p id="p_idxconf_parallel">Il n'est pas conseillé d'exécuter des tâches de traduction en
+        parallèle, et pas seulement à cause de l'index. Une tâche ne peut pas réutiliser les topics
+        qu'une autre tâche traduit en même temps&#160;; les tâches parallèles répètent donc un travail
+        qu'une seule tâche aurait effectué une fois, et elles ne peuvent pas maintenir une
+        terminologie cohérente entre elles.</p>
+    </section>
+    <section id="cf-ai-translation-index-conflicts-changes-view">
+      <title>Conserver a posteriori les entrées des deux tâches</title>
+      <p id="p_idxconf_cv">Si deux tâches se sont déjà exécutées en parallèle, vous pouvez tout de
+        même combiner leurs résultats, une tâche à la fois&#160;:</p>
+      <ol id="ol_idxconf_cv">
+        <li id="li_idxconf_cv_first">Importez la première tâche dans votre espace de travail,
+          révisez-la et validez-la comme d'habitude.</li>
+        <li id="li_idxconf_cv_second">Importez la deuxième tâche dans votre espace de travail. Comme
+          l'index de votre espace de travail est désormais celui qui a été validé pour la première
+          tâche, la boîte de dialogue <uicontrol>Conflit d'import</uicontrol> n'apparaît pas pour
+          elle, et l'index importé remplace l'index validé.</li>
+        <li id="li_idxconf_cv_merge">Ouvrez la <xref
+            href="cf-projects-workspace_changes_view.dita">vue <uicontrol>Modifications</uicontrol></xref>
+          et sélectionnez <filepath>translation-index.xml</filepath>. La comparaison affiche à
+          gauche la version importée par la deuxième tâche et à droite la version validée de la
+          première tâche. Modifiez le côté gauche afin qu'il conserve les entrées des deux versions,
+          puis validez.</li>
+      </ol>
+      <p id="p_idxconf_cv_easy">C'est plus facile qu'il n'y paraît, car les deux versions ne diffèrent
+        que par des éléments <codeph>&lt;entry></codeph> entiers, à raison d'un par ligne. Aucune des
+        lignes produites par les deux tâches n'a besoin d'être réconciliée mot à mot. Conservez
+        chaque entrée qui apparaît d'un côté ou de l'autre, et gardez les entrées triées.</p>
+      <p id="p_idxconf_cv_note">
+        <note id="note_idxconf_cv_translated_files" type="notice">Révisez également les fichiers
+          traduits de la deuxième tâche. Si les deux tâches ont traduit le même topic dans la même
+          langue, la deuxième importation écrase la première traduction de ce topic, et une seule des
+          deux entrées correspondantes est correcte. Supprimez l'entrée de ce topic au lieu de
+          conserver les deux, afin que le topic soit traduit à nouveau à partir de sa source
+          actuelle. Consultez <xref href="cf-ai-translation-redoing.dita">Refaire des
+            traductions</xref>.</note>
+      </p>
+    </section>
+    <section id="cf-ai-translation-index-conflicts-branches">
+      <title>Traduction sur des branches distinctes</title>
+      <p id="p_idxconf_branches">Lorsque les traductions sont produites sur des branches différentes,
+        par exemple une branche par langue ou par domaine de produit, le conflit d'index apparaît
+        lors de la fusion. Utilisez l'action <uicontrol>Fusionner dans la branche actuelle</uicontrol>
+        et résolvez le conflit avec la <xref href="cf-projects-workspace-conflict-resolution.dita"
+          >boîte de dialogue de résolution des conflits de fusion de branches</xref>&#160;:</p>
+      <ul id="ul_idxconf_branches">
+        <li id="li_idxconf_branch_manual">Pour <filepath>translation-index.xml</filepath>, choisissez
+            <uicontrol>Fusion manuelle</uicontrol> et modifiez la version fusionnée afin qu'elle
+          contienne les entrées des deux branches. Ne choisissez pas <uicontrol>Garder les modifications de
+            main</uicontrol> ni <uicontrol>Garder les modifications de dev</uicontrol>, car chacune de ces
+          options supprime les entrées enregistrées sur l'autre branche, et les fichiers
+          correspondants sont traduits à nouveau lors de la tâche suivante.</li>
+        <li id="li_idxconf_branch_same">Si le même topic a été traduit dans la même langue sur les
+          deux branches, le fichier traduit lui-même est également en conflit. Résolvez ce conflit,
+          puis supprimez l'entrée de ce topic de l'index fusionné et retraduisez le topic après la
+          fusion.</li>
+      </ul>
+      <p id="p_idxconf_branch_split">Si vous travaillez régulièrement sur des branches distinctes,
+        envisagez de répartir l'index en fragments, un par langue ou par domaine de produit, à
+        l'aide de pointeurs <codeph>&lt;include
+          href="..."/></codeph>. Chaque branche met alors à jour un fichier différent, et la fusion
+        n'a rien à réconcilier. Consultez la <xref href="cf-ai-translation-index-format.dita"
+          >référence du format de fichier</xref>.</p>
+    </section>
+    <section id="cf-ai-translation-index-conflicts-check">
+      <title>Vérification du résultat</title>
+      <p id="p_idxconf_check">Après avoir résolu un conflit, assurez-vous que l'index est toujours un
+        document XML bien formé et qu'aucune entrée n'est dupliquée pour la même paire
+          <codeph>(language, source
+          file)</codeph>. La tâche de traduction suivante signale comme <b>manquant</b> ou
+          <b>obsolète</b> tout fichier dont l'entrée est absente, ce qui permet de confirmer
+        facilement que la fusion a conservé ce que vous attendiez. Consultez <xref
+          href="cf-ai-translation-running.dita">Exécution d'une traduction
+          incrémentielle</xref>.</p>
+    </section>
+  </body>
+</topic>

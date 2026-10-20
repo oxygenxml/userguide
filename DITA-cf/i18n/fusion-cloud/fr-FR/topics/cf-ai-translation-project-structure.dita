@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-project-structure" xml:lang="fr-FR">
+  <title>Choix d'une structure de projet pour la traduction</title>
+  <shortdesc>Comment organiser le contenu source et le contenu traduit en dossiers et en branches, et
+    comment l'agent détermine la disposition à utiliser.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>structure de projet de traduction</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="cf-ai-translation-default-layout">
+      <title>La disposition de projet par défaut</title>
+      <p id="p_mjh_ss5_1kc">Par défaut, <ph keyref="product"/> organise le contenu source et le
+        contenu traduit en une paire de dossiers par langue, le tout sur la même branche&#160;:</p>
+      <ul id="ul_njh_ss5_1kc">
+        <li id="li_ojh_ss5_1kc">Le contenu source anglais est stocké dans un dossier
+          <filepath>en/</filepath>.</li>
+        <li id="li_pjh_ss5_1kc">Chaque langue cible est stockée dans son propre dossier de premier
+          niveau, nommé d'après le code de la langue (par exemple, <filepath>fr-FR/</filepath> ou
+            <filepath>de-DE/</filepath>).</li>
+        <li id="li_qjh_ss5_1kc">Dans chaque dossier de langue, les fichiers utilisent les mêmes
+          chemins relatifs que leurs équivalents anglais (par exemple,
+            <filepath>en/topics/install.dita</filepath> et
+            <filepath>fr-FR/topics/install.dita</filepath>).</li>
+        <li id="li_rjh_ss5_1kc">L'<xref href="cf-ai-translation-index.dita">index de
+            traduction</xref> est stocké à l'emplacement
+          <filepath>.contentfusion/i18n/translation-index.xml</filepath>.</li>
+      </ul>
+      <p id="p_sjh_ss5_1kc">Il s'agit de la disposition que l'agent suppose lorsqu'il <xref
+          href="cf-ai-translation-first-run.dita">configure un projet pour la première tâche de
+          traduction</xref>. C'est également la disposition décrite dans l'ensemble de cette
+        documentation, sauf indication contraire.</p>
+    </section>
+    <section id="cf-ai-translation-layout-detection">
+      <title>Comment l'agent détermine la disposition</title>
+      <p id="p_tjh_ss5_1kc">Lorsqu'une tâche de traduction démarre, l'agent détermine la disposition à
+        utiliser en trois étapes&#160;:</p>
+      <ol>
+        <li>Si une disposition personnalisée est documentée dans
+            <filepath>agent-instructions.md</filepath>, l'agent la suit.</li>
+        <li id="li_wjh_ss5_1kc">Sinon, l'agent essaie de détecter la disposition à partir du contenu
+          existant. Si vous utilisez une disposition autre que celle par défaut, documentez-la dans
+            <filepath>agent-instructions.md</filepath> afin que l'agent puisse la suivre de manière
+          fiable au lieu de la déduire à chaque fois.</li>
+        <li>Si aucune disposition n'est détectée, l'agent utilise la disposition par défaut décrite
+          ci-dessus.</li>
+      </ol>
+    </section>
+    <section id="cf-ai-translation-layout-constraints">
+      <title>Choix d'une disposition personnalisée</title>
+      <p id="p_yjh_ss5_1kc">Si la disposition par défaut ne convient pas à votre projet, vous pouvez
+        en utiliser une autre, à condition qu'elle respecte les contraintes suivantes&#160;:</p>
+      <ul>
+        <li>Pour assurer la compatibilité avec d'autres outils, conservez toutes les ressources DITA
+          dans des sous-dossiers du dossier qui contient la DITA map.</li>
+        <li id="li_bkh_ss5_1kc">Conservez chaque fichier source au même emplacement relatif dans
+          chaque langue cible que dans la langue source. Sinon, les liens doivent être mis à jour
+          pendant la traduction, ce qui est source d'erreurs. Par exemple, il n'est pas recommandé
+          d'identifier les fichiers français par un suffixe <filepath>-fr</filepath>.</li>
+        <li id="li_ckh_ss5_1kc">Stockez les langues source et cibles sur la même branche. Par
+          exemple, si vous souhaitez conserver une branche d'édition qui ne contient que des
+          fichiers anglais, créez une branche parallèle qui contient à la fois la source anglaise et
+          toutes les traductions selon la disposition par défaut par langue, puis fusionnez la
+          branche d'édition dans celle-ci avant chaque tâche de traduction.</li>
+      </ul>
+      <p>Documentez en détail toute disposition autre que celle par défaut dans
+          <filepath>agent-instructions.md</filepath> afin que l'agent la suive. Consultez <xref
+          href="cf-ai-translation-customizing.dita">Personnalisation du comportement de la
+          traduction</xref>.</p>
+    </section>
+  </body>
+</topic>

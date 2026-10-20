@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-custom-doctypes" xml:lang="fr-FR">
+  <title>Configuration des spécialisations DITA pour la traduction</title>
+  <shortdesc>Comment faire connaître à l'agent de traduction les spécialisations DITA personnalisées.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>spécialisation DITA</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_n55_tv5_1kc">L'agent considère tout fichier XML bien formé comme du contenu traduisible&#160;: un
+      topic écrit dans une spécialisation DITA personnalisée est donc inclus dans la traduction sans configuration
+      supplémentaire. Toutefois, vous devez tout de même configurer <b>la façon dont il est validé</b> et <b>la façon dont
+        il est traduit</b>.</p>
+    <section id="cf-ai-translation-custom-doctypes-validation">
+      <title>Configuration des règles de validation</title>
+      <p id="p_o55_tv5_1kc">La validation détermine quels éléments et attributs doivent rester
+        inchangés et lesquels peuvent être traduits. Pour étendre ou remplacer les règles intégrées pour
+        une spécialisation, ajoutez à votre espace de travail un fichier facultatif
+          <filepath>.contentfusion/i18n/validation-rules.xml</filepath>&#160;:</p>
+      <p>
+        <codeblock outputclass="language-xml">&lt;validation-rules version="1">
+  &lt;global>
+    &lt;keep-unchanged>&lt;element>my-token&lt;/element>&lt;attribute>my-ref&lt;/attribute>&lt;/keep-unchanged>
+    &lt;translate>&lt;element>mytitle&lt;/element>&lt;attribute>my-label&lt;/attribute>&lt;/translate>
+  &lt;/global>
+  &lt;match root="learningContent">
+    &lt;keep-unchanged>&lt;element>custom-skip&lt;/element>&lt;/keep-unchanged>
+    &lt;translate>&lt;element>lcTitle&lt;/element>&lt;/translate>
+  &lt;/match>
+&lt;/validation-rules></codeblock>
+      </p>
+      <p id="p_q55_tv5_1kc">Les règles appliquées à un document proviennent de trois couches, présentées ici par
+        ordre de priorité croissante&#160;:</p>
+      <ol>
+        <li><b>Valeurs par défaut intégrées</b> - Les règles dont l'agent part toujours (décrites ci-dessous).
+          Elles s'appliquent même lorsqu'aucun fichier <filepath>validation-rules.xml</filepath> n'existe.</li>
+        <li><b>Règles <codeph>&lt;global></codeph></b> - Vos ajouts et remplacements à l'échelle du projet,
+          appliqués à chaque document.</li>
+        <li id="li_u55_tv5_1kc"><b>Règles <codeph>&lt;match root="…"></codeph></b> - Remplacements pour les
+          documents dont l'élément racine correspond au nom indiqué. C'est ainsi que vous ciblez une
+          spécialisation sans affecter les autres. Pour les documents correspondants, ces règles ont
+          priorité sur les règles <codeph>&lt;global></codeph> et sur les valeurs par défaut intégrées.</li>
+      </ol>
+      <p id="p_v55_tv5_1kc">Dans la plupart des cas, vous n'avez pas besoin de lister chaque élément et attribut,
+        car chaque type a un comportement par défaut raisonnable&#160;:</p>
+      <ul id="ul_w55_tv5_1kc">
+        <li id="li_x55_tv5_1kc"><b>Les éléments sont traduisibles par défaut.</b> Le contenu textuel d'un
+          élément est traduit, sauf si une règle intégrée ou l'une de vos propres entrées
+            <codeph>&lt;keep-unchanged></codeph> le protège explicitement. Ajouter un élément
+          sous <codeph>&lt;translate></codeph> n'est utile que lorsque vous devez remplacer une
+          protection existante.</li>
+        <li><b>Les attributs sont protégés par défaut.</b> Un attribut reste inchangé, sauf si une règle intégrée
+          ou votre propre entrée <codeph>&lt;translate></codeph> autorise explicitement sa
+          traduction. C'est pourquoi une spécialisation personnalisée n'a généralement besoin que d'entrées
+            <codeph>&lt;translate></codeph> pour ses propres attributs de type libellé, et a rarement
+          besoin de <codeph>&lt;keep-unchanged></codeph> pour les attributs.</li>
+      </ul>
+      <p id="p_z55_tv5_1kc">En résumé, pour les éléments, listez les exceptions qui ne doivent <i>pas</i> être
+        traduites. Pour les attributs, listez les exceptions qui <i>doivent</i> être traduites.</p>
+      <p id="p_av5_tv5_1kc">Les valeurs par défaut intégrées protègent déjà le contenu DITA habituellement non traduisible,
+        tel que le code, les identifiants, les clés et les valeurs similaires. Elles autorisent également déjà la
+        traduction des attributs textuels standard, tels que <codeph>navtitle</codeph>,
+          <codeph>alt</codeph>, <codeph>spectitle</codeph>, <codeph>reftitle</codeph>,
+          <codeph>standby</codeph> et <codeph>value</codeph>. N'ajoutez des règles que pour les éléments ou
+        attributs propres à votre spécialisation qui ne sont pas déjà traités correctement par ces
+        valeurs par défaut.</p>
+    </section>
+    <section id="cf-ai-translation-custom-doctypes-guidance">
+      <title>Décrire une spécialisation dans agent-instructions.md</title>
+      <p id="p_bv5_tv5_1kc">Les règles de validation ne font que contraindre la sortie&#160;; elles n'apprennent pas à l'agent
+        la sémantique de votre spécialisation. Créez un court fichier Markdown qui décrit la
+        spécialisation en langage clair, par exemple
+        <filepath>learning-content-guide.md</filepath>, et référencez-le depuis
+          <filepath>agent-instructions.md</filepath>. Lorsqu'il traduit des documents utilisant votre
+        spécialisation, l'agent s'appuie sur ces indications ainsi que sur ses connaissances générales de DITA.</p>
+      <p id="p_cv5_tv5_1kc">En vous inspirant de la structure des indications intégrées sur les doctypes, incluez ce qui
+        suit lorsque vous décrivez votre propre spécialisation&#160;:</p>
+      <ul>
+        <li><b>Titres et libellés par rapport au contenu du corps</b> - Quels éléments sont des titres, des intitulés ou des libellés
+          d'interface (qui doivent être concis, comme un intitulé) par opposition à la prose narrative, y compris les
+          titres imbriqués dans des éléments enfants structurels.</li>
+        <li><b>Contenu protégé d'apparence technique</b> - Éléments ou attributs qui ressemblent à
+          des mots ordinaires mais sont en réalité des identifiants, des clés ou du code, et doivent rester exactement tels qu'ils sont
+          écrits.</li>
+        <li><b>Éléments dépendant du contexte</b> - Éléments qui ne sont traduisibles que dans certains
+          contextes et qui servent de jetons fixes dans d'autres.</li>
+        <li><b>Attributs pouvant changer</b> - Indiquez les attributs précis des éléments de votre
+          spécialisation qui contiennent du texte traduisible (libellés, texte de remplacement, etc.),
+          car les attributs sont protégés par défaut.</li>
+        <li><b>Exemples délicats</b> - Pour tout cas facile à mal traduire, incluez un court
+          exemple avant/après montrant la source et la traduction attendue.</li>
+      </ul>
+    </section>
+  </body>
+</topic>

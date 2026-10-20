@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-index-format" xml:lang="fr-FR">
+  <title>Le format de translation-index.xml</title>
+  <shortdesc>Informations de référence sur les éléments, les attributs et les règles de disposition
+    utilisés dans le fichier translation-index.xml.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>index de traduction</indexterm>
+        <indexterm>translation-index.xml</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <bodydiv><section id="section_o2n_zh3_xjc">
+        <title>Emplacement du fichier</title>
+        <p id="p_o51_fv5_1kc">Le fichier se trouve à l'emplacement
+            <filepath>.contentfusion/i18n/translation-index.xml</filepath>.</p>
+    </section><section id="section_msg_yb3_xjc">
+      <title>Exemple de fichier</title>
+      <codeblock id="codeblock_lbv_yb3_xjc" outputclass="language-bourne">&lt;translation-index version="1">
+  &lt;include href="publication-a.xml"/>
+  &lt;entry lang="de-DE">&lt;source href="../../en/topics/install.dita" sha="b225cee9d0ca041bfd5765cb10165571e2250150"/>&lt;target href="../../de-DE/topics/install.dita" sha="08971eb314de5eecb3b299d064f96f1d4"/>&lt;/entry>
+  &lt;entry lang="fr-FR">&lt;source href="../../en/topics/install.dita" sha="b225cee9d0ca041bfd5765cb10165571e2250150"/>&lt;target href="../../fr-FR/topics/install.dita" sha="500c34a518243af8ef106ae1fd17dc4bc4543ef6"/>&lt;/entry>
+&lt;/translation-index></codeblock>
+    </section><section id="section_lpr_nd3_xjc">
+      <title>Élément&#160;: translation-index</title>
+        <p id="p_okf_jmy_zjc"><xmlelement>translation-index</xmlelement></p>
+      <table frame="all" rowsep="1" colsep="1" id="table_bxp_w13_xjc">
+        <tgroup cols="3">
+          <colspec colnum="1" colname="col1"/>
+          <colspec colnum="2" colname="col2"/>
+          <colspec colnum="3" colname="col3"/>
+          <thead>
+            <row>
+              <entry>Attribut</entry>
+              <entry>Obligatoire</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>version</codeph></entry>
+              <entry>oui</entry>
+              <entry>Doit être <codeph>1</codeph> pour le format actuel.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section><section id="section_exp_w13_xjc">
+      <title>Élément&#160;: entry lang</title>
+        <p id="p_zs4_lmy_zjc"><xmlelement>entry lang="..."/</xmlelement></p>
+      <p>Une ligne par paire <codeph>(language, source file)</codeph>. L'attribut
+        <codeph>lang</codeph> est un code de langue BCP 47 (par exemple <codeph>fr</codeph>,
+        <codeph>fr-FR</codeph>, <codeph>de-DE</codeph>) et doit correspondre au code que vous
+        utilisez pour les tâches de traduction.</p>
+      <p>Chaque entrée contient exactement un enfant <codeph>&lt;source></codeph> et un enfant
+        <codeph>&lt;target></codeph>, écrits sur la même ligne que
+        <codeph>&lt;entry></codeph>.</p>
+      <table frame="all" rowsep="1" colsep="1" id="table_hxp_w13_xjc">
+        <tgroup cols="3">
+          <colspec colnum="1" colname="col1"/>
+          <colspec colnum="2" colname="col2"/>
+          <colspec colnum="3" colname="col3"/>
+          <thead>
+            <row>
+              <entry>Enfant</entry>
+              <entry>Attributs</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><codeph>&lt;source></codeph></entry>
+              <entry><codeph>href</codeph>, <codeph>sha</codeph></entry>
+              <entry>Chemin du fichier en langue source et son SHA-1 de blob Git au moment de la
+                dernière traduction enregistrée.</entry>
+            </row>
+            <row>
+              <entry><codeph>&lt;target></codeph></entry>
+              <entry><codeph>href</codeph>, <codeph>sha</codeph></entry>
+              <entry>Chemin du fichier traduit et son SHA-1 de blob Git au moment de la dernière
+                traduction enregistrée.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section><section id="section_path_rules_xjc">
+      <title>Règles de chemin (<codeph>href</codeph>)</title>
+      <ul id="ul_pxp_w13_xjc">
+      <li>Les chemins sont <b>relatifs au répertoire du fichier d'index</b> (et non à la racine de
+        l'espace de travail), et utilisent les séparateurs POSIX <codeph>/</codeph>, même sous
+        Windows.</li>
+      <li>Les chemins source et cible sont tous deux obligatoires afin que vous puissiez copier
+        l'index avec les fichiers traduits entre des branches, ou réorganiser l'arborescence des
+        dossiers, sans perdre l'association.</li>
+      <li>Les chemins doivent correspondre à des fichiers situés dans l'espace de travail.</li>
+    </ul></section><section id="section_layout_rules_xjc">
+      <title>Règles de disposition</title>
+      <ul id="ul_qxp_w13_xjc">
+      <li id="li_u51_fv5_1kc">Utilisez un <codeph>&lt;entry></codeph> par ligne et gardez les
+            éléments enfants sur la même ligne. N'utilisez pas d'entrées multilignes mises en
+            forme.</li>
+      <li id="li_v51_fv5_1kc">Triez les entrées par <codeph>lang</codeph>, puis par
+              <codeph>href</codeph> de la source, dans chaque fichier qui contient des
+            entrées.</li>
+      <li id="li_w51_fv5_1kc">L'agent applique cet ordre lorsqu'il écrit le fichier. Si vous
+            modifiez le fichier manuellement, suivre le même ordre aide à réduire le bruit lors des
+            fusions.</li>
+    </ul></section><section id="section_sxp_w13_xjc">
+      <title>Élément&#160;: include href</title>
+        <p id="p_o3d_4my_zjc"><xmlelement>include href="..."/</xmlelement></p>
+      <p id="p_x51_fv5_1kc">Facultatif. Cet élément intègre un autre fragment d'index à partir d'un
+          chemin relatif au répertoire du fichier actuel. Utilisez-le dans les situations
+          suivantes&#160;:</p>
+      <ul id="ul_txp_w13_xjc">
+        <li>Plusieurs domaines de produit d'un même dépôt maintiennent chacun leur propre
+          fragment.</li>
+        <li>Vous souhaitez un fragment par langue cible.</li>
+        <li id="li_av1_fv5_1kc">Vous voulez garder l'index principal de petite taille afin de faciliter
+            les révisions et la résolution des conflits.</li>
+      </ul>
+      <p>Règles&#160;:</p>
+      <ul id="ul_uxp_w13_xjc">
+        <li>Par défaut, l'agent ajoute les nouvelles entrées au fichier d'index <b>racine</b>. Vous
+          pouvez lui demander (dans <filepath>agent-instructions.md</filepath>) d'enregistrer plutôt
+          les entrées d'une langue ou d'un domaine de produit donné dans un fragment précis. Par
+          exemple, «&#160;suivre les traductions françaises dans
+          <filepath>.contentfusion/i18n/translation-index-fr.xml</filepath>&#160;».</li>
+        <li>Lorsque l'agent met à jour une entrée existante, il modifie le fichier où cette entrée
+          est déclarée.</li>
+        <li id="li_ev1_fv5_1kc">Pour que les entrées stockées dans un fragment distinct soient prises
+            en compte lorsque l'agent détermine ce qui est déjà traduit lors d'une tâche ultérieure,
+            l'index racine doit inclure ce fragment avec un <codeph>&lt;include></codeph>. Si un
+            fragment est écrit mais non inclus, il n'est pas consulté, et ses fichiers sont de
+            nouveau détectés comme manquants lors de la tâche suivante.</li>
+        <li id="li_fv1_fv5_1kc">Les fichiers inclus doivent exister. Une inclusion manquante est une
+            erreur.</li>
+        <li>Les inclusions circulaires sont rejetées.</li>
+      </ul>
+    </section></bodydiv>
+  </body>
+</topic>

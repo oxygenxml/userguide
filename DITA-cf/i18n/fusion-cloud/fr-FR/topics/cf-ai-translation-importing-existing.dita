@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-ai-translation-importing-existing" xml:lang="fr-FR">
+  <title>Importation d'un projet contenant des traductions existantes</title>
+  <shortdesc>Comment initialiser l'index de traduction d'un projet qui contient déjà du contenu
+    traduit produit en dehors du flux de travail de traduction par IA.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>traduction</indexterm>
+        <indexterm>importation de traductions existantes</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_od4_b55_1kc">Si un projet contient déjà du contenu traduit (créé manuellement, par un
+      prestataire de traduction ou avec un autre outil), vous n'avez pas besoin de le traduire à
+      nouveau lorsque vous commencez à utiliser l'agent de traduction. Demandez plutôt à l'agent
+      d'enregistrer les traductions existantes dans un <xref href="cf-ai-translation-index.dita"
+        >index de traduction</xref> afin qu'elles soient reconnues comme <b>à jour</b> plutôt que
+        <b>manquantes</b> lors de votre prochaine traduction. Consultez <xref
+        href="cf-ai-translation-running.dita">Exécution d'une traduction incrémentielle</xref> pour
+      une explication de ces statuts.</p>
+    <section id="cf-ai-translation-importing-steps">
+      <title>Création de l'index pour les traductions existantes</title>
+      <ol id="ol_pd4_b55_1kc">
+        <li id="li_qd4_b55_1kc">Lancez une tâche de traduction. Dans le champ
+            <uicontrol>Instructions</uicontrol>, indiquez à l'agent que le contenu est déjà traduit
+          et doit être importé au lieu d'être traduit. Par exemple&#160;:
+          <codeblock id="codeblock_tr1_snx_xjc" outputclass="language-ini">The files are already translated. Import them into the
+translation index instead of translating them.</codeblock></li>
+        <li>L'agent associe chaque fichier traduit à son fichier source, en suivant la <xref
+            href="cf-ai-translation-project-structure.dita">disposition</xref> de votre projet (ou
+          les consignes explicites que vous lui donnez lorsque l'association n'est pas évidente), et
+          enregistre une entrée d'index pour chaque paire en utilisant le SHA-1 de blob Git actuel
+          du fichier source. Aucun contenu n'est traduit à cette étape&#160;; seul l'index est
+          écrit.</li>
+        <li id="li_sd4_b55_1kc">Révisez l'index obtenu et les fichiers traduits, puis validez-les.</li>
+      </ol>
+      <note id="note_xml_lang" type="important">Chaque fichier traduit doit déclarer sa langue dans
+        l'attribut <codeph>xml:lang</codeph> de son élément racine, défini avec le code de la langue
+        cible (par exemple, <codeph>xml:lang="fr-FR"</codeph> sur l'élément
+          <codeph>&lt;topic></codeph> d'un topic français). Si cet attribut est absent d'un fichier,
+        ou s'il ne correspond pas à la langue importée, le fichier est rejeté et n'est pas
+        enregistré dans l'index. L'agent peut ajouter l'attribut et réessayer, mais l'importation est
+        plus rapide et plus prévisible lorsque les fichiers l'incluent déjà.</note>
+    </section>
+    <section id="cf-ai-translation-importing-verify">
+      <title>Vérifier avant de s'y fier</title>
+      <p id="p_td4_b55_1kc">L'importation marque une traduction comme <b>à jour</b> sans en vérifier la
+        qualité&#160;; confirmez donc l'état importé avant de vous y fier&#160;:</p>
+      <ul>
+        <li>Vérifiez par sondage que les traductions importées correspondent au contenu source à la
+          version enregistrée dans l'index.</li>
+        <li id="li_wd4_b55_1kc">Recherchez les fichiers sources qui n'ont pas de traduction
+          correspondante. Ils restent <b>manquants</b> et sont traduits lors de la tâche
+          suivante.</li>
+        <li id="li_xd4_b55_1kc">Si vous n'êtes pas sûr qu'une traduction soit toujours exacte,
+          excluez-la de l'importation ou supprimez son entrée d'index afin que l'agent la retraduise
+          au lieu de la considérer comme à jour.</li>
+      </ul>
+    </section>
+    <p>Il s'agit d'une étape de préparation à effectuer une seule fois. Dès que l'index reflète vos
+      traductions existantes, les tâches suivantes suivent le même flux de travail incrémentiel que
+      pour n'importe quel autre projet.</p>
+  </body>
+</topic>

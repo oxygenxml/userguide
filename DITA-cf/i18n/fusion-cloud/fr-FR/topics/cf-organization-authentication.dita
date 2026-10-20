@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="cf-organization-authentication" xml:lang="fr-FR">
+  <title>Page Authentification de l'organisation</title>
+  <shortdesc>Les administrateurs de l'organisation peuvent utiliser la page <uicontrol>Authentification</uicontrol> pour
+    configurer les fournisseurs d'authentification, l'authentification unique OIDC et les domaines e-mail approuvés.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Organisations<indexterm>Page Authentification</indexterm></indexterm>
+        <indexterm>Authentification</indexterm>
+        <indexterm>Authentification unique</indexterm>
+        <indexterm>OIDC</indexterm>
+        <indexterm>Domaines e-mail approuvés</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>La page <uicontrol>Authentification</uicontrol> de <ph keyref="product"/> permet aux administrateurs de l'organisation de
+      configurer la manière dont les utilisateurs peuvent rejoindre l'organisation et s'y connecter.</p>
+
+    <section id="section_access_authentication">
+      <title>Accéder à la page Authentification</title>
+      <p>Seuls les utilisateurs ayant le rôle d'<b>administrateur de l'organisation</b> peuvent accéder à la page de
+        gestion de l'authentification. Pour accéder à cette page&#160;: <ol>
+          <li>Cliquez sur le nom de votre profil utilisateur dans le coin supérieur droit de l'interface.</li>
+          <li>Sélectionnez <uicontrol>Gérer l'organisation</uicontrol> dans le menu déroulant.</li>
+          <li>Dans l'interface de gestion de l'organisation, cliquez sur
+              <uicontrol>Authentification</uicontrol> dans le panneau de navigation de gauche.</li>
+        </ol><note type="note">Si l'option <uicontrol>Gérer l'organisation</uicontrol>
+          n'apparaît pas dans votre menu utilisateur, vous ne disposez pas des privilèges
+          d'administrateur pour votre organisation.</note></p>
+    </section>
+
+    <section id="section_authentication_layout">
+      <title>Disposition de la page et composants</title>
+      <p>La page <uicontrol>Authentification</uicontrol> propose des options pour activer ou désactiver les fournisseurs
+        d'authentification et les domaines e-mail approuvés.</p>
+      <p id="p_xnf_d4l_1hc">
+        <fig id="fig_l4f_d4l_1hc">
+          <title>Page de gestion de l'authentification de l'organisation</title>
+          <image href="../img/generated/cf-organization-authentication-page.png"/>
+        </fig>
+      </p>
+      <p id="p_vp3_mk1_rhc">La page Authentification est organisée en plusieurs sections&#160;: </p>
+      <p id="p_tcn_h4l_1hc">
+        <dl id="dl_ucn_h4l_1hc">
+          <dlentry id="dlentry_vcn_h4l_1hc">
+            <dt>Options d'authentification unique</dt>
+            <dd>Permet aux administrateurs d'activer ou de désactiver l'inscription avec
+                <uicontrol>GitHub</uicontrol>, <uicontrol>Google</uicontrol> ou <uicontrol>OIDC
+                single sign-on</uicontrol>. Lorsque cette option est activée, les utilisateurs peuvent rejoindre l'organisation en utilisant
+              le fournisseur sélectionné, sans invitation. Toutefois, les utilisateurs qui rejoignent l'organisation
+              via l'authentification sociale ne se voient pas attribuer de licence automatiquement. Un
+              administrateur doit attribuer manuellement une licence à ces utilisateurs. <note type="tip"
+                id="note_wcn_h4l_1hc">Par défaut, l'authentification Google et GitHub est activée lors de la création
+                d'une organisation. L'administrateur de l'organisation peut désactiver ces
+                fournisseurs à tout moment depuis cette page.</note></dd>
+          </dlentry>
+          <dlentry id="dlentry_xcn_h4l_1hc">
+            <dt>Configuration du fournisseur OIDC</dt>
+            <dd>Lorsque <uicontrol>OIDC single sign-on</uicontrol> est activé, des champs supplémentaires apparaissent
+              pour configurer le fournisseur. Pour configurer l'authentification OIDC de votre organisation,
+              suivez ces instructions&#160;: <ol id="ul_ycn_h4l_1hc">
+                <li id="li_zcn_h4l_1hc"><b>Enregistrer une application</b>&#160;: dans l'interface d'administration
+                  de votre fournisseur OpenID Connect (tel que Microsoft Entra ID ou Okta), enregistrez
+                  une nouvelle application pour votre organisation Content Fusion dans le cloud&#160;:<ul
+                    id="ul_adn_h4l_1hc">
+                    <li id="li_bdn_h4l_1hc">Lorsqu'un URI de redirection est demandé, utilisez&#160;:
+                        <codeph>https://&lt;content-fusion-organization-address&gt;/api/oauthc/oidcId/callback</codeph>
+                      (remplacez <codeph>&lt;content-fusion-organization-address&gt;</codeph> par
+                      l'adresse réelle de votre organisation).</li>
+                    <li id="li_cdn_h4l_1hc">Après l'enregistrement, notez l'<b>ID client</b> (parfois
+                      appelé ID d'application) et le <b>secret client</b>.</li>
+                  </ul></li>
+                <li id="li_ddn_h4l_1hc"><b>Configurer les détails du fournisseur dans la page Authentification de
+                    Content Fusion</b>&#160;: <ul id="ul_edn_h4l_1hc">
+                    <li id="li_fdn_h4l_1hc"><b>Nom du fournisseur&#160;:</b> le nom d'affichage du fournisseur
+                      OIDC (par exemple, «&#160;Okta&#160;» ou «&#160;EntraID&#160;»).</li>
+                    <li id="li_gdn_h4l_1hc"><b>URL du point d'autorisation, URL du point de jeton, URL du point
+                        d'informations utilisateur</b>&#160;:<ul id="ul_hdn_h4l_1hc">
+                        <li id="li_idn_h4l_1hc"><b>Pour Okta&#160;:</b> pour récupérer les points de terminaison
+                            d'<b>autorisation</b>, de <b>jeton</b> et d'<b>informations utilisateur</b>,
+                          ajoutez <codeph>/.well-known/openid-configuration</codeph> à l'<b>URI de
+                            l'émetteur</b> de votre <b>serveur d'autorisation</b>. Vous pouvez trouver l'<b>URI de
+                            l'émetteur</b> dans <menucascade>
+                            <uicontrol>Okta Admin Console</uicontrol>
+                            <uicontrol>Security</uicontrol>
+                            <uicontrol>API</uicontrol>
+                            <uicontrol>Authorization Servers</uicontrol>
+                          </menucascade>.<p id="p_hyd_w2k_4fc">Par exemple, votre URL de découverte peut
+                            ressembler à&#160;:
+                              <codeph>https://&lt;okta-subdomain&gt;.okta.com/oauth2/&lt;authorizationServerId&gt;/.well-known/openid-configuration</codeph></p><p
+                            id="p_iyd_w2k_4fc">où vous devez remplacer
+                              <codeph>&lt;okta-subdomain&gt;</codeph> par votre domaine Okta, et
+                              <codeph>&lt;authorizationServerId&gt;</codeph> par l'ID réel de
+                            votre <b>serveur d'autorisation</b>.</p></li>
+                        <li id="li_odn_h4l_1hc"><b>Pour Microsoft Entra ID&#160;:</b> pour récupérer les points de terminaison
+                            d'<b>autorisation</b>, de <b>jeton</b> et d'<b>informations utilisateur</b>, utilisez&#160;:
+                            <codeph>https://login.microsoftonline.com/&lt;tenant-id&gt;/v2.0/.well-known/openid-configuration</codeph>,
+                          où vous devez remplacer <codeph>&lt;tenant-id&gt;</codeph> par l'<b>ID de l'annuaire (locataire)</b>
+                          figurant dans la vue d'ensemble de votre application enregistrée
+                          dans le portail Azure. </li>
+                      </ul></li>
+                    <li id="li_rdn_h4l_1hc"><b>ID client</b>&#160;: saisissez l'<b>ID client</b> (ou l'<b>ID
+                        d'application</b> dans certains cas) généré lors de l'enregistrement
+                      de l'application.</li>
+                    <li id="li_tdn_h4l_1hc"><b>Secret client</b>&#160;: saisissez le <b>secret client</b>
+                      généré lors de l'enregistrement de l'application.</li>
+                  </ul></li>
+                <li id="li_vdn_h4l_1hc"><b>Enregistrer la configuration</b>&#160;: après avoir saisi les informations
+                  requises, veillez à cliquer sur le bouton <uicontrol>Enregistrer</uicontrol>.</li>
+              </ol></dd>
+          </dlentry>
+          <dlentry id="dlentry_pmf_hmh_phc">
+            <dt>Domaines e-mail approuvés</dt>
+            <dd>Les administrateurs peuvent spécifier une liste de domaines d'e-mail (un par ligne) qui seront
+              approuvés&#160;; les utilisateurs dont l'adresse e-mail appartient à ces domaines pourront
+              s'inscrire sans invitation. Si un utilisateur rejoint l'organisation à partir d'un domaine e-mail approuvé, le système
+              lui attribue une licence SME si une licence est disponible.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <note type="note">
+        <ul>
+          <li>Les utilisateurs qui s'inscrivent avec Google ou GitHub ne reçoivent pas de rôle automatiquement. Un
+            administrateur de l'organisation doit attribuer un rôle pour accorder l'accès approprié.</li>
+          <li>Si un fournisseur social est désactivé par la suite, les utilisateurs qui s'étaient inscrits avec celui-ci peuvent
+            sélectionner <uicontrol>Forgot my password</uicontrol> pour définir un mot de passe et continuer à se
+            connecter avec leur adresse e-mail.</li>
+        </ul>
+      </note>
+    </section>
+  </body>
+</topic>
