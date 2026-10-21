@@ -60,39 +60,39 @@
     <section id="section_plugin_tools">
       <title>Tools Contributed by Plugins</title>
       <p id="p_plugin_tools_intro">Before the AI runs a tool contributed by another plugin or add-on,
-        the chat asks for your confirmation, even when the plugin declares that the tool is safe.
-        The approval box asks <uicontrol>Allow this tool to run?</uicontrol>, shows the name of the
-        tool and that it comes from a plugin, says what the tool does (or, for a call that the plugin
-        considers unsafe, the plugin's own warning), and shows the arguments of the call, if any.
-        The tools that <ph keyref="product"/> itself contributes, such as
-          <codeph>compare_documents</codeph>, are not concerned.</p>
-      <!-- Screenshot to add: the approval box of a plugin tool, with the menu of "Always allow this tool" open. -->
-      <p id="p_plugin_tools_choices">The approval box offers the following choices:</p>
+        the chat asks for your confirmation, even when the plugin declares that the call is safe. For
+        such a call, the approval box asks <uicontrol>Allow this tool to run?</uicontrol>, shows the
+        name of the tool and that it comes from a plugin, says what the tool does, and shows the
+        arguments of the call, if any. The tools that <ph keyref="product"/> itself contributes, such
+        as <codeph>compare_documents</codeph>, are not concerned.</p>
+      <p id="p_plugin_tools_choices">For a call that the plugin declares safe, the approval box offers
+        the following choices:</p>
       <p id="p_hvk_gsv_ykc">
         <dl id="dl_plugin_tools_choices">
           <dlentry id="dlentry_ivk_gsv_ykc">
-            <dt><uicontrol>Always allow this tool</uicontrol></dt>
-            <dd>Runs the tool and adds it to the list on this preferences page, so that it no longer
-              asks. If the plugin declares the call safe, only the calls that the tool declares safe
-              are allowed from then on, and the calls that it declares unsafe still ask for your
-              confirmation. If the plugin declares the call unsafe, every call of the tool is
-              allowed.</dd>
+            <dt><uicontrol>Always allow safe calls of this tool</uicontrol></dt>
+            <dd>Runs the tool and adds it to the list on this preferences page, so that the calls
+              that the tool declares safe no longer ask. The calls that it declares unsafe still ask
+              for your confirmation. Pressing <uicontrol>Enter</uicontrol> has the same effect.</dd>
           </dlentry>
           <dlentry id="dlentry_kvk_gsv_ykc">
             <dt><uicontrol>Allow once</uicontrol></dt>
-            <dd>Available in the menu of <uicontrol>Always allow this tool</uicontrol>. Runs the
-              tool this time only. Pressing <uicontrol>Enter</uicontrol> has the same effect.</dd>
+            <dd>Available in the menu of <uicontrol>Always allow safe calls of this
+                tool</uicontrol>. Runs the tool this time only. When the call cannot be always
+              allowed, it is the only choice besides <uicontrol>Skip</uicontrol>, and pressing
+                <uicontrol>Enter</uicontrol> has the same effect.</dd>
           </dlentry>
           <dlentry id="dlentry_mvk_gsv_ykc">
-            <dt><uicontrol>Always allow the [category] tools</uicontrol></dt>
-            <dd>Available in the menu of <uicontrol>Always allow this tool</uicontrol> when all the
-              tools of the plugin are in a category of their own that no other tool uses. The menu
-              item names the category, for example <uicontrol>Always allow the Git
-              tools</uicontrol>. Runs the tool and allows all the tools of the category at once,
-              with the same distinction between the calls declared safe and unsafe. This also covers
-              the tools added to the category later by an update of the plugin, or by another plugin
-              that takes its place. While two plugins contribute tools in the same category, it
-              applies to neither of them.</dd>
+            <dt><uicontrol>Always allow safe calls of the [category] tools</uicontrol></dt>
+            <dd>Available in the menu of <uicontrol>Always allow safe calls of this
+                tool</uicontrol> when all the tools of the plugin are in a category of their own that
+              no other tool uses. The menu item names the category, for example <uicontrol>Always
+                allow safe calls of the Git tools</uicontrol>. Runs the tool and allows the calls
+              that all the tools of the category declare safe at once. The calls that they declare
+              unsafe still ask for your confirmation. This also covers the tools added to the
+              category later by an update of the plugin, or by another plugin that takes its place.
+              While two plugins contribute tools in the same category, it applies to neither of
+              them.</dd>
           </dlentry>
           <dlentry id="dlentry_ovk_gsv_ykc">
             <dt><uicontrol>Skip</uicontrol></dt>
@@ -101,6 +101,16 @@
           </dlentry>
         </dl>
       </p>
+      <p id="p_plugin_tools_unsafe_calls">A call that the plugin declares unsafe is asked about in the
+        same way as the calls of other unsafe tools: the approval box shows the plugin's own warning
+        (or, if the plugin gives none, the name of the tool and the arguments of the call) and offers
+          <uicontrol>Allow</uicontrol>, which runs the tool this time only, and
+          <uicontrol>Skip</uicontrol>. Pressing <uicontrol>Enter</uicontrol> has the same effect as
+          <uicontrol>Allow</uicontrol>, and pressing <uicontrol>Esc</uicontrol> has the same effect as
+          <uicontrol>Skip</uicontrol>. The menu of <uicontrol>Allow</uicontrol> offers to always allow
+        the tool, which adds an entry that allows every call of the tool, such as
+          <codeph>plugin:git_push</codeph>. The calls that a plugin declares unsafe can only be always
+        allowed for each tool, never for a whole category.</p>
       <p id="p_plugin_tools_entries">The tools contributed by plugins are listed on this preferences
         page under names of their own, so that an entry added for another tool never allows them:</p>
       <ul id="ul_plugin_tools_entries">
@@ -111,8 +121,7 @@
           declares safe.</li>
         <li><codeph>plugin:category:</codeph> followed by the category, in lower case and with
           underscores in place of its spaces, such as <codeph>plugin:category:git</codeph>, allows
-          all the tools of the category. It can also be followed by a space and
-            <codeph>safe-calls</codeph>.</li>
+          the calls that the tools of the category declare safe.</li>
       </ul>
       <p id="p_plugin_tools_patterns">An entry that contains the <codeph>*</codeph> character covers
         the tools contributed by plugins only if it starts with <codeph>plugin:</codeph>. For
@@ -122,6 +131,9 @@
         in a transformation that uses the <xref href="custom_xpath_functions.dita">AI XPath
           functions</xref> or in an action that the AI runs by itself), a tool contributed by a
         plugin runs only if it is always allowed, even for the calls that the plugin declares safe.
+        A call that the plugin declares safe is allowed by an entry such as
+          <codeph>plugin:git_status safe-calls</codeph> or by the category of the tool, while a call
+        that it declares unsafe is allowed only by an entry such as <codeph>plugin:git_push</codeph>.
         Otherwise, the AI receives a refusal that identifies the entry to add and logs the
         refusal.</p>
       <p id="p_plugin_tools_option">To stop asking for a confirmation before the tools contributed by
