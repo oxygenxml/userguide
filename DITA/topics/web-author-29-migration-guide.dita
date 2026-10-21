@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="web-author-29-migration-guide">
+  <title>Upgrading Web Author from Version 28.1 to 29.0</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Migration</indexterm>
+        <indexterm>Upgrade from 28.1 to 29.0</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p>This migration guide describes the main changes that administrators and integrators should
+      review when upgrading <b>Oxygen XML Web Author</b> or <b>Oxygen XML Web Author Component</b>
+      from version 28.1 to version 29.0.</p>
+    <p>The information in this topic is intended for system administrators, deployment engineers,
+      and integrators who maintain advanced Web Author deployments, custom plug-ins, custom
+      authentication configurations, or WAR-based installations.</p>
+    <section id="section_migration_overview">
+      <title>Migration Overview</title>
+      <p>Version 29.0 updates several core and platform components. To avoid disrupting the live
+        environment, first upgrade a separate test deployment, then back up the production
+        deployment before applying the changes to it.</p>
+    </section>
+    <section id="section_tomcat_migration">
+      <title>Apache Tomcat Upgraded from Tomcat 9 to Tomcat 10.1</title>
+      <p><b>Oxygen XML Web Author</b> 29.0 and the License Servlet both require Apache Tomcat 10.1.
+        Earlier Web Author versions used Tomcat 9, which is not compatible with Web Author 29.0.</p>
+      <ul id="ul_b32_zll_rkc">
+        <li>If you use the <b>Oxygen XML Web Author product</b> distribution, Tomcat 10.1 is already
+          included and the bundled configuration files are updated accordingly. </li>
+        <li>If you deploy <b>Oxygen XML Web Author Component</b> or <b>Oxygen License Servlet from
+            the WAR distribution</b>, deploy it on Tomcat 10.1.</li>
+      </ul>
+      <p>Plugins may be affected if their third-party libraries depend on the
+          <filepath>javax.*</filepath> API interfaces, which are no longer available at runtime in
+        Tomcat 10. Tomcat 10 instead provides the equivalent servlet interfaces under
+          <filepath>jakarta.*</filepath>.</p>
+      <p>Recommended actions:</p>
+      <ol id="ol_tomcat_actions">
+        <li>If you are using the WAR distribution, deploy it in Tomcat 10.1.</li>
+        <li>Review any customized Tomcat 9 configuration files and migrate them to the format used
+          by Tomcat 10.1.</li>
+        <li>Verify that plug-ins and their third-party dependencies support the Servlet 6 runtime,
+          which uses <codeph>jakarta.</codeph> interfaces instead of <codeph>javax.</codeph>. Pay
+          particular attention to serialization and deserialization libraries such as Jackson or
+          Gson, and to DTOs that rely on <codeph>javax.annotation</codeph> classes.</li>
+        <li>If you made custom changes to <codeph>web.xml</codeph>, you must migrate them because
+          the <codeph>web.xml</codeph> file has changed in Web Author 29.</li>
+        <li>Review the Apache Tomcat migration documentation for additional compatibility
+            requirements:<ul id="ul_tomcat_links">
+            <li><xref href="https://tomcat.apache.org/migration-10.html" format="html"
+                scope="external">Apache Tomcat 10.0 Migration Guide</xref></li>
+            <li><xref href="https://tomcat.apache.org/migration-10.1.html" format="html"
+                scope="external">Apache Tomcat 10.1 Migration Guide</xref></li>
+          </ul></li>
+      </ol>
+    </section>
+    <section id="section_shiro_migration">
+      <title>Apache Shiro Upgraded from Version 2.2.1 to 3.0.0</title>
+      <p>Recommended actions:</p>
+      <ol id="ol_shiro_actions">
+        <li><b>If you customized the <codeph>shiro.ini</codeph> file</b>, revalidate each change to
+          make sure it works with Shiro 3.0.0. The default <filepath>shiro.ini</filepath> file has
+          not changed between versions 28.1 and 29.0.</li>
+        <li>If you encounter problems, also review the Apache Shiro migration documentation: <xref
+            href="https://shiro.apache.org/migration-guide.html#migrating-2x-to-3x" format="html"
+            scope="external">Migrating from Shiro 2.x to 3.x</xref>.</li>
+      </ol>
+    </section>
+    <section id="section_m5y_jg4_qkc">
+      <title>Secure Cookies Behind a Reverse Proxy</title>
+      <p>In <b>Oxygen XML Web Author</b> 29.0, Apache Shiro 3.0.0 adds the <codeph>Secure</codeph>
+        attribute to a cookie <b>only</b> when the application itself receives the request over
+        HTTPS. Therefore, if Web Author is exposed to browsers over HTTPS through a reverse proxy,
+        but the proxy forwards requests to Web Author over HTTP, the session cookie is sent without
+        the <codeph>Secure</codeph> attribute — even when Web Author is configured to require
+        it.</p>
+      <p>Two options are affected when the <codeph>Secure</codeph> attribute is absent. If only the
+          <codeph>Use secure cookie attribute</codeph> Administration page option is enabled, Web
+        Author still works, but the session cookie is no longer restricted to HTTPS. If the
+          <codeph>force.cookies.samesite.none</codeph> configuration option is enabled, browsers
+        reject the cookie because <codeph>SameSite=None</codeph> requires Secure, and Web Author
+        fails to load with the message: <i>Cookies are disabled. Please enable cookies!</i></p>
+      <p>To address the missing <codeph>Secure</codeph> cookie attribute, you can configure the
+        reverse proxy to add it. For example, an NGINX configuration may look like
+        this:<codeblock id="codeblock_qvg_bm4_qkc" outputclass="language-javascript">  # nginx.conf
+  server {
+    proxy_cookie_flags ~ Secure;</codeblock></p>
+    </section>
+    <section id="section_security_manager_migration">
+      <title>Web Author Uses Oxygen Security Manager (Java Security Manager Was Removed from Recent
+        Java Versions) </title>
+      <p><b>Oxygen XML Web Author</b> 29.0 uses the <b>Oxygen Security Manager</b>. The Java
+        Security Manager has been removed from recent Java versions and is no longer compatible with
+        Web Author 29.0.</p>
+      <p>In version 28.1, the Java Security Manager was active by default in the <b>Oxygen XML Web
+          Author</b> product distribution and could be enabled manually for the <b>Oxygen XML Web
+          Author Component</b>. In version 29.0, Web Author works only with the <b>Oxygen Security
+          Manager</b> (it does not work with the Java Security Manager, even on a Java version that
+        still includes it).</p>
+      <p>The <b>Oxygen Security Manager</b> is enabled by default in the Web Author All Platforms,
+        Linux, and Windows distributions. In the WAR distribution and in <b>Oxygen XML Web Author
+          Component</b>, which is also distributed as a WAR, it is not configured by default. You
+        must either enable the <b>Oxygen Security Manager</b> manually or explicitly disable it.
+        Otherwise, Web Author fails to start.</p>
+      <p>If you use a WAR distribution, follow the steps and recommendations below to enable the
+          <b>Oxygen Security Manager</b>:</p>
+      <ol id="ol_rtb_d2p_qkc">
+        <li>
+          <p>The Java platform permanently disabled the Security Manager, as specified by JEP 486
+            (developed by Oracle as part of the OpenJDK project). As a result, some
+              <codeph>java.security.AccessController</codeph> methods are still available in the JRE
+            but behave differently than before. For example,
+              <codeph>java.security.AccessController.doPrivileged</codeph> now runs the action
+            without applying permission restrictions. Check that your plug-ins do not rely on the
+            previous behavior of these methods, either in their own code or through third-party
+            libraries. For details, see <xref href="https://openjdk.org/jeps/486" format="html"
+              scope="external"/>.</p>
+        </li>
+        <li>Check that plug-ins do not implement
+            <codeph>java.net.URLConnection.getPermission</codeph> because this is no longer
+          supported.</li>
+        <li>Make sure that no applications other than the built-in <b>Oxygen</b> applications run in
+          the same Tomcat instance, because the <b>Oxygen Security Manager</b> can interfere with
+          other applications running in that JVM.</li>
+        <li>
+          <p>Remove system properties and arguments that are specific to the Java Security Manager,
+            such as <codeph>-Djava.security.manager</codeph> and Tomcat's <codeph>-security</codeph>
+            argument.</p>
+        </li>
+        <li>Migrate from <filepath>catalina.policy</filepath> to <filepath>oxygen.policy</filepath>.
+          The <b>Oxygen Security Manager</b> requires an <codeph>oxygen.policy</codeph> file that
+          specifies permissions. If you previously had additional permissions in
+            <filepath>catalina.policy</filepath>, you must now add them to
+            <filepath>oxygen.policy</filepath>. You can obtain this file from the All Platforms kit.
+          Note that <codeph>oxygen.policy</codeph> uses internal classes from the
+            <codeph>ro.sync.security</codeph> package; it does not use JRE permission classes that
+          are deprecated for removal and are not supported.</li>
+        <li>Specify the <codeph>oxygen.policy</codeph> location with the
+            <codeph>-Doxygen.security.policy</codeph> system property.</li>
+        <li>Add the
+            <codeph>-javaagent:./tomcat/webapps/oxygen-xml-web-author/WEB-INF/lib/oxygen-sandbox.jar</codeph>
+          JVM argument. Ensure that the application is deployed at the
+            <codeph>oxygen-xml-web-author</codeph> path and that the WAR is expanded (unzipped)
+          before starting Tomcat; otherwise, the <codeph>javaagent</codeph> JAR location will not
+          exist on disk.</li>
+        <li>Verify that Web Author starts with the <b>Oxygen Security Manager</b> enabled by
+          checking logs for <codeph>You are running oXygen XML Web Author with security mode
+            enabled</codeph> and that no permission-related errors or warnings from custom plug-ins
+          appear.</li>
+      </ol>
+    </section>
+    <section id="section_sdk_api_migration">
+      <title>Deprecated Oxygen SDK APIs </title>
+      <p>As Tomcat 10 migrated to the Jakarta APIs, <b>we deprecated the Oxygen SDK APIs that depend
+          on <codeph>javax</codeph></b>. This change affects the <codeph>WebappServlet</codeph> and
+          <codeph>WebappServletFilter</codeph> extensions declared in <codeph>plugin.xml</codeph>
+        with <codeph>&lt;extension type="…"&gt;</codeph>.</p>
+      <p>Web Author maintains compatibility with older plug-ins that use these deprecated extension
+        classes by using internal adapters between the Jakarta Servlet and Javax Servlet APIs.
+        However, these adapters offer only partial compatibility. For example, async responses are
+        not supported. Therefore, although existing filters and servlets might continue to work, you
+        should migrate away from legacy <codeph>javax.servlet</codeph>-based APIs.</p>
+      <p>The application logs a startup warning for each plug-in that uses the deprecated extension.
+        For example: <codeph>The 'X' plugin uses the deprecated WebappServletPluginExtension
+          extension</codeph>. Update the affected plug-in to use the replacement extension described
+        below.</p>
+      <p>Recommended actions:</p>
+      <ol id="ol_sdk_actions">
+        <li>Replace <codeph>WebappServlet</codeph> extensions that use
+            <codeph>ro.sync.ecss.extensions.api.webapp.plugin.WebappServletPluginExtension</codeph>
+          with
+          <codeph>ro.sync.ecss.extensions.api.webapp.plugin.ServletPluginExtension</codeph>.</li>
+        <li>Replace <codeph>WebappServlet</codeph> extensions with <codeph>role="config"</codeph>
+          that use <codeph>ro.sync.ecss.extensions.api.webapp.plugin.PluginConfigExtension</codeph>
+          with
+            <codeph>ro.sync.ecss.extensions.api.webapp.plugin.ServletPluginConfigExtension</codeph>.</li>
+        <li>No replacement API was added directly in the <b>Oxygen SDK</b> for the deprecated
+            <codeph>WebappServletFilter</codeph> extension point, which uses
+            <codeph>javax.servlet.Filter</codeph>. If you still need to add a filter, configure
+          servlet filters directly in Tomcat by editing <filepath>tomcat/conf/web.xml</filepath>
+          instead of using this extension point. For details, see <xref scope="external"
+            format="html" href="https://tomcat.apache.org/tomcat-10.0-doc/config/filter.html">Apache
+            Tomcat filter configuration</xref>.</li>
+      </ol>
+    </section>
+    <section id="section_vwn_qm4_qkc">
+      <title>WebSphere Support </title>
+      <p>WebSphere is no longer supported in Web Author 29.0. Although Web Author could previously
+        be run on WebSphere by using the standard WAR distribution, that deployment option has been
+        deprecated since version 27.0.</p>
+      <p>Recommended action: Run Web Author 29.0 on Apache Tomcat 10.1 instead.</p>
+    </section>
+    <section id="section_java_migration">
+      <title>Java Runtime </title>
+      <p>The minimum required Java version for Web Author 29.0 changed from 17 to 21.</p>
+    </section>
+    <section id="section_post_migration_validation">
+      <title>Post-Migration Validation</title>
+      <p>After upgrading, review the server logs and test both common usage scenarios and any
+        deployment-specific customizations.</p>
+    </section>
+  </body>
+</topic>
