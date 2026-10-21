@@ -661,15 +661,41 @@ public class StoreOperation extends AuthorOperationWithResult {
             recent conversations).</li>
         </ul></p>
       <p>Instead of operations, the page that integrates <uicontrol>Web Author</uicontrol> can
-        provide its own storage (for example, the local storage of the browser). To do this, define
-        a <codeph>window.POSITRON_STORAGE</codeph> object with a <codeph>save(key, value)</codeph>
-        and a <codeph>load(key)</codeph> JavaScript method. When both methods are defined, they are
-        used for the favorites and the chat history instead of the operations. Define the object
-        when the page loads, before AI Positron loads or saves the favorites and the chat history.
-        Example:<codeblock outputclass="language-javascript">// currentUserId identifies the user logged in to the CMS.
+        provide its own storage (for example, a server of the CMS, a database, or the local storage
+        of the browser). To do this, define a <codeph>window.POSITRON_STORAGE</codeph> object with a
+          <codeph>save(key, value)</codeph> and a <codeph>load(key)</codeph> JavaScript method. Both
+        methods must return a promise, which lets them wait for a request to a server to finish.
+        Declaring them <codeph>async</codeph> is the simplest way to do this. When both methods are defined, they are used for the
+        favorites and the chat history instead of the operations. Define the object when the page
+        loads, before AI Positron loads or saves the favorites and the chat history. Example of a
+        storage kept on a server:<codeblock outputclass="language-javascript">// storeUrl is where the CMS keeps the values of the user logged in to it.
 window.POSITRON_STORAGE = {
-  save: (key, value) => localStorage.setItem(currentUserId + "." + key, value),
-  load: key => localStorage.getItem(currentUserId + "." + key)
+  async save(key, value) {
+    const response = await fetch(`${storeUrl}/${encodeURIComponent(key)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: value
+    });
+    if (!response.ok) {
+      throw new Error(`Could not save ${key}: ${response.status}`);
+    }
+  },
+  async load(key) {
+    const response = await fetch(`${storeUrl}/${encodeURIComponent(key)}`);
+    if (response.status === 404) {
+      return null;
+    }
+    if (!response.ok) {
+      throw new Error(`Could not load ${key}: ${response.status}`);
+    }
+    return response.text();
+  }
+};</codeblock></p>
+      <p>A storage that answers at once, such as the local storage of the browser, must also return
+        promises. Example:<codeblock outputclass="language-javascript">// currentUserId identifies the user logged in to the CMS.
+window.POSITRON_STORAGE = {
+  save: async (key, value) => localStorage.setItem(currentUserId + "." + key, value),
+  load: async key => localStorage.getItem(currentUserId + "." + key)
 };</codeblock></p>
       <note type="attention">The <codeph>window.POSITRON_STORAGE</codeph> JavaScript API is
         experimental. It may change or be removed in a future version, without backward
@@ -677,20 +703,24 @@ window.POSITRON_STORAGE = {
       <p>The methods receive the same keys as the operations, and must behave as follows:<ul>
           <li><codeph>save(key, value)</codeph> receives the data serialized as a JSON string in
               <codeph>value</codeph>, and must keep it under <codeph>key</codeph>, replacing what
-            was kept there before. It can return a promise.</li>
-          <li><codeph>load(key)</codeph> must return the string that was last saved for that key, or
-              <codeph>null</codeph> if nothing was saved yet. It can return the string directly or
-            as a promise. A promise must always be resolved or rejected. Until it is, the
-            conversations that end in the meantime are not saved.</li>
+            was kept there before. It must return a promise that is resolved once the data is kept,
+            or rejected if it cannot be kept.</li>
+          <li><codeph>load(key)</codeph> must return a promise that is resolved with the string that
+            was last saved for that key, or with <codeph>null</codeph> if nothing was saved yet, and
+            rejected if the data cannot be read. The promise must always be resolved or rejected.
+            Until it is, the conversations that end in the meantime are not saved.</li>
+          <li>A method that throws an error, returns something other than a promise, or whose
+            promise is rejected, fails. The failure is reported in the browser console.</li>
         </ul></p>
       <note type="important">
         <ul>
           <li>The stored data is the user's content. The chat history includes the prompts, the
             answers, and the results of the tools, which may contain document content. If the
             storage is shared by several users (for example, the local storage of a shared browser
-            profile), prefix the keys with an identifier of the user, as in the example above.</li>
-          <li>If a load fails (the method throws an error, its promise is rejected, or it returns
-            something other than the saved string), or if the object is defined after AI Positron
+            profile), prefix the keys with an identifier of the user, as in the local storage
+            example above.</li>
+          <li>If a load fails (the method fails, or its promise is resolved with something other
+            than the saved string), or if the object is defined after AI Positron
             has loaded a list, the list is empty and the next save replaces everything that was kept
             under that key.</li>
           <li>A browser's local storage provides approximately 5 MB for each website. Saving data
