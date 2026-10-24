@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="scripting-generate-hash-report-for-directory">
+  <title>Generate Hash Report for Directory</title>
+  <body>
+    <note conkeyref="reusables-scripting/note-scripting-license" id="note_scripting_license"/>
+    <p>The <uicontrol>Generate Hash Report for Directory</uicontrol> script
+        (<codeph>generateHash.sh</codeph>/<codeph>generateHash.bat</codeph>, found in the
+        <filepath>scripts</filepath> subfolder inside the <b>Oxygen's</b> installation directory)
+      generates a report with a content-aware hash for each file in a directory or ZIP archive. The
+      script does not compare two locations (it only produces the per-file fingerprints that you can
+      later compare.</p>
+    <p product="author developer editor">This script is the command-line equivalent of the <xref
+        href="generate-hash-report-for-directory.dita">Generate Hash Report for Directory</xref>
+      tool. See that topic for information about hash calculation, supported content types, and
+      known limitations.</p>
+    <section id="syntax">
+      <title>Arguments for the Generate Hash Report for Directory Script</title>
+      <codeblock outputclass="language-bourne">generateHash.bat -p dirOrArchivePath -r hashReportPath [-csv] [-d diffOptionsFilePath] [-v]
+  [-help | --help | -h | --h]</codeblock>
+      <p>On Linux or macOS, use <codeph>sh generateHash.sh</codeph> instead of <codeph>generateHash.bat</codeph>.</p>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>-p dirOrArchivePath</dt>
+            <dd>Mandatory argument that specifies the target directory or ZIP archive for which the hash report is generated.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-r hashReportPath</dt>
+            <dd>Mandatory argument that specifies the path and name of the hash report. The report is XML-formatted. The <filepath>.xml</filepath> extension is added if it is not specified.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-csv</dt>
+            <dd>Optional argument with no value. When present, the script also generates a simplified CSV report with the same path and name as <codeph>-r</codeph> and the <filepath>.csv</filepath> extension.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-d diffOptionsFilePath</dt>
+            <dd>Optional argument that specifies a JSON, YAML, or XML configuration file that defines differences to ignore when computing hashes. The file uses the format described in <xref href="scripting-arguments-comparison-scripts.dita">Providing Arguments to Comparison Scripts via a Configuration File</xref>. Files that differ only in ignored ways have the same hash.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-v</dt>
+            <dd>Optional argument with no value. By default, the script prints only the final result. When present, it also prints each file as the script processes it.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>-help | --help | -h | --h</dt>
+            <dd>Displays help text.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <note type="note">The <codeph>dirOrArchivePath</codeph>, <codeph>hashReportPath</codeph>, and <codeph>diffOptionsFilePath</codeph> arguments can use relative paths. The script resolves them against the current working directory, including <filepath>.</filepath> and <filepath>..</filepath> segments.</note>
+    </section>
+    <section id="exit-status">
+      <title>Exit Status and Console Output</title>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>0</dt>
+            <dd>The script generated the report or reports successfully and printed the path of each generated report.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>1</dt>
+            <dd>The script could not generate the report. For example, a mandatory argument is missing, the target or diff options file does not exist, the diff options file is malformed, or the output file's parent directory does not exist. The script prints the reason as an <codeph>ERROR:</codeph> line.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p>An unrecognized argument does not stop the script. It prints a <codeph>WARNING</codeph>
+        line and ignores the argument.</p>
+      <codeblock outputclass="language-bourne">generateHash.bat -p dirOrArchivePath -r hashReportPath -csb
+WARNING: Unexpected argument "-csb" ignored.
+Hash report written to: hashReportPath.xml</codeblock>
+      <note type="tip">The parent directory of the report file specified by <codeph>-r</codeph> must exist. The script does not create it.</note>
+    </section>
+    <section id="xml-report-format">
+      <title>XML Report Format</title>
+      <codeblock xml:space="preserve" outputclass="language-xml">&lt;fileHashReport directoryPath="D:/deployments/location-046"
+                diffOptionsFilePath="D:/deployments/diffOptions.json"&gt;
+  &lt;meta name="description" content="File hash report"/&gt;
+  &lt;meta name="author" content="Oxygen XML App Suite"/&gt;
+  &lt;meta name="userName" content="john_doe"/&gt;
+  &lt;meta name="reportTimestamp"
+        content="2026-09-17T10:18:01.3927923"/&gt;
+  &lt;meta name="diffOptions"
+        content="Include files filter:*; ...; Ignore attribute order:true;"/&gt;
+  &lt;dir name="app"&gt;
+    &lt;file name="log.xml" path="app/log.xml" size="1204"
+          modified="2026-09-16T11:30:12.374Z"
+          hash="7e83f485e6ea30e7c7b52614e2f08daaf5c0a6496d5b31091d8a3e162918387f"/&gt;
+    &lt;file name="notes.txt" path="app/notes.txt" size="598"
+          modified="2026-09-16T15:02:10.657Z"
+          hash="1505a90671f30a6c6af075493d77a1b1eb04985ae82716102c42fd8d7c334a64"
+          additionalInfo="hash based on raw file bytes"/&gt;
+  &lt;/dir&gt;
+  ......
+  &lt;file name="results-023.json" path="results-023.json" size="4522"
+        modified="2026-08-16T16:22:19.571Z"
+        hash="1c23bebcbf488bbfa3b6f5f2be6c82a1d490b7a641eda526570ee9ffd0233b4c"/&gt;
+&lt;/fileHashReport&gt;</codeblock>
+      <p id="p_jwx_14y_zkc">File paths are relative to the scanned directory. You can match the same
+        file in reports generated on different machines or from different absolute locations by its
+          <codeph>path</codeph> attribute.</p>
+      <p id="p_kwx_14y_zkc" product="author developer editor">For more details about the attributes
+        and elements, and how the hash is computed for each content type, see the <xref
+          href="generate-hash-report-for-directory.dita">Generate Hash Report for Directory
+          Tool</xref> topic.</p>
+    </section>
+    <section id="csv-report-format">
+      <title>CSV Report Format</title>
+      <p>When you specify <codeph>-csv</codeph>, the script writes a flat CSV report alongside the XML report. Use the CSV report in a spreadsheet or SQL-like tool.</p>
+      <codeblock xml:space="preserve" outputclass="language-csv">"name";"path";"size";"modified";"hash";"additionalInfo"
+"log.xml";"app/log.xml";"1204";"2026-09-16T11:30:12.374Z";
+"7e83f485e6ea30e7c7b52614e2f08daaf5c0a6496d5b31091d8a3e162918387f";""
+"notes.txt";"app/notes.txt";"598";"2026-09-16T15:02:10.657Z";
+"1505a90671f30a6c6af075493d77a1b1eb04985ae82716102c42fd8d7c334a64";
+"hash based on raw file bytes"
+"results-023.json";"results-023.json";"4522";"2026-08-16T16:22:19.571Z";
+"1c23bebcbf488bbfa3b6f5f2be6c82a1d490b7a641eda526570ee9ffd0233b4c";""</codeblock>
+      <ul>
+        <li>The report uses semicolons as delimiters. It quotes every field and doubles embedded quotation marks.</li>
+        <li>The report has one row for each file. It has no rows for directories.</li>
+        <li>The columns correspond to the attributes of an XML <xmlelement>file</xmlelement>
+          element. Read the XML report for report metadata, such as the timestamp, user, and diff
+          options.</li>
+        <li>The script computes each file hash once and uses it in both reports.</li>
+      </ul>
+    </section>
+    <section id="comparing-reports">
+      <title>Comparing Reports</title>
+      <p>Reports generated by this script use the same format as reports generated by the GUI tool. Generate a report for each location with the same <codeph>-d</codeph> diff options file, then compare the reports with XQuery or load the CSV reports into a SQL-capable tool.</p>
+      <p product="author developer editor">For XQuery examples that compare a reference location or
+        check for drift, see <xref
+          href="generate-hash-report-for-directory.dita#generate-hash-report-for-directory/section_kfs_ppq_wkc"
+          >Example: Verifying Consistent Deployment Across Multiple Locations</xref>.</p>
+    </section>
+    <section id="examples">
+      <title>Examples of Generate Hash Report for Directory Script</title>
+      <p>
+        <dl>
+          <dlentry>
+            <dt>Example 1: Generate an XML Report</dt>
+            <dd>
+              <p>Generate an XML report for a deployment:</p>
+              <codeblock outputclass="language-bourne">generateHash.bat -p "D:\deployments\location-046"
+  -r "D:\deployments\location-046-report"</codeblock>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Example 2: Generate XML and CSV Reports with Diff Options</dt>
+            <dd>
+              <p>Generate both report formats and apply settings that ignore selected differences:</p>
+              <codeblock outputclass="language-bourne">generateHash.bat -p "D:\deployments\location-046"
+  -r "D:\deployments\location-046-report" -csv
+  -d "D:\deployments\diffOptions.json"</codeblock>
+            </dd>
+          </dlentry>
+          <dlentry>
+            <dt>Example 3: Print Progress</dt>
+            <dd>
+              <p>Generate XML and CSV reports and print progress for every processed file:</p>
+              <codeblock outputclass="language-bourne">generateHash.bat -p "D:\deployments\location-046"
+  -r "D:\deployments\location-046-report" -csv -v</codeblock>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p>On Linux or macOS, replace <codeph>generateHash.bat</codeph> with <codeph>sh generateHash.sh</codeph>.</p>
+    </section>
+  </body>
+  <related-links>
+    <link href="generate-hash-report-for-directory.dita" product="author developer editor">
+      <linktext>Generate Hash Report for Directory</linktext>
+    </link>
+    <link href="scripting-compare-directories.dita">
+      <linktext>Compare Directories Script</linktext>
+    </link>
+  </related-links>
+</topic>
