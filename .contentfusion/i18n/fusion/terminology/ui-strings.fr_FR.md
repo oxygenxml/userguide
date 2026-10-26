@@ -2531,7 +2531,7 @@
 | upgrade.dialog.title | Upgrade Subscription | Mettre à niveau l'abonnement | Title for the upgrade subscription dialog |
 | upgrade_required | Server Upgrade Required | Mise à niveau du serveur requise | Title for upgrade required message |
 | upgrade_required_message | Your Content Fusion server version is older than 9.0 and does not support the Projects API. To access projects, please upgrade your server to version 9.0 or later. | Votre version du serveur Content Fusion est antérieure à 9.0 et ne prend pas en charge l'API Projects. Pour accéder aux projets, veuillez mettre à niveau votre serveur vers la version 9.0 ou ultérieure. | Message for upgrade required |
-| upload | Upload | Transférer | Upload button text |
+| upload | Upload | Téléverser | Upload button text |
 | upload-only-first-level-references | Upload only resources that are directly referenced in the files to be reviewed. | Ne téléversez que les ressources qui sont directement référencées dans les dossiers à examiner. | Checkbox message presented in Preferences page that controls whatever to upload only first level references or all references |
 | upload-only-first-level-references-warn | Enabling this option may cause some DITA features (e.g. conkeyrefs) to not work properly. | L'activation de cette option peut entraîner un mauvais fonctionnement de certaines fonctionnalités de DITA (par exemple, les conkeyrefs). | Warning that expose the limitation of the option. |
 | upload.folder | Upload folder | Téléverser le dossier |  |
