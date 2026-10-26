@@ -249,7 +249,7 @@
 | cancel.job.confirmation.message | Are you sure you want to cancel this job? | Êtes-vous sûr de vouloir annuler cette tâche ? | Message in the confirmation dialog shown before cancelling a batch job. |
 | cancel.job.failed | Failed to cancel job | Impossible d'annuler le travail | Error dialog title when a cancel job request fails. |
 | cancel.job.failed.message | The job could not be cancelled. Please try again. | Le travail n'a pas pu être annulé. Veuillez réessayer. | Error dialog message when a cancel job request fails. |
-| cancel.merge.project.btn | Transition the task back to the "Review closed" state, discarding any changes made during the integration process. This will also revoke your exclusive access to the files. | Revenir à l'état "Révision fermée" de la tâche, en abandonnant toutes les modifications apportées pendant le processus d'intégration. Cela révoquera également votre accès exclusif aux fichiers. | Tooltip shown when hovering over the Cancel integration button. |
+| cancel.merge.project.btn | Transition the task back to the "Review closed" state, discarding any changes made during the integration process. This will also revoke your exclusive access to the files. | Revenir à l'état "Révision clôturée" de la tâche, en abandonnant toutes les modifications apportées pendant le processus d'intégration. Cela révoquera également votre accès exclusif aux fichiers. | Tooltip shown when hovering over the Cancel integration button. |
 | cancel.organization.deletion | Cancel deletion | Annuler la suppression | Button text to cancel organization deletion |
 | cancel_deletion_instruction | To cancel the deletion, please click the button below: | Pour annuler la suppression, veuillez cliquer sur le bouton ci-dessous : | Instruction to cancel the deletion |
 | cancel_organization_deletion | Cancel Organization Deletion | Annuler la suppression de l'organisation | Button text to cancel organization deletion |
@@ -339,7 +339,7 @@
 | close.others | Close other tabs | Fermer les autres onglets | Short label for button that closes all other tabs excepts the current one |
 | close.review | Close review | Fermer la révision | Action that closes the collection of reviews from Subject Matter Experts. |
 | close.review.failed | Failed to close review | Échec de la fermeture de la révision | Error message presented when the review close of a review task has failed. |
-| close.review.tooltip | Transition the task to the "Review closed" state. The reviewers will not be able to make further edits, but owners can still make changes. | Passer la tâche à l'état "Révision fermée". Les examinateurs ne pourront plus apporter de modifications, mais les propriétaires pourront toujours le faire. | Tooltip for an Action that closes the collection of reviews from Subject Matter Experts. |
+| close.review.tooltip | Transition the task to the "Review closed" state. The reviewers will not be able to make further edits, but owners can still make changes. | Passer la tâche à l'état "Révision clôturée". Les examinateurs ne pourront plus apporter de modifications, mais les propriétaires pourront toujours le faire. | Tooltip for an Action that closes the collection of reviews from Subject Matter Experts. |
 | close.to.left | Close tabs to the left | Fermer les onglets à gauche | Short label for button that closes all tabs to the left of the current one |
 | close.to.right | Close tabs to the right | Fermer les onglets à droite | Short label for button that closes all tabs to the right of the current one |
 | close_and_close | Copy and close | Copier et fermer | Copy and close button of the troubleshoot dialog. |
@@ -1141,7 +1141,7 @@
 | mark.as.integrated.tooltip | Transition the task to the "Integrated" state. An integrated task is hidden by default in the tasks list, but still accessible to owners. It will not be accessible anymore to reviewers. | Faites passer la tâche à l'état "Intégré". Une tâche intégrée est masquée par défaut dans la liste des tâches, mais reste accessible aux propriétaires. Elle ne sera plus accessible aux examinateurs. | Mark a review task as integrated |
 | mark.as.not.integrated | Mark as not integrated | Marquer comme non intégré | Mark a legacy review task as not integrated, reverting from integrated to review closed state |
 | mark.as.not.integrated.failure | Failed to mark the task as not integrated. | Échec de la marque de la tâche comme non intégrée. | Error message when marking a task as not integrated fails |
-| mark.as.not.integrated.tooltip | Revert the task to "Review Closed" state where it becomes visible to reviewers, but only the owner can make changes. | Revenez la tâche à l'état "Révision fermée" où elle devient visible pour les examinateurs, mais seul le propriétaire peut apporter des modifications. | Tooltip for marking a task as not integrated |
+| mark.as.not.integrated.tooltip | Revert the task to "Review Closed" state where it becomes visible to reviewers, but only the owner can make changes. | Revenez la tâche à l'état "Révision clôturée" où elle devient visible pour les examinateurs, mais seul le propriétaire peut apporter des modifications. | Tooltip for marking a task as not integrated |
 | mark.as.not.reviewed | Mark as not reviewed | Marquer comme non révisé | Mark a file as not reviewed |
 | mark.as.reviewed | Mark as reviewed | Marquer comme révisé | Mark a file as reviewed |
 | mark.not.integrated | Mark as not integrated | Marquer comme non importé | Menu action on an already-integrated job card that clears its integrated marker, so it shows as not brought into the workspace again. |
@@ -1851,7 +1851,7 @@
 | resume.conflicts.resolution | Resume conflicts resolution | Reprendre la résolution des conflits | Resume conflicts resolution button text. |
 | Retry | Retry | Réessayer | Retry button text; Try re-running an action that just failed.; Label for the retry connection button. |
 | return.to.login | Return to login | Retour à la page de connexion | Label shown on navigation button. |
-| review.closed | Review closed | Révision fermée | Label for a task that has been closed. |
+| review.closed | Review closed | Révision clôturée | Label for a task that has been closed. |
 | review.restarted | Your review is in progress again due to your recent changes | Votre révision est de nouveau en cours en raison de vos modifications récentes | Message presented when a reviewer edits a document from a finalized review task. |
 | review.status.summary | Review Status | Statut de la révision | The title of the popover that appears when we click to see the finalization status for each reviewer. |
 | review.task | review task | tâche de révision | Short name for a review task, used in merge conflict messages. |
