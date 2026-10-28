@@ -1,94 +1,266 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="translation_procedure">
-  <title>Translating an Oxygen user manual</title>
-  <shortdesc>Use this procedure to translate a user manual into a new language, or to update an
-    existing translation.</shortdesc>
+  <title>Translating an Oxygen User Manual with Content Fusion</title>
+  <shortdesc>Use the <ph>Content Fusion</ph> AI translation agent to translate a user manual into a
+    new language, or to update a translation after the English source changes.</shortdesc>
   <body>
-    <p id="p_b4g_j5p_1lc">The translation process includes the next steps: create a translation
-      branch, translate user manual, review and update the translation, integrate the translation
-      branch and optional publish it.</p>
-    <p id="p_ypf_rwp_1lc">A translation branch lets you work on a translation without changing the
-      source content. When reviewing the translation, you compare the source-language topic with the
-      translated topic. The source-language topic must remain unchanged during this review.</p>
-    <p>As example I will translate the <b>Content Fusion Cloud</b> manual into <b>French</b>
-        (<codeph>fr-FR</codeph>).</p>
+    <p id="p_b4g_j5p_1lc">The AI translation agent in <ph>Content Fusion</ph> translates a whole
+      DITA publication in one job. It keeps the DITA structure, copies the images, and records what
+      it translated in a translation index. The next time you run it, it translates only the topics
+      that changed. So the same procedure works for a first translation and for every update
+      after it.</p>
+    <p>A good translation of a user manual needs more than a good model. The reader follows the
+      manual while looking at the product, so every menu and button name must match the localized
+      product. This procedure shows how to give the agent that knowledge, and how to check the
+      result before it reaches the readers.</p>
+    <p>The examples translate the <b>Content Fusion Cloud</b> manual into <b>French</b>
+        (<codeph>fr-FR</codeph>). For another manual or language, replace the product name and the
+      language tag.</p>
     <section id="steps-at-a-glance">
-      <title>Steps at a glance</title>
+      <title>The workflow at a glance</title>
       <ol>
-        <li><xref href="#create-branch">Create a translation branch</xref></li>
-        <li><xref href="#collect-values">Collect the values you need</xref></li>
-        <li><xref href="#prepare-resources">Prepare the language resources</xref></li>
-        <li><xref href="#translate">Translate</xref></li>
-        <li><xref href="#review">Review the translation</xref></li>
-        <li><xref href="#integrate">Integrate the translation branch</xref></li>
+        <li><xref href="#create-branch">Create a translation branch</xref>: keep the translation
+          work apart from the source content.</li>
+        <li><xref href="#prepare-resources">Prepare the translation resources</xref>: give the
+          agent the product's UI strings and the approved terminology.</li>
+        <li><xref href="#translate">Translate</xref>: run a translation job and bring its results
+          into your workspace.</li>
+        <li><xref href="#review">Review the translation</xref>: check the result with a quick
+          check, a bilingual reviewer, and an AI review.</li>
+        <li><xref href="#integrate">Integrate and publish</xref>: merge the translation branch and
+          publish the translated manual.</li>
       </ol>
     </section>
+    <section id="before-you-begin">
+      <title>Before you begin</title>
+      <p>You need:</p>
+      <ul>
+        <li>Access to the <ph>User Guide</ph> project in <ph>Content Fusion</ph>, with permission to
+          create branches.</li>
+        <li>AI credits in your <ph>Content Fusion</ph> organization. A translation job stops when
+          the credits run out.</li>
+        <li>A local clone of the <ph>User Guide</ph> repository, to update the UI strings (see
+            <xref href="#get-ui-strings">Get the latest UI strings</xref>).</li>
+      </ul>
+    </section>
   </body>
-  
+
   <topic id="create-branch">
-    <title>1. Create a translation branch</title>
+    <title>Step 1: Create a translation branch</title>
     <body>
-      <p>Open <ph>Content Fusion</ph> in your browser, go to <ph>User Guide</ph> project and in your
-        workspace and <xref format="html" scope="external"
+      <p>Do all the translation work on a dedicated Git branch. The branch keeps the translated
+        files apart from the source content. This matters during the review: the reviewer compares
+        each translated topic with its English source, and the source must not change while they
+        do it. When the translation is approved, you merge the branch back.</p>
+      <ol>
+        <li>In <ph>Content Fusion</ph>, open the <ph>User Guide</ph> project.</li>
+        <li>Make sure you are in your personal workspace, not in a review task.</li>
+        <li>In the top stripe, click the branch drop-down menu, then select <uicontrol>Create new
+            branch...</uicontrol>.</li>
+        <li>Enter the name of the new branch. Use this pattern:
+              <codeph>translation/translate--&lt;product-name>--&lt;lang></codeph>
+          <ul>
+            <li><codeph>&lt;product-name></codeph>: the product name, with hyphens instead of
+              spaces.</li>
+            <li><codeph>&lt;lang></codeph>: the target language as a BCP 47 tag.</li>
+          </ul>
+          <p>Example: <codeph>translation/translate--Content-Fusion-Cloud--fr-FR</codeph></p></li>
+        <li>Select the branch to start from: the branch that holds the English content you want to
+          translate.</li>
+      </ol>
+      <note type="important">Before you continue, check that the top stripe shows the translation
+        branch. Everything you do from now on is saved on this branch.</note>
+      <p>For more about branches, see <xref format="html" scope="external"
           href="https://www.oxygenxml.com/doc/versions/9.2/ug-content-fusion-cloud/topics/cf-projects-workspace.html#cf-projects-workspace__section-br-mgmnt"
-          >create a new branch</xref>. You can named it for instance
-          <codeph>translation/translate--&lt;product>--&lt;lang></codeph>.</p>
-      <p>Example: <codeph>translation/translate--Content-Fusion-Cloud--fr-FR</codeph></p>
-      <p>Do all the work in the next steps on this branch.</p>
-    </body>
-  </topic>
-  
-
-  <topic id="collect-values">
-    <title>2. Collect the values you need</title>
-    <body>
-      <p>You use these values in every step. Write them down before you start.</p>
-      <ul>
-        <li><b>Product name</b>: the product, exactly as listed in the <codeph>Products</codeph>
-          table of <filepath>.contentfusion/i18n/agent-instructions.md</filepath>.
-          <p>Example: <codeph>Content Fusion Cloud</codeph></p></li>
-        <li><b><codeph>&lt;product></codeph></b>: the folder that holds the product's language
-          resources.
-          <p>Example: <codeph>fusion</codeph></p></li>
-        <li><b><codeph>&lt;lang></codeph></b>: the target language, as a BCP 47 tag (with a
-          hyphen).
-          <p>Example: <codeph>fr-FR</codeph></p></li>
-        <li><b><codeph>&lt;lang_></codeph></b>: the same language with an underscore. UI strings
-          file names use this form.
-          <p>Example: <codeph>fr_FR</codeph></p></li>
-        <li><b>Output folder</b>: the folder that receives the translated files.
-          <p>Example: <filepath>DITA-cf/i18n/fusion-cloud/fr-FR/</filepath></p></li>
-        <li><b>Ticket</b>: the Jira ticket for the work.
-          <p>Example: <codeph>CF-1234</codeph></p></li>
-      </ul>
+          >Branch Management</xref> in the <cite>Oxygen Content Fusion User Guide</cite>.</p>
     </body>
   </topic>
 
-
-  <!-- 3. Prepare the language resources -->
   <topic id="prepare-resources">
-    <title>3. Prepare the language resources</title>
+    <title>Step 2: Prepare the translation resources</title>
     <body>
-      <p>The translation agent reads three files from <filepath>.contentfusion/i18n/</filepath>:</p>
+      <p id="p_chv_ydq_1lc">A general-purpose translation is rarely good enough for a user manual.
+        Two things make the difference:</p>
       <ul>
-        <li><b><filepath>agent-instructions.md</filepath></b>: the rules the agent applies to every
-          translation.</li>
-        <li><b><filepath>&lt;product>/terminology/terminology.en-US-&lt;lang>.md</filepath></b>:
-          approved terms and terms that must not be translated.
-          <p>Example: <filepath>fusion/terminology/terminology.en-US-fr-FR.md</filepath></p></li>
-        <li><b><filepath>&lt;product>/terminology/ui-strings.&lt;lang_>.md</filepath></b>: the
-          product's translated UI labels.
-          <p>Example: <filepath>fusion/terminology/ui-strings.fr_FR.md</filepath></p></li>
+        <li>Every menu, button, and dialog name in the text matches what the reader sees on
+          screen.</li>
+        <li>Every product concept is translated the same way in every topic.</li>
       </ul>
-      <note>If the terminology or UI strings file is missing for a language, the agent still
-        translates, but the quality is lower.</note>
-      <p>Do these tasks to make sure the files are present and up to date.</p>
+      <p>The agent does not know these rules by itself. You give them to it in a few files, before
+        you translate.</p>
+      <section id="where-rules-live">
+        <title>Where the agent finds the project rules</title>
+        <p id="p_bmr_wdq_1lc">The agent reads the project rules from
+            <filepath>.contentfusion/i18n/agent-instructions.md</filepath> and applies them to
+          every translation job, on top of its built-in rules. For one-time requests, use the
+            <uicontrol>Translation Instructions</uicontrol> field of the job instead.</p>
+        <p>For the Oxygen user manuals, the project rules are split across three files in
+            <filepath>.contentfusion/i18n/</filepath>. <filepath>agent-instructions.md</filepath>
+          holds the general rules. The two large lists, the UI strings and the terminology, have
+          their own file for each product and language. The agent loads only the lists that the
+          current job needs:</p>
+        <table frame="all" rowsep="1" colsep="1" id="table_resource_files">
+          <tgroup cols="3">
+            <colspec colnum="1" colname="col1"/>
+            <colspec colnum="2" colname="col2"/>
+            <colspec colnum="3" colname="col3"/>
+            <thead>
+              <row>
+                <entry>File</entry>
+                <entry>Holds</entry>
+                <entry>Example for French</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><filepath>agent-instructions.md</filepath></entry>
+                <entry>The rules for every translation, the list of products, and how to use the
+                  next two files.</entry>
+                <entry>(one file for all languages)</entry>
+              </row>
+              <row>
+                <entry><filepath>&lt;product>/terminology/ui-strings.&lt;lang>.md</filepath></entry>
+                <entry>The product's translated UI labels and messages.</entry>
+                <entry><filepath>fusion/terminology/ui-strings.fr_FR.md</filepath></entry>
+              </row>
+              <row>
+                <entry><filepath>&lt;product>/terminology/terminology.en-US-&lt;lang>.md</filepath></entry>
+                <entry>The approved translation of each product concept, and the terms that stay in
+                  English.</entry>
+                <entry><filepath>fusion/terminology/terminology.en-US-fr_FR.md</filepath></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        <p id="p_xbq_rcq_1lc">In these paths, <codeph>&lt;product></codeph> is the product's
+          resource folder (<codeph>fusion</codeph> for <ph>Content Fusion</ph>) and
+            <codeph>&lt;lang></codeph> is the BCP 47 tag with an underscore
+          (<codeph>fr_FR</codeph>).</p>
+      </section>
+      <section id="ui-strings-vs-terminology">
+        <title>UI strings and terminology: what is the difference?</title>
+        <p id="p_zx1_3gq_1lc">Both files tell the agent which words to use, but in different
+          ways:</p>
+        <ul>
+          <li><b>A UI string is copied exactly.</b> The reader must find it on screen, so the agent
+            never changes it. If the label does not fit the grammar of the sentence, the agent
+            rewrites the sentence around the label.</li>
+          <li><b>A term is adapted to the sentence.</b> It fixes which word to use for a concept,
+            but the word can change its form: singular or plural, with or without an article, and
+            so on.</li>
+        </ul>
+      </section>
+      <section id="ui-strings">
+        <title>UI strings</title>
+        <p id="p_pdk_52q_1lc">UI strings are the texts that the product displays: menus, options,
+          buttons, view and dialog names, and messages. For example, the <uicontrol>New
+            project</uicontrol> action or the <uicontrol>Task activity</uicontrol> section.</p>
+        <p>The UI strings file is a table generated from the product's own translation files. Each
+          row gives a string's ID, its English text, its translation, and where it appears:</p>
+        <codeblock outputclass="language-markdown">| ID | Source (en-US) | Target (fr_FR) | Context |
+|---|---|---|---|
+| save | Save | Enregistrer | Save button label; Generic save button text |
+| activity | Task activity | Activité de tâche | Section title for the activity stream related to a task. |</codeblock>
+        <p id="p_xdy_vgq_1lc">The agent uses the <b>Target</b> text exactly as it is. These French
+          examples show why:</p>
+        <table frame="all" rowsep="1" colsep="1" id="table_ydy_vgq_1lc">
+          <tgroup cols="3">
+            <colspec colnum="1" colname="col1"/>
+            <colspec colnum="2" colname="col2"/>
+            <colspec colnum="3" colname="col3"/>
+            <thead>
+              <row>
+                <entry>English source</entry>
+                <entry>Wrong (label changed)</entry>
+                <entry>Correct (label unchanged)</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>Click <b>Save</b>.</entry>
+                <entry>Cliquez sur Sauvegarder.</entry>
+                <entry>Cliquez sur <b>Enregistrer</b>.</entry>
+              </row>
+              <row>
+                <entry>Open the <b>Settings</b> view.</entry>
+                <entry>Ouvrez la vue Réglages.</entry>
+                <entry>Ouvrez la vue <b>Paramètres</b>.</entry>
+              </row>
+              <row>
+                <entry>The <b>Task activity</b> section lists the comments.</entry>
+                <entry>La section Activité de la tâche affiche les commentaires.</entry>
+                <entry>La section <b>Activité de tâche</b> affiche les commentaires.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        <p>Each wrong translation reads well, but the reader cannot find the label on screen.</p>
+      </section>
+      <section id="terminology">
+        <title>Terminology</title>
+        <p id="p_pm4_zgq_1lc">The terminology file holds the concepts of the product and its
+          domain, such as <i>DITA map</i>, <i>transformation scenario</i>, or <i>Git
+            repository</i>. It has two tables.</p>
+        <p id="p_qm4_zgq_1lc">The <b>Terms</b> table gives the approved translation of each
+          concept. The <b>Details</b> column adds the grammar the agent needs (part of speech,
+          gender), the translations to avoid, and example sentences:</p>
+        <codeblock outputclass="language-markdown">| Source | Target | Context | Details |
+|---|---|---|---|
+| workspace | espace de travail | user's working copy of a project | pos: noun; gender: m; ex: from a card in your workspace → depuis une fiche de votre espace de travail |
+| review task | tâche de révision | unit of review work in Content Fusion | pos: noun; gender: f; deprecated: tâche d'examen; deprecated: tâche de revue |</codeblock>
+        <p id="p_rm4_zgq_1lc">The agent always uses the approved word, but adapts its form to the
+          sentence:</p>
+        <table frame="all" rowsep="1" colsep="1" id="table_sm4_zgq_1lc">
+          <tgroup cols="2">
+            <colspec colnum="1" colname="col1"/>
+            <colspec colnum="2" colname="col2"/>
+            <thead>
+              <row>
+                <entry>English source</entry>
+                <entry>French translation</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>Create a review task.</entry>
+                <entry>Créez une tâche de révision.</entry>
+              </row>
+              <row>
+                <entry>The review tasks are listed in your workspace.</entry>
+                <entry>Les tâches de révision sont listées dans votre espace de travail.</entry>
+              </row>
+              <row>
+                <entry>Close all review tasks.</entry>
+                <entry>Fermez toutes les tâches de révision.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        <p id="p_tm4_zgq_1lc">The <b>Do not translate</b> table lists the terms that stay in
+          English: product and brand names, acronyms, file names, and code. The <b>Note</b> column
+          tells the agent how the term behaves in the target language:</p>
+        <codeblock outputclass="language-markdown">| Term | Kind | Note |
+|---|---|---|
+| Content Fusion | product | short product name |
+| DITA map | name | feminine in French (la DITA map), plural DITA maps; map alone → carte |</codeblock>
+        <p id="p_um4_zgq_1lc">For example, <i>Open the DITA map.</i> becomes <i>Ouvrez la DITA
+            map.</i>, not <i>Ouvrez la carte DITA.</i></p>
+      </section>
+      <section id="check-resources">
+        <title>Check the resources before you translate</title>
+        <p id="p_h5x_zyr_1lc">The terminology file is maintained by hand. The UI strings file is
+          generated, and it gets out of date when the product changes. Before each translation:</p>
+        <ol>
+          <li><xref href="#get-ui-strings">Get the latest UI strings</xref> and <xref
+              href="#convert-ui-strings">convert them to Markdown</xref>.</li>
+          <li><xref href="#register-product">Register the product</xref>, if this is its first
+            translation.</li>
+        </ol>
+      </section>
     </body>
-
-    <!-- 3.1 -->
     <topic id="get-ui-strings">
-      <title>3.1 Get the latest UI strings</title>
+      <title>Get the latest UI strings</title>
       <body>
         <ol>
           <li>Get the latest XML UI strings for the product. Follow the instructions on the <xref
@@ -96,77 +268,66 @@
               href="https://wiki.sync.ro/topics/sdlc/projects/exm/internationalizare_oxygen_oxygen_i18n.html"
               >Oxygen i18n wiki page</xref>.</li>
           <li>Save the XML files in <filepath>translation/xml-translation/&lt;product>/</filepath>.
-            <p>Example: <filepath>translation/xml-translation/fusion/</filepath></p></li>
+              <p>Example: <filepath>translation/xml-translation/fusion/</filepath></p></li>
         </ol>
       </body>
     </topic>
-
-    <!-- 3.2 -->
     <topic id="convert-ui-strings">
-      <title>3.2 Convert the UI strings to Markdown</title>
+      <title>Convert the UI strings to Markdown</title>
       <body>
-        <p>The agent can't read the XML files. Convert them to Markdown with the
-            <filepath>translation/ui-strings-to-md.xsl</filepath> stylesheet.</p>
-        <p>Choose one option:</p>
+        <p>The agent reads the UI strings as a Markdown table, not as XML. The
+            <filepath>translation/ui-strings-to-md.xsl</filepath> stylesheet converts them. It
+          writes one <filepath>ui-strings.&lt;lang>.md</filepath> file for each language in the XML
+          files.</p>
+        <p>Run it in one of two ways:</p>
         <ul>
-          <li><xref href="#translation-procedure/option-a-script">Option A: Run the script</xref>.
-            Needs Java 11 or later and Saxon-HE 12.</li>
-          <li><xref href="#translation-procedure/option-b-oxygen">Option B: Run the stylesheet in
-              Oxygen XML Editor</xref>. No extra installs: Oxygen XML Editor includes Saxon.</li>
+          <li><xref href="#option-a-script">Option A: Run the script</xref>. Needs Java 11 or later
+            and Saxon-HE 12.</li>
+          <li><xref href="#option-b-oxygen">Option B: Run the stylesheet in Oxygen XML
+              Editor</xref>. Nothing to install: Oxygen XML Editor includes Saxon.</li>
         </ul>
-        <p>Both options write one <filepath>ui-strings.&lt;lang_>.md</filepath> file for each
-          language in the XML files.</p>
       </body>
-
       <topic id="option-a-script">
         <title>Option A: Run the script</title>
         <body>
           <ol>
-            <li>Open the script in a text editor:
-              <ul>
+            <li>Open the script in a text editor: <ul>
                 <li>Windows: <filepath>translation\ui-strings-to-md.bat</filepath></li>
                 <li>Linux, macOS, or Git Bash:
-                    <filepath>translation/ui-strings-to-md.sh</filepath></li>
+                  <filepath>translation/ui-strings-to-md.sh</filepath></li>
               </ul></li>
             <li>In the <codeph>Settings</codeph> section at the top of the script, check these
-              variables. Relative paths start from the <filepath>translation</filepath> folder.
-              <ul>
-                <li><b><codeph>IN_DIR</codeph></b>: the folder with the XML files from step 3.1.
-                  <p>Example: <filepath>xml-translation/fusion</filepath></p></li>
-                <li><b><codeph>OUT_DIR</codeph></b>: the product's terminology folder.
-                  <p>Example: <filepath>../.contentfusion/i18n/fusion/terminology</filepath></p></li>
+              variables. Relative paths start from the <filepath>translation</filepath> folder. <ul>
+                <li><b><codeph>IN_DIR</codeph></b>: the folder with the XML UI strings. <p>Example:
+                      <filepath>xml-translation/fusion</filepath></p></li>
+                <li><b><codeph>OUT_DIR</codeph></b>: the product's terminology folder. <p>Example:
+                      <filepath>../.contentfusion/i18n/fusion/terminology</filepath></p></li>
                 <li><b><codeph>SAXON_LIB</codeph></b>: leave it empty if Saxon-HE 12 is in your
                   local Maven repository (<filepath>~/.m2/repository</filepath>). Otherwise, set it
-                  to the folder of the Saxon-HE 12 download (the folder with the Saxon jar and its
+                  to the Saxon-HE 12 folder (the folder with the Saxon jar and its
                     <filepath>lib/</filepath> subfolder).</li>
-              </ul>
-              <note type="tip">To use other folders for one run without editing the script, pass
-                them as arguments: <codeph>translation\ui-strings-to-md.bat in=&lt;input folder>
-                  out=&lt;output folder></codeph></note></li>
-            <li>Run the script. You can run it from any folder.
-              <p>Windows:</p>
-              <codeblock>translation\ui-strings-to-md.bat</codeblock>
-              <p>Linux, macOS, or Git Bash:</p>
-              <codeblock outputclass="language-bash">translation/ui-strings-to-md.sh</codeblock>
-              <p>The script lists each file it writes. It also warns about strings that have no
-                translation in a language.</p></li>
+              </ul></li>
+            <li>Run the
+                script.<p>Windows:</p><codeblock outputclass="language-bourne">translation\ui-strings-to-md.bat</codeblock><p>Linux,
+                macOS, or Git
+              Bash:</p><codeblock outputclass="language-bash">translation/ui-strings-to-md.sh</codeblock></li>
             <li>If the script stops with an <codeph>ERROR:</codeph> line, fix the cause and run it
-              again. Common causes: Java or Saxon is not found, or the input folder is wrong.</li>
+              again. Usually, Java or Saxon is not found, or the input folder is wrong.</li>
             <li>Check the diff of the Markdown files, then commit them.</li>
           </ol>
         </body>
       </topic>
-
       <topic id="option-b-oxygen">
         <title>Option B: Run the stylesheet in Oxygen XML Editor</title>
         <body>
           <ol>
-            <li>In Oxygen XML Editor, open <filepath>translation/ui-strings-to-md.xsl</filepath>.</li>
-            <li>Create a transformation scenario:
-              <ol>
-                <li>Select <uicontrol>Configure Transformation Scenario(s)</uicontrol>, then
-                    <menucascade><uicontrol>New</uicontrol><uicontrol>XSLT
-                      transformation</uicontrol></menucascade>.</li>
+            <li>In Oxygen XML Editor, open
+              <filepath>translation/ui-strings-to-md.xsl</filepath>.</li>
+            <li>Create a transformation scenario: <ol>
+                <li>Select <uicontrol>Configure Transformation Scenario(s)</uicontrol>, then <menucascade>
+                    <uicontrol>New</uicontrol>
+                    <uicontrol>XSLT transformation</uicontrol>
+                  </menucascade>.</li>
                 <li>Leave the <uicontrol>XML URL</uicontrol> field empty.</li>
                 <li>Set <uicontrol>Transformer</uicontrol> to Saxon-HE, PE, or EE, version 12 or
                   later.</li>
@@ -174,82 +335,326 @@
                     <codeph>xsl:initial-template</codeph>.</li>
               </ol></li>
             <li>Click <uicontrol>Parameters</uicontrol> and set these parameters. Relative paths
-              start from the <filepath>translation</filepath> folder.
-              <ul>
-                <li><b><codeph>in</codeph></b>: the folder with the XML files from step 3.1.
-                  <p>Example: <filepath>xml-translation/fusion/</filepath></p></li>
-                <li><b><codeph>out</codeph></b>: the product's terminology folder.
-                  <p>Example: <filepath>../.contentfusion/i18n/fusion/terminology/</filepath></p></li>
+              start from the <filepath>translation</filepath> folder. <ul>
+                <li><b><codeph>in</codeph></b>: the folder with the XML UI strings. <p>Example:
+                      <filepath>xml-translation/fusion/</filepath></p></li>
+                <li><b><codeph>out</codeph></b>: the product's terminology folder. <p>Example:
+                      <filepath>../.contentfusion/i18n/fusion/terminology/</filepath></p></li>
               </ul></li>
-            <li>Apply the scenario.
-              <p>The Markdown files are written to the <codeph>out</codeph> folder. Warnings about
-                missing translations appear in the <uicontrol>Results</uicontrol> panel.</p></li>
+            <li>Apply the scenario. <p>The Markdown files are written to the <codeph>out</codeph>
+                folder. Warnings about missing translations appear in the
+                  <uicontrol>Results</uicontrol> panel.</p></li>
             <li>Check the diff of the Markdown files, then commit them.</li>
           </ol>
         </body>
       </topic>
     </topic>
-
-    <!-- 3.3 -->
     <topic id="register-product">
-      <title>3.3 Register a new product</title>
+      <title>Register the product</title>
       <body>
-        <p>Skip this task if the product is already in the <codeph>Products</codeph> table of
-            <filepath>.contentfusion/i18n/agent-instructions.md</filepath>.</p>
-        <p>Otherwise, add a row to that table with the product name and its
-            <codeph>&lt;product></codeph> folder.</p>
-        <note type="important">If the product is not in the table, the agent stops before it
-          translates anything.</note>
+        <p>The agent finds the product's resource folder in the <codeph>Products</codeph> table of
+            <filepath>.contentfusion/i18n/agent-instructions.md</filepath>. If the product is
+          already in the table, skip this task.</p>
+        <p>Otherwise, add a row with the product name and its <codeph>&lt;product></codeph>
+          folder:</p>
+        <codeblock outputclass="language-markdown">| Product | `&lt;product>` | Language resources |
+|---|---|---|
+| Content Fusion | `fusion` | `.contentfusion/i18n/fusion/terminology/` |</codeblock>
+        <note type="important">When you start the translation job, name the product exactly as it
+          appears in this table. If the agent does not find the product in the table, it stops
+          before it translates anything.</note>
       </body>
     </topic>
   </topic>
 
-  <!-- 4. Translate -->
   <topic id="translate">
-    <title>4. Translate</title>
+    <title>Step 3: Translate</title>
     <body>
-      <ol>
-        <li>Open the <codeph>User Guide</codeph> project in Content Fusion.</li>
-        <li>Start a translation. In the prompt, name the product and the output folder.
-          <p>Example:</p>
-          <codeblock>Translations are for product: `Content Fusion Cloud`.
+      <p>The agent translates only the files that need it. For each source file, it checks the
+        translation index (<filepath>.contentfusion/i18n/translation-index.xml</filepath>) and
+        finds one of three states:</p>
+      <ul>
+        <li><b>Missing</b>: the file was never translated into this language. The agent translates
+          it.</li>
+        <li><b>Stale</b>: the English source changed after the last translation. The agent
+          translates it again, and uses the existing translation as context, so the earlier
+          wording and your manual corrections are kept where they still apply.</li>
+        <li><b>Current</b>: the translation matches the English source. The agent skips it.</li>
+      </ul>
+      <p>That is why you can run this step again at any time to update a translation.</p>
+      <section id="start-translation">
+        <title>Start the translation job</title>
+        <ol>
+          <li>In <ph>Content Fusion</ph>, open the <ph>User Guide</ph> project, and check that the
+            translation branch is selected in the top stripe.</li>
+          <li>Click <uicontrol>New translation</uicontrol>, and set these fields: <ul>
+              <li><uicontrol>Publications</uicontrol>: the publication of the manual to
+                translate.</li>
+              <li><uicontrol>Target Languages</uicontrol>: one or more target languages.</li>
+              <li><uicontrol>Translation Instructions</uicontrol>: the product name, exactly as it
+                appears in the <codeph>Products</codeph> table, and the folder for the translated
+                files. <p>Example:</p><codeblock>Translations are for product: `Content Fusion`.
 
 Save translations to `DITA-cf/i18n/fusion-cloud/fr-FR/`, mirroring the source structure inside it.</codeblock></li>
-      </ol>
+            </ul></li>
+          <li>Click <uicontrol>Start translation</uicontrol>.</li>
+        </ol>
+        <note type="tip">To translate into several languages, select all of them in one job. The job
+          translates them one after another.</note>
+      </section>
+      <section id="first-translation">
+        <title>The first translation into a language</title>
+        <p>The first job for a language also creates the translation index entries, the translated
+          maps, a copy of every image, and the deliverables for the new language. It copies the
+          deliverables that already exist for English. See <xref format="html" scope="external"
+            href="https://www.oxygenxml.com/doc/versions/9.2/ug-content-fusion-cloud/topics/cf-ai-translation-first-run.html"
+            >The First Time You Translate a Project</xref> in the <cite>Oxygen Content Fusion User
+            Guide</cite>.</p>
+      </section>
+      <section id="follow-translation">
+        <title>Follow the job</title>
+        <p>The job appears as a card in your workspace. The card shows the current step and the
+          progress. You can stop the job from the card.</p>
+        <note type="important">While the job runs, do not change the source files or the
+          translated files that it covers. Your changes can conflict with the files that the agent
+          writes.</note>
+        <p>If the job fails, click <uicontrol>View log</uicontrol> on the card to see the cause. For
+          example, the job fails when your organization runs out of AI credits. If the job produced
+          some files before it failed, select <uicontrol>Bring partial results into
+            workspace</uicontrol> to keep them. To run the same job again, select
+            <uicontrol>Re-run</uicontrol> from the card's menu.</p>
+        <p>For more, see <xref format="html" scope="external"
+            href="https://www.oxygenxml.com/doc/versions/9.2/ug-content-fusion-cloud/topics/cf-ai-translation-jobs.html"
+            >Managing a Translation Job</xref> in the <cite>Oxygen Content Fusion User
+            Guide</cite>.</p>
+      </section>
+      <section id="bring-translation">
+        <title>Bring the translation into your workspace</title>
+        <ol>
+          <li>When the job finishes, click <uicontrol>Bring into workspace</uicontrol> on the card.
+            The translated files and the updated translation index are added to your workspace as
+            uncommitted changes.</li>
+          <li><xref href="#review/check-changes">Check what the job changed</xref>.</li>
+          <li>Commit the files to the translation branch. <p>A reviewer can open the translated
+              files only after you commit them.</p></li>
+        </ol>
+      </section>
     </body>
   </topic>
 
-  <!-- 5. Review -->
   <topic id="review">
-    <title>5. Review the translation</title>
+    <title>Step 4: Review the translation</title>
     <body>
-      <ol>
-        <li>Open <filepath>translation/review-prompt.md</filepath>.</li>
-        <li>In the <codeph>Variables</codeph> section, set <codeph>TARGET_LANG</codeph> to the
-          target language.
-          <p>Example: <codeph>TARGET_LANG = fr-FR</codeph></p></li>
-        <li>Give the prompt to the AI assistant.
-          <p>The reviewer compares each translated file with its source. It writes a report to
-              <filepath>translation-review-&lt;lang>.md</filepath> at the repository root.</p></li>
-        <li>Read the report. Start with the root-cause rollup: a few root causes usually explain
-          most of the issues.</li>
-        <li>Fix the issues:
-          <ul>
-            <li><b>Root causes</b>: fix them in the terminology file or in
-                <filepath>agent-instructions.md</filepath>. Then translate the affected files
-              again.</li>
-            <li><b>One-off issues</b>: fix them directly in the translated file.</li>
-          </ul></li>
-        <li>Commit all changes to the translation branch.</li>
-      </ol>
+      <p>Use any of these methods to review the translation. Each one finds different problems, so
+        combine them when you can.</p>
+      <table frame="all" rowsep="1" colsep="1" id="table_review_types">
+        <tgroup cols="3">
+          <colspec colnum="1" colname="col1"/>
+          <colspec colnum="2" colname="col2"/>
+          <colspec colnum="3" colname="col3"/>
+          <thead>
+            <row>
+              <entry>Review</entry>
+              <entry>Who</entry>
+              <entry>Finds</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><xref href="#review/check-changes">Check what the job changed</xref></entry>
+              <entry>You</entry>
+              <entry>Unexpected files, invalid DITA, broken references.</entry>
+            </row>
+            <row>
+              <entry><xref href="#review/ai-review">Review with an AI agent</xref></entry>
+              <entry>An AI agent</entry>
+              <entry>Wrong terms and UI labels, inconsistencies, missing text, in every
+                topic.</entry>
+            </row>
+            <row>
+              <entry><xref href="#review/expert-review">Ask a translation expert</xref></entry>
+              <entry>A bilingual reviewer</entry>
+              <entry>Wrong meaning, unnatural style.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p>When you find a problem, fix it at its cause. See <xref href="#review/fix-issues">Fix the
+          issues</xref>.</p>
+      <section id="check-changes">
+        <title>Check what the job changed</title>
+        <p>Do this check right after you bring the translation into your workspace, before you
+          commit it.</p>
+        <ul>
+          <li><b>Changes view</b>: lists every file the job added or modified: the translated
+            topics, the translation index, and, for a new language, the deliverables. Make sure the
+            job changed only the files you expected. The English topics must not be in the
+            list.</li>
+          <li><b>Problems view</b>: shows validation errors. Make sure the translated publication is
+            valid DITA and has no broken references.</li>
+        </ul>
+        <p>For details, see <xref format="html" scope="external"
+            href="https://www.oxygenxml.com/doc/versions/9.2/ug-content-fusion-cloud/topics/cf-ai-translation-reviewing.html"
+            >Reviewing Translations Before You Commit</xref> in the <cite>Oxygen Content Fusion User
+            Guide</cite>.</p>
+      </section>
+      <section id="ai-review">
+        <title>Review with an AI agent</title>
+        <p id="p_yqz_njx_1lc">A human reviewer rarely reads every topic of a large manual. An AI
+          agent can. The <filepath>translation/review-prompt.md</filepath> file is a review prompt
+          written for the Oxygen user manuals. It tells the agent to compare every translated topic
+          with its source and to look for these problems:</p>
+        <ul id="ul_zqz_njx_1lc">
+          <li><b>Terminology</b>: a term that does not use its approved translation.</li>
+          <li><b>UI terminology</b>: a menu, button, or dialog name that does not match the
+            product's UI strings.</li>
+          <li><b>Language quality</b>: grammar, spelling, and the typography of the target language,
+            such as the non-breaking space before a colon in French.</li>
+          <li><b>Accuracy and completeness</b>: text that is missing, added, or that changes the
+            meaning of the source.</li>
+          <li><b>Consistency</b>: the same concept translated in different ways in different
+            topics.</li>
+          <li><b>Style and naturalness</b>: text that reads like a translation, not like a manual
+            written in the target language.</li>
+        </ul>
+        <p id="p_arz_njx_1lc">You run the review as a translation job that does not translate
+          anything. The agent only reads the files and writes a report.</p>
+        <ol id="ol_brz_njx_1lc">
+          <li>In <ph>Content Fusion</ph>, open the <ph>User Guide</ph> project, and check that the
+            translation branch is selected in the top stripe.</li>
+          <li>Click <uicontrol>New translation</uicontrol>, and set these fields: <ul
+              id="ul_crz_njx_1lc">
+              <li><uicontrol>Publications</uicontrol>: the translated publication.</li>
+              <li><uicontrol>Target Languages</uicontrol>: the language to review.</li>
+              <li><uicontrol>Translation Instructions</uicontrol>: tell the agent not to translate,
+                to follow the review prompt, and which language to review. Write the language tag
+                exactly as it appears in the translation index. <p id="p_drz_njx_1lc"
+                >Example:</p><codeblock>Do not translate anything.
+Follow the instructions in `translation/review-prompt.md`, with TARGET_LANG = fr-FR.</codeblock></li>
+            </ul></li>
+          <li>Click <uicontrol>Start translation</uicontrol>. <p id="p_erz_njx_1lc">The agent finds
+              the translated topics in the translation index and uses the same project rules as the
+              translation agent. It writes the report to
+                <filepath>translation-review-&lt;lang>.md</filepath> at the root of the
+              repository.</p></li>
+          <li>When the job finishes, click <uicontrol>Bring into workspace</uicontrol> on the card,
+            then open the report.</li>
+          <li>Start with the <b>Root-cause rollup</b> table at the top of the report. A few root
+            causes usually explain most issues, and the table tells you where to fix each one. Then
+            read the issue records: each one shows the source text, the current translation, and a
+            recommended translation.</li>
+        </ol>
+        <p id="p_frz_njx_1lc">You can ask the agent other questions in the same way. See <xref
+            format="html" scope="external"
+            href="https://www.oxygenxml.com/doc/versions/9.2/ug-content-fusion-cloud/topics/cf-ai-translation-asking.html"
+            >Asking the Agent a Question</xref> in the <cite>Oxygen Content Fusion User
+          Guide</cite>.</p>
+      </section>
+      <section id="expert-review">
+        <title>Ask a translation expert</title>
+        <p>A reviewer who knows both languages is the best judge of meaning and style. The reviewer
+          reads each translated topic side by side with its English source, in one of these
+          tools:</p>
+        <ul>
+          <li><b><ph>Content Fusion</ph></b>: with the translation branch selected, create a project
+            review task that includes the translated topics, and invite the reviewer. The reviewer
+            edits the topics or adds comments in the browser. When the review is done, you
+            integrate the accepted changes into the translation branch. See <xref format="html"
+              scope="external"
+              href="https://www.oxygenxml.com/doc/versions/9.2/ug-content-fusion-cloud/topics/cf-projects-review-tasks.html#cf-projects-review-tasks__section_cn4_k3x_4jb"
+              >Creating a Project Review Task</xref>.</li>
+          <li><b>Oxygen XML Editor</b>: the reviewer checks out the translation branch and reviews
+            the files locally. This suits reviewers who prefer a desktop editor, or who want the
+            source and the translation open side by side.</li>
+        </ul>
+        <note type="tip">Attach the English PDF of the manual to the review task, so the reviewer
+          sees each topic in its context.</note>
+      </section>
+      <section id="fix-issues">
+        <title>Fix the issues</title>
+        <p>Where you fix an issue depends on its cause:</p>
+        <table frame="all" rowsep="1" colsep="1" id="table_fix_issues">
+          <tgroup cols="3">
+            <colspec colnum="1" colname="col1"/>
+            <colspec colnum="2" colname="col2"/>
+            <colspec colnum="3" colname="col3"/>
+            <thead>
+              <row>
+                <entry>Cause</entry>
+                <entry>Fix it in</entry>
+                <entry>Then</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>A one-time mistake in a single topic</entry>
+                <entry>The translated topic. Edit it directly.</entry>
+                <entry>Commit the change. Later translation jobs skip the topic and keep your
+                  correction, as long as its English source does not change.</entry>
+              </row>
+              <row>
+                <entry>A wrong or missing term or UI string, or a rule that the agent did not
+                  follow</entry>
+                <entry>The terminology file, the UI strings file, or
+                    <filepath>agent-instructions.md</filepath>.</entry>
+                <entry><xref href="#review/retranslate">Retranslate the affected
+                  topics</xref>.</entry>
+              </row>
+              <row>
+                <entry>An error or unclear text in the English source</entry>
+                <entry>The English topic, on the translation branch. The fix reaches the source
+                  branch when you integrate the translation branch.</entry>
+                <entry>The topic becomes <i>stale</i>, and the next job translates it again. Fix the
+                  source only after the review is complete, so the reviewers compare the
+                  translation with the source it was made from.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </section>
+      <section id="retranslate">
+        <title>Retranslate after you change the rules</title>
+        <p>A change in the terminology, the UI strings, or <filepath>agent-instructions.md</filepath>
+          does not make a translation stale. The agent tracks only changes in the English source,
+          so the next job skips the topics that are already translated. To make the agent translate
+          them again, remove their entries from the translation index:</p>
+        <ol>
+          <li>Open <filepath>.contentfusion/i18n/translation-index.xml</filepath>.</li>
+          <li>Delete the entries for the topics you want to retranslate. The topics become
+              <i>missing</i>, so the next job translates them again.</li>
+          <li>Commit your changes, then <xref href="#translate">run the translation
+            again</xref>.</li>
+          <li>Review the retranslated topics.</li>
+        </ol>
+        <note type="caution">The next job overwrites the translated topics whose entries you
+          deleted. If you corrected some of them by hand, commit the corrections before you run the
+          job, so you can restore them.</note>
+        <p>When the review finds no more important issues, continue with <xref href="#integrate"
+            >Integrate and publish</xref>.</p>
+      </section>
     </body>
   </topic>
 
-  <!-- 6. Integrate -->
   <topic id="integrate">
-    <title>6. Integrate the translation branch</title>
+    <title>Step 5: Integrate and publish</title>
     <body>
-      <p>In <b>Content Fusion</b>, integrate the translation branch.</p>
+      <p>When the review is complete, merge the translation branch back into the branch you created
+        it from. The merge brings the translated files, the updated translation index, and any
+        source fixes from the review.</p>
+      <ol>
+        <li>In <ph>Content Fusion</ph>, select the target branch in the top stripe.</li>
+        <li>From the branch drop-down menu, select <uicontrol>Merge into current
+            branch...</uicontrol>, then select the translation branch.</li>
+        <li>Optional: publish the translated manual from the project's
+            <uicontrol>Deliverables</uicontrol> page. The first translation job created the
+          deliverables for the new language.</li>
+      </ol>
+      <p>For details, see <xref format="html" scope="external"
+          href="https://www.oxygenxml.com/doc/versions/9.2/ug-content-fusion-cloud/topics/cf-projects-workspace.html#cf-projects-workspace__section-br-mgmnt"
+          >Branch Management</xref> in the <cite>Oxygen Content Fusion User Guide</cite>.</p>
+      <note type="tip"><b>Mark the release with a Git tag.</b> A tag records the exact commit of
+        each translation release, so you can later compare two releases, or rebuild the manual
+        exactly as it was published.</note>
     </body>
   </topic>
 </topic>
