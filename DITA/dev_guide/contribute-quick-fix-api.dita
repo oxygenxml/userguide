@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD LIGHTWEIGHT DITA Topic//EN" "topic.dtd">
+<topic id="contribute-quick-fix-api">
+  <title>Contributing a Quick Fix for a Validation Problem</title>
+  <body>
+    <p id="p_i1p_213_blc">A plugin can contribute a custom quick fix for a validation problem.</p>
+    <p id="p_n2x_p13_blc">API Reference:</p>
+    <simpletable id="simpletable_phy_q13_blc">
+      <sthead>
+        <stentry>
+          <p>Class</p>
+        </stentry>
+        <stentry>
+          <p>Annotation</p>
+        </stentry>
+        <stentry>
+          <p>Notes</p>
+        </stentry>
+      </sthead>
+      <strow>
+        <stentry>
+          <p id="p_jlk_513_blc"
+            >ro.sync.exml.workspace.api.editor.validation.ValidationProblemQuickFix</p>
+        </stentry>
+        <stentry>
+          <p id="p_gl2_v13_blc">@API(EXTENDABLE, PUBLIC)</p>
+        </stentry>
+        <stentry>
+          <p id="p_ely_v13_blc">Defines the fix itself. Implement two methods; two others have
+            default implementations.</p>
+        </stentry>
+      </strow>
+      <strow>
+        <stentry>
+          <p id="p_dx5_513_blc">ValidationProblems.addQuickFix(DocumentPositionedInfo,
+            ValidationProblemQuickFix)</p>
+        </stentry>
+        <stentry>
+          <p id="p_f5n_v13_blc">{{@API(EXTENDABLE,</p>
+          <p id="p_g5n_v13_blc">PUBLIC)}}</p>
+        </stentry>
+        <stentry>
+          <p id="p_wp4_w13_blc">Attaches the fix to a reported problem. Returns false if the problem
+            does not support quick fixes.</p>
+        </stentry>
+      </strow>
+    </simpletable>
+    <p id="p_ecn_xb3_blc">The Fix Class:</p>
+    <pre>publicabstractclass ValidationProblemQuickFix {
+    publicabstractString getName();
+    publicabstract void performFix();
+    publicString getDescription() { returnnull; }
+    publicString getIconPath()    { returnnull; }
+  }
+  </pre>
+    <p id="p_by3_zb3_blc">Attach it from a <i>ValidationProblemsFilter</i> implementation, where the
+      plugin already receives the problems:</p>
+    <pre>public void filterValidationProblems(ValidationProblems validationProblems) {
+    for (DocumentPositionedInfo problem : validationProblems.getProblemsList()) {
+      validationProblems.addQuickFix(problem, new ValidationProblemQuickFix() {
+        publicString getName() {
+          return"AI Positron Fix";
+        }
+        public void performFix() {
+          // Change the document here.
+        }
+        publicString getIconPath() {
+          return iconURL.toExternalForm();
+        }
+      });
+    }
+  }</pre>
+    <p id="p_dvx_d33_blc"><b>Notes:</b></p>
+    <ul id="ul_n1p_213_blc">
+      <li id="li_o1p_213_blc">
+        <p id="p_p1p_213_blc">The contributed fix is available wherever <b>Oxygen</b> provides quick
+          fixes (the quick fix menu in Text mode, the quick fix widget in Author mode, the error
+          tooltip, and the <b>Results</b> view).</p>
+      </li>
+      <li id="li_r1p_213_blc">
+        <p id="p_s1p_213_blc"><i>performFix()</i> is invoked only when the user applies the fix. A
+          contributed fix is never applied by the "apply all default quick fixes" feature because it
+          can perform any action, including presenting its own user interface.</p>
+      </li>
+      <li id="li_u1p_213_blc">
+        <p id="p_v1p_213_blc">In the desktop application, <i>performFix()</i> runs on the AWT
+          thread. Move long-running operations off this thread. In Web Author, the same method runs
+          on the server while the user's request is processed. Therefore, an implementation shared
+          by both applications must not present a user interface there.</p>
+      </li>
+      <li id="li_y1p_213_blc">
+        <p id="p_z1p_213_blc"><i>getIconPath()</i> accepts either a classpath-relative path or an
+          absolute URL. For example, use the external form of a URL obtained from the plugin's class
+          loader (jar:file:...!/images/MyFix.png). A fix with no icon uses the generic quick fix
+          icon.</p>
+      </li>
+      <li id="li_fym_zh3_blc">
+        <p>If <i>performFix()</i> throws an exception, <b>Oxygen</b> reports it to the user with the
+          message "quick fix was not applied because it failed while performing the changes", logs
+          the error, and does not apply anything else for that fix. In Web Author, the error is only
+          logged.</p>
+      </li>
+    </ul>
+  </body>
+</topic>
