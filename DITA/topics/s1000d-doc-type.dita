@@ -283,6 +283,85 @@
             href="how-to-add-support-for-s1000d-schemas.dita"/>.</note>
       </p>
     </section>
+    <section id="section_v1q_ncn_clc">
+      <title>Built-in Validation and Transformation Scenarios</title>
+      <p id="p_w1q_ncn_clc"><ph keyref="product"/> includes various built-in validation and
+        transformation scenarios for S1000D. There are built-in default validation scenarios for
+        issues 4.0, 4.1, 4.2, 5.0, 6, and 7, CALS tables, and complete validation in categories for
+        Data Modules, Publication Modules, and BREX.</p>
+      <p id="p_bzx_42n_clc">Built-in transformation scenarios are available to convert data modules
+        to PDF or HTML output, or to convert BREX modules to Schematron.</p>
+    </section>
+    <section id="section_vcv_1fn_clc">
+      <title>Publication Module Validation and Completeness Check</title>
+      <p id="p_wcv_1fn_clc">In addition to its other default S1000D validation scenarios, <ph
+          keyref="product"/> includes the <uicontrol>S1000D PM Validation and Completeness
+          Check</uicontrol> scenario that validates a publication module, checks the completeness of
+        the publication it defines, and validates the data modules included in the publication.</p>
+      <p id="p_jx5_dgn_clc"><u>S1000D PM Validation and Completeness Check Scenario Validation
+          Process:</u><ul id="ul_xdz_dgn_clc">
+          <li id="li_ydz_dgn_clc">Validates the publication module against its schema, the BREX data
+            module it declares, and the S1000D business rules.</li>
+          <li id="li_zdz_dgn_clc">Checks the publication module for completeness by following
+            included publication modules and treating them as a single publication.</li>
+          <li id="li_a2z_dgn_clc">Validates each data module in the publication as it would be
+            validated individually, using its associated validation scenarios or, if none are
+            associated, the default validation scenarios for its document type. If the
+              <uicontrol>Report table layout problems</uicontrol> setting is selected, the layout of
+            tables is also checked.</li>
+          <li id="li_b2z_dgn_clc">Displays errors and warnings in the Results panel, where you can
+            select an error to open the module at the problem location.</li>
+        </ul></p>
+      <p id="p_vr2_1hn_clc"><u>Examples of Problems Reported by the Completeness Check:</u><ul
+          id="ul_d2z_dgn_clc">
+          <li id="li_e2z_dgn_clc">References to data modules and publication modules that cannot be
+            found.</li>
+          <li id="li_f2z_dgn_clc">BREX data modules declared by a module that cannot be found.</li>
+          <li id="li_g2z_dgn_clc">References to a module that exists but not in the issue or
+            language specified by the reference (the available issues and languages are
+            listed).</li>
+          <li id="li_h2z_dgn_clc">References with missing or incomplete codes.</li>
+          <li id="li_i2z_dgn_clc">Any <codeph>referredFragment</codeph> attributes whose ID is not
+            in the referenced module.</li>
+          <li id="li_j2z_dgn_clc">ICNs that cannot be found.</li>
+          <li id="li_k2z_dgn_clc">External publications whose local files cannot be found and, when
+            requested, remote locations that cannot be reached.</li>
+          <li id="li_l2z_dgn_clc">References to modules that are not part of the publication, when
+            requested.</li>
+          <li id="li_m2z_dgn_clc">Data modules entered twice in the same publication module or in
+            more than one publication module of the publication.</li>
+          <li id="li_n2z_dgn_clc">Publication modules entered within themselves.</li>
+          <li id="li_o2z_dgn_clc">Any <codeph>pmRef</codeph> references that point to a module that
+            is not a publication module.</li>
+          <li id="li_p2z_dgn_clc">Modules that are not well-formed.</li>
+          <li id="li_q2z_dgn_clc">Documents that are not publication modules and publication modules
+            whose folders cannot be listed.</li>
+          <li id="li_r2z_dgn_clc">Table layout problems, when requested.</li>
+          <li id="li_s2z_dgn_clc">Unexpected check failures, which are reported instead of causing
+            the validation to fail.</li>
+        </ul></p>
+      <p id="p_lpt_lhn_clc"><u>Validation Engine Configuration Settings:</u></p>
+      <p id="p_prv_nhn_clc">When you configure a validation engine for an S1000D validation
+        scenario, the <xref href="create-validation-scenario.dita">Configure Validation Engine
+          dialog box</xref> contains the following options:<ul id="ul_igc_xhn_clc">
+          <li id="li_jgc_xhn_clc"><uicontrol>Include remote resources</uicontrol> - Checks whether
+            the remote locations (http, https, ftp, sftp) of external publications can be reached.
+            Disabled by default.</li>
+          <li id="li_u4f_yhn_clc"><uicontrol>Report table layout problems</uicontrol> - Checks the
+            layout of CALS tables in the publication's data modules as they are read for the
+            completeness check. Reports short rows, column and span mismatches, and incorrect column
+            names. Enabled by default.</li>
+          <li id="li_pnb_23n_clc"><uicontrol>Validate references to modules outside the
+              publication</uicontrol> - Also looks up referenced modules that are not part of the
+            publication, matching their issue and language and looking for the referred fragment
+            within them. When disabled, these references are excluded from the check, and nothing is
+            reported about them. Enabled by default.</li>
+          <li id="li_d4s_g3n_clc"><uicontrol>Warn about references to modules not part of the
+              publication</uicontrol> - Reports each reference that resolves to a module outside the
+            publication, helping keep a publication intended to be self-contained that way. This
+            option is independent of the preceding setting. Disabled by default.</li>
+        </ul></p>
+    </section>
     <section id="brex_support">
       <title>BREX Editing, Validation, and Transformation</title>
       <p id="p_ftk_cgk_54b">BREX modules can be edited in the <uicontrol>Text</uicontrol> or
@@ -291,8 +370,8 @@
         set to Schematron).</p>
       <p id="p_umn_mjq_wkc">If a BREX module is referenced in the current S1000D document, <ph
           keyref="product"/> automatically validates the file against the detected BREX.</p>
-      <p id="p_pm5_ljq_wkc">Built-in BREX validation scenarios are also available, including default
-        scenarios for 4.0, 4.1, 4.2, 5.0, 6, and 7 issues.</p>
+      <p id="p_pm5_ljq_wkc">Built-in BREX validation scenarios are available, including default
+        scenarios for issues 4.0, 4.1, 4.2, 5.0, 6, and 7.</p>
       <p id="p_ldq_svf_jkc">You can also convert BREX modules to Schematron using the built-in
           <uicontrol>S1000D Brex To Schematron</uicontrol> transformation scenario. This
         transformation also converts SNS (Standard Numbering System) rules (checking the data module
