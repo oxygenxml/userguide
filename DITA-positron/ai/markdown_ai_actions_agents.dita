@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="markdown_ai_actions_agents">
+  <title>Defining Sub-Agents, Chat Modes, and AI Actions in Markdown</title>
+  <shortdesc>Instead of using an action JSON file and a separate prompt file, you can define a
+    sub-agent, a chat mode, or an AI action in a single <filepath>Markdown</filepath>
+    file.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Markdown actions</indexterm>
+        <indexterm>sub-agents</indexterm>
+        <indexterm>custom chat modes</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p id="p_markdown_intro">Place the <filepath>Markdown</filepath> file in one of the AI action
+      folders configured in the <xref keyref="actions_preferences"/> page. The file begins with a
+      YAML front matter block that names the item and describes it, followed by the prompt that
+      instructs the AI.</p>
+    <p id="p_markdown_kinds">The <codeph>output-action</codeph> and <codeph>visibility</codeph>
+      keys of the front matter decide what the file defines:</p>
+    <simpletable id="st_markdown_kinds"
+        relcolwidth="1* 1* 1* 2*">
+        <sthead>
+          <stentry>To define</stentry>
+          <stentry><codeph>output-action</codeph></stentry>
+          <stentry><codeph>visibility</codeph></stentry>
+          <stentry>Where it is available</stentry>
+        </sthead>
+        <strow>
+          <stentry>A sub-agent</stentry>
+          <stentry>Not set (<codeph>agentic</codeph>)</stentry>
+          <stentry>Not set (<codeph>visible-only-for-tools</codeph>)</stentry>
+          <stentry>Only to AI agents that delegate work.</stentry>
+        </strow>
+        <strow>
+          <stentry>A chat mode</stentry>
+          <stentry>Not set (<codeph>agentic</codeph>)</stentry>
+          <stentry><codeph>visible</codeph></stentry>
+          <stentry>In the <uicontrol>Chat modes</uicontrol> drop-down menu, and to AI agents that
+            delegate work.</stentry>
+        </strow>
+        <strow>
+          <stentry>An AI action</stentry>
+          <stentry><codeph>replace</codeph>, <codeph>insert</codeph>, <codeph>none</codeph>, or
+              <codeph>create-new-document</codeph></stentry>
+          <stentry><codeph>visible</codeph></stentry>
+          <stentry>In the <uicontrol>Actions</uicontrol> drop-down menu, and to AI agents that
+            invoke actions.</stentry>
+        </strow>
+      </simpletable>
+    <section id="section_markdown_sub_agent">
+      <title>Example: A Sub-Agent</title>
+      <p id="p_sub_agents_example">A file whose front matter contains only the required keys and,
+        optionally, the tools, defines a
+        sub-agent:<codeblock id="codeblock_sub_agent_example" outputclass="language-markdown">---
+name: Style Reviewer
+description: Reviews a topic against the documentation style guide and reports what should be changed. Use it before a topic is published.
+tools: get_document_content, grep_project, search_project_resources
+---
+
+You are a documentation reviewer.
+
+Read the topic you are given and check it against the style guide of the project. Report
+what should be changed and why. Do not edit the document yourself.</codeblock></p>
+      <p id="p_sub_agents_invocation">A sub-agent does not appear in the <uicontrol>Chat
+          modes</uicontrol> drop-down menu. Instead, it is available to AI agents that delegate
+        work, such as the <uicontrol>Agent</uicontrol>, <uicontrol>DITA Agent</uicontrol>,
+          <uicontrol>Dev Agent</uicontrol>, <uicontrol>Planner</uicontrol>, and
+          <uicontrol>Personas</uicontrol> chat modes. These agents discover the sub-agent through
+        its <codeph>description</codeph> and invoke it using the <codeph>invoke_ai_agent</codeph>
+        tool.</p>
+    </section>
+    <section id="section_markdown_chat_mode">
+      <title>Example: A Chat Mode</title>
+      <p id="p_chat_mode_example">Setting <codeph>visibility</codeph> to <codeph>visible</codeph>
+        turns the same kind of file into a chat mode that you can select in the <uicontrol>Chat
+          modes</uicontrol> drop-down menu of the Chat
+        view:<codeblock id="codeblock_chat_mode_example" outputclass="language-markdown">---
+name: Release Notes Writer
+description: Writes release notes from the change descriptions you provide, following the release notes conventions of the project.
+visibility: visible
+tools: get_document_content, search_project_resources, list_dir, edit_document
+---
+
+You are a technical writer who prepares release notes.
+
+Find the release notes of the previous versions in the project and follow their structure
+and tone. Group the changes into new features, improvements, and bug fixes. Describe each
+change from the point of view of the user, in one or two sentences.</codeblock></p>
+      <p id="p_chat_mode_details">The chat mode is placed in the same category as the built-in
+        chat modes. Like the built-in chat modes, it receives details about the application, the
+        project, and the opened documents: the <codeph>${applicationContext}</codeph> editor
+        variable is appended to the prompt, unless the prompt already contains it. To show the
+        chat mode in the drop-down menu without also offering it to the agents that delegate work,
+        set <codeph>visibility</codeph> to <codeph>visible-only-in-ui</codeph>.</p>
+    </section>
+    <section id="section_markdown_ai_action">
+      <title>Example: An AI Action</title>
+      <p id="p_ai_action_example">Setting <codeph>output-action</codeph> to a value other than
+          <codeph>agentic</codeph> defines an AI action that is applied to the selected content,
+        just like the actions defined in JSON
+        files:<codeblock id="codeblock_ai_action_example" outputclass="language-markdown">---
+name: Shorten Sentences
+description: Rewrites the selected content using shorter, simpler sentences.
+output-action: replace
+visibility: visible
+tools:
+---
+
+Rewrite the content you receive so that no sentence is longer than 20 words. Split long
+sentences rather than dropping information. Keep the XML markup unchanged and respond only
+with the rewritten content.</codeblock></p>
+      <p id="p_ai_action_details">The action appears in the <uicontrol>Actions</uicontrol>
+        drop-down menu, in the <uicontrol>Other</uicontrol> category. The
+          <codeph>output-action</codeph> key takes the same values as the <xref
+          href="creating_custom_ai_actions.dita#creating_custom_ai_actions/dl_rjl_ngb_kfc"
+          ><codeph>output-action</codeph> property</xref> of an AI action defined in JSON. For
+        example, <codeph>replace</codeph> proposes to replace the selection with the response,
+        while <codeph>none</codeph> only shows the response in the Chat view.</p>
+      <note id="note_ai_action_tools">The empty <codeph>tools</codeph> key in the example is
+        intentional. Without it, the action would inherit the tools of the built-in
+          <uicontrol>Agent</uicontrol> chat mode, including those that edit documents. A simple
+        action that transforms the selection usually needs no tools.</note>
+    </section>
+    <section id="section_markdown_keys">
+      <title>Front Matter Keys</title>
+      <p id="p_sub_agents_keys">The YAML front matter may contain the following keys:<dl
+          id="dl_sub_agent_keys">
+          <dlentry id="dlentry_sub_agent_name">
+            <dt>name</dt>
+            <dd>(Required) The name of the sub-agent, chat mode, or action. It is presented in the
+              UI and to the AI agents that invoke it, and it is used to compute its ID: the name
+              in lowercase, with blanks replaced by dashes, after the <codeph>agent.</codeph>
+              prefix (for example, <codeph>agent.style-reviewer</codeph> for the sub-agent in the
+              first example). If two definitions produce the same ID, only the first is loaded, and
+              the others are reported in the application log.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_description">
+            <dt>description</dt>
+            <dd>(Required) Describes when to use the item. An AI agent reads this description when
+              choosing from the available sub-agents and actions, so describe the purpose rather
+              than how it works. For chat modes and actions, it is also shown in the UI.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_tools">
+            <dt>tools</dt>
+            <dd>
+              <p id="p_sub_agent_tools">(Optional) Specifies the tools that may be called. List the
+                tools either on one line, separated by commas, or as a YAML list. If this key is
+                missing, the item inherits the tools of the built-in <uicontrol>Agent</uicontrol>
+                chat mode, except for tools that invoke agents. This prevents a sub-agent from
+                delegating to itself. Declaring the key without specifying a tool gives no tools.
+                An item that does not declare the key also gets the tools contributed by other
+                plugins and add-ons, while one that declares it gets only the tools it lists.</p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_model">
+            <dt>model</dt>
+            <dd>(Optional) The ID of the model to run with. By default, a sub-agent runs with the
+              model used by the conversation that invoked it.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_output_action">
+            <dt>output-action</dt>
+            <dd>(Optional) Takes the same values as the <codeph>output-action</codeph> property of
+              an AI action. The default is <codeph>agentic</codeph>, which defines a sub-agent or a
+              chat mode. Any other value defines an AI action.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_visibility">
+            <dt>visibility</dt>
+            <dd>(Optional) Accepts the following values:<p id="p_f4y_ktg_yhc">
+                <dl id="dl_xqw_g4c_yhc">
+                  <dlentry id="dlentry_fpy_ktg_yhc">
+                    <dt>visible</dt>
+                    <dd>Appears in the UI and is accessible for tools that invoke actions (e.g.
+                        <codeph>invoke_ai_agent</codeph> or
+                      <codeph>invoke_ai_action</codeph>).</dd>
+                  </dlentry>
+                  <dlentry id="dlentry_gpy_ktg_yhc">
+                    <dt>visible-only-in-ui</dt>
+                    <dd>Appears in the UI but cannot be invoked by tools.</dd>
+                  </dlentry>
+                  <dlentry id="dlentry_hpy_ktg_yhc">
+                    <dt>visible-only-for-tools</dt>
+                    <dd>Does not appear in the UI but can be invoked by tools.</dd>
+                  </dlentry>
+                  <dlentry id="dlentry_ipy_ktg_yhc">
+                    <dt>hidden</dt>
+                    <dd>Does not appear in the UI and cannot be invoked by tools.</dd>
+                  </dlentry>
+                </dl>
+              </p>The default value is <codeph>visible-only-for-tools</codeph>, which defines a
+              sub-agent. An unknown value is reported in the application log and the default is
+              used instead.</dd>
+          </dlentry>
+          <dlentry id="dlentry_sub_agent_profile">
+            <dt>profile</dt>
+            <dd>(Optional) Restricts the item to certain applications. It accepts a
+              comma-separated list of application types, such as <codeph>xml_editor,
+                xml_developer</codeph>, with the same values as the <xref
+                href="creating_custom_ai_actions.dita#creating_custom_ai_actions/dlentry_action_profile"
+                  ><codeph>profile</codeph> property</xref> of an AI action defined in JSON.</dd>
+          </dlentry>
+        </dl></p>
+    </section>
+    <section id="section_markdown_other_files">
+      <title>Other Markdown Files in the Actions Folders</title>
+      <p id="p_sub_agents_other_markdown">A <filepath>Markdown</filepath> file in the AI action
+        folders is loaded as a sub-agent, chat mode, or action only if it contains a front matter
+        with both the <codeph>name</codeph> and the <codeph>description</codeph> keys. A file named
+          <filepath>SKILL.md</filepath> is a <xref href="ai_positron_skills_creation.dita"
+          >skill</xref>, and a file without front matter is an ordinary prompt referenced by an
+        action through its <codeph>prompt_ref</codeph> property.</p>
+    </section>
+  </body>
+</topic>

@@ -12,24 +12,24 @@
       scripts configured in a JSON file, without requiring any Java code. </p>
     <p conaction="mark"
       conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/p_hooks_ov_inline_desktop_insert"/>
-    <simpletable conaction="pushafter" id="st_ov_inline" relcolwidth="2* 1* 3*">
-      <sthead>
-        <stentry>Event</stentry>
-        <stentry>Type</stentry>
-        <stentry>Description</stentry>
-      </sthead>
-      <strow>
-        <stentry><codeph>beforeInlineCompletion</codeph></stentry>
-        <stentry>Blocking</stentry>
-        <stentry>Fired before an inline autocomplete suggestion is requested. Veto to suppress the
-          suggestion.</stentry>
-      </strow>
-      <strow>
-        <stentry><codeph>afterInlineCompletion</codeph></stentry>
-        <stentry>Fire-and-forget</stentry>
-        <stentry>Fired after an inline autocomplete suggestion has been generated.</stentry>
-      </strow>
-    </simpletable>
+    <p conaction="pushafter" id="p_hooks_ov_inline"><b>Inline autocomplete</b><simpletable id="st_ov_inline" relcolwidth="2* 1* 3*">
+        <sthead>
+          <stentry>Event</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>beforeInlineCompletion</codeph></stentry>
+          <stentry>Blocking</stentry>
+          <stentry>Fired before an inline autocomplete suggestion is requested. Veto to suppress the
+            suggestion.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>afterInlineCompletion</codeph></stentry>
+          <stentry>Fire-and-forget</stentry>
+          <stentry>Fired after an inline autocomplete suggestion has been generated.</stentry>
+        </strow>
+      </simpletable></p>
     <p conaction="mark"
       conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/p_hooks_inline_payloads_desktop_insert"/>
     <p conaction="pushafter">
@@ -96,5 +96,101 @@
         </dlentry>
       </dl>
     </p>
+    <p conaction="mark"
+      conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/p_hooks_ov_mcp_server_desktop_insert"/>
+    <p conaction="pushafter" id="p_hooks_mcp_server"><b>Tools called through the Oxygen MCP
+        server</b> - The tools that third-party AI assistants (such as Claude Code or GitHub
+      Copilot) call through the <xref href="oxygen_mcp_server_preferences.dita">Oxygen MCP
+        server</xref> trigger the same hook events as the tools called in the AI chat:<ul
+        id="ul_hooks_mcp_server_events">
+        <li><codeph>preToolUse</codeph>, followed by <codeph>postToolUse</codeph> or
+            <codeph>postToolUseFailure</codeph>, and the events that the tool fires itself, such as
+            <codeph>beforeEditFile</codeph>, <codeph>beforeReadFile</codeph>,
+            <codeph>beforeLoadSkill</codeph>, or <codeph>subagentStart</codeph>. When a handler
+          vetoes a blocking event, the tool (or, for an event that the tool fires itself, the vetoed
+          operation) does not run, and the AI assistant receives an error that contains the veto
+          message.</li>
+        <li>The events of the AI actions and sub-agents that such a tool starts (for example,
+          through the <codeph>invoke_ai_agent</codeph> tool), including their own tool calls.</li>
+      </ul>All these events report <codeph>mcp_server</codeph> in their
+        <codeph>invocation_source</codeph> field. For a tool that the AI assistant calls directly,
+      there is no AI Positron chat session: the <codeph>session_id</codeph> field holds the
+      identifier of the MCP session of the assistant, which a sub-agent started by the tool reports
+      as its <codeph>parent_session_id</codeph>, and no prompt or response events are fired. The MCP
+      session itself is reported as a session of type <codeph>mcp_server</codeph> and
+        <codeph>sessionStart</codeph> is fired when the AI assistant connects to the server and
+        <codeph>sessionEnd</codeph> when its session ends, with one of the following reasons:<ul
+        id="ul_hooks_mcp_session_end_reasons">
+        <li><codeph>client_close</codeph> - The AI assistant ended its session.</li>
+        <li><codeph>connection_lost</codeph> - The AI assistant could no longer be reached (for
+          example, because it dropped its connection while waiting for the result of a tool). An
+          assistant usually starts a new session then, so one connection of an assistant can be
+          reported as several sessions.</li>
+        <li><codeph>server_stop</codeph> - The <i>Oxygen</i> MCP server was stopped from its
+          preferences page.</li>
+        <li><codeph>application_close</codeph> - <ph keyref="product"/> was closed.</li>
+      </ul>There is no idle timeout: an AI assistant that disconnects without ending its session,
+      while no tool result or notification is being sent to it, is reported as ended only when the
+      server stops or <ph keyref="product"/> closes. The payloads of all these events also name the
+      MCP client of the AI assistant, as it introduced itself when it connected to the
+        server:<simpletable id="st_hooks_mcp_client" relcolwidth="1* 1* 2*">
+        <sthead>
+          <stentry>Field</stentry>
+          <stentry>Type</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>mcp_client_name</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Name of the MCP client (e.g. <codeph>claude-code</codeph>). Omitted when the
+            client gave none.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>mcp_client_version</codeph></stentry>
+          <stentry>string</stentry>
+          <stentry>Version of the MCP client. Omitted when the client gave none.</stentry>
+        </strow>
+      </simpletable></p>
+    <p id="p_gwl_l4k_xkc">
+      <dl id="dl_hwl_l4k_xkc">
+        <dlentry id="dlentry_iwl_l4k_xkc">
+          <dt><!----></dt>
+          <dd conaction="mark"
+            conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/dd_session_start_desc"/>
+          <dd conaction="pushafter" id="dd_session_start_mcp">It is also fired when an AI assistant
+            connects to the <i>Oxygen</i> MCP server, with <codeph>mcp_server</codeph> as its
+              <codeph>session_type</codeph> (see <b>Tools called through the Oxygen MCP server</b>
+            in the overview above).</dd>
+        </dlentry>
+        <dlentry id="dlentry_lwl_l4k_xkc">
+          <dt><!----></dt>
+          <dd conaction="mark"
+            conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/dd_session_end_desc"/>
+          <dd conaction="pushafter" id="dd_session_end_mcp">It is also fired when the session of an
+            AI assistant connected to the <i>Oxygen</i> MCP server ends, with
+              <codeph>mcp_server</codeph> as its <codeph>session_type</codeph> and
+              <codeph>client_close</codeph>, <codeph>connection_lost</codeph>,
+              <codeph>server_stop</codeph>, or <codeph>application_close</codeph> as its
+              <codeph>reason</codeph> (see <b>Tools called through the Oxygen MCP server</b> in the
+            overview above).</dd>
+        </dlentry>
+      </dl>
+    </p>
+    <simpletable id="st_base_payload_mcp">
+      <strow conaction="mark"
+        conref="../ai/ai_positron_enterprise-hooks.dita#ai_positron_enterprise-hooks/strow_base_user_id">
+        <stentry/>
+        <stentry/>
+        <stentry/>
+      </strow>
+      <strow conaction="pushafter" id="strow_base_invocation_source">
+        <stentry><codeph>invocation_source</codeph></stentry>
+        <stentry>string</stentry>
+        <stentry>The route through which the run that fired the event was started from outside AI
+          Positron: <codeph>mcp_server</codeph> for a tool called through the <i>Oxygen</i> MCP
+          server, and for the AI actions and sub-agents that such a tool starts. Omitted when AI
+          Positron started the run itself.</stentry>
+      </strow>
+    </simpletable>
   </body>
 </topic>

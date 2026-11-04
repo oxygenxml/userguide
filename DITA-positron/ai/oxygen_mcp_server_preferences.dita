@@ -23,7 +23,9 @@
           <dt>Port</dt>
           <dd>
             <p>The port number on which the local MCP HTTP server listens for incoming connections.
-              Change this value if the default port is already in use by another application.</p>
+              The default port is <codeph>8757</codeph>. Change this value if the default port is
+              already in use by another application. The port can be changed only while the server
+              is stopped.</p>
           </dd>
         </dlentry>
         <dlentry>
@@ -35,7 +37,11 @@
               not displayed again for subsequent starts and stops.</p>
             <p>When the server is running, third-party AI assistants can discover and call the tools
               provided by <b>AI Positron</b>.<note type="important">The server must be started
-                manually each time you restart the <ph keyref="product"/> application.</note><note
+                manually each time you restart the <ph keyref="product"/> application, unless the
+                  <xref href="#oxygen_mcp_server_preferences/keep_server_state" type="dlentry"
+                  >Remember the server state (running or stopped) and restore it at application
+                  start</xref>
+                option is selected.</note><note
                 id="note_eg5_2s5_jkc">The MCP HTTP server can be started only if you are using <ph
                   keyref="product"/>
                 <b>Enterprise</b> version or the <b>AI Positron</b> Enterprise license.</note><note
@@ -59,6 +65,34 @@
               </note></p>
           </dd>
         </dlentry>
+        <dlentry id="keep_server_state">
+          <dt>Remember the server state (running or stopped) and restore it at application start</dt>
+          <dd>
+            <p>If selected, <ph keyref="product"/> remembers whether you last left the server running
+              or stopped, and restores that state the next time it starts. The server does not run
+              while the application is closed. If you left the server running in the previous
+              session, it starts again automatically after the application's main window is
+              displayed. If you had stopped it,
+              it remains stopped. The server starts with the same port and authentication token, so
+              AI assistants that you have already connected do not require a new configuration. This
+              option is not selected by default.</p>
+            <p>The server starts automatically only after you accept the EULA by clicking
+                <uicontrol>Start</uicontrol> once. If the server cannot start (for example, because
+              another application is already using its port), the page shows the server as stopped.
+              The application attempts to start it again the next time <ph keyref="product"/>
+              starts.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Server URL</dt>
+          <dd>
+            <p>Displayed while the server is running. The server accepts connections only from the
+              local computer, at <codeph>http://127.0.0.1:port/mcp</codeph> (for example,
+                <codeph>http://127.0.0.1:8757/mcp</codeph> for the default port). It uses the MCP
+              Streamable HTTP transport only; the older HTTP with SSE transport is not supported, so
+              configure the AI assistant to connect using Streamable HTTP.</p>
+          </dd>
+        </dlentry>
         <dlentry>
           <dt>Copy MCP Configuration</dt>
           <dd>
@@ -68,6 +102,21 @@
               the AI assistant will be able to discover and call the XML tools available in the <ph
                 keyref="product"/>
               <b>AI Positron</b> add-on.</p>
+            <p>The authentication token is kept when you stop and start the server, change the
+              port, or restart <ph keyref="product"/>. After changing the port, copy the
+              configuration again, since the server URL changes.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>Restore Defaults</dt>
+          <dd>
+            <p>Stops the server if it is running, resets the port to its default value, deselects
+              the <uicontrol>Remember the server state (running or stopped) and restore it at
+                application start</uicontrol> option, and generates a new authentication token. AI
+              assistants that were configured with the previous token are rejected (with an HTTP <codeph>401 Unauthorized</codeph> error)
+              until you click <uicontrol>Copy MCP Configuration</uicontrol> and paste the new
+              configuration into each of them. Use this button to revoke the access of all the AI
+              assistants that you previously connected.</p>
           </dd>
         </dlentry>
       </dl>
@@ -76,8 +125,26 @@
       <title>Tools</title>
       <p>All <xref href="custom_ai_action_tool_calls.dita">AI tools</xref> that are part of the
           <b>AI Positron</b> add-on are available through the use of the HTTP MCP server to the
-        third-party <b>AI Assistant</b>, with the exception of the <codeph>Run command line</codeph>
-        tool. </p>
+        third-party <b>AI Assistant</b>, with the exception of the following tools, which have no
+        use or no safe use for an AI assistant connected through the HTTP MCP server:<ul>
+          <li><codeph>run_command_line</codeph> - The AI assistant runs commands through its own
+            tools, with its own restrictions.</li>
+          <li><codeph>search_chat_history</codeph> - Past <b>AI Positron</b> conversations can
+            contain content that you did not intend to share again. <b>AI Positron</b> asks for your
+            approval before this tool runs in its chat, but there is no such approval process for a
+            call made through the HTTP MCP server.</li>
+          <li><codeph>ask_user</codeph> - The tool asks its questions in the <b>AI Positron</b>
+            chat. The AI assistant asks you through its own interface instead.</li>
+          <li><codeph>store_to_memory</codeph> and <codeph>update_memory</codeph> - The tools manage
+            the memory of the <b>AI Positron</b> chat. The AI assistant has a memory of its
+            own.</li>
+        </ul></p>
+      <note type="important">The <xref href="unsafe_tool_approval_preferences.dita">approval
+          prompt</xref> that <b>AI Positron</b> displays before running an unsafe tool applies only
+        to its own chat. Tools called by a third-party AI assistant through the HTTP MCP server run
+        without any prompt from <b>AI Positron</b>, including tools that modify files, such as
+          <codeph>edit_document</codeph>. Approving tool calls is the responsibility of the
+        third-party AI assistant, so configure its own tool permission settings accordingly.</note>
       <p>AI Tools contributed by the main <ph keyref="product"/> application and other installed
         plugins which are loaded by the <b>AI Positron</b> add-on also become available through the
         started HTTP MCP server.</p>
@@ -98,13 +165,56 @@
           </dlentry>
         </dl></p>
     </section>
+    <section id="section_concurrent_changes">
+      <title>Changes Made to the Same Document at the Same Time</title>
+      <p>Several AI assistants connected through the HTTP MCP server, or an AI assistant and the
+          <b>AI Positron</b> chat, can modify files at the same time. Changes to different documents
+        are made in parallel. Changes to the same document are made one at a time: each tool call
+        reads the document only after the previous change was saved, so no change is lost. This
+        applies to the tools that modify a document: <codeph>edit_document</codeph>,
+          <codeph>save_document</codeph>, <codeph>refactor_xml</codeph>,
+          <codeph>refactor_xml_with_xslt</codeph>, and
+          <codeph>add_dita_reference_to_ditamap</codeph>.</p>
+      <ul>
+        <li>If another change already modified the text that an edit replaces, the edit fails with
+          an error saying that the text could not be located. The AI assistant is expected to read
+          the document again and retry the edit.</li>
+        <li>If a change waits for more than 30 seconds for another change of the same document to
+          end, it fails with an error telling the AI assistant to retry. This can happen, for
+          example, while another change of that document is waiting for you to confirm it.</li>
+      </ul>
+      <note>A tool call that writes the entire content of a document replaces whatever the document
+        contains at that moment. If the AI assistant read the content before another change was
+        made, that change is overwritten. Edits that replace specific text, the usual way of editing
+        with <codeph>edit_document</codeph>, are not affected.</note>
+    </section>
     <section id="section_preview_file_changes">
-      <title>Preview File Changes</title>
-      <p>When the HTTP MCP server is started, a new MCP server status button appears on the
-          <uicontrol>AI Positron</uicontrol> chat view. If changes are made to files using the edit
-        tool provided by <uicontrol>AI Positron</uicontrol> via MCP, clicking the status button
-        shows a dialog box that allows you to review all changes made by the external AI assistants
-        and accept, modify, or reject them.</p>
+      <title>Server Status and Changed Files</title>
+      <p>The <uicontrol><image href="../img/ai-mcp-server16.png"/>Oxygen MCP Server</uicontrol>
+        button in the <uicontrol>AI Positron</uicontrol> view toolbar shows the HTTP MCP server
+        status and the documents that external AI assistants have changed through the server. If you
+        have the <b>Enterprise</b> license required to start the server, the button is always
+        displayed, even when the server is stopped. Otherwise, it is displayed only when the server
+        is running or when changed documents are waiting for review.</p>
+      <p>A badge in the lower-right corner of the button icon indicates the server status:<ul>
+          <li>A green dot - The server is running, and no documents are waiting for review.</li>
+          <li>A number in a green bubble - The server is running, and the number indicates how many
+            changed documents are waiting for review. If more than nine documents are waiting, the
+            bubble displays a star.</li>
+          <li>A number in a grey bubble - The server is stopped, but documents changed while it was
+            running are still waiting for review.</li>
+          <li>No badge - The server is not running, and no documents are waiting for review.</li>
+        </ul></p>
+      <p>Hover over the button to view the same information in its tooltip, including the exact
+        number of documents waiting for review.</p>
+      <p>Click the button to open the <uicontrol>Oxygen MCP Server</uicontrol> dialog box. The
+        dialog box shows the <uicontrol>Server status</uicontrol>, the server URL when the server is
+        running, and a <uicontrol>Server preferences</uicontrol> link that opens this preferences
+        page, where you can start or stop the server. When the server is stopped, the dialog box
+        also explains the server's purpose. Below this information, it lists the documents that
+        external AI assistants changed through the edit tool provided by <b>AI Positron</b>. You can
+        review the changes and accept, modify, or reject them. The server status and document list
+        are updated while the dialog box is open.</p>
     </section>
 </body>
 </topic>

@@ -61,6 +61,22 @@
                       the application, references to the moved or renamed resource are automatically
                       updated.</dd>
                   </dlentry>
+                <dlentry>
+                  <dt><codeph>store_to_memory</codeph> (Not Available for Web Author)</dt>
+                  <dd>Records a user preference or directive in persistent global memory so it can
+                    be considered in future interactions across projects. When the new preference
+                    contradicts or refines a rule that is already stored, the AI replaces that rule
+                    with the <codeph>update_memory</codeph> tool instead of storing a second
+                    one.</dd>
+                </dlentry>
+                <dlentry>
+                  <dt><codeph>update_memory</codeph> (Not Available for Web Author)</dt>
+                  <dd>Changes the rules stored in the persistent memory used for AI interactions. It
+                    can forget a single rule, revise the wording of a single rule, or clear the
+                    entire memory. The AI asks for confirmation before clearing the memory. This
+                    tool replaces the <codeph>clear_memory</codeph> tool, and chat modes or agents
+                    that still refer to <codeph>clear_memory</codeph> use this tool instead.</dd>
+                </dlentry>
                </dl>
              </p>
             </dd>
@@ -140,6 +156,26 @@
                     <dd>Retrieves all plain text (e.g. without markup) from the current document
                       open in the editor.</dd>
                   </dlentry>
+                <dlentry id="dlentry_search_chat_history">
+                  <dt><codeph>search_chat_history</codeph> (Works only in Oxygen desktop, Not
+                    Available for Web Author, Eclipse, or Content Fusion)</dt>
+                  <dd>Searches the titles and descriptions of conversations saved in the current
+                    project's chat history to find a past conversation you refer to (for example,
+                    "we discussed this before, what was the conclusion?"). A conversation matches if
+                    its title or description contains at least one search word, ignoring case and
+                    accents. Matches are ranked by the number of matching words they contain, with
+                    the most recently changed conversations listed first when the number of matching
+                    words is the same. The conversation in which the tool is called is never
+                    included. The AI receives at most 15 matches, each with its title, description,
+                    creation date, last modification date, and number of messages, along with the
+                    total number of matches. This lets it determine when a search was too broad. The
+                    tool does not search conversation messages. The AI uses the titles,
+                    descriptions, and dates to answer or asks you to reopen the conversation.
+                    Because past conversations may contain content that you did not intend to share
+                    again, the chat asks for your confirmation before running the search. You can
+                    also add the tool to the list of tools that are always allowed (see <xref
+                      href="unsafe_tool_approval_preferences.dita"/>).</dd>
+                </dlentry>
                   <dlentry>
                     <dt><codeph>get_schematron_components</codeph> (Not Available for Web Author or
                       Content Fusion)</dt>
@@ -178,10 +214,40 @@
                     <dd>Returns a list of DITA XML reusable components that match the keywords.</dd>
                   </dlentry>
                   <dlentry>
+                    <dt><codeph>find_possible_reusable_content</codeph> (Works only in Oxygen
+                      desktop version 29 or newer, Not Available for Web Author or Content
+                      Fusion)</dt>
+                    <dd>Returns groups of elements with similar text content that are candidates for
+                    content reuse. The AI can choose the elements to search, the project, folder, or
+                    file to search (by default, the current project or, if no project is open, the
+                    resources referenced by the DITA map open in the <uicontrol>DITA Maps
+                      Manager</uicontrol> view), whether to ignore common stop words, and the number
+                    of groups to return. It can also limit the results to groups found in specific
+                    documents. With an Enterprise license, the AI can lower the minimum similarity
+                    between elements, although this makes the search take longer. HTML files are
+                    skipped.</dd>
+                  </dlentry>
+                  <dlentry>
                     <dt><codeph>get_dita_keyrefs</codeph> (Not Available for Web Author or Content
                       Fusion)</dt>
                     <dd>Returns a mapping between product names and corresponding DITA key
                       references in JSON format.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><codeph>get_profiling_conditions</codeph> (Works only in Oxygen desktop
+                      version 29 or newer, Not Available for Web Author or Content Fusion)</dt>
+                    <dd>Returns (in JSON format) the profiling (conditional text) configuration for
+                    a document. This includes the profiling attributes and allowed values for each
+                    of them, the defined profiling condition sets, the currently applied condition
+                    set, and how profiled content is currently displayed in the editor. The
+                    attributes and values come from the <uicontrol>Profiling/Conditional
+                      Text</uicontrol> preferences or from a DITA subject scheme map referenced in
+                    the root map. The AI uses this tool to add or change profiling attributes using
+                    only the declared attributes and values, and to explain why some content is
+                    excluded or missing from the output. An optional document URL can be specified
+                    (the document does not need to be open). Otherwise, the current document opened
+                    in the current editor or the current DITA map in the <uicontrol>DITA Maps
+                      Manager</uicontrol> view is used as context.</dd>
                   </dlentry>
                   <dlentry>
                     <dt><codeph>evaluate_xpath</codeph></dt>
@@ -193,6 +259,17 @@
                     work with structured content without reading the entire file. If no document URL
                     is provided, the expression is evaluated against the currently open document.
                     Otherwise, the specified document is evaluated even if it is not open.</dd>
+                  </dlentry>
+                  <dlentry>
+                    <dt><codeph>compare_documents</codeph> (Works only in Oxygen desktop version 29
+                      or newer, Not Available for Web Author or Content Fusion)</dt>
+                    <dd>Returns the differences between two documents in unified diff format.
+                    Without parameters, it reports the comparison currently open in the editing
+                    area, including unsaved modifications. Otherwise, it compares two specified
+                    documents without opening them and can optionally use a common ancestor for a
+                    three-way comparison. The AI uses this tool to summarize changes between two
+                    versions of a document, explain a change, or answer questions about a
+                    comparison.</dd>
                   </dlentry>
                 </dl>
               </p>
@@ -348,5 +425,55 @@
       plain text without markup."
   }
 ]</codeblock>
+    <section id="section_hyg_j4n_clc">
+      <title>Tools Contributed by Oxygen Add-ons</title>
+      <p id="p_iyg_j4n_clc">
+        <dl id="dl_qmb_n4n_clc">
+          <dlentry id="dlentry_rmb_n4n_clc">
+            <dt>Batch Documents Converter</dt>
+            <dd>
+              <p id="p_bct_1pn_clc">If <xref
+                  href="https://www.oxygenxml.com/doc/ug-addons/add-ons/batch-converter-addon.html"
+                  format="html" scope="external"><b>Oxygen's</b>
+                  <uicontrol>Batch Documents Converter</uicontrol> add-on</xref> version 6.2.0 or
+                later is installed, it contributes the following tool for AI Positron:</p>
+              <p id="p_xcl_r4n_clc">
+                <dl id="dl_vh4_r4n_clc">
+                  <dlentry id="dlentry_wh4_r4n_clc">
+                    <dt>convert_documents</dt>
+                    <dd>Converts one or more documents between supported formats. It accepts either
+                      a single file or an entire folder as input and converts the contents to the
+                      specified output format.</dd>
+                  </dlentry>
+                </dl>
+              </p>
+            </dd>
+          </dlentry>
+          <dlentry id="dlentry_y3p_4pn_clc">
+            <dt>Terminology Checker</dt>
+            <dd>
+              <p id="p_z3p_4pn_clc">If <xref
+                  href="https://www.oxygenxml.com/doc/ug-addons/add-ons/terminology-checker-addon.html"
+                  format="html" scope="external"><b>Oxygen's</b>
+                  <uicontrol>Terminology Checker</uicontrol> add-on</xref> version 4.2.2 or later is
+                installed, it contributes the following tools for AI Positron:</p>
+              <p id="p_ajp_4pn_clc">
+                <dl id="dl_bjp_4pn_clc">
+                  <dlentry id="dlentry_cjp_4pn_clc">
+                    <dt>term_check_document_content</dt>
+                    <dd>Checks a specified document's content to identify terminology issues.</dd>
+                  </dlentry>
+                  <dlentry id="dlentry_bgw_3qn_clc">
+                    <dt>term_check_current_document</dt>
+                    <dd>Checks the currently open document's content to identify terminology
+                      issues.</dd>
+                  </dlentry>
+                </dl>
+              </p>
+            </dd>
+          </dlentry>
+        </dl>
+      </p>
+    </section>
   </body>
 </topic>

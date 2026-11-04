@@ -4,29 +4,145 @@
 <topic id="unsafe_tool_approval_preferences">
 <title>Unsafe Tool Auto-Approval Preferences</title>
 <body>
-    <p id="p_mqd_cr5_jkc">Tools that, once executed, cannot be undone or previewed by AI Positron
-      are considered <b>unsafe</b>. These tools include all tools obtained through the <xref
-        href="model_context_protocol_preferences.dita">Model Context Protocol</xref> integration and
-      tools used to run command lines. By default, for such tools, the end user is explicitly asked
-      in the chat box to allow the tool to run. When prompted, the end user can also choose to
-      always allow a tool to run. In that case, the allowed tool is automatically added to the list
-      of allowed tools on this preferences page.</p>
-    <p id="p_nqd_cr5_jkc">The text area contains a line-separated list of tool name prefixes that
-      are always allowed to run without asking the end user. The <codeph>*</codeph> character acts
-      as a wildcard that matches any sequence of characters.</p>
-    <p id="p_oqd_cr5_jkc">For a tool that runs a command line, when the end user allows a certain
-      command line, the prefix of that command line is also added to the tool name. Therefore, the
-      user may always allow a command line such as <codeph>git log</codeph> to run, but they may
-      want to be asked about any other command line.</p>
-    <p id="p_pqd_cr5_jkc">For MCP tools, each tool call is initially approved individually. For
-      example, when this single tool call is always allowed:</p>
+    <p id="p_mqd_cr5_jkc">Tools that AI Positron cannot undo or preview after they run are
+      considered <b>unsafe</b>. These tools include all tools obtained through the <xref
+        href="model_context_protocol_preferences.dita">Model Context Protocol</xref> integration,
+      tools that run command lines, and tools contributed by other plugins and add-ons (see <xref
+        href="#unsafe_tool_approval_preferences/section_plugin_tools"/>). By default, the end user
+      is explicitly asked in the chat box to allow these tools to run. When prompted, the end user
+      can also choose to always allow a tool to run. In that case, the tool is automatically added
+      to the list of allowed tools on this preferences page. The <xref
+        href="custom_ai_action_tool_calls.dita#custom_ai_action_tool_calls/dlentry_search_chat_history"
+          ><codeph>search_chat_history</codeph> tool</xref>, which searches your past conversations,
+      is handled the same way because those conversations may contain content that you did not
+      intend to share again.</p>
+    <p id="p_nqd_cr5_jkc">The text area contains a list of tools that are always allowed to run
+      without asking the end user, with one tool per line. Each entry begins with a tool name, which
+      must match exactly unless it contains the <codeph>*</codeph> character. The <codeph>*</codeph>
+      character is a wildcard that matches any sequence of characters.</p>
+    <p id="p_oqd_cr5_jkc">For the command-line tool (<codeph>run_command_line</codeph>), the tool
+      name can be followed by a space and a command key. A command key is a short,
+      underscore-separated name that the AI model assigns to each command line. It describes the
+      command line rather than repeating the command line. For example, the command line <codeph>p4
+        opened //demo/spec/...</codeph> may be assigned the <codeph>p4_opened_demo_spec</codeph>
+      key. When an end user chooses to always allow a command line, an entry containing the tool
+      name and command key, such as <codeph>run_command_line p4_opened_demo_spec</codeph>, is added
+      to the list. This lets the end user always allow a specific command line while still being
+      prompted about other command lines. The command key in an entry is matched as follows:</p>
+    <ul id="ul_aqd_cr5_jkc">
+      <li>Without a wildcard, the entry's command key must be identical to the command-line key. For
+        example, <codeph>run_command_line p4_opened</codeph> allows the <codeph>p4_opened</codeph>
+        key but not the <codeph>p4_opened_demo_spec</codeph> key.</li>
+      <li>With a wildcard, the entry's command key is a pattern that must match the entire
+        command-line key. For example, <codeph>run_command_line p4_opened_*</codeph> allows all keys
+        that start with <codeph>p4_opened_</codeph>, and <codeph>run_command_line p4_*</codeph>
+        allows all keys that start with <codeph>p4_</codeph>.</li>
+      <li>Without a command key, the entry allows all command lines. This applies to both
+          <codeph>run_command_line</codeph> and <codeph>run_command_line*</codeph>.</li>
+    </ul>
+    <p id="p_bqd_cr5_jkc">The AI model chooses the command key to describe the command line. The key
+      does not restrict the command line itself. Because the AI model chooses the key, the same
+      command line may receive a slightly different key in a later run. Use a wildcard to cover
+      these variations. The <b>Always allow</b> option is unavailable for a command line whose key
+      contains the <codeph>*</codeph> character.</p>
+    <p id="p_pqd_cr5_jkc">For MCP tools, each tool call must initially be approved individually. For
+      example, when this tool call is always allowed:</p>
     <image href="../img/mcp-brave-always-allow.png" placement="break" id="image_wtp_znv_v3c"/>
     <p>the preferences page is updated to contain this entry:</p>
     <image href="../img/mcp-always-allowed-prefs.png" placement="break" id="image_mmm_h4v_v3c"/>
-    <p>If you want to allow all tool calls to the MCP server, you can manually edit that entry to
+    <p>If you want to allow every tool call to the MCP server, you can manually edit the entry to
       use the wildcard form <codeph>brave-search_*</codeph>.</p>
-    <p>The standalone wildcard <codeph>*</codeph> is not allowed as a single entry.</p>
-    <p>This preferences page can be saved at project level if you want to share a certain set of
-      allowed tools with your team members.</p>
+    <p>An entry consisting only of <codeph>*</codeph> characters, or a command key consisting only
+      of <codeph>*</codeph> characters, matches nothing. Therefore, it cannot accidentally allow
+      every tool or command line.</p>
+    <p>You can save this preferences page at the project level to share a specific set of allowed
+      tools with team members.</p>
+    <section id="section_plugin_tools">
+      <title>Tools Contributed by Plugins</title>
+      <p id="p_plugin_tools_intro">Before the AI runs a tool contributed by another plugin or
+        add-on, the chat asks for your confirmation, even when the plugin declares that the call is
+        safe. For such a call, the approval box asks <uicontrol>Allow this tool to run?</uicontrol>,
+        shows the name of the tool and that it comes from a plugin, describes what the tool does,
+        and shows the arguments of the call, if any. The tools that <ph keyref="product"/>
+        contributes, such as <codeph>compare_documents</codeph>, are not affected.</p>
+      <p id="p_plugin_tools_choices">For a call that the plugin declares safe, the approval box offers
+        the following choices:</p>
+      <p id="p_hvk_gsv_ykc">
+        <dl id="dl_plugin_tools_choices">
+          <dlentry id="dlentry_ivk_gsv_ykc">
+            <dt><uicontrol>Always allow safe calls of this tool</uicontrol></dt>
+            <dd>Runs the tool and adds it to the list on this preferences page, so that calls the
+              tool declares safe no longer require confirmation. The calls that it declares unsafe
+              still ask for your confirmation. Pressing <uicontrol>Enter</uicontrol> has the same
+              effect.</dd>
+          </dlentry>
+          <dlentry id="dlentry_kvk_gsv_ykc">
+            <dt><uicontrol>Allow once</uicontrol></dt>
+            <dd>Available in the menu of <uicontrol>Always allow safe calls of this
+              tool</uicontrol>. Runs the tool only this time. When the call cannot be always
+              allowed, it is the only choice besides <uicontrol>Skip</uicontrol>, and pressing
+                <uicontrol>Enter</uicontrol> has the same effect.</dd>
+          </dlentry>
+          <dlentry id="dlentry_mvk_gsv_ykc">
+            <dt><uicontrol>Always allow safe calls to tools in the [category] category</uicontrol></dt>
+            <dd>Available in the menu of <uicontrol>Always allow safe calls of this tool</uicontrol>
+              when all the tools of the plugin are in a category of their own that no other tool
+              uses. The menu item names the category, for example <uicontrol>Always allow safe calls
+                to tools in the Git category</uicontrol>. Runs the tool and allows all calls that
+              the tools in the category declare safe. Calls that they declare unsafe still require
+              your confirmation. This also covers the tools added to the category later by an update
+              of the plugin, or by another plugin that takes its place. While two plugins contribute
+              tools in the same category, it applies to neither of them.</dd>
+          </dlentry>
+          <dlentry id="dlentry_ovk_gsv_ykc">
+            <dt><uicontrol>Skip</uicontrol></dt>
+            <dd>Does not run the tool, and tells the AI that the call was skipped. Pressing
+                <uicontrol>Esc</uicontrol> has the same effect.</dd>
+          </dlentry>
+        </dl>
+      </p>
+      <p id="p_plugin_tools_unsafe_calls">A call that the plugin declares unsafe requires approval
+        in the same way as calls from other unsafe tools: the approval box shows the plugin's own
+        warning (or, if the plugin gives none, the name of the tool and the arguments of the call)
+        and offers <uicontrol>Allow</uicontrol>, which runs the tool this time only, and
+          <uicontrol>Skip</uicontrol>. Pressing <uicontrol>Enter</uicontrol> has the same effect as
+          <uicontrol>Allow</uicontrol>, and pressing <uicontrol>Esc</uicontrol> has the same effect
+        as <uicontrol>Skip</uicontrol>. The menu of <uicontrol>Allow</uicontrol> offers to always
+        allow the tool, which adds an entry that allows every call of the tool, such as
+          <codeph>plugin:git_push</codeph>. The calls that a plugin declares unsafe can only be
+        always allowed for each tool, never for a whole category.</p>
+      <p id="p_plugin_tools_entries">The tools contributed by plugins are listed on this preferences
+        page under distinct names, so that an entry added for another tool never allows them:</p>
+      <ul id="ul_plugin_tools_entries">
+        <li><codeph>plugin:</codeph> followed by the tool name, such as
+            <codeph>plugin:git_push</codeph>, allows every call of the tool.</li>
+        <li>The same entry followed by a space and <codeph>safe-calls</codeph>, such as
+            <codeph>plugin:git_status safe-calls</codeph>, allows only the calls that the tool
+          declares safe.</li>
+        <li><codeph>plugin:category:</codeph> followed by the category, in lower case and with
+          underscores in place of its spaces, such as <codeph>plugin:category:git</codeph>, allows
+          the calls that the tools of the category declare safe.</li>
+      </ul>
+      <p id="p_plugin_tools_patterns">An entry containing the <codeph>*</codeph> character applies
+        to tools contributed by plugins only when it starts with <codeph>plugin:</codeph>. For
+        example, <codeph>plugin:*</codeph> allows all of them, while <codeph>*_status</codeph> does
+        not allow <codeph>plugin:git_status</codeph>.</p>
+      <p id="p_plugin_tools_unattended">When the user cannot be prompted for confirmation (for
+        example, in a transformation that uses the <xref href="custom_xpath_functions.dita">AI XPath
+          functions</xref> or in an action that the AI runs by itself), a tool contributed by a
+        plugin runs only if it is always allowed, even for the calls that the plugin declares safe.
+        A call that the plugin declares safe is allowed by an entry such as
+          <codeph>plugin:git_status safe-calls</codeph> or by the category of the tool, while a call
+        that it declares unsafe is allowed only by an entry such as
+        <codeph>plugin:git_push</codeph>. Otherwise, the AI receives a refusal that identifies the
+        entry to add and logs the refusal.</p>
+      <p id="p_plugin_tools_option">To stop being prompted for confirmation before tools contributed
+        by plugins run, clear the <uicontrol>Ask for confirmation before running the tools
+          contributed by plugins</uicontrol> option in the <xref keyref="actions_preferences"/>
+        preferences page.</p>
+    </section>
   </body>
+  <related-links>
+    <link href="custom_ai_action_tool_calls.dita#custom_ai_action_tool_calls/section_hyg_j4n_clc"/>
+  </related-links>
 </topic>

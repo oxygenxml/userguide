@@ -242,6 +242,16 @@
               <uicontrol>Add</uicontrol>, <uicontrol>Edit</uicontrol>, <uicontrol>Remove</uicontrol>
             buttons below the text box.</dd>
         </dlentry>
+        <dlentry id="reusable-auto-compact-conversation">
+          <dt>Auto-compact conversation</dt>
+          <dd>When enabled (the default), the chat conversation is automatically compacted before a
+            new message is sent if the context used by the conversation, including the message about
+            to be sent, reaches 70% of the model's context window. The AI replaces older messages
+            with a hidden summary, allowing the conversation to continue without exceeding the
+            model's capacity. If this option is disabled, you can still compact the conversation
+            manually using the <uicontrol>Context Consumption/Compact</uicontrol> button in the chat
+            view.</dd>
+        </dlentry>
         <dlentry id="reusables-enable-streaming">
           <dt>Enable streaming</dt>
           <dd>This option controls whether streaming is enabled. When enabled (default),
@@ -567,7 +577,7 @@
               visual preview of the changes that were already made, and you have the options to
                   <uicontrol><image href="../../img/AcceptChange16.png" placement="inline"/>Keep
                 changes</uicontrol> or <uicontrol><image href="../../img/RejectChange16.png"
-                  placement="inline"/>Reject changes</uicontrol>.</p>
+                  placement="inline"/>Undo changes</uicontrol>.</p>
           </dd>
         </dlentry>
         <dlentry id="dlentry_review">
@@ -917,18 +927,33 @@
     <section id="section_import_export_chat">
       <title>Export and Import Chats</title>
       <!-- If this reusable section needs to be used as a standalone topic, use ../export_import_chats.dita. -->
-      <p id="p_ocj_3hs_cfc">A conversation with the AI can be exported to a JSON file using the
-          <uicontrol>Export Chat</uicontrol> action (available in the <uicontrol>Actions</uicontrol>
-        menu). The exported file includes helpful information such as details about the invoked
-        action, its parameters, the tools available, the tool calls, the user and assistant
-        messages, and, if applicable, the content that the action was invoked on.</p>
+      <p id="p_ocj_3hs_cfc">You can export a conversation with the AI to a JSON file using the
+          <uicontrol>Export chat...</uicontrol> action. The exported file includes information such
+        as details about the action that was invoked, its parameters, the available tools, tool
+        calls, user and assistant messages, and, if applicable, the content on which the action was
+        invoked.</p>
       <p id="p_pcj_3hs_cfc">You can import a conversation from a JSON file using the
-          <uicontrol>Import Chat</uicontrol> action, allowing you to continue the conversation from
+          <uicontrol>Import chat...</uicontrol> action. This lets you continue the conversation from
         that point.</p>
-      <p id="p_qcj_3hs_cfc">These actions are particularly useful for debugging purposes. For
-        instance, you can export a conversation and share it with the developer of a custom action
-        to help them investigate any issues encountered. Once the issue is resolved, you can import
-        the previous conversation and resume from where you left off.</p>
+      <p id="p_loc_3hs_cfc">The availability of these actions depends on the product:<ul
+          id="ul_loc_3hs_cfc">
+          <li id="li_dsk_3hs_cfc">In the <b>Oxygen</b> desktop application, the actions are
+            available in the <uicontrol>History</uicontrol> drop-down menu in the <uicontrol>AI
+              Positron</uicontrol> view. When the assistant is displayed in a separate window, the
+            history panel appears beside the chat and the actions are available from the menu of the
+              <uicontrol>More actions</uicontrol> button (the three vertical dots button) at the top of
+            the panel.</li>
+          <li id="li_ecl_3hs_cfc">In <b>Eclipse</b>, the actions are available in the
+              <uicontrol>Actions</uicontrol> menu of the <uicontrol>AI Positron</uicontrol>
+            view.</li>
+        </ul></p>
+      <p id="p_avl_3hs_cfc">The actions are not available while the AI is processing a request. The
+          <uicontrol>Export chat...</uicontrol> action is available only when the chat displays a
+        conversation.</p>
+      <p id="p_qcj_3hs_cfc">These actions are particularly useful for debugging. For example, you
+        can export a conversation and share it with the developer of a custom action to help
+        investigate any issues encountered. After the issue is resolved, you can import the previous
+        conversation and continue where you left off.</p>
     </section>
     <section id="section_Generating-Doc-Drafts">
       <title>Generating Documentation Drafts</title>
@@ -1037,10 +1062,12 @@ is not available for XQuery files.&lt;/instruction>
           <filepath>excluded-action-ids.txt</filepath>, which can list all action IDs (on a
         line-by-line basis) that should be filtered out of the AI Positron UI.</p>
       <p id="action_id_export">To discover an action's ID, after you invoke an AI action, you can
-        use the <uicontrol>Actions</uicontrol> drop-down menu in the chat view (or press
+        use the <uicontrol>Export chat...</uicontrol> action, which is available in the
+          <uicontrol>History</uicontrol> menu of the chat view in the <b>Oxygen</b> desktop
+        application and in the <uicontrol>Actions</uicontrol> menu in Eclipse (or press
           <codeph>/</codeph> in the chat input text area if you are using the AI Positron for Web
-        Author) and choose to export the conversation to JSON. The JSON exported representation of
-        the action should contain the action ID.</p>
+        Author), and export the conversation to JSON. The JSON exported representation of the action
+        should contain the action ID.</p>
     </section>
     <section id="distributing_ai_skills">
       <title>Distributing Skills </title>
@@ -1482,11 +1509,13 @@ Output:
       <p id="p_ik5_lch_1jc">
         <dl id="dl_kl5_lch_1jc">
           <dlentry id="dlentry_ll5_lch_1jc">
-            <dt>xml-review-comments</dt>
-            <dd>The AI uses this skill when a request involves reviewing XML content without editing
-              the text directly. It adds inline review comments for issues such as spelling,
-              grammar, readability, logic, and technical accuracy. It can also resolve existing
-              review comments by applying the suggested changes.</dd>
+            <dt>review-comments</dt>
+            <dd>The AI uses this skill when a request involves reviewing XML or Markdown content
+              without editing the text directly. It adds inline review comments for issues such as
+              spelling, grammar, readability, logic, and technical accuracy. It can also reply to
+              existing review comments (adding its answer to the discussion thread of the comment
+              without changing the commented content), and resolve existing review comments by
+              applying the suggested changes.</dd>
           </dlentry>
           <dlentry id="translate-builtin-skill">
             <dt>translate-xml-content</dt>

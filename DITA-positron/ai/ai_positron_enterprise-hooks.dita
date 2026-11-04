@@ -34,7 +34,7 @@
               <filepath>pom.xml</filepath>:<codeblock id="codeblock_hooks_dep" outputclass="language-xml">&lt;dependency>
   &lt;groupId>com.oxygenxml&lt;/groupId>
   &lt;artifactId>oxygen-ai-positron-api&lt;/artifactId>
-  &lt;version>8.4.0&lt;/version>
+  &lt;version>8.5.0&lt;/version>
   &lt;scope>compile&lt;/scope>
 &lt;/dependency></codeblock><p id="p_hooks_repo">The artifact is published at <xref
                 href="https://oxygenxml.com/maven/" format="html" scope="external"
@@ -346,6 +346,8 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <stentry>Fired after the user rejects AI-proposed file changes.</stentry>
         </strow>
       </simpletable>
+      <p id="p_hooks_ov_mcp_server_desktop_insert"
+        ><!--DON'T DELETE. This is target for conref push content that documents the hooks of the tools called through the Oxygen MCP server for Desktop only.--></p>
     </section>
     <section id="section_hooks_events">
       <title>Hook Events Reference</title>
@@ -420,7 +422,7 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
           <stentry>string</stentry>
           <stentry>Absolute path to the current project or workspace root.</stentry>
         </strow>
-        <strow>
+        <strow id="strow_base_user_id">
           <stentry><codeph>user_id</codeph></stentry>
           <stentry>string</stentry>
           <stentry>System identifier of the user.</stentry>
@@ -429,8 +431,9 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
       <p><dl id="dl_hooks_events">
           <dlentry id="dlentry_session_start">
             <dt><codeph>sessionStart</codeph>: Fire-and-forget</dt>
-            <dd>Fired when a new AI session is created. This includes interactive chat conversations,
-              batch AI refactoring sessions, and AI XPath function invocations.</dd>
+            <dd id="dd_session_start_desc">Fired when a new AI session is created. This includes
+              interactive chat conversations, batch AI refactoring sessions, and AI XPath function
+              invocations.</dd>
             <dd>
               <simpletable id="st_session_start" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -457,9 +460,9 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
 
           <dlentry id="dlentry_session_end">
             <dt><codeph>sessionEnd</codeph>: Fire-and-forget</dt>
-            <dd>Fired when an AI session ends, whether a chat conversation is closed or cleared,
-              a batch AI refactoring run finishes, or an AI XPath function invocation
-              completes.</dd>
+            <dd id="dd_session_end_desc">Fired when an AI session ends, whether a chat conversation
+              is closed or cleared, a batch AI refactoring run finishes, or an AI XPath function
+              invocation completes.</dd>
             <dd>
               <simpletable id="st_session_end" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -470,14 +473,16 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>reason</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>Reason the session ended: <codeph>user_close</codeph> (the user manually
-                    closed or cleared the chat), <codeph>application_close</codeph> (the host
-                    application is shutting down), <codeph>completed</codeph> (the session completed
-                    normally, for example, a refactoring batch run or an AI XPath function
-                    invocation finished successfully), <codeph>aborted</codeph> (the user pressed
-                      <uicontrol>Stop</uicontrol> during an invocation before it finished), or
-                      <codeph>error</codeph> (the invocation was terminated by an unexpected
-                    error).</stentry>
+                  <stentry>Reason the session ended, which depends on the kind of session. For a
+                    chat conversation: <codeph>user_close</codeph> (the user manually closed or
+                    cleared the chat) or <codeph>application_close</codeph> (the host application
+                    is shutting down). For a batch AI refactoring run: <codeph>complete</codeph>
+                    (the run finished, including when it failed) or <codeph>stopped</codeph> (the
+                    user stopped it). For an AI
+                    XPath function invocation: <codeph>completed</codeph> (the invocation finished
+                    successfully), <codeph>aborted</codeph> (the user pressed
+                      <uicontrol>Stop</uicontrol> before it finished), or <codeph>error</codeph>
+                    (the invocation was terminated by an unexpected error).</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>session_type</codeph></stentry>

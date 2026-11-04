@@ -477,7 +477,7 @@
                 </dd>
               </dlentry>
               <dlentry id="dlentry_yy1_2fw_2dc">
-                <dt>Enable writing content in project (Experimental)</dt>
+                <dt>Enable writing content in project</dt>
                 <dd>Allows tools that can be used by the AI to write content in the current
                   project. The available tools used for this purpose are listed in the text
                   box.</dd>
@@ -488,26 +488,23 @@
       </ol>
     </section>
     <section id="custom_actions">
-      <title>Custom Actions</title>
-      <p>It is possible to create additional custom actions by defining them in a zipped JSON file
-        and attaching it within the Administration page.<ol>
-          <li>Create a JSON file that contains the custom actions based on information found in
-              <xref
-              href="https://www.oxygenxml.com/doc/ug-positron-desktop/ai/creating_custom_ai_actions.html"
-              format="html" scope="external">Oxygen XML Editor - AI Positron: Creating Custom
-              Actions</xref>.</li>
+      <title>Custom Actions, Agents and Skills</title>
+      <p>It is possible to create additional custom actions, agents and skills by bundling them in a
+        zipped JSON file and attaching it within the Administration page.<ol>
+          <li>Create a JSON file that contains the custom actions, agents and skills based on
+            information found in <xref href="creating_custom_ai_actions.dita"/> and <xref
+              href="ai_positron_skills_creation.dita"/>.</li>
           <li>Zip the created file.</li>
           <li>Go to the <xref
               href="https://www.oxygenxml.com/doc/ug-waCustom/topics/webapp-admin-page.html"
               format="html" scope="external">Administration Page</xref> and to the
-              <uicontrol>Preferences</uicontrol> tab. In the <uicontrol>Actions</uicontrol> section,
-            specify your zip file in the <uicontrol>Additional actions</uicontrol> option and use
-            the <uicontrol>Upload actions</uicontrol> button to upload it. If a file has already
-            been uploaded, it will be replaced with the new one.</li>
+              <uicontrol>Preferences</uicontrol> tab. In the <b>Actions, agents and skills</b>
+            section, specify your zip file in the <uicontrol>Additional actions</uicontrol> option
+            and use the <uicontrol>Upload actions</uicontrol> button to upload it. If a file has
+            already been uploaded, it will be replaced with the new one.</li>
           <li>Click <uicontrol>Apply</uicontrol> before exiting the Administration Page.</li>
-        </ol>Custom actions can also be distributed by being bundled with <xref
-          href="https://www.oxygenxml.com/doc/ug-positron-desktop/ai/creating_custom_ai_actions.html#creating_custom_ai_actions__distributing_ai_actions"
-          format="html" scope="external">existing plugins or frameworks</xref>.</p>
+        </ol>Custom actions, agents and skills can also be distributed by being bundled with <xref
+          href="distributing_filtering_ai_actions.dita">existing plugins and frameworks</xref>.</p>
     </section>
     <section id="section_lqv_qnt_vbc">
       <title>Tool Calls</title>
@@ -588,6 +585,14 @@
             <dd>The AI Tools extension point lets developers add their own custom callback
               tools or replace the built-in ones. This makes it possible to create custom
               interactions with AI engines.</dd>
+            <dd>A tool added this way is automatically available in every chat mode and sub-agent
+              without needing to be listed explicitly. An exception applies to sub-agents defined in
+                <filepath>Markdown</filepath> files that list their own tools. The read-only
+                <uicontrol>Ask</uicontrol> chat mode receives the tool only when its
+                <codeph>isReadOnly()</codeph> method returns <codeph>true</codeph>. You can declare
+              this method starting with <b>Oxygen XML Web Author</b> version 29.0. A tool that
+              replaces a built-in tool is available only in chat modes that use the built-in
+              tool.</dd>
             <dd>To implement a tool, follow these steps:<ol id="ol_h1z_m1m_y2c">
                 <li id="li_gv1_pxw_z2c">Implement the
                     <codeph>ro.sync.exml.plugin.ai.AIFunctionsPluginExtension</codeph> interface in
@@ -615,13 +620,14 @@
         line-by-line basis) that should be filtered out of the AI Positron UI.</p>
     </section>
     <section id="section_x4x_qh2_tgc">
-      <title>Persistent Favorites</title>
-      <p id="p_y4x_qh2_tgc">By default, favorites are not persistent in the demo <uicontrol>Web
-          Author</uicontrol> web site. Content Management Systems that integrate <uicontrol>Web
-          Author</uicontrol> can add two predefined variables (using JavaScript to the global
-          <codeph>window</codeph> object) that point to operations used to store and retrieve
-        persistent strings.
-        Example:<codeblock id="codeblock_tts_wp3_pcc" outputclass="language-java">window.POSITRON_RETRIEVE_OPERATION = "package.name.RetrieveOperation";
+      <title>Persistent Favorites and Chat History</title>
+      <p id="p_y4x_qh2_tgc">By default, the favorite prompts and the chat history are not persistent
+        in the demo <uicontrol>Web Author</uicontrol> web site. Content Management Systems that
+        integrate <uicontrol>Web Author</uicontrol> can add two predefined variables (using
+        JavaScript to the global <codeph>window</codeph> object) that point to operations used to
+        store and retrieve persistent strings. The same pair of operations is used for both the
+        favorites and the chat history.
+        Example:<codeblock id="codeblock_tts_wp3_pcc" outputclass="language-javascript">window.POSITRON_RETRIEVE_OPERATION = "package.name.RetrieveOperation";
 window.POSITRON_STORE_OPERATION ="package.name.StoreOperation";</codeblock>with the
           <codeph>RetrieveOperation</codeph> implemented like this (for
         example):<codeblock id="codeblock_w15_fq3_pcc" outputclass="language-java">@WebappRestSafe
@@ -643,6 +649,85 @@ public class StoreOperation extends AuthorOperationWithResult {
     return null;
   }
 }</codeblock></p>
+      <p id="p_hst_qh2_tgc">Both operations receive a <codeph>key</codeph> argument that identifies
+        what is being stored, and a <codeph>namespace</codeph> argument whose value is always
+          <codeph>positron</codeph>. The store operation also receives a <codeph>value</codeph>
+        argument that contains the data serialized as a JSON string. The retrieve operation must
+        return the string that was last stored for that key, or <codeph>null</codeph> if nothing
+        was stored yet. The following keys are used:<ul id="ul_hst_qh2_tgc">
+          <li><codeph>com.oxygenxml.positron.favorites.list</codeph> - The list of favorite
+            prompts.</li>
+          <li><codeph>com.oxygenxml.positron.history.list</codeph> - The chat history (the 10 most
+            recent conversations).</li>
+        </ul></p>
+      <p>Instead of operations, the page that integrates <uicontrol>Web Author</uicontrol> can
+        provide its own storage (for example, a server of the CMS, a database, or the local storage
+        of the browser). To do this, define a <codeph>window.POSITRON_STORAGE</codeph> object with a
+          <codeph>save(key, value)</codeph> and a <codeph>load(key)</codeph> JavaScript method. Both
+        methods must return a promise, which lets them wait for a request to a server to finish.
+        Declaring them <codeph>async</codeph> is the simplest way to do this. When both methods are defined, they are used for the
+        favorites and the chat history instead of the operations. Define the object when the page
+        loads, before AI Positron loads or saves the favorites and the chat history. Example of a
+        storage kept on a server:<codeblock outputclass="language-javascript">// storeUrl is where the CMS keeps the values of the user logged in to it.
+window.POSITRON_STORAGE = {
+  async save(key, value) {
+    const response = await fetch(`${storeUrl}/${encodeURIComponent(key)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: value
+    });
+    if (!response.ok) {
+      throw new Error(`Could not save ${key}: ${response.status}`);
+    }
+  },
+  async load(key) {
+    const response = await fetch(`${storeUrl}/${encodeURIComponent(key)}`);
+    if (response.status === 404) {
+      return null;
+    }
+    if (!response.ok) {
+      throw new Error(`Could not load ${key}: ${response.status}`);
+    }
+    return response.text();
+  }
+};</codeblock></p>
+      <p>A storage that answers at once, such as the local storage of the browser, must also return
+        promises. Example:<codeblock outputclass="language-javascript">// currentUserId identifies the user logged in to the CMS.
+window.POSITRON_STORAGE = {
+  save: async (key, value) => localStorage.setItem(currentUserId + "." + key, value),
+  load: async key => localStorage.getItem(currentUserId + "." + key)
+};</codeblock></p>
+      <note type="attention">The <codeph>window.POSITRON_STORAGE</codeph> JavaScript API is
+        experimental. It may change or be removed in a future version, without backward
+        compatibility.</note>
+      <p>The methods receive the same keys as the operations, and must behave as follows:<ul>
+          <li><codeph>save(key, value)</codeph> receives the data serialized as a JSON string in
+              <codeph>value</codeph>, and must keep it under <codeph>key</codeph>, replacing what
+            was kept there before. It must return a promise that is resolved once the data is kept,
+            or rejected if it cannot be kept.</li>
+          <li><codeph>load(key)</codeph> must return a promise that is resolved with the string that
+            was last saved for that key, or with <codeph>null</codeph> if nothing was saved yet, and
+            rejected if the data cannot be read. The promise must always be resolved or rejected.
+            Until it is, the conversations that end in the meantime are not saved.</li>
+          <li>A method that throws an error, returns something other than a promise, or whose
+            promise is rejected, fails. The failure is reported in the browser console.</li>
+        </ul></p>
+      <note type="important">
+        <ul>
+          <li>The stored data is the user's content. The chat history includes the prompts, the
+            answers, and the results of the tools, which may contain document content. If the
+            storage is shared by several users (for example, the local storage of a shared browser
+            profile), prefix the keys with an identifier of the user, as in the local storage
+            example above.</li>
+          <li>If a load fails (the method fails, or its promise is resolved with something other
+            than the saved string), or if the object is defined after AI Positron
+            has loaded a list, the list is empty and the next save replaces everything that was kept
+            under that key.</li>
+          <li>A browser's local storage provides approximately 5 MB for each website. Saving data
+            that exceeds this limit fails, and the failure is reported only in the browser
+            console.</li>
+        </ul>
+      </note>
     </section>
   </body>
 </topic>
