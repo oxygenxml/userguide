@@ -11,30 +11,30 @@
   </prolog>
   <body>
     <p id="p_jnr_dgk_54b">By default, <ph keyref="webappProduct"/> comes with Oxygen Security
-      Manager, this being the replacement solution for Java Security Manager that has been removed
-      from recent Java versions and is no longer compatible with Web Author 29.0. If you're
-      upgrading vrom version 28.1 (or later) to 29 please see the dedicated topic <xref
+      Manager. It replaces the Java Security Manager, which has been removed from recent Java
+      versions and is no longer compatible with Web Author 29.0. If you are upgrading from version
+      28.1 (or later) to version 29, see the dedicated topic: <xref
         href="web-author-29-migration-guide.dita"/>.</p>
-    <p>The Oxygen Security Manager is a security layer that acts as a security net, helping
-      protecting agains malicious plugins and various attacks. It allows the minimal file access
-      permissions that are required for the application to function properly:<ul id="ul_rjs_5hd_cr">
+    <p>The Oxygen Security Manager is a security layer that acts as a safety net, helping to protect
+      against malicious plugins and various attacks. It allows the minimal file access permissions
+      that the application requires to function properly:<ul id="ul_rjs_5hd_cr">
         <li id="li_knr_dgk_54b"><i>READ</i> access to the directory where the <ph
             keyref="webappProduct"/> is deployed.</li>
         <li id="li_lnr_dgk_54b"><i>READ</i> and <i>WRITE</i> access to the application's working
           directory.</li>
-        <li id="li_mnr_dgk_54b"><i>READ</i> and <i>WRITE</i> access to JVM's temporary
-          directory.</li>
+        <li id="li_mnr_dgk_54b"><i>READ</i> and <i>WRITE</i> access to the temporary directory of
+          the JVM (Java Virtual Machine).</li>
       </ul></p>
     <section id="disabling_security_mode">
       <title>Disabling Oxygen  Security Manager</title>
-      <p>We do not recommend disabling Oxygen Security Manager, but in some specific use-cases you
-        might need to disable it, fro example when developing a custom plugin. We recommend keeping
-        the Oxygen Security Manager enabled in production, as this being an important security layer
-        in the application.</p>
-      <p>Note that you also might have to disable the Java Security Manager by removing
-        "-Djava.security.manager" if present.</p>
-      <p id="p_nnr_dgk_54b">To disable the default security mode, follow this procedure (depending
-        on your installation method):</p>
+      <p>We do not recommend disabling the Oxygen Security Manager. However, in some specific use
+        cases, you might need to disable it (for example, when developing a custom plugin). In
+        production, we recommend keeping the Oxygen Security Manager enabled, as it is an important
+        security layer of the application.</p>
+      <p>Note that you might also have to disable the Java Security Manager by removing the
+        "-Djava.security.manager" option, if it is present.</p>
+      <p id="p_nnr_dgk_54b">To disable the default security mode, follow the procedure for your
+        installation method:</p>
       <p id="p_onr_dgk_54b"><u><i><b>Windows Installer</b></i></u><ol id="ol_pnr_dgk_54b">
           <li id="li_qnr_dgk_54b">Go to the installation directory of <ph keyref="webappProduct"/>.</li>
           <li id="li_rnr_dgk_54b">Launch <uicontrol>Manage Web Author Service</uicontrol>.</li>
@@ -56,29 +56,28 @@
         </ol></p>
     </section>
     <section id="enabling_security_mode">
-      <title>Configuring Oxygen Security Manager for Web Author Component that uses WAR
-        distribution</title>
-      <p>The Oxygen Security Manager is by default enabled, but for integrators that use the WAR kit
-        from Oxygen XML Web Author Component (not regular Oxygen XML Web Author product Linux and
-        Windows installers or All Platforms kit) they meed to configure it so that the application
-        will start succesfully. </p>
+      <title>Configuring Oxygen Security Manager for the Web Author Component WAR
+        Distribution</title>
+      <p>The Oxygen Security Manager is enabled by default. However, integrators who use the WAR kit
+        from Oxygen XML Web Author Component (not the regular Oxygen XML Web Author Linux and
+        Windows installers or the All Platforms kit) need to configure it so that the application
+        starts successfully. To do this, follow these steps:</p>
       <p id="p_t4r_dgk_54b">
         <ol id="ul_ojh_g3d_cr">
-          <li>Specify the <codeph>oxygen.policy</codeph> location with the
-              <codeph>-Doxygen.security.policy</codeph> system property.  The <b>Oxygen Security
+          <li>Specify the location of the <codeph>oxygen.policy</codeph> file using the
+              <codeph>-Doxygen.security.policy</codeph> system property. The <b>Oxygen Security
               Manager</b> requires an <codeph>oxygen.policy</codeph> file that specifies
-            permissions. If you previously had additional permissions in
-              <filepath>catalina.policy</filepath>, you must now add them to
-              <filepath>oxygen.policy</filepath>. You can obtain this file from the All Platforms
-            kit. Note that <codeph>oxygen.policy</codeph> uses internal classes from the
-              <codeph>ro.sync.security</codeph> package; it does not use JRE permission classes that
-            are deprecated for removal and are not supported.</li>
+            permissions. You can obtain this file from the All Platforms kit. If you previously had
+            additional permissions in <filepath>catalina.policy</filepath>, you must now add them to
+              <filepath>oxygen.policy</filepath>. Note that <codeph>oxygen.policy</codeph> uses
+            internal classes from the <codeph>ro.sync.security</codeph> package; it does not use JRE
+            permission classes that are deprecated for removal and are not supported.</li>
           <li>Add the
               <codeph>-javaagent:./tomcat/webapps/oxygen-xml-web-author/WEB-INF/lib/oxygen-sandbox.jar</codeph>
-            JVM argument. Ensure that the application is deployed at the
-              <codeph>oxygen-xml-web-author</codeph> path and that the WAR is expanded (unzipped)
-            before starting Tomcat; otherwise, the <codeph>javaagent</codeph> JAR location will not
-            exist on disk.</li>
+            JVM argument. Before starting Tomcat, make sure that the application is deployed at the
+              <codeph>oxygen-xml-web-author</codeph> path and that the WAR file is expanded
+            (unzipped). Otherwise, the <codeph>javaagent</codeph> JAR location will not exist on
+            disk.</li>
         </ol>
       </p>
     </section>
@@ -93,28 +92,29 @@
     </section>
     <section id="configuring_file_permissions_to_custom_locations">
       <title>Configuring File Permissions to Custom Locations</title>
-      <p id="p_y4r_dgk_54b">There are cases when the <ph keyref="webappProduct"/> needs to access files system
-        resources, but due to security reasons, you want to prevent your users from opening them
+      <p id="p_y4r_dgk_54b">In some cases, <ph keyref="webappProduct"/> needs to access file system
+        resources, but for security reasons, you want to prevent your users from opening them
         directly in the <ph keyref="webappProduct"/> editing page using the
           <filepath>file://</filepath> protocol.</p>
-      <p id="p_z4r_dgk_54b">You can do this by following these steps:<ol id="ul_rfq_nvr_qr">
-          <li id="li_apr_dgk_54b">Edit the <filepath>oxygen.policy</filepath> file and add a line
-            such
-            as:<codeblock outputclass="language-java" id="codeblock_bpr_dgk_54b">permission ro.sync.security.permission.FilePermission "path/to/yourSecretDir/-", "read,write,delete";
+      <p id="p_z4r_dgk_54b">To do this, follow these steps:<ol id="ul_rfq_nvr_qr">
+          <li id="li_apr_dgk_54b">Edit the <filepath>oxygen.policy</filepath> file and add lines
+            such as the
+            following:<codeblock outputclass="language-java" id="codeblock_bpr_dgk_54b">permission ro.sync.security.permission.FilePermission "path/to/yourSecretDir/-", "read,write,delete";
 permission ro.sync.security.permission.FilePermission "path/to/yourSecretDir", "read,write,delete";</codeblock></li>
           <li id="li_cpr_dgk_54b">Use the following system property when starting the Tomcat
-              server:<codeblock outputclass="language-ini" id="codeblock_dpr_dgk_54b">-Dfile.protocol.blacklist=/path/to/yourSecretDir</codeblock><note id="note_epr_dgk_54b">Use
-              the value of <codeph>path.separator</codeph> system property to separate more
-              directories. For example, under Linux, the value of <codeph>path.separator</codeph>
-              property is a colon punctuation character <codeph>:</codeph>.</note></li>
+              server:<codeblock outputclass="language-ini" id="codeblock_dpr_dgk_54b">-Dfile.protocol.blacklist=/path/to/yourSecretDir</codeblock><note
+              id="note_epr_dgk_54b">To specify multiple directories, separate them using the value
+              of the <codeph>path.separator</codeph> system property. For example, on Linux, the
+              value of the <codeph>path.separator</codeph> property is the colon character
+                (<codeph>:</codeph>).</note></li>
         </ol></p>
     </section>
     <section id="section_u2x_dzv_brb">
       <title>Security Options</title>
       <p><ph keyref="webappProduct"/> comes with several security <xref
           href="customizing-options.dita#customizing-options/oxygen_standalone_options_supported_by_web_author"
-          >options</xref> preconfigured and they may prevent loading some documents (for example, in
-        development mode). These options are:</p>
+          >options</xref> preconfigured, which may prevent some documents from loading (for example,
+        in development mode). These options are:</p>
       <p>
         <ul id="ul_rt3_4zv_brb">
           <li><uicontrol>ignore.absolute.file.system.entities</uicontrol> - If set to <b>true</b>
@@ -127,7 +127,7 @@ permission ro.sync.security.permission.FilePermission "path/to/yourSecretDir", "
             (default value), XML external entities are blocked if their target URL does not have the
             same protocol as the URL of the file where the entity is declared.</li>
           <li><uicontrol>block.cross.protocol.author.references</uicontrol> - If set to <b>true</b>
-            (default value), Author references (for example DITA <codeph>conref</codeph>) are
+            (default value), Author references (for example, DITA <codeph>conref</codeph>) are
             blocked if their target URL has a different protocol than the URL of the file that
             contains the referencing element.</li>
           <li id="li_kkn_ysc_drb"><uicontrol>author.display.references.expanded</uicontrol> - If set
@@ -136,8 +136,8 @@ permission ro.sync.security.permission.FilePermission "path/to/yourSecretDir", "
         </ul>
       </p>
       <note id="note_w5n_lwt_drb">XML external entities that use URLs with the <codeph>jar</codeph>
-        protocol are blocked unless the XML file that declares the entity is loaded from an URLs
-        with the <codeph>jar</codeph> protocol.</note>
+        protocol are blocked unless the XML file that declares the entity is loaded from a URL that
+        uses the <codeph>jar</codeph> protocol.</note>
     </section>
   </body>
 </topic>
