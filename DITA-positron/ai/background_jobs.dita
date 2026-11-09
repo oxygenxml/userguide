@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="background_jobs">
+  <title>Long-Running Tools and Background Jobs</title>
+  <shortdesc>Some tools that the AI calls can take minutes, such as a build, the completeness check
+    of a large publication, or a sub-agent working on a part of a task. The AI can run them in the
+    background, as jobs, while you keep chatting.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>background jobs</indexterm>
+        <indexterm>long-running tools</indexterm>
+        <indexterm>stopping tools</indexterm>
+        <indexterm>sub-agents in the background</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section id="stopping_running_tools">
+      <title>Stopping a Running Tool</title>
+      <p>While the AI is working, the <uicontrol>Send</uicontrol> button of the <xref
+          href="ai_positron_view.dita">AI Positron view</xref> becomes a
+          <uicontrol>Stop</uicontrol> button. Selecting it stops the current turn and the tool the
+        AI is running at that moment, instead of waiting for the tool to end:</p>
+      <ul id="ul_stopping_running_tools">
+        <li>A command started with <codeph>run_command_line</codeph> is killed.</li>
+        <li>A transformation scenario or a completeness check is stopped.</li>
+        <li>A call to an MCP tool is abandoned: the MCP server is not told, and its late answer is
+          ignored.</li>
+      </ul>
+      <p>The <uicontrol>Stop</uicontrol> button does not stop the jobs that run in the background,
+        described below.</p>
+    </section>
+    <section id="tools_in_background">
+      <title>Tools That Can Run in the Background</title>
+      <p>The following tools can run as background jobs:</p>
+      <ul id="ul_tools_in_background">
+        <li><codeph>run_command_line</codeph> - for commands that keep running or take long, such
+          as a server, a watcher, or a build.</li>
+        <li><codeph>validate_and_check_for_completeness</codeph> - for the check of a large
+          publication.</li>
+        <li><codeph>grep_project</codeph> and the other tools contributed by <i>Oxygen</i> that
+          support it (<i>Oxygen</i> 29 or newer).</li>
+        <li><codeph>invoke_transformation_scenario</codeph> - for a transformation that takes a
+          while.</li>
+        <li><codeph>invoke_ai_agent</codeph> - for a sub-agent working on a part of the task.</li>
+      </ul>
+      <p>The AI decides when to run a tool in the background, for example for a long build. You
+        can also ask for it, for example: "Check the map for completeness in the background". A
+        tool call that does not run in the background works as before, and the turn waits for it to
+        end.</p>
+    </section>
+    <section id="following_background_job">
+      <title>Following a Background Job</title>
+      <p>A tool call that runs in the background returns at once, and the AI goes on with other
+        work, or finishes its answer. Under the tool call, a line shows <uicontrol>Running in the
+          background (job-1)</uicontrol> and a <uicontrol>Stop</uicontrol> link. Below it, the line
+        shows how far the job got, when the tool tells it (for example, the file that is being
+        validated), and an animated indicator while the job runs.</p>
+      <p>You can keep chatting while the job runs. When it ends, the line shows
+          <uicontrol>Finished in the background (job-1)</uicontrol>, <uicontrol>Failed in the
+          background (job-1)</uicontrol>, or <uicontrol>Stopped in the background
+          (job-1)</uicontrol>. A job that did not finish still shows how far it got.</p>
+    </section>
+    <section id="when_job_ends">
+      <title>When a Job Ends</title>
+      <p>The AI is told when a background job ends:</p>
+      <ul id="ul_when_job_ends">
+        <li>If the chat is idle, a notice such as <uicontrol>Finished in the background (job-1):
+            Validate and check for completeness</uicontrol> appears in the conversation, and the AI
+          follows up on the result on its own. What you were typing in the chat input area is
+          kept.</li>
+        <li>If the AI is working on another turn, it is told when that turn ends, or with the next
+          message you send.</li>
+      </ul>
+      <p>While a job runs, the AI can also read its output or progress with the
+          <codeph>get_job_output</codeph> tool.</p>
+    </section>
+    <section id="stopping_background_jobs">
+      <title>Stopping Background Jobs</title>
+      <p>A background job is stopped when:</p>
+      <ul id="ul_stopping_background_jobs">
+        <li>You select the <uicontrol>Stop</uicontrol> link on its line.</li>
+        <li>The AI stops it with the <codeph>stop_job</codeph> tool, for example when you ask it
+          to.</li>
+        <li>You start a new chat or open another conversation. A new chat first waits briefly for
+          the jobs to end, so that the changes they made to documents are part of the review of the
+          document changes.</li>
+        <li>You close <i>Oxygen</i>.</li>
+      </ul>
+      <p>The <uicontrol>Stop</uicontrol> button of the chat leaves background jobs running.</p>
+      <p>At most 5 jobs can run at the same time. When the AI tries to start another one, the tool
+        call fails and the AI is told why, but the turn goes on. When you reopen a conversation from
+        the <xref href="chat_history.dita">chat history</xref>, its tool calls show how their jobs
+        ended.</p>
+    </section>
+    <section id="subagents_in_background">
+      <title>Sub-Agents in the Background</title>
+      <p>When the AI runs a sub-agent in the background, several sub-agents can work at the same
+        time, each in its own <xref href="chat_modes.dita#chat_modes/subagent_conversations"
+          >conversation tab</xref>. The line of the job shows what the sub-agent is doing:</p>
+      <ul id="ul_subagents_in_background">
+        <li><uicontrol>Thinking</uicontrol> - The sub-agent decides what to do next.</li>
+        <li>The tool call it runs, as it is shown in its tab (for example, <uicontrol>Search in
+            project (needle)</uicontrol>).</li>
+        <li><uicontrol>Waiting for your answer in its tab</uicontrol> - The sub-agent asked you a
+            <xref href="clarifying_questions.dita">clarifying question</xref>.</li>
+        <li><uicontrol>Waiting for your confirmation in its tab</uicontrol> - The sub-agent waits
+          for you to allow or skip an unsafe tool call.</li>
+      </ul>
+      <p>Select this text to open the tab of the sub-agent, where you can answer its question,
+        confirm its tool call, or follow its work. The <uicontrol>Stop</uicontrol> link on the line
+        stops the sub-agent, while the <uicontrol>Stop</uicontrol> button of the chat leaves it
+        running. A sub-agent that was stopped shows the tool call it was in.</p>
+    </section>
+  </body>
+</topic>
