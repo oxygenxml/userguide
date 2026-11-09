@@ -2,8 +2,8 @@
 <!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA 1.3 Troubleshooting//EN" "troubleshooting.dtd">
 <troubleshooting id="git-addon-ts-rebase-merge-blocked">
   <title>Rebase or Merge Is Blocked</title>
-  <shortdesc>The Git Client will not start a rebase or merge while conflicts or uncommitted changes are
-    outstanding.</shortdesc>
+  <shortdesc>The Git Client will not start a rebase or merge while conflicts or uncommitted changes
+    are outstanding, or when the Git configuration forbids the merge.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -14,7 +14,7 @@
   <troublebody>
     <condition id="problem">
       <title>Problem</title>
-      <p>A rebase or merge will not start, or stops immediately.</p>
+      <p id="p_upc_dwt_hkc">A rebase or merge does not start, or it stops immediately.</p>
     </condition>
     <troubleSolution>
       <cause id="cause">
@@ -39,6 +39,33 @@
           </step>
           <step>
             <cmd>Start the rebase or merge again.</cmd>
+          </step>
+        </steps>
+      </remedy>
+    </troubleSolution>
+    <troubleSolution>
+      <cause id="cause_config">
+        <title>Cause</title>
+        <p>The Git configuration forbids the merge, and the Git Client reports that the merge was
+          not performed. Under <codeph>merge.ff = only</codeph>, a merge of branches that have
+          diverged is refused. A <uicontrol conkeyref="branch-uicontrols/branch-squash-merge"/> is
+          refused under <codeph>merge.ff = false</codeph>.</p>
+        <note>This setting is often in <filepath>~/.gitconfig</filepath>, where it applies to every
+          repository on the machine rather than only to the current one.</note>
+      </cause>
+      <remedy id="solution_config">
+        <title>Solution</title>
+        <steps>
+          <step>
+            <cmd>Change the <codeph>merge.ff</codeph> setting, or remove it to restore the Git
+              default.</cmd>
+          </step>
+          <step>
+            <cmd>Alternatively, run a merge that the configuration permits.</cmd>
+            <info>
+              <p>Under <codeph>merge.ff = only</codeph>, pull or rebase first so that the branches
+                no longer diverge.</p>
+            </info>
           </step>
         </steps>
       </remedy>

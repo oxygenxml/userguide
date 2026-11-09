@@ -1,6 +1,6 @@
 # Git Client Add-on Documentation — Style Guide
 
-**Applies to:** `DITA-addons/git-addon/`
+**Applies to:** `DITA-addons/git-client/`
 **Extends:** the house guides at `DITA/positron-ai-actions/docs/addons-ai/dependencies/oxygen-ug-styleguide.md` and `rules/styleguide/`. Where the house rules already decide something (American spelling, list punctuation, hyphenation, title case mechanics), defer to them. This guide adds the Git-addon-specific rules and the type/reuse discipline that make this doc set a best-practice sample.
 
 > **The one-line philosophy:** *Type by reader intent. One source of truth per fact. Tasks link, they don't re-describe. Relaxed but precise.*
@@ -24,7 +24,7 @@ Write for a technical user who reads to *do*, not to browse. Be the friendly exp
 | "The Git Client makes it easy to seamlessly push your changes." | "Push sends your local commits to the remote repository." |
 | "Changes can be staged by the user by clicking the stage button." | "To stage a change, select **Stage Selected**." |
 | "It is possible that a conflict may potentially occur during a merge." | "A merge can produce conflicts when the same lines change on both branches." |
-| shortdesc: "This topic describes the procedure for cloning." | shortdesc: "Copy a remote repository to your machine so you can start working with it." |
+| shortdesc: "This topic describes the procedure for cloning." | shortdesc: "Copy a remote repository to your machine so that you can start working with it." |
 | tip: "Users are advised that stashing is available." | tip: "In a hurry? Stash your changes to switch branches without committing." |
 
 ---
@@ -49,7 +49,7 @@ Generic `<topic>` is **banned**. Every topic is one of four types:
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task id="git-addon-clone-a-repository">
   <title>Clone a Repository</title>
-  <shortdesc>Copy a remote repository to your machine so you can start working with it.</shortdesc>
+  <shortdesc>Copy a remote repository to your machine so that you can start working with it.</shortdesc>
   <prolog><metadata><keywords>
     <indexterm>Git Client add-on<indexterm>cloning repositories</indexterm></indexterm>
   </keywords></metadata></prolog>
@@ -196,6 +196,19 @@ These are validated automatically in Oxygen. Follow them as you author:
 - **Give every `<codeblock>` an `@outputclass`** naming its language (for example, `language-dos`, `language-xml`) so it isn't misread as XML.
 - **Never hard-code the product name.** Use `<ph keyref="product"/>` in prose — even inside a `<propdesc>`. (A literal UI label that contains "Oxygen" stays as-is inside `<uicontrol>`.)
 
+---
+
+## 5b. XML Formatting
+
+These topics are often authored outside Oxygen, where **Format and Indent is not available** — match the house formatting by hand instead. Measured across this doc set: wrap column **100**, indent **2 spaces**, continuation lines **+2** from the opening element's indent.
+
+- **Never hand-wrap around inline elements.** Write prose as continuous text and let it fill to column 100. Breaking a line so that a `<uicontrol conkeyref="…"/>` sits by itself is not the house style, and it is the single largest source of reformatting churn in review.
+- **Do not reflow paragraphs you are not changing.** When you edit one sentence, leave the surrounding line breaks alone. A rewrapped paragraph reads as a whole-paragraph diff and invites a reformatting pass over the whole topic.
+- Oxygen additionally breaks *inside* a start tag when it would cross the margin (`<xref` on one line, `  href="…"/>` on the next). Do not try to reproduce this — it is the one part of the format that cannot be matched by hand, and leaving it alone costs nothing.
+- **If you have Oxygen open**, running Format and Indent on the changed topics before committing closes the gap exactly. Optional, but it is the only way to get a perfect match.
+
+---
+
 ## 6. Images
 
 - PNG, white background, ≤ 650 × 650 px. Wrap in `<fig>` with a title (noun phrase, title case): "Clone Repository Dialog Box".
@@ -233,7 +246,7 @@ These are validated automatically in Oxygen. Follow them as you author:
 
 - **View names:** "Git Staging view", "Git History view", "Git Branch Manager view" — lowercase "view", following the name. Never "panel", "window", or "tab".
 - **Menus:** "contextual menu" for the right-click menu (this is the established Oxygen User Guide norm — the main guide uses "contextual menu" ~900 times vs "context menu" a handful; do not use "context menu").
-- **select vs click:** use **select** for choosing an action, menu item, button, checkbox, or list entry. Reserve **click** for when the physical mouse action matters (a graph node); use **double-click** explicitly. Never "click on".
+- **select vs click:** use **select** for choosing an action, menu item, button, checkbox, or list entry — **including toolbar buttons** ("On the Git Staging toolbar, select `<uicontrol>Push</uicontrol>`"). Reserve **click** for when the physical mouse action matters (a graph node); use **double-click** explicitly. Never "click on". This matches the main User Guide, where toolbar steps read "toolbar, and select…" throughout and *click* appears only for real gestures ("expand it by clicking the arrow next to the toolbar name").
 - **Repository / working copy / remote:** "repository" = the Git repository; "working copy" = the local checkout the Git Client currently operates on; "the remote" = the remote repository. Never "repo".
 - **Operations vs actions:** lowercase prose for the verb ("push your commits"); `<uicontrol>` with button case for the named action. Decide each action's capitalization once (match the button text) and reuse it from `lib/`.
 - **AI Positron name:** the AI product is **AI Positron** — always reference it with the key `<ph keyref="plugin-positron"/>` (defined in `add-ons.ditamap`, expands to "AI Positron"), never hardcode the name or use bare "Positron". Use plain "AI" only for the generic capability. The "requires AI Positron" prerequisite note is `conkeyref="reusables-addons/important_requires_positron"`.
@@ -242,7 +255,29 @@ These are validated automatically in Oxygen. Follow them as you author:
 - **No em-dashes:** avoid em-dash (`—`) asides in topic prose; reflow them into separate sentences or parentheses. In choice/label lists use "`<uicontrol>Label</uicontrol>` - description" with a spaced hyphen, and use "-" (not "—") for an empty or placeholder cell value.
 - **No clause-joining semicolons:** do not join two clauses with a semicolon. Write two sentences, or use a conjunction such as "and", "so", or "then". A semicolon is acceptable only to separate items in a list whose entries already contain commas.
 - **Numbers:** the outdated-branch check runs "every 3.5 hours".
-- **Version:** this doc set targets Git Client add-on **6.0**.
+- **Version:** this doc set targets Git Client add-on **6.1**.
+
+---
+
+## 9a. Wording and Grammar
+
+These are the corrections a doc-team review makes on our prose. The first three are house rules with a written source in `rules/styleguide/`; the rest are established User Guide usage.
+
+| Write | Not | Source |
+|---|---|---|
+| "the remotes for the repository" | "the repository's remotes" | `generalStyleRules.dita` — *Avoid using possessives in the User Guide, if at all possible. If you find yourself using an apostrophe to show possession, rewrite the sentence.* |
+| "This requires a force push afterward." | "Requires a force push afterward." | `commonGrammarErrors.dita` — *Avoid sentence fragments.* Every sentence needs a subject, including a one-line `<stentry>` description in an action table |
+| "gray" | "grey" | `generalStyleRules.dita` — American spelling |
+| "so that you can" | "so you can" | UG usage |
+| "After every file is resolved" | "Once every file is resolved" | UG usage |
+| "you are prompted to choose" | "you are asked to choose" | UG usage |
+| "Disabling X", "enabled by default" | "Turning off X", "on by default" | UG usage |
+| "Each pane is labeled…" | "Each pane is captioned…" | UG usage |
+| "the **Tags** dialog box" | "the tags dialog box" | Name a dialog box with its own title, capitalized (see §9) |
+
+**Possessives are the one to watch.** They are easy to write without noticing and they account for the largest share of review edits on this doc set. "The local branch's tracking branch" becomes "the tracking branch for the local branch"; "the related branch's tip commit" becomes "the tip commit of the related branch".
+
+**Register matters for "in sync".** Use "synchronized" in descriptive prose ("both panes are kept synchronized with the Git Staging view"), but the idiom is fine in a tip ("to keep two servers in sync with a single push").
 
 ---
 
@@ -259,5 +294,7 @@ These are validated automatically in Oxygen. Follow them as you author:
 - [ ] At least one `Git Client add-on<…>` indexterm?
 - [ ] Images in `<fig>` with title, PNG, white bg, ≤ 650 px; only where they help?
 - [ ] Links resolve; descriptive text; external links `format="html" scope="external"`; link density low?
-- [ ] `@id` == filename; stable IDs only on real xref/conref/conkeyref targets?
+- [ ] `@id` == filename; add stable IDs only on real xref/conref/conkeyref targets. (Auto-generated IDs such as `p_qcq_54p_fkc` appear whenever a topic is edited in Oxygen with auto-ID enabled — leave them in place, never strip them.)
 - [ ] American spelling; house list-punctuation rules followed?
+- [ ] §9a wording applied — no possessives, no sentence fragments, "so that", "after", "prompted", "disabled"?
+- [ ] §5b formatting — wrapped at 100, no hand-wrapping around inline elements, untouched paragraphs not reflowed?
