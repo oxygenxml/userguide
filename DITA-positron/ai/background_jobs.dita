@@ -44,17 +44,20 @@
         <li><codeph>invoke_transformation_scenario</codeph> - for a transformation that takes a
           while.</li>
         <li><codeph>invoke_ai_agent</codeph> - for a sub-agent working on a part of the task.</li>
-        <li>MCP tools whose server declares a <codeph>runInBackground</codeph> parameter in their
-          input schema, which tells that a call may take long. The parameter is passed on to the
-          server as the AI sets it. Such a call may take up to one hour. The other MCP tools always
-          run in the chat turn, limited by the <uicontrol>Tool call timeout</uicontrol> option of
-          the <xref href="model_context_protocol_preferences.dita">Model Context Protocol
-            preferences</xref>.</li>
+        <li>MCP tools. A call that is still running after the time set in the <uicontrol>Move tool
+            calls to the background after</uicontrol> option of the <xref
+            href="model_context_protocol_preferences.dita">Model Context Protocol
+            preferences</xref> (15 seconds by default) moves to the background on its own. A tool
+          whose server declares a <codeph>runInBackground</codeph> parameter in its input schema,
+          which tells that a call may take long, can also run in the background from the start,
+          when the AI asks for it; the parameter is passed on to the server as the AI sets it. A
+          call in the background may take up to one hour.</li>
       </ul>
       <p>The AI decides when to run a tool in the background, for example for a long build. You
         can also ask for it, for example: "Check the map for completeness in the background". A
         tool call that does not run in the background works as before, and the turn waits for it to
-        end.</p>
+        end. The exception is a call of an MCP tool, which moves to the background on its own when
+        it takes long.</p>
     </section>
     <section id="following_background_job">
       <title>Following a Background Job</title>
@@ -97,9 +100,10 @@
       </ul>
       <p>The <uicontrol>Stop</uicontrol> button of the chat leaves background jobs running.</p>
       <p>At most 5 jobs can run at the same time. When the AI tries to start another one, the tool
-        call fails and the AI is told why, but the turn goes on. When you reopen a conversation from
-        the <xref href="chat_history.dita">chat history</xref>, its tool calls show how their jobs
-        ended.</p>
+        call fails and the AI is told why, but the turn goes on. A call of an MCP tool that takes
+        long does not move to the background then: the turn goes on waiting for it. When you
+        reopen a conversation from the <xref href="chat_history.dita">chat history</xref>, its tool
+        calls show how their jobs ended.</p>
     </section>
     <section id="subagents_in_background">
       <title>Sub-Agents in the Background</title>
