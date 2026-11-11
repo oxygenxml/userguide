@@ -20,7 +20,7 @@
     <section id="section_migration_overview">
       <title>Migration Overview</title>
       <p>Version 29.0 updates several core and platform components. To avoid disrupting the live
-        environment, first upgrade a separate test deployment, then back up the production
+        environment, first upgrade a separate test deployment. Then back up the production
         deployment before applying the changes to it.</p>
     </section>
     <section id="section_tomcat_migration">
@@ -29,13 +29,13 @@
         Earlier Web Author versions used Tomcat 9, which is not compatible with Web Author 29.0.</p>
       <ul id="ul_b32_zll_rkc">
         <li>If you use the <b>Oxygen XML Web Author product</b> distribution, Tomcat 10.1 is already
-          included and the bundled configuration files are updated accordingly. </li>
+          included, and the bundled configuration files have been updated accordingly. </li>
         <li>If you deploy <b>Oxygen XML Web Author Component</b> or <b>Oxygen License Servlet from
             the WAR distribution</b>, deploy it on Tomcat 10.1.</li>
       </ul>
-      <p>Plugins may be affected if their third-party libraries depend on the
+      <p>Plug-ins may be affected if their third-party libraries depend on the
           <filepath>javax.*</filepath> API interfaces, which are no longer available at runtime in
-        Tomcat 10. Tomcat 10 instead provides the equivalent servlet interfaces under
+        Tomcat 10. Instead, Tomcat 10 provides the equivalent servlet interfaces under
           <filepath>jakarta.*</filepath>.</p>
       <p>Recommended actions:</p>
       <ol id="ol_tomcat_actions">
@@ -46,8 +46,8 @@
           which uses <codeph>jakarta.</codeph> interfaces instead of <codeph>javax.</codeph>. Pay
           particular attention to serialization and deserialization libraries such as Jackson or
           Gson, and to DTOs that rely on <codeph>javax.annotation</codeph> classes.</li>
-        <li>If you made custom changes to <codeph>web.xml</codeph>, you must migrate them because
-          the <codeph>web.xml</codeph> file has changed in Web Author 29.</li>
+        <li>If you customized <codeph>web.xml</codeph>, you must migrate your changes because the
+            <codeph>web.xml</codeph> file has changed in Web Author 29.</li>
         <li>Review the Apache Tomcat migration documentation for additional compatibility
             requirements:<ul id="ul_tomcat_links">
             <li><xref href="https://tomcat.apache.org/migration-10.html" format="html"
@@ -77,14 +77,14 @@
         but the proxy forwards requests to Web Author over HTTP, the session cookie is sent without
         the <codeph>Secure</codeph> attribute — even when Web Author is configured to require
         it.</p>
-      <p>Two options are affected when the <codeph>Secure</codeph> attribute is absent. If only the
+      <p>The absence of the <codeph>Secure</codeph> attribute affects two options. If only the
           <codeph>Use secure cookie attribute</codeph> Administration page option is enabled, Web
         Author still works, but the session cookie is no longer restricted to HTTPS. If the
           <codeph>force.cookies.samesite.none</codeph> configuration option is enabled, browsers
         reject the cookie because <codeph>SameSite=None</codeph> requires Secure, and Web Author
         fails to load with the message: <i>Cookies are disabled. Please enable cookies!</i></p>
       <p>To address the missing <codeph>Secure</codeph> cookie attribute, you can configure the
-        reverse proxy to add it. For example, an NGINX configuration may look like
+        reverse proxy to add it. For example, an NGINX configuration might look like
         this:<codeblock id="codeblock_qvg_bm4_qkc" outputclass="language-javascript">  # nginx.conf
   server {
     proxy_cookie_flags ~ Secure;</codeblock></p>
@@ -98,8 +98,8 @@
       <p>In version 28.1, the Java Security Manager was active by default in the <b>Oxygen XML Web
           Author</b> product distribution and could be enabled manually for the <b>Oxygen XML Web
           Author Component</b>. In version 29.0, Web Author works only with the <b>Oxygen Security
-          Manager</b> (it does not work with the Java Security Manager, even on a Java version that
-        still includes it).</p>
+          Manager</b>. It does not work with the Java Security Manager, even on a Java version that
+        still includes it.</p>
       <p>The <b>Oxygen Security Manager</b> is enabled by default in the Web Author All Platforms,
         Linux, and Windows distributions. In the WAR distribution and in <b>Oxygen XML Web Author
           Component</b>, which is also distributed as a WAR, it is not configured by default. You
@@ -122,9 +122,9 @@
         <li>Check that plug-ins do not implement
             <codeph>java.net.URLConnection.getPermission</codeph> because this is no longer
           supported.</li>
-        <li>Make sure that no applications other than the built-in <b>Oxygen</b> applications run in
-          the same Tomcat instance, because the <b>Oxygen Security Manager</b> can interfere with
-          other applications running in that JVM.</li>
+        <li>Make sure that only the built-in <b>Oxygen</b> applications run in the same Tomcat
+          instance, because the <b>Oxygen Security Manager</b> can interfere with other applications
+          running in that JVM.</li>
         <li>
           <p>Remove system properties and arguments that are specific to the Java Security Manager,
             such as <codeph>-Djava.security.manager</codeph> and Tomcat's <codeph>-security</codeph>
@@ -132,7 +132,7 @@
         </li>
         <li>Migrate from <filepath>catalina.policy</filepath> to <filepath>oxygen.policy</filepath>.
           The <b>Oxygen Security Manager</b> requires an <codeph>oxygen.policy</codeph> file that
-          specifies permissions. If you previously had additional permissions in
+          specifies permissions. If you previously added permissions to
             <filepath>catalina.policy</filepath>, you must now add them to
             <filepath>oxygen.policy</filepath>. You can obtain this file from the All Platforms kit.
           Note that <codeph>oxygen.policy</codeph> uses internal classes from the
@@ -147,9 +147,9 @@
           before starting Tomcat; otherwise, the <codeph>javaagent</codeph> JAR location will not
           exist on disk.</li>
         <li>Verify that Web Author starts with the <b>Oxygen Security Manager</b> enabled by
-          checking logs for <codeph>You are running oXygen XML Web Author with security mode
-            enabled</codeph> and that no permission-related errors or warnings from custom plug-ins
-          appear.</li>
+          checking the logs for <codeph>You are running oXygen XML Web Author with security mode
+            enabled</codeph>. Also check that no permission-related errors or warnings from custom
+          plug-ins appear.</li>
       </ol>
     </section>
     <section id="section_sdk_api_migration">
@@ -159,8 +159,8 @@
           <codeph>WebappServletFilter</codeph> extensions declared in <codeph>plugin.xml</codeph>
         with <codeph>&lt;extension type="…"&gt;</codeph>.</p>
       <p>Web Author maintains compatibility with older plug-ins that use these deprecated extension
-        classes by using internal adapters between the Jakarta Servlet and Javax Servlet APIs.
-        However, these adapters offer only partial compatibility. For example, async responses are
+        classes through internal adapters between the Jakarta Servlet and Javax Servlet APIs.
+        However, these adapters provide only partial compatibility. For example, async responses are
         not supported. Therefore, although existing filters and servlets might continue to work, you
         should migrate away from legacy <codeph>javax.servlet</codeph>-based APIs.</p>
       <p>The application logs a startup warning for each plug-in that uses the deprecated extension.
@@ -190,7 +190,7 @@
       </ol>
       <p><u><b>REST Connector: the bearer token sent through <codeph>rest-bearer-token</codeph>
             requires the <codeph>X-Requested-With</codeph> header</b></u></p>
-      <p>In Web Author 29.0, the servlets of the <b>REST Connector</b> plug-in were migrated to
+      <p>In Web Author 29.0, the <b>REST Connector</b> plug-in's servlets were migrated to
           <codeph>ServletPluginExtension</codeph>, which is protected against CSRF attacks. If you
         send the bearer token with an HTTP POST request to
           <codeph>$WEB_AUTHOR_URL/plugins-dispatcher/rest-bearer-token</codeph>, the request must
@@ -210,7 +210,7 @@
     </section>
     <section id="section_java_migration">
       <title>Java Runtime </title>
-      <p>The minimum required Java version for Web Author 29.0 changed from 17 to 21.</p>
+      <p>The minimum Java version required for Web Author 29.0 has changed from 17 to 21.</p>
     </section>
     <section id="section_post_migration_validation">
       <title>Post-Migration Validation</title>
