@@ -1075,7 +1075,12 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
             <dt><codeph>afterEditFile</codeph>: Fire-and-forget</dt>
             <dd>Fired after the agent attempts to edit or create a file, both on success and on
               failure. Also fired after a DITA map structure addition (inserting a topic reference).
-              Use it to audit AI-generated file changes.</dd>
+              Use it to audit AI-generated file changes. The <codeph>outcome</codeph> field tells
+              whether the edit was applied, applied to a document that did not validate, or not
+              applied.</dd>
+            <dd>An applied edit is either saved to the file or applied to the document that is open
+              in an editor, which is saved later. Do not assume that the file on disk already holds
+              the change.</dd>
             <dd>
               <simpletable id="st_after_edit_file" relcolwidth="1* 1* 2*">
                 <sthead>
@@ -1097,21 +1102,38 @@ public class ShellGuardHooksHandler implements AIHooksHandler {
                 <strow>
                   <stentry><codeph>content</codeph></stentry>
                   <stentry>string</stentry>
-                  <stentry>The complete file content after a successful write, or
-                      <codeph>null</codeph> when the write failed. For fragment-based edits, this is
-                    the full document with all replacements already merged in.</stentry>
+                  <stentry>The complete document content the edit applied, also when the document
+                    did not validate, or <codeph>null</codeph> when the edit was not applied. For
+                    fragment-based edits, this is the full document with all replacements already
+                    merged in. This is the content as the agent sent it, so the document may hold it
+                    slightly changed: characters that are not allowed in XML are removed, a stray
+                      <codeph>&amp;</codeph> or <codeph>&lt;</codeph> is escaped, and an edit
+                    merged into a document that tracks changes may be recorded as tracked changes.
+                    Read the document when the exact result matters.</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>tool_result</codeph></stentry>
                   <stentry>string</stentry>
                   <stentry>The result string returned to the AI model after the tool call completed
-                    (e.g. a success confirmation or an error message).</stentry>
+                    (e.g. a success confirmation, the validation problems of the edited document, or
+                    an error message).</stentry>
                 </strow>
                 <strow>
                   <stentry><codeph>succeeded</codeph></stentry>
                   <stentry>boolean</stentry>
-                  <stentry><codeph>true</codeph> when the file was written to disk successfully,
-                    <codeph>false</codeph> when the save failed.</stentry>
+                  <stentry><codeph>true</codeph> when the edit was applied, also when the document
+                    then did not validate; <codeph>false</codeph> when it was not applied. Use
+                      <codeph>outcome</codeph> to tell whether the document validated.</stentry>
+                </strow>
+                <strow>
+                  <stentry><codeph>outcome</codeph></stentry>
+                  <stentry>string</stentry>
+                  <stentry>What became of the edit: <codeph>applied</codeph> when it was applied,
+                      <codeph>applied_invalid</codeph> when it was applied but the document did not
+                    validate, or <codeph>not_applied</codeph> when it was not applied. For
+                      <codeph>applied_invalid</codeph>, the tool call fails so that the AI fixes the
+                    document, and <codeph>tool_result</codeph> holds the validation
+                    problems.</stentry>
                 </strow>
               </simpletable>
             </dd>
