@@ -123,15 +123,19 @@
         id="ul_hooks_mcp_session_end_reasons">
         <li><codeph>client_close</codeph> - The AI assistant ended its session.</li>
         <li><codeph>connection_lost</codeph> - The AI assistant could no longer be reached (for
-          example, because it dropped its connection while waiting for the result of a tool). An
+          example, because it dropped its connection while waiting for the result of a tool), or it
+          left its session idle: it sent no request since the previous check for idle sessions and
+          had no open event stream when the check ran. An
           assistant usually starts a new session then, so one connection of an assistant can be
           reported as several sessions.</li>
         <li><codeph>server_stop</codeph> - The <i>Oxygen</i> MCP server was stopped from its
           preferences page.</li>
         <li><codeph>application_close</codeph> - <ph keyref="product"/> was closed.</li>
-      </ul>There is no idle timeout: an AI assistant that disconnects without ending its session,
-      while no tool result or notification is being sent to it, is reported as ended only when the
-      server stops or <ph keyref="product"/> closes. The payloads of all these events also name the
+      </ul>The server checks for idle sessions every 30 minutes, so an AI assistant that disconnects
+      without ending its session, while no tool result or notification is being sent to it, is
+      reported as ended with <codeph>connection_lost</codeph> at most an hour after its last request,
+      or with <codeph>server_stop</codeph> or <codeph>application_close</codeph> if the server stops
+      or <ph keyref="product"/> closes first. The payloads of all these events also name the
       MCP client of the AI assistant, as it introduced itself when it connected to the
         server:<simpletable id="st_hooks_mcp_client" relcolwidth="1* 1* 2*">
         <sthead>
