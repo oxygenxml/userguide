@@ -42,5 +42,28 @@
       input area. It expands the selected content (including images) and it updates every time the
       selection is changed. You can reference the selection in a message by typing
         <b>@selection</b>.</p>
+    <section id="section_large_attachments">
+      <title>Large Attachments</title>
+      <p>So that large files do not fill the context of the AI model, an attachment with 100 KB of
+        text or more is not sent in full with the message. Instead, the AI is told where the file
+        is and it reads only the parts it needs:</p>
+      <ul id="ul_large_attachments">
+        <li>Text, CSV, and XML files are read from where they are on disk.</li>
+        <li>Excel workbooks (<filepath>.xlsx</filepath>) are converted to one CSV file for each
+          sheet, and PowerPoint presentations (<filepath>.pptx</filepath>) are converted to a
+          Markdown file that contains the slides in the order of the presentation.</li>
+        <li>PDF and Word (<filepath>.docx</filepath>) documents are split into Markdown section
+          files, and their images are extracted into a temporary folder. In the chat modes that
+          use sub-agents, such as <uicontrol>Planner</uicontrol>, these documents are split
+          regardless of their size.</li>
+      </ul>
+      <p>Smaller files are sent in full with the message. Large files are handled this way only in
+        the chat modes that can read files; otherwise, they are also sent in full.</p>
+      <p>The AI can read the files you attach even if they are outside the locations it is
+        otherwise allowed to access. This applies only to the conversation in which the files are
+        attached (including its sub-agents), and the AI cannot change these files. Files excluded
+        from AI processing by <filepath>.ai-ignore</filepath> rules remain excluded. For more
+        details, see <xref href="exclude_resources_ai_processing.dita"/>.</p>
+    </section>
   </body>
 </topic>
