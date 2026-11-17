@@ -83,21 +83,6 @@
               starts.</p>
           </dd>
         </dlentry>
-        <dlentry id="offer_mcp_server_tools">
-          <dt>Include tools of MCP servers configured in AI Positron</dt>
-          <dd>
-            <p>If selected, the AI assistants connected through the HTTP MCP server can also discover
-              and call the tools of the MCP servers configured in the <xref
-                href="model_context_protocol_preferences.dita">Model Context Protocol (MCP)
-                Preferences</xref> page. This option is not selected by default, so an AI assistant
-              that connects to the server gets only the MCP servers of its own configuration, and
-              not the ones configured in <b>AI Positron</b>, which may require authentication or
-              have access to your data.</p>
-            <p>Changing this option applies right away to a running server: the connected AI
-              assistants are told that the list of tools changed, without restarting the server. A
-              call to a tool that is no longer offered is refused.</p>
-          </dd>
-        </dlentry>
         <dlentry>
           <dt>Server URL</dt>
           <dd>
@@ -122,13 +107,61 @@
               configuration again, since the server URL changes.</p>
           </dd>
         </dlentry>
+        <dlentry id="offer_mcp_server_tools">
+          <dt>Include tools of MCP servers configured in AI Positron</dt>
+          <dd>
+            <p>If selected, the AI assistants connected through the HTTP MCP server can also discover
+              and call the tools of the MCP servers configured in the <xref
+                href="model_context_protocol_preferences.dita">Model Context Protocol (MCP)
+                Preferences</xref> page. This option is not selected by default, so an AI assistant
+              that connects to the server gets only the MCP servers of its own configuration, and
+              not the ones configured in <b>AI Positron</b>, which may require authentication or
+              have access to your data.</p>
+            <p>Changing this option applies right away to a running server: the connected AI
+              assistants are told that the list of tools changed, without restarting the server. A
+              call to a tool that is no longer offered is refused.</p>
+          </dd>
+        </dlentry>
+        <dlentry id="provided_tools">
+          <dt>Provided Tools</dt>
+          <dd>
+            <p>A section that lists the tools the server can offer to the AI assistants connected
+              to it, grouped by category, with a check box for each category and for each tool. The
+              tools of each MCP server configured in <b>AI Positron</b> form a category named after
+              the server. Use the <uicontrol>Filter</uicontrol> field to find a tool by its name or
+              description.</p>
+            <ul>
+              <li>Deselect a tool to keep it from the AI assistants.</li>
+              <li>Deselect a category to leave out all its tools, including the tools that are added
+                to the category later (for example, new tools of a plugin or of an MCP server). The
+                tools of a deselected category are displayed deselected and disabled. Select the
+                category again to offer all its listed tools again, including those that you
+                deselected one by one.</li>
+              <li>A category remains selected even if you deselect all its tools one by one, because
+                the tools that are added to it later are still offered. To leave out a category as a
+                whole, deselect the category itself.</li>
+              <li>The tools of the MCP servers configured in <b>AI Positron</b> are listed only while
+                the <xref href="#oxygen_mcp_server_preferences/offer_mcp_server_tools"
+                  type="dlentry">Include tools of MCP servers configured in AI Positron</xref>
+                option is selected. The choices that you made for them are kept while they are not
+                listed.</li>
+              <li>The choices for tools that are not listed at the moment, such as the tools of an
+                MCP server that is not connected, are kept.</li>
+            </ul>
+            <p>The choices apply when you click <uicontrol>OK</uicontrol> or
+                <uicontrol>Apply</uicontrol>. If the server is running, the connected AI assistants
+              are told right away that the list of tools changed, and a call to a tool that is no
+              longer offered is refused.</p>
+          </dd>
+        </dlentry>
         <dlentry>
           <dt>Restore Defaults</dt>
           <dd>
             <p>Stops the server if it is running, resets the port to its default value, deselects
               the <uicontrol>Remember the server state (running or stopped) and restore it at
                 application start</uicontrol> and <uicontrol>Include tools of MCP servers configured in
-                AI Positron</uicontrol> options, and generates a new authentication
+                AI Positron</uicontrol> options, selects all the tools and categories in the
+                <uicontrol>Provided Tools</uicontrol> section, and generates a new authentication
               token. AI
               assistants that were configured with the previous token are rejected (with an HTTP <codeph>401 Unauthorized</codeph> error)
               until you click <uicontrol>Copy MCP Configuration</uicontrol> and paste the new
@@ -167,7 +200,10 @@
         started HTTP MCP server. The tools of the MCP servers configured in <b>AI Positron</b> are
         available only if the <xref href="#oxygen_mcp_server_preferences/offer_mcp_server_tools"
           type="dlentry">Include tools of MCP servers configured in AI Positron</xref>
-        option is selected.</p>
+        option is selected. You can leave out any of the tools offered by the server, including
+        the specific tools listed below, in the <xref
+          href="#oxygen_mcp_server_preferences/provided_tools" type="dlentry">Provided Tools</xref>
+        section.</p>
       <p>In addition the following specific tools are available through the HTTP MCP server:<dl>
           <dlentry>
             <dt><codeph>get_oxygen_xml_application_context</codeph></dt>
